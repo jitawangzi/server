@@ -14,7 +14,7 @@ public class HeroFragmentComposeRequest_16000050Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.newBuilder() ; 
 		
-		builder.setHeroId(331001);
+		builder.addHeroId(331001);
 		
 		return builder.build() ; 
 	}

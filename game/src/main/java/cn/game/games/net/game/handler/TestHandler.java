@@ -22,7 +22,6 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
-import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
@@ -36,11 +35,13 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -366,16 +367,19 @@ public class TestHandler extends BaseHandler {
         ItemModule itemModule = player.getItemModule();
         System.err.println(itemModule);
         System.err.println(itemModule.getId_items());
-        Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
-        requestRemoteServer.onComplete(r -> {
-            if (r.succeeded()) {
-                ItemModule result = r.result();
-                System.err.println("返回值： " + result);
-                System.err.println("返回值： " + result.getId_items());
-            } else {
-                System.err.println("失败");
-            }
-        });
+		List<Goods> goods = PlayerHelper.randomReward(101602);
+		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
+
+//        Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
+//        requestRemoteServer.onComplete(r -> {
+//            if (r.succeeded()) {
+//                ItemModule result = r.result();
+//                System.err.println("返回值： " + result);
+//                System.err.println("返回值： " + result.getId_items());
+//            } else {
+//                System.err.println("失败");
+//            }
+//        });
         //		Future<Long> future = GameServer.getInstance().getRemoteLoginServerInterface(CallType.LoadBalancer).getUid2("323323");
         //		future.onComplete(r -> {
         //			System.out.println(r);

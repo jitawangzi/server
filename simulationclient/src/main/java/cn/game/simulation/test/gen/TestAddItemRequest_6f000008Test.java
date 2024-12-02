@@ -3,7 +3,6 @@ package cn.game.simulation.test.gen;
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 //@Component
@@ -15,9 +14,10 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 
 //		builder.setId(Asset.playerExp.ID);
 //		builder.setCount(Integer.MAX_VALUE / 2);
+//		builder.setCount(0);
 //		
-		builder.setId(205000);
-		builder.setCount(1);
+		builder.setId(203003);
+//		builder.setCount(10000000);
 
 		return builder.build() ; 
 	}

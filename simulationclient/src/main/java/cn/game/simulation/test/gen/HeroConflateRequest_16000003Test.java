@@ -10,7 +10,6 @@ import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.HeroMsg.HeroConflateInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
@@ -24,7 +23,9 @@ public class HeroConflateRequest_16000003Test extends ServerTest{
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
 		HeroConflateInfo.Builder heroConflateInfo = HeroConflateInfo.newBuilder();
-		heroConflateInfo.setUid(Rnd.randomOne(herosList).getUid());
+//		heroConflateInfo.setUid(Rnd.randomOne(herosList).getUid());
+		heroConflateInfo.setUid("8309891457125475330");
+		heroConflateInfo.putSameProfessionItems(211602, 1);
 		
 		builder.addHeroConflateInfo(heroConflateInfo);
 

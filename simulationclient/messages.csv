@@ -139,3 +139,28 @@
 138,buyVipGiftRequest_34000005,0x34000005,VIP,5300,,,购买一次性礼包奖励请求
 139,getVipInfoRequest_34000001,0x34000001,VIP,5300,,,获取VIP 信息 请求
 140,rewardFreeVipGiftRequest_34000003,0x34000003,VIP,5300,,,领取每日免费奖励请求
+141,GmAccountForbidListRequest_77000003,0x77000003,,,,,请求封号列表
+142,GmAccountForbidRequest_77000005,0x77000005,,,,,请求封号
+143,GmAccountUnblockRequest_77000007,0x77000007,,,,,请求解封
+144,GmMailCheckRequest_77000044,0x77000044,,,,,审核邮件
+145,GmMailDeleteRequest_77000046,0x77000046,,,,,删除邮件
+146,GmMailListRequest_77000042,0x77000042,,,,,查看邮件列表
+147,GmMailPlayerSendRequest_77000040,0x77000040,,,,,gm给指定玩家发邮件 已废弃
+148,GmMailServerSendRequest_77000048,0x77000048,,,,,gm给指定服务器发邮件
+149,GmNoticeAddRequest_77000060,0x77000060,,,,,增加公告
+150,GmNoticeDeleteRequest_77000064,0x77000064,,,,,删除公告
+151,GmNoticeListRequest_77000066,0x77000066,,,,,查看公告列表
+152,GmNoticeUpdateRequest_77000062,0x77000062,,,,,更新公告
+153,GmOperationRequest_77000071,0x77000071,,,,,请求gm操作记录列表
+154,GmOrderReimburseRequest_77000027,0x77000027,,,,,补单
+155,GmOrderRequest_77000025,0x77000025,,,,,"查询订单,哪个参数有值用哪个查，如果都没有值"
+156,GmPlayerLogoutRequest_77000009,0x77000009,,,,,请求踢下线
+157,GmPlayerRequest_77000021,0x77000021,,,,,查看某玩家数据，优先id，如果id没有通过name查询。
+158,GmServerOpRequest_77000030,0x77000030,,,,,操作服务器重启等
+159,GmServerStatusRequest_77000032,0x77000032,,,,,改变服务器状态
+160,GmShutdownServerRequest_77000001,0x77000001,,,,,关闭服务器
+161,DrawHeroWishRequest_37000005,0x37000005,,,,,选择心愿红卡
+162,HeroFragmentComposeRequest_16000050,0x16000050,,,,,使用英雄碎片合成英雄
+163,HeroDisassembleRequest_16000052,0x16000052,,,,,英雄分解成碎片
+164,BuyXianShiLiBaoRequest_15000052,0x15000052,,,,,购买限时礼包
+165,GetXianShiLiBaoInfoRequest_15000050,0x15000050,,,,,获取现时礼包数据
