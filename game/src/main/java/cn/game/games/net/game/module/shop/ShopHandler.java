@@ -121,16 +121,13 @@ public class ShopHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_num_is_max.getId());
 			return;
 		}
-		if (!PlayerHelper.delResources(player, config.Price, OpType.BuyXianShiLiBao)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
 		player.pay(PayType.XianShiLiBao, req.getId(),config.Price).
 		onSuccess(handleSuccess -> {
 			if (handleSuccess){
 				resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
 				resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
 			}
+			client.sendProtocol(resp);
 		}).onFailure(e -> {
 					e.printStackTrace();
 					client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
