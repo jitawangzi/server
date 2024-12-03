@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
@@ -23,6 +24,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -87,6 +89,8 @@ import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import cn.game.util.SpringContextLoader;
+import cn.game.util.log.LoggerType;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -1216,6 +1220,11 @@ public class PlayerHelper {
 		return future.map(player);
 	}
 
+	/** 
+	 * 创建新玩家
+	 * @param player
+	 * @return
+	 */
 	public static Future<Player> savePlayerToDb(Player player) {
 		PlayerData data = player.getData();
 		data.beforeSave();
@@ -1501,6 +1510,28 @@ public class PlayerHelper {
 		}
 		Future<SimplePlayer> simplePlayer = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		return simplePlayer.map(SimplePlayer::getServerId);
+	}
+
+	/** 
+	 * 从数据库中载入所有玩家数据，逐个执行修正逻辑，发生异常继续处理，不中断。 
+	 * @param function  修正方法，返回true为数据修正了，需要保存，false为数据没有修改，不需要保存
+	 */
+	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
+		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+		BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
+			try {
+				Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
+				Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+				Boolean fix = function.apply(player);
+				if (fix) {
+					log.info("修正玩家数据: " + player.getPlayerId());
+					PlayerHelper.saveClientCache(player.getPlayerId()).toCompletionStage().toCompletableFuture().get(30, TimeUnit.SECONDS);
+				}
+				PlayerHelper.clearPlayer(player.getPlayerId());
+			} catch (Exception e) {
+				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+			}
+		});
 	}
 
 	/** 

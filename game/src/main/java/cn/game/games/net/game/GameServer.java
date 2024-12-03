@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.management.MBeanServer;
@@ -34,18 +34,16 @@ import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
-import cn.game.core.util.BatchQueryUtil;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
-import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
+import cn.game.games.net.game.manager.DataFixManager;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
@@ -70,7 +68,6 @@ import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Future;
 
 /**
  * vertx重构通讯
@@ -174,6 +171,8 @@ public class GameServer implements GameServerMBean {
 //		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
+
+		DataFixManager.getInstance().init();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
@@ -181,14 +180,7 @@ public class GameServer implements GameServerMBean {
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
-
 		System.err.println("Game Server startup complete");
-
-		// 记录bi
-//		RocketMQRpcClient producer = new RocketMQRpcClient("192.168.1.67:9876", "SYQ_GROUP");
-//		producer.start();
-//		testUpdateBatch();
-//		getLoginGameServerInterface().getUidByName("sfsdfs32");
 	}
 
 	/** 
@@ -209,23 +201,15 @@ public class GameServer implements GameServerMBean {
 				found = true;
 			}
 			if (!found) {
-				PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-				BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
-					try {
-						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-						PlayerHelper.saveSimplePlayerToRedisSync(player);
 
-						// 初始化名字，名字--id
-						PlayerNameManager.getInstance().addExistingUsername(playerData.getName());
-						PlayerNameManager.getInstance().saveName2IdSync(playerData.getName(), playerData.getPlayerId());
-
-						PlayerHelper.clearPlayer(player.getPlayerId());
-					} catch (Exception e) {
-						LoggerType.Stdout.logger
-								.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-					}
-				});
+				Function<Player, Boolean> function = player -> {
+					PlayerHelper.saveSimplePlayerToRedisSync(player);
+					// 初始化名字，名字--id
+					PlayerNameManager.getInstance().addExistingUsername(player.getData().getName());
+					PlayerNameManager.getInstance().saveName2IdSync(player.getData().getName(), player.getData().getPlayerId());
+					return false;
+				};
+				PlayerHelper.loadAndProcessPlayers(function);
 			}
 		} catch (Exception e) {
 			throw e;
@@ -233,46 +217,6 @@ public class GameServer implements GameServerMBean {
 			lock.unlock();
 		}
 	}
-
-	private void deleteErrorPlayers() {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
-		if (lock == null) {
-			return;
-		}
-		try {
-			PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-			int batchSize = 100;
-			int offset = 0;
-
-			while (true) {
-				List<PlayerData> batch = mapper.getBatch(offset, batchSize);
-				if (batch.isEmpty()) {
-					break;
-				}
-				batch.parallelStream().forEach(playerData -> {
-					try {
-						Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-						Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-						if (playerData.getHead() == 0) {
-							PlayerNameManager.getInstance().removeName(playerData.getName());
-							RedisUtil.delete(CacheType.PLAYER_SIMPLE.key(playerData.getPlayerId()));
-						}
-						PlayerHelper.clearPlayer(player.getPlayerId());
-					} catch (Exception e) {
-						LoggerType.Stdout.logger
-								.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-						ServerContext.getInstance().handleStartFail(e);
-					}
-				});
-				offset += batchSize;
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			lock.unlock();
-		}
-	}
-
 	/** 
 	 * 当修改时间测试某些和时间相关的功能时，如果时间往后调了超过一个小时，则自动踢出客户端
 	 * 主要方便测试跨天的一些逻辑。 
