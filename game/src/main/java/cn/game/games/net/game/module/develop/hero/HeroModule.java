@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
@@ -151,7 +152,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 //	}
 
 	@Override
-	public List<Hero> add(int itemId, int count, OpType opType) {
+	public Object add(int itemId, int count, OpType opType) {
 		if (count > 100) {
 			throw new IllegalArgumentException("add hero , count > 100 : " + count);
 		}
@@ -171,11 +172,21 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion, true);
 			return list;
 		}
+		Collection<Hero> sameHeros = getByConfigId(itemId);
+		if (!sameHeros.isEmpty()) {
+			// 同英雄的转碎片id。
+			return player.getItemModule()
+					.add(heroConfig.Fragment, GlobalConst.HeroSynthesisDisassemble.get(heroConfig.InitialQuality) * count, opType);
+		}
 
-		List<Hero> list = super.add(itemId, count, opType);
-		
-		for (Hero hero : list) {
-			GameLogger.getHero(player, hero, opType);
+		Object list = super.add(itemId, count, opType);
+		if (list instanceof List) {
+			for (Item hero : (List<Item>) list) {
+				if (hero instanceof Hero) {
+					GameLogger.getHero(player, (Hero) hero, opType);
+				}
+			}
+
 		}
 		return list;
 	}

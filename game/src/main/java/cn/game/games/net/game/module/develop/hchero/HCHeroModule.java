@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.develop.hchero;
 
 import java.util.Collection;
-import java.util.List;
 
 import cn.game.games.cache.entity.HCHero;
 import cn.game.games.core.event.EventTypeEnum;
@@ -61,8 +60,8 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 //	}
 
 	@Override
-	public List<HCHero> add(int itemId, int count, OpType opType) {
-		List<HCHero> list = super.add(itemId, count, opType);
+	public Object add(int itemId, int count, OpType opType) {
+		Object list = super.add(itemId, count, opType);
 		
 //		for (HCHero hero : list) {
 //			GameLogger.getHCHero(player, hero, opType);
