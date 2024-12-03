@@ -80,22 +80,25 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                     return;
                 }
                 int level = player.getLevel();
-                checkAddNewLiBao(level, battleId);
+                checkAddNewLiBaoByBattleId(level, battleId);
             }
             case LevelUp -> {
-                int level = event.getIntParameter(0);
+                int level = event.getIntParameter(1);
                ShiLuoZhenJingBattle shiLuoZhenJingBattle = player.getChapterModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-               List<ActivityXianShiLiBaoConfig> allLevelConfigList = ActivityXianShiLiBaoManager.instance().getLvList(level);
-                Set<Integer> groupSet = new HashSet<>();
+               List<ActivityXianShiLiBaoConfig> allLevelConfigList = getlevelConfigList(level);
+                Map<Integer, ActivityXianShiLiBaoConfig> groupSet = new HashMap<>();
                 if (allLevelConfigList != null){
                     allLevelConfigList.forEach(config ->{
-                        if (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID || shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID){
-                            groupSet.add(config.Group);
+                        if (!groupSet.containsKey(config.Group) &&
+                                (
+                                shiLuoZhenJingBattle == null ? config.BattleID == 0 :
+                                (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID || shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID)
+                        )
+                        ){
+                            groupSet.put(config.Group,config);
                         }
                     });
-                    groupSet.forEach(group ->{
-                        checkAddNewLiBao(level,group);
-                    });
+                    addNewLiBao(groupSet);
                 }
             }
             default -> {
@@ -105,21 +108,28 @@ public class XianShiLiBaoModule extends BasePlayerModule {
         }
     }
 
-    private void checkAddNewLiBao(int level, int battleId) {
+    private List<ActivityXianShiLiBaoConfig> getlevelConfigList(int level) {
+        return ActivityXianShiLiBaoManager.instance().list().stream().filter(c -> c.Lv <= level).collect(Collectors.toList());
+    }
+
+    private void checkAddNewLiBaoByBattleId(int level, int battleId) {
         List<ActivityXianShiLiBaoConfig> list = getXianShiLiBaoConfigList(level, battleId);
-        Optional<ActivityXianShiLiBaoConfig> optionalActivityXianShiLiBaoConfig = list.stream().findAny();
-        if (!optionalActivityXianShiLiBaoConfig.isPresent()){
-            return;
-        }
-        ActivityXianShiLiBaoConfig xianShiLiBaoConfig = optionalActivityXianShiLiBaoConfig.get();
-        if (groupMap.containsKey(xianShiLiBaoConfig.Group)){
-            return;
-        }
-        long failTimer = (System.currentTimeMillis() + xianShiLiBaoConfig.Duration*1000L);
-        groupMap.put(xianShiLiBaoConfig.Group,failTimer);
-        ShopMsg.NotifyNewXianShiLiBao_15000054.Builder res = ShopMsg.NotifyNewXianShiLiBao_15000054.newBuilder();
-        res.setInfo(ShopMsg.XianShiLiBaoInfo.newBuilder().setGroupId(xianShiLiBaoConfig.Group).setFailTimer((int) (failTimer/1000L)).build());
-        player.getGameClient().sendProtocol(res);
+        Map<Integer, ActivityXianShiLiBaoConfig> groupIds = new HashMap<>();
+        list.forEach(c ->{groupIds.put(c.Group,c);});
+        addNewLiBao(groupIds);
+    }
+
+    private void addNewLiBao(Map<Integer, ActivityXianShiLiBaoConfig> groupIds) {
+        groupIds.values().forEach(xianShiLiBaoConfig ->{
+            if (groupMap.containsKey(xianShiLiBaoConfig.Group)){
+                return;
+            }
+            long failTimer = (System.currentTimeMillis() + xianShiLiBaoConfig.Duration*1000L);
+            groupMap.put(xianShiLiBaoConfig.Group,failTimer);
+            ShopMsg.NotifyNewXianShiLiBao_15000054.Builder res = ShopMsg.NotifyNewXianShiLiBao_15000054.newBuilder();
+            res.setInfo(ShopMsg.XianShiLiBaoInfo.newBuilder().setGroupId(xianShiLiBaoConfig.Group).setFailTimer((int) (failTimer/1000L)).build());
+            player.getGameClient().sendProtocol(res);
+        });
     }
 
     public List<ActivityXianShiLiBaoConfig> getGroupConfigList(int group) {
