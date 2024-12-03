@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
-import cn.game.protocol.generated.config.*;
-import cn.game.protocol.generated.manager.*;
-import cn.game.protocol.protobuf.ShopMsg;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -26,13 +22,34 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
+import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
+import cn.game.protocol.generated.config.ActivityXianShiLiBaoConfig;
+import cn.game.protocol.generated.config.ChapterPacksConfig;
+import cn.game.protocol.generated.config.FundPassConfig;
+import cn.game.protocol.generated.config.FundPassRewardsConfig;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.config.MonthCardConfig;
+import cn.game.protocol.generated.config.RechargeConfig;
+import cn.game.protocol.generated.config.ShopConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.ActivityXianShiLiBaoManager;
+import cn.game.protocol.generated.manager.ChapterPacksManager;
+import cn.game.protocol.generated.manager.FundPassManager;
+import cn.game.protocol.generated.manager.FundPassRewardsManager;
+import cn.game.protocol.generated.manager.HCBattleManager;
+import cn.game.protocol.generated.manager.MonthCardManager;
+import cn.game.protocol.generated.manager.RechargeManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.protocol.protobuf.ShopMsg;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRequest_15000010;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyResponse_15000011;
 import cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012;
@@ -235,11 +252,16 @@ public class ShopHandler extends BaseHandler {
 		if (heishiRefreshTimes < freeFreshMaxTimes) {
 //			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
-			if (heishiPayTimes >= GlobalConst.HeishiPayfrseh.length) {
+			int maxPayTimes = GlobalConst.HeishiPayfrsehCnt.get(player.getVipLevel());
+
+			if (heishiPayTimes >= maxPayTimes) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
 				return;
 			}
-			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.HeishiPayfrseh[heishiPayTimes], OpType.HeishiFresh);
+			int payCost = GlobalConst.HeishiPayfrseh[heishiPayTimes >= GlobalConst.HeishiPayfrseh.length - 1
+					? GlobalConst.HeishiPayfrseh.length - 1
+					: heishiPayTimes];
+			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, payCost, OpType.HeishiFresh);
 			if (!delResources) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 				return;
