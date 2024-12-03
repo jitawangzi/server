@@ -14,14 +14,17 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.chat.ChatHelper;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuidanceRandomGroupConfig;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.MarqueeConfig;
 import cn.game.protocol.generated.config.SupremeRandomGroupConfig;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.GuidanceRandomGroupManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.MarqueeManager;
 import cn.game.protocol.generated.manager.SupremeRandomGroupManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -131,6 +134,9 @@ public class DrawModule extends BasePlayerModule {
 
 		allRewards.add(ret);
 		allRewards.add(giftList);
+		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(1);
+		int quality = marqueeConfig.Para;
+		List<String> heroNames = new ArrayList<>();
 
 		DrawConfig drawConfig = DrawManager.instance().get(id);
 		if (id == 2) { // 至尊抽卡走特殊逻辑。首次十连给指定的卡，接下来走特殊卡池
@@ -146,9 +152,9 @@ public class DrawModule extends BasePlayerModule {
 			Set<Integer> guidanceKeySet = randomParameterGroupIds.keySet();
 			if (count == 10 && isFirstTen) {
 				for (int i = 0; i < count; i++) {
-
-					List<RewardInfo> reward = drawRewards(GlobalConst.FirstMandatoryDraw[i]);
-					ret.addAll(reward);
+					List<Goods> reward = drawRewards(GlobalConst.FirstMandatoryDraw[i]);
+					heroNames.addAll(getMarqueeHeroNames(reward, quality));
+					ret.addAll(PlayerHelper.addResources(player, reward, OpType.Draw));
 				}
 				isFirstTen = false;
 			} else {
@@ -172,24 +178,29 @@ public class DrawModule extends BasePlayerModule {
 								curGuidanceGroupIndex = -1;
 							}
 						}
-						List<RewardInfo> reward = drawRewards(guidanceRandomGroupConfig.GivenID);
-						ret.addAll(reward);
+						List<Goods> reward = drawRewards(guidanceRandomGroupConfig.GivenID);
+						heroNames.addAll(getMarqueeHeroNames(reward, quality));
+						ret.addAll(PlayerHelper.addResources(player, reward, OpType.Draw));
 						guidanceDrawCount++;
 					} else {
-						List<RewardInfo> reward = supremeDraw(id);
-						ret.addAll(reward);
+						List<Goods> reward = supremeDraw(id);
+						heroNames.addAll(getMarqueeHeroNames(reward, quality));
+						ret.addAll(PlayerHelper.addResources(player, reward, OpType.Draw));
 					}
 
 				}
 			}
 		} else if (id == 201 || id == 301) {
 			for (int i = 0; i < count; i++) {
-				List<RewardInfo> reward = supremeDraw(id);
-				ret.addAll(reward);
+				List<Goods> reward = supremeDraw(id);
+				heroNames.addAll(getMarqueeHeroNames(reward, quality));
+				ret.addAll(PlayerHelper.addResources(player, reward, OpType.Draw));
 			}
 		} else {
 			for (int i = 0; i < count; i++) {
-				ret.addAll(drawRewards(drawConfig.DrawRandomId));
+				List<Goods> drawRewards = drawRewards(drawConfig.DrawRandomId);
+				heroNames.addAll(getMarqueeHeroNames(drawRewards, quality));
+				ret.addAll(PlayerHelper.addResources(player, drawRewards, OpType.Draw));
 			}
 		}
 
@@ -199,7 +210,38 @@ public class DrawModule extends BasePlayerModule {
 		if (freeOnce) {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
 		}
+		if (!heroNames.isEmpty()) {
+			String marqueeText = getMarqueeText(heroNames);
+			ChatHelper.marquee(marqueeText, player.getServerId());
+		}
+
 		return allRewards;
+	}
+
+	private String getMarqueeText(List<String> heroNames) {
+
+		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(1);
+		StringBuilder sb = new StringBuilder();
+
+		for (String name : heroNames) {
+			sb.append(name).append("、");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		return String.format(marqueeConfig.Text, player.getData().getName(), sb.toString());
+	}
+
+	private List<String> getMarqueeHeroNames(List<Goods> reward, int quality) {
+		List<String> heroNames = new ArrayList<>();
+		for (Goods goods : reward) {
+			int hid = goods.getId();
+			if (ItemHelper.getGoodsType(hid) == GoodsTypeEnum.Hero.getId()) {
+				HeroConfig heroConfig = HeroManager.instance().get(hid);
+				if (heroConfig.InitialQuality >= quality) {
+					heroNames.add(heroConfig.name);
+				}
+			}
+		}
+		return heroNames;
 	}
 
 	private List<Goods> wishHeroRewards(int randomDropId) {
@@ -239,9 +281,9 @@ public class DrawModule extends BasePlayerModule {
 		return randomReward;
 	}
 
-	private List<RewardInfo> drawRewards(int randomDropId) {
+	private List<Goods> drawRewards(int randomDropId) {
 		List<Goods> wishHeroRewards = wishHeroRewards(randomDropId);
-		return PlayerHelper.addResources(player, wishHeroRewards, OpType.Draw);
+		return wishHeroRewards;
 	}
 
 	/** 
@@ -249,7 +291,7 @@ public class DrawModule extends BasePlayerModule {
 	 * @param id  draw表id
 	 * @return
 	 */
-	private List<RewardInfo> supremeDraw(int id) {
+	private List<Goods> supremeDraw(int id) {
 		List<SupremeRandomGroupConfig> list = SupremeRandomGroupManager.instance().getDrawIdList(id);
 
 		List<Integer> supremeRandomGroupList = supremeRandomGroupMap.computeIfAbsent(id, k -> new ArrayList<>());

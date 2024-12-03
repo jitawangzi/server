@@ -49,6 +49,7 @@ public class ChatHandler extends BaseHandler {
 		ChatResponse_31000002.Builder resp = ChatResponse_31000002.newBuilder();
 		ChatType chatType = req.getChatType(); // 聊天类型
 		String content = req.getContent();
+		String serverId = req.getServerId();
 		ProtocolStringList atPlayerIdsList = req.getAtPlayerIdsList();
 		SimplePlayerInfo sendPlayer = req.getSendPlayer();
 //		String sendServerId = sendPlayer.getServerId();
@@ -84,6 +85,10 @@ public class ChatHandler extends BaseHandler {
 //					player.getGameClient().sendProtocol(notAtMeMessage);
 //				}
 //			}
+			break;
+		}
+		case MARQUEE: {
+			PushService.getInstance().pushMessage(notAtMeMessage, false, serverId);
 			break;
 		}
 		case UNINON_CHAT: {

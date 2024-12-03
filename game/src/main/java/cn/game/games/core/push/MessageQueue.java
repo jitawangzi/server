@@ -1,6 +1,7 @@
 package cn.game.games.core.push;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -15,6 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.protobuf.Message;
 
@@ -57,7 +60,9 @@ public class MessageQueue {
 	}
 
 	public void addMessage(Message protoMessage, boolean immediate, String... tags) {
-		PushMessage msg = new PushMessage(protoMessage, immediate, Arrays.asList(tags));
+		List<String> tagList = tags == null || tags.length == 1 && StringUtils.isEmpty(tags[0]) ? Collections.emptyList()
+				: Arrays.asList(tags);
+		PushMessage msg = new PushMessage(protoMessage, immediate, tagList);
 		if (immediate) {
 			immediateQueue.offer(msg);
 		} else {
@@ -113,7 +118,7 @@ public class MessageQueue {
 	}
 
 	private void broadcastMessage(List<String> tags, Message message) {
-		Set<Long> players = tags.isEmpty() ? tagSystem.getAllPlayers() : tagSystem.getPlayersByTags(tags.toArray(new String[0]));
+		Set<Long> players = tags.isEmpty() ? tagSystem.getAllPlayers() : tagSystem.getPlayersByTags(tags);
 		for (Long playerId : players) {
 			sendToPlayer.accept(playerId, message);
 		}

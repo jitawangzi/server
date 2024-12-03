@@ -51,8 +51,12 @@ public class TagSystem {
 	}
 
     public Set<Long> getPlayersByTags(String... tags) {
-        return tagToPlayers.getOrDefault(Arrays.asList(tags), Collections.emptySet());
+		return getPlayersByTags(Arrays.asList(tags));
     }
+
+	public Set<Long> getPlayersByTags(List<String> tags) {
+		return tagToPlayers.getOrDefault(tags, Collections.emptySet());
+	}
 
 	public Set<Long> getAllPlayers() {
 //		return new HashSet<>(playerToTags.keySet());

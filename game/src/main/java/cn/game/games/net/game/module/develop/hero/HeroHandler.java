@@ -790,8 +790,8 @@ public class HeroHandler extends BaseHandler {
             }
             if (oldQuality != newQuality) {
                 GameLogger.heroraise(player, hero, 2, 1, newQuality, beforeCombat, afterCombat);
+				player.handleEvent(EventTypeEnum.HeroQuality, hero);
             }
-            player.handleEvent(EventTypeEnum.HeroQuality, hero);
             player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
             resp.addHero(hero.toHeroInfo());
         }
