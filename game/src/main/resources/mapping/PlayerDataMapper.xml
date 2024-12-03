@@ -827,6 +827,10 @@
     <foreach close=")" collection="ids" index="index" item="item" open="(" separator=",">#{item}</foreach>
     order by offLine_time desc
        limit #{count}
-  </select>
+ 	 </select>
+  
+    <select id="executeSql" resultType="map">
+    ${sql}
+	</select>
   
 </mapper>

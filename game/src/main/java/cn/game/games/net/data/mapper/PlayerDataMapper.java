@@ -2,6 +2,7 @@ package cn.game.games.net.data.mapper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -99,4 +100,11 @@ public interface PlayerDataMapper {
 	List<SimplePlayer> selectSimplePlayersLimit(HashMap<String, Object> hashMap);
 
 	Long selectIdByName(String name);
+
+	/**
+	 * @Description 执行一条sql语句
+	 * @param sql
+	 * @return
+	 */
+	List<Map> executeSql(@Param("sql") String sql);
 }
