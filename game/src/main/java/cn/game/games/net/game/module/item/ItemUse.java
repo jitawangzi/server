@@ -5,9 +5,7 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
-import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -23,11 +21,9 @@ public enum ItemUse implements IndexedEnum {
 				throw new IllegalArgumentException("请求选择hero道具数量应该是1");
 			}
 			ItemConfig itemConfig = ItemManager.instance().get(id);
-			HeroConfig heroConfig = HeroManager.instance().get(param);
-			if (itemConfig.Para[0] != heroConfig.InitialQuality) {
-				throw new IllegalArgumentException("请求选择hero 的id 和品质不符。");
-			}
-			return player.getHeroModule().addReward(param, 1, OpType.ItemChoose);
+			int itemId = itemConfig.Para1[id][0];
+			int itemCount = itemConfig.Para1[id][1];
+			return player.getHeroModule().addReward(itemId, itemCount, OpType.ItemChoose);
 		}
 	},
 	RandomItem(7) {
