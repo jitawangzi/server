@@ -39,6 +39,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		builder.setActivityId(id);
 		builder.setDay(day);
 		builder.setCanSignin(!isSignin);
+		builder.addAllExtRewardIds(rewardExtra);
 		return builder.build();
 	}
 
