@@ -6,7 +6,9 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.push.PushService;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.MarqueeConfig;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.MarqueeManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
@@ -31,9 +33,11 @@ public class ChatModule extends BasePlayerModule {
 		}
 		case HeroQuality: {
 			Hero hero = event.getParameter(0);
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			MarqueeConfig marqueeConfig = MarqueeManager.instance().get(2);
 			if (hero.getQuality() >= marqueeConfig.Para) {
-				ChatHelper.marquee(String.format(marqueeConfig.Text, GlobalConst.HeroQuality1.get(hero.getQuality())),
+				ChatHelper.marquee(String.format(marqueeConfig.Text, player.getData().getName(), heroConfig.name,
+						GlobalConst.HeroQuality1.get(hero.getQuality())),
 						player.getServerId());
 			}
 			break;
