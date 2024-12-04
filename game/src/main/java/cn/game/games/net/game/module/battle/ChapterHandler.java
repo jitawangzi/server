@@ -40,6 +40,8 @@ import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000222;
+import cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardResponse_13000223;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartRequest_13000055;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062;
@@ -154,6 +156,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleWorldBossInfoRequest_13000301, this::worldBossInfo);
 		putInvoker(PbProtocol.BattleWorldBossBuyTimesRequest_13000303, this::worldBossBuy);
 		putInvoker(PbProtocol.BattleWorldRewardRequest_13000305, this::worldBossReward);
+		putInvoker(PbProtocol.BattleChapterRewardRequest_13000222, this::battleChapterReward);
 
 		//PVP 大道争锋
 		putInvoker(PbProtocol.BattlePvPTargetListRequest_13000111, OfflineBattleHandler::searchTargetList);
@@ -172,6 +175,30 @@ public class ChapterHandler extends BaseHandler {
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void battleChapterReward(NetClient client, Object message) {
+		BattleChapterRewardRequest_13000222 req = (BattleChapterRewardRequest_13000222) message;
+		BattleChapterRewardResponse_13000223.Builder resp = BattleChapterRewardResponse_13000223.newBuilder();
+		long playerId = client.getPlayerId();
+		int id = req.getId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		List<Integer> battleChapterRewards = chapterModule.getBattleChapterRewards();
+		if (battleChapterRewards.contains(id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		if (!chapterModule.isBattlePass(id)) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+		}
+
+		BattleConfig battleConfig = BattleManager.instance().get(id);
+		List<RewardInfo> rewards = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleChapterFirstReward);
+		resp.addAllReward(rewards);
 		client.sendProtocol(resp);
 	}
 
