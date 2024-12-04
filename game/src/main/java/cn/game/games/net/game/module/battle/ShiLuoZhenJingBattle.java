@@ -185,6 +185,18 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return canReward;
 	}
 
+	public void setHistoryMaxBattleId(int historyMaxBattleId) {
+		this.historyMaxBattleId = historyMaxBattleId;
+	}
+
+	public void setStartBattleId(int startBattleId) {
+		this.startBattleId = startBattleId;
+	}
+
+	public void setCompleteBattleId(int completeBattleId) {
+		this.completeBattleId = completeBattleId;
+	}
+
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {
 		List<RewardInfo> rewardInfos = new ArrayList<>();
 

@@ -125,6 +125,9 @@ public class ChapterModule extends BasePlayerModule  {
 	/** 所有的战斗相关玩法数据 */
 	private Map<Integer, IBattleHandler> battlesMap = new HashMap<Integer, IBattleHandler>();
 
+	/** 领取过章奖励的  battleId */
+	private List<Integer> battleChapterRewards = new ArrayList<>();
+
 	/** 
 	 * 
 	 * @param type
@@ -222,14 +225,6 @@ public class ChapterModule extends BasePlayerModule  {
 	public void updateBattleLevel(BattleLevel level) {
 		DAO.execute(BattleLevelMapper.class, MapperConstant.updateByPrimaryKey,
 				level);
-	}
-
-	public boolean isBattleLevelPass(int levelId) {
-		return this.levels.get(levelId) != null;
-	}
-	public boolean isExploreActPass(int id) {
-
-		return false;
 	}
 
 	/** 
@@ -515,6 +510,10 @@ public class ChapterModule extends BasePlayerModule  {
 		this.reliveCountPerBattle = reliveCountPerBattle;
 	}
 
+	public List<Integer> getBattleChapterRewards() {
+		return battleChapterRewards;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -649,6 +648,7 @@ public class ChapterModule extends BasePlayerModule  {
 		builder.setBattleRewardMultipleTimes(battleRewardMultipleTimes);
 		builder.setShareReliveCount(shareReliveCount);
 		builder.setAdReliveCount(adReliveCount);
+		builder.addAllBattleChapterIds(battleChapterRewards);
 
 		BattleDayChallenge dayChallenge = getBattle(DungeonTypeEnum.DayChallenge);
 		if (dayChallenge != null) {

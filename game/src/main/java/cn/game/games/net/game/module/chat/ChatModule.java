@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.chat;
 
+import java.text.MessageFormat;
+
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -36,7 +38,8 @@ public class ChatModule extends BasePlayerModule {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			MarqueeConfig marqueeConfig = MarqueeManager.instance().get(2);
 			if (hero.getQuality() >= marqueeConfig.Para) {
-				ChatHelper.marquee(String.format(marqueeConfig.Text, player.getData().getName(), heroConfig.name,
+
+				ChatHelper.marquee(MessageFormat.format(marqueeConfig.Text, player.getData().getName(), heroConfig.name,
 						GlobalConst.HeroQuality1.get(hero.getQuality())),
 						player.getServerId());
 			}

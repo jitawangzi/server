@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.draw;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -227,7 +228,7 @@ public class DrawModule extends BasePlayerModule {
 			sb.append(name).append("、");
 		}
 		sb.deleteCharAt(sb.length() - 1);
-		return String.format(marqueeConfig.Text, player.getData().getName(), sb.toString());
+		return MessageFormat.format(marqueeConfig.Text, player.getData().getName(), sb.toString());
 	}
 
 	private List<String> getMarqueeHeroNames(List<Goods> reward, int quality) {
