@@ -170,10 +170,15 @@ public class TestHandler extends BaseHandler {
 				}
 				case "slzj": {
 					// 设置失落真经关卡id
+					int battleId = params.get(1);
 					ChapterModule chapterModule = player.getChapterModule();
 					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 					if (battle != null) {
-						battle.setStartBattleId(params.get(1));
+						BattleConfig battleConfig = BattleManager.instance().get(battleId);
+						if (battleConfig.preBattle > 0) {
+							battle.setCompleteBattleId(battleConfig.preBattle);
+						}
+						battle.setStartBattleId(battleId);
 					}
 					break;
 				}
