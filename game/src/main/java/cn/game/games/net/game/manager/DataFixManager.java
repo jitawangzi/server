@@ -84,6 +84,32 @@ public class DataFixManager {
 		PlayerHelper.loadAndProcessPlayers(function);
 	}
 
+	/** 
+	 * ognl -x 3 '@cn.game.games.net.game.manager.DataFixManager@getInstance().runtimeFix()'
+	 */
+	public void runtimeFix() {
+		log.info("runtimeFix");
+	}
+
+	/** 
+	 * ognl -x 3 '@cn.game.games.net.game.manager.DataFixManager@getInstance().runtimeFixLongArgs(new long[]{100L, 200L, 300L})'
+	 * @param args
+	 */
+	public void runtimeFixLongArgs(long... args) {
+		log.info("runtimeFixLongArgs");
+
+	}
+
+	/** 
+	 * ognl -x 3 '@cn.game.games.net.game.manager.DataFixManager@getInstance().runtimeFixStringArgs(new String[]{"hello", "world"})'
+	 * @param args
+	 */
+	public void runtimeFixStringArgs(String... args) {
+		log.info("runtimeFixStringArgs");
+
+
+	}
+
 	public void init() {
 		initializeDataFixLogTable();
 		runAllFixes();
