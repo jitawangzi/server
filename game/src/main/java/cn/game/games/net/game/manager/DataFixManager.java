@@ -70,7 +70,8 @@ public class DataFixManager {
 					for (Quest quest : fixList) {
 						List<Condition> requires = quest.getConditionContainer().getRequires();
 						Condition condition = requires.get(0);
-						if (condition.getRequireId() <= battle.getHistoryMaxBattleId()) {
+						if (condition.getRequireId() <= battle.getHistoryMaxBattleId()
+								|| condition.getRequireId() <= battle.getStartBattleId()) {
 							condition.addCount(1);
 							quest.setState(QuestHelper.CAN_GIVEWARD);
 							fix = true;
