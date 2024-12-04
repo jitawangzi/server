@@ -631,7 +631,7 @@ public class HeroHandler extends BaseHandler {
 		}
 		hero.setStar(1);
 //		resp.addAllHeros(heroInfos);
-		resp.addAllItems(itemInfos);
+//		resp.addAllItems(itemInfos);
 
 		client.sendProtocol(resp.build());
 	}

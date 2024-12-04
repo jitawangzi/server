@@ -1,5 +1,19 @@
 package cn.game.games.net.game.module.pvp;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.commons.lang.math.RandomUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -8,21 +22,19 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.NPCConfig;
+import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.NPCManager;
+import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import org.apache.commons.lang.math.RandomUtils;
-
-import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * @ClassName OfflineBattleModule
