@@ -47,7 +47,7 @@ public class DataFixManager {
 		return instance;
 	}
 
-	@DataFix(description = "修正玩家失落真经410任务数据", deprecated = true)
+	@DataFix(description = "修正玩家失落真经410任务数据", deprecated = false)
 	public void fixPlayerQuestSlzj410() {
 
 		Function<Player, Boolean> function = player -> {
