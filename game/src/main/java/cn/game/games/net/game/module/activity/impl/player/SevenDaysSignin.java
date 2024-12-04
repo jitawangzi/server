@@ -81,7 +81,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		//月卡加成额外掉落
 		if (config.Reward1.length > 0){
 			rewardExtra.add(config.ID);
-			int[] drops =  GameUtil.arrayAddition(config.Reward1, player.getWelfareValue(WelfareTypeEnum.MonthClock));
+			int[][] drops =  GameUtil.arrayAddition(config.Reward1, player.getWelfareValue(WelfareTypeEnum.MonthClock));
 			GameLogger.activity(player, super.id, day);
 			List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
 			return resources;
@@ -108,10 +108,10 @@ public class SevenDaysSignin extends PlayerActivityBase {
     	getSevenDaysSigninConfigList(id).forEach(
             config -> {
               if (config.Reward1.length > 0 && !rewardExtra.contains(config.ID)) {
-                drops.add(Goods.valueOf(config.Reward1));
+                drops.addAll(Goods.valueOf(config.Reward1));
               }
             });
-		MailHelper.sendMail(player.getPlayerId(), 21, drops, true);
+		MailHelper.sendMail(player.getPlayerId(), 20, drops, true);
 	}
 
 	public int getSigninDay() {

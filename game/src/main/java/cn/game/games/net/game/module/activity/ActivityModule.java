@@ -330,7 +330,7 @@ public class ActivityModule extends BasePlayerModule {
 	}
 	//检查 并重置 类型 4 周期的活动
 	private void checkResetCycleActivity() {
-		List<ActivityConfig> cycleList = ActivityManager.instance().list().stream().filter(activityConfig -> activityConfig.openType == 4).collect(Collectors.toList());
+		List<ActivityConfig> cycleList = ActivityManager.instance().list().stream().filter(activityConfig -> activityConfig.resetType == 4).collect(Collectors.toList());
 		cycleList.forEach(activityConfig -> {
 			if (!activities.containsKey(activityConfig.ID)) {
 				open(activityConfig.ID, true);
