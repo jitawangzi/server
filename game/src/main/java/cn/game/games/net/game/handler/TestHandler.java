@@ -44,6 +44,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
@@ -63,6 +64,7 @@ import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -146,28 +148,35 @@ public class TestHandler extends BaseHandler {
                     client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
                     break;
                 }
-            case "tdlv":
-                {
-                    // 设置天道修为等级
-                    DevelopModule developModule = player.getDevelopModule();
-                    developModule.setHeavenlyDaoLevel(params.get(1));
-                    break;
-                }
-            case "btmain":
-                {
-                    // 设置主线关卡id
-                    ChapterModule chapterModule = player.getChapterModule();
-                    chapterModule.setMainBattleHighest(params.get(1));
-                    BattleConfig battleConfig = BattleManager.instance().getNullable(params.get(1));
-                    while (battleConfig != null) {
-                        chapterModule.addChapter(battleConfig.ID);
-                        Chapter chapter = chapterModule.getChapter(battleConfig.ID);
-                        chapter.setBattleTime(30);
-                        chapter.setPass(true);
-                        battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
-                    }
-                    break;
-                }
+				case "tdlv": {
+					// 设置天道修为等级
+					DevelopModule developModule = player.getDevelopModule();
+					developModule.setHeavenlyDaoLevel(params.get(1));
+					break;
+				}
+				case "btmain": {
+					// 设置主线关卡id
+					ChapterModule chapterModule = player.getChapterModule();
+					chapterModule.setMainBattleHighest(params.get(1));
+					BattleConfig battleConfig = BattleManager.instance().getNullable(params.get(1));
+					while (battleConfig != null) {
+						chapterModule.addChapter(battleConfig.ID);
+						Chapter chapter = chapterModule.getChapter(battleConfig.ID);
+						chapter.setBattleTime(30);
+						chapter.setPass(true);
+						battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+					}
+					break;
+				}
+				case "slzj": {
+					// 设置失落真经关卡id
+					ChapterModule chapterModule = player.getChapterModule();
+					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+					if (battle != null) {
+						battle.setStartBattleId(params.get(1));
+					}
+					break;
+				}
             case "quest":
                 {
                     // 完成某个任务
