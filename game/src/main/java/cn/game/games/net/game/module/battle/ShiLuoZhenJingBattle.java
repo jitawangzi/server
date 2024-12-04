@@ -193,6 +193,10 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		this.startBattleId = startBattleId;
 	}
 
+	public void setCompleteBattleId(int completeBattleId) {
+		this.completeBattleId = completeBattleId;
+	}
+
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {
 		List<RewardInfo> rewardInfos = new ArrayList<>();
 
