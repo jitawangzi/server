@@ -64,6 +64,7 @@ import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -586,6 +587,10 @@ public class Player  {
 		builder.setHead(getData().getHead());
 		builder.setHeadFrame(getData().getHeadFrame());
 		builder.setServerId(getData().getServerId());
+		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
+		builder.setTiandaoLevel(getDevelopModule().getHeavenlyDaoLevel());
+		builder.setCombatEffectiveness(getAttrModule().getPower());
+		
 		return builder.build();
 
 	}

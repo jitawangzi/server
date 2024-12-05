@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Mail;
@@ -18,7 +17,6 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.Union;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
@@ -73,27 +71,6 @@ public class PbBuilder {
 		return list;
 	}
 
-	/**
-	 * 根据在线玩家对象构建玩家数据，需要保证参数不能为空
-	 * @param player
-	 * @return
-	 */
-	public static SimplePlayerInfo buildSimplePlayerInfo(Player player) {
-
-		Long playerId = player.getData().getPlayerId();
-		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
-		builder.setId(playerId + "");
-		builder.setLevel(player.getData().getLevel());
-		builder.setName(player.getData().getName());
-		builder.setOnline(GameClientManager.getInstance().isOnline(playerId));
-		builder.setOfflineTime((int) (player.getData().getOfflineTime() / 1000));
-		builder.setHead(player.getData().getHead());
-		builder.setHeadFrame(player.getData().getHeadFrame());
-		builder.setServerId(ServerContext.getInstance().getServerId());
-		return builder.build();
-
-	}
-	
 	public static List<SimplePlayerInfo> buildSimplePlayerInfos(List<SimplePlayer> players) {
 		List<SimplePlayerInfo> list = new ArrayList<BaseMsg.SimplePlayerInfo>();
 		for (SimplePlayer simplePlayer : players) {

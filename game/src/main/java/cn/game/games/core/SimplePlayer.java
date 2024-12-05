@@ -55,6 +55,8 @@ public class SimplePlayer implements Serializable {
 
 	/** 关卡进度 */
 	public int battleId;
+	/** 天道修为等级 */
+	private int tdLevel;
 
 	public List<Hero> heros;
 	/**
@@ -105,6 +107,7 @@ public class SimplePlayer implements Serializable {
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
 		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
+		this.tdLevel = player.getDevelopModule().getHeavenlyDaoLevel();
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
@@ -174,7 +177,7 @@ public class SimplePlayer implements Serializable {
 		builder.setHeadFrame(headFrame);
 		builder.setServerId(serverId);
 		builder.setServerName(serverName);
-
+		builder.setTiandaoLevel(tdLevel);
 		builder.setCombatEffectiveness(combatEffectiveness);
 
 		return builder.build();
