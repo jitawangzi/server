@@ -336,7 +336,7 @@ public class PlayerHelper {
 		boolean ret = goodsModule.del(id, value, consumeType);
 
 		if (ret) {
-			player.handleEvent(EventTypeEnum.CostItem, id, value);
+			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);
 //			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
 //					consumeType == null ? "NO_DEFINE" : consumeType.getName());
 			if (notify) {

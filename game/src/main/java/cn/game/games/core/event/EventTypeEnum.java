@@ -68,7 +68,7 @@ public enum EventTypeEnum {
 	HCHero(18, "获得合成英雄"),
 	// 参数，id，value
 	GetItem(19, "获取资源"),
-	/** 消耗资源： 参数 id，数量 */
+	/** 消耗资源： 参数 id，数量(int类型) */
 	CostItem(20, "消耗资源"),
 	/** 消耗带有uid的物品： 参数 uid，configId */
 	CostUidItem(21, "消耗带有uid的物品"),
