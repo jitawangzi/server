@@ -405,6 +405,8 @@ public class Player  {
 //		builder.setActionPower(getData().getActionPower());
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
 		builder.setOfflineTime(getData().getOfflineTime().toString());
+		builder.setServerId(getData().getServerId());
+		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
 		return builder.build();
 	}
 
