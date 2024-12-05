@@ -13,9 +13,6 @@
 
         <Property name="file_stdout">stdout</Property>
         <Property name="file_system">system</Property>
-        <Property name="file_info">info</Property>
-        <Property name="file_warn">warn</Property>
-        <Property name="file_error">error</Property>
         <Property name="file_net">net</Property>
 <!--         <Property name="file_netcheck">netcheck</Property> -->
 
@@ -462,28 +459,6 @@
                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
             </Policies>
         </RollingRandomAccessFile>
-
-<!--         <RollingRandomAccessFile name="arena" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_game}/${file_arena}.log.${date_suffix}${extension}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="mail" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_game}/${file_mail}.log.${date_suffix}${extension}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
 
         <RollingRandomAccessFile name="task"
                                  immediateFlush="true"
