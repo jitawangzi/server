@@ -306,7 +306,7 @@ public class PlayerHelper {
 
 	}
 
-	public static boolean delResources(Player player, int id, int value, OpType consumeType) {
+	public static boolean delResources(Player player, int id, long value, OpType consumeType) {
 		return delResources(player, id, value, consumeType, true);
 	}
 
@@ -327,7 +327,7 @@ public class PlayerHelper {
 	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 * @return
 	 */
-	public static boolean delResources(Player player, int id, int value, OpType consumeType, boolean notify) {
+	public static boolean delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
 
 		if (value <= 0) {
 			return true;

@@ -29,7 +29,7 @@ public class MapWrapper {
 		return map.remove(id) != null;
 	}
 
-	public long add(int id, int value) {
+	public long add(int id, long value) {
 		if (value == 0) {
 			return 0;
 		}
@@ -40,7 +40,7 @@ public class MapWrapper {
 		return add(id, 1);
 	}
 
-	public boolean del(int id, int value) {
+	public boolean del(int id, long value) {
 		Long cur = map.get(id);
 		if (cur == null || cur < value) {
 			return false;

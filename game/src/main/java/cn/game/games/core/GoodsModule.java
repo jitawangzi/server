@@ -104,7 +104,7 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		return add(configId, 1, opType);
 	}
 
-	public abstract boolean del(int configId, int count, OpType... args);
+	public abstract boolean del(int configId, long count, OpType... args);
 
 	public abstract boolean del(long uid, OpType... args);
 

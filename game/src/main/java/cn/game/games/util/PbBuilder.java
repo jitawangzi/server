@@ -173,8 +173,9 @@ public class PbBuilder {
 	public static GoodsInfo buildGoodsInfo(Goods goods) {
 		return GoodsInfo.newBuilder().setId(goods.getId()).setCount(goods.getCount()).build();
 	}
-	public static GoodsInfo buildGoodsInfo(int id, int count) {
-		return GoodsInfo.newBuilder().setId(id).setCount(count).build();
+
+	public static GoodsInfo buildGoodsInfo(int id, long count) {
+		return GoodsInfo.newBuilder().setId(id).setCount((int) count).build();
 	}
 
 	public static UnionMsg.UnionInfo buildUnionInfo(Union union, long playerId) throws Exception {

@@ -82,7 +82,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	}
 
 	@Override
-	public boolean del(int itemId, int count, OpType... args) {
+	public boolean del(int itemId, long count, OpType... args) {
 		throw new UnsupportedOperationException("不支持通过配置表id删除不能重叠的物品");
 	}
 

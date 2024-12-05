@@ -11,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
@@ -30,6 +32,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -56,6 +59,7 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
@@ -63,6 +67,7 @@ import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -141,77 +146,135 @@ public class TestHandler extends BaseHandler {
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         GameEvent params = new GameEvent(cmd.split(" "));
-        switch(params.getStringParameter(0)) {
-            case "item":
-                {
-                    List<RewardInfo> items = TestHelper.addItems(player, params.get(1), params.get(2));
-                    client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
-                    break;
-                }
-				case "tdlv": {
-					// 设置天道修为等级
-					DevelopModule developModule = player.getDevelopModule();
-					developModule.setHeavenlyDaoLevel(params.get(1));
+		int paramsCount = params.getParams().length;
+		// 默认的参数变量
+		int p1 = 0;
+		int p2 = 0;
+		int p3 = 0;
+		if (paramsCount > 1) {
+			if (StringUtils.isNumeric(params.getParameter(1).toString())) {
+				p1 = Integer.parseInt(params.getParameter(1).toString());
+			}
+		}
+		if (paramsCount > 2) {
+			if (StringUtils.isNumeric(params.getParameter(2).toString())) {
+				p2 = Integer.parseInt(params.getParameter(2).toString());
+			}
+		}
+		if (paramsCount > 3) {
+			if (StringUtils.isNumeric(params.getParameter(3).toString())) {
+				p3 = Integer.parseInt(params.getParameter(3).toString());
+			}
+		}
+		switch (params.getStringParameter(0).toLowerCase()) {
+		case "item": {
+			List<RewardInfo> items = TestHelper.addItems(player, p1, p2);
+			client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
+			break;
+		}
+		case "hero": {
+			if (p2 > 0) { // 指定了品质
+				String string = GlobalConst.HeroQuality1.get(p2);
+				if (StringUtils.isEmpty(string)) {
+					throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+				}
+				HeroModule heroModule = player.getHeroModule();
+				heroModule.add(p1, OpType.Test);
+				Collection<Hero> heros = heroModule.getByConfigId(p1);
+				for (Hero hero : heros) {
+					hero.setQuality(p2);
+					RewardInfo rewardInfo = RewardInfo.newBuilder().setRole(hero.toHeroInfo()).build();
+					client.sendProtocol(RewardPush_55000501.newBuilder().addRewards(rewardInfo).build());
 					break;
 				}
-				case "btmain": {
-					// 设置主线关卡id
-					ChapterModule chapterModule = player.getChapterModule();
-					chapterModule.setMainBattleHighest(params.get(1));
-					BattleConfig battleConfig = BattleManager.instance().getNullable(params.get(1));
-					while (battleConfig != null) {
-						chapterModule.addChapter(battleConfig.ID);
-						Chapter chapter = chapterModule.getChapter(battleConfig.ID);
-						chapter.setBattleTime(30);
-						chapter.setPass(true);
-						battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
-					}
-					break;
+
+			} else {
+				List<RewardInfo> items = TestHelper.addItems(player, p1, 1);
+				client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
+			}
+			break;
+		}
+		case "tdlv": {
+			// 设置天道修为等级
+			if (p1 == 0) {
+				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+			}
+			DevelopModule developModule = player.getDevelopModule();
+			developModule.setHeavenlyDaoLevel(p1);
+			break;
+		}
+		case "zxgk": {
+			// 设置主线关卡id
+			if (p1 == 0) {
+				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+			}
+			ChapterModule chapterModule = player.getChapterModule();
+			chapterModule.setMainBattleHighest(p1);
+			BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
+			while (battleConfig != null) {
+				chapterModule.addChapter(battleConfig.ID);
+				Chapter chapter = chapterModule.getChapter(battleConfig.ID);
+				chapter.setBattleTime(30);
+				chapter.setPass(true);
+				battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+			}
+			break;
+		}
+		case "slzj": {
+			// 设置失落真经关卡id
+			ChapterModule chapterModule = player.getChapterModule();
+			ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+			if (battle != null) {
+				BattleConfig battleConfig = BattleManager.instance().get(p1);
+				if (battleConfig.preBattle > 0) {
+					battle.setCompleteBattleId(battleConfig.preBattle);
 				}
-				case "slzj": {
-					// 设置失落真经关卡id
-					int battleId = params.get(1);
-					ChapterModule chapterModule = player.getChapterModule();
-					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-					if (battle != null) {
-						BattleConfig battleConfig = BattleManager.instance().get(battleId);
-						if (battleConfig.preBattle > 0) {
-							battle.setCompleteBattleId(battleConfig.preBattle);
-						}
-						battle.setStartBattleId(battleId);
-					}
-					break;
-				}
-            case "quest":
-                {
-                    // 完成某个任务
-                    QuestModule module = player.getQuestModule();
-                    List<RewardInfo> items = module.finish(params.get(1), 0);
-                    client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
-                    break;
-                }
-            case "playerquit":
-                {
-                    // 把某人退出
-                    if (params.getParams().length == 1) {
-                        // 退出所有人
-                        GameClientManager.getInstance().logoutAll(LogoutType.GMTestRequest);
-                    } else {
-                        // 退出某人
-                        TestHelper.logoutPlayer(params.getLong(1), LogoutType.GMTestRequest);
-                    }
-                    break;
-                }
-            case "playerdel":
-                {
-                    // 将某人删档
-                    TestHelper.deletePlayer(params.getLong(1));
-                    break;
-                }
-            default:
-                client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
-                break;
-        }
+				battle.setStartBattleId(p1);
+			}
+			break;
+		}
+		case "quest": {
+			QuestManager.instance().get(p1);
+			// 完成某个任务
+			QuestModule module = player.getQuestModule();
+			List<RewardInfo> items = module.finish(p1, 0);
+			client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
+			break;
+		}
+		case "playerquit": {
+			// 把某人退出
+			if (paramsCount == 1) {
+				// 退出所有人
+				GameClientManager.getInstance().logoutAll(LogoutType.GMTestRequest);
+			} else {
+				// 退出某人
+				TestHelper.logoutPlayer(params.getLong(1), LogoutType.GMTestRequest);
+			}
+			break;
+		}
+		case "playerdel": {
+			if (p1 == 0) {
+				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+			}
+			// 将某人删档
+			TestHelper.deletePlayer(params.getLong(1));
+			break;
+		}
+		case "citem": {
+			if (p1 > 0) {
+				GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(p1);
+				long count = goodsModule.getCount(p1);
+				PlayerHelper.delResources(player, p1, count, OpType.Test);
+			} else {
+				player.getCurrencyModule().getCurrencyMap().clear();
+				player.getItemModule().getId_items().clear();
+			}
+			break;
+		}
+		default:
+			client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
+			break;
+		}
         client.sendProtocol(resp.build());
     }
 

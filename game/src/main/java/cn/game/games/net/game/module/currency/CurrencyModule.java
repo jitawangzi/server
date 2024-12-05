@@ -76,7 +76,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	@Override
-	public boolean del(int configId, int count, OpType... args) {
+	public boolean del(int configId, long count, OpType... args) {
 
 		if (count <= 0) {
 			return true;

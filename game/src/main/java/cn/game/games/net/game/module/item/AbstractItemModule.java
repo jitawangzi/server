@@ -86,7 +86,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 * 减少指定道具数量
 	 */
 	@Override
-	public boolean del(int itemId, int count, OpType... args) {
+	public boolean del(int itemId, long count, OpType... args) {
 		T item = id_items.get(itemId);
 		if (item == null)
 			return false;
