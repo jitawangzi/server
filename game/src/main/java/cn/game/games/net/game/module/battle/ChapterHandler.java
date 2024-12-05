@@ -197,7 +197,7 @@ public class ChapterHandler extends BaseHandler {
 		}
 
 		BattleConfig battleConfig = BattleManager.instance().get(id);
-		List<RewardInfo> rewards = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleChapterFirstReward);
+		List<RewardInfo> rewards = PlayerHelper.addResources(player, battleConfig.ChapterRewards, OpType.BattleChapterFirstReward);
 		resp.addAllReward(rewards);
 		client.sendProtocol(resp);
 	}
