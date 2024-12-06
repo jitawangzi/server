@@ -92,7 +92,8 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                         if (!groupSet.containsKey(config.Group) &&
                                 (
                                 shiLuoZhenJingBattle == null ? config.BattleID == 0 :
-                                (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID || shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID)
+                                (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID && shiLuoZhenJingBattle.getHistoryMaxStage() == 10)||
+                                        (shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID && shiLuoZhenJingBattle.getBattleStage() == 10)
                         )
                         ){
                             groupSet.put(config.Group,config);
