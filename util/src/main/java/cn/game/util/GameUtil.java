@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
  * @author SYQ
  */
 public class GameUtil {
+	private static final int[] EMPTY_INT_ARRAY = new int[] {};
 	
 	public static List<Long> transform(List<Integer> list) {
 		return Lists.transform(list, r -> Long.valueOf(r));
@@ -99,6 +100,22 @@ public class GameUtil {
 					ret[i][j] = (int) (array[i][j] * (1 + addition / 10000f));
 				}
 			}
+		}
+		return ret;
+	}
+
+	public static int[] transformIdAndCount(List<Integer> idList, List<Integer> countList) {
+		if (idList == null || countList == null) {
+			return EMPTY_INT_ARRAY;
+		}
+		if (idList.size() != countList.size()) {
+			throw new IllegalArgumentException("idList.size()!=countList.size()" + idList.size() + "  " + countList.size());
+		}
+		int[] ret = new int[idList.size() * 2];
+
+		for (int i = 0; i < idList.size(); i++) {
+			ret[i * 2] = idList.get(i);
+			ret[i * 2 + 1] = countList.get(i);
 		}
 		return ret;
 	}

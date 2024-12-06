@@ -165,3 +165,4 @@
 164,BuyXianShiLiBaoRequest_15000052,0x15000052,,,,,购买限时礼包
 165,GetXianShiLiBaoInfoRequest_15000050,0x15000050,,,,,获取现时礼包数据
 166,BattleChapterRewardRequest_13000222,0x13000222,,,,,领取关卡章节奖励
+167,ItemSellRequest_0b000007,0x0b000007,,,,,出售道具

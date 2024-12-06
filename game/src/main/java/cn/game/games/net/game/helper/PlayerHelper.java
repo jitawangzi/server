@@ -741,8 +741,8 @@ public class PlayerHelper {
 //	}
 
 	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType, boolean notify) {
-		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.length > 0) {
+			List<RewardInfo> rewardItems = new ArrayList<>();
 			for (int i = 0; i < rewards.length; i++) {
 				for (int j = 0; j < rewards[i].length; j += 2) {
 					List<RewardInfo> rewardItem = addResources(player, rewards[i][j], rewards[i][j + 1], opType, false);
@@ -753,11 +753,14 @@ public class PlayerHelper {
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 			}
 		}
-		return rewardItems;
+		return Collections.EMPTY_LIST;
 	}
 
 	public static List<RewardInfo> addResources(Player player, int[] rewards, OpType opType) {
 
+		if (rewards == null || rewards.length == 0) {
+			return Collections.EMPTY_LIST;
+		}
 		if (rewards.length > 2) {
 			List<RewardInfo> ret = new ArrayList<>();
 			for (int i = 0; i < rewards.length - 1; i += 2) {
@@ -775,15 +778,15 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static List<RewardInfo> addResources(Player player, Collection<? extends Entry<Integer, Integer>> rewards, OpType opType) {
-		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (rewards != null && rewards.size() > 0) {
+			List<RewardInfo> rewardItems = new ArrayList<>();
 			for (Entry<Integer, Integer> pair : rewards) {
 				List<RewardInfo> rewardItem = addResources(player, pair.getKey(), pair.getValue(), opType, false);
 				rewardItems.addAll(rewardItem);
 			}
 			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 		}
-		return rewardItems;
+		return Collections.EMPTY_LIST;
 	}
 
 	public static List<RewardInfo> addResources(Player player, Map<Integer, Integer> map, OpType opType) {
