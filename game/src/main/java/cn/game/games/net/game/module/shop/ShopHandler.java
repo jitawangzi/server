@@ -252,7 +252,8 @@ public class ShopHandler extends BaseHandler {
 		if (heishiRefreshTimes < freeFreshMaxTimes) {
 //			player.handleEvent(EventTypeEnum.WatchAds);
 		}else {
-			int maxPayTimes = GlobalConst.HeishiPayfrsehCnt.get(player.getVipLevel());
+			int maxPayTimes = 0;
+			maxPayTimes += player.getWelfareValue(WelfareTypeEnum.VIPPaymentFrequency);
 
 			if (heishiPayTimes >= maxPayTimes) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
