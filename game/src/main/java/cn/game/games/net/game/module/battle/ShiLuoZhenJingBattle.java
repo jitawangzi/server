@@ -203,9 +203,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LostScripturesFriendAddition);
 		for (int i = 0; i < GlobalConst.LostScripturesRewards.length; i++) {
 			int rewardId = GlobalConst.LostScripturesRewards[i];
-			int rewardCount = calcRewardCount(GlobalConst.LostScripturesRewardsNum[i], level, stage);
+			int rewardCount = calcRewardCount(i, level, stage);
 			if (welfareValue > 0) {
 				rewardCount += rewardCount * welfareValue / 10000f;
+			}
+			if (rewardCount <= 0){
+				continue;
 			}
 			List<RewardInfo> resources = PlayerHelper.addResources(player, rewardId, rewardCount, OpType.ShiLuoZhenJing);
 			rewardInfos.addAll(resources);
@@ -213,15 +216,26 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		return rewardInfos;
 	}
 
-	private int calcRewardCount(float[] rewardsParam, int level, int stage) {
+	private int calcRewardCount(int index, int level, int stage) {
+//	private int calcRewardCount(float[] rewardsParam, int level, int stage) {//旧的 公式
+//		LostScripturesRewardsFormula	【失落真经】奖励公式	1号位奖励公式=IF(小关卡数/5取余数=0,5，IF(小关卡数/10取余数=0,10,空))|2号位奖励=30|3号位奖励=大关卡数*100+小关卡数10
+		float[][] params = GlobalConst.LostScripturesRewardsFormula;
+		if (index == 0){//1号位奖励公式=IF(小关卡数/5取余数=0,5，IF(小关卡数/10取余数=0,10,空))
+			return stage == 5 ? (int)params[0][0] : ((stage == 10) ? (int)params[0][1] : 0);
+		} else if (index == 1){//2号位奖励=30
+			return (int)params[1][0];
+		} else if (index == 2) {//3号位奖励=大关卡数*100+小关卡数10
+			return level * (int)params[2][0] + stage * (int)params[2][1];
+		}
+		return 0;
 
-		// 计算关卡的值
+		/*// 计算关卡的值
 		int battle = (level - 1) * 10 + stage;
 		// 计算整体公式的值
 		double result = (rewardsParam[0] * Math.pow((battle + rewardsParam[1]), rewardsParam[2]) + rewardsParam[3]) / rewardsParam[4] + 1;
 		// 向下取整并乘以 n
 		int finalResult = (int) (Math.floor(result) * rewardsParam[5]);
-		return finalResult;
+		return finalResult;*/
 	}
 
 }
