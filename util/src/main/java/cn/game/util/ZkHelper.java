@@ -15,7 +15,7 @@ import io.vertx.core.json.JsonObject;
 
 public class ZkHelper {
 	private static final Logger log = LoggerFactory.getLogger(ZkHelper.class);
-
+	private static volatile boolean inited = false;
 	public static CuratorFramework curator;
 	static {
 		init();
@@ -56,7 +56,10 @@ public class ZkHelper {
 	}
 
 	public static void init() {
-
+		if (inited) {
+			return;
+		}
+		inited = true;
 		Config zkConfig = ConfigService.getConfig("zookeeper");
 		String content = zkConfig.getProperty("zk", null);
 		JsonObject conf = new JsonObject(content);
