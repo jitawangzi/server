@@ -17,6 +17,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ItemMsg;
 import cn.game.protocol.protobuf.ItemMsg.ItemSellRequest_0b000007;
 import cn.game.protocol.protobuf.ItemMsg.ItemSellResponse_0b000008;
+import cn.game.protocol.protobuf.ItemMsg.ItemUseInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.GameUtil;
@@ -41,26 +42,37 @@ public class ItemHandler extends BaseHandler {
     protected void use(NetClient client, Object message) {
         ItemMsg.ItemUseRequest_0b000003 req = (ItemMsg.ItemUseRequest_0b000003) message;
         ItemMsg.ItemUseResponse_0b000004.Builder resp = ItemMsg.ItemUseResponse_0b000004.newBuilder();
-        int id = req.getId();
-        //long target = StringUtils.isEmpty(req.getTarget()) ? 0 : Long.parseLong(req.getTarget());
-        int count = req.getCount();
-        int param = req.getParam();
-        ItemConfig item = ItemManager.instance().getNullable(id);
-        if (item == null) {
-            client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
-            return;
-        }
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ItemModule itemModule = player.getItemModule();
-        long c = itemModule.getCount(id);
-        if (c < count) {
-            client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-            return;
-        }
-        ItemUse itemUse = ItemUse.valueOf(item.ItemType);
-        List<RewardInfo> rewards = itemUse.use(player, id, count, param);
-        resp.addAllReward(rewards);
-        itemModule.del(id, count);
+		List<ItemUseInfo> itemUseList = req.getItemUseList();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+		for (ItemUseInfo itemUseInfo : itemUseList) {
+			if (itemUseInfo.getCount() <= 0) {
+				client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+				return;
+			}
+			if (!PlayerHelper.isEnough(player, itemUseInfo.getId(), itemUseInfo.getCount())) {
+				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+				return;
+			}
+		}
+		for (ItemUseInfo itemUseInfo : itemUseList) {
+			int id = itemUseInfo.getId();
+			int count = itemUseInfo.getCount();
+			int param = itemUseInfo.getParam();
+			ItemConfig item = ItemManager.instance().getNullable(id);
+			if (item == null) {
+				client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
+				return;
+			}
+			boolean delResources = PlayerHelper.delResources(player, id, param, OpType.ItemOpen);
+			if (!delResources) {
+				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+				continue;
+			}
+			ItemUse itemUse = ItemUse.valueOf(item.ItemType);
+			List<RewardInfo> rewards = itemUse.use(player, id, count, param);
+			resp.addAllReward(rewards);
+		}
         client.sendProtocol(resp);
     }
 
