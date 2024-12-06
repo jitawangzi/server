@@ -33,7 +33,7 @@ xcopy /Y /Q %metafolder%\output\java\manager %workspace%\protocol\src\main\java\
 :: XCopy  /Y /Q  %metafolder%\maps\*.tsx %workspace%\game\src\main\resources\map
 :: XCopy  /Y /Q  %metafolder%\maps\mainline\*.json %workspace%\game\src\main\resources\mainline
 
-@echo on
+ :: @echo on
 
  :: pause
 
