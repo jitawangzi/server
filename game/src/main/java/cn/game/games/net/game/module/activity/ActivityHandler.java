@@ -7,28 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import cn.game.protocol.generated.config.SevenDaysSigninConfig;
-import cn.game.protocol.generated.manager.SevenDaysSigninManager;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.activity.impl.player.*;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
+import cn.game.protocol.manual.OpType;
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.activity.impl.player.ActivityJQB;
-import cn.game.games.net.game.module.activity.impl.player.ActivityLeiChong;
-import cn.game.games.net.game.module.activity.impl.player.ActivityMeiRiBaoLi;
-import cn.game.games.net.game.module.activity.impl.player.ActivityQingShen;
-import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.recharge.PayType;
-import cn.game.protocol.generated.config.ActivityConfig;
-import cn.game.protocol.generated.config.ActivityQingShenConfig;
-import cn.game.protocol.generated.config.FirstChargeConfig;
-import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.protocol.generated.manager.FirstChargeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
@@ -50,6 +40,11 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninResponse_110
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyInfoRequest_11000091;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawResponse_11000094;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyResponse_11000096;
 
 /**
  * 活动处理器
@@ -77,7 +72,11 @@ public class ActivityHandler extends BaseHandler {
         putInvoker(PbProtocol.ActivityQingShenInfoRequest_11000071, this::getQingShenInfo);
         putInvoker(PbProtocol.ActivityJQBInfoRequest_11000081, this::getJQBInfo);
         putInvoker(PbProtocol.ActivityRedPointRequest_11000003, this::redPoint);
+        putInvoker(PbProtocol.ActivityWestLuckyInfoRequest_11000091, this::westLuckyInfo);
+        putInvoker(PbProtocol.ActivityWestLuckyDrawRequest_11000093, this::westLuckyDraw);
+        putInvoker(PbProtocol.ActivityWestLuckyBuyRequest_11000095, this::westLuckyBuy);
     }
+
 
     private void empty(NetClient client, Object message) {
         ActivityFirstChargeBuyRequest_11000010 req = (ActivityFirstChargeBuyRequest_11000010) message;
@@ -125,14 +124,15 @@ public class ActivityHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
-        if (extRewardId > 0){//领取 额外签到奖励
+        if (extRewardId > 0) {
+            //领取 额外签到奖励
             SevenDaysSigninConfig config = SevenDaysSigninManager.instance().getNullable(extRewardId);
-            if (config == null){
+            if (config == null) {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
                 return;
             }
             resp.addAllRewards(activityBase.rewardExtra(config));
-        }else {
+        } else {
             if (activityBase.isSignin()) {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.repeat_request.getId());
                 return;
@@ -295,7 +295,7 @@ public class ActivityHandler extends BaseHandler {
                 rewardTaskIds.removeIf(taskId -> !roundIds.contains(taskId));
                 Collections.sort(rewardTaskIds);
             }
-            log.info(String.format("ActivityQingShen rewardTaskIds:%s",rewardTaskIds));
+            log.info(String.format("ActivityQingShen rewardTaskIds:%s", rewardTaskIds));
             rewardTaskIds.forEach(taskId -> {
                 List<RewardInfo> reward = activityBase.receive(taskId);
                 if (reward == null) {
@@ -353,16 +353,104 @@ public class ActivityHandler extends BaseHandler {
         List<Integer> idsList = req.getIdsList();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         ActivityRedPointResponse_11000004.Builder resp = ActivityRedPointResponse_11000004.newBuilder();
-		List<Boolean> redList = new ArrayList<Boolean>();
-		for (Integer id : idsList) {
-			ActivityBase activityBase = player.getActivityModule().get(id);
-			if (activityBase != null && activityBase.hasRed()) {
-				redList.add(true);
-			} else {
-				redList.add(false);
-			}
-		}
-		resp.addAllIsRed(redList);
+        List<Boolean> redList = new ArrayList<Boolean>();
+        for (Integer id : idsList) {
+            ActivityBase activityBase = player.getActivityModule().get(id);
+            if (activityBase != null && activityBase.hasRed()) {
+                redList.add(true);
+            } else {
+                redList.add(false);
+            }
+        }
+        resp.addAllIsRed(redList);
+        client.sendProtocol(resp.build());
+    }
+
+    private void westLuckyInfo(NetClient client, Object message) {
+        ActivityWestLuckyInfoRequest_11000091 req = (ActivityWestLuckyInfoRequest_11000091) message;
+        int activityId = req.getActivityId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(player.getActivityModule().get(activityId).buildActivityInfo());
+    }
+
+    private void westLuckyDraw(NetClient client, Object message) {
+        ActivityWestLuckyDrawRequest_11000093 req = (ActivityWestLuckyDrawRequest_11000093) message;
+        int activityId = req.getActivityId();
+        int drawNum = req.getDrawNum();
+        ActivityWestLuckyDrawResponse_11000094.Builder resp = ActivityWestLuckyDrawResponse_11000094.newBuilder();
+        resp.setActivityId(activityId);
+        resp.setDrawNum(drawNum);
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (drawNum != 1 && drawNum != 10){
+            client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+            return;
+        }
+        ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
+        if (activityWestLucky == null){
+            client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        if (!PlayerHelper.isEnough(player, ActivityWestLucky.drawItemId, drawNum)){
+            client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+            return;
+        }
+        PlayerHelper.delResources(player, ActivityWestLucky.drawItemId, drawNum,OpType.ZhuanPanDraw);
+        for (int i = 0; i < drawNum; i++){
+            List<Integer> ids = activityWestLucky.draw();
+            activityWestLucky.addDrawNum();
+            ids.forEach(id ->{
+                ActivityWestLuckyTurntableConfig config = ActivityWestLuckyTurntableManager.instance().get(id);
+                if (config.CircleType == 1 || config.CircleType == 2){
+                   resp.addAllDrops(PlayerHelper.addResources(player, config.Reward, OpType.ZhuanPanDraw));
+                }
+            });
+            resp.addAllDrawIds(ids);
+        }
+        client.sendProtocol(resp.build());
+
+    }
+
+
+
+    private void westLuckyBuy(NetClient client, Object message) {
+        ActivityWestLuckyBuyRequest_11000095 req = (ActivityWestLuckyBuyRequest_11000095) message;
+        int activityId = req.getActivityId();
+        int id = req.getId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ActivityWestLuckyBuyResponse_11000096.Builder resp = ActivityWestLuckyBuyResponse_11000096.newBuilder();
+        resp.setActivityId(activityId);
+        resp.setId(id);
+        ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
+        if (activityWestLucky == null){
+            client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        ActivityWestLuckyPackConfig config = ActivityWestLuckyPackManager.instance().getNullable(id);
+        if (config == null){
+            client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
+            return;
+        }
+        int buyNum = activityWestLucky.getBuyIdMap().getOrDefault(id, 0);
+        if (buyNum >= config.Quota){
+            client.sendProtocol(resp, ErrorMsgEnum.buy_over_limit.getId());
+            return;
+        }
+        player.pay(PayType.FirstCharge,id, config.PurchaseParameter, id).onSuccess(
+            t->{
+                if (t){
+                    resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
+                    activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
+                } else {
+                    client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
+                }
+            }
+        ).onFailure(
+                err->{
+                    err.printStackTrace();
+                    client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+                }
+        );
+
         client.sendProtocol(resp.build());
     }
 }
