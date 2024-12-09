@@ -752,6 +752,7 @@ public class PlayerHelper {
 			if (notify) {
 				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
 			}
+			return rewardItems;
 		}
 		return Collections.EMPTY_LIST;
 	}
@@ -785,6 +786,7 @@ public class PlayerHelper {
 				rewardItems.addAll(rewardItem);
 			}
 			PlayerHelper.sendProtocol(player.getPlayerId(), RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
+			return rewardItems;
 		}
 		return Collections.EMPTY_LIST;
 	}
