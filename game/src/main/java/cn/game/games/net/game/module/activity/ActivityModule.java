@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,9 @@ public class ActivityModule extends BasePlayerModule {
 	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
+	/** 开启过的一次性的活动 */
+	private Set<Integer> disposableIds = new HashSet<>();
+
 	@Deprecated
 	public int getState(int id) {
 		if (activities.containsKey(id)) {
@@ -60,6 +64,50 @@ public class ActivityModule extends BasePlayerModule {
 				open(activityConfig.ID, false);
 			}
 		}
+	}
+
+	/** 
+	 * 非时间开启的一些新加的活动
+	 */
+	private void initNonTimeOpeningActivity() {
+		Collection<ActivityConfig> list = ActivityManager.instance().list();
+		for (ActivityConfig activityConfig : list) {
+			if (canOpenNonTimeOpeningActivity(activityConfig)) {
+				open(activityConfig.ID, false);
+			}
+		}
+	}
+
+	private void initNonTimeNewDayActivity() {
+
+		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE_DAYS);
+		for (ActivityConfig activityConfig : openTypeList) {
+			if (canOpenNonTimeOpeningActivity(activityConfig)) {
+				open(activityConfig.ID, false);
+			}
+		}
+	}
+
+	private boolean canOpenNonTimeOpeningActivity(ActivityConfig activityConfig) {
+		if (activityConfig.openType == 0) {
+			return false;
+		}
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_PLAYER_CREATE) {
+			return true;
+		}
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_PLAYER_CREATE_DAYS) {
+			int days = DateUtil.diffDays(player.getData().getCreateDate());
+			if (days >= activityConfig.openParam) {
+				return true;
+			}
+		}
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_PLAYER_LEVEL) {
+			int level = player.getLevel();
+			if (level >= activityConfig.openParam) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** 
@@ -108,6 +156,8 @@ public class ActivityModule extends BasePlayerModule {
 				open(id, false);
 			}
 		}
+		// 非时间开启的一些新加的活动
+		initNonTimeOpeningActivity();
 	};
 
 	/** 
@@ -226,6 +276,9 @@ public class ActivityModule extends BasePlayerModule {
 			if (activityConfig.disable) {
 				return;
 			}
+			if (activityConfig.resetType == 0 && disposableIds.contains(id)) {
+				return;
+			}
 //			if (!activityConfig.isMultiplayer && player != null) {
 //				return ; 
 //			}
@@ -235,6 +288,9 @@ public class ActivityModule extends BasePlayerModule {
 				activityBase.init(activityConfig.ID, player, true);
 				if (notify) {
 					activityBase.syncActivityInfo();
+				}
+				if (activityConfig.resetType == 0) {
+					disposableIds.add(id);
 				}
 //				initAdd(activityConfig.ID);
 			}
@@ -303,6 +359,7 @@ public class ActivityModule extends BasePlayerModule {
 			refreshByType(1);
 			newDay();
 			checkResetCycleActivity();
+			initNonTimeNewDayActivity();
 			break;
 		}
 		case NewWeek: {
