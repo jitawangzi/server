@@ -71,12 +71,21 @@ public class XianShiLiBaoModule extends BasePlayerModule {
         switch (event.getType()){
             case BattleEnd -> {
                 int battleId = event.getIntParameter(0);
+
                 BattleConfig battleConfig = BattleManager.instance().get(battleId);
                 if (battleConfig == null){
                     log.error(String.format("not found BattleConfig battleConfig battleId:%d, pid:%d",battleId,player.getPlayerId()));
                     return;
                 }
                 if (battleConfig.BattleType != DungeonTypeEnum.ShiLuoZhenJing.getId()){
+                    return;
+                }
+                int stage = event.getIntParameter(1);
+                boolean winFlag = event.getBoolParameter(2);
+                if (!winFlag){
+                    return;
+                }
+                if (stage != 10){
                     return;
                 }
                 int level = player.getLevel();
@@ -89,14 +98,17 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                 Map<Integer, ActivityXianShiLiBaoConfig> groupSet = new HashMap<>();
                 if (allLevelConfigList != null){
                     allLevelConfigList.forEach(config ->{
-                        if (!groupSet.containsKey(config.Group) &&
-                                (
-                                shiLuoZhenJingBattle == null ? config.BattleID == 0 :
-                                (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID && shiLuoZhenJingBattle.getHistoryMaxStage() == 10)||
+                        if (!groupSet.containsKey(config.Group)){
+                            if(config.BattleID != 0){
+                                if (shiLuoZhenJingBattle != null && (
+                                        (shiLuoZhenJingBattle.getHistoryMaxBattleId() >= config.BattleID && shiLuoZhenJingBattle.getHistoryMaxStage() == 10)||
                                         (shiLuoZhenJingBattle.getCompleteBattleId() >= config.BattleID && shiLuoZhenJingBattle.getBattleStage() == 10)
-                        )
-                        ){
-                            groupSet.put(config.Group,config);
+                                )){
+                                    groupSet.put(config.Group,config);
+                                }
+                            } else {
+                                groupSet.put(config.Group,config);
+                            }
                         }
                     });
                     addNewLiBao(groupSet);
