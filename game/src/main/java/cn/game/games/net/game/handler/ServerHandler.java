@@ -76,7 +76,6 @@ import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.Message;
 
 /**
  * 服务器之间的消息处理器
@@ -494,8 +493,10 @@ public class ServerHandler extends BaseHandler {
 		if (online) {
 			Player oldPlayer = PlayerManager.getInstance().getPlayer(playerId);
 			if (oldPlayer != null) {
+				log.warn("player online in multi server, player id: " + playerId + ", old server id: " + serverId + ", new server id: "
+						+ ServerContext.getInstance().getServerId());
 				// 需要通知新登录的服务器，退出当前player
-				Future<Message<Object>> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
+				Future<GamePlayerLogoutResponse_7d000102> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
 				requestRemoteServer.onFailure(ee -> {
 					PlayerHelper.addTask(playerId, r -> {

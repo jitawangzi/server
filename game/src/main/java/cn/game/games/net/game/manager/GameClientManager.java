@@ -254,7 +254,7 @@ public class GameClientManager {
 			VxHolder.broadcastRemoteServer(ServerType.Game, message);
 		} else {
 			for (String string : serverIds) {
-				VxHolder.requestRemoteServer(string, message);
+				VxHolder.sendRemoteServer(string, message);
 			}
 		}
 	}
