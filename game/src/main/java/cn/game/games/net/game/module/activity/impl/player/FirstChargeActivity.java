@@ -137,9 +137,11 @@ public class FirstChargeActivity extends PlayerActivityBase {
 		Collection<FirstChargeConfig> list = FirstChargeManager.instance().list();
 		for (FirstChargeConfig config : list) {
 			if (firstChargeConfig.ActivityiDIndex == config.ActivityiDIndex && firstChargeConfig.ActivityiD == config.ActivityiD) {
-				SingleCharge charge = new SingleCharge();
-				charge.setDay(DateUtil.getDay());
-				chargeMap.put(config.ID, charge);
+				if (config.ID == cid || config.Preconditions == 0 && config.Price.length == 0) {
+					SingleCharge charge = new SingleCharge();
+					charge.setDay(DateUtil.getDay());
+					chargeMap.put(config.ID, charge);
+				}
 			}
 		}
 
