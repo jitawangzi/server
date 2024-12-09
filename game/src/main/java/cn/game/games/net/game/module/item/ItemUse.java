@@ -17,13 +17,10 @@ public enum ItemUse implements IndexedEnum {
 	HeroChoose(4) {
 		@Override
 		public List<RewardInfo> use(Player player, int id, int num, int param) {
-			if (num != 1) {
-				throw new IllegalArgumentException("请求选择hero道具数量应该是1");
-			}
 			ItemConfig itemConfig = ItemManager.instance().get(id);
-			int itemId = itemConfig.Para1[id][0];
-			int itemCount = itemConfig.Para1[id][1];
-			return player.getHeroModule().addReward(itemId, itemCount, OpType.ItemChoose);
+			int itemId = itemConfig.Para1[param][0];
+			int itemCount = itemConfig.Para1[param][1] * num;
+			return PlayerHelper.addResources(player, itemId, itemCount, OpType.ItemChoose);
 		}
 	},
 	RandomItem(7) {
