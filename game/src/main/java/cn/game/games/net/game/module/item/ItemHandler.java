@@ -64,7 +64,7 @@ public class ItemHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 				return;
 			}
-			boolean delResources = PlayerHelper.delResources(player, id, param, OpType.ItemOpen);
+			boolean delResources = PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
 			if (!delResources) {
 				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 				continue;
