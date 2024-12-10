@@ -5,11 +5,15 @@
 /dist
 /bin/*
 /target/
-/.settings/*
-.settings
 /build
-/.classpath
-/.project
 /src/main/resources/xml
 /protocol/
-/protocol
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# IDEA
+.idea/
+*.iml
