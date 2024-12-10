@@ -7,11 +7,11 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ${m.shortName}Test extends ServerTest{
+public class BuyXianShiLiBaoRequest_15000052Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		${m.longName}.Builder builder = ${m.longName}.newBuilder() ; 
+		cn.game.protocol.protobuf.ShopMsg.BuyXianShiLiBaoRequest_15000052.Builder builder = cn.game.protocol.protobuf.ShopMsg.BuyXianShiLiBaoRequest_15000052.newBuilder() ; 
 		
 		
 		
@@ -20,7 +20,7 @@ public class ${m.shortName}Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
-		${m.longName}.Builder builder = ${m.longName}.newBuilder() ; 
+		cn.game.protocol.protobuf.ShopMsg.BuyXianShiLiBaoRequest_15000052.Builder builder = cn.game.protocol.protobuf.ShopMsg.BuyXianShiLiBaoRequest_15000052.newBuilder() ; 
 		
 		
 		
@@ -28,7 +28,7 @@ public class ${m.shortName}Test extends ServerTest{
 	}
 	
 	public static void main(String args[]) throws Exception {
-	    ${m.shortName}Test instance = new ${m.shortName}Test();
+	    BuyXianShiLiBaoRequest_15000052Test instance = new BuyXianShiLiBaoRequest_15000052Test();
 	    instance.start();
 	}
 
