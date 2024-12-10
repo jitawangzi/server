@@ -12,3 +12,5 @@
 /statistics/
 /player.json
 /.idea
+../protocol/
+../protocol/*
