@@ -24,7 +24,8 @@ public class CompleteTask extends AbstractCondition {
     @Override
     public boolean checkEventParam(GameEvent event) {
         int taskId = event.getIntParameter(0);
-        int requireTaskId = getExtParam()[0];
+        int[] extParam = getExtParam();
+        int requireTaskId =  extParam.length > 0 ? extParam[0] : 0;
         return taskId == requireTaskId;
     }
 

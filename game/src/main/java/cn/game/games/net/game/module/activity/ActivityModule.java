@@ -81,9 +81,11 @@ public class ActivityModule extends BasePlayerModule {
 	private void initNonTimeNewDayActivity() {
 
 		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE_DAYS);
-		for (ActivityConfig activityConfig : openTypeList) {
-			if (canOpenNonTimeOpeningActivity(activityConfig)) {
-				open(activityConfig.ID, false);
+		if (openTypeList != null){
+			for (ActivityConfig activityConfig : openTypeList) {
+				if (canOpenNonTimeOpeningActivity(activityConfig)) {
+					open(activityConfig.ID, false);
+				}
 			}
 		}
 	}
