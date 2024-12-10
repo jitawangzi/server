@@ -12,8 +12,5 @@
 /.project
 /src/main/resources/xml
 /protocol/
-<<<<<<< HEAD
 /protocol/*
 .protocol
-=======
->>>>>>> branch 'release' of http://10.1.10.103:3800/project-server/server.git
