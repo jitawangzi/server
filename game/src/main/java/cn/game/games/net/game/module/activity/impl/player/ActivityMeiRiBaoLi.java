@@ -111,7 +111,11 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 		QuestModule questModule = player.getQuestModule();
 		rewardIdList.add(id);
 		GameLogger.activity(player, super.id, id);
-		return questModule.receive(id);
+		List<RewardInfo> resList = questModule.receive(id);
+		if (rewardIdList.size() == getConfigList().size()){
+			player.getActivityModule().destroy(super.id, true);
+		}
+		return resList;
 	}
 
 	@Override
@@ -153,5 +157,11 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 			//活动结束  删除活动相关的任务
 			questModule.remove(activityMeiRiBaoLiConfig.taskID);
 		});
+	}
+
+	@Override
+	public void destroy() {
+		shutDown();
+		super.destroy();
 	}
 }
