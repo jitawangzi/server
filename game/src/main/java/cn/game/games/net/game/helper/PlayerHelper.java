@@ -1565,6 +1565,43 @@ public class PlayerHelper {
 	}
 
 	/** 
+	 * 
+	 * 修改玩家数据, 允许在服务器运行时修改
+	 * 如果玩家在线，直接修改内存数据，否则从数据库中加载数据修改
+	 * 
+	 * @param playerId
+	 * @param function 修改数据的方法，结果true表示数据修改了， false表示数据没有修改
+	 */
+	public static void modifyPlayer(long playerId, Function<Player, Boolean> function) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		boolean online = player != null;
+		if (player == null) {
+			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
+			Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerId);
+			// 简单起见，同步获取玩家
+			player = playerFromDb.toCompletionStage().toCompletableFuture().join();
+		}
+		Player modify = player;
+		if (online) {
+			GameClient gameClient = player.getGameClient();
+			if (gameClient == null) {
+				log.error("modifyPlayer gameClient is null, playerId: " + playerId);
+				return;
+			}
+			gameClient.getContext().runOnContext(v -> {
+				function.apply(modify);
+			});
+		} else {
+			Boolean apply = function.apply(player);
+			if (apply != null && apply) {
+				PlayerHelper.saveClientCache(playerId);
+				PlayerHelper.clearPlayer(playerId);
+				RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			}
+		}
+	}
+
+	/** 
 	 * 按照名字或者id查找玩家
 	 * @param playerName
 	 * @param playerId

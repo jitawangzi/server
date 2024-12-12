@@ -16,14 +16,18 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.gm.GmHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.rank.RankEntry;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.SoulPetConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.SoulPetManager;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -125,5 +129,35 @@ public class TestHelper {
 			// 保存数据
 			Future<?> logout = GameClientManager.getInstance().logout((GameClient) gameClientByPlayer, LogoutType.GMTestRequest);
 		}
+	}
+
+	/** 
+	 * 玩家换服务器
+	 * @param playerId
+	 * @param targetServer
+	 */
+	public static void transferServer(long playerId, String targetServer) {
+		VirtualServerManager.instance().get(targetServer);
+
+		PlayerHelper.modifyPlayer(playerId, player -> {
+			String serverId = player.getData().getServerId();
+			if (player.getData().getServerId().equals(targetServer)) {
+				log.error("目标服务器与源服务器不能相同");
+				return false;
+			}
+			// 修改玩家的服务器id
+			player.getData().setServerId(targetServer);
+			PlayerHelper.saveSimplePlayerToRedis(player);
+
+			// 换排行榜
+			for (RankType rankType : RankType.values()) {
+				RankEntry rankEntry = RankService.getInstance().getRankEntry(serverId, rankType, playerId);
+				if (rankEntry.getScore() > 0) {
+					RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getPlayerId(), rankEntry.getScore());
+					RankService.getInstance().removeRankAsync(rankType, serverId, playerId);
+				}
+			}
+			return true;
+		});
 	}
 }

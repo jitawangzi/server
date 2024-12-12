@@ -271,6 +271,12 @@ public class TestHandler extends BaseHandler {
 			}
 			break;
 		}
+		case "huanfu": {
+			String serverId = params.getStringParameter(1);
+			TestHelper.transferServer(playerId, serverId);
+
+			break;
+		}
 		default:
 			client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
 			break;

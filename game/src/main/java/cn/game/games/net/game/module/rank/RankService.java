@@ -367,6 +367,12 @@ public class RankService {
 		return rank.toCompletableFuture();
 	}
 
+	public RFuture<Boolean> removeRankAsync(RankType type, String serverId, long playerId) {
+		String key = getKey(serverId, type);
+		RScoredSortedSet<Long> sortedSet = RedisUtil.getRedis().getScoredSortedSet(key, LongCodec.INSTANCE);
+		return sortedSet.removeAsync(playerId);
+	}
+
 	/**
 	 * 转成自定义的RankEntry对象,不包含排名。
 	 * @param entrys 排行数据
