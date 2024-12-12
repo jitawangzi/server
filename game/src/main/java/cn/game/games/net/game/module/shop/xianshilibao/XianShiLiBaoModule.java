@@ -167,7 +167,7 @@ public class XianShiLiBaoModule extends BasePlayerModule {
 
     public Iterable<RewardMsg.RewardInfo> addBuyId(ActivityXianShiLiBaoConfig config) {
         buyIds.add(config.ID);
-        GameLogger.shoptrade(player, config.Group, config.ID);
+        GameLogger.activity(player, GameLogger.ActivityXianShiLiBaoLogId, config.ID);
         return PlayerHelper.addReward(player,config.Reward, OpType.BuyXianShiLiBao);
     }
 }

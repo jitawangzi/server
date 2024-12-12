@@ -48,6 +48,9 @@ import cn.game.util.log.SystemLogger;
 // * @author pangjiawei - [Created on 2018/1/30 22:14]
 // */
 public class GameLogger extends Logger {
+
+	/**限时礼包的默认活动id*/
+	public final static int ActivityXianShiLiBaoLogId = 10000000;
 //
 //	/**
 //	 * 构造玩家日志前缀模板
