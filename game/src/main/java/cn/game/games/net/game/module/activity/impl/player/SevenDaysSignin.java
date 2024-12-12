@@ -85,7 +85,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 	public long calcEndTime() {
 		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
 		if (activityConfig.resetType == 4){
-			int endDay = getSevenDaysSigninConfigList(getId()).size() - day + 1;
+			int endDay = getSevenDaysSigninConfigList(getId()).size() - day;
 			return DateUtil.nextDayStartTime(endDay);
 		} else {
 			return super.calcEndTime();
