@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.shop.xianshilibao;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.protocol.generated.config.ActivityXianShiLiBaoConfig;
@@ -166,6 +167,7 @@ public class XianShiLiBaoModule extends BasePlayerModule {
 
     public Iterable<RewardMsg.RewardInfo> addBuyId(ActivityXianShiLiBaoConfig config) {
         buyIds.add(config.ID);
+        GameLogger.shoptrade(player, config.Group, config.ID);
         return PlayerHelper.addReward(player,config.Reward, OpType.BuyXianShiLiBao);
     }
 }
