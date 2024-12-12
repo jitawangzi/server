@@ -5,8 +5,11 @@ import java.util.List;
 
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import com.google.protobuf.Message;
 
@@ -65,16 +68,28 @@ public class SevenDaysSignin extends PlayerActivityBase {
 	@Override
 	public List<RewardInfo> receive(int id) {
 		SevenDaysSigninConfig config = getSevenDaysSigninConfig(day);
+		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
 		//月卡加成额外掉落
 		int[][] drops =  GameUtil.arrayAddition(config.Item, player.getWelfareValue(WelfareTypeEnum.MonthClock));
 		List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
 		GameLogger.activity(player, super.id, day);
-		if (day == getSevenDaysSigninConfigList(id).size()) {
+		if (day == getSevenDaysSigninConfigList(id).size() && activityConfig.resetType != 4) {//7日签到结束就销毁
 			player.getActivityModule().destroy(super.id, true);
 		}
 		return resources;
+	}
+
+	@Override
+	public long calcEndTime() {
+		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
+		if (activityConfig.resetType == 4){
+			int endDay = getSevenDaysSigninConfigList(getId()).size() - day + 1;
+			return DateUtil.nextDayStartTime(endDay);
+		} else {
+			return super.calcEndTime();
+		}
 	}
 
 	public List<RewardInfo> rewardExtra(SevenDaysSigninConfig config) {
