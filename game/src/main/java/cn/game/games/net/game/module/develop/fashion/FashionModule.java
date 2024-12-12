@@ -24,11 +24,6 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void setInstanceAfter(Fashion hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.fashionUid == 0) {

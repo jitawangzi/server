@@ -351,11 +351,6 @@ public class FriendModule extends BasePlayerModule {
 //		}
 		return;
 	}
-
-	@Override
-	public void initFromDbAfter() {
-
-	};
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub

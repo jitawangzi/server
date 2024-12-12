@@ -207,16 +207,6 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
-	public void initFromDbAfter() {
-
-	};
-
-	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.putAllAssetRecover(idUpdateTimeMap);
 	}

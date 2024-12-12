@@ -45,12 +45,6 @@ public class FuncModule extends BasePlayerModule {
 
 	}
 
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public void refreshFuncOpen(int level) {
 		InitialUI[] values = InitialUI.values();
 		for (InitialUI initialUI : values) {

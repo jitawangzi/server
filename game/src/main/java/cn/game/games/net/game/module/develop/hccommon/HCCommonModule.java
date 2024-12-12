@@ -42,9 +42,5 @@ public class HCCommonModule extends BasePlayerModule {
 		builder.setBattleSpeedUnlock(isBattleSpeedUnlock);
 		builder.setBattleSpeedAdsCount(player.getVarModule().getVar(VarConstant.BATTLE_SPEED_ADS_COUNT));
 	}
-	@Override
-	public void initFromDbAfter() {
-
-	}
 
 }

@@ -610,11 +610,6 @@ public class ChapterModule extends BasePlayerModule  {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void initFromDbAfter() {
 		int now = DateUtil.currentTimeSeconds();
 		Iterator<Integer> iterator = storeStaminas.iterator();

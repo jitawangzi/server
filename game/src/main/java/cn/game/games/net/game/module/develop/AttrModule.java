@@ -121,13 +121,6 @@ public class AttrModule extends BasePlayerModule {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	public void initFromDbAfter() {
 		Set<Class<?>> allModuleClass = ClassHelper.findSubclasses("cn.game.games", PlayerAttrCalc.class);
 		for (Class<?> class1 : allModuleClass) {

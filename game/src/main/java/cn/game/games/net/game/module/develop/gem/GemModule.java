@@ -23,11 +23,6 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void setInstanceAfter(Gem instance) {
 		// 随机宝石属性
 	}

@@ -25,11 +25,6 @@ public class DragonSkillModule extends AbstractItemNoStackModule<DragonSkill> {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void setInstanceAfter(DragonSkill hero) {
 		ObjUtil.setDefaultValue(hero);
 		hero.setLevel(1);

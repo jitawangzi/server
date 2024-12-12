@@ -152,8 +152,4 @@ public class DevelopModule extends BasePlayerModule {
 		return events;
 	}
 
-	@Override
-	public void initFromDbAfter() {
-	}
-
 }

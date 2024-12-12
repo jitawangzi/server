@@ -118,7 +118,9 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	/** 
 	 * 业务数据从数据库载入后的自定义初始化流程
 	 */
-	public abstract void initFromDbAfter() ;
+	public void initFromDbAfter() {
+		return;
+	}
 
 	public void defaultDbTasks(List<DbTask> dbTasks) {
 		if (defaultDbMapperClass != null) {

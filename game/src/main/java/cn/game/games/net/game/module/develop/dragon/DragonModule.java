@@ -31,11 +31,6 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void setInstanceAfter(Dragon hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.dragonUid == 0) {

@@ -52,10 +52,4 @@ public class ChatModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 	}
-
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
 }

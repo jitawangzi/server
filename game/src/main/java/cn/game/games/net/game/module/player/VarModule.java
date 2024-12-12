@@ -97,10 +97,6 @@ public class VarModule extends BasePlayerModule {
 //		}
 //	}
 	@Override
-	public void initFromDbAfter() {
-
-	};
-	@Override
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {

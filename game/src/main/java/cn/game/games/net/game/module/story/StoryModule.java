@@ -85,17 +85,6 @@ public class StoryModule extends BasePlayerModule {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void initFromDbAfter() {
-
-	};
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		// TODO Auto-generated method stub
