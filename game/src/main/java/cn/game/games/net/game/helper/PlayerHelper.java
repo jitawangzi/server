@@ -591,6 +591,10 @@ public class PlayerHelper {
 //			e.printStackTrace();
 //		}
 		player.handleEvent(EventTypeEnum.LoginFinish);
+		Collection<BasePlayerModule> allModule = player.getAllModule();
+		for (BasePlayerModule basePlayerModule : allModule) {
+			basePlayerModule.onLogin();
+		}
 
 		GameLogger.login(player);
 		GameLogger.rolelogin(player);

@@ -151,6 +151,10 @@ public class ActivityModule extends BasePlayerModule {
 			activityBase.init(activityBase.getId(), player, false);
 		}
 		checkExpired();
+	};
+
+	@Override
+	public void onLogin() {
 		// 可能符合开启条件的新任务。
 		Set<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
 		for (Integer id : openList) {
@@ -160,7 +164,7 @@ public class ActivityModule extends BasePlayerModule {
 		}
 		// 非时间开启的一些新加的活动
 		initNonTimeOpeningActivity();
-	};
+	}
 
 	/** 
 	 * 关闭过期的活动

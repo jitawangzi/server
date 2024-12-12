@@ -6,7 +6,7 @@ package cn.game.games.core.event;
 public enum EventTypeEnum {
 	/** 创建新玩家 */
 	PLAYER_CREATE(100, "创建新玩家"),
-	/** 开始登陆 */
+	/** 开始登陆,似乎用处不大，可以用LoginFinish代替 */
 	Login(101, "开始登陆"),
 	/** 登陆完成 */
 	LoginFinish(102, "登陆完成"),

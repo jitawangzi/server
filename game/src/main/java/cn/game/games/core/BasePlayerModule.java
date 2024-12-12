@@ -107,19 +107,29 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	/**
 	 * 从数据库中初始化数据,这里只是将数据从db加载到内存，数据的进一步初始化，
-	 * 应该在{@link #initFromDbAfter()}里完成，例如初始化任务的事件监听、登陆时检查过期数据等。 
+	 * 应该在{@link #initFromDbAfter()}里完成，例如检查过期数据等。 
 	 * 一般在多表情况下使用，或者单表用独立表存数据的情况。 
 	 * @param iterator
 	 */
 	protected void initFromDb(ListIterator<?> iterator) {
-		return;
 	}
 
 	/** 
-	 * 业务数据从数据库载入后的自定义初始化流程
+	 * 数据从数据库载入后的进一步初始化流程，主要针对的还是Module数据的初始化，
+	 * 例如检查过期数据等，不要写具体的业务逻辑。
+	 * 而玩家正常登陆才会触发的一些逻辑，不要写在这里
+	 * 可以在{@link #onLogin()}里处理，或者Login、LoginFinish事件  
+	 * 
+	 * 比如查询离线玩家时，只要进行数据的初始化就可以了
+	 *  
 	 */
 	public void initFromDbAfter() {
-		return;
+	}
+
+	/** 
+	 * 玩家登陆后的一些业务逻辑,触发时机和LoginFinish事件一样
+	 */
+	public void onLogin() {
 	}
 
 	public void defaultDbTasks(List<DbTask> dbTasks) {
