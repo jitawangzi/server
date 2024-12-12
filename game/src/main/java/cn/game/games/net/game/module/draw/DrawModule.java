@@ -85,12 +85,6 @@ public class DrawModule extends BasePlayerModule {
 
 	}
 
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public int getNextFreeTime(int id) {
 		int freeTime = freeDrawTime.getValue(id);
 		if (freeTime == 0) {

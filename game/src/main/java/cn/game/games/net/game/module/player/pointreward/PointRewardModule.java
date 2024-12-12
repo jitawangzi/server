@@ -237,12 +237,6 @@ public class PointRewardModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected int getInitOrder() {
 		return INIT_PRIORITY_LOW;
 	}

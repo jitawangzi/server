@@ -36,10 +36,4 @@ public class FirstChargeModule extends BasePlayerModule {
 
 	}
 
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

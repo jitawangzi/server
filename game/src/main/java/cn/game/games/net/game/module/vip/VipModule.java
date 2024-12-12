@@ -42,11 +42,6 @@ public class VipModule extends BasePlayerModule {
     public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {
     }
 
-    @Override
-    public void initFromDbAfter() {
-
-    }
-
     public List<Integer> getRewardFreeGiftList() {
         return rewardFreeGiftList;
     }

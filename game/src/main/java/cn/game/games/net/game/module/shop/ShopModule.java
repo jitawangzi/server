@@ -455,9 +455,4 @@ public class ShopModule extends BasePlayerModule {
 	private void refreshShopNewMonth() {
 		refreshShopByShopType(14);
 	}
-
-	@Override
-	public void initFromDbAfter() {
-
-	}
 }

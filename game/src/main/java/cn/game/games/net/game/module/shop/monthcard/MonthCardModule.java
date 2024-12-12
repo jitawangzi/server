@@ -10,7 +10,6 @@ import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.data.mapper.MonthCardMapper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.MonthCardConfig;
@@ -75,11 +74,6 @@ public class MonthCardModule extends BasePlayerModule {
 				monthCard.update();
 			}
 		}
-	}
-
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { MonthCardMapper.class };
 	}
 
 //	@Override

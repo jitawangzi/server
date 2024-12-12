@@ -26,11 +26,6 @@ public class SwordModule extends AbstractItemNoStackModule<Sword> {
 	}
 
 	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return null;
-	}
-
-	@Override
 	public void setInstanceAfter(Sword hero) {
 		if (this.SwordUid == 0) {
 			this.SwordUid = hero.getId();

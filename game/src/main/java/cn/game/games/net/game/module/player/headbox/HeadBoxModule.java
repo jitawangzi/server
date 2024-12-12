@@ -117,10 +117,4 @@ public class HeadBoxModule extends GoodsModule<HeadBox, HeadBox> {
 	public void buildPlayerAllInfo(Builder builder) {
 
 	}
-
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
 }

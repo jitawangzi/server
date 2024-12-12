@@ -58,12 +58,6 @@ public class RankModule extends BasePlayerModule {
 
 	}
 
-	@Override
-	public void initFromDbAfter() {
-		// TODO Auto-generated method stub
-
-	}
-
 	/** 
 	 * 1、已上阵神将排行榜 = 已上阵5个神将养成（升级+突破+图鉴）+所有外围养成
 	2、最强神将战力榜 = Max（最强神将，仅算升级+突破）--先算上阵的。 
