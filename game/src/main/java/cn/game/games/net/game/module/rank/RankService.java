@@ -355,12 +355,16 @@ public class RankService {
 		CompletableFuture<Boolean>[] futures = new CompletableFuture[serverIds.length];
 		for (int i = 0; i < futures.length; i++) {
 			String serverId = serverIds[i];
-			String key = getKey(serverId, type);
-
-			RFuture<Boolean> rank = RedisUtil.deleteAsync(key);
-			futures[i] = rank.toCompletableFuture();
+			futures[i] = removeRankAsync(type, serverId).toCompletableFuture();
 		}
 		return CompletableFuture.allOf(futures);
+	}
+
+	public CompletableFuture<Boolean> removeRankAsync(RankType type, String serverId) {
+		String key = getKey(serverId, type);
+
+		RFuture<Boolean> rank = RedisUtil.deleteAsync(key);
+		return rank.toCompletableFuture();
 	}
 
 	/**

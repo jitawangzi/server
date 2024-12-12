@@ -60,6 +60,16 @@ public class GameUtil {
 		return false;
 	}
 
+	/** 是否包含 */
+	public static boolean contains(String[] array, String o) {
+		for (String i : array) {
+			if (i.equals(o)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** 
 	 * 给数量做加成
 	 * @param array 0：id 1：数量

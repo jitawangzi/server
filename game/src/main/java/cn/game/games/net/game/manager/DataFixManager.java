@@ -23,7 +23,11 @@ import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.module.rank.RankEntry;
+import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.util.GameUtil;
 import cn.game.util.SpringContextLoader;
 
 /**    
@@ -82,6 +86,59 @@ public class DataFixManager {
 		};
 
 		PlayerHelper.loadAndProcessPlayers(function);
+	}
+
+	/** 
+	 * 
+	 * ognl '@cn.game.games.net.game.manager.DataFixManager@getInstance().mergeServers(@array{"param1","param2"}, @array{@array{"source1","source2"},@array{"source3","source4"}})'
+	 * @param target
+	 * @param sources
+	 */
+	public void mergeServers(String[] target, String[][] sources) {
+		if (target.length != sources.length) {
+			log.error("目标服务器数量与源服务器数量不匹配");
+			return;
+		}
+		for (int i = 0; i < target.length; i++) {
+			String targetServer = target[i];
+			String[] sourceServers = sources[i];
+			if (GameUtil.contains(sourceServers, targetServer)) {
+				log.error("目标服务器与源服务器不能相同");
+				return;
+			}
+			log.info("合并服务器: " + targetServer + " <= " + String.join(",", sourceServers));
+			// 合并逻辑
+			PlayerHelper.loadAndProcessPlayers(player -> {
+				if (GameUtil.contains(sourceServers, player.getData().getServerId())) {
+					// 修改玩家的服务器id
+                    player.getData().setServerId(targetServer);
+					PlayerHelper.saveSimplePlayerToRedis(player);
+					return true;
+				}
+				return false;
+			});
+
+			// 合并其他数据
+			// 排行榜
+			for (RankType rankType : RankType.values()) {
+				for (String srouceServerId : sourceServers) {
+					for (int page = 1;; page++) {
+						List<RankEntry> rankEntries = RankService.getInstance().getPage(srouceServerId, rankType, page, 50);
+						if (rankEntries.isEmpty()) {
+							break;
+						}
+						for (RankEntry rankEntry : rankEntries) {
+							// 放到目标排行榜
+							RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getPlayerId(), rankEntry.getScore());
+						}
+					}
+					RankService.getInstance().removeRankAsync(rankType, srouceServerId);
+				}
+
+			}
+
+		}
+		
 	}
 
 	/** 
