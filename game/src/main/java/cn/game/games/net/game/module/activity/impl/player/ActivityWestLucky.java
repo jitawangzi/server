@@ -113,7 +113,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
             int drawNum = getDrawCellNum(c.ID);
             boolean flag = c.CircleType == 2 && c.LimitTimes > 0 && drawNum < c.LimitTimes;
             if (flag && c.NumberInNoObtain > 0){
-                flag = totalNum < c.NumberInNoObtain;
+                flag = totalNum >= c.NumberInNoObtain;
             }
             return  flag;
         }).collect(Collectors.toList());
