@@ -127,7 +127,7 @@ public class TestHelper {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
 			// 保存数据
-			Future<?> logout = GameClientManager.getInstance().logout((GameClient) gameClientByPlayer, LogoutType.GMTestRequest);
+			Future<?> logout = GameClientManager.getInstance().logout((GameClient) gameClientByPlayer, logoutType);
 		}
 	}
 

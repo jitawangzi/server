@@ -1,9 +1,12 @@
 package cn.game.games.net.game.module.award;
 
-import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 
 /**
  * 物品id和数量的封装
@@ -12,7 +15,7 @@ import java.util.List;
  */
 public class Goods {
 
-	/** 配置表id */
+	/** 配置表id ，物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id*/
 	private int id;
 	/** 数量 */
 	private int count;

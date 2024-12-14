@@ -53,6 +53,8 @@ import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -67,6 +69,7 @@ import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.HCHeroInfo;
@@ -103,6 +106,12 @@ public class PlayerHelper {
 //	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 //	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
 
+	/** 
+	 * 判断玩家是否有足够的物品
+	 * @param player
+	 * @param list entry key:物品id,entry value:数量
+	 * @return
+	 */
 	public static boolean isEnough(Player player, Collection<? extends Entry<Integer, Integer>> list) {
 
 		if (list == null || list.isEmpty()) {
@@ -116,6 +125,12 @@ public class PlayerHelper {
 		return true;
 	}
 
+	/** 
+	 * 判断玩家是否有足够的物品
+	 * @param player
+	 * @param map key:物品id, value:数量
+	 * @return
+	 */
 	public static boolean isEnough(Player player, Map<Integer, Integer> map) {
 		if (map == null || map.isEmpty()) {
 			return true;
@@ -123,25 +138,13 @@ public class PlayerHelper {
 		return isEnough(player, map.entrySet());
 	}
 
-	public static boolean isEnoughOld(Player player, int[][] list) {
-
-		if (list == null || list.length == 0) {
-			return true;
-		}
-		for (int i = 0; i < list.length; i++) {
-			if (!isEnough(player, list[i][0], list[i][1])) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	/**
-	 * or的关系判断,二维数组中有一个满足就可以
+	 * or的关系判断,二维数组中有一个满足就可以,暂时不用了
 	 * @param player
 	 * @param list
 	 * @return
 	 */
+	@Deprecated
 	public static boolean isEnoughOr(Player player, int[][] list) {
 
 		if (list == null || list.length == 0) {
@@ -155,6 +158,12 @@ public class PlayerHelper {
 		return false;
 	}
 
+	/** 
+	 * 判断玩家是否有足够的物品
+	 * @param player
+	 * @param list ，数组0是id，1是数量
+	 * @return
+	 */
 	public static boolean isEnough(Player player, int[][] list) {
 
 		if (list == null || list.length == 0) {
@@ -168,6 +177,12 @@ public class PlayerHelper {
 		return true;
 	}
 
+	/** 
+	 * 判断玩家是否有足够的物品
+	 * @param player
+	 * @param list ，数组0是id，1是数量，也可以向后扩展，例如 2是id，3是数量
+	 * @return
+	 */
 	public static boolean isEnough(Player player, int[] list) {
 		if (list == null || list.length == 0) {
 			return true;
@@ -180,6 +195,15 @@ public class PlayerHelper {
 		return true;
 	}
 
+	/** 
+	 * 判断玩家是否有足够的物品
+	 * @param player
+	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+	 * 通过物品id的规则，计算出属于什么物品类型
+	 * 所有物品类型 : {@link GoodsTypeEnum#getId()}
+	 * @param count
+	 * @return
+	 */
 	public static boolean isEnough(Player player, int id, int count) {
 		return player.getGoodsModule(id).isEnough(id, count);
 	}
@@ -253,6 +277,15 @@ public class PlayerHelper {
 		return ret;
 	}
 
+	/** 
+	 * 给某玩家增加物品
+	 * @param player
+	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id 
+	 * @param value 增加数量
+	 * @param opType  操作类型
+	 * @param notify   增加后，是否通知客户端
+	 * @return
+	 */
 	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType, boolean notify) {
 		if (value < 0) {
 			return Collections.EMPTY_LIST;
@@ -284,12 +317,13 @@ public class PlayerHelper {
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
 	 * @param player
-	 * @param id
+	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
 	 * @param value
 	 * @param mode 数值或当前百分比
 	 * @param consumeType
 	 * @return
 	 */
+	@Deprecated
 	public static boolean delResources(Player player, int id, int value, int mode, OpType consumeType) {
 		if (value <= 0) {
 			return true;
@@ -306,10 +340,25 @@ public class PlayerHelper {
 
 	}
 
+	/** 
+	 * 扣除玩家的物品
+	 * @param player
+	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+	 * @param value 减少的数量
+	 * @param consumeType 消耗类型
+	 * @return
+	 */
 	public static boolean delResources(Player player, int id, long value, OpType consumeType) {
 		return delResources(player, id, value, consumeType, true);
 	}
 
+	/** 
+	 * 通过消耗表的id，来扣除玩家的物品
+	 * @param player
+	 * @param consumeId 消耗表的id  {@link ConsumeConfig#ID}
+	 * @param consumeType 消耗类型
+	 * @return
+	 */
 	public static boolean delResources(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
 			return true;
@@ -321,9 +370,9 @@ public class PlayerHelper {
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
 	 * @param player
-	 * @param id
-	 * @param value
-	 * @param consumeType
+	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+	 * @param value 减少的数量
+	 * @param consumeType 	    消耗类型
 	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 * @return
 	 */
@@ -351,9 +400,9 @@ public class PlayerHelper {
 
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
-	 * @param player
-	 * @param list
-	 * @param consumeType
+	 * @param player 玩家
+	 * @param list，entry key:物品id,entry value:数量
+	 * @param consumeType 消耗类型
 	 * @return
 	 */
 	public static boolean delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType) {
@@ -377,6 +426,13 @@ public class PlayerHelper {
 		return false;
 	}
 
+	/**
+	 * 进行某操作时扣除资源，包括所有大类型
+	 * @param player
+	 * @param map，key:物品id,value:数量
+	 * @param consumeType 消耗类型
+	 * @return
+	 */
 	public static boolean delResources(Player player, Map<Integer, Integer> map, OpType consumeType) {
 
 		if (map == null || map.isEmpty()) {
@@ -385,6 +441,13 @@ public class PlayerHelper {
 		return delResources(player, map.entrySet(), consumeType);
 	}
 
+	/** 
+	 * 进行某操作时扣除资源，包括所有大类型
+	 * @param player
+	 * @param list ，数组0是id，1是数量
+	 * @param consumeType
+	 * @return
+	 */
 	public static boolean delResources(Player player, int[][] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
@@ -407,6 +470,13 @@ public class PlayerHelper {
 		return false;
 	}
 
+	/** 
+	 * 进行某操作时扣除资源，包括所有大类型
+	 * @param player
+	 * @param list ，数组0是id，1是数量,也可以向后扩展，例如 2是id，3是数量
+	 * @param consumeType
+	 * @return
+	 */
 	public static boolean delResources(Player player, int[] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
@@ -428,33 +498,9 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 二维数组用或的关系扣东西
-	 * @param playerId
-	 * @param list
-	 * @param consumeType
-	 * @return
-	 */
-	/*	public static boolean delResources(Player player, int[][] list, ResourceConsumeEnum consumeType) {
-
-			if (list == null || list.length == 0) {
-				return true;
-			}
-			if (isEnough(player, list)) {
-				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
-				for (int i = 0; i < list.length; i++) {
-					delResources(player, list[i][0], list[i][1], consumeType, false);
-					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][0], list[i][1]));
-				}
-				player.getGameClient().sendProtocol(spendPush.build());
-				return true;
-			}
-			return false;
-		}*/
-
-	/**
 	 * 根据奖励id，增加所有物品
 	 * @param player
-	 * @param randomRewardId
+	 * @param randomRewardId  {@link RandomGivenConfig#ID}
 	 * @return
 	 */
 	public static List<RewardInfo> addReward(Player player, int randomRewardId, OpType opType) {
@@ -464,7 +510,7 @@ public class PlayerHelper {
 	/**
 	 * 根据奖励id，增加所有物品,带加成
 	 * @param player
-	 * @param randomRewardId  奖励id
+	 * @param randomRewardId  {@link RandomGivenConfig#ID}
 	 * @param additionValue,额外增加的数量加成， 除以10000
 	 * @return
 	 */
@@ -483,7 +529,7 @@ public class PlayerHelper {
 	/**
 	 * 只是随机出来具体的奖励，不加到玩家身上,较少直接用到
 	 * @param player
-	 * @param randomRewardId
+	 * @param randomRewardId {@link RandomGivenConfig#ID}
 	 * @return
 	 */
 	public static List<Goods> randomReward(int randomRewardId) {
@@ -699,7 +745,7 @@ public class PlayerHelper {
 	/**
 	 * 一次性增加多个奖励
 	 * @param player
-	 * @param rewards
+	 * @param goods
 	 * @return
 	 */
 	public static List<RewardInfo> addResources(Player player, List<Goods> goods, OpType opType) {
@@ -727,22 +773,6 @@ public class PlayerHelper {
 		}
 		return ret;
 	}
-
-//	public static List<RewardInfo> addResources(long playerId, int[][] rewards, boolean notify) {
-//		List<RewardInfo> rewardItems = new ArrayList<>();
-//		if (rewards != null && rewards.length > 0) {
-//			for (int i = 0; i < rewards.length; i++) {
-//				for (int j = 0; j < rewards[i].length; j += 2) {
-//					List<RewardInfo> rewardItem = addResources(playerId, rewards[i][j], rewards[i][j + 1], false);
-//					rewardItems.addAll(rewardItem);
-//				}
-//			}
-//			if (notify) {
-//				PlayerHelper.sendProtocol(playerId, RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(rewardItems));
-//			}
-//		}
-//		return rewardItems;
-//	}
 
 	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType, boolean notify) {
 		if (rewards != null && rewards.length > 0) {
@@ -814,6 +844,12 @@ public class PlayerHelper {
 		}
 	}
 
+	/** 
+	 * 给玩家发消息，带错误码
+	 * @param playerId
+	 * @param message 消息
+	 * @param errorCode 错误码
+	 */
 	public static void sendProtocol(long playerId, Object message, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
@@ -821,6 +857,11 @@ public class PlayerHelper {
 		}
 	}
 
+	/** 
+	 * 给玩家发默认的错误消息，带错误码
+	 * @param playerId
+	 * @param errorCode 	    错误码
+	 */
 	public static void sendErrorProtocol(long playerId, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
@@ -836,8 +877,7 @@ public class PlayerHelper {
 	 * @return Future,如果发到别的服务器处理，null，不用后续处理。
 	 */
 	@Deprecated
-	public static Future<GamePlayerResponse_7d000016> sendRemotePlayer(long playerId, Object message,
-			boolean discardWhenOffline) {
+	public static Future<GamePlayerResponse_7d000016> sendRemotePlayer(long playerId, Object message, boolean discardWhenOffline) {
 		if (!PlayerManager.getInstance().isOnline(playerId) && discardWhenOffline) {
 			return null;
 		}
@@ -857,14 +897,12 @@ public class PlayerHelper {
 			}
 
 			int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
-			GamePlayerRequest_7d000015 gamePlayerRequest_7d000015 = GamePlayerRequest_7d000015
-					.newBuilder()
+			GamePlayerRequest_7d000015 gamePlayerRequest_7d000015 = GamePlayerRequest_7d000015.newBuilder()
 					.setPlayerId(playerId)
 					.setId(msgId)
 					.setData(m.toByteString())
 					.build();
-			Future<GamePlayerResponse_7d000016> requestRemoteServer = VxHolder
-					.requestRemoteServer(serverId, gamePlayerRequest_7d000015);
+			Future<GamePlayerResponse_7d000016> requestRemoteServer = VxHolder.requestRemoteServer(serverId, gamePlayerRequest_7d000015);
 			requestRemoteServer.onSuccess(resp -> {
 				int errorCode = resp.getErrorCode();
 				if (errorCode == ErrorMsgEnum.not_online.getId()) {
@@ -883,11 +921,13 @@ public class PlayerHelper {
 
 	/**
 	 * 给某在线玩家推送一个消息，如果玩家不在线，可以丢弃消息。
-	 * @param playerId
-	 * @param message
+	 * 玩家不一定在某个服务器。 
+	 * @param playerId 	    玩家id
+	 * @param message 	    消息
 	 */
 	public static void sendOnlinePlayer(long playerId, Object message) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		// 在当前服务器
 		if (player != null) {
 			player.getGameClient().sendProtocol(message);
 			return;
@@ -896,6 +936,7 @@ public class PlayerHelper {
 		// 发给所在服务器处理。
 		String serverId = PlayerManager.getInstance().getServerId(playerId);
 		if (StringUtils.isEmpty(serverId)) {
+			// 玩家不在线
 			return;
 		}
 		com.google.protobuf.Message m = null;
@@ -912,27 +953,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 给某玩家发送消息，可能是跨服的玩家
-	 * @param playerId
-	 * @param message
-	 * @param serverId
-	 */
-	@Deprecated
-	public void sendProtcolCrossServer(long playerId, String serverId, com.google.protobuf.Message message) {
-		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) { // 本服务器玩家
-			GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-			if (gameClient != null) {
-				gameClient.sendProtocol(message);
-			}
-
-		} else {
-			sendToRemotePlayer(playerId, serverId, message);
-		}
-
-	}
-
-	/**
-	 * 将消息发送给指定服务器的玩家
+	 * 将消息发送给指定服务器的玩家，不需要返回消息
 	 * @param playerId
 	 *            目标玩家id
 	 * @param message
@@ -947,7 +968,7 @@ public class PlayerHelper {
 		builder.setId(msgId);
 		builder.setPlayerId(playerId);
 
-		VxHolder.requestRemoteServer(serverId, builder.build());
+		VxHolder.sendRemoteServer(serverId, builder.build());
 
 	}
 
@@ -973,7 +994,7 @@ public class PlayerHelper {
 	/**
 	 * 是否满足所有条件
 	 * @param player
-	 * @param conditions
+	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
 	public static boolean checkCondition(Player player, List<Integer> conditions) {
@@ -981,18 +1002,24 @@ public class PlayerHelper {
 		return checkCondition(player, conditions, false);
 	}
 
+	/** 
+	 * 是否满足所有条件
+	 * @param player
+	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
+	 * @return
+	 */
 	public static boolean checkCondition(Player player, int[] conditions) {
 
 		return checkCondition(player, GameUtil.transform1(conditions));
 	}
 
 	/**
-	 * @Description
+	 * 是否满足所有条件
 	 * @param player
-	 * @param conditions
-	 * @param or
-	 *            true,如果满足任意条件
-	 * @return
+	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
+	 * @param or 是否满足任意条件即可
+	 *            
+	 * @return true,如果满足任意条件
 	 */
 	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or) {
 
@@ -1019,7 +1046,7 @@ public class PlayerHelper {
 	/**
 	 * 基础的条件检查
 	 * @param player
-	 * @param condition
+	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
 	public static boolean checkCondition(Player player, int condition) {
@@ -1034,7 +1061,7 @@ public class PlayerHelper {
 	/**
 	 * 获取某条件的计数，一般是根据当前数据直接可以获得的，或者是累计计数等，不需要额外条件的。
 	 * @param player
-	 * @param condition
+	 * @param condition 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
 	public static int getConditionCount(Player player, int condition) {
@@ -1098,13 +1125,8 @@ public class PlayerHelper {
 		}
 	}
 
-	public static List<DbTask> genPlayerDbTask(long uid) {
-
-		List<DbTask> dbTasks = new ArrayList<>();
-		return dbTasks;
-	}
-
 	/**
+	 * 重连
 	 * @param newGameClient
 	 * @param reconnect 客户端传递的参数，是否是重连
 	 * @param playerId
@@ -1190,6 +1212,13 @@ public class PlayerHelper {
 		});
 	}
 
+	/** 
+	 * 构造Player实例
+	 * @param playerData
+	 * @param account
+	 * @param client
+	 * @return
+	 */
 	public static Player createPlayer(PlayerData playerData, Account account, GameClient client) {
 		client.setPlayerId(playerData.getPlayerId());
 		GameClientManager.getInstance().addGameClientPlayer((GameClient) client);
@@ -1220,20 +1249,20 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static RFuture<Boolean> trySetServerId(long playerId) {
-		RFuture<Boolean> playerLockFuture = RedisUtil
-				.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId), ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
+		RFuture<Boolean> playerLockFuture = RedisUtil.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
+				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
 
 	public static RFuture<Void> setServerId(long playerId) {
-		RFuture<Void> playerLockFuture = RedisUtil
-				.setAsync(CacheType.PLAYER_SERVER_ID.key(playerId), ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
+		RFuture<Void> playerLockFuture = RedisUtil.setAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
+				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
 
 	public static Future<Void> saveSimplePlayerToRedis(Player player) {
 		String key = CacheType.PLAYER_SIMPLE.key(player.getData().getPlayerId());
-		return  RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
+		return RedisLocalCache.getInstance().putAsync(key, new SimplePlayer(player));
 	}
 
 	/** 
@@ -1251,7 +1280,7 @@ public class PlayerHelper {
 	}
 
 	/** 
-	 * 创建新玩家
+	 * 创建新玩家，保存到数据库
 	 * @param player
 	 * @return
 	 */
@@ -1296,38 +1325,11 @@ public class PlayerHelper {
 		return DAO.execute(dbTasks).compose(r -> initPlayerModuleFromDb(player, r));
 	}
 
-	public static void selectPlayerDataWithMQ(boolean reconnect, Player dbPlayer) {
-		long playerId = dbPlayer.getData().getPlayerId();
-		/*
-		List<DbTask> dbTasks = PlayerHelper.initDbTasks(dbPlayer.getData().getUid(), playerId);
-		
-		Handler<List<Object>> callBackTask = PlayerHelper.selectPlayerDataSuccess(dbPlayer);
-		
-		GameDataPushBatch_7d00000b.Builder builder = GameDataPushBatch_7d00000b.newBuilder();
-		GameDataPushBatch2_7d00000c.Builder builder2 = GameDataPushBatch2_7d00000c.newBuilder();
-		
-		for (DbTask dbTask : dbTasks) {
-			DbTaskProto proto = DbTaskProto.newBuilder().setMapperClass(dbTask.getMapper().getName()).setMethod(dbTask.getMethod())
-					.setArg(UnsafeByteOperations.unsafeWrap(KryoUtils.serializeClassAndObject(dbTask.getArg()))).build();
-			builder.addDbTasks(proto);
-		}
-		builder2.setArg(UnsafeByteOperations.unsafeWrap(KryoUtils.serializeClassAndObject(dbTasks)));
-		GameServer.getInstance().requestDataServer(builder2.build(), new RequestCallback() {
-		
-			@Override
-			public void onSuccess(Message message) {
-				byte[] body = message.getBody();
-				Object obj = KryoUtils.deserializeClassAndObject(body);
-				callBackTask.handle((List<Object>) obj);
-			}
-			@Override
-			public void onException(Throwable e) {
-				e.printStackTrace();
-			}
-		});*/
-
-	}
-
+	/** 
+	 * 初始化玩家数据库查询任务
+	 * @param player
+	 * @return
+	 */
 	public static List<DbTask> initDbTasks(Player player) {
 		List<DbTask> dbTasks = new ArrayList<>();
 		for (BasePlayerModule module : player.getModuleSorted()) {
@@ -1506,7 +1508,7 @@ public class PlayerHelper {
 			return QiankunMirrorLvManager.instance().getNullable(level);
 		} else if (id == Asset.Favorability.ID) {
 			return FairyFriendFavorabilityManager.instance().getUIFairyListIDLV(subId, level);
-    	} else if (id == Asset.VIPExp.ID) {
+		} else if (id == Asset.VIPExp.ID) {
 			return VIPManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
@@ -1568,6 +1570,7 @@ public class PlayerHelper {
 	 * 
 	 * 修改玩家数据, 允许在服务器运行时修改
 	 * 如果玩家在线，直接修改内存数据，否则从数据库中加载数据修改
+	 * 如果玩家在其他服务器，先抛出异常，后续完善
 	 * 
 	 * @param playerId
 	 * @param function 修改数据的方法，结果true表示数据修改了， false表示数据没有修改
@@ -1608,9 +1611,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<SimplePlayer> seachPlayer(String playerName, long playerId) {
-		if (playerId > 0){
+		if (playerId > 0) {
 			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
-		} else if (playerName != null){
+		} else if (playerName != null) {
 			return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
 				return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(r));
 			});
@@ -1625,7 +1628,7 @@ public class PlayerHelper {
 	 * @param msg
 	 * @return true 可以发送， false 不可以发送
 	 */
-	public static Future<Boolean> checkContextData(Player player, String msg){
+	public static Future<Boolean> checkContextData(Player player, String msg) {
 		Promise<Boolean> promise = Promise.promise();
 		if (Config.wechatAccessToken == null || Config.DISABLE_WECHAT_CONTENT_CHECK) {
 			return Future.succeededFuture(true);
@@ -1636,32 +1639,30 @@ public class PlayerHelper {
 				"version":2,
 				"scene":2,
 				"openid": "odN8m7fO2xG_3qneoOMxeWeOcmwQ"
-
+		
 		}*/
-		Map<String,Object> data = new HashMap<>();
-		data.put("content",msg);
-		data.put("version",2);
-		data.put("scene",2);
-		data.put("openid",player.getOpenId());
-		VxHolder.post(url
-				, response ->{
-					if (response != null){
-						int errcode = response.getInteger("errcode");
-						if (errcode == 0){
-							JsonObject dataResult = response.getJsonObject("result");
+		Map<String, Object> data = new HashMap<>();
+		data.put("content", msg);
+		data.put("version", 2);
+		data.put("scene", 2);
+		data.put("openid", player.getOpenId());
+		VxHolder.post(url, response -> {
+			if (response != null) {
+				int errcode = response.getInteger("errcode");
+				if (errcode == 0) {
+					JsonObject dataResult = response.getJsonObject("result");
 //							label	number	命中标签枚举值，100 正常；10001 广告；20001 时政；20002 色情；20003 辱骂；20006 违法犯罪；20008 欺诈；20012 低俗；20013 版权；21000 其他
-							if (dataResult.getInteger("label") == 100){
-								promise.complete(true);
-								return;
-							}
-						}
+					if (dataResult.getInteger("label") == 100) {
+						promise.complete(true);
+						return;
 					}
-					promise.complete(false);
 				}
-				,err->{
+			}
+			promise.complete(false);
+		}, err -> {
 			err.printStackTrace();
 			promise.fail(err);
-		},data);
+		}, data);
 		return promise.future();
 	}
 }

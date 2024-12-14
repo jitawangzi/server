@@ -111,7 +111,7 @@ public class DataFixManager {
 			PlayerHelper.loadAndProcessPlayers(player -> {
 				if (GameUtil.contains(sourceServers, player.getData().getServerId())) {
 					// 修改玩家的服务器id
-                    player.getData().setServerId(targetServer);
+					player.getData().setServerId(targetServer);
 					PlayerHelper.saveSimplePlayerToRedis(player);
 					return true;
 				}
@@ -138,7 +138,7 @@ public class DataFixManager {
 			}
 
 		}
-		
+
 	}
 
 	/** 
@@ -163,7 +163,6 @@ public class DataFixManager {
 	 */
 	public void runtimeFixStringArgs(String... args) {
 		log.info("runtimeFixStringArgs");
-
 
 	}
 
