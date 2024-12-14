@@ -53,7 +53,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
         switch (event.getType()){
             case NewDay:
                 //清空刷新购买次数
-                List<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list().stream().filter(c -> c.Refresh == 0).toList();;
+                List<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list().stream().filter(c -> c.Refresh == 1).toList();;
                 list.forEach(c -> buyIdMap.remove(c.ID));
                 break;
         }
