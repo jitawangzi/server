@@ -111,7 +111,11 @@ public class ActivityWestLucky extends PlayerActivityBase {
         //内圈待抽取集合  内圈：2
         List<ActivityWestLuckyTurntableConfig> intterConfigList = configList.stream().filter(c -> {
             int drawNum = getDrawCellNum(c.ID);
-            return c.CircleType == 2 && c.LimitTimes > 0 && drawNum < c.LimitTimes && c.NumberInNoObtain > 0 && totalNum < c.NumberInNoObtain;
+            boolean flag = c.CircleType == 2 && c.LimitTimes > 0 && drawNum < c.LimitTimes;
+            if (flag && c.NumberInNoObtain > 0){
+                flag = totalNum < c.NumberInNoObtain;
+            }
+            return  flag;
         }).collect(Collectors.toList());
 
         if (intterConfigList == null || intterConfigList.isEmpty()) {//内圈没有可抽取的物品 则不随机 进入内圈事件=4
@@ -123,9 +127,10 @@ public class ActivityWestLucky extends PlayerActivityBase {
             if (config.CircleType == 3){//  连续3次外圈事件=3
                 List<Integer> findList = new ArrayList<>(result);
                 for(int i = 0; i < 3; i++) {
-                    findList.addAll(draw(true, findList));
+                    List<Integer> tempList = draw(true, findList);
+                    findList.addAll(tempList);
                 }
-                result.addAll(findDrawList);
+                result.addAll(findList.subList(1, findList.size()));
             } else if (config.CircleType == 4) {//进入内圈事件=4
                 config =  Rnd.randomElement(intterConfigList, c -> c.Weight);
                 result.add(config.ID);
