@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.impl.player.*;
 import cn.game.protocol.generated.config.*;
@@ -370,7 +371,13 @@ public class ActivityHandler extends BaseHandler {
         ActivityWestLuckyInfoRequest_11000091 req = (ActivityWestLuckyInfoRequest_11000091) message;
         int activityId = req.getActivityId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        client.sendProtocol(player.getActivityModule().get(activityId).buildActivityInfo());
+        ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
+        ActivityMsg.ActivityWestLuckyInfoResponse_11000092.Builder res = ActivityMsg.ActivityWestLuckyInfoResponse_11000092.newBuilder();
+        if (activityWestLucky == null){
+            client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        client.sendProtocol(player.getActivityModule().get(activityId).buildActivityShowInfo());
     }
 
     private void westLuckyDraw(NetClient client, Object message) {
@@ -395,8 +402,9 @@ public class ActivityHandler extends BaseHandler {
             return;
         }
         PlayerHelper.delResources(player, ActivityWestLucky.drawItemId, drawNum,OpType.ZhuanPanDraw);
+        GameLogger.activity(player,activityId,0);
         for (int i = 0; i < drawNum; i++){
-            List<Integer> ids = activityWestLucky.draw();
+            List<Integer> ids = activityWestLucky.draw(false,new ArrayList<>());
             activityWestLucky.addDrawNum();
             ids.forEach(id ->{
                 ActivityWestLuckyTurntableConfig config = ActivityWestLuckyTurntableManager.instance().get(id);
@@ -435,9 +443,11 @@ public class ActivityHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.buy_over_limit.getId());
             return;
         }
+
         player.pay(PayType.FirstCharge,id, config.PurchaseParameter, id).onSuccess(
             t->{
                 if (t){
+                    GameLogger.activity(player,activityId,id);
                     resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
                     activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
                 } else {

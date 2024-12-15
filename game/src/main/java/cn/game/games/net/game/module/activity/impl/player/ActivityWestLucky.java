@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName ActivityWestLucky
@@ -61,6 +62,9 @@ public class ActivityWestLucky extends PlayerActivityBase {
     @Override
     public Message buildActivityShowInfo() {
         ActivityMsg.ActivityWestLuckyInfoResponse_11000092.Builder res = ActivityMsg.ActivityWestLuckyInfoResponse_11000092.newBuilder();
+        drawMap.forEach((k,v)->{
+            res.putDramaMap(k,v.num);
+        });
         res.setActivityId(id)
                 .putAllBuyMap(buyIdMap);
         return res.build();
@@ -85,16 +89,30 @@ public class ActivityWestLucky extends PlayerActivityBase {
         return ActivityWestLuckyTurntableManager.instance().list().stream().filter(c -> c.ActivityiD == id).toList();
     }
 
-    public List<Integer> draw(){
+    public List<Integer> draw(boolean is3Type,List<Integer> findDrawList){
         List<Integer> result = new ArrayList<>();
         List<ActivityWestLuckyTurntableConfig> configList = getConfigList();
         //外圈待抽取集合
-        List<ActivityWestLuckyTurntableConfig> outConfigList = configList.stream().filter(c -> c.CircleType == 1).toList(); //外圈：1
+        List<ActivityWestLuckyTurntableConfig> outConfigList = configList.stream().filter(c -> c.CircleType == 1 || c.CircleType == 3 || c.CircleType == 4).collect(Collectors.toList()); //外圈：1
+        if (is3Type){
+            outConfigList = outConfigList.stream().filter(c ->{
+                if (c.CircleType == 3){
+                    return false;
+                }
+                if (findDrawList.contains(c.ID)){
+                    return  false;
+                }
+                return true;
+            }).collect(Collectors.toList());
+        }
+        if (outConfigList == null || outConfigList.isEmpty()) {//外圈没有可抽取的物品 则不随机
+            return result;
+        }
         //内圈待抽取集合  内圈：2
         List<ActivityWestLuckyTurntableConfig> intterConfigList = configList.stream().filter(c -> {
             int drawNum = getDrawCellNum(c.ID);
             return c.CircleType == 2 && c.LimitTimes > 0 && drawNum < c.LimitTimes && c.NumberInNoObtain > 0 && totalNum < c.NumberInNoObtain;
-        }).toList();
+        }).collect(Collectors.toList());
 
         if (intterConfigList == null || intterConfigList.isEmpty()) {//内圈没有可抽取的物品 则不随机 进入内圈事件=4
             outConfigList.removeIf(c -> c.CircleType == 4);
@@ -103,9 +121,11 @@ public class ActivityWestLucky extends PlayerActivityBase {
         if (config != null){
             result.add(config.ID);
             if (config.CircleType == 3){//  连续3次外圈事件=3
+                List<Integer> findList = new ArrayList<>(result);
                 for(int i = 0; i < 3; i++) {
-                    result.addAll(draw());
+                    findList.addAll(draw(true, findList));
                 }
+                result.addAll(findDrawList);
             } else if (config.CircleType == 4) {//进入内圈事件=4
                 config =  Rnd.randomElement(intterConfigList, c -> c.Weight);
                 result.add(config.ID);
