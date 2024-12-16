@@ -96,7 +96,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
         List<ActivityWestLuckyTurntableConfig> outConfigList = configList.stream().filter(c -> c.CircleType == 1 || c.CircleType == 3 || c.CircleType == 4).collect(Collectors.toList()); //外圈：1
         if (is3Type){
             outConfigList = outConfigList.stream().filter(c ->{
-                if (c.CircleType == 3){
+                if (c.CircleType == 3 || c.CircleType == 4){
                     return false;
                 }
                 if (findDrawList.contains(c.ID)){
