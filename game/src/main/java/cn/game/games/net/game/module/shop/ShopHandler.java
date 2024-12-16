@@ -270,7 +270,8 @@ public class ShopHandler extends BaseHandler {
 		}
 		heishiRefreshTimesMap.add(shopId);
 //		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
-		shopModule.refreshHeishiItems(shopId);
+
+		shopModule.refreshHeishiItems(shopId, shopConfig.Refresh);
 
 		List<ShopItem> shopItems = shopModule.getShopItems(shopId);
 		for (ShopItem shopItem : shopItems) {

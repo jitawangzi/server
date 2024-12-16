@@ -217,7 +217,7 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 		// 刷新黑市
-		refreshHeishiItems(0);
+		refreshHeishiItems(0, PlayerHelper.REFRESH_TYPE_DAY);
 		heishiRefreshTimes = 0;
 		heishiRefreshTimesMap.clear();
 		// 刷新金币、钻石商店
@@ -244,8 +244,9 @@ public class ShopModule extends BasePlayerModule {
 	/** 
 	 * 刷新指定id的黑市，如果不指定id，则刷新所有
 	 * @param shopId 
+	 * @param 刷新类型 
 	 */
-	public void refreshHeishiItems(int shopId) {
+	public void refreshHeishiItems(int shopId, int refreshType) {
 		Collection<ShopConfig> shops = ShopManager.instance().list();
 		for (ShopConfig shopConfig : shops) {
 			if (shopConfig.Type != 2) {
@@ -254,24 +255,29 @@ public class ShopModule extends BasePlayerModule {
 			if (shopId > 0 && shopConfig.ID != shopId) {
 				continue;
 			}
+			if (shopConfig.Refresh != refreshType) {
+				continue;
+			}
 			// 刷新黑市
 			int shop = shopConfig.ID;
 			shopItemsMap.removeAll(shop);
 
 			List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, 1);
-			if (typeList == null) {
-				continue;
-			}
-			int fixCount = typeList.size();
-			for (HeishiConfig heishiConfig : typeList) {
-				shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+			int fixCount = 0;
+			if (typeList != null) {
+				fixCount = typeList.size();
+				for (HeishiConfig heishiConfig : typeList) {
+					shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
+				}
 			}
 
 			typeList = HeishiManager.instance().getShopIDTypeList(shop, 2);
-			List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd
-					.randomWeighableElementsNonRepeating(typeList, GlobalConst.HeishiShelvesCnt - fixCount);
-			for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
-				shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+			if (typeList != null) {
+				List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList,
+						GlobalConst.HeishiShelvesCnt - fixCount);
+				for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
+					shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+				}
 			}
 
 		}
@@ -312,6 +318,9 @@ public class ShopModule extends BasePlayerModule {
 		//刷新 每周礼包
 		int shop = 13;
 		refreshShopByShopType(shop);
+
+		// 刷新黑市
+		refreshHeishiItems(0, PlayerHelper.REFRESH_TYPE_WEEK);
 	}
 
 	private void refreshShopByShopType(int shop) {

@@ -105,6 +105,9 @@ public class PlayerHelper {
 //	private static final Logger resourceDelLog = LoggerFactory.getLogger("resourceDelLog");
 //	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 //	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
+	public static final int REFRESH_TYPE_DAY = 1;
+	public static final int REFRESH_TYPE_WEEK = 2;
+	public static final int REFRESH_TYPE_MONTH = 3;
 
 	/** 
 	 * 判断玩家是否有足够的物品
