@@ -295,6 +295,7 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		developModule.setIsPotentiaBreak(id, true);
+		developModule.getPotentiaBreakLevelMap().add(id, 1);
 		client.sendProtocol(resp.build());
 	}
 	private void rescueLvUp(NetClient client, Object message) {

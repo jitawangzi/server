@@ -34,9 +34,10 @@ public class DevelopModule extends BasePlayerModule {
 	private int heavenlyDaoLevel;
 	/**  修炼等级。 属性id->等级 */
 	private IntMapWrapper potentiaLvMap = new IntMapWrapper();
-
 	/**  */
 	private Map<Integer, Boolean> isPotentiaBreakMap = new HashMap<Integer, Boolean>();
+	/** 潜力修炼的突破等级 */
+	private IntMapWrapper potentiaBreakLevelMap = new IntMapWrapper();
 
 	private QianKunMirrorInfo.Builder qiankunMirrorBuilder = QianKunMirrorInfo.newBuilder();
 
@@ -63,6 +64,10 @@ public class DevelopModule extends BasePlayerModule {
 
 	public QianKunMirrorInfo.Builder getQiankunMirrorBuilder() {
 		return qiankunMirrorBuilder;
+	}
+
+	public IntMapWrapper getPotentiaBreakLevelMap() {
+		return potentiaBreakLevelMap;
 	}
 
 	/** 
@@ -97,6 +102,7 @@ public class DevelopModule extends BasePlayerModule {
 		builder.setHeavenlyDaoLevel(heavenlyDaoLevel);
 		builder.putAllPotentialLvMap(potentiaLvMap.getMap());
 		builder.putAllPotentialBreak(isPotentiaBreakMap);
+		builder.putAllPotentiaBreakLevelMap(potentiaBreakLevelMap.getMap());
 		builder.setQianKunMirrorInfo(qiankunMirrorBuilder);
 
 	}

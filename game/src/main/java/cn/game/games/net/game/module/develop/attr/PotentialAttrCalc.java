@@ -22,6 +22,7 @@ public class PotentialAttrCalc extends PlayerAttrCalc {
 	public void calcAttr() {
 		DevelopModule developModule = player.getDevelopModule();
 
+		// 潜力
 		// 初始修炼等级
 		// 突破属性： 当前值 = 初始值 +（lv-1）*每级成长值+INT(LV/10)*突破成长值
 		Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
@@ -29,11 +30,13 @@ public class PotentialAttrCalc extends PlayerAttrCalc {
 			int lv = developModule.getCultivationLv(k, 1);
 			if (lv > 0) {
 				PotentialConfig config = DevelopHelper.getPotentialConfig(v, lv);
-				int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1] + (lv / 10) * config.BreakthroughGrowth[1];
+				int breakLevel = developModule.getPotentiaBreakLevelMap().getValue(config.ID);
+				int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1]
+						+ breakLevel * config.BreakthroughGrowth[1];
 				attrMap.add(config.PotentialBase[0], attrValue);
 			}
 		});
-
+		// 强援
 		Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
 		rescueMarks.forEach((k, v) -> {
 			int lv = developModule.getCultivationLv(k, 2);
