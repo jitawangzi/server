@@ -932,7 +932,10 @@ public class QuestModule extends BasePlayerModule {
 			break;
 		}
 		case Patrol: {
-			addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
+			boolean isFast = event.getBoolParameter(0);
+			if (isFast) {
+				addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
+			}
 			break;
 		}
 		case Draw: {

@@ -19,6 +19,6 @@ public class QuickHangUpCumulation extends AbstractCumulativeCondition {
 	}
 	@Override
 	public boolean checkEventParam(GameEvent event) {
-		return true;
+		return event.getBoolParameter(0);
 	}
 }
