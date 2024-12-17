@@ -1522,7 +1522,6 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
-	@Deprecated
 	public static String getServerId(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
@@ -1537,7 +1536,6 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
-	@Deprecated
 	public static Future<String> getServerIdAsync(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
@@ -1601,9 +1599,9 @@ public class PlayerHelper {
 			Boolean apply = function.apply(player);
 			if (apply != null && apply) {
 				PlayerHelper.saveClientCache(playerId);
-				PlayerHelper.clearPlayer(playerId);
-				RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			}
+			PlayerHelper.clearPlayer(playerId);
+			RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 		}
 	}
 

@@ -303,31 +303,6 @@ public class RankService {
 	}
 
 	/**
-	 * 从排行榜中移除玩家。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 */
-	public void removePlayer(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		rank.remove(playerId);
-	}
-
-	/**
-	 * 异步从排行榜中移除玩家。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 * @return 异步操作的Future
-	 */
-	public RFuture<Boolean> removePlayerAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		return rank.removeAsync(playerId);
-	}
-
-	/**
 	 * 删除某个排行榜
 	 *
 	 * @param serverId 服务器ID
@@ -367,10 +342,32 @@ public class RankService {
 		return rank.toCompletableFuture();
 	}
 
+	/** 
+	 * 异步从排行榜中移除玩家。
+	 * @param type 排行榜类型
+	 * @param serverId 服务器ID 
+	 * @param playerId 玩家ID
+	 * @return
+	 */
 	public RFuture<Boolean> removeRankAsync(RankType type, String serverId, long playerId) {
-		String key = getKey(serverId, type);
-		RScoredSortedSet<Long> sortedSet = RedisUtil.getRedis().getScoredSortedSet(key, LongCodec.INSTANCE);
-		return sortedSet.removeAsync(playerId);
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return rank.removeAsync(playerId);
+	}
+
+	/** 
+	 * 把一个玩家从所有排行榜中移除
+	 * @param playerId
+	 * @return
+	 */
+	public void removeRankAsync(long playerId) {
+		PlayerHelper.getServerIdAsync(playerId).map(serverId -> {
+			for (RankType rankType : RankType.values()) {
+				removeRankAsync(rankType, serverId, playerId);
+			}
+			return null;
+		}).onFailure(e -> {
+			log.error("removeRankAsync error " + playerId, e);
+		});
 	}
 
 	/**
