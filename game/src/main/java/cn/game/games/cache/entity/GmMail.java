@@ -71,6 +71,11 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private String approvalTimer;
 	/**
+	 * 发送邮件的人 GM账号
+	 * @mbg.generated
+	 */
+	private String sendName;
+	/**
 	 * 邮件给那些人发送 ; 分割
 	 * @mbg.generated
 	 */
@@ -265,6 +270,20 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	public void setApprovalTimer(String approvalTimer) {
 		this.approvalTimer = approvalTimer;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getSendName() {
+		return sendName;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setSendName(String sendName) {
+		this.sendName = sendName;
 	}
 
 	/**

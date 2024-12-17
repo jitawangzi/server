@@ -42,6 +42,7 @@ public class GmHelper {
     builder.setType(gmMail.getMailopttype());
     builder.setTitle(gmMail.getTitle());
     builder.setContent(gmMail.getContext());
+    builder.setSendName(gmMail.getSendName() == null ? "null": gmMail.getSendName());
     builder.setCreateTime((int) (gmMail.getCreateTime().getTime() / 1000L));
     builder.setCheckTime(
         gmMail.getApprovalTimer() == null
@@ -69,6 +70,17 @@ public class GmHelper {
     builder.setTimeCheckType(gmMail.getTimeCheckType() == null ? 0 : gmMail.getTimeCheckType());
     builder.setLevelStart(gmMail.getMinLevel() ==null ? 0 :gmMail.getMinLevel());
     builder.setLevelEnd(gmMail.getMaxLevel() == null ? 0 : gmMail.getMaxLevel());
+    long sendStartTimer = 0;
+    long sendEndTimer = 0;
+    if (gmMail.getSendStartTimer() != null){
+      sendStartTimer = DateUtil.getLongDate(gmMail.getSendStartTimer())/1000;
+    }
+    if (gmMail.getSendEndTimer() != null){
+      sendEndTimer = DateUtil.getLongDate(gmMail.getSendEndTimer())/1000;
+    }
+    builder.setSendStartTime((int)sendStartTimer);
+    builder.setSendEndTime((int)sendEndTimer);
+
     if (gmMail.getPids() != null) {
       String[] strs = gmMail.getPids().replace("[","").replace("]","").split(",");
       for (String str : strs) {

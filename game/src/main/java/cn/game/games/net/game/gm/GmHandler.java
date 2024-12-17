@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.game.module.rank.RankService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -122,6 +123,7 @@ public class GmHandler extends BaseHandler {
       g.setCount(goods.getCount());
       list.add(g);
     }
+    String gmSendPlayerName = PlayerManager.getInstance().getPlayer(client.getPlayerId()).getData().getName();
     if (title.isEmpty() || content.isEmpty()) {
       sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "gmSendMail");
       return;
@@ -131,6 +133,7 @@ public class GmHandler extends BaseHandler {
     gmMail.setContext(content);
     gmMail.setOptFlag((byte)0);
     gmMail.setCreateTime(new Date());
+    gmMail.setSendName(String.format("%s:%d",gmSendPlayerName, client.getPlayerId()));
     if (!list.isEmpty()) {
 		gmMail.setAttachment(JsonUtil.toJsonStringWithType(list));
     }
@@ -448,8 +451,13 @@ public class GmHandler extends BaseHandler {
         GmAccountForbidResponse_77000006.newBuilder();
     String reason = request.getReason();
     int type = request.getType();
-    long unblockTime = request.getEndTime();
-    List<Long> pids = new ArrayList<>();
+    long unblockTime;
+    if (request.getEndTime() < 0){//永久封号，封禁100年
+        unblockTime = DateUtil.DAY_SECONDS * 365 * 100;
+    } else {
+        unblockTime = request.getEndTime();
+    }
+      List<Long> pids = new ArrayList<>();
     VxHolder.vertx.executeBlocking(
         (hand) -> {
           request
@@ -463,6 +471,9 @@ public class GmHandler extends BaseHandler {
                     if (forbidAccount != null) {
                       sendAndRecordOpt(client, request, response.build());
                       pids.add(forbidAccount.getPlayerId());
+                      if (request.getEndTime() < 0){//希望修复永久封停不可用问题，同时对账号附带清榜效果
+                          RankService.getInstance().removeRankAsync(Long.parseLong(playerId));
+                      }
                     } else {
                       sendAndRecordOpt(
                           client, request, response.build(), ErrorMsgEnum.unknown, reason);

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
@@ -72,6 +73,10 @@ public class SimplePlayer implements Serializable {
 	 */
 	Map<Integer,Map<Integer,Integer>> secretscripMap = new HashMap<Integer,Map<Integer,Integer>>();
 	List<Secretscript> secretscripInfos = new ArrayList<>();
+	/***
+	 * 玩家资产
+	 */
+	Map<Integer, Long> assetsMap = new HashMap<>();
 
 	@Deprecated
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
@@ -137,6 +142,9 @@ public class SimplePlayer implements Serializable {
         //存储 神通阵容
         secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getPvPSecretscriptMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
+		this.assetsMap.putAll(player.getCurrencyModule().getCurrencyMap().getMap());
+		this.recharge = player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
+
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -191,12 +199,11 @@ public class SimplePlayer implements Serializable {
 		builder.setCreateTime((int) (getCreateTimer()/1000));
 		builder.setLastLoginTime((int) (getLastLoginTimer()/1000));
 		builder.setServerId(getServerId());
+		builder.setCurBattleId(battleId);
+		builder.setPower(combatEffectiveness);
 		builder.setChargeCumulation(recharge);
-		if (offlineTime < lastLoginTimer){
-			builder.setIsOnline(true);
-		} else {
-			builder.setIsOnline(false);
-		}
+		builder.putAllAssets(assetsMap);
+		builder.setIsOnline(online);
         return builder.build();
     }
 
