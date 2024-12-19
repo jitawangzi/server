@@ -69,8 +69,12 @@ public class SevenDaysSignin extends PlayerActivityBase {
 	public List<RewardInfo> receive(int id) {
 		SevenDaysSigninConfig config = getSevenDaysSigninConfig(day);
 		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
+		int addRadio = 0;
+		if (getSevenDaysSigninConfigList(id).size() > 7 ){//月卡才有加成，7日的 没有加成
+			addRadio = player.getWelfareValue(WelfareTypeEnum.MonthClock);
+		}
 		//月卡加成额外掉落
-		int[][] drops =  GameUtil.arrayAddition(config.Item, player.getWelfareValue(WelfareTypeEnum.MonthClock));
+		int[][] drops =  GameUtil.arrayAddition(config.Item, addRadio);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;
