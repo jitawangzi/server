@@ -145,4 +145,10 @@ public class HeroHelper {
 		}
 		return true;
 	}
+
+	public static int getMarqueeId(int heroCount) {
+
+		return heroCount == 10 ? 1 : 3;
+	}
+
 }

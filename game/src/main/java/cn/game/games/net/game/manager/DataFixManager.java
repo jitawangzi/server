@@ -202,7 +202,7 @@ public class DataFixManager {
 			// 类名+方法名作为唯一标识符
 			String fixName = this.getClass().getName() + "." + method.getName();
 			if (isFixExecuted(fixName)) {
-				log.info("修正已执行: " + fixName + (annotation != null ? ", 描述: " + annotation.description() : ""));
+				log.info("已经执行过修正: " + fixName + (annotation != null ? ", 描述: " + annotation.description() : ""));
 				return;
 			}
 

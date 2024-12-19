@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.draw;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +15,7 @@ import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.chat.ChatHelper;
+import cn.game.games.net.game.module.develop.hero.HeroHelper;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuidanceRandomGroupConfig;
@@ -129,7 +129,7 @@ public class DrawModule extends BasePlayerModule {
 
 		allRewards.add(ret);
 		allRewards.add(giftList);
-		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(1);
+		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(HeroHelper.getMarqueeId(count));
 		int quality = marqueeConfig.Para;
 		List<String> heroNames = new ArrayList<>();
 
@@ -206,24 +206,13 @@ public class DrawModule extends BasePlayerModule {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
 		}
 		if (!heroNames.isEmpty()) {
-			String marqueeText = getMarqueeText(heroNames);
+			String marqueeText = ChatHelper.getHeroMarqueeText(player.getData().getName(), heroNames, count);
 			ChatHelper.marquee(marqueeText, player.getServerId());
 		}
 
 		return allRewards;
 	}
 
-	private String getMarqueeText(List<String> heroNames) {
-
-		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(1);
-		StringBuilder sb = new StringBuilder();
-
-		for (String name : heroNames) {
-			sb.append(name).append("、");
-		}
-		sb.deleteCharAt(sb.length() - 1);
-		return MessageFormat.format(marqueeConfig.Text, player.getData().getName(), sb.toString());
-	}
 
 	private List<String> getMarqueeHeroNames(List<Goods> reward, int quality) {
 		List<String> heroNames = new ArrayList<>();

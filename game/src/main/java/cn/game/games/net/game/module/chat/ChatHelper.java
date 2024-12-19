@@ -1,6 +1,12 @@
 package cn.game.games.net.game.module.chat;
 
+import java.text.MessageFormat;
+import java.util.List;
+
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.net.game.module.develop.hero.HeroHelper;
+import cn.game.protocol.generated.config.MarqueeConfig;
+import cn.game.protocol.generated.manager.MarqueeManager;
 import cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatType;
 import cn.game.protocol.protobuf.ChatMsg.ServerChatMessagePush_31000010;
@@ -25,5 +31,17 @@ public class ChatHelper {
 		messageBuilder.setServerId(serverId);
 		VxHolder.broadcastRemoteServer(ServerType.Game, messageBuilder.build());
 
+	}
+
+	public static String getHeroMarqueeText(String playerName, List<String> heroNames, int heroCount) {
+
+		MarqueeConfig marqueeConfig = MarqueeManager.instance().get(HeroHelper.getMarqueeId(heroCount));
+		StringBuilder sb = new StringBuilder();
+
+		for (String name : heroNames) {
+			sb.append(name).append("、");
+		}
+		sb.deleteCharAt(sb.length() - 1);
+		return MessageFormat.format(marqueeConfig.Text, playerName, sb.toString());
 	}
 }

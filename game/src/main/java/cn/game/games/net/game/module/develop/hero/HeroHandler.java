@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.develop.hero;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,15 +26,18 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.chat.ChatHelper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.HeroLvConfig;
+import cn.game.protocol.generated.config.MarqueeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.MarqueeManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009;
@@ -131,6 +135,11 @@ public class HeroHandler extends BaseHandler {
 			if (!PlayerHelper.delResources(player, heroConfig.Fragment, count, OpType.HeroFragmentCompose)) {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
 				return;
+			}
+			MarqueeConfig marqueeConfig = MarqueeManager.instance().get(HeroHelper.getMarqueeId(count));
+			if (heroConfig.InitialQuality >= marqueeConfig.Para) {
+				String marqueeText = ChatHelper.getHeroMarqueeText(player.getData().getName(), Arrays.asList(heroConfig.name), 1);
+				ChatHelper.marquee(marqueeText, player.getServerId());
 			}
 			List<RewardInfo> resources = PlayerHelper.addResources(player, heroId, 1, OpType.HeroFragmentCompose);
 			resp.addAllReward(resources);
