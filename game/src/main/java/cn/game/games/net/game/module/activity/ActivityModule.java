@@ -31,8 +31,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 
 public class ActivityModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish,
-			EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
 			EventTypeEnum.NewMonth, EventTypeEnum.LevelUp };
 	/** 已经开始的活动，只是展示的不在这里。  */
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
@@ -81,7 +80,7 @@ public class ActivityModule extends BasePlayerModule {
 
 	private void initNonTimeNewDayActivity() {
 
-		Collection<ActivityConfig> openTypeList = ActivityManager.instance().list();
+		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE_DAYS);
 		if (openTypeList != null){
 			for (ActivityConfig activityConfig : openTypeList) {
 				if (canOpenNonTimeOpeningActivity(activityConfig)) {
@@ -366,10 +365,6 @@ public class ActivityModule extends BasePlayerModule {
 			refreshByType(1);
 			newDay();
 			checkResetCycleActivity();
-			initNonTimeNewDayActivity();
-			break;
-		}
-		case LoginFinish: {
 			initNonTimeNewDayActivity();
 			break;
 		}
