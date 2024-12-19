@@ -78,6 +78,7 @@ public class ActivityModule extends BasePlayerModule {
 		}
 	}
 
+	@Deprecated
 	private void initNonTimeNewDayActivity() {
 
 		List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_CREATE_DAYS);
@@ -365,7 +366,7 @@ public class ActivityModule extends BasePlayerModule {
 			refreshByType(1);
 			newDay();
 			checkResetCycleActivity();
-			initNonTimeNewDayActivity();
+//			initNonTimeNewDayActivity();
 			break;
 		}
 		case NewWeek: {
