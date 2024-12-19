@@ -1,9 +1,17 @@
 package cn.game.games.net.game.module.activity.impl.player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.protobuf.Message;
+
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
@@ -15,15 +23,6 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.util.Rnd;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.protobuf.Message;
-import org.ehcache.sizeof.annotations.IgnoreSizeOf;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName ActivityWestLucky
@@ -68,11 +67,6 @@ public class ActivityWestLucky extends PlayerActivityBase {
         res.setActivityId(id)
                 .putAllBuyMap(buyIdMap);
         return res.build();
-    }
-
-    @Override
-    public void syncActivityInfo() {
-
     }
 
     @Override
