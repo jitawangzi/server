@@ -536,6 +536,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static List<Goods> randomReward(int randomRewardId) {
+		if (randomRewardId <= 0) {
+			return Collections.EMPTY_LIST;
+		}
 		List<Goods> ret = new ArrayList<>();
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
 		for (int[] rewardInfo : randomGivenConfig.MustGiven) {
@@ -769,7 +772,9 @@ public class PlayerHelper {
 	}
 
 	public static List<RewardInfo> addGoods(Player player, List<Goods> goods, OpType opType) {
-
+		if (goods == null || goods.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
 		List<RewardInfo> ret = new ArrayList<>();
 		for (Goods g : goods) {
 			ret.addAll(addResources(player, g.getId(), g.getCount(), opType));
