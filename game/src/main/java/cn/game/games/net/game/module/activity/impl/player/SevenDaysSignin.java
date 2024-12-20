@@ -70,7 +70,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		SevenDaysSigninConfig config = getSevenDaysSigninConfig(day);
 		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
 		int addRadio = 0;
-		if (getSevenDaysSigninConfigList(id).size() > 7 ){//月卡才有加成，7日的 没有加成
+		if (getSevenDaysSigninConfigList(this.getId()).size() > 7 ){//月卡才有加成，7日的 没有加成
 			addRadio = player.getWelfareValue(WelfareTypeEnum.MonthClock);
 		}
 		//月卡加成额外掉落
