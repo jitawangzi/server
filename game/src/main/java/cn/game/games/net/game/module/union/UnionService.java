@@ -327,19 +327,21 @@ public class UnionService {
 
 	// 工会基本信息
 	public static class UnionInfo {
-		private String unionId;
+		// 基本不变的一些基础字段
+		private long unionId;
 		private String name;
 		private int level;
 		private String leaderId; // 会长ID
 		private String notice; // 公告
 		private long createTime;
+		// 可能频繁修改的字段，需要单独更新的
 		private Map<String, Object> extraProperties; // 扩展字段
 
-		public String getUnionId() {
+		public long getUnionId() {
 			return unionId;
 		}
 
-		public void setUnionId(String unionId) {
+		public void setUnionId(long unionId) {
 			this.unionId = unionId;
 		}
 

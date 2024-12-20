@@ -1,5 +1,5 @@
 --[[
-脚本名称: subtract_if_non_negative
+脚本名称: subtract_hash_if_non_negative
 描述: 减少hash表中指定字段的数值，确保结果不为负数
 参数:
   KEYS[1]: hash表的键名
