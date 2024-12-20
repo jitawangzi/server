@@ -169,3 +169,4 @@
 168,ActivityWestLuckyBuyRequest_11000095,0x11000095,,,,,购买转盘道具
 169,ActivityWestLuckyDrawRequest_11000093,0x11000093,,,,,抽取转盘
 170,ActivityWestLuckyInfoRequest_11000091,0x11000091,,,,,转盘信息
+171,PlayerPatrolInfoRequest_01000070,0x01000070,,,,,请求巡逻数据，一般是在功能刚开启时请求。
