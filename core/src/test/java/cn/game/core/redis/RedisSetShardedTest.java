@@ -33,7 +33,7 @@ import cn.game.util.RedisUtil;
 class RedisSetShardedTest {
 
 	private static RedissonClient redisClient;
-	private static RedisSetSharded<String> shardedSet;
+	private static RedisShardedSet<String> shardedSet;
 	private static final String BASE_KEY = "test:sharded:set";
 	private static final int SHARD_COUNT = 4;
 
@@ -53,7 +53,7 @@ class RedisSetShardedTest {
 		}
 		redisClient = RedisUtil.getRedis();
 
-		shardedSet = new RedisSetSharded<>(redisClient, BASE_KEY, SHARD_COUNT);
+		shardedSet = new RedisShardedSet<>(redisClient, BASE_KEY, SHARD_COUNT);
 	}
 
 	@AfterAll

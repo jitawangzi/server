@@ -32,7 +32,7 @@ import org.redisson.misc.RedissonPromise;
  *
  * @param <T> 存储元素的类型
  */
-public class RedisSetSharded<T> extends AbstractShardedRedis {
+public class RedisShardedSet<T> extends AbstractShardedRedis {
 
 	/**
 	 * 创建一个分片Redis Set实例
@@ -41,7 +41,7 @@ public class RedisSetSharded<T> extends AbstractShardedRedis {
 	 * @param baseKey 基础键名，用于生成分片键
 	 * @param shardCount 分片数量
 	 */
-	public RedisSetSharded(RedissonClient redisClient, String baseKey, int shardCount) {
+	public RedisShardedSet(RedissonClient redisClient, String baseKey, int shardCount) {
 		super(redisClient, baseKey, shardCount);
 	}
 
