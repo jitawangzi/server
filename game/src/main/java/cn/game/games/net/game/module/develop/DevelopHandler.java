@@ -304,7 +304,7 @@ public class DevelopHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		int id = req.getId();
-		if (!player.isFuncOpen(InitialUI.Consciousness)) {
+		if (!player.isFuncOpen(InitialUI.HuDaoQiangYuan)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}

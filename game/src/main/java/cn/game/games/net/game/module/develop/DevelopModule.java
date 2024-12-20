@@ -130,6 +130,7 @@ public class DevelopModule extends BasePlayerModule {
 						potentiaLvMap.setValue(potential.PotentialMark, 1);
 					}
 				});
+			} else if (func == InitialUI.HuDaoQiangYuan) {
 				Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
 				rescueMarks.forEach((k, v) -> {
 					RescueConfig potential = DevelopHelper.getRescueConfig(v, 1);
