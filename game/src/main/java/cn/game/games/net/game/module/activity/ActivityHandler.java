@@ -450,6 +450,7 @@ public class ActivityHandler extends BaseHandler {
                     GameLogger.activity(player,activityId,id);
                     resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
                     activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
+                    client.sendProtocol(resp.build());
                 } else {
                     client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
                 }
@@ -460,7 +461,5 @@ public class ActivityHandler extends BaseHandler {
                     client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
                 }
         );
-
-        client.sendProtocol(resp.build());
     }
 }
