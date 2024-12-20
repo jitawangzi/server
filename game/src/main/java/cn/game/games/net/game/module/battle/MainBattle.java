@@ -60,11 +60,14 @@ public class MainBattle extends XiYouBattleHandler {
 		if (killMonsterCount > chapter.getKillMonsterCount()) {
 			chapter.setKillMonsterCount(killMonsterCount);
 		}
+		// 发送奖励
+		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				chapterModule.setMainBattleHighest(chapter.getBattleId());
 				player.handleEvent(EventTypeEnum.ChapterFirstWin, chapter.getBattleId());
+				allRewards.addAll(PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleEnd));
 			}
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
@@ -73,8 +76,7 @@ public class MainBattle extends XiYouBattleHandler {
 		if (request.getBattleTime() > chapter.getBattleTime()) {
 			chapter.setBattleTime(request.getBattleTime());
 		}
-		// 发送奖励
-		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
+
 		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom, OpType.BattleEnd);
 		allRewards.addAll(rewards);
 		String convertAwardFUN = battleConfig.ConvertAwardFUN;
