@@ -420,9 +420,10 @@ public class GmHandler extends BaseHandler {
     req.setOptmsg(optMsg == null ? "null" : optMsg)
         .setOptParam(requestStr)
         .setOptPid(
-            client.getPlayerId()
+                player.getAccount().accountId + ":"
+             + client.getPlayerId()
                 + ":"
-                + player.getData().getName() + ":" + player.getAccount().accountId)
+                + player.getData().getName()  )
         .setOptResult(result);
     VxHolder.requestRemoteServer(ServerType.Login, req.build())
         .onComplete(r -> {})
