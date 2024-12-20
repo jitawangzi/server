@@ -76,7 +76,7 @@ public class SimplePlayer implements Serializable {
 	/***
 	 * 玩家资产
 	 */
-	Map<Integer, Long> assetsMap = new HashMap<>();
+	public Map<Integer, Long> assetsMap = new HashMap<>();
 
 	@Deprecated
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
@@ -435,6 +435,14 @@ public class SimplePlayer implements Serializable {
         return builder.build();
     }
 
+	public Map<Integer, Long> getAssetsMap() {
+		return assetsMap;
+	}
+
+	public void setAssetsMap(Map<Integer, Long> assetsMap) {
+		this.assetsMap = assetsMap;
+	}
+
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
@@ -454,4 +462,6 @@ public class SimplePlayer implements Serializable {
 	public void setBattleAttrs(byte[] battleAttrs) {
 		this.battleAttrs = battleAttrs;
 	}
+
+
 }

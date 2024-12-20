@@ -1,5 +1,6 @@
 package cn.game.games.net.game.gm;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import cn.game.games.net.game.module.rank.RankService;
+import com.google.protobuf.TextFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -123,9 +125,9 @@ public class GmHandler extends BaseHandler {
       g.setCount(goods.getCount());
       list.add(g);
     }
-    String gmSendPlayerName = PlayerManager.getInstance().getPlayer(client.getPlayerId()).getData().getName();
+    Player gmSendPlayer = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     if (title.isEmpty() || content.isEmpty()) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "gmSendMail");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "发送邮件");
       return;
     }
     GmMail gmMail = new GmMail();
@@ -133,7 +135,7 @@ public class GmHandler extends BaseHandler {
     gmMail.setContext(content);
     gmMail.setOptFlag((byte)0);
     gmMail.setCreateTime(new Date());
-    gmMail.setSendName(String.format("%s:%d",gmSendPlayerName, client.getPlayerId()));
+    gmMail.setSendName(String.format("%s:%s:%d",gmSendPlayer.getAccount().accountId,gmSendPlayer.getData().getName(), client.getPlayerId()));
     if (!list.isEmpty()) {
 		gmMail.setAttachment(JsonUtil.toJsonStringWithType(list));
     }
@@ -142,7 +144,7 @@ public class GmHandler extends BaseHandler {
       if (req.getSendEndTime() <= req.getSendStartTime()
           || req.getLevelEnd() <= req.getLevelStart()
           || (req.getTimeCheckType() != 0 && req.getTimeCheckType() != 1)) {
-        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "gmSendMail");
+        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "发送邮件");
         return;
       }
       gmMail.setServerids(req.getServerIdList().toString());
@@ -163,12 +165,12 @@ public class GmHandler extends BaseHandler {
     DAO.insert(gmMail)
         .onSuccess(
             r -> {
-              sendAndRecordOpt(client, req, res.build());
+              sendAndRecordOpt(client, req, res.build(),"发送邮件");
             })
         .onFailure(
             e -> {
               e.printStackTrace();
-              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "gmSendMail");
+              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "发送邮件");
             });
   }
 
@@ -178,7 +180,7 @@ public class GmHandler extends BaseHandler {
     int page = req.getPageNum();
     int size = req.getPageSize();
     if (page < 1 || size < 1) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "selectGmMailList");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "查询邮件");
       return;
     }
     DAO.execute(
@@ -205,12 +207,12 @@ public class GmHandler extends BaseHandler {
                       }
                     });
               }
-              sendAndRecordOpt(client, req, res.build());
+              sendAndRecordOpt(client, req, res.build(),"查询邮件");
             })
         .onFailure(
             e -> {
                 e.printStackTrace();
-              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, e.getMessage());
+              sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "查询邮件");
             });
   }
 
@@ -219,7 +221,7 @@ public class GmHandler extends BaseHandler {
     GmMsg.GmMailCheckResponse_77000045.Builder res =
         GmMsg.GmMailCheckResponse_77000045.newBuilder();
     if (req.getUidCount() <= 0) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "checkMail");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "审核邮件");
       return;
     }
     req.getUidList()
@@ -237,7 +239,7 @@ public class GmHandler extends BaseHandler {
                         GmMail gmMail = (GmMail) r;
                         if (gmMail.getApprovalTimer() != null) {
                           sendAndRecordOpt(
-                              client, req, res.build(), ErrorMsgEnum.request_parameter_null, "checkMail");
+                              client, req, res.build(), ErrorMsgEnum.request_parameter_null, "审核邮件");
                           return;
                         }
                         gmMail.setApprovalTimer(DateUtil.getStringDate());
@@ -265,12 +267,12 @@ public class GmHandler extends BaseHandler {
                             VxHolder.broadcastRemoteServer(ServerType.Game,ServerMsg.NotifyAddGlobalGmMailRequest_7d000060.newBuilder().setAddGmMailId(gmMail.getId()).build());
 //                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastAddGlobalGmMail(gmMail.getId());
                         }
-                        sendAndRecordOpt(client, req, res.build());
+                        sendAndRecordOpt(client, req, res.build(),"审核邮件");
                       })
                   .onFailure(
                       e -> {
                         e.printStackTrace();
-                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "checkMail");
+                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "审核邮件");
                       });
             });
   }
@@ -280,7 +282,7 @@ public class GmHandler extends BaseHandler {
     GmMsg.GmMailDeleteResponse_77000047.Builder res =
         GmMsg.GmMailDeleteResponse_77000047.newBuilder();
     if (req.getUidCount() <= 0) {
-      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "delGmMail");
+      sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "删除邮件");
       return;
     }
     req.getUidList()
@@ -294,12 +296,12 @@ public class GmHandler extends BaseHandler {
 //                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
                             VxHolder.broadcastRemoteServer(ServerType.Game,ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(Integer.parseInt(mailId)).build());
                         }
-                        sendAndRecordOpt(client, req, res.build());
+                        sendAndRecordOpt(client, req, res.build(),"删除邮件");
                       })
                   .onFailure(
                       e -> {
                           e.printStackTrace();
-                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "delGmMail");
+                        sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "删除邮件");
                       });
             });
   }
@@ -312,7 +314,7 @@ public class GmHandler extends BaseHandler {
     PlayerHelper.seachPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 :  Long.parseLong(request.getPlayerId()) )
             .onSuccess(result ->{
                 response.setPlayer(result.toGmPlayerInfo());
-                sendAndRecordOpt(client, request, response.build());
+                sendAndRecordOpt(client, request, response.build(),"查询玩家");
             })
             .onFailure(err ->{
                 err.printStackTrace();
@@ -389,8 +391,8 @@ public class GmHandler extends BaseHandler {
         });*/
   }
 
-  private void sendAndRecordOpt(NetClient client, Message request, Message response) {
-    sendAndRecordOpt(client, request, response, null, null);
+  private void sendAndRecordOpt(NetClient client, Message request, Message response,String optMsg) {
+    sendAndRecordOpt(client, request, response, null, optMsg);
   }
 
   /**
@@ -409,15 +411,18 @@ public class GmHandler extends BaseHandler {
     } else {
       client.sendProtocol(response);
     }
-    String result = errMsg == null ? response.toString() : errMsg.getDesc();
+      String responseStr = TextFormat.printer().escapingNonAscii(false).printToString(response);
+      String result = errMsg == null ? responseStr : errMsg.getDesc();
+      Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+      String requestStr = TextFormat.printer().escapingNonAscii(false).printToString(request);
     ServerMsg.GmOptRecordRequest_7d000052.Builder req =
         ServerMsg.GmOptRecordRequest_7d000052.newBuilder();
     req.setOptmsg(optMsg == null ? "null" : optMsg)
-        .setOptParam(request.toString())
+        .setOptParam(requestStr)
         .setOptPid(
             client.getPlayerId()
                 + ":"
-                + PlayerManager.getInstance().getPlayer(client.getPlayerId()).getData().getName())
+                + player.getData().getName() + ":" + player.getAccount().accountId)
         .setOptResult(result);
     VxHolder.requestRemoteServer(ServerType.Login, req.build())
         .onComplete(r -> {})
@@ -469,7 +474,7 @@ public class GmHandler extends BaseHandler {
                             .forbidAccount(
                                 Long.parseLong(playerId), reason, unblockTime * 1000L + "", type);
                     if (forbidAccount != null) {
-                      sendAndRecordOpt(client, request, response.build());
+                      sendAndRecordOpt(client, request, response.build(),"封号");
                       pids.add(forbidAccount.getPlayerId());
                       if (request.getEndTime() < 0){//希望修复永久封停不可用问题，同时对账号附带清榜效果
                           RankService.getInstance().removeRankAsync(Long.parseLong(playerId));
@@ -513,7 +518,7 @@ public class GmHandler extends BaseHandler {
             playerId -> {
               PlayerManager.getInstance().unblockAccount(Long.parseLong(playerId));
               pids.add(Long.parseLong(playerId));
-              sendAndRecordOpt(client, request, response.build());
+              sendAndRecordOpt(client, request, response.build(),"解封账号");
             });
     // 通知其他game节点删除封号记录
     if (!pids.isEmpty()) {
