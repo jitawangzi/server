@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.FairyFriendFightConfig;
@@ -94,6 +95,7 @@ public class FairyFriendHandler extends BaseHandler {
 			resp.addFavorabilityCount(v);
 			resp.addFairyFriend(k.toProto());
 		});
+		player.handleEvent(EventTypeEnum.FairyFriendsTravel, count);
 		client.sendProtocol(resp.build());
 	}
 
@@ -177,6 +179,7 @@ public class FairyFriendHandler extends BaseHandler {
 		fairyFriend.setExp(exp[0]);
 		fairyFriend.setLevel(exp[1]);
 		resp.setFairyFriendInfo(fairyFriend.toProto());
+		player.handleEvent(EventTypeEnum.FairyFriendsGift, 1);
 
 		client.sendProtocol(resp.build());
 	}

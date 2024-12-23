@@ -86,7 +86,7 @@ public enum EventTypeEnum {
 	// 参数 : 商店id，商品id，数量
 	BuyItems(28, "商店购买商品"),
 
-	Practice(29, "修炼"),
+	QianLi(29, "潜力修炼"),
 	/** 参数： hero */
 	HeroQuality(30, "英雄品质提升"),
 	/** 第一次通关主线  参数: 章节id ，battle表id*/
@@ -95,7 +95,8 @@ public enum EventTypeEnum {
 	/** 开启战斗 :  Battle战役id，关卡id*/
 	BattleStart(54, "开启战斗"),
 	/** 开启战斗 : HCBattle id，关卡id*/
-	HCBattleStart(54, "开启战斗"),
+	HCBattleStart(55, "开启战斗"),
+	ParticipatePVPStart(56, "开始大道争锋PVP战斗"),
 	/** 角色更换技能 */
 	SwitchSkills(61, "角色更换技能"),
 	/** 探索后获得资源 */
@@ -113,6 +114,10 @@ public enum EventTypeEnum {
 	vipLevelChange(78, "VIP 等级变动"),
 	QuestFinish(79,"任务完成"),
 	LoginSuccess(80, "只要是登录就会刷新的该事件"),
+	QiangYuan(85, "强援修炼"),
+	FairyFriendsTravel(86, "仙友寻缘"),
+	FairyFriendsGift(87, "仙友赠礼"),
+
 	;
 	private int id;
 	private String desc;

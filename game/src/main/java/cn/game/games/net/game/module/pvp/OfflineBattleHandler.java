@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -181,6 +181,7 @@ public class OfflineBattleHandler {
                     });
           }
           client.sendProtocol(res);
+				player.handleEvent(EventTypeEnum.ParticipatePVPStart);
         });
   }
 
