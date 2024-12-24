@@ -33,18 +33,17 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
@@ -448,10 +447,15 @@ public class TestHandler extends BaseHandler {
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
-        System.err.println(itemModule);
-        System.err.println(itemModule.getId_items());
-		List<Goods> goods = PlayerHelper.randomReward(101602);
-		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
+		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
+		for (Hero hero : battleHeroList) {
+			if (hero.getQuality() >= 7) {
+				player.handleEvent(EventTypeEnum.HeroBattle, hero);
+				break;
+			}
+		}
+//		List<Goods> goods = PlayerHelper.randomReward(101602);
+//		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
 
 //        Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
 //        requestRemoteServer.onComplete(r -> {
