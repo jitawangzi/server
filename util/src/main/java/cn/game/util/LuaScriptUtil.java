@@ -24,7 +24,13 @@ public class LuaScriptUtil {
 		UPDATE_SET_SCORE_IF_GREATER("update_set_score_if_greater.lua", "更新值set分数如果新值更大", true),
 		SUBTRACT_HASH_IF_NON_NEGATIVE("subtract_hash_if_non_negative.lua", "减少hash表中指定字段的数值，确保结果不为负数", true),
 		UPDATE_HASH_CONDITIONAL("update_hash_conditional.lua", "只有当hash表中当前值等于期望值时才进行加减操作", true),
-		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),;
+		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),
+		ADD_SET_WITH_LIMIT("add_set_with_limit.lua", "向集合添加元素，但限制集合大小不超过指定值", true),
+		ADD_SET_BATCH_WITH_LIMIT("add_set_batch_with_limit.lua", "批量向集合添加元素，但限制集合大小不超过指定值", true),
+		ADD_LIST_WITH_FIFO_LIMIT("add_list_with_fifo_limit.lua", "向列表添加元素，如果超过大小限制则移除最老的元素", true),
+		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
+
+		;
 
 		private final String filename;
 		private final String description;
