@@ -7,9 +7,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
-import cn.game.protocol.generated.manager.HeroManager;
 
 @ConditionType(type = ConditionTypeEnum.BattleHeroQuality)
 public class BattleHeroQuality extends AbstractCondition {
@@ -30,8 +28,8 @@ public class BattleHeroQuality extends AbstractCondition {
 		Map<Long, Integer> battleHeros = player.getHeroModule().getBattleHeros();
 		for (Long id : battleHeros.keySet()) {
 			Hero hero = player.getHeroModule().get(id);
-			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			if (heroConfig.InitialQuality >= getParam(0)) {
+//			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			if (hero.getQuality() >= getParam(0)) {
 				count++;
 			}
 		}
@@ -42,7 +40,7 @@ public class BattleHeroQuality extends AbstractCondition {
 	public boolean checkEventParam(GameEvent event) {
 		Hero hero = event.getParameter(0);
 		int quality = getParam(0);
-		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-		return heroConfig.InitialQuality >= quality;
+//		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+		return hero.getQuality() >= quality;
 	}
 }

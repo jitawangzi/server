@@ -395,6 +395,9 @@ public class QuestModule extends BasePlayerModule {
 		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 
 		int group = questConfig.Type;
+		if (group == 0) {
+			throw new IllegalArgumentException(" quest group is 0 : " + id);
+		}
 		if (this.quests.get(group).get(id) != null) {
 			log.warn(" {} 任务{}重复开启 : ", playerId, questConfig.ID);
 			return null;
