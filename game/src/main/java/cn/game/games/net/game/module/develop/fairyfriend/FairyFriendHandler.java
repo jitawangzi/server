@@ -179,7 +179,7 @@ public class FairyFriendHandler extends BaseHandler {
 		fairyFriend.setExp(exp[0]);
 		fairyFriend.setLevel(exp[1]);
 		resp.setFairyFriendInfo(fairyFriend.toProto());
-		player.handleEvent(EventTypeEnum.FairyFriendsGift, 1);
+		player.handleEvent(EventTypeEnum.FairyFriendsGift, count);
 
 		client.sendProtocol(resp.build());
 	}

@@ -181,7 +181,6 @@ public class OfflineBattleHandler {
                     });
           }
           client.sendProtocol(res);
-				player.handleEvent(EventTypeEnum.ParticipatePVPStart);
         });
   }
 
@@ -205,6 +204,8 @@ public class OfflineBattleHandler {
       return;
     }
     module.playNum++;
+	player.handleEvent(EventTypeEnum.ParticipatePVPStart);
+
     final SimplePlayer targetPlayer = module.getTargetPlayer(req.getTargetId());
     PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
     CompletableFuture<List<Integer>> rankListFuture =
