@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.util.*;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -98,12 +100,6 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
-import cn.game.util.BinarySearchUtil;
-import cn.game.util.ConversionUtil;
-import cn.game.util.DateUtil;
-import cn.game.util.ObjUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.ServerType;
 import io.vertx.core.Future;
 
 /**
@@ -843,6 +839,16 @@ public class PlayerHandler extends BaseHandler {
 		String passportSessionId = req.getSessionId();
 //		String serverId = req.getServerId();
 		boolean reconnect = req.getReconnect();
+		//邀请者id 不存在则为 0
+		long invitePid = 0;
+		if (req.getClueToken() != null &&  !req.getClueToken().isEmpty()){
+			try {
+				JsonObject tokenJson = JsonUtil.parserJson(req.getClueToken());
+				invitePid = tokenJson.getAsJsonObject("query").get("friendID").getAsLong();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		log.info("passportSessionId : " + passportSessionId + " start login");
 		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
 		if (canLogin > 0) {
@@ -859,6 +865,7 @@ public class PlayerHandler extends BaseHandler {
 			account.deviceId = r.getDeviceId();
 			return r.getUid();
 		});
+		long finalInvitePid = invitePid;
 		uidFuture.map(uid -> {
 			newGameClient.setSessionId(passportSessionId);
 			if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
@@ -876,8 +883,8 @@ public class PlayerHandler extends BaseHandler {
 				// 客户端新登陆
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
 				if (!isReallyReconnect) {
-					loadOrCreatePlayerData(uid, account, newGameClient)
-							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+					loadOrCreatePlayerData(uid,account, newGameClient)
+							.compose(playerData -> handlePlayerData(playerData, finalInvitePid, account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
@@ -914,10 +921,10 @@ public class PlayerHandler extends BaseHandler {
 		return checkOtherServer(player.getPlayerId()).compose(r -> loadPlayerFromDb(player, account, client));
 	}
 
-	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
+	private Future<Player> handlePlayerData(PlayerData playerData,long invitePid, Account account, GameClient client) {
 		if (playerData.isNew()) {
 			Player player = PlayerHelper.createPlayer(playerData, account, client);
-			return PlayerHelper.initPlayerData(player)
+			return PlayerHelper.initPlayerData(player,invitePid)
 					.compose(PlayerHelper::savePlayerToDb)
 					.compose(PlayerHelper::saveSimplePlayer);
 		}

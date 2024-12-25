@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.games.net.game.module.invite.InviteModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -727,5 +728,9 @@ public class Player  {
 
 	public String getOpenId(){
 		return account.deviceId;
+	}
+
+	public InviteModule getInviteModule(){
+		return getModule(InviteModule.class);
 	}
 }
