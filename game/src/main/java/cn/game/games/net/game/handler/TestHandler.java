@@ -232,6 +232,23 @@ public class TestHandler extends BaseHandler {
 			}
 			break;
 		}
+		case "slzjsd": {
+			// 设置失落真经手动关卡。
+			ChapterModule chapterModule = player.getChapterModule();
+			ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+			if (battle != null) {
+				if (p1 > 0) {
+					BattleConfig battleConfig = BattleManager.instance().get(p1);
+					if (battleConfig.preBattle > 0) {
+						battle.setCompleteBattleId(battleConfig.preBattle);
+					}
+					battle.setStartBattleId(p1);
+				}
+				battle.setBattleStage(10);
+				battle.setZhijieshoudong(true);
+			}
+			break;
+		}
 		case "quest": {
 			QuestManager.instance().get(p1);
 			// 完成某个任务
