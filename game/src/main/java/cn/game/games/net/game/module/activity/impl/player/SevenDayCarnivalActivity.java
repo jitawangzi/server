@@ -39,6 +39,12 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 			SevenDaysCarnivalConfig config = SevenDaysCarnivalManager.instance().getUITypeDay(ActivityHelper.SEVENDAYS_CARNIVAL, day);
 			for (int questId : config.TaskID) {
 				Quest quest = questModule.get(questId);
+				if (quest == null) {
+					// SevenDaysCarnival新加任务，老号可能没有，直接跳过
+//					log.warn("ActivitySevenDays quest {} is null", questId);
+//					log.info("SevenDaysCarniva quests : " + questModule.getGroup(QuestTypeEnum.SevenDaysCarniva));
+					continue;
+				}
 				newBuilder.addQuests(quest.toQuestInfo());
 			}
 			builder.addSevenDay(newBuilder.build());
