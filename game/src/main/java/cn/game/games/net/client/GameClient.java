@@ -285,6 +285,7 @@ public class GameClient extends AbstractNetClient {
 		if (list != null && !list.isEmpty()) {
 			for (IProtocol<byte[]> send : list) {
 				sendProtocol(send.getMsgID(), send.getSeq(), send.getData(), send.getErrorCode(), false);
+				log.info("GameClient[{}]send processed messages msgId[{}] seq[{}]", this, send.getMsgID(), send.getSeq());
 			}
 			return false;
 		}

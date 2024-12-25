@@ -2,6 +2,7 @@ package cn.game.simulation.test.gen;
 
 import com.google.protobuf.Message;
 
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
@@ -12,12 +13,12 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.newBuilder() ; 
 
-//		builder.setId(Asset.playerExp.ID);
+		builder.setId(Asset.playerExp.ID);
 //		builder.setCount(Integer.MAX_VALUE / 2);
 //		builder.setCount(0);
 //		
-		builder.setId(204011);
-		builder.setCount(1000);
+//		builder.setId(204011);
+		builder.setCount(10000);
 
 		return builder.build() ; 
 	}

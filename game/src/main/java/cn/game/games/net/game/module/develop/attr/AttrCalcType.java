@@ -4,6 +4,7 @@ public enum AttrCalcType {
 	HeroBook,
 	HeavenlyDao,
 	Potential,
+	Rescue,
 	QiankunMirror,
 	FairyFriend,
 	Pet,

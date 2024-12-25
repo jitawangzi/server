@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -204,6 +204,8 @@ public class OfflineBattleHandler {
       return;
     }
     module.playNum++;
+	player.handleEvent(EventTypeEnum.ParticipatePVPStart);
+
     final SimplePlayer targetPlayer = module.getTargetPlayer(req.getTargetId());
     PlayerHelper.delResources(player, DA_DAO_TICK_ITEM_ID, 1, OpType.DA_DAO_JOIN, true);
     CompletableFuture<List<Integer>> rankListFuture =

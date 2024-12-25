@@ -6,23 +6,21 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 修炼
- * 
- */
-@ConditionType(type = ConditionTypeEnum.Practice)
-public class Practice extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.QiangYuan, EventTypeEnum.QianLi };
+@ConditionType(type = ConditionTypeEnum.CumulativeGift)
+public class CumulativeGift extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.FairyFriendsGift };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-
-	public Practice() {
+	public CumulativeGift() {
 
 	}
-
+	@Override
+	public void updateRequireCount(GameEvent event) {
+		finishCount += event.getIntParameter(0);
+	}
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {

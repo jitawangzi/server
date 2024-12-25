@@ -6,24 +6,17 @@ import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
-/**
- * 修炼
- * 
- */
-@ConditionType(type = ConditionTypeEnum.Practice)
-public class Practice extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.QiangYuan, EventTypeEnum.QianLi };
+@ConditionType(type = ConditionTypeEnum.ParticipateFairyFriend)
+public class ParticipateFairyFriend extends AbstractCondition {
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.FairyFriendsTravel };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
-
-	public Practice() {
+	public ParticipateFairyFriend() {
 
 	}
-
-
 	@Override
 	public boolean checkEventParam(GameEvent event) {
 		return true;

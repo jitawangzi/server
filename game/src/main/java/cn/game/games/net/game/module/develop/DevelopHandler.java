@@ -259,7 +259,7 @@ public class DevelopHandler extends BaseHandler {
 		developModule.getPotentiaLvMap().add(id, 1);
 		developModule.setIsPotentiaBreak(id, false);
 
-		player.handleEvent(EventTypeEnum.Practice);
+		player.handleEvent(EventTypeEnum.QianLi);
 
 		client.sendProtocol(resp.build());
 	}
@@ -304,7 +304,7 @@ public class DevelopHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		int id = req.getId();
-		if (!player.isFuncOpen(InitialUI.Consciousness)) {
+		if (!player.isFuncOpen(InitialUI.HuDaoQiangYuan)) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
 			return;
 		}
@@ -333,7 +333,7 @@ public class DevelopHandler extends BaseHandler {
 			return;
 		}
 		developModule.getPotentiaLvMap().add(id, 1);
-		player.handleEvent(EventTypeEnum.Practice);
+		player.handleEvent(EventTypeEnum.QiangYuan);
 		client.sendProtocol(resp.build());
 	}
 	private void heavenlyDaoLvUp(NetClient client, Object message) {

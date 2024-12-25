@@ -7,10 +7,8 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.DevelopHelper;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.protocol.generated.config.PotentialConfig;
-import cn.game.protocol.generated.config.RescueConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.PotentialManager;
-import cn.game.protocol.generated.manager.RescueManager;
 
 public class PotentialAttrCalc extends PlayerAttrCalc {
 
@@ -34,15 +32,6 @@ public class PotentialAttrCalc extends PlayerAttrCalc {
 				int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1]
 						+ breakLevel * config.BreakthroughGrowth[1];
 				attrMap.add(config.PotentialBase[0], attrValue);
-			}
-		});
-		// 强援
-		Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
-		rescueMarks.forEach((k, v) -> {
-			int lv = developModule.getCultivationLv(k, 2);
-			if (lv > 0) {
-				RescueConfig config = DevelopHelper.getRescueConfig(v, lv);
-				attrMap.add(config.RescueMulHurtPerGrow[0], config.RescueMulHurtPerGrow[1] * lv);
 			}
 		});
 	}
