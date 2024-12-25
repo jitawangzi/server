@@ -13,6 +13,7 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.SevenDaysCarnivalConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.SevenDaysCarnivalManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysCarnivalResponse_11000021;
 import cn.game.protocol.protobuf.ActivityMsg.SevenDaysQuest;
@@ -39,6 +40,11 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 			SevenDaysCarnivalConfig config = SevenDaysCarnivalManager.instance().getUITypeDay(ActivityHelper.SEVENDAYS_CARNIVAL, day);
 			for (int questId : config.TaskID) {
 				Quest quest = questModule.get(questId);
+				if (quest == null) {
+					log.warn("ActivitySevenDays quest {} is null", questId);
+					log.info("SevenDaysCarniva quests : " + questModule.getGroup(QuestTypeEnum.SevenDaysCarniva));
+					continue;
+				}
 				newBuilder.addQuests(quest.toQuestInfo());
 			}
 			builder.addSevenDay(newBuilder.build());
