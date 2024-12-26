@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.game.games.net.game.module.invite.InviteModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.Message;
 
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.vertx.VxHolder;
@@ -43,6 +44,7 @@ import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.func.FuncModule;
+import cn.game.games.net.game.module.invite.InviteModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
@@ -616,19 +618,31 @@ public class Player  {
 		return getPlayerModule().getExpLevelMap().getValue(exp.ID);
 	}
 
+	public void handleFail(Throwable t) {
+		handleFail(PlayerErrorPush_01000099.getDefaultInstance(), t);
+	}
+
 	/** 
 	 * 处理客户端请求出现的异常 ，发送默认错误返回并记录异常日志。 
 	 * 一般用在异步调用的异常处理
-	 * @param t
+	 * @param response 发生错误时的返回消息
+	 * @param t  异常
 	 */
-	public void handleFail(Throwable t) {
+	public void handleFail(Message response, Throwable t) {
+		// 逻辑错误，非法逻辑
 		if (t instanceof LogicException) {
 			LogicException logicException = (LogicException) t;
-			getGameClient().sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), logicException.getErrorCode());
-		} else {
-			getGameClient().sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
-			log.error("", t);
+			getGameClient().sendProtocol(response, logicException.getErrorCode());
+			return;
 		}
+		// 一般是vertx主动生成的错误码错误
+		if (StringUtils.isNumeric(t.getMessage())) {
+			getGameClient().sendProtocol(response, Integer.parseInt(t.getMessage()));
+			return;
+		}
+		// 未知异常，记录日志
+		getGameClient().sendProtocol(response, ErrorMsgEnum.unknown.getId());
+		log.error("", t);
 	}
 
 	/** 
