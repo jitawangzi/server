@@ -253,6 +253,18 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 		return todayCanQuick;
 	}
 
+	public void setMaxBattleId(int maxBattleId) {
+		this.maxBattleId = maxBattleId;
+	}
+
+	public void setCompleteBattleId(int completeBattleId) {
+		this.completeBattleId = completeBattleId;
+	}
+
+	public void setStartBattleId(int startBattleId) {
+		this.startBattleId = startBattleId;
+	}
+
 	@Override
 	public int battleStart(int id) {
 		if (!player.isFuncOpen(InitialUI.NightmareRealm)) {
