@@ -793,7 +793,7 @@ public class PlayerHandler extends BaseHandler {
 				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
 			}
 			return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
-		}).map(r -> {
+		}).compose(r -> {
 			if (!r) {
 				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_repeat.ID));
 			}
