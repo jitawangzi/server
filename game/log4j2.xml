@@ -39,6 +39,7 @@
 <!--         <Property name="file_activationcode">activationcode</Property> -->
         <Property name="file_gethero">gethero</Property>
         <Property name="file_heroraise">heroraise</Property>
+        <Property name="file_invite">invite</Property>
 
 
         <!-- *********************** 其他 ************************* -->
@@ -211,6 +212,9 @@
         </AsyncLogger>
         <AsyncLogger name="heroraise" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="heroraise"/>
+        </AsyncLogger>
+        <AsyncLogger name="invite" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="invite"/>
         </AsyncLogger>
 
 <!--         <AsyncLogger name="arena" level="info" includeLocation="false" additivity="false"> -->
@@ -662,6 +666,16 @@
         <RollingRandomAccessFile name="heroraise"
                                  immediateFlush="true"
                                  filePattern="${path_cy_game}/${file_heroraise}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="invite"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_invite}.log.${date_suffix}">
             <PatternLayout charset="UTF-8" pattern="%m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/>

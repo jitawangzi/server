@@ -5,6 +5,7 @@ import cn.game.games.cache.entity.Invite;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -48,7 +49,10 @@ public class InviteModule extends BasePlayerModule {
         Invite invite = new Invite();
         invite.setPlayerId(invitePid);
         invite.setDstPid(playerId);
-        DAO.insert(invite);
+        DAO.insert(invite).onSuccess((h)->{
+            GameLogger.invite(player,invitePid);
+        });
+
     }
 
 
