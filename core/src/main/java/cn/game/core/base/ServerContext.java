@@ -3,6 +3,8 @@ package cn.game.core.base;
 import java.lang.management.ManagementFactory;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
+import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -22,9 +25,13 @@ public class ServerContext {
 
 	private static final ServerContext instance = new ServerContext();
 	public static final String SERVER_RUN_MODE = "server.run.mode";
+	private static final String LEADER_PATH = "/server/leader/";
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
+	/** 是否是主节点 */
+	private volatile boolean isLeader;
+	private LeaderLatch leaderLatch;
 
 	private ServerContext() {
 	};
@@ -61,6 +68,7 @@ public class ServerContext {
 		setRunMode();
 		checkServerId(serverId);
 		initHotUpdate();
+		startLeaderTask();
 	}
 
 	/** 
@@ -107,6 +115,14 @@ public class ServerContext {
 		if (lock != null) {
 			lock.forceUnlock();
 		}
+		if (leaderLatch != null) {
+			try {
+				leaderLatch.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error("leaderLatch close error", e);
+			}
+		}
 	}
 
 	/** 
@@ -151,6 +167,35 @@ public class ServerContext {
 		attachThread.setDaemon(true);
 		attachThread.start();
 
+	}
+
+	private void startLeaderTask() throws Exception {
+		String latchPath = LEADER_PATH + serverType.name().toLowerCase();
+		log.info("Starting leader election for node: {}, path: {}", serverId, latchPath);
+
+		leaderLatch = new LeaderLatch(ZkHelper.curator, latchPath, serverId);
+		leaderLatch.start();
+		leaderLatch.addListener(new LeaderLatchListener() {
+			@Override
+			public void isLeader() {
+				isLeader = true;
+				log.info("I am leader: {}", serverId);
+			}
+
+			@Override
+			public void notLeader() {
+				isLeader = false;
+				log.info("I am not leader: {}", serverId);
+			}
+		});
+	}
+
+	/** 
+	 * 当前节点是否是主节点
+	 * @return
+	 */
+	public boolean isLeader() {
+		return isLeader;
 	}
 
 	/** 
