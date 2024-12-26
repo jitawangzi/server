@@ -1,5 +1,8 @@
 package cn.game.games.net.game.module.invite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -9,9 +12,6 @@ import cn.game.protocol.generated.manager.InviteManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.QuestMsg;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName InviteHandler
@@ -39,6 +39,20 @@ public class InviteHandler {
             res.addAllRewardIndexList(module.rewardIndexList);
             client.sendProtocol(res);
         });
+
+        module.getTargetLvMap().map(targetLvMap -> {
+			InviteManager.instance().list().forEach(inviteConfig -> {
+				QuestMsg.InviteTask.Builder taskBuilder = QuestMsg.InviteTask.newBuilder().setIndex(inviteConfig.ID);
+				int needNum = inviteConfig.Condition[0];
+				int needLv = inviteConfig.Condition[1];
+				int num = (int) targetLvMap.values().stream().filter(lv -> lv >= needLv).count();
+				taskBuilder.setNum(num >= needNum ? needNum : num);
+				res.addTaskList(taskBuilder);
+			});
+			res.addAllRewardIndexList(module.rewardIndexList);
+			client.sendProtocol(res);
+			return null;
+		}).onFailure(player::handleFail);
     }
 
     public static void rewardInviteTask(NetClient client, Object o) {

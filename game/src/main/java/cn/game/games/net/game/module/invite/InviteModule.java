@@ -1,27 +1,28 @@
 package cn.game.games.net.game.module.invite;
 
-import cn.game.core.cache.RedisLocalCache;
+import static cn.game.games.core.event.EventTypeEnum.PLAYER_CREATE;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.Invite;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.InviteMapper;
-import cn.game.games.net.data.mapper.MailMapper;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.PlayerMsg;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import static cn.game.games.core.event.EventTypeEnum.LoginSuccess;
-import static cn.game.games.core.event.EventTypeEnum.PLAYER_CREATE;
 
 /**
  * @ClassName InviteModule
@@ -36,6 +37,10 @@ public class InviteModule extends BasePlayerModule {
      */
     @JsonIgnore
     Map<Long,Integer> targetLvMap = new HashMap<>();
+
+	/** 邀请到的目标列表  */
+	@JsonIgnore
+	List<Long> targetPlayers = new ArrayList<>();
     /**
      * 领取过奖励的任务下标
      */
@@ -82,6 +87,10 @@ public class InviteModule extends BasePlayerModule {
         List<Long> targetPids = new ArrayList<>();
         inviteList.forEach(invite -> {targetPids.add(invite.getDstPid());});
         meargeInvitePid(targetPids,null);
+
+		for (Invite invite : inviteList) {
+			targetPlayers.add(invite.getDstPid());
+		}
     }
 
     @Override
@@ -113,6 +122,16 @@ public class InviteModule extends BasePlayerModule {
             }
         });
     }
+
+	/** 
+	 * 获取邀请到的目标玩家id和等级
+	 * @return
+	 */
+	public Future<Map<Long, Integer>> getTargetLvMap() {
+		return PlayerManager.getInstance()
+				.batchGetSimplePlayerListFromRedisAsync(targetPlayers)
+				.map(list -> list.stream().collect(Collectors.toMap(player -> player.id, player -> player.level)));
+	}
 
     @Override
     public Class<?>[] defaultDbMapperClass() {
