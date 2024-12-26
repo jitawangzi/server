@@ -48,6 +48,8 @@ public abstract class IBattleHandler {
 	 */
 	abstract void newDay();
 
+	abstract void onLogin();
+
 	public boolean hasRedPoint() {
 		return false;
 	}

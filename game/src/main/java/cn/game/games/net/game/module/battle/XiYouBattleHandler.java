@@ -61,4 +61,9 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 		throw new UnsupportedOperationException("not support quickEnd, id: " + id + ", subId: " + subId + ", isWin: " + isWin);
 	}
 
+	@Override
+	public void onLogin() {
+
+	}
+
 }

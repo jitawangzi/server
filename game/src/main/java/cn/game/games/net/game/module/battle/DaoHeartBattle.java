@@ -43,13 +43,19 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 
 	public DaoHeartBattle(int type) {
 		this.type = type;
-		nextBattleId = nextBattleId();
 		reset();
 	};
 
 	@Override
 	public boolean hasRedPoint() {
 		return false;
+	}
+
+	@Override
+	public void onLogin() {
+		if (nextBattleId == 0) {
+			nextBattleId = nextBattleId();
+		}
 	}
 
 	@Override
@@ -61,6 +67,8 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 	 * 每天重置数据
 	 */
 	public void reset() {
+		nextBattleId = nextBattleId();
+
 		this.randomBuff.clear();
 		this.freeSweep = 0;
 		this.paySweep = 0;

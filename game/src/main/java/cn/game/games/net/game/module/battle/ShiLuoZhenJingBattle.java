@@ -51,6 +51,13 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		reset();
 	}
 
+	@Override
+	public void onLogin() {
+		if (startBattleId == 0) {
+			nextBattleId();
+		}
+	}
+
 	public void reset() {
 		// 跨天重置之前，先结算一下奖励
 //		if (startBattleId > 0) {

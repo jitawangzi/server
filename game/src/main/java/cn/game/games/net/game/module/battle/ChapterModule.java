@@ -563,6 +563,9 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		case LoginFinish: {
 			updateStoreStaminas();
+			battlesMap.forEach((k, v) -> {
+				v.onLogin();
+			});
 			break;
 		}
 		case PLAYER_CREATE: {
