@@ -795,7 +795,7 @@ public class PlayerHandler extends BaseHandler {
 			return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
 		}).map(r -> {
 			if (!r) {
-				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_repeat.ID));
+				throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
 			}
 			PlayerNameManager.getInstance()
 					.saveName2Id(newName, player.getData().getPlayerId())
@@ -807,7 +807,7 @@ public class PlayerHandler extends BaseHandler {
 			player.getData().setName(newName);
 			client.sendProtocol(resp);
 			return null;
-		}).onFailure(player::handleFail);
+		}).onFailure(r -> player.handleFail(resp.build(), r));
 	}
 
 	protected void gender(NetClient client, Object message) {
