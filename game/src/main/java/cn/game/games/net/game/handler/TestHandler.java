@@ -46,6 +46,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
@@ -232,6 +233,20 @@ public class TestHandler extends BaseHandler {
 			}
 			break;
 		}
+		case "mymj": {
+			// 设置梦魇秘境关卡id
+			ChapterModule chapterModule = player.getChapterModule();
+			MengYanMiJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+			if (battle != null) {
+				BattleConfig battleConfig = BattleManager.instance().get(p1);
+				if (battleConfig.preBattle > 0) {
+					battle.setCompleteBattleId(battleConfig.preBattle);
+					battle.setMaxBattleId(battleConfig.preBattle);
+				}
+				battle.setStartBattleId(p1);
+			}
+			break;
+		}
 		case "slzjsd": {
 			// 设置失落真经手动关卡。
 			ChapterModule chapterModule = player.getChapterModule();
@@ -241,6 +256,7 @@ public class TestHandler extends BaseHandler {
 					BattleConfig battleConfig = BattleManager.instance().get(p1);
 					if (battleConfig.preBattle > 0) {
 						battle.setCompleteBattleId(battleConfig.preBattle);
+						battle.setHistoryMaxBattleId(battleConfig.preBattle);
 					}
 					battle.setStartBattleId(p1);
 				}
