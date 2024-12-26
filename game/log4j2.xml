@@ -246,7 +246,7 @@
     <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1.} - %msg%n"/>
     <Policies>
         <TimeBasedTriggeringPolicy/>
-        <SizeBasedTriggeringPolicy size="100MB"/>
+        <SizeBasedTriggeringPolicy size="1024MB"/>
     </Policies>
     <DefaultRolloverStrategy max="100"/>
 </RollingRandomAccessFile>
@@ -255,7 +255,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
@@ -266,7 +266,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
             <Filters>
@@ -280,7 +280,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
             <Filters>
@@ -294,7 +294,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
@@ -303,7 +303,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
