@@ -44,7 +44,7 @@ public interface InviteMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Invite> selectByIndexPid(@Param("playerId") Long playerId);
+	List<Invite> selectByPlayerId(@Param("playerId") Long playerId);
 
 	/**
 	 * @mbg.generated

@@ -58,7 +58,7 @@ public class InviteModule extends BasePlayerModule {
 
     @Override
     public EventTypeEnum[] getEventTypes() {
-        return new EventTypeEnum[]{PLAYER_CREATE, LoginSuccess};
+        return new EventTypeEnum[]{PLAYER_CREATE};
     }
 
     @Override
@@ -75,36 +75,48 @@ public class InviteModule extends BasePlayerModule {
                 saveInviteData(invitePid);
                 break;
             }
-            case LoginSuccess -> {
-                refreshInviteDataLv();
-                break;
-            }
-
         }
+    }
+
+    @Override
+    protected void initFromDb(ListIterator<?> iterator) {
+        List<Invite> inviteList = (List<Invite>) iterator.next();
+        meargeInvitePid(inviteList,null);
+    }
+
+    @Override
+    public boolean alwaysStoreDataInStandaloneTable() {
+        return true;
     }
 
     CompletionStage<Void> refreshInviteDataLv() {
         CompletableFuture<Void> voidFuture = new CompletableFuture();
-        DAO.execute(InviteMapper.class,"selectByIndexPid",playerId).onSuccess(result ->{
+        DAO.execute(InviteMapper.class,"selectByPlayerId",playerId).onSuccess(result ->{
             List<Invite> list = (List<Invite>) result;
-            List<Long> targetPids = new ArrayList<>();
-            list.forEach(data ->{
-                targetPids.add(data.getDstPid());
-            });
-            Map<Long,Integer> targetMap = new HashMap<>();
-            PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPids).onSuccess(targetPlayerList ->{
-                targetPlayerList.forEach(simplePlayer -> {
-                    targetMap.put(simplePlayer.id,simplePlayer.level);
-                });
-                this.targetLvMap = targetMap;
-                voidFuture.complete(null);
-            }).onFailure(e ->{
-                e.printStackTrace();
-            });
+            meargeInvitePid(list,  voidFuture);
         }).onFailure(e ->{
             e.printStackTrace();
         });
         return voidFuture;
+    }
+
+    private void meargeInvitePid(List<Invite> list,  CompletableFuture<Void> voidFuture) {
+        List<Long> targetPids = new ArrayList<>();
+        list.forEach(data ->{
+            targetPids.add(data.getDstPid());
+        });
+        Map<Long,Integer> targetMap = new HashMap<>();
+        PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPids).onSuccess(targetPlayerList ->{
+            targetPlayerList.forEach(simplePlayer -> {
+                targetMap.put(simplePlayer.id,simplePlayer.level);
+            });
+            this.targetLvMap = targetMap;
+            if (voidFuture != null){
+                voidFuture.complete(null);
+            }
+        }).onFailure(e ->{
+            e.printStackTrace();
+        });
     }
 
     @Override

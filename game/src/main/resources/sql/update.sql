@@ -8,7 +8,7 @@ CREATE TABLE `t_invite` (
                             `player_id` bigint NOT NULL COMMENT '邀请者的角色id',
                             `dst_pid` bigint NOT NULL COMMENT '被邀请者玩家id',
                             PRIMARY KEY (`id`),
-                            KEY `index_pid` (`player_id`) USING BTREE
+                            KEY `player_id` (`player_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
