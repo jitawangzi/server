@@ -170,3 +170,7 @@
 169,ActivityWestLuckyDrawRequest_11000093,0x11000093,,,,,抽取转盘
 170,ActivityWestLuckyInfoRequest_11000091,0x11000091,,,,,转盘信息
 171,PlayerPatrolInfoRequest_01000070,0x01000070,,,,,请求巡逻数据，一般是在功能刚开启时请求。
+172,InviteTaskListRequest_20000041,0x20000041,,,,,邀请任务请求
+173,RewardInviteTaskRequest_20000043,0x20000043,,,,,领取邀请任务奖励
+174,BattleRogueAdvertiseRequest_13000010,0x13000010,,,,,战斗中看广告选取肉鸽技能
+175,BattleRogueAdvertiseRequest_13000012,0x13000012,,,,,战斗中看广告选取肉鸽技能
