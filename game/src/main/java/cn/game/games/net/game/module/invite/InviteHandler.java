@@ -34,7 +34,6 @@ public class InviteHandler {
                 int needLv = inviteConfig.Condition[1];
                 int num = (int) module.targetLvMap.values().stream().filter( lv -> lv >= needLv).count();
                 taskBuilder.setNum(num >= needNum ? needNum : num);
-//                taskBuilder.setNum(needNum);
                 res.addTaskList(taskBuilder);
             });
             res.addAllRewardIndexList(module.rewardIndexList);

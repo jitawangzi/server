@@ -52,7 +52,6 @@ public class InviteModule extends BasePlayerModule {
         DAO.insert(invite).onSuccess((h)->{
             GameLogger.invite(player,invitePid);
         });
-
     }
 
 
@@ -73,7 +72,6 @@ public class InviteModule extends BasePlayerModule {
                     return;
                 }
                 saveInviteData(invitePid);
-                break;
             }
         }
     }
@@ -81,7 +79,9 @@ public class InviteModule extends BasePlayerModule {
     @Override
     protected void initFromDb(ListIterator<?> iterator) {
         List<Invite> inviteList = (List<Invite>) iterator.next();
-        meargeInvitePid(inviteList,null);
+        List<Long> targetPids = new ArrayList<>();
+        inviteList.forEach(invite -> {targetPids.add(invite.getDstPid());});
+        meargeInvitePid(targetPids,null);
     }
 
     @Override
@@ -91,20 +91,12 @@ public class InviteModule extends BasePlayerModule {
 
     CompletionStage<Void> refreshInviteDataLv() {
         CompletableFuture<Void> voidFuture = new CompletableFuture();
-        DAO.execute(InviteMapper.class,"selectByPlayerId",playerId).onSuccess(result ->{
-            List<Invite> list = (List<Invite>) result;
-            meargeInvitePid(list,  voidFuture);
-        }).onFailure(e ->{
-            e.printStackTrace();
-        });
+        List<Long> targetPids = new ArrayList<>(targetLvMap.keySet());
+        meargeInvitePid(targetPids,voidFuture);
         return voidFuture;
     }
 
-    private void meargeInvitePid(List<Invite> list,  CompletableFuture<Void> voidFuture) {
-        List<Long> targetPids = new ArrayList<>();
-        list.forEach(data ->{
-            targetPids.add(data.getDstPid());
-        });
+    private void meargeInvitePid(List<Long> targetPids,  CompletableFuture<Void> voidFuture) {
         Map<Long,Integer> targetMap = new HashMap<>();
         PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPids).onSuccess(targetPlayerList ->{
             targetPlayerList.forEach(simplePlayer -> {
@@ -116,6 +108,9 @@ public class InviteModule extends BasePlayerModule {
             }
         }).onFailure(e ->{
             e.printStackTrace();
+            if (voidFuture != null){
+                voidFuture.complete(null);
+            }
         });
     }
 
