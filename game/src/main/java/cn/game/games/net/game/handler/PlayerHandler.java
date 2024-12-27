@@ -840,7 +840,9 @@ public class PlayerHandler extends BaseHandler {
 		if (req.getClueToken() != null &&  !req.getClueToken().isEmpty()){
 			try {
 				JsonObject tokenJson = JsonUtil.parserJson(req.getClueToken());
-				invitePid = tokenJson.getAsJsonObject("query").get("friendID").getAsLong();
+				if (tokenJson.has("query") && tokenJson.getAsJsonObject("query").has("friendID")){
+					invitePid = tokenJson.getAsJsonObject("query").get("friendID").getAsLong();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
