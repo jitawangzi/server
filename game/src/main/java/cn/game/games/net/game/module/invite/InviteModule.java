@@ -32,11 +32,7 @@ import io.vertx.core.Future;
  * @create: 2024-12-24 16:54 @Version 1.0
  */
 public class InviteModule extends BasePlayerModule {
-    /**
-     * 邀请到的目标列表 和 等级信息
-     */
-    @JsonIgnore
-    Map<Long,Integer> targetLvMap = new HashMap<>();
+
 
 	/** 邀请到的目标列表  */
 	@JsonIgnore
@@ -62,7 +58,7 @@ public class InviteModule extends BasePlayerModule {
 
     @Override
     public EventTypeEnum[] getEventTypes() {
-        return new EventTypeEnum[]{PLAYER_CREATE};
+        return new EventTypeEnum[]{PLAYER_CREATE, EventTypeEnum.LoginSuccess};
     }
 
     @Override
@@ -77,7 +73,21 @@ public class InviteModule extends BasePlayerModule {
                     return;
                 }
                 saveInviteData(invitePid);
+                break;
             }
+            case LoginSuccess -> {
+                DAO.execute(InviteMapper.class,"selectByPlayerId",playerId).onSuccess( res ->{
+                    if (res != null){
+                        List<Invite> list = (List<Invite>)res;
+                        list.forEach(invite -> {
+                            if (!targetPlayers.contains(invite.getDstPid())){
+                                targetPlayers.add(invite.getDstPid());
+                            }
+                        });
+                    }
+                }).onFailure(e ->{e.printStackTrace();});
+            }
+
         }
     }
 
@@ -86,11 +96,7 @@ public class InviteModule extends BasePlayerModule {
         List<Invite> inviteList = (List<Invite>) iterator.next();
         List<Long> targetPids = new ArrayList<>();
         inviteList.forEach(invite -> {targetPids.add(invite.getDstPid());});
-        meargeInvitePid(targetPids,null);
-
-		for (Invite invite : inviteList) {
-			targetPlayers.add(invite.getDstPid());
-		}
+		this.targetPlayers = targetPids;
     }
 
     @Override
@@ -98,30 +104,9 @@ public class InviteModule extends BasePlayerModule {
         return true;
     }
 
-    CompletionStage<Void> refreshInviteDataLv() {
-        CompletableFuture<Void> voidFuture = new CompletableFuture();
-        List<Long> targetPids = new ArrayList<>(targetLvMap.keySet());
-        meargeInvitePid(targetPids,voidFuture);
-        return voidFuture;
-    }
 
-    private void meargeInvitePid(List<Long> targetPids,  CompletableFuture<Void> voidFuture) {
-        Map<Long,Integer> targetMap = new HashMap<>();
-        PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPids).onSuccess(targetPlayerList ->{
-            targetPlayerList.forEach(simplePlayer -> {
-                targetMap.put(simplePlayer.id,simplePlayer.level);
-            });
-            this.targetLvMap = targetMap;
-            if (voidFuture != null){
-                voidFuture.complete(null);
-            }
-        }).onFailure(e ->{
-            e.printStackTrace();
-            if (voidFuture != null){
-                voidFuture.complete(null);
-            }
-        });
-    }
+
+
 
 	/** 
 	 * 获取邀请到的目标玩家id和等级
