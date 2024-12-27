@@ -793,9 +793,9 @@ public class PlayerHandler extends BaseHandler {
 				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
 			}
 			return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
-		}).compose(r -> {
+		}).map(r -> {
 			if (!r) {
-				return Future.failedFuture(ErrorMsgEnum.player_name_repeat.ID + "");
+				throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
 			}
 			PlayerNameManager.getInstance()
 					.saveName2Id(newName, player.getData().getPlayerId())
