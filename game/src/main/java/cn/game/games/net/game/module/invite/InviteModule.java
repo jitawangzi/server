@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.InviteConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.InviteManager;
 import cn.game.protocol.protobuf.QuestMsg;
 import cn.game.protocol.protobuf.ServerMsg;
@@ -31,6 +32,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.PlayerMsg;
 import io.vertx.core.Future;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName InviteModule
@@ -67,23 +69,29 @@ public class InviteModule extends BasePlayerModule {
         invite.setDstPid(playerId);
         DAO.insert(invite).onSuccess((h)->{
             GameLogger.invite(player,invitePid);
-            notifyLvUpToInvitePlayer();
+            notifyLvUpToInvitePlayer(new GameEvent(EventTypeEnum.LevelUp,Asset.playerExp.ID,0));
         });
     }
 
-    private void notifyLvUpToInvitePlayer() {
+    private void notifyLvUpToInvitePlayer(GameEvent event) {
         if (this.invitePid == 0){
+            return;
+        }
+        int exp = event.getIntParameter(0);
+        int level = event.getIntParameter(1);
+        if (exp != Asset.playerExp.ID) {
             return;
         }
         VxHolder.executeBlockingWithTimeout(()->{
             String inviteServerId = PlayerManager.getInstance().getServerId(invitePid);
-            if (inviteServerId != null){
+            if (!StringUtils.isEmpty(inviteServerId)){
                 ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041.Builder req = ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041.newBuilder();
                 req.setPid(invitePid);
                 req.setTargetPid(playerId);
                 req.setLv(player.getLevel());
                 log.info(String.format("notifyLvUpToInvitePlayer req:%s",req));
-                PlayerHelper.sendRemotePlayer(invitePid,req.build(),true);
+//                PlayerHelper.sendRemotePlayer(invitePid,req.build(),true);
+                VxHolder.sendRemoteServer(inviteServerId,req.build());
             }
             return null;
         });
@@ -136,7 +144,7 @@ public class InviteModule extends BasePlayerModule {
                 break;
             }
 
-            case LevelUp -> notifyLvUpToInvitePlayer();
+            case LevelUp -> notifyLvUpToInvitePlayer(event);
         }
     }
 
