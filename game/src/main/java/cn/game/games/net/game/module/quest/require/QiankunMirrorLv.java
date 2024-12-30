@@ -9,7 +9,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.QiankunMirrorLv)
 public class QiankunMirrorLv extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BattleStart };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LevelUp };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -29,7 +29,7 @@ public class QiankunMirrorLv extends AbstractCondition {
 		int exp = event.getIntParameter(0);
 		int level = event.getIntParameter(1);
 		if (exp == Asset.QiankunMirrorExp.ID) {
-			return level >= getRequireCount();
+			return true;
 		}
 		return false;
 	}
