@@ -83,8 +83,7 @@ public class InviteModule extends BasePlayerModule {
                 req.setTargetPid(playerId);
                 req.setLv(player.getLevel());
                 log.info(String.format("notifyLvUpToInvitePlayer req:%s",req));
-//                PlayerHelper.sendToRemotePlayer(invitePid,inviteServerId,req.build());
-                VxHolder.broadcastRemoteServer(ServerType.Game,req.build());
+                PlayerHelper.sendRemotePlayer(invitePid,req.build(),true);
             }
             return null;
         });
