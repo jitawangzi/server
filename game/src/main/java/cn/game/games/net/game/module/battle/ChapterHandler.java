@@ -78,6 +78,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveResponse_13000011;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
+import cn.game.protocol.protobuf.BattleMsg.BattleRogueAdvertiseRequest_13000012;
+import cn.game.protocol.protobuf.BattleMsg.BattleRogueAdvertiseResponse_13000013;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshRequest_13000052;
 import cn.game.protocol.protobuf.BattleMsg.BattleRougeRefreshResponse_13000053;
 import cn.game.protocol.protobuf.BattleMsg.BattleShareRequest_13000007;
@@ -157,6 +159,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleWorldBossBuyTimesRequest_13000303, this::worldBossBuy);
 		putInvoker(PbProtocol.BattleWorldRewardRequest_13000305, this::worldBossReward);
 		putInvoker(PbProtocol.BattleChapterRewardRequest_13000222, this::battleChapterReward);
+		putInvoker(PbProtocol.BattleRogueAdvertiseRequest_13000012, this::rogueAdvertise);
 
 		//PVP 大道争锋
 		putInvoker(PbProtocol.BattlePvPTargetListRequest_13000111, OfflineBattleHandler::searchTargetList);
@@ -174,6 +177,24 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void rogueAdvertise(NetClient client, Object message) {
+		BattleRogueAdvertiseRequest_13000012 req = (BattleRogueAdvertiseRequest_13000012) message;
+		BattleRogueAdvertiseResponse_13000013.Builder resp = BattleRogueAdvertiseResponse_13000013.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+//		int adRogueCount = chapterModule.getAdRogueCount();
+//		if (adRogueCount >= GlobalConst.RogueAdvertiseCount) {
+//			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+//			return;
+//		}
+//		chapterModule.setAdReliveCount(chapterModule.getAdReliveCount() + 1);
+		player.handleEvent(EventTypeEnum.WatchAds);
 
 		client.sendProtocol(resp);
 	}
@@ -1329,8 +1350,6 @@ public class ChapterHandler extends BaseHandler {
 			AttrModule module = player.getModule(AttrModule.class);
 			module.calcAllAttr();
 			resp.setAttrs(module.buildBattleAttrs());
-
-			chapterModule.setReliveCountPerBattle(0);
 		}
 //		resp.setRandomSeed(randomSeed + "");
 		client.sendProtocol(resp, errorCode);

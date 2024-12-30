@@ -44,7 +44,7 @@ import cn.game.util.IntMapWrapper;
  */
 public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin };
+			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
 
 
 
@@ -99,9 +99,14 @@ public class ChapterModule extends BasePlayerModule  {
 	private int shareReliveCount;
 	/** 每日广告复活次数 */
 	private int adReliveCount;
+	/** 每日广告全部肉鸽选择次数 */
+	private int adRogueCount;
 	/** 单次战斗复活次数 */
 	@JsonIgnore
 	private int reliveCountPerBattle;
+	/** 单次战斗全部肉鸽选择次数*/
+	@JsonIgnore
+	private int adRogueCountPerBattle;
 
 	/** 每日挑战数据 */
 	@JsonIgnore
@@ -514,10 +519,27 @@ public class ChapterModule extends BasePlayerModule  {
 		return battleChapterRewards;
 	}
 
+	public int getAdRogueCount() {
+		return adRogueCount;
+	}
+
+	public void setAdRogueCount(int adRogueCount) {
+		this.adRogueCount = adRogueCount;
+	}
+
+	public int getAdRogueCountPerBattle() {
+		return adRogueCountPerBattle;
+	}
+
+	public void setAdRogueCountPerBattle(int adRogueCountPerBattle) {
+		this.adRogueCountPerBattle = adRogueCountPerBattle;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+
 
 	private void newDay() {
 		this.freeRougeTimes = 0;
@@ -554,6 +576,11 @@ public class ChapterModule extends BasePlayerModule  {
 			if (lingPoBattle != null) {
 				lingPoBattle.updateBattleId();
 			}
+			break;
+		}
+		case BattleStart: {
+			this.reliveCountPerBattle = 0;
+			this.adRogueCountPerBattle = 0;
 			break;
 		}
 		case FuncOpen: {
