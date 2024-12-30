@@ -24,6 +24,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.log.GameLogger;
@@ -46,15 +47,19 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
+import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -105,6 +110,7 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.JsonUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
@@ -370,6 +376,34 @@ public class PlayerHandler extends BaseHandler {
 				case CardBook: {
 
 					ret = false;
+					break;
+				}
+				case Shop: {
+					if (!player.isFuncOpen(InitialUI.Shop)) {
+						continue;
+					}
+					ShopModule shopModule = player.getShopModule();
+					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
+					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
+
+					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
+					int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
+					freeFreshMaxTimes += welfareValue;
+
+					ret = freeFreshMaxTimes > heishiRefreshTimes;
+					if (ret) {
+						continue;
+					}
+					List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
+					if (typeList != null) {
+						for (HeishiConfig heishiConfig : heishiList) {
+							ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
+							if (shopItem.getItemBuyTimes() == 0) {
+								ret = true;
+								break;
+							}
+						}
+					}
 					break;
 				}
 				default:

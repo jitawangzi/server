@@ -173,10 +173,6 @@ public class ShopModule extends BasePlayerModule {
 		return heishiRefreshTimesMap;
 	}
 
-	public void setHeishiRefreshTimesMap(IntMapWrapper heishiRefreshTimesMap) {
-		this.heishiRefreshTimesMap = heishiRefreshTimesMap;
-	}
-
 	public void setLastFreeOpenBoxTime(int lastFreeOpenBoxTime) {
 		this.lastFreeOpenBoxTime = lastFreeOpenBoxTime;
 	}
