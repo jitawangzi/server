@@ -901,18 +901,18 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.RechargeCnt, 1);
 			break;
 		}
-		case QianLi: {
-			addCumulativeCount(ConditionTypeEnum.UpgradeAltar, 1);
-			break;
-		}
-		case QiangYuan: {
-			addCumulativeCount(ConditionTypeEnum.UpgradeHuDao, 1);
-			break;
-		}
-		case ParticipatePVPStart: {
-			addCumulativeCount(ConditionTypeEnum.ParticipatePVP, 1);
-			break;
-		}
+//		case QianLi: {
+//			addCumulativeCount(ConditionTypeEnum.UpgradeAltar, 1);
+//			break;
+//		}
+//		case QiangYuan: {
+//			addCumulativeCount(ConditionTypeEnum.UpgradeHuDao, 1);
+//			break;
+//		}
+//		case ParticipatePVPStart: {
+//			addCumulativeCount(ConditionTypeEnum.ParticipatePVP, 1);
+//			break;
+//		}
 		case ChapterWin: {
 			int id = event.getIntParameter(0);
 			// 这个不用了
@@ -927,14 +927,14 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
 			break;
 		}
-		case FairyFriendsTravel: {
-			addCumulativeCount(ConditionTypeEnum.ParticipateFairyFriend, event.getIntParameter(0));
-			break;
-		}
-		case FairyFriendsGift: {
-			addCumulativeCount(ConditionTypeEnum.CumulativeGift, 1);
-			break;
-		}
+//		case FairyFriendsTravel: {
+//			addCumulativeCount(ConditionTypeEnum.ParticipateFairyFriend, event.getIntParameter(0));
+//			break;
+//		}
+//		case FairyFriendsGift: {
+//			addCumulativeCount(ConditionTypeEnum.CumulativeGift, 1);
+//			break;
+//		}
 		case HeroBreak: {
 //			int star = event.getIntParameter(0);
 			int quality = event.getIntParameter(1);
