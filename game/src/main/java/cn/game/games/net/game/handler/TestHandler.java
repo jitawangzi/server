@@ -316,6 +316,12 @@ public class TestHandler extends BaseHandler {
 
 			break;
 		}
+		case "newday": {
+			int nowDay = DateUtil.getDay();
+			player.getData().setRefreshDay(nowDay - 1);
+			PlayerHelper.refreshDay(player);
+			break;
+		}
 		default:
 			client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
 			break;
