@@ -423,7 +423,9 @@ public class PlayerHelper {
 				delResources(player, entry.getKey(), entry.getValue(), consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;
@@ -467,7 +469,9 @@ public class PlayerHelper {
 					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
 				}
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;
@@ -494,7 +498,9 @@ public class PlayerHelper {
 				delResources(player, list[j], list[j + 1], consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[j], list[j + 1]));
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;

@@ -80,7 +80,7 @@ public class VarModule extends BasePlayerModule {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-//		builder.setPlayer(player.toProto());
+		builder.setRenameCount(getVar(VarConstant.RANAME_COUNT));
 	}
 
 	@Override

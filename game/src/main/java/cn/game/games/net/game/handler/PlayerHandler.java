@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.game.util.*;
-import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import com.google.gson.JsonObject;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -49,6 +50,7 @@ import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -100,6 +102,13 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
+import cn.game.util.BinarySearchUtil;
+import cn.game.util.ConversionUtil;
+import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.ObjUtil;
+import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.Future;
 
 /**
@@ -763,55 +772,42 @@ public class PlayerHandler extends BaseHandler {
 		PlayerNameRequest_01000011 request = (PlayerNameRequest_01000011) message;
 		PlayerNameResponse_01000012.Builder resp = PlayerNameResponse_01000012.newBuilder();
 		String newName = request.getName();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (StringUtils.isEmpty(newName)) {
-			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+		if (StringUtils.isBlank(newName)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.ID);
 			return;
 		}
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		String oldName = player.getData().getName();
 
+		int renameCount = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
+		int[] cost = renameCount >= GlobalConst.PlayerName.length - 1 ? GlobalConst.PlayerName[GlobalConst.PlayerName.length - 1]
+				: GlobalConst.PlayerName[renameCount];
+		if (!PlayerHelper.isEnough(player, cost)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.ID);
+			return;
+		}
+
 		Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
-		checkFuture.onSuccess(b -> {
+		checkFuture.compose(b -> {
 			if (!b) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-				return;
+				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
 			}
-			int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
-			if (var > 0) {
-				// 检查消耗的资源TODO
-//			player.isEnough(var, var);
+			return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
+		}).map(r -> {
+			if (!r) {
+				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_repeat.ID));
 			}
+			PlayerNameManager.getInstance()
+					.saveName2Id(newName, player.getData().getPlayerId())
+					.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName));
 
-		/*	boolean check = KeywordFilter.getInstance().check(newName);
-			if (!check) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-				return;
-			}*/
-			if (var == 0) {
-				player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
-			}
-			PlayerNameManager.getInstance().tryCreateUser(newName).thenApply(r -> {
-				if (!r) {
-					client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
-				} else {
-					PlayerNameManager
-							.getInstance()
-							.saveName2Id(newName, player.getData().getPlayerId())
-							.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName));
+			PlayerHelper.delResources(player, cost, OpType.Rename);
+			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
 
-					player.getData().setName(newName);
-					client.sendProtocol(resp);
-				}
-				return null;
-			}).exceptionally(player::handleFailFunction);
-
-		}).onFailure(err ->{
-			err.printStackTrace();
-			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-
-		});
-
-
+			player.getData().setName(newName);
+			client.sendProtocol(resp);
+			return null;
+		}).onFailure(player::handleFail);
 	}
 
 	protected void gender(NetClient client, Object message) {
