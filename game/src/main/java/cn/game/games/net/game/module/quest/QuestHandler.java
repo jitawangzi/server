@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.quest;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.net.game.module.invite.InviteHandler;
 import org.springframework.stereotype.Component;
 
 import com.google.common.primitives.Ints;
@@ -64,6 +65,10 @@ public class QuestHandler extends BaseHandler {
 		putInvoker(PbProtocol.QuestAcceptRequest_20000026, this::accept);
 		putInvoker(PbProtocol.QuestBranchPriorityRequest_20000028, this::branchPriority);
 		putInvoker(PbProtocol.QuestUpdateRequest_20000030, this::update);
+
+
+		putInvoker(PbProtocol.InviteTaskListRequest_20000041, InviteHandler::list);
+		putInvoker(PbProtocol.RewardInviteTaskRequest_20000043, InviteHandler::rewardInviteTask);
 	}
 
 	protected void update(NetClient client, Object message) {

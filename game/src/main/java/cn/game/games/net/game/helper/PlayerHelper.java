@@ -595,7 +595,7 @@ public class PlayerHelper {
 	 * 初始化新角色数据，角色第一次创建时需要调用此方法
 	 * @param player
 	 */
-	public static void initNewPlayerData(Player player) {
+	public static void initNewPlayerData(Player player, long invitePid) {
 		Long playerId = player.getData().getPlayerId();
 		log.info("首次初始化角色playerId={}", playerId);
 		// 对模块数据初始化顺序有要求的，其他模块需要的， 一些基础数据尽量放到这里初始化。
@@ -606,7 +606,7 @@ public class PlayerHelper {
 		}
 
 		// 对于事件的处理是没有顺序的
-		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
+		player.handleEvent(EventTypeEnum.PLAYER_CREATE,invitePid);
 
 		GameLogger.rolebuild(player);
 	}
@@ -1241,11 +1241,14 @@ public class PlayerHelper {
 	}
 
 	public static Future<Player> initPlayerData(Player player) {
+		return initPlayerData(player,0);
+	}
+	public static Future<Player> initPlayerData(Player player,long invitePid) {
 
 		if (player.getData().isNew()) {
 			// 初始的资源
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
-			PlayerHelper.initNewPlayerData(player);
+			PlayerHelper.initNewPlayerData(player,  invitePid);
 		}
 		PlayerHelper.initAfterLogin(player);
 		return Future.succeededFuture(player);
