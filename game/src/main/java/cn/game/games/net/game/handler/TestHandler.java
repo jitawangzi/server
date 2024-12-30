@@ -260,7 +260,11 @@ public class TestHandler extends BaseHandler {
 					}
 					battle.setStartBattleId(p1);
 				}
-				battle.setBattleStage(10);
+				if (p2 > 0 && p2 < 10) {
+					battle.setBattleStage(p2);
+				} else {
+					battle.setBattleStage(10);
+				}
 				battle.setZhijieshoudong(true);
 			}
 			break;
