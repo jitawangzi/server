@@ -1429,6 +1429,8 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
+
 		player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
 		IBattleHandler battleHandler = chapterModule.getBattle(attackingType);
 		ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req);
@@ -1436,16 +1438,21 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, result.getErrorCode());
 			return;
 		}
-
+		List<RewardInfo> allRewards = new ArrayList<>();
+		if (result.getValue() != null) {
+			allRewards.addAll(result.getValue());
+		}
+		// 通用奖励
+		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom, OpType.BattleEnd);
+		if (rewards != null) {
+			allRewards.addAll(rewards);
+		}
 		if (req.getWin()) {
 			player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId, attackingId);
 		}
 		chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
-		List<RewardInfo> rewardsList = result.getValue();
-		if (rewardsList != null) {
-			resp.addAllRewards(rewardsList);
-			chapterModule.setLastBattleRewards(rewardsList);
-		}
+		resp.addAllRewards(allRewards);
+		chapterModule.setLastBattleRewards(allRewards);
 		client.sendProtocol(resp);
 //		Chapter chapter = chapterModule.getChapter(attackingDungeonId);
 //		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
