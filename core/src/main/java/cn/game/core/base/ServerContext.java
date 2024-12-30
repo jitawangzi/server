@@ -1,10 +1,13 @@
 package cn.game.core.base;
 
 import java.lang.management.ManagementFactory;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
+import org.apache.curator.framework.recipes.leader.Participant;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +177,6 @@ public class ServerContext {
 		log.info("Starting leader election for node: {}, path: {}", serverId, latchPath);
 
 		leaderLatch = new LeaderLatch(ZkHelper.curator, latchPath, serverId);
-		leaderLatch.start();
 		leaderLatch.addListener(new LeaderLatchListener() {
 			@Override
 			public void isLeader() {
@@ -188,6 +190,35 @@ public class ServerContext {
 				log.info("I am not leader: {}", serverId);
 			}
 		});
+		leaderLatch.start();
+		log.info("Leader elected: {}", getCurrentLeader());
+	}
+
+	/** 
+	 * 同步获取当前leader的id
+	 * 尽量使用异步方法。 
+	 * @return
+	 * @throws Exception
+	 */
+	public String getCurrentLeader() throws Exception {
+		Participant leader = leaderLatch.getLeader();
+		return leader.getId();
+	}
+
+	/** 
+	 * 异步获取当前leader的id
+	 * @return
+	 * @throws Exception
+	 */
+	public CompletionStage<String> getCurrentLeaderAsync() {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return getCurrentLeader();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
 	}
 
 	/** 
