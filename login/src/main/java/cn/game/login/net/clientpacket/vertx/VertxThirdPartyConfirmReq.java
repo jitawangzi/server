@@ -67,7 +67,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 		case OFFICIAL: {
 			String[] split = token.split(" ");
 			String username = split[0];
-			String pwd = split.length > 1 ? split[1] : null;
+			String pwd = split.length > 1 ? split[1] : "";
 
 			RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 			future.onComplete((v, throwable) -> {
