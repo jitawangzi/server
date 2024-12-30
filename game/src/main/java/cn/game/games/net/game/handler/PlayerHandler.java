@@ -391,16 +391,15 @@ public class PlayerHandler extends BaseHandler {
 					freeFreshMaxTimes += welfareValue;
 
 					ret = freeFreshMaxTimes > heishiRefreshTimes;
-					if (ret) {
-						continue;
-					}
-					List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
-					if (typeList != null) {
-						for (HeishiConfig heishiConfig : heishiList) {
-							ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
-							if (shopItem.getItemBuyTimes() == 0) {
-								ret = true;
-								break;
+					if (!ret) {
+						List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
+						if (typeList != null) {
+							for (HeishiConfig heishiConfig : heishiList) {
+								ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
+								if (shopItem.getItemBuyTimes() == 0) {
+									ret = true;
+									break;
+								}
 							}
 						}
 					}
