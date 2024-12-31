@@ -33,8 +33,7 @@ import cn.game.util.Rnd;
  */
 @ActivityType(type = ActivityTypeEnum.ActivityZhuanPan)
 public class ActivityWestLucky extends PlayerActivityBase {
-    @JsonIgnore
-    public final static int drawItemId = 209001;
+
     /**累计抽取次数*/
     int totalNum;
     /**购买的物品数量 key id, val 数量*/
@@ -52,7 +51,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
         switch (event.getType()){
             case NewDay:
                 //清空刷新购买次数
-                List<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list().stream().filter(c -> c.Refresh == 1).toList();;
+                List<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list().stream().filter(c -> c.Refresh == 1 && c.NumberPeriods == id).toList();;
                 list.forEach(c -> buyIdMap.remove(c.ID));
                 break;
         }
@@ -67,6 +66,11 @@ public class ActivityWestLucky extends PlayerActivityBase {
         res.setActivityId(id)
                 .putAllBuyMap(buyIdMap);
         return res.build();
+    }
+
+    public int getDrawItemId(){
+        return getConfigList().stream().findAny().get().ConsumeItemID;
+
     }
 
     @Override
@@ -147,9 +151,9 @@ public class ActivityWestLucky extends PlayerActivityBase {
     @Override
     public void destroy() {
         //销毁身上的抽奖卷
-        long num = player.getItemModule().getCount(drawItemId);
+        long num = player.getItemModule().getCount(getDrawItemId());
         if (num > 0){
-            PlayerHelper.delResources(player,drawItemId,num, OpType.ZhuanPanClearItem);
+            PlayerHelper.delResources(player,getDrawItemId(),num, OpType.ZhuanPanClearItem);
         }
     }
 
