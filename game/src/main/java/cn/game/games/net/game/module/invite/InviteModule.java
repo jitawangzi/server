@@ -133,7 +133,7 @@ public class InviteModule extends BasePlayerModule {
     public void handleEvent(GameEvent event) {
         switch (event.getType()){
             case PLAYER_CREATE -> {
-                long invitePid = event.getLong(0);
+                long invitePid = player.getAccount().getInvitePid();
                 if (invitePid <= 0){
                     return;
                 }

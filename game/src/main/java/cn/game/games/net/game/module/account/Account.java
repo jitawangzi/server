@@ -1,6 +1,8 @@
 package cn.game.games.net.game.module.account;
 
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import cn.game.util.JsonUtil;
+import com.google.gson.JsonObject;
 
 public class Account {
 
@@ -21,6 +23,8 @@ public class Account {
     public final String sdkPayChannel;//sdk充值渠道
 	public final String system;// 系统: 小游戏定死“system”
 	public final String clue_token;//
+    /**邀请者id  不存在则为 0*/
+    public  long invitePid;
 
 	public Account(PlayerLoginRequest_01000001 req) {
 //        this.accountType = req.getAccountType();
@@ -39,6 +43,20 @@ public class Account {
         this.sdkPayChannel = req.getSdkPayChannel();
 		this.system = req.getSystem();
 		this.clue_token = req.getClueToken();
+        if (req.getClueToken() != null &&  !req.getClueToken().isEmpty()){
+            try {
+                JsonObject tokenJson = JsonUtil.parserJson(req.getClueToken());
+                if (tokenJson.has("query") && tokenJson.getAsJsonObject("query").has("friendID")){
+                    this.invitePid = tokenJson.getAsJsonObject("query").get("friendID").getAsLong();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public long getInvitePid() {
+        return invitePid;
     }
 
     public int getAccountType() {

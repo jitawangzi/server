@@ -868,18 +868,6 @@ public class PlayerHandler extends BaseHandler {
 		String passportSessionId = req.getSessionId();
 //		String serverId = req.getServerId();
 		boolean reconnect = req.getReconnect();
-		//邀请者id 不存在则为 0
-		long invitePid = 0;
-		if (req.getClueToken() != null &&  !req.getClueToken().isEmpty()){
-			try {
-				JsonObject tokenJson = JsonUtil.parserJson(req.getClueToken());
-				if (tokenJson.has("query") && tokenJson.getAsJsonObject("query").has("friendID")){
-					invitePid = tokenJson.getAsJsonObject("query").get("friendID").getAsLong();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 		log.info("passportSessionId : " + passportSessionId + " start login");
 		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
 		if (canLogin > 0) {
@@ -896,7 +884,6 @@ public class PlayerHandler extends BaseHandler {
 			account.deviceId = r.getDeviceId();
 			return r.getUid();
 		});
-		long finalInvitePid = invitePid;
 		uidFuture.map(uid -> {
 			newGameClient.setSessionId(passportSessionId);
 			if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
@@ -915,7 +902,7 @@ public class PlayerHandler extends BaseHandler {
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
 				if (!isReallyReconnect) {
 					loadOrCreatePlayerData(uid,account, newGameClient)
-							.compose(playerData -> handlePlayerData(playerData, finalInvitePid, account, newGameClient))
+							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
@@ -952,10 +939,10 @@ public class PlayerHandler extends BaseHandler {
 		return checkOtherServer(player.getPlayerId()).compose(r -> loadPlayerFromDb(player, account, client));
 	}
 
-	private Future<Player> handlePlayerData(PlayerData playerData,long invitePid, Account account, GameClient client) {
+	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {
 		if (playerData.isNew()) {
 			Player player = PlayerHelper.createPlayer(playerData, account, client);
-			return PlayerHelper.initPlayerData(player,invitePid)
+			return PlayerHelper.initPlayerData(player)
 					.compose(PlayerHelper::savePlayerToDb)
 					.compose(PlayerHelper::saveSimplePlayer);
 		}
