@@ -122,6 +122,9 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 	@Override
 	public long calcEndTime() {
+		if (endTime > 0){
+			return endTime;
+		}
 		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
 		if (activityConfig.resetType == 4){
 			int endDay = getConfigList().size() - rewardIdList.size();
