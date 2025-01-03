@@ -734,7 +734,7 @@ public class PlayerHelper {
 
 		int secord = fiveTime - player.getData().getRefreshFiveDay();
 
-		long nowTime = DateUtil.getStamp();
+		long nowTime = DateUtil.currentTimeSeconds();
 
 		// 判断必须要跨一天以上才可以刷
 		int refTime = fiveTime;

@@ -440,13 +440,6 @@ public final class DateUtil {
 
 	}
 
-	/**当前年份*/
-	public static int getYear() {
-		Calendar calendar = Calendar.getInstance(); 
-		int year = calendar.get(Calendar.YEAR);
-		return year;
-	}
-
 	/**
 	 * 获取当前日期的字符串格式
 	 * 
@@ -515,9 +508,6 @@ public final class DateUtil {
 		return calendar.getTime();
 	}
 	
-	public static int getStamp() {
-		return (int) (System.currentTimeMillis()/1000);
-	}
 
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
