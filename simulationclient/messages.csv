@@ -174,3 +174,4 @@
 173,RewardInviteTaskRequest_20000043,0x20000043,,,,,领取邀请任务奖励
 174,BattleRogueAdvertiseRequest_13000010,0x13000010,,,,,战斗中看广告选取肉鸽技能
 175,BattleRogueAdvertiseRequest_13000012,0x13000012,,,,,战斗中看广告选取肉鸽技能
+176,HeroIllustrationsLevelRewardRequest_16000044,0x16000044,,,,,领取图鉴等级奖励，只能一级一级领

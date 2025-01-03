@@ -107,7 +107,6 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
-import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -359,7 +358,6 @@ public class PlayerHandler extends BaseHandler {
 				}
 				case NightmareRealm: {
 					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 
 					ret = false;
 					break;
@@ -379,7 +377,7 @@ public class PlayerHandler extends BaseHandler {
 						continue;
 					}
 					ShopModule shopModule = player.getShopModule();
-					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
+//					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
 //					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
 //
 //					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;

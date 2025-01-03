@@ -146,6 +146,17 @@ public class HeroHelper {
 		return true;
 	}
 
+	public static int getMaxStar(Collection<Hero> heros) {
+
+		int maxStar = 0;
+		for (Hero hero : heros) {
+			if (hero.getStar() > maxStar) {
+				maxStar = hero.getStar();
+			}
+		}
+		return maxStar;
+	}
+
 	public static int getMarqueeId(int heroCount) {
 
 		return heroCount == 10 ? 1 : 3;

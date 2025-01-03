@@ -63,6 +63,7 @@ import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
+import cn.game.protocol.generated.manager.HeroBandBookManager;
 import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
@@ -1525,6 +1526,8 @@ public class PlayerHelper {
 			return FairyFriendFavorabilityManager.instance().getUIFairyListIDLV(subId, level);
 		} else if (id == Asset.VIPExp.ID) {
 			return VIPManager.instance().getNullable(level);
+		} else if (id == Asset.CatalogPoints.ID) {
+			return HeroBandBookManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}

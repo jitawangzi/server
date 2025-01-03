@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GameServerStatus;
@@ -45,13 +47,21 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	private long freeDayHeroUid;
 
 	/** 领取过图鉴奖励的英雄id,领取到什么品质了 */
+	@JsonIgnore
+	@Deprecated
 	private Map<Integer, Integer> illustrationsHeroQualitys = new HashMap<Integer, Integer>();
 
 	/** 某个英雄id，达到的最大品质。 */
+	@JsonIgnore
+	@Deprecated
 	private Map<Integer, Integer> illustrationsHeroQualitysMax = new HashMap<Integer, Integer>();
 
 	/** 曾经拥有过的英雄id */
 	private List<Integer> ownedHeroIds = new ArrayList<>();
+	/**  */
+	private Map<Integer, Integer> illustrationsHeroStars = new HashMap<Integer, Integer>();
+	/** 领取过图鉴等级奖励的等级 */
+	private int illustrationRewardLevel;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -102,24 +112,9 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			if (ownedHeroIds.contains(configId)) {
 				ownedHeroIds.remove(Integer.valueOf(configId));
 			}
-			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
-				HeroConfig heroConfig = HeroManager.instance().get(configId);
-				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
-			}
 			break;
 		}
 		case HeroQuality: {
-			Hero hero = event.getParameter(0);
-			int configId = hero.getConfigId();
-			HeroConfig heroConfig = HeroManager.instance().get(configId);
-			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
-				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
-			} else {
-				int oldQuality = illustrationsHeroQualitysMax.get(configId);
-				if (hero.getQuality() > oldQuality) {
-					illustrationsHeroQualitysMax.put(configId, hero.getQuality());
-				}
-			}
 			break;
 		}
 		}
@@ -289,6 +284,17 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return illustrationsHeroQualitysMax;
 	}
 
+	public Map<Integer, Integer> getIllustrationsHeroStars() {
+		return illustrationsHeroStars;
+	}
+
+	public int getIllustrationRewardLevel() {
+		return illustrationRewardLevel;
+	}
+
+	public void setIllustrationRewardLevel(int illustrationRewardLevel) {
+		this.illustrationRewardLevel = illustrationRewardLevel;
+	}
 	@Override
 	public void checkConfig(int id) {
 		HeroManager.instance().get(id);

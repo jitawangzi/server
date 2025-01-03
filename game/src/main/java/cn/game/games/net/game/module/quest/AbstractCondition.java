@@ -160,14 +160,12 @@ public abstract class AbstractCondition implements Condition {
 	@Override
 	public void unregisterEvent() {
 //		
-//		eventOp.unregisterEventHandler(events, this);
 		player.getEventModule().unregisterEventHandler(this);
 	}
 
 	@Override
 	public void registerEvent() {
 //		
-//		eventOp.registerEventHandler(events, this);
 		player.getEventModule().registerEventHandler(this);
 
 	}
