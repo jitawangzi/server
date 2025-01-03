@@ -11,8 +11,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.JsonObject;
-
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -57,7 +55,6 @@ import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.QuestionnaireManager;
@@ -111,7 +108,6 @@ import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
-import cn.game.util.JsonUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -384,14 +380,14 @@ public class PlayerHandler extends BaseHandler {
 					}
 					ShopModule shopModule = player.getShopModule();
 					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
-					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
-
-					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
-					int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
-					freeFreshMaxTimes += welfareValue;
-
-					ret = freeFreshMaxTimes > heishiRefreshTimes;
-					if (!ret) {
+//					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
+//
+//					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
+//					int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
+//					freeFreshMaxTimes += welfareValue;
+//
+//					ret = freeFreshMaxTimes > heishiRefreshTimes;
+//					if (!ret) {
 						List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
 						if (typeList != null) {
 							for (HeishiConfig heishiConfig : heishiList) {
@@ -402,7 +398,7 @@ public class PlayerHandler extends BaseHandler {
 								}
 							}
 						}
-					}
+//					}
 					break;
 				}
 				default:
