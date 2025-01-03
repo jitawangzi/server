@@ -65,6 +65,10 @@ public class SevenDaysSignin extends PlayerActivityBase {
 		return null;
 	}
 
+	public SevenDaysSigninConfig  getSevenDaysSigninConfig(){
+		return getSevenDaysSigninConfig(day);
+	}
+
 	@Override
 	public List<RewardInfo> receive(int id) {
 		SevenDaysSigninConfig config = getSevenDaysSigninConfig(day);

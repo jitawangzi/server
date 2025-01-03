@@ -11,11 +11,17 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
+import cn.game.protocol.generated.config.SevenDaysSigninConfig;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
 
 public class MonthCardModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
@@ -46,7 +52,25 @@ public class MonthCardModule extends BasePlayerModule {
 		MonthCard newCard = MonthCard.valueOf(this.playerId, cardId, buyTime, expireTime);
 		monthCards.put(cardId, newCard);
 		newCard.insert();
+		if (cardId == 1){//购买月卡， 检查是否有月卡签到
+			checkMothCardSignReward();
+		}
 		return newCard;
+	}
+
+	/**
+	 * 月卡修改：购买月卡跳转、当天未买签到后，买了返还一天的双倍奖励
+	 */
+	private void checkMothCardSignReward() {
+		SevenDaysSignin sevenDaysSignin = (SevenDaysSignin) player.getActivityModule().get(26);
+		if (sevenDaysSignin == null) return;
+		if (!sevenDaysSignin.isSignin()) return;
+		SevenDaysSigninConfig config = sevenDaysSignin.getSevenDaysSigninConfig();
+		int addRadio = player.getWelfareValue(WelfareTypeEnum.MonthClock);
+		int[][] drops =  GameUtil.arrayAddition(config.Item, addRadio);
+		drops =  GameUtil.subItems(drops, config.Item);
+		List<Goods> dropItems = Goods.valueOf(drops);
+		MailHelper.sendMail(player.getPlayerId(), 20, dropItems, true);
 	}
 
 	@Override
