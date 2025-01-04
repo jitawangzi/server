@@ -91,7 +91,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			if (singleCharge.getSelectedIndex().contains(firstChargeConfig.ID)) {
 				status = 2;
 			} else {
-				if (nowDay - singleCharge.getDay() >= firstChargeConfig.Order - 1) {
+				if (DateUtil.diffDays(singleCharge.getDay() * 1000L) >= firstChargeConfig.Order - 1) {
 					status = 1;
 				}
 			}
@@ -139,7 +139,8 @@ public class FirstChargeActivity extends PlayerActivityBase {
 			if (firstChargeConfig.ActivityiDIndex == config.ActivityiDIndex && firstChargeConfig.ActivityiD == config.ActivityiD) {
 				if (config.ID == cid || config.Preconditions == 0 && config.Price.length == 0) {
 					SingleCharge charge = new SingleCharge();
-					charge.setDay(DateUtil.getDay());
+//					charge.setDay(DateUtil.getDay());
+					charge.setDay(DateUtil.currentTimeSeconds());
 					chargeMap.put(config.ID, charge);
 				}
 			}
@@ -210,7 +211,7 @@ public class FirstChargeActivity extends PlayerActivityBase {
 }
 
 class SingleCharge {
-	/** 购买日期 */
+	/** 购买 时间（秒时间戳） */
 	private int day;
 	/** 领过的id，后来修改了，这里只能有一个 */
 	private List<Integer> selectedIndex = new ArrayList<>();
