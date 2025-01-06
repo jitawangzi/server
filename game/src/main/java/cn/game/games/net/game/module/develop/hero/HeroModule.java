@@ -59,7 +59,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	/** 曾经拥有过的英雄id */
 	private List<Integer> ownedHeroIds = new ArrayList<>();
 	/**  */
-	private Map<Integer, Integer> illustrationsHeroStars = new HashMap<Integer, Integer>();
+	private Map<Integer, QualityStarObj> illustrationsHeroStars = new HashMap<Integer, QualityStarObj>();
 	/** 领取过图鉴等级奖励的等级 */
 	private int illustrationRewardLevel;
 
@@ -115,6 +115,11 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			break;
 		}
 		case HeroQuality: {
+//			Hero hero = event.getParameter(0);
+//			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+//			illustrationsHeroStars.compute(hero.getConfigId(),
+//					(k, v) -> v == null ? new Pair<Integer, Integer>(heroConfig.InitialQuality, 1)
+//					: new Pair<Integer, Integer>(v.first, v.second + 1));
 			break;
 		}
 		}
@@ -284,7 +289,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return illustrationsHeroQualitysMax;
 	}
 
-	public Map<Integer, Integer> getIllustrationsHeroStars() {
+	public Map<Integer, QualityStarObj> getIllustrationsHeroStars() {
 		return illustrationsHeroStars;
 	}
 

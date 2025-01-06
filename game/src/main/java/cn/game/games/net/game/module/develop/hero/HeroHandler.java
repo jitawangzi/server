@@ -74,6 +74,7 @@ import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxResponse_16000022;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001;
 import cn.game.protocol.protobuf.HeroMsg.HeroUpLevelResponse_16000002;
+import cn.game.protocol.protobuf.HeroMsg.QualityStar;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
@@ -166,14 +167,34 @@ public class HeroHandler extends BaseHandler {
 		}
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         HeroModule heroModule = player.getHeroModule();
-        Collection<Hero> heros = heroModule.getByConfigId(heroId);
-        int maxStar = HeroHelper.getMaxStar(heros);
-        Map<Integer, Integer> starsMap = heroModule.getIllustrationsHeroStars();
-        if (starsMap.containsKey(heroId) && starsMap.get(heroId) >= maxStar) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
-            return;
-        }
-        starsMap.compute(heroId, (k, v) -> v == null ? 1 : v + 1);
+		List<Hero> heros = (List<Hero>) heroModule.getByConfigId(heroId);
+		if (heros.isEmpty()) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
+			return;
+		}
+		Hero hero = heros.get(0);
+		Map<Integer, QualityStarObj> starsMap = heroModule.getIllustrationsHeroStars();
+		QualityStarObj qualityStarObj = starsMap.get(heroId);
+		int maxStar = HeroHelper.getMaxStar(hero.getQuality());
+		if (qualityStarObj == null) {
+			qualityStarObj = new QualityStarObj();
+			qualityStarObj.quality = heroConfig.InitialQuality;
+			qualityStarObj.star = 1;
+			starsMap.put(heroId, qualityStarObj);
+		} else {
+			if (hero.getQuality() == qualityStarObj.quality) {
+				if (qualityStarObj.star >= maxStar) {
+					client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+					return;
+				}
+				if (hero.getStar() > qualityStarObj.star) {
+					qualityStarObj.star++;
+				}
+			} else {
+				qualityStarObj.quality++;
+				qualityStarObj.star = 1;
+			}
+		}
 		List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.CatalogPoints.ID, GlobalConst.HeroHandBookEXP,
 				OpType.llustrationsReward);
         resp.addAllReward(resources);
@@ -185,9 +206,11 @@ public class HeroHandler extends BaseHandler {
         HeroIllustrationsListResponse_16000041.Builder resp = HeroIllustrationsListResponse_16000041.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         HeroModule heroModule = player.getHeroModule();
-        Map<Integer, Integer> heroStarsMap = heroModule.getIllustrationsHeroStars();
+		Map<Integer, QualityStarObj> heroStarsMap = heroModule.getIllustrationsHeroStars();
         resp.addAllHeroIds(heroModule.getOwnedHeroIds());
-        resp.putAllHeroStarsMap(heroStarsMap);
+        heroStarsMap.forEach((k, v) -> {
+			resp.addHeroStars(QualityStar.newBuilder().setHeroId(k).setQuality(v.quality).setStar(v.star));
+		});
 		resp.setRewardLevel(heroModule.getIllustrationRewardLevel());
         client.sendProtocol(resp.build());
     }
