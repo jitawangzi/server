@@ -11,4 +11,7 @@ public class IdConstant {
 	/** 问卷调查奖励 */
 	public static final int Questionnaire = 3;
 
+	/** 功能开启奖励 */
+	public static final int FUNC_OPEN_REWARD = 3;
+
 }

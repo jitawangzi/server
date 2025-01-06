@@ -70,6 +70,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardRequest_01000305;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardResponse_01000306;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060;
@@ -155,9 +157,29 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerAssetDataRequest_01000200, this::assetData);
 		putInvoker(PbProtocol.PlayerQuestionnaireRequest_01000300, this::questionnaireInfo);
 		putInvoker(PbProtocol.PlayerQuestionnaireRewardRequest_01000302, this::questionnaireReward);
+		putInvoker(PbProtocol.PlayerFuncOpenRewardRequest_01000305, this::funcOpenReward);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
+	private void funcOpenReward(NetClient client, Object message) {
+		PlayerFuncOpenRewardRequest_01000305 request = (PlayerFuncOpenRewardRequest_01000305) message;
+		PlayerFuncOpenRewardResponse_01000306.Builder response = PlayerFuncOpenRewardResponse_01000306.newBuilder();
+		int id = request.getId();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.FUNC_OPEN_REWARD);
+		if (idsSet.contains(id)) {
+			client.sendProtocol(response, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		if (InitialUI.get(id).FuncOpenReward.length == 0) {
+			client.sendProtocol(response, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		response.addAllRewards(PlayerHelper.addResources(player, InitialUI.get(id).FuncOpenReward, OpType.FuncOpen));
+		idsSet.add(id);
+		client.sendProtocol(response.build());
+	}
 	private void questionnaireReward(NetClient client, Object message) {
 		PlayerQuestionnaireRewardRequest_01000302 request = (PlayerQuestionnaireRewardRequest_01000302) message;
 		PlayerQuestionnaireRewardResponse_01000303.Builder response = PlayerQuestionnaireRewardResponse_01000303.newBuilder();

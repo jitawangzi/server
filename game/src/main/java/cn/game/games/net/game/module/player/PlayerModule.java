@@ -112,7 +112,7 @@ public class PlayerModule extends BasePlayerModule {
 	};
 
 	public boolean addId(int type, int configId) {
-		return getOrCreateIdSet(type).add(configId);
+		return getIdsSet(type).add(configId);
 //		Map<Integer, PlayerIds> map = getOrCreateIdSet(type);
 //		if (map.containsKey(configId)) {
 //			return;
@@ -133,7 +133,7 @@ public class PlayerModule extends BasePlayerModule {
 //		if (playerIds != null) {
 //			playerIds.delete();
 //		}
-		return getOrCreateIdSet(type).remove(configId);
+		return getIdsSet(type).remove(configId);
 	}
 
 //	public void updateTime(int type, int configId) {
@@ -147,20 +147,11 @@ public class PlayerModule extends BasePlayerModule {
 //	}
 
 	public boolean hasId(int type, int configId) {
-		return getOrCreateIdSet(type).contains(configId);
+		return getIdsSet(type).contains(configId);
 	}
 
 	public Set<Integer> getIdsSet(int type) {
-		return getOrCreateIdSet(type);
-	}
-
-	public Set<Integer> getOrCreateIdSet(int type) {
-		Set<Integer> set = idsSet.get(type);
-		if (set == null) {
-			set = new HashSet<Integer>();
-			idsSet.put(type, set);
-		}
-		return set;
+		return idsSet.computeIfAbsent(type, k -> new HashSet<>());
 	}
 
 	public IntMapWrapper getExpLevelMap() {
@@ -252,7 +243,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllLevels(expLevelMap.getMap());
 
 		// 礼包
-		builder.addAllChapterPacks(getOrCreateIdSet(IdConstant.CHAPTER_PACK));
+		builder.addAllChapterPacks(getIdsSet(IdConstant.CHAPTER_PACK));
 		
 		if (cloudBox != null && !cloudBox.isEmpty()) {
 			List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
@@ -263,7 +254,8 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllGuide(guideMap);
 		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
-		builder.addAllHeadboxs(getOrCreateIdSet(IdConstant.HEAD_BOX));
+		builder.addAllHeadboxs(getIdsSet(IdConstant.HEAD_BOX));
+		builder.addAllFuncOpenRewardIds(getIdsSet(IdConstant.FUNC_OPEN_REWARD));
 		List<FuncOpenConfig> lockHideList = FuncOpenManager.instance().getLockHideList(false);
 		if (lockHideList != null) {
 			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));
