@@ -140,6 +140,14 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 		if (id == Asset.CatalogPoints.ID) {
 			// 图鉴积分手动升级，只加经验，不升级
 			currencyMap.add(id, count);
+			player.getGameClient()
+					.sendProtocol(PlayerExpLevelPush_01100050.newBuilder()
+							.setExpLevel(ExpLevelInfo.newBuilder()
+									.setId(id)
+									.setExp((int) currencyMap.getValue(id))
+									.setLevel(player.getLevel(Asset.get(id)))
+									.build())
+							.build());
 			return;
 		}
 

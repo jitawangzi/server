@@ -403,7 +403,6 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case CardBook: {
-
 					ret = false;
 					break;
 				}
