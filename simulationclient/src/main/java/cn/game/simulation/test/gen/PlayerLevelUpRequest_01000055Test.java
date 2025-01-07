@@ -1,8 +1,10 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.Message;
+
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
@@ -12,7 +14,7 @@ public class PlayerLevelUpRequest_01000055Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.newBuilder() ; 
-		
+		builder.setId(Asset.CatalogPoints.ID);
 		
 		
 		return builder.build() ; 

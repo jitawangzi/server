@@ -24,6 +24,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
@@ -1595,13 +1596,8 @@ public class PlayerHelper {
 		BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
 			try {
 				Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-				Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-				Boolean fix = function.apply(player);
-				if (fix) {
-					log.info("修正玩家数据: " + player.getPlayerId());
-					PlayerHelper.saveClientCache(player.getPlayerId()).toCompletionStage().toCompletableFuture().get(30, TimeUnit.SECONDS);
-				}
-				PlayerHelper.clearPlayer(player.getPlayerId());
+				Player player = AsyncUtils.await(playerFromDb);
+				modifyPlayerOffline(function, player);
 			} catch (Exception e) {
 				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 			}
@@ -1624,7 +1620,7 @@ public class PlayerHelper {
 			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
 			Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerId);
 			// 简单起见，同步获取玩家
-			player = playerFromDb.toCompletionStage().toCompletableFuture().join();
+			player = AsyncUtils.await(playerFromDb);
 		}
 		Player modify = player;
 		if (online) {
@@ -1637,13 +1633,20 @@ public class PlayerHelper {
 				function.apply(modify);
 			});
 		} else {
-			Boolean apply = function.apply(player);
-			if (apply != null && apply) {
-				PlayerHelper.saveClientCache(playerId);
-			}
-			PlayerHelper.clearPlayer(playerId);
-			RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			modifyPlayerOffline(function, modify);
 		}
+	}
+
+	private static void modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
+		Boolean apply = function.apply(player);
+		if (apply != null && apply) {
+			log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
+			Future<List<Object>> saveClientCache = PlayerHelper.saveClientCache(player.getPlayerId());
+			AsyncUtils.await(saveClientCache);// 简单起见，同步保存
+		}
+		// 修改完玩家数据后，需要从缓存中清除数据
+		PlayerHelper.clearPlayer(player.getPlayerId());
+		RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
 	}
 
 	/** 
