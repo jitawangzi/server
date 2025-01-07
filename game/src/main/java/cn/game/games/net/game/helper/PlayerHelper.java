@@ -1507,6 +1507,32 @@ public class PlayerHelper {
 	}
 
 	/** 
+	 * 手动升级，对于一个玩家只有一种等级的，例如玩家等级，vip等级 等等
+	 * @param expId 经验id
+	 * @param subId	子id，如果同一类型下有多个配置，用这个区分。
+	 * @param curLevel 当前等级
+	 * @param curExp	当前经验
+	 * @return
+	 */
+	public static int[] levelUp(Player player, int expId, int subId) {
+		Asset expAsset = Asset.get(expId);
+		if (expAsset.Type != 2) {
+			throw new IllegalArgumentException("不是经验id");
+		}
+		int curExp = (int) player.getCurrencyModule().get(expAsset);
+		int curLevel = player.getLevel(expAsset);
+		ExpConfig expConfig = getExpConfig(expId, curLevel, subId);
+		ExpConfig nextExpConfig = getExpConfig(expId, curLevel + 1, subId);
+		if (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
+			curExp -= expConfig.experience;
+			curLevel++;
+			player.getPlayerModule().getExpLevelMap().add(expId);
+			player.getCurrencyModule().setCount(expId, curExp);
+		}
+		return new int[] { curExp, curLevel };
+	}
+
+	/** 
 	 * 获取某个升级配置。 
 	 * @param id  经验id
 	 * @param level 等级

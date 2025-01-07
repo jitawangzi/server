@@ -137,6 +137,12 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	public void addExp(int id, int count) {
+		if (id == Asset.CatalogPoints.ID) {
+			// 图鉴积分手动升级，只加经验，不升级
+			currencyMap.add(id, count);
+			return;
+		}
+
 		long curExp = currencyMap.getValue(id) + count;
 
 		IntMapWrapper levelsMap = player.getPlayerModule().getExpLevelMap();

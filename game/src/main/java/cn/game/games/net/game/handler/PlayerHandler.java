@@ -64,6 +64,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.protocol.protobuf.PlayerMsg.ExpLevelInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataRequest_01000200;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataResponse_01000201;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
@@ -83,6 +84,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadResponse_01000014;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatResponse_01000006;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerImageRequest_01000019;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerImageResponse_0100001a;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpResponse_01000056;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
@@ -158,9 +161,19 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerQuestionnaireRequest_01000300, this::questionnaireInfo);
 		putInvoker(PbProtocol.PlayerQuestionnaireRewardRequest_01000302, this::questionnaireReward);
 		putInvoker(PbProtocol.PlayerFuncOpenRewardRequest_01000305, this::funcOpenReward);
+		putInvoker(PbProtocol.PlayerLevelUpRequest_01000055, this::levelUp);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
 	}
 
+	private void levelUp(NetClient client, Object message) {
+		PlayerLevelUpRequest_01000055 request = (PlayerLevelUpRequest_01000055) message;
+		PlayerLevelUpResponse_01000056.Builder response = PlayerLevelUpResponse_01000056.newBuilder();
+		int id = request.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		int[] levelUp = PlayerHelper.levelUp(player, id, 0);
+		response.setExpLevel(ExpLevelInfo.newBuilder().setId(id).setExp(levelUp[0]).setLevel(levelUp[1]).build());
+		client.sendProtocol(response.build());
+	}
 	private void funcOpenReward(NetClient client, Object message) {
 		PlayerFuncOpenRewardRequest_01000305 request = (PlayerFuncOpenRewardRequest_01000305) message;
 		PlayerFuncOpenRewardResponse_01000306.Builder response = PlayerFuncOpenRewardResponse_01000306.newBuilder();
