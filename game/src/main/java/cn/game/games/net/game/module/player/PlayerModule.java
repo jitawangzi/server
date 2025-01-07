@@ -22,6 +22,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.develop.hero.QualityStarObj;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.FuncOpenConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -34,6 +35,7 @@ import cn.game.protocol.generated.manager.HeadPortraitManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
+import cn.game.protocol.protobuf.BaseMsg.QualityStar;
 import cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxPush_01100040;
@@ -260,6 +262,14 @@ public class PlayerModule extends BasePlayerModule {
 		if (lockHideList != null) {
 			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));
 		}
+
+		HeroModule heroModule = player.getHeroModule();
+		Map<Integer, QualityStarObj> heroStarsMap = heroModule.getIllustrationsHeroStars();
+		heroStarsMap.forEach((k, v) -> {
+			builder.addHeroStars(QualityStar.newBuilder().setHeroId(k).setQuality(v.quality).setStar(v.star));
+		});
+		builder.setRewardLevel(heroModule.getIllustrationRewardLevel());
+
 		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
 	}
 	@Override
