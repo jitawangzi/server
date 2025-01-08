@@ -9,14 +9,12 @@ import cn.game.games.cache.entity.Player;
 
 public abstract class MultiPlayerActivityBase extends ActivityBase {
 	protected Map<Long, ActivityPlayerData> playerDataMap = new ConcurrentHashMap<>();
-	protected String activityInstanceId; // 活动实例ID
 
 	@Override
-	public void init(int id, Player player, boolean isNew) {
-		super.init(id, player, isNew);
+	public void init(int id, Object owner, boolean isNew) {
+		super.init(id, owner, isNew);
 		this.isMultiPlayer = true;
 		if (isNew) {
-			this.activityInstanceId = generateActivityInstanceId();
 		}
 	}
 
@@ -52,11 +50,6 @@ public abstract class MultiPlayerActivityBase extends ActivityBase {
 
 	protected abstract void onPlayerLeave(Player player);
 
-	protected abstract String generateActivityInstanceId();
-
-	public String getActivityInstanceId() {
-		return activityInstanceId;
-	}
 
 	public boolean shouldExpire(long now) {
 		// TODO Auto-generated method stub

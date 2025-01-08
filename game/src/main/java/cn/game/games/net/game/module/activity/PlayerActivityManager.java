@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.activity;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +12,14 @@ import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
 
 public class PlayerActivityManager extends AbstractActivityManager {
-	private Player player;
+	private transient Player player;
 	private Set<Integer> disposableIds = new HashSet<>();
+
+	public PlayerActivityManager(Player player) {
+		this.player = player;
+	}
+	public PlayerActivityManager() {
+	}
 
 	@Override
 	protected Object getOwner() {
@@ -31,6 +36,9 @@ public class PlayerActivityManager extends AbstractActivityManager {
 		}
 		if (config.isMultiplayer) {
 			return false;
+		}
+		if (config.openType == 0) {
+			return isInOpenTime(config.ID);
 		}
 		return canOpenNonTimeOpeningActivity(config);
 	}
@@ -63,19 +71,6 @@ public class PlayerActivityManager extends AbstractActivityManager {
 	}
 
 	@Override
-	protected boolean shouldExpire(ActivityBase activity, ActivityConfig config, long now, Collection<Integer> showList) {
-		if (config.openType == 0) {
-			return !showList.contains(activity.getId());
-		} else {
-			long endTime = activity.calcEndTime();
-			if (endTime > 0) {
-				return now >= endTime;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	protected void afterActivityOpen(ActivityBase activity) {
 		ActivityConfig config = ActivityManager.instance().get(activity.getId());
 		if (config.resetType == 0) {
@@ -83,6 +78,12 @@ public class PlayerActivityManager extends AbstractActivityManager {
 		}
 	}
 
+	@Override
+	public void runDestroyTask(int id, long remaining) {
+		player.setTimerTask(remaining, r -> {
+			destroy(id, true);
+		});
+	}
 	@Override
 	protected boolean shouldRefresh(ActivityConfig config) {
 		// TODO Auto-generated method stub

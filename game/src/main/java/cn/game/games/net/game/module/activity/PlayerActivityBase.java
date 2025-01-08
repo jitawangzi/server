@@ -22,8 +22,8 @@ public abstract class PlayerActivityBase extends ActivityBase {
 	}
 
 	@Override
-	public void init(int id, Player player, boolean isNew) {
-		this.player = player;
+	public void init(int id, Object owner, boolean isNew) {
+		this.player = (Player) owner;
 		player.registerEventHandler(this);
 		super.init(id, null, isNew);
 	}

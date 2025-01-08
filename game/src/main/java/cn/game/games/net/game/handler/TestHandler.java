@@ -33,7 +33,6 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -494,12 +493,12 @@ public class TestHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
 		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
-		for (Hero hero : battleHeroList) {
-			if (hero.getQuality() >= 7) {
-				player.handleEvent(EventTypeEnum.HeroBattle, hero);
-				break;
-			}
-		}
+//		for (Hero hero : battleHeroList) {
+//			if (hero.getQuality() >= 7) {
+//				player.handleEvent(EventTypeEnum.HeroBattle, hero);
+//				break;
+//			}
+//		}
 //		List<Goods> goods = PlayerHelper.randomReward(101602);
 //		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
 
@@ -517,7 +516,7 @@ public class TestHandler extends BaseHandler {
         //		future.onComplete(r -> {
         //			System.out.println(r);
         //		});
-        //        testcalcPower(player);
+		testcalcPower(player);
         //		drawTest2(player);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");

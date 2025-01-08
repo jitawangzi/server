@@ -1,17 +1,10 @@
 package cn.game.games.net.game.module.activity;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.games.net.common.module.activity.ActivityFactory;
 import cn.game.protocol.generated.config.ActivityConfig;
 
 public class GlobalActivityManager extends AbstractActivityManager {
-	private static GlobalActivityManager INSTANCE;
-	private Map<String, MultiPlayerActivityBase> activityInstances = new ConcurrentHashMap<>();
-
 	@Override
 	protected Object getOwner() {
 		return null; // 全局活动没有特定所有者
@@ -19,6 +12,9 @@ public class GlobalActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
+		if (config.openType == 0) {
+			return isInOpenTime(config.ID);
+		}
 		return config.isMultiplayer && !config.disable;
 	}
 
@@ -28,10 +24,10 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	}
 
 	@Override
-	protected boolean shouldExpire(ActivityBase activity, ActivityConfig config, long now, Collection<Integer> showList) {
+	protected boolean shouldExpire(ActivityBase activity) {
 		if (activity instanceof MultiPlayerActivityBase) {
 			MultiPlayerActivityBase multiActivity = (MultiPlayerActivityBase) activity;
-			return multiActivity.shouldExpire(now);
+			return multiActivity.shouldExpire(0);
 		}
 		return false;
 	}
@@ -40,7 +36,6 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	protected void afterActivityOpen(ActivityBase activity) {
 		if (activity instanceof MultiPlayerActivityBase) {
 			MultiPlayerActivityBase multiActivity = (MultiPlayerActivityBase) activity;
-			activityInstances.put(multiActivity.getActivityInstanceId(), multiActivity);
 		}
 	}
 
@@ -48,8 +43,12 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	protected void afterActivityDestroy(ActivityBase activity) {
 		if (activity instanceof MultiPlayerActivityBase) {
 			MultiPlayerActivityBase multiActivity = (MultiPlayerActivityBase) activity;
-			activityInstances.remove(multiActivity.getActivityInstanceId());
 		}
+	}
+
+	@Override
+	public void runDestroyTask(int id, long remaining) {
+		// TODO
 	}
 
 	@Override

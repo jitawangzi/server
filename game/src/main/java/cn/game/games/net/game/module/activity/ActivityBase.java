@@ -152,7 +152,7 @@ public abstract class ActivityBase implements EventHandler {
 		return false;
 	};
 
-	public void init(int id, Player player, boolean isNew) {
+	public void init(int id, Object owner, boolean isNew) {
 
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
 		this.id = id;
