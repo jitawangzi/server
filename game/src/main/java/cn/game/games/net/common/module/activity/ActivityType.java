@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity;
+package cn.game.games.net.common.module.activity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -40,7 +40,6 @@ import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
-import cn.game.games.net.common.ServerHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
@@ -55,6 +54,7 @@ import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.KeywordFilter;
 import cn.game.util.LockUtil;
@@ -113,7 +113,7 @@ public class GameServer implements GameServerMBean {
 	public void start(String[] args) throws Exception {
 
 		long start = System.currentTimeMillis();
-		String serverId = ServerHelper.parseServerId(args, ServerType.Game);
+		String serverId = GameUtil.parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");

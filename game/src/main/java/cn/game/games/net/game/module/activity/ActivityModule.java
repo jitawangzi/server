@@ -17,6 +17,8 @@ import cn.game.games.cache.entity.Activity;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.common.module.activity.ActivityFactory;
+import cn.game.games.net.common.module.activity.ActivityHelper;
 import cn.game.games.net.data.mapper.ActivityMapper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.util.DAO;

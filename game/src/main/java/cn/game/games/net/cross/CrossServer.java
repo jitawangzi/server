@@ -5,9 +5,9 @@ import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.util.IdUtil;
-import cn.game.games.net.common.ServerHelper;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -33,7 +33,7 @@ public class CrossServer {
 	public void start(String args[]) throws Exception {
 		long start = System.currentTimeMillis();
 
-		String serverId = ServerHelper.parseServerId(args, ServerType.Cross);
+		String serverId = GameUtil.parseServerId(args, ServerType.Cross);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动跨服。。");

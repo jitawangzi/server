@@ -12,10 +12,10 @@ import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.common.module.activity.ActivityType;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;

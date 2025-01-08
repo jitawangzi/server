@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ public abstract class ActivityBase implements EventHandler {
 	/** 活动实际开始/参加时间 */
 	protected long startTime;
 	protected long endTime;
+	protected boolean isMultiPlayer;
 
 	/** 
 	 * 当前活动是否有红点显示
@@ -62,6 +64,15 @@ public abstract class ActivityBase implements EventHandler {
 		return null;
 	}
 
+	// 新增获取活动参与者列表方法
+	public List<Long> getParticipants() {
+		return new ArrayList<>();
+	}
+
+	// 新增判断玩家是否可以参与活动
+	public boolean canJoin(Player player) {
+		return true; // 默认都可以参加
+	}
 	public ActivityInfo buildActivityInfo() {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);

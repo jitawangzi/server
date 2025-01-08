@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity;
+package cn.game.games.net.common.module.activity;
 
 public class ActivityHelper {
 	/** 活动开启类型： 创建玩家 */

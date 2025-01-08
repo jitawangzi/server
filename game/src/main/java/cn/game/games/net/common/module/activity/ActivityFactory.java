@@ -1,4 +1,4 @@
-package cn.game.games.net.game.module.activity;
+package cn.game.games.net.common.module.activity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.clazz.ClassManager;
+import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.protocol.generated.config.ActivityConfig;
 
 public class ActivityFactory {
@@ -24,6 +25,11 @@ public class ActivityFactory {
 
 	public static ActivityBase createActivity(int type) {
 		return ClassManager.getInstance().createActivityClassInstance(type);
+	}
+
+	public static ActivityBase createMultiPlayerActivity(int type) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
