@@ -190,9 +190,12 @@ public class HeroHandler extends BaseHandler {
 				if (hero.getStar() > qualityStarObj.star) {
 					qualityStarObj.star++;
 				}
-			} else {
+			} else if (hero.getQuality() > qualityStarObj.quality) {
 				qualityStarObj.quality++;
 				qualityStarObj.star = 1;
+			} else {
+				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+				return;
 			}
 		}
 		List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.CatalogPoints.ID, GlobalConst.HeroHandBookEXP,
