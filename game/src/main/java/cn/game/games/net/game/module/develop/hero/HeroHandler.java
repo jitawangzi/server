@@ -199,6 +199,9 @@ public class HeroHandler extends BaseHandler {
 				} else {
 					qualityStarObj.star++;
 				}
+			} else if (hero.getQuality() > qualityStarObj.quality) {
+				qualityStarObj.quality++;
+				qualityStarObj.star = 1;
 			} else {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 				return;
