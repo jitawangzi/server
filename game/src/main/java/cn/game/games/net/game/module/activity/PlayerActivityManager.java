@@ -89,4 +89,17 @@ public class PlayerActivityManager extends AbstractActivityManager {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	public void setDisposableIds(Set<Integer> disposableIds) {
+		this.disposableIds = disposableIds;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
 }

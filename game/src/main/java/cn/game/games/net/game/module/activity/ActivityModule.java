@@ -8,16 +8,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.common.module.activity.ActivityHelper;
 import cn.game.games.net.data.mapper.ActivityMapper;
-import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
@@ -25,26 +25,34 @@ public class ActivityModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
 			EventTypeEnum.NewMonth, EventTypeEnum.LevelUp };
 	/** 已经开始的活动，只是展示的不在这里。  */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
 	/** 开启过的一次性的活动 */
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Set<Integer> disposableIds = new HashSet<>();
 
 	private PlayerActivityManager playerActivityManager;
 
 	public Map<Integer, ActivityInfo> getShowState() {
-
-		Map<Integer, ActivityInfo> activityInfos = new HashMap<Integer, ActivityMsg.ActivityInfo>();
-		for (Integer id : activities.keySet()) {
-//			ActivityInfo activityInfo = ActivityInfo.newBuilder().setId(id).setStateValue(getState(id)).build();
-			activityInfos.put(id, buildActivityInfo(id));
-		}
-		return activityInfos;
+		return playerActivityManager.getShowState();
 	}
 
 	@Override
 	protected void initAfter() {
-		playerActivityManager = new PlayerActivityManager(player);
+		if (playerActivityManager == null) {
+			playerActivityManager = new PlayerActivityManager();
+		}
+		if (playerActivityManager.getPlayer() == null) {
+			playerActivityManager.setPlayer(player);
+		}
+		// 老数据兼容处理
+		if (!activities.isEmpty()) {
+			playerActivityManager.setActivities(activities);
+		}
+		if (!disposableIds.isEmpty()) {
+            playerActivityManager.setDisposableIds(disposableIds);
+		}
 	};
 
 	private void initNewActivity() {
@@ -56,29 +64,15 @@ public class ActivityModule extends BasePlayerModule {
 		}
 	}
 
-	/** 
-	 * 同步某个活动的状态。 
-	 * @param id
-	 * @return 
-	 */
-	public ActivityInfo buildActivityInfo(int id) {
-		// 已经开始过的
-		ActivityBase activityBase = activities.get(id);
-		if (activityBase != null) {
-			return activityBase.buildActivityInfo();
-		}
-		// 尚未开始的
-		return ActivityStateManager.getInstance().buildActivityInfo(id);
-	}
-
 	@Override
 	public void initFromDbAfter() {
 		// 这里注意一个活动，多开启时间的
-		for (ActivityBase activityBase : activities.values()) {
+		for (ActivityBase activityBase : playerActivityManager.list()) {
 			activityBase.init(activityBase.getId(), player, false);
 		}
 		checkExpired();
 	};
+
 
 	@Override
 	public void onLogin() {
@@ -93,17 +87,6 @@ public class ActivityModule extends BasePlayerModule {
 		playerActivityManager.checkExpired();
 		playerActivityManager.endTimeTask();
 	}
-
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class[] { ActivityMapper.class };
-	}
-
-	public void delete(int id) {
-//		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
-	}
-
-
 	/**
 	 * 关闭活动，依然保留活动数据
 	 * @param id
@@ -111,8 +94,6 @@ public class ActivityModule extends BasePlayerModule {
 	public void shutdown(int id) {
 		playerActivityManager.shutdown(id);
 	}
-
-
 	/** 
 	 * 彻底销毁活动，删除数据， 不再展示。 
 	 * @param id
@@ -124,7 +105,6 @@ public class ActivityModule extends BasePlayerModule {
 	public void destroy(int id, boolean notify) {
 		playerActivityManager.destroy(id, notify);
 	}
-
 	/** 
 	 * 重置某个活动
 	 * @param id
@@ -170,7 +150,6 @@ public class ActivityModule extends BasePlayerModule {
 			refreshByType(1);
 			playerActivityManager.newDay();
 			checkResetCycleActivity();
-//			initNonTimeNewDayActivity();
 			break;
 		}
 		case NewWeek: {
@@ -200,16 +179,17 @@ public class ActivityModule extends BasePlayerModule {
 	private void checkResetCycleActivity() {
 		List<ActivityConfig> cycleList = ActivityManager.instance().list().stream().filter(activityConfig -> activityConfig.resetType == 4).collect(Collectors.toList());
 		cycleList.forEach(activityConfig -> {
-			if (!activities.containsKey(activityConfig.ID)) {
-				open(activityConfig.ID, true);
-			}
+			playerActivityManager.open(activityConfig.ID, player, true);
 		});
 	}
 
 	@Override
-	public void buildPlayerAllInfo(Builder builder) {
-		// TODO Auto-generated method stub
+	public Class<?>[] defaultDbMapperClass() {
+		return new Class[] { ActivityMapper.class };
+	}
 
+	@Override
+	public void buildPlayerAllInfo(Builder builder) {
 	}
 
 	@Override

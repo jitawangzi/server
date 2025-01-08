@@ -2,6 +2,7 @@ package cn.game.games.net.common.module.activity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.protobuf.ActivityMsg;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
@@ -23,6 +26,10 @@ public abstract class AbstractActivityManager {
 
 	public ActivityBase get(int id) {
 		return activities.get(id);
+	}
+
+	public Collection<ActivityBase> list() {
+		return activities.values();
 	}
 	// 活动生命周期管理
 	public void open(int id, Object owner, boolean notify) {
@@ -211,7 +218,30 @@ public abstract class AbstractActivityManager {
 		return !showList.contains(id);
 	}
 
-	protected abstract boolean shouldRefresh(ActivityConfig config);
+	public Map<Integer, ActivityInfo> getShowState() {
+
+		Map<Integer, ActivityInfo> activityInfos = new HashMap<Integer, ActivityMsg.ActivityInfo>();
+		for (Integer id : activities.keySet()) {
+			activityInfos.put(id, buildActivityInfo(id));
+		}
+		return activityInfos;
+	}
+
+	/** 
+	 * 同步某个活动的状态。 
+	 * @param id
+	 * @return 
+	 */
+	public ActivityInfo buildActivityInfo(int id) {
+		// 已经开始过的
+		ActivityBase activityBase = activities.get(id);
+		if (activityBase != null) {
+			return activityBase.buildActivityInfo();
+		}
+		// 尚未开始的
+		return ActivityStateManager.getInstance().buildActivityInfo(id);
+	}
+
 
 	@Deprecated
 	public void initAdd(int id) {
@@ -250,6 +280,10 @@ public abstract class AbstractActivityManager {
 		DAO.updateWithBLOBs(activity);
 	}
 
+	public void delete(int id) {
+//		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
+	}
+
 	@Deprecated
 	public void updateAll() {
 
@@ -273,6 +307,12 @@ public abstract class AbstractActivityManager {
 			DAO.updateWithBLOBs(activity);
 		}
 	}
+
+	public void setActivities(Map<Integer, ActivityBase> activities) {
+		this.activities = activities;
+	}
+
+	protected abstract boolean shouldRefresh(ActivityConfig config);
 
 	// 钩子方法，允许子类在活动生命周期的关键点进行干预
 	protected void beforeActivityOpen(ActivityBase activity) {

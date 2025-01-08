@@ -7,6 +7,7 @@ public class EventModule implements GameEventRegistration {
 
 	private static class PlayerGameEventRegistration extends AbstractGameEventRegistration {
 
+
 	}
 
 	@Override
@@ -30,16 +31,15 @@ public class EventModule implements GameEventRegistration {
 	}
 
 	@Override
-	public void registerEventHandler(EventHandler eventHandler) {
-		registration.registerEventHandler(eventHandler);
-
+	public void unregisterEventHandler(EventHandler eventHandler) {
+		registration.unregisterEventHandler(eventHandler.getEventTypes(), eventHandler);
 	}
 
 	@Override
-	public void unregisterEventHandler(EventHandler eventHandler) {
-		registration.unregisterEventHandler(eventHandler);
-
+	public void registerEventHandler(EventHandler eventHandler) {
+		registration.registerEventHandler(eventHandler);
 	}
+
 	@Override
 	public void handleEvent(GameEvent gameEvent) {
 		registration.handleEvent(gameEvent);
@@ -48,7 +48,6 @@ public class EventModule implements GameEventRegistration {
 	@Override
 	public void handleEvent(EventTypeEnum eventType, Object... params) {
 		registration.handleEvent(new GameEvent(eventType, params));
-
 	}
 
 }
