@@ -187,12 +187,21 @@ public class HeroHandler extends BaseHandler {
 					client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 					return;
 				}
-				if (hero.getStar() > qualityStarObj.star) {
+				if (hero.getStar() <= qualityStarObj.star) {
+					client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+					return;
+				}
+				qualityStarObj.star++;
+			} else if (hero.getQuality() > qualityStarObj.quality) {
+				if (qualityStarObj.star >= maxStar) {
+					qualityStarObj.quality++;
+					qualityStarObj.star = 1;
+				} else {
 					qualityStarObj.star++;
 				}
 			} else {
-				qualityStarObj.quality++;
-				qualityStarObj.star = 1;
+				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+				return;
 			}
 		}
 		List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.CatalogPoints.ID, GlobalConst.HeroHandBookEXP,
