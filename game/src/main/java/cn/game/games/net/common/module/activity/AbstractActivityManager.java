@@ -9,10 +9,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.data.mapper.ActivityMapper;
+import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
+import cn.game.games.net.game.module.activity.ActivityFactory;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -22,6 +28,9 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public abstract class AbstractActivityManager {
+	protected Logger log = LoggerFactory.getLogger(this.getClass());
+
+	/** 进行中的活动，同id只能有一个活动 */
 	protected Map<Integer, ActivityBase> activities = new ConcurrentHashMap<>();
 
 	public ActivityBase get(int id) {
@@ -85,6 +94,16 @@ public abstract class AbstractActivityManager {
 			}
 		}
 		for (Integer id : deleteIds) {
+			destroy(id, false);
+		}
+	}
+
+	public void checkExpired(int id) {
+		ActivityBase activityBase = activities.get(id);
+		if (activityBase == null) {
+			return;
+		}
+		if (shouldExpire(activityBase)) {
 			destroy(id, false);
 		}
 	}
@@ -178,15 +197,6 @@ public abstract class AbstractActivityManager {
 		return rewards;
 	}
 
-	// 抽象方法，由子类实现
-	/** 
-	 * 返回活动所属对象(玩家或服务器)
-	 * @return
-	 */
-	protected abstract Object getOwner();
-
-	protected abstract boolean canOpen(ActivityConfig config);
-
 	protected ActivityBase createActivity(ActivityConfig config) {
 		return ActivityFactory.createActivity(config.type);
 
@@ -199,9 +209,9 @@ public abstract class AbstractActivityManager {
 	 */
 	protected boolean shouldExpire(ActivityBase activity) {
 		// 判断按活动时间开启的活动
-		boolean inOpenTime = isInOpenTime(activity.getId());
-		if (inOpenTime) {
-			return false;
+		ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
+		if (activityConfig.openType == 0) {
+			return isInOpenTime(activity.getId());
 		}
 		// 非时间开启的活动
 		long endTime = activity.calcEndTime();
@@ -213,14 +223,11 @@ public abstract class AbstractActivityManager {
 	}
 
 	/** 
-	 * 判断当前的活动，如果是按时间开启的，是否在活动时间内
-	 * @return  true，要么不是按活动时间开启的，要么是按活动时间开启的且在开启时间范围内
+	 * 判断当前的按时间开启的活动，是否在活动时间内
+	 * @param id
+	 * @return
 	 */
 	protected boolean isInOpenTime(int id) {
-		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.openType != 0) {
-			return true;
-		}
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
 		return !showList.contains(id);
 	}
@@ -249,46 +256,28 @@ public abstract class AbstractActivityManager {
 		return ActivityStateManager.getInstance().buildActivityInfo(id);
 	}
 
-
-	@Deprecated
-	public void initAdd(int id) {
-
-		Activity activity = new Activity();
-		ActivityBase activityBase = this.activities.get(id);
-		activity.setId(id);
-		Object owner = getOwner();
-		if (owner != null && owner instanceof Player) {
-			activity.setPlayerId(((Player) owner).getPlayerId());
-		} else {
-			activity.setPlayerId(0L);
+	/** 
+	 * 从数据库中加载活动
+	 * @param id
+	 */
+	public void load(int id) {
+		Object activity = DAO.executeSync(ActivityMapper.class, MapperConstant.selectByPrimaryKey, new Object[] { 0L, id });
+		if (activity == null) {
+			return;
 		}
-		activity.setStat((byte) 0);
-		if (activityBase != null) {
-			activity.setParams(activityBase.toSaveString());
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((Activity) activity).getParams(), null);
+
+		ActivityBase existing = activities.putIfAbsent(id, newActivity);
+		if (existing != null) {
+			log.warn("重复加载活动:{}", id);
+			return;
 		}
-		DAO.insert(activity);
-	}
-
-	@Deprecated
-	public void update(int id) {
-
-		Activity activity = new Activity();
-		activity.setId(id);
-		Object owner = getOwner();
-		if (owner != null && owner instanceof Player) {
-			activity.setPlayerId(((Player) owner).getPlayerId());
-		} else {
-			activity.setPlayerId(0L);
-		}
-		activity.setStat((byte) 0);
-		ActivityBase activityBase = this.activities.get(id);
-		activity.setParams(activityBase.toSaveString());
-
-		DAO.updateWithBLOBs(activity);
+		afterLoad();
 	}
 
 	public void delete(int id) {
-//		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { playerId, id });
+		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { 0L, id });
 	}
 
 	@Deprecated
@@ -308,7 +297,7 @@ public abstract class AbstractActivityManager {
 			} else {
 				activity.setPlayerId(0L);
 			}
-			activity.setStat((byte) 0);
+			activity.setStat((byte) activityBase.getState());
 			activity.setParams(saveString);
 
 			DAO.updateWithBLOBs(activity);
@@ -319,9 +308,22 @@ public abstract class AbstractActivityManager {
 		this.activities = activities;
 	}
 
+	// 抽象方法，由子类实现
+
+	/** 
+	 * 返回活动所属对象(玩家或服务器)
+	 * @return
+	 */
+	protected abstract Object getOwner();
+
+	protected abstract boolean canOpen(ActivityConfig config);
+
 	protected abstract boolean shouldRefresh(ActivityConfig config);
 
 	// 钩子方法，允许子类在活动生命周期的关键点进行干预
+	protected void afterLoad() {
+		
+	}
 	protected void beforeActivityOpen(ActivityBase activity) {
 	}
 

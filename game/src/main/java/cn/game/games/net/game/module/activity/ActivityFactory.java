@@ -2,11 +2,10 @@ package cn.game.games.net.game.module.activity;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.util.JsonUtil;
 
 public class ActivityFactory {
 
@@ -14,7 +13,8 @@ public class ActivityFactory {
 
 		ActivityBase activityBase;
 		if (!StringUtils.isEmpty(saveString)) {
-			activityBase = JSON.parseObject(saveString, ClassManager.getInstance().getActivityClass(config.type));
+			activityBase = JsonUtil.parseObjectWithType(saveString);
+//			activityBase = JSON.parseObject(saveString, ClassManager.getInstance().getActivityClass(config.type));
 		} else {
 			activityBase = createActivity(config.type);
 		}

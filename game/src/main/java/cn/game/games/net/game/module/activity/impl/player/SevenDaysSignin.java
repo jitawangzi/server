@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.games.net.common.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.ActivityConfig;

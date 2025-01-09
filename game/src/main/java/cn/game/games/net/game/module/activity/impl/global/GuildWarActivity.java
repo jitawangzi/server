@@ -6,7 +6,7 @@ import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.common.module.activity.ActivityType;
+import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.MultiPlayerActivityBase;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;

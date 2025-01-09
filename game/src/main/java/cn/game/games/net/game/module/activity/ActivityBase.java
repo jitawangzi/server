@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
@@ -23,6 +22,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
 import io.vertx.core.Future;
 
 /**
@@ -166,7 +166,8 @@ public abstract class ActivityBase implements EventHandler {
 	 * @return 存储用字符串
 	 */
 	public String toSaveString() {
-		return JSON.toJSONString(this, serializeConfig);
+//		return JSON.toJSONString(this, serializeConfig);
+		return JsonUtil.toJsonStringWithType(this);
 	}
 
 	public int getId() {

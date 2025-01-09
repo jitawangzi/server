@@ -5,6 +5,7 @@ import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.util.IdUtil;
+import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
@@ -46,6 +47,9 @@ public class CrossServer {
 		Config.load();
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
+
+		CrossActivityService crossActivityService = new CrossActivityService();
+		crossActivityService.init();
 
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 	}
