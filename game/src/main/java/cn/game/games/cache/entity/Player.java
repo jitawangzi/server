@@ -207,16 +207,20 @@ public class Player  {
 		}
 	}
 
+	/** 
+	 * 尽量不要使用这个方法
+	 * @param gameEvent
+	 */
 	public void handleEvent(GameEvent gameEvent) {
 		eventModule.handleEvent(gameEvent);
 	}
 
 	public void handleEvent(EventTypeEnum eventType) {
-		eventModule.handleEvent(new GameEvent(eventType));
+		eventModule.handleEvent(new GameEvent(eventType, this));
 	}
 
 	public void handleEvent(EventTypeEnum eventType, Object... params) {
-		eventModule.handleEvent(new GameEvent(eventType, params));
+		eventModule.handleEvent(new GameEvent(eventType, this, params));
 	}
 
 	public EventModule getEventModule() {
