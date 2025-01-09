@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.protobuf.Message;
 
-import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.common.module.activity.ActivityType;
@@ -17,14 +16,14 @@ public class GuildWarActivity extends MultiPlayerActivityBase {
 //	private Map<Integer, GuildWarData> guildDataMap = new ConcurrentHashMap<>();
 
 	@Override
-	protected void onPlayerJoin(Player player) {
+	protected void onPlayerJoin(long playerId) {
 //		int guildId = player.getGuildId();
 //		guildDataMap.computeIfAbsent(guildId, k -> new GuildWarData());
 		// 处理玩家加入逻辑
 	}
 
 	@Override
-	protected void onPlayerLeave(Player player) {
+	protected void onPlayerLeave(long playerId) {
 		// 处理玩家离开逻辑
 	}
 
