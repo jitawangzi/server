@@ -5,34 +5,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import cn.game.games.cache.entity.Player;
-
 public abstract class MultiPlayerActivityBase extends ActivityBase {
 	protected Map<Long, ActivityPlayerData> playerDataMap = new ConcurrentHashMap<>();
 
-	@Override
-	public void init(int id, Object owner, boolean isNew) {
-		super.init(id, owner, isNew);
-		this.isMultiPlayer = true;
-		if (isNew) {
-		}
-	}
-
 	// 玩家加入活动
-	public void joinActivity(Player player) {
-		if (canJoin(player)) {
+	public void joinActivity(long playerId) {
+		if (canJoin(playerId)) {
 			ActivityPlayerData data = new ActivityPlayerData();
-			data.setPlayerId(player.getPlayerId());
+			data.setPlayerId(playerId);
 			data.setJoinTime(System.currentTimeMillis());
-			playerDataMap.put(player.getPlayerId(), data);
-			onPlayerJoin(player);
+			playerDataMap.put(playerId, data);
+			onPlayerJoin(playerId);
 		}
 	}
 
 	// 玩家离开活动
-	public void leaveActivity(Player player) {
-		playerDataMap.remove(player.getPlayerId());
-		onPlayerLeave(player);
+	public void leaveActivity(long playerId) {
+		playerDataMap.remove(playerId);
+		onPlayerLeave(playerId);
 	}
 
 	// 获取活动内玩家数据
@@ -46,14 +36,8 @@ public abstract class MultiPlayerActivityBase extends ActivityBase {
 	}
 
 	// 子类实现的钩子方法
-	protected abstract void onPlayerJoin(Player player);
+	protected abstract void onPlayerJoin(long playerId);
 
-	protected abstract void onPlayerLeave(Player player);
-
-
-	public boolean shouldExpire(long now) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	protected abstract void onPlayerLeave(long playerId);
 
 }

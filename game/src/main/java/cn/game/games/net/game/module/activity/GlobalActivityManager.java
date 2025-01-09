@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.activity;
 
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
-import cn.game.games.net.common.module.activity.ActivityFactory;
 import cn.game.protocol.generated.config.ActivityConfig;
 
 public class GlobalActivityManager extends AbstractActivityManager {
@@ -16,20 +15,6 @@ public class GlobalActivityManager extends AbstractActivityManager {
 			return isInOpenTime(config.ID);
 		}
 		return config.isMultiplayer && !config.disable;
-	}
-
-	@Override
-	protected ActivityBase createActivity(ActivityConfig config) {
-		return ActivityFactory.createMultiPlayerActivity(config.type);
-	}
-
-	@Override
-	protected boolean shouldExpire(ActivityBase activity) {
-		if (activity instanceof MultiPlayerActivityBase) {
-			MultiPlayerActivityBase multiActivity = (MultiPlayerActivityBase) activity;
-			return multiActivity.shouldExpire(0);
-		}
-		return false;
 	}
 
 	@Override

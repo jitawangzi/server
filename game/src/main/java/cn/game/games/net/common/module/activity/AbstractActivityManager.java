@@ -179,11 +179,18 @@ public abstract class AbstractActivityManager {
 	}
 
 	// 抽象方法，由子类实现
-	protected abstract Object getOwner(); // 返回活动所属对象(玩家或服务器)
+	/** 
+	 * 返回活动所属对象(玩家或服务器)
+	 * @return
+	 */
+	protected abstract Object getOwner();
 
 	protected abstract boolean canOpen(ActivityConfig config);
 
-	protected abstract ActivityBase createActivity(ActivityConfig config);
+	protected ActivityBase createActivity(ActivityConfig config) {
+		return ActivityFactory.createActivity(config.type);
+
+	}
 
 	/** 
 	 * 判断一个已经开启的活动，是否过期了

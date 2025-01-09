@@ -32,6 +32,7 @@ public class ActivityModule extends BasePlayerModule {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Set<Integer> disposableIds = new HashSet<>();
 
+	/** 活动数据 */
 	private PlayerActivityManager playerActivityManager;
 
 	public Map<Integer, ActivityInfo> getShowState() {

@@ -5,7 +5,6 @@ import java.util.Set;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
-import cn.game.games.net.common.module.activity.ActivityFactory;
 import cn.game.games.net.common.module.activity.ActivityHelper;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -63,11 +62,6 @@ public class PlayerActivityManager extends AbstractActivityManager {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	protected ActivityBase createActivity(ActivityConfig config) {
-		return ActivityFactory.createActivity(config.type);
 	}
 
 	@Override

@@ -27,9 +27,4 @@ public class ActivityFactory {
 		return ClassManager.getInstance().createActivityClassInstance(type);
 	}
 
-	public static ActivityBase createMultiPlayerActivity(int type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
