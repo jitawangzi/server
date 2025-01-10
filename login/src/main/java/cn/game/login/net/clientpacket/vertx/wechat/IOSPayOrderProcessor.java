@@ -1,5 +1,6 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import cn.game.core.base.ServerContext;
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -215,13 +216,17 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
         response.end();
     }
 
-    static String  tokenUrl =
+    public static String  tokenUrl =
             "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s&force_refresh=false";
+    public static String  centerTokenUrl = "";
     static String jsapiTicketUrl =
             "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
     public static void startRefreshAccessTokenTask(){
         //正式环境的才会更新accessToken
-        if (!cn.game.util.Config.wechat_pay_page_url.endsWith("https://dhpartylogin.changyou.com/wx_pay")){
+       /*if (!cn.game.util.Config.wechat_pay_page_url.endsWith("https://dhpartylogin.changyou.com/wx_pay")){
+            return;
+        }*/
+       if (!cn.game.util.Config.use_wechat_access_token_flag){
             return;
         }
         try {
@@ -254,6 +259,10 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
 }
 
     static boolean refreshOnceAccessToken(long now) throws Exception {
+        if (ServerContext.getInstance().getServerType() != ServerType.Login) {
+            return false;
+        }
+
         boolean lock =
             LockUtil.tryLockNoWaitSync(
                 6, CacheType.IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK.key());
@@ -261,49 +270,46 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
           log.info("startRefreshAccessTokenTask not lock");
            return true;
         }
-        String url =
-            String.format(
-                    tokenUrl,
-                cn.game.util.Config.wechat_appid,
-                cn.game.util.Config.wechat_secret);
-        log.info("startRefreshAccessTokenTask url:" + url);
-        String result = HttpUtil.get(url);
-        if (result != null) {
-          JsonObject jsonObject = JsonUtil.parserJson(result);
-          String accessToken = jsonObject.get("access_token").getAsString();
-          String expires_in = jsonObject.get("expires_in").getAsString();
-          updateAccessToken(
-              accessToken, now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+        if (!StringUtils.isEmpty(cn.game.util.Config.center_server_url)){
+            String url = cn.game.util.Config.center_server_url+"/wechat/getWxAccessToken";
+            log.info("startRefreshAccessTokenTask url:" + url);
+            String result = HttpUtil.get(url);
+            if (result != null) {
+                JsonObject jsonObject = JsonUtil.parserJson(result);
+                String accessToken = jsonObject.get("access_token").getAsString();
+                String expires_in = jsonObject.get("expires_in").getAsString();
+                updateAccessToken(accessToken, Long.parseLong(expires_in) );
+                // 获取 jsapi_ticket jsapi_ticket是公众号用于调用微信JS接口的临时票据
+                url = String.format(jsapiTicketUrl, accessToken);
+                result = HttpUtil.get(url);
+                if (result != null) {
+                    jsonObject = JsonUtil.parserJson(result);
+                    String jsapiTicket = jsonObject.get("ticket").getAsString();
+                    expires_in = jsonObject.get("expires_in").getAsString();
+                    updateJsapiTicket(
+                            jsapiTicket, now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
+                }
 
-          // 获取 jsapi_ticket jsapi_ticket是公众号用于调用微信JS接口的临时票据
-          url = String.format(jsapiTicketUrl, accessToken);
-          result = HttpUtil.get(url);
-          if (result != null) {
-            jsonObject = JsonUtil.parserJson(result);
-            String jsapiTicket = jsonObject.get("ticket").getAsString();
-            expires_in = jsonObject.get("expires_in").getAsString();
-            updateJsapiTicket(
-                jsapiTicket, now + Long.parseLong(expires_in) * DateUtil.SECOND_MILLIS);
-          }
+                // 通知其他节点
+                VxHolder.broadcastRemoteServer(
+                        ServerType.Login,
+                        ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
+                                .setAccessToken(accessToken)
+                                .setExpireTime(accessTokenExpiresTimer)
+                                .setJsapiTicket(jsapiTicket)
+                                .setTickExpireTime(jsapiTicketExpiresTimer)
+                                .build());
 
-          // 通知其他节点
-          VxHolder.broadcastRemoteServer(
-              ServerType.Login,
-              ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
-                  .setAccessToken(accessToken)
-                  .setExpireTime(accessTokenExpiresTimer)
-                  .setJsapiTicket(jsapiTicket)
-                  .setTickExpireTime(jsapiTicketExpiresTimer)
-                  .build());
+                VxHolder.broadcastRemoteServer(
+                        ServerType.Game,
+                        ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
+                                .setAccessToken(accessToken)
+                                .setExpireTime(accessTokenExpiresTimer)
+                                .setJsapiTicket(jsapiTicket)
+                                .setTickExpireTime(jsapiTicketExpiresTimer)
+                                .build());
+            }
 
-            VxHolder.broadcastRemoteServer(
-                    ServerType.Game,
-                    ServerMsg.LoginUpdateIOSAccessTokenRequest_7d000074.newBuilder()
-                            .setAccessToken(accessToken)
-                            .setExpireTime(accessTokenExpiresTimer)
-                            .setJsapiTicket(jsapiTicket)
-                            .setTickExpireTime(jsapiTicketExpiresTimer)
-                            .build());
         }
         return false;
     }

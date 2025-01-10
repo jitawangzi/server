@@ -116,6 +116,15 @@ public final class Config {
 	public static String APP_KEY;
 
 	/**
+	 * 中心服务器地址
+	 */
+  public static String center_server_url;
+	/**
+	 * 1 true， 0 false，是否用微信参数去正式环境请求accessToken
+	 */
+	public static boolean use_wechat_access_token_flag;
+
+	/**
 	 *
 	 */
 	public static void load() {
@@ -161,13 +170,14 @@ public final class Config {
 			wechat_push_EncodingAESKey = initialProp.getProperty("wechat_push_EncodingAESKey", "");
 			wechat_appid = initialProp.getProperty("wechat_appid", "");
 			wechat_secret = initialProp.getProperty("wechat_secret", "");
+			center_server_url = initialProp.getProperty("center_server_url", "");
 			wechat_midas_offerId = initialProp.getProperty("wechat_midas_offerId", "");
 			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			wechat_pay_callback_url = initialProp.getProperty("wechat_pay_callback_url", "");
 			wechat_pay_page_url = initialProp.getProperty("wechat_pay_page_url", "");
 			disableIosPayClientVersion = initialProp.getProperty("disableIosPayClientVersion", "");
-
+			use_wechat_access_token_flag =  initialProp.getProperty("use_wechat_access_token_flag", "0").equals("1");
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
