@@ -2,9 +2,16 @@ package cn.game.games.net.game.module.activity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cn.game.core.net.protocol.object.ObjectProtocol;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.GlobalEvent;
+import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.util.ServerType;
 
 /**
  * 玩家自己的活动
@@ -26,6 +33,27 @@ public abstract class PlayerActivityBase extends ActivityBase {
 		this.player = (Player) owner;
 		player.registerEventHandler(this);
 		super.init(id, null, isNew);
+	}
+
+	/** 
+	 * 发送给全体活动，或者跨服活动
+	 */
+	protected void publishEvent(GameEvent event) {
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		if (!activityConfig.isMultiplayer) {
+			return;
+		}
+		// 如果跨服
+		if (activityConfig.isCross) {
+			if (event.isSendToCross()) {
+				return;
+			}
+			event.setSendToCross(true);
+			// TODO 找到目标服务器
+			VxHolder.sendRemoteServer(ServerType.Cross, new ObjectProtocol(PbProtocol.GamePlayerEventPush_7d010100, event));
+		} else {
+			GlobalEvent.getInstance().handleEvent(event);
+		}
 	}
 
 	@Override
