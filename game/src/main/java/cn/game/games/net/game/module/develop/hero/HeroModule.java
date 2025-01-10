@@ -201,6 +201,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setStar(1);
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
+		hero.setSkin(heroConfig.HeroSkinID);
 
 		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}

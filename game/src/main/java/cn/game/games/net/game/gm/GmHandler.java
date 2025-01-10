@@ -1,6 +1,5 @@
 package cn.game.games.net.game.gm;
 
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,13 +7,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import cn.game.games.net.game.module.rank.RankService;
-import com.google.protobuf.TextFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.TextFormat;
 
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -28,7 +27,9 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -41,6 +42,8 @@ import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007;
 import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockResponse_77000008;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameResponse_77000051;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022;
 import cn.game.protocol.protobuf.GmMsg.GmServerOpRequest_77000030;
@@ -81,8 +84,41 @@ public class GmHandler extends BaseHandler {
     putInvoker(PbProtocol.GmMailDeleteRequest_77000046, this::delGmMail);
 	putInvoker(PbProtocol.GmServerStatusRequest_77000032, this::serverStatus);
 	putInvoker(PbProtocol.GmServerOpRequest_77000030, this::serverOp);
+	putInvoker(PbProtocol.GmPlayerRenameRequest_77000050, this::rename);
   }
 
+	private void rename(NetClient client, Object o) {
+		GmPlayerRenameRequest_77000050 req = (GmPlayerRenameRequest_77000050) o;
+		GmPlayerRenameResponse_77000051 resp = GmPlayerRenameResponse_77000051.getDefaultInstance();
+		String playerIdString = req.getPlayerId();
+		String newName = req.getName();
+		long playerId = Long.parseLong(playerIdString);
+		Player me = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		
+		PlayerHelper.modifyPlayer(playerId, player -> {
+			String oldName = player.getData().getName();
+			Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
+			checkFuture.compose(b -> {
+				if (!b) {
+					return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
+				}
+				return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
+			}).map(r -> {
+				if (!r) {
+					throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
+				}
+				PlayerNameManager.getInstance()
+						.saveName2Id(newName, player.getData().getPlayerId())
+						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName))
+						.thenCompose(rr -> PlayerHelper.saveSimplePlayer(player).toCompletionStage());
+//				
+				player.getData().setName(newName);
+				client.sendProtocol(resp);
+				return null;
+			}).onFailure(r -> me.handleFail(r));
+			return true;
+		});
+	}
 	private void serverStatus(NetClient client, Object o) {
 		GmServerStatusRequest_77000032 req = (GmServerStatusRequest_77000032) o;
 		GmServerStatusResponse_77000033 resp = GmServerStatusResponse_77000033.getDefaultInstance();

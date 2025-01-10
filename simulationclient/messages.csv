@@ -177,3 +177,5 @@
 176,HeroIllustrationsLevelRewardRequest_16000044,0x16000044,,,,,领取图鉴等级奖励，只能一级一级领
 177,PlayerFuncOpenRewardRequest_01000305,0x01000305,,,,,领取功能开启的奖励
 178,PlayerLevelUpRequest_01000055,0x01000055,,,,,手动升级请求
+179,HeroSkinRequest_16000060,0x16000060,,,,,英雄换皮肤
+180,GmPlayerRenameRequest_77000050,0x77000050,,,,,gm改名

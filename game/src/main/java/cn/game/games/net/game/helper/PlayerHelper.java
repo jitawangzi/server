@@ -24,7 +24,6 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
@@ -1595,9 +1594,10 @@ public class PlayerHelper {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 		BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
 			try {
-				Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-				Player player = AsyncUtils.await(playerFromDb);
-				modifyPlayerOffline(function, player);
+				PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
+					modifyPlayerOffline(function, player);
+					return null;
+				});
 			} catch (Exception e) {
 				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 			}
@@ -1618,15 +1618,23 @@ public class PlayerHelper {
 		boolean online = player != null;
 		if (player == null) {
 			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
-			Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerId);
-			// 简单起见，同步获取玩家
-			player = AsyncUtils.await(playerFromDb);
+			PlayerHelper.loadPlayerFromDb(playerId).map(p -> {
+				modifyPlayerFinal(function, p, online);
+				return null;
+			}).onFailure(e -> {
+                log.error("modifyPlayer error, playerId: " + playerId); 
+			});
+		} else {
+			modifyPlayerFinal(function, player, online);
 		}
+	}
+
+	private static void modifyPlayerFinal(Function<Player, Boolean> function, Player player, boolean online) {
 		Player modify = player;
 		if (online) {
 			GameClient gameClient = player.getGameClient();
 			if (gameClient == null) {
-				log.error("modifyPlayer gameClient is null, playerId: " + playerId);
+				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 				return;
 			}
 			gameClient.getContext().runOnContext(v -> {
@@ -1642,7 +1650,7 @@ public class PlayerHelper {
 		if (apply != null && apply) {
 			log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
 			Future<List<Object>> saveClientCache = PlayerHelper.saveClientCache(player.getPlayerId());
-			AsyncUtils.await(saveClientCache);// 简单起见，同步保存
+//			AsyncUtils.await(saveClientCache);// 简单起见，同步保存
 		}
 		// 修改完玩家数据后，需要从缓存中清除数据
 		PlayerHelper.clearPlayer(player.getPlayerId());

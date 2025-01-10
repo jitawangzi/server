@@ -305,6 +305,7 @@ public class Hero extends ItemNoStack implements Serializable, DbEntity {
 		if (player != null) {
 			builder.setBattlePos(player.getHeroModule().getBattleHeroPos(id));
 		}
+		builder.setSkin(this.skin);
 //		builder.setExp(this.exp); 
 //		builder.setGetTime(getTime.intValue());
 

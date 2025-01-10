@@ -258,6 +258,7 @@ public class PlayerModule extends BasePlayerModule {
 		
 		builder.addAllHeadboxs(getIdsSet(IdConstant.HEAD_BOX));
 		builder.addAllFuncOpenRewardIds(getIdsSet(IdConstant.FUNC_OPEN_REWARD));
+		builder.addAllHeroSkinIds(getIdsSet(IdConstant.HERO_SKIN));
 		List<FuncOpenConfig> lockHideList = FuncOpenManager.instance().getLockHideList(false);
 		if (lockHideList != null) {
 			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));

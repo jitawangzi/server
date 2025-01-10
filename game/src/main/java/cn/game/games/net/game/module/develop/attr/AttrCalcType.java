@@ -9,6 +9,7 @@ public enum AttrCalcType {
 	FairyFriend,
 	Pet,
 	Secretscript,
+	HeroSkin,
 	NONE,
 
 	;
