@@ -8,7 +8,7 @@ public enum ServerType {
 	Data(),
 	Cross(),
 	Gm(),
-	World(),
+	Center(),
 	;
 	
 	private String serverIdKey;
