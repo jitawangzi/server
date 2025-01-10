@@ -3,7 +3,6 @@ package cn.game.games.net.game.manager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,59 +13,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.task.TaskManager;
-import cn.game.games.cache.entity.Activity;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.AbstractGameEventRegistration;
-import cn.game.games.net.data.mapper.ActivityMapper;
-import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GlobalEvent;
 import cn.game.games.net.game.module.activity.ActivityModule;
-import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;
+import io.vertx.core.impl.ConcurrentHashSet;
 
-public class ActivityStateManager extends AbstractGameEventRegistration {
+public class ActivityStateManager {
 
 	private static final Logger log = LoggerFactory.getLogger(ActivityManager.class);
 
 	private static ActivityStateManager instance = new ActivityStateManager();
 
 	// 当前开启的活动id（2状态）,一般是按时间开启的全体活动
-	private Set<Integer> activeActivitys = new HashSet<>();
+	private Set<Integer> activeActivitys = new ConcurrentHashSet<>();
 
 	// 1、2、3 状态的活动id ,只是根据时间开启的活动,
 	private Map<Integer, Integer> states = new ConcurrentHashMap<>();
 	/** 全体活动 */
-	public ActivityModule activityModule = new ActivityModule();
+//	public ActivityModule activityModule = new ActivityModule();
 
 	public static ActivityStateManager getInstance() {
 		return instance;
 	}
 
-	public boolean isOpen(int id) {
-
-		return this.activeActivitys.contains(id);
-	}
-
-//	public void open(int id) {
-//
-//		if (!activeActivitys.contains(id)) {
-//			activeActivitys.add(id);
-//			activityOp.open(id);
-//		}
-//	}
-
-	public void close(int id) {
-
-		activeActivitys.remove(Integer.valueOf(id));
-		activityModule.shutdown(id);
-	}
-
 	public void start() {
-
 		Date nowDate = new Date();
 		for (ActivityConfig activityConfig : ActivityManager.instance().list()) {
 			int id = activityConfig.ID;
@@ -338,8 +315,9 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 						});
 					}
 				} else {
-					activityModule.open(id, true);
+//					activityModule.open(id, true);
 					activeActivitys.add(id);
+					GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityOpenTime, id);
 				}
 			});
 		}
@@ -371,7 +349,8 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 						});
 					}
 				} else {
-					activityModule.shutdown(id);
+					GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityShutDownTime, id);
+//					activityModule.shutdown(id);
 					activeActivitys.remove(id);
 				}
 			});
@@ -404,7 +383,8 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 				}
 			} else {
 				removeState(id);
-				activityModule.destroy(id);
+//				activityModule.destroy(id);
+				GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityDestoryTime, id);
 			}
 //			});
 		}
@@ -511,21 +491,4 @@ public class ActivityStateManager extends AbstractGameEventRegistration {
 		Date now = new Date();
 		return (int) DateUtil.howLong(TimeUnit.SECONDS, startDate, now);
 	}
-
-	public void initGlobal() {
-//		DataGameServerInterface dataGameServerInterfaceSync = GameServer.getInstance().getDataGameServerInterfaceSync();
-
-		//查询所有玩家爬塔数据
-//		List<ClimbingTower> climbingTowers = (List<ClimbingTower>) dataGameServerInterfaceSync.exec(ClimbingTowerMapper.class,
-//				MapperConstant.selectAll, null);
-//		climbingTowers.forEach(e -> this.playerClimbingTowerData.put(e.getPlayerId(), e));
-
-		@SuppressWarnings("unchecked")
-		List<Activity> activities = (List<Activity>) DAO.executeSync(ActivityMapper.class,
-				MapperConstant.selectByPlayerId, 0L);
-
-//		activityOp.initLoadData(activities);
-
-	}
-
 }

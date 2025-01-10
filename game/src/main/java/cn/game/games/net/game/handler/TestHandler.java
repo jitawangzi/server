@@ -491,14 +491,12 @@ public class TestHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
 		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
-
-		Future<?> future = PlayerHelper.modifyPlayerNew(240201736L, pp -> {
-			pp.getData().setLevel(999);
-			return true;
-		});
-		future.onComplete(r -> {
-			System.out.println(r);
-		});
+//		for (Hero hero : battleHeroList) {
+//			if (hero.getQuality() >= 7) {
+//				player.handleEvent(EventTypeEnum.HeroBattle, hero);
+//				break;
+//			}
+//		}
 //		List<Goods> goods = PlayerHelper.randomReward(101602);
 //		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
 
@@ -526,7 +524,6 @@ public class TestHandler extends BaseHandler {
 
 			return true;
 		});
-
         //		drawTest2(player);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");

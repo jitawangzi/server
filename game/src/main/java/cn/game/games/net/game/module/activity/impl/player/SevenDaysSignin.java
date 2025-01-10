@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.ActivityConfig;
@@ -16,7 +17,6 @@ import com.google.protobuf.Message;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;

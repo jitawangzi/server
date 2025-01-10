@@ -29,6 +29,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventHandler;
+import cn.game.games.core.event.EventModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
@@ -49,7 +50,6 @@ import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.pet.PetModule;
 import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
-import cn.game.games.net.game.module.event.EventModule;
 import cn.game.games.net.game.module.func.FuncModule;
 import cn.game.games.net.game.module.invite.InviteModule;
 import cn.game.games.net.game.module.item.ItemModule;
@@ -216,16 +216,20 @@ public class Player  {
 		}
 	}
 
+	/** 
+	 * 尽量不要使用这个方法
+	 * @param gameEvent
+	 */
 	public void handleEvent(GameEvent gameEvent) {
 		eventModule.handleEvent(gameEvent);
 	}
 
 	public void handleEvent(EventTypeEnum eventType) {
-		eventModule.handleEvent(new GameEvent(eventType));
+		eventModule.handleEvent(new GameEvent(eventType, this));
 	}
 
 	public void handleEvent(EventTypeEnum eventType, Object... params) {
-		eventModule.handleEvent(new GameEvent(eventType, params));
+		eventModule.handleEvent(new GameEvent(eventType, this, params));
 	}
 
 	public EventModule getEventModule() {

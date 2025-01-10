@@ -11,8 +11,8 @@ import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
