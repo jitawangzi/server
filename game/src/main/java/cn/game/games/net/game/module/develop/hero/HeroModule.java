@@ -19,6 +19,7 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
+import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.generated.config.DayCardConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -202,6 +203,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
 		hero.setSkin(heroConfig.HeroSkinID);
+		player.getPlayerModule().addId(IdConstant.HERO_SKIN, heroConfig.HeroSkinID);
 
 		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}

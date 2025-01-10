@@ -39,7 +39,7 @@ public class HeroSkinModule extends AbstractItemIdModule<HeroSkin> {
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
-		return GoodsTypeEnum.Skin;
+		return GoodsTypeEnum.HeroSkin;
 	}
 
 	@Override
