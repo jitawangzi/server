@@ -97,6 +97,9 @@ public class DataFixManager {
 			if (lingPoBattle == null) {
 				return false;
 			}
+			if (lingPoBattle.getBattleId() == 31001) {
+				return false;
+			}
 			lingPoBattle.setBattleId(31001);
 //			lingPoBattle.setBattleTimes(0);
 			return true;

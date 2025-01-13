@@ -300,7 +300,9 @@ public class PlayerHelper {
 			rewards = goodsModule.addReward(id, value, opType);
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
-			BIHelper.resourceUpdate(player, id, value, opType, true);
+			if (player.isOnline()) {
+				BIHelper.resourceUpdate(player, id, value, opType, true);
+			}
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
@@ -397,7 +399,9 @@ public class PlayerHelper {
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
-			BIHelper.resourceUpdate(player, id, value, consumeType, false);
+			if (player.isOnline()) {
+				BIHelper.resourceUpdate(player, id, value, consumeType, false);
+			}
 		}
 		return ret;
 	}
