@@ -113,7 +113,7 @@ public class PlayerModule extends BasePlayerModule {
 		}
 	};
 
-	public boolean addId(int type, int configId) {
+	public boolean addId(IdConstant type, int configId) {
 		return getIdsSet(type).add(configId);
 //		Map<Integer, PlayerIds> map = getOrCreateIdSet(type);
 //		if (map.containsKey(configId)) {
@@ -129,7 +129,7 @@ public class PlayerModule extends BasePlayerModule {
 //		map.put(add.getConfigId(), add);
 	}
 
-	public boolean removeId(int type, int configId) {
+	public boolean removeId(IdConstant type, int configId) {
 //		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
 //		PlayerIds playerIds = map.remove(configId);
 //		if (playerIds != null) {
@@ -148,12 +148,12 @@ public class PlayerModule extends BasePlayerModule {
 //		}
 //	}
 
-	public boolean hasId(int type, int configId) {
+	public boolean hasId(IdConstant type, int configId) {
 		return getIdsSet(type).contains(configId);
 	}
 
-	public Set<Integer> getIdsSet(int type) {
-		return idsSet.computeIfAbsent(type, k -> new HashSet<>());
+	public Set<Integer> getIdsSet(IdConstant type) {
+		return idsSet.computeIfAbsent(type.getValue(), k -> new HashSet<>());
 	}
 
 	public IntMapWrapper getExpLevelMap() {

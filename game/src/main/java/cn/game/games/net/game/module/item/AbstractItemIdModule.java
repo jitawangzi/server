@@ -5,6 +5,7 @@ import java.util.Set;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.protocol.manual.OpType;
 
@@ -44,7 +45,7 @@ public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T
 	 * 获取id类型
 	 * @return
 	 */
-	public abstract int getIdType();
+	public abstract IdConstant getIdType();
 
 	/** 
 	 * 重复获取时，转化为某种资源

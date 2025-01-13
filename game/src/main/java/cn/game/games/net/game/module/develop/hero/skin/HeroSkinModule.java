@@ -43,7 +43,7 @@ public class HeroSkinModule extends AbstractItemIdModule<HeroSkin> {
 	}
 
 	@Override
-	public int getIdType() {
+	public IdConstant getIdType() {
 		return IdConstant.HERO_SKIN;
 	}
 
