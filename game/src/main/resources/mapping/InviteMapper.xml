@@ -177,4 +177,11 @@
     </foreach>
     )
   </update>
+  
+  
+     <delete id="deletePlayerData" parameterType="java.lang.Long">
+    delete from t_invite
+    where player_id = #{playerId,jdbcType=BIGINT}
+      or dst_pid = #{playerId,jdbcType=BIGINT}
+  </delete>
 </mapper>

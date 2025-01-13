@@ -134,8 +134,9 @@ public class DrawHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+        boolean battlePass = player.getChapterModule().isBattlePass(GlobalConst.OrientationFree); 
 		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		if (monthCardModule.getMonthCard(1) == null || monthCardModule.getMonthCard(2) == null) {
+		if ((monthCardModule.getMonthCard(1) == null || monthCardModule.getMonthCard(2) == null) && !battlePass) {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.condition_check_error.ID);
 			return;
 		}

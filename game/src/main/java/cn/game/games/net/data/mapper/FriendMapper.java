@@ -78,4 +78,6 @@ public interface FriendMapper {
 	
 	Long selectBlack(@Param("playerId") Long playerId, @Param("friendId") Long friendId, @Param("relation") Byte relation);
 
+	int deletePlayerData(@Param("playerId") Long playerId);
+
 }

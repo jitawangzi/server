@@ -151,6 +151,17 @@ public class ActivityModule extends BasePlayerModule {
 		for (ActivityBase activityBase : activities.values()) {
 			activityBase.init(activityBase.getId(), player, false);
 		}
+		if (disposableIds.isEmpty()) {// 兼容老数据
+			for (ActivityBase activityBase : activities.values()) {
+				ActivityConfig activityConfig = ActivityManager.instance().getNullable(activityBase.getId());
+				if (activityConfig == null) {
+					continue;
+				}
+				if (activityConfig.resetType == 0) {
+					disposableIds.add(activityBase.getId());
+				}
+			}
+		}
 		checkExpired();
 	};
 
@@ -177,7 +188,11 @@ public class ActivityModule extends BasePlayerModule {
 		List<Integer> deleteIds = new ArrayList<>();
 		for (ActivityBase activityBase : activities.values()) {
 			int cid = activityBase.getId();
-			ActivityConfig activityConfig = ActivityManager.instance().get(cid);
+			ActivityConfig activityConfig = ActivityManager.instance().getNullable(cid);
+			if (activityConfig == null) {
+				deleteIds.add(cid);
+				continue;
+			}
 			if (activityConfig.openType == 0) { // 按照时间开启的
 				// 活动已经彻底关闭了
 				if (!showList.contains(cid)) // 活动已经彻底关闭了

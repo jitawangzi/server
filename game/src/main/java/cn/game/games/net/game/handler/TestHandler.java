@@ -36,8 +36,13 @@ import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.data.mapper.ForbidAccountMapper;
+import cn.game.games.net.data.mapper.FriendApplicationMapper;
+import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
@@ -793,8 +798,24 @@ public class TestHandler extends BaseHandler {
             }
             PlayerHelper.clearPlayer(playerId);
         }
+        
+//        RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId)).
+//        compose(r -> {
+//			
+//		})
         // 删除数据库
-        DAO.execute(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId);
+		List<DbTask> tasks = new ArrayList<>();
+		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(FriendMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+
+		// 名字、排行榜、简要数据
+
+//		DAO.execute(tasks).compose(r -> {
+//			
+//		});
         // 删除login账号
         VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
         client.sendProtocol(defaultInstance);

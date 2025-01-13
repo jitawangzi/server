@@ -1,8 +1,10 @@
 package cn.game.games.net.data.mapper;
 
-import cn.game.games.cache.entity.Invite;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+
+import cn.game.games.cache.entity.Invite;
 
 public interface InviteMapper {
 
@@ -70,4 +72,7 @@ public interface InviteMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<Invite> recordList);
+
+	int deletePlayerData(@Param("playerId") Long playerId);
+
 }
