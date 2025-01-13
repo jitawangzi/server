@@ -69,6 +69,8 @@ public class LoginServerHandler extends BaseHandler {
 	private void playerDelete(NetClient client, Object o) {
 		LoginPlayerDeleteRequest_7d000080 req = (LoginPlayerDeleteRequest_7d000080) o;
 		long playerId = req.getPlayerId();
+		// 删除账号缓存
+
 		UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 		userMapper.deleteByPrimaryKey(playerId);
 		client.sendProtocol(LoginPlayerDeleteResponse_7d000081.getDefaultInstance());

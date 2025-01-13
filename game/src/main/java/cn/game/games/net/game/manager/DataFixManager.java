@@ -26,10 +26,7 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.util.GameUtil;
 import cn.game.util.SpringContextLoader;
@@ -92,31 +89,31 @@ public class DataFixManager {
 		PlayerHelper.loadAndProcessPlayers(function);
 	}
 
-	@DataFix(description = "修复天道修为新增任务", deprecated = false)
-	public void fixPlayerQuestTDAdd() {
-		Function<Player, Boolean> function = player -> {
-			int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
-			QuestModule questModule = player.getQuestModule();
-			// 所有天道修改任务
-			List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
-			boolean fix = false;
-			for (QuestConfig questConfig : groupList) {
-				// 当前天道修为等级的任务
-				if (questConfig.OpenCondition == heavenlyDaoLevel) {
-					Quest quest = questModule.open(questConfig.ID, false);
-					if (quest != null) {
-						// 新增了任务
-						fix = true;
-					}
-				}
-			}
-			return fix;
-		};
+//	@DataFix(description = "修复天道修为新增任务", deprecated = false)
+//	public void fixPlayerQuestTDAdd() {
+//		Function<Player, Boolean> function = player -> {
+//			int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+//			QuestModule questModule = player.getQuestModule();
+//			// 所有天道修改任务
+//			List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
+//			boolean fix = false;
+//			for (QuestConfig questConfig : groupList) {
+//				// 当前天道修为等级的任务
+//				if (questConfig.OpenCondition == heavenlyDaoLevel) {
+//					Quest quest = questModule.open(questConfig.ID, false);
+//					if (quest != null) {
+//						// 新增了任务
+//						fix = true;
+//					}
+//				}
+//			}
+//			return fix;
+//		};
+//
+//		PlayerHelper.loadAndProcessPlayers(function);
+//	}
 
-		PlayerHelper.loadAndProcessPlayers(function, true);
-	}
-
-	@DataFix(description = "重置灵魄之战数据", deprecated = false)
+	@DataFix(description = "重置灵魄之战数据", deprecated = true)
 	public void fixPlayerLPZZReset() {
 
 		Function<Player, Boolean> function = player -> {

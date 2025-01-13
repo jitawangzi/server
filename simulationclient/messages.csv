@@ -179,3 +179,4 @@
 178,PlayerLevelUpRequest_01000055,0x01000055,,,,,手动升级请求
 179,HeroSkinRequest_16000060,0x16000060,,,,,英雄换皮肤
 180,GmPlayerRenameRequest_77000050,0x77000050,,,,,gm改名
+181,GmPlayerDeleteRequest_77000052,0x77000052,,,,,gm删除某个玩家数据

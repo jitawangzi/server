@@ -20,6 +20,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
@@ -33,6 +35,7 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
@@ -49,6 +52,7 @@ import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
@@ -62,6 +66,7 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -69,6 +74,7 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
@@ -104,6 +110,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
@@ -799,10 +806,6 @@ public class TestHandler extends BaseHandler {
             PlayerHelper.clearPlayer(playerId);
         }
         
-//        RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId)).
-//        compose(r -> {
-//			
-//		})
         // 删除数据库
 		List<DbTask> tasks = new ArrayList<>();
 		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deletePlayerData, playerId));
@@ -811,13 +814,25 @@ public class TestHandler extends BaseHandler {
 		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
 		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
 
-		// 名字、排行榜、简要数据
-
-//		DAO.execute(tasks).compose(r -> {
-//			
-//		});
-        // 删除login账号
-        VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
+		RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId)).toCompletionStage().thenCompose(r -> {
+			SimplePlayer simplePlayer = (SimplePlayer) r;
+			// 名字
+			PlayerNameManager.getInstance().removeName(simplePlayer.name);
+			// 排行榜
+			for (RankType rankType : RankType.values()) {
+				RankService.getInstance().removeRankAsync(rankType, simplePlayer.serverId, simplePlayer.id);
+			}
+			// 简要数据
+			String key = CacheType.PLAYER_SIMPLE.key(playerId);
+			return RedisUtil.deleteAsync(key);
+		}).thenCompose(r -> DAO.execute(tasks).toCompletionStage()).thenCompose(r -> {
+			// 删除login账号
+			VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
+			return null;
+		}).exceptionally(e -> {
+			log.error("", e);
+			return null ; 
+		});
         client.sendProtocol(defaultInstance);
     }
 
