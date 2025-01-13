@@ -8,6 +8,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.protocol.generated.config.ActivityXianShiLiBaoConfig;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityXianShiLiBaoManager;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -93,7 +94,11 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                 checkAddNewLiBaoByBattleId(level, battleId);
             }
             case LevelUp -> {
+                int exp = event.getIntParameter(0);
                 int level = event.getIntParameter(1);
+                if (exp != Asset.playerExp.ID) {
+                    return;
+                }
                ShiLuoZhenJingBattle shiLuoZhenJingBattle = player.getChapterModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                List<ActivityXianShiLiBaoConfig> allLevelConfigList = getlevelConfigList(level);
                 Map<Integer, ActivityXianShiLiBaoConfig> groupSet = new HashMap<>();
