@@ -4,9 +4,7 @@ import java.util.Set;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.player.IdConstant;
-import cn.game.protocol.generated.config.HeroSkinConfig;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.HeroSkinManager;
 
 public class HeroSkinCalc extends PlayerAttrCalc {
 
@@ -16,10 +14,10 @@ public class HeroSkinCalc extends PlayerAttrCalc {
 	@Override
 	public void calcAttr() {
 		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.HERO_SKIN);
-		for (Integer integer : idsSet) {
-			HeroSkinConfig heroSkinConfig = HeroSkinManager.instance().get(integer);
-			attrMap.addAll(heroSkinConfig.AttributeVlalue);
-		}
+//		for (Integer integer : idsSet) {
+//			HeroSkinConfig heroSkinConfig = HeroSkinManager.instance().get(integer);
+//			attrMap.addAll(heroSkinConfig.AttributeVlalue);
+//		}
 	}
 
 	@Override
