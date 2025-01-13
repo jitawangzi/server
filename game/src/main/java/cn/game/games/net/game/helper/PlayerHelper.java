@@ -10,6 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.BatchQueryUtil;
+import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -1593,10 +1595,12 @@ public class PlayerHelper {
 	/** 
 	 * 从数据库中载入所有玩家数据，逐个执行修正逻辑，发生异常继续处理，不中断。 
 	 * @param function  修正方法，返回true为数据修正了，需要保存，false为数据没有修改，不需要保存
+	 * @param parallel  是否并行处理
 	 */
-	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
+	public static void loadAndProcessPlayers(Function<Player, Boolean> function, boolean parallel) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-		BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
+		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
+		Consumer<PlayerData> processor = playerData -> {
 			try {
 				PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
 					modifyPlayerOffline(function, player);
@@ -1605,7 +1609,16 @@ public class PlayerHelper {
 			} catch (Exception e) {
 				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 			}
-		});
+		};
+		if (parallel) {
+			BatchQueryUtil.processBatchParallel(batchQuery, processor, true);
+		} else {
+			BatchQueryUtil.processBatch(batchQuery, processor);
+		}
+	}
+
+	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
+		loadAndProcessPlayers(function, false);
 	}
 
 	/** 

@@ -46,7 +46,7 @@ public class BatchQueryUtil {
     }
 
 	/** 
-	 * 使用多线程处理查询出来的数据，可以指定 ExecutorService
+	 * 使用多线程处理查询出来的数据，可以指定默认使用ForkJoinPool执行任务
 	 * @param <T>
 	 * @param batchQuery
 	 * @param processor
@@ -57,6 +57,16 @@ public class BatchQueryUtil {
 		return processBatchParallel(batchQuery, processor, null, 100, continueOnError);
 	}
 
+	/** 
+	 * 使用多线程处理查询出来的数据，指定全部参数
+	 * @param <T>
+	 * @param batchQuery 查询器
+	 * @param processor 数据处理器
+	 * @param executor 处理任务的线程池
+	 * @param batchSize 每次查询的数据量
+	 * @param continueOnError 出错时是否继续处理下一个数据
+	 * @return
+	 */
 	public static <T> BatchProcessResult processBatchParallel(BatchQuery<T> batchQuery, Consumer<T> processor, ExecutorService executor,
 			int batchSize, boolean continueOnError) {
 
