@@ -424,7 +424,7 @@ public class PlayerHandler extends BaseHandler {
 						if (typeList != null) {
 							for (HeishiConfig heishiConfig : heishiList) {
 								ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
-								if (shopItem.getItemBuyTimes() == 0) {
+								if (shopItem != null && shopItem.getItemBuyTimes() == 0) {
 									ret = true;
 									break;
 								}
