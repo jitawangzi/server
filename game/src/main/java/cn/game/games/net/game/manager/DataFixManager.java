@@ -19,6 +19,7 @@ import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.Quest;
@@ -51,7 +52,6 @@ public class DataFixManager {
 		return instance;
 	}
 
-	@DataFix(description = "修正玩家失落真经410任务数据", deprecated = true)
 	public void fixPlayerQuestSlzj410() {
 
 		Function<Player, Boolean> function = player -> {
@@ -83,6 +83,23 @@ public class DataFixManager {
 				}
 			}
 			return fix;
+		};
+
+		PlayerHelper.loadAndProcessPlayers(function);
+	}
+
+	@DataFix(description = "重置灵魄之战数据", deprecated = false)
+	public void fixPlayerLPZZReset() {
+
+		Function<Player, Boolean> function = player -> {
+
+			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
+			if (lingPoBattle == null) {
+				return false;
+			}
+			lingPoBattle.setBattleId(31001);
+//			lingPoBattle.setBattleTimes(0);
+			return true;
 		};
 
 		PlayerHelper.loadAndProcessPlayers(function);
