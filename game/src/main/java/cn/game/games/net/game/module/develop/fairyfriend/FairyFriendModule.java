@@ -49,6 +49,10 @@ public class FairyFriendModule extends AbstractItemModule<FairyFriend> {
 		}
 		}
 	}
+	@Override
+	public void onLogin() {
+		addFairyFriend();
+	}
 
 	private void addFairyFriend() {
 		Collection<FairyFriendConfig> list = FairyFriendManager.instance().list(); 
