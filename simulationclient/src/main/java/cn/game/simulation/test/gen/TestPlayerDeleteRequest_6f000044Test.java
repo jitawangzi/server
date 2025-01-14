@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
@@ -15,7 +14,7 @@ public class TestPlayerDeleteRequest_6f000044Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.newBuilder() ; 
 		
-		builder.setPlayerId(240200002);
+		builder.setPlayerId(240201711);
 		
 		return builder.build() ; 
 	}

@@ -20,39 +20,29 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
-import cn.game.core.cache.CacheType;
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
-import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.data.mapper.ForbidAccountMapper;
-import cn.game.games.net.data.mapper.FriendApplicationMapper;
-import cn.game.games.net.data.mapper.FriendMapper;
-import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
@@ -66,7 +56,6 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
-import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -74,7 +63,6 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
-import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
@@ -87,7 +75,6 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
-import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
@@ -110,8 +97,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -793,48 +778,14 @@ public class TestHandler extends BaseHandler {
         }
     }
 
-    private void playerDelete(NetClient client, Object message) {
-        TestPlayerDeleteRequest_6f000044 req = (TestPlayerDeleteRequest_6f000044) message;
-        long playerId = req.getPlayerId();
-        TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
-        Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
-        if (playerDelete != null) {
-            GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-            if (gameClientByPlayer != null) {
-                GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
-            }
-            PlayerHelper.clearPlayer(playerId);
-        }
-        
-        // 删除数据库
-		List<DbTask> tasks = new ArrayList<>();
-		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deletePlayerData, playerId));
-		tasks.add(new DbTask(FriendMapper.class, MapperConstant.deletePlayerData, playerId));
-		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
-		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
-		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+	private void playerDelete(NetClient client, Object message) {
+		TestPlayerDeleteRequest_6f000044 req = (TestPlayerDeleteRequest_6f000044) message;
+		long playerId = req.getPlayerId();
+		TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
+		PlayerHelper.deletePlayerData(playerId);
+		client.sendProtocol(defaultInstance);
+	}
 
-		RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId)).toCompletionStage().thenCompose(r -> {
-			SimplePlayer simplePlayer = (SimplePlayer) r;
-			// 名字
-			PlayerNameManager.getInstance().removeName(simplePlayer.name);
-			// 排行榜
-			for (RankType rankType : RankType.values()) {
-				RankService.getInstance().removeRankAsync(rankType, simplePlayer.serverId, simplePlayer.id);
-			}
-			// 简要数据
-			String key = CacheType.PLAYER_SIMPLE.key(playerId);
-			return RedisUtil.deleteAsync(key);
-		}).thenCompose(r -> DAO.execute(tasks).toCompletionStage()).thenCompose(r -> {
-			// 删除login账号
-			VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
-			return null;
-		}).exceptionally(e -> {
-			log.error("", e);
-			return null ; 
-		});
-        client.sendProtocol(defaultInstance);
-    }
 
     private void message(NetClient client, Object message) {
         TestMessageRequest_6f000080 req = (TestMessageRequest_6f000080) message;

@@ -3,6 +3,7 @@ package cn.game.login.net.handler;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.GmOptMapper;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
 import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
@@ -69,10 +71,21 @@ public class LoginServerHandler extends BaseHandler {
 	private void playerDelete(NetClient client, Object o) {
 		LoginPlayerDeleteRequest_7d000080 req = (LoginPlayerDeleteRequest_7d000080) o;
 		long playerId = req.getPlayerId();
+		String account = req.getAccount();
 		// 删除账号缓存
-
-		UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-		userMapper.deleteByPrimaryKey(playerId);
+		User user = UserHelper.getUserByName(account);
+		if (user != null) {
+			UserHelper.removeUser(account).thenCompose(r -> UserHelper.removeUser(user.getSessionId())).thenCompose(r -> {
+				return CompletableFuture.supplyAsync(() -> {
+					UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+					userMapper.deleteByPrimaryKey(playerId);
+					return null;
+				});
+			}).exceptionally(e -> {
+				log.error("删除玩家失败", e);
+				return null;
+			});
+		}
 		client.sendProtocol(LoginPlayerDeleteResponse_7d000081.getDefaultInstance());
 	}
 	private void updateGmInfo(NetClient client, Object o) {

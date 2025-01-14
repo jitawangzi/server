@@ -40,6 +40,8 @@ import cn.game.protocol.protobuf.GmMsg.GmAccountForbidRequest_77000005;
 import cn.game.protocol.protobuf.GmMsg.GmAccountForbidResponse_77000006;
 import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockRequest_77000007;
 import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockResponse_77000008;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerDeleteRequest_77000052;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerDeleteResponse_77000053;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050;
@@ -85,8 +87,17 @@ public class GmHandler extends BaseHandler {
 	putInvoker(PbProtocol.GmServerStatusRequest_77000032, this::serverStatus);
 	putInvoker(PbProtocol.GmServerOpRequest_77000030, this::serverOp);
 	putInvoker(PbProtocol.GmPlayerRenameRequest_77000050, this::rename);
+	putInvoker(PbProtocol.GmPlayerDeleteRequest_77000052, this::playerDelete);
   }
 
+	private void playerDelete(NetClient client, Object o) {
+		GmPlayerDeleteRequest_77000052 req = (GmPlayerDeleteRequest_77000052) o;
+		GmPlayerDeleteResponse_77000053 resp = GmPlayerDeleteResponse_77000053.getDefaultInstance();
+
+		PlayerHelper.deletePlayerData(Long.parseLong(req.getPlayerId()));
+		client.sendProtocol(resp);
+
+	}
 	private void rename(NetClient client, Object o) {
 		GmPlayerRenameRequest_77000050 req = (GmPlayerRenameRequest_77000050) o;
 		GmPlayerRenameResponse_77000051 resp = GmPlayerRenameResponse_77000051.getDefaultInstance();

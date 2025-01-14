@@ -10,6 +10,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,6 +38,10 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.data.mapper.ForbidAccountMapper;
+import cn.game.games.net.data.mapper.FriendApplicationMapper;
+import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -48,6 +53,7 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.rank.RankModule;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -61,6 +67,7 @@ import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
@@ -88,12 +95,14 @@ import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
+import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.Future;
@@ -1600,12 +1609,19 @@ public class PlayerHelper {
 	public static void loadAndProcessPlayers(Function<Player, Boolean> function, boolean parallel) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
+		AtomicInteger count = new AtomicInteger();
+		AtomicInteger count2 = new AtomicInteger();
 		Consumer<PlayerData> processor = playerData -> {
 			try {
+				System.err.println("loadcount: " + count.incrementAndGet());
 				PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
+					System.err.println("execcount: " + count2.incrementAndGet());
 					modifyPlayerOffline(function, player);
 					return null;
-				});
+				}).onFailure(r -> {
+					log.error("loadAndProcessPlayers error, playerId: " + playerData.getPlayerId());
+				}).toCompletionStage().toCompletableFuture().join();
+//				});
 			} catch (Exception e) {
 				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
 			}
@@ -1734,5 +1750,53 @@ public class PlayerHelper {
 			promise.fail(err);
 		}, data);
 		return promise.future();
+	}
+
+	/** 
+	 * 删除玩家数据，一般只给gm使用
+	 * @param playerId
+	 */
+	public static void deletePlayerData(long playerId) {
+		Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
+		if (playerDelete != null) {
+			GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+			if (gameClientByPlayer != null) {
+				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
+			}
+			PlayerHelper.clearPlayer(playerId);
+		}
+
+		// 删除数据库
+		List<DbTask> tasks = new ArrayList<>();
+		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(FriendMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+
+		DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).toCompletionStage().thenCompose(r -> {
+			PlayerData playerData = (PlayerData) r;
+			// 名字
+			PlayerNameManager.getInstance().removeName(playerData.getName());
+			// 排行榜
+			for (RankType rankType : RankType.values()) {
+				RankService.getInstance().removeRankAsync(rankType, playerData.getServerId(), playerData.getPlayerId());
+			}
+			// 简要数据
+			String key = CacheType.PLAYER_SIMPLE.key(playerId);
+			return RedisUtil.deleteAsync(key).thenApply(result -> playerData);
+		}).thenCompose(playerData -> DAO.execute(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
+			// 删除login账号,这里可以使用传递下来的playerData
+			return VxHolder
+					.requestRemoteServer(ServerType.Login,
+							LoginPlayerDeleteRequest_7d000080.newBuilder()
+									.setPlayerId(playerData.getPlayerId())
+									.setAccount(playerData.getAccountId())
+									.build())
+					.toCompletionStage();
+		}).exceptionally(e -> {
+			log.error("", e);
+			return null;
+		});
 	}
 }
