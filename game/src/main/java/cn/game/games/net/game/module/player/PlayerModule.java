@@ -20,6 +20,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.hero.QualityStarObj;
@@ -87,6 +88,8 @@ public class PlayerModule extends BasePlayerModule {
 	/** 上次世界聊天发言时间 */
 	private int lastChatTime;
 	
+	/** 账号也记录一下，如果离线修复数据时触发bi使用 */
+	private Account account;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -214,6 +217,14 @@ public class PlayerModule extends BasePlayerModule {
 		this.lastChatTime = lastChatTime;
 	}
 
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
 	public void startCloudBoxTask() {
 		int[] randomCLoud = GlobalConst.RandomCLoud;
 		if (randomCLoud[0] == 1) {
@@ -282,6 +293,7 @@ public class PlayerModule extends BasePlayerModule {
 			if (player.isFuncOpen(InitialUI.RandomBox)) {
 				startCloudBoxTask();
 			}
+			setAccount(player.getAccount());
 			break;
 		}
 		case PLAYER_CREATE: {

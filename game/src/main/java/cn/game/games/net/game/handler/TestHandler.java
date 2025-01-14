@@ -56,13 +56,13 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
-import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -515,9 +515,16 @@ public class TestHandler extends BaseHandler {
         //		future.onComplete(r -> {
         //			System.out.println(r);
         //		});
-		testcalcPower(player);
-		RankModule rankModule = player.getModule(RankModule.class);
-		rankModule.updateHeroCombatRank();
+//		testcalcPower(player);
+//		RankModule rankModule = player.getModule(RankModule.class);
+//		rankModule.updateHeroCombatRank();
+
+		PlayerHelper.modifyPlayer(240201720, pp -> {
+
+			PlayerHelper.addResources(pp, Asset.diamond.ID, 999, OpType.Test);
+
+			return true;
+		});
 
         //		drawTest2(player);
         //		drawTest(player);

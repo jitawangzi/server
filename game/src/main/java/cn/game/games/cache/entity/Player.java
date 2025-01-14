@@ -701,7 +701,7 @@ public class Player  {
 
 
 	public Account getAccount() {
-		return account;
+		return account == null ? getPlayerModule().getAccount() : account;
 	}
 
 	public void setAccount(Account account) {
@@ -741,7 +741,7 @@ public class Player  {
 	}
 
 	public String getOpenId(){
-		return account.deviceId;
+		return getAccount().deviceId;
 	}
 
 	public InviteModule getInviteModule(){

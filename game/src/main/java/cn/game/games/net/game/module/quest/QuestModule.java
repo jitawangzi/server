@@ -648,9 +648,7 @@ public class QuestModule extends BasePlayerModule {
 		case QuestHelper.ACCEPTED:
 			quest.initCondition();
 			if (questConfig.Type != QuestTypeEnum.Achievement.ID) {
-				if (player.isOnline()) {
-					GameLogger.task(player, quest.getId(), false);
-				}
+				GameLogger.task(player, quest.getId(), false);
 			}
 			// 执行接取命令，事件
 			/*			if (missionConfig instanceof MainlineMissionConfig) {
