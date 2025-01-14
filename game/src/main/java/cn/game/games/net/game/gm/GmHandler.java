@@ -48,6 +48,8 @@ import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameResponse_77000051;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerResponse_77000022;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerTDLevelRequest_77000054;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerTDLevelResponse_77000055;
 import cn.game.protocol.protobuf.GmMsg.GmServerOpRequest_77000030;
 import cn.game.protocol.protobuf.GmMsg.GmServerOpResponse_77000031;
 import cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032;
@@ -88,8 +90,26 @@ public class GmHandler extends BaseHandler {
 	putInvoker(PbProtocol.GmServerOpRequest_77000030, this::serverOp);
 	putInvoker(PbProtocol.GmPlayerRenameRequest_77000050, this::rename);
 	putInvoker(PbProtocol.GmPlayerDeleteRequest_77000052, this::playerDelete);
+	putInvoker(PbProtocol.GmPlayerTDLevelRequest_77000054, this::tdLv);
   }
 
+	private void tdLv(NetClient client, Object o) {
+		GmPlayerTDLevelRequest_77000054 req = (GmPlayerTDLevelRequest_77000054) o;
+		GmPlayerTDLevelResponse_77000055 resp = GmPlayerTDLevelResponse_77000055.getDefaultInstance();
+		long playerId = Long.parseLong(req.getPlayerId());
+		int level = req.getLevel();
+
+		PlayerHelper.modifyPlayer(playerId, player -> {
+			if (player.getDevelopModule().getHeavenlyDaoLevel() != level) {
+				player.getDevelopModule().setHeavenlyDaoLevel(level);
+				return true;
+			}
+			return false;
+		});
+
+		client.sendProtocol(resp);
+
+	}
 	private void playerDelete(NetClient client, Object o) {
 		GmPlayerDeleteRequest_77000052 req = (GmPlayerDeleteRequest_77000052) o;
 		GmPlayerDeleteResponse_77000053 resp = GmPlayerDeleteResponse_77000053.getDefaultInstance();
