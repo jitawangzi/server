@@ -22,10 +22,10 @@ public class BatchProcessResult {
 	public static class BatchError {
 		private final int offset;
 		private final int itemIndex; // 在batch中的索引位置
-		private final Exception exception;
+		private final Throwable exception;
 		private final String message;
 
-		public BatchError(int offset, int itemIndex, Exception exception, String message) {
+		public BatchError(int offset, int itemIndex, Throwable exception, String message) {
 			this.offset = offset;
 			this.itemIndex = itemIndex;
 			this.exception = exception;
@@ -40,7 +40,7 @@ public class BatchProcessResult {
 			return itemIndex;
 		}
 
-		public Exception getException() {
+		public Throwable getException() {
 			return exception;
 		}
 

@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.MessageLite.Builder;
 
+import cn.game.core.async.AsyncProcessor;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -104,7 +104,6 @@ import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.log.LoggerType;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -1600,37 +1599,29 @@ public class PlayerHelper {
 	/** 
 	 * 从数据库中载入所有玩家数据，逐个执行修正逻辑，发生异常继续处理，不中断。 
 	 * @param function  修正方法，返回true为数据修正了，需要保存，false为数据没有修改，不需要保存
-	 * @param parallel  是否并行处理
 	 */
-	public static void loadAndProcessPlayers(Function<Player, Boolean> function, boolean parallel) {
+	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
-		AtomicInteger count = new AtomicInteger();
-		AtomicInteger count2 = new AtomicInteger();
-		Consumer<PlayerData> processor = playerData -> {
-			try {
-				System.err.println("loadcount: " + count.incrementAndGet());
-				PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
-					System.err.println("execcount: " + count2.incrementAndGet());
-					modifyPlayerOffline(function, player);
-					return null;
-				}).onFailure(r -> {
-					log.error("loadAndProcessPlayers error, playerId: " + playerData.getPlayerId());
-				}).toCompletionStage().toCompletableFuture().join();
-//				});
-			} catch (Exception e) {
-				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
-			}
-		};
-		if (parallel) {
-			BatchQueryUtil.processBatchParallel(batchQuery, processor, true);
-		} else {
-			BatchQueryUtil.processBatch(batchQuery, processor);
-		}
-	}
+		AtomicInteger loadcount = new AtomicInteger();
+		AtomicInteger execcount = new AtomicInteger();
+		AtomicInteger errorcount = new AtomicInteger();
+		AsyncProcessor<PlayerData> processor = playerData -> {
+			System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers loadcount: " + loadcount.incrementAndGet());
+			return PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
+				System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers execcount: " + execcount.incrementAndGet());
+				modifyPlayerOffline(function, player);
+				return null;
+			}).onFailure(r -> {
+				log.error("loadAndProcessPlayers error, playerId: " + playerData.getPlayerId());
+				System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers errorcount: " + errorcount.getAndIncrement());
 
-	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
-		loadAndProcessPlayers(function, false);
+			});
+		};
+		Future<Void> processBatchAsync = BatchQueryUtil.processBatchAsync(batchQuery, processor, true);
+		processBatchAsync.onFailure(r -> {
+			log.error("loadAndProcessPlayers error", r);
+		});
 	}
 
 	/** 
