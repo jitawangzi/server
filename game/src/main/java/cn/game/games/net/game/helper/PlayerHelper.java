@@ -1784,7 +1784,7 @@ public class PlayerHelper {
 			}
 			// 简要数据
 			String key = CacheType.PLAYER_SIMPLE.key(playerId);
-			return RedisUtil.deleteAsync(key).thenApply(result -> playerData);
+			return RedisLocalCache.getInstance().deleteAsync(key).thenApply(result -> playerData);
 		}).thenCompose(playerData -> DAO.execute(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
 			// 删除login账号,这里可以使用传递下来的playerData
 			return VxHolder

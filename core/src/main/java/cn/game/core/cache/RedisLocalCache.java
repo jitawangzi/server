@@ -186,6 +186,11 @@ public class RedisLocalCache {
 		cache.invalidate(key);
 	}
 
+	public RFuture<Boolean> deleteAsync(String key) {
+		invalidate(key);
+		return RedisUtil.deleteAsync(key);
+	}
+
 	/** 
 	 * 从Redis批量获取数据（同步）
 	 * @param keys

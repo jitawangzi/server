@@ -95,7 +95,17 @@ public class DataFixManager {
 //			int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
 //			QuestModule questModule = player.getQuestModule();
 //			// 所有天道修改任务
+//			if (player.getData().getPlayerId().longValue() == 240201709) {
+//				System.out.println();
+//			}
+//
 //			List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
+//			int count = 0;
+//			for (QuestConfig questConfig : groupList) {
+//				if (questConfig.OpenCondition == heavenlyDaoLevel) {
+//					count++;
+//				}
+//			}
 //			boolean fix = false;
 //			for (QuestConfig questConfig : groupList) {
 //				// 当前天道修为等级的任务

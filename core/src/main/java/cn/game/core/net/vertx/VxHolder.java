@@ -488,18 +488,18 @@ public class VxHolder {
 
 		// 设置超时定时器
 		long timerId = vertx.setTimer(timeoutMs, id -> {
-			if (!promise.future().isComplete()) {
-				promise.fail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
-			}
+			// 使用 tryFail 替代 fail，如果已经完成则返回 false
+			promise.tryFail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
 		});
 
 		// 处理执行结果
 		executionFuture.onComplete(ar -> {
 			vertx.cancelTimer(timerId);
 			if (ar.succeeded()) {
-				promise.complete(ar.result());
+				// 使用 tryComplete 替代 complete，如果已经完成则返回 false
+				promise.tryComplete(ar.result());
 			} else {
-				promise.fail(ar.cause());
+				promise.tryFail(ar.cause());
 			}
 		});
 

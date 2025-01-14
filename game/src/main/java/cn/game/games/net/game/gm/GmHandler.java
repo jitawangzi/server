@@ -360,7 +360,9 @@ public class GmHandler extends BaseHandler {
     String name = request.getName();
     PlayerHelper.seachPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 :  Long.parseLong(request.getPlayerId()) )
             .onSuccess(result ->{
-                response.setPlayer(result.toGmPlayerInfo());
+				if (result != null) {
+					response.setPlayer(result.toGmPlayerInfo());
+				}
                 sendAndRecordOpt(client, request, response.build(),"查询玩家");
             })
             .onFailure(err ->{

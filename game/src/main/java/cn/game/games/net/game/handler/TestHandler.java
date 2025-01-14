@@ -56,6 +56,7 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -514,7 +515,10 @@ public class TestHandler extends BaseHandler {
         //		future.onComplete(r -> {
         //			System.out.println(r);
         //		});
-        //        testcalcPower(player);
+		testcalcPower(player);
+		RankModule rankModule = player.getModule(RankModule.class);
+		rankModule.updateHeroCombatRank();
+
         //		drawTest2(player);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");
@@ -569,6 +573,7 @@ public class TestHandler extends BaseHandler {
         System.out.println("神通增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
         System.out.println();
         System.out.println();
+		float totalCombat = 0;
         for (Hero hero : list) {
             //			if (hero.getLevel() == 1) {
             //				continue; ti
@@ -577,14 +582,19 @@ public class TestHandler extends BaseHandler {
             System.out.println("hero id : " + hero.getConfigId() + " name : " + heroConfig.name + " level : " + hero.getLevel());
             System.out.println("基本属性： " + BattleHelper.makeHeroAttr(hero));
             IntMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
-            System.out.println("单英雄不算外围战力： " + BattleHelper.calcCombat(heroAttr));
+			float heroCombat = BattleHelper.calcCombat(heroAttr);
+			System.out.println("单英雄不算外围战力： " + heroCombat);
             System.out.println();
             heroAttrs.put(hero.getId(), heroAttr);
+			totalCombat += heroCombat;
         }
         System.out.println();
         AttrModule module = player.getModule(AttrModule.class);
         module.calcAllAttr();
-        System.out.println("所有外围增加的战力： " + BattleHelper.calcCombat(module.getPlayerAttrMap()));
+		float wwCombat = BattleHelper.calcCombat(module.getPlayerAttrMap());
+		System.out.println("所有外围增加的战力： " + wwCombat);
+		totalCombat += wwCombat * list.size();
+		System.err.println("总战力： " + totalCombat);
     }
 
     private void drawTest(Player player) {
