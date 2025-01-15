@@ -454,7 +454,7 @@ public class VxHolder {
 				T result = blockingCode.execute();
 				promise.complete(result);
 			} catch (Throwable e) {
-				log.error("error executeBlockingWithTimeout", e);
+				log.error("executeBlockingWithTimeout error", e);
 				promise.fail(e);
 			}
 		}, timeoutMs, ordered);
