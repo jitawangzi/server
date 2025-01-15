@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.MessageLite.Builder;
 
-import cn.game.core.async.AsyncProcessor;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -1606,9 +1606,9 @@ public class PlayerHelper {
 		AtomicInteger loadcount = new AtomicInteger();
 		AtomicInteger execcount = new AtomicInteger();
 		AtomicInteger errorcount = new AtomicInteger();
-		AsyncProcessor<PlayerData> processor = playerData -> {
+		Consumer<PlayerData> processor = playerData -> {
 			System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers loadcount: " + loadcount.incrementAndGet());
-			return PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
+			PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
 				System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers execcount: " + execcount.incrementAndGet());
 				modifyPlayerOffline(function, player);
 				return null;
@@ -1618,10 +1618,10 @@ public class PlayerHelper {
 
 			});
 		};
-		Future<Void> processBatchAsync = BatchQueryUtil.processBatchAsync(batchQuery, processor, true);
-		processBatchAsync.onFailure(r -> {
-			log.error("loadAndProcessPlayers error", r);
-		});
+		BatchQueryUtil.processBatch(batchQuery, processor);
+//		processBatchAsync.onFailure(r -> {
+//			log.error("loadAndProcessPlayers error", r);
+//		});
 	}
 
 	/** 

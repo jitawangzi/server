@@ -1,8 +1,8 @@
 package cn.game.core.async;
 
-import io.vertx.core.Future;
+import java.util.concurrent.CompletableFuture;
 
 @FunctionalInterface
 public interface AsyncProcessor<T> {
-	Future<?> process(T item);
+	CompletableFuture<?> process(T item);
 }

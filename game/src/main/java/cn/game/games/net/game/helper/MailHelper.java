@@ -2,7 +2,6 @@ package cn.game.games.net.game.helper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -24,6 +23,7 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
 import cn.game.util.DateUtil;
+import io.vertx.core.Future;
 
 /**
  * 邮件帮助类
@@ -118,7 +118,7 @@ public class MailHelper {
 	 * @param mailId
 	 * @param goods
 	 */
-	public static void sendMail(long receiverId, int mailId, List<Goods> goods, boolean notify) {
+	public static Future<Object> sendMail(long receiverId, int mailId, List<Goods> goods, boolean notify) {
 
 		Mail mail = Mail.valueOfMailId(receiverId, mailId, goods);
 		// 先推本服的,其他服直接存库，跨服的一般实时性要求低一些
@@ -126,8 +126,9 @@ public class MailHelper {
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();
 			mailModule.sendOnline(mail, notify);
+			return Future.succeededFuture(); 
 		} else {
-			DAO.insert(mail);
+			return DAO.insert(mail);
 		}
 	}
 

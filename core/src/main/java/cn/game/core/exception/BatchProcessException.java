@@ -16,6 +16,11 @@ public class BatchProcessException extends RuntimeException {
 		this.result = result;
 	}
 
+	public BatchProcessException(String message, Throwable cause) {
+		super(message, cause);
+		this.result = null;
+	}
+
 	public BatchProcessResult getResult() {
 		return result;
 	}

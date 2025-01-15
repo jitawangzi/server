@@ -104,7 +104,7 @@ public class BatchQueryUtil {
 		for (T item : batch) {
 			Future<?> itemFuture;
 			try {
-				itemFuture = processor.process(item);
+				itemFuture = Future.fromCompletionStage(processor.process(item));
 			} catch (Exception e) {
 				// 直接抛出的异常转换为失败的Future
 				logger.error("Process: failed to process item at offset " + offset, e);

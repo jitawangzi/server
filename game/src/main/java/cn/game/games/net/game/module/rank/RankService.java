@@ -1,10 +1,13 @@
 package cn.game.games.net.game.module.rank;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RFuture;
@@ -14,9 +17,12 @@ import org.redisson.client.protocol.ScoredEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.task.SchedulerService;
+import cn.game.core.util.BatchQueryUtil;
+import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -26,6 +32,7 @@ import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.generated.manager.RankRewardManager;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.LockUtil;
@@ -56,9 +63,14 @@ public class RankService {
 		return INSTANCE;
 	}
 
-	/** TODO 所有服务器id，先这么写 */
-	private static final String[] serverIds = new String[] { "server1", "server2", "server3", "server4" };
-
+	private String[] getServerIds() {
+		return VirtualServerManager.instance()
+		.list()
+		.stream()
+		.map(r -> r.ID)
+		.collect(toList())
+				.toArray(new String[] {});
+	}
 	/**
 	 * 根据服务器ID和排行榜类型生成Redis键。
 	 *
@@ -311,6 +323,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public void removeRank(RankType type) {
+		String[] serverIds = getServerIds();
 		for (int i = 0; i < serverIds.length; i++) {
 			String serverId = serverIds[i];
 			String key = getKey(serverId, type);
@@ -327,6 +340,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public CompletableFuture<Void> removeRankAsync(RankType type) {
+		String[] serverIds = getServerIds();
 		CompletableFuture<Boolean>[] futures = new CompletableFuture[serverIds.length];
 		for (int i = 0; i < futures.length; i++) {
 			String serverId = serverIds[i];
@@ -496,6 +510,8 @@ public class RankService {
 	 * @param rankId
 	 */
 	private void reward(int rankId) {
+		log.info("pre rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
+
 		RankConfig rankConfig = RankManager.instance().get(rankId);
 		List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
 		if (rewardList == null) {
@@ -505,23 +521,34 @@ public class RankService {
 		if (!lock) {
 			return;
 		}
+		long start = System.currentTimeMillis();
+		log.info("start rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
+		String[] serverIds = getServerIds();
+		AtomicInteger totalCount = new AtomicInteger();
+
 		RankType rankType = RankType.get(rankConfig.ID);
 		for (String serverId : serverIds) {
-			for (int page = 1;; page++) {
-				List<RankEntry> rankEntries = getPage(serverId, rankType, page, DEFAULT_PAGE_SIZE);
-				if (rankEntries.isEmpty()) {
-					break;
-				}
-				for (RankEntry rankEntry : rankEntries) {
-					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(), r -> r.RewardStage);
-					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
-					MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false);
-				}
-			}
+			log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
+			BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
+				return getPage(serverId, rankType, offset, DEFAULT_PAGE_SIZE);
+			};
+			BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
+				totalCount.incrementAndGet();
+				RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
+						r -> r.RewardStage);
+				List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
+				return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false)
+						.toCompletionStage()
+						.toCompletableFuture();
+			}, true);
 		}
+
+		log.info("rankId[{}] reward completed, use time[{}] ms,process totalCount[{}] ", rankId, (System.currentTimeMillis() - start),
+				totalCount.get());
+
 		if (rankConfig.ResetRank) {
 			log.info("removeRank, rankId:{}", rankId);
-            removeRank(rankType);
+			removeRank(rankType);
 		}
 	}
 
