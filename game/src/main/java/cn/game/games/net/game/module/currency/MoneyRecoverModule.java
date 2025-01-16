@@ -158,6 +158,21 @@ public class MoneyRecoverModule extends BasePlayerModule {
 			}
 		}
 	}
+//	Asset.playerEnergy.ID
+
+	/**
+	 * 获取恢复满体力还需要多久
+	 * @return 时间戳 毫秒
+	 */
+	public long getEnergyOfflineRecoveryTimer(){
+	  long curEnergy  = player.getCurrencyModule().get(Asset.playerEnergy);
+		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(Asset.playerEnergy.ID);
+		if (recoveryConfig == null){
+			return 0L;
+		}
+		if (curEnergy >= recoveryConfig.maxShow) return 0L;
+		return (recoveryConfig.maxShow - curEnergy) * 60 * 1000L;
+	}
 
 	private void startAllRecoveryTask() {
 		Collection<AssetRestoreConfig> list = AssetRestoreManager.instance().list();
