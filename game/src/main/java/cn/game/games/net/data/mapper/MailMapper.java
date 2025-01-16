@@ -72,4 +72,7 @@ public interface MailMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<Mail> recordList);
+
+	int deletePlayerData(@Param("playerId") Long playerId);
+
 }
