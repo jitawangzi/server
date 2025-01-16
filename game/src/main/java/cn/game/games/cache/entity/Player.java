@@ -769,7 +769,6 @@ public class Player  {
 	private void addAoYouRewardNotifyTask() {
 		long beginTimer  = DateUtil.DAY_MILLIS/2;
 		long cycleTimer =DateUtil.DAY_MILLIS/2;
-		beginTimer = cycleTimer = DateUtil.MINUTE_MILLIS;
 		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(()->{
 			//玩家已经在线，则取消所有离线任务执行
 			if (checkDelScheduleTask()) return;
@@ -781,10 +780,9 @@ public class Player  {
 	}
 
 	private void addMonthSignNotifyTask() {
-
-		long beginTimer  = DateUtil.nextDayStartTime(1)  - System.currentTimeMillis();
+		long now = System.currentTimeMillis();
+		long beginTimer  = DateUtil.getDayHourTimestamp(DateUtil.toLocalDate(DateUtil.nextDayStartTime(1)) ,9) - now ;
 		long cycleTimer =DateUtil.DAY_MILLIS;
-		beginTimer = cycleTimer = DateUtil.MINUTE_MILLIS;
 		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(()->{
 			//玩家已经在线，则取消所有离线任务执行
 			if (checkDelScheduleTask()) return;
@@ -808,7 +806,6 @@ public class Player  {
 		getAccount().getPlatform();
 		MoneyRecoverModule recoverModule = getModule(MoneyRecoverModule.class);
 		long fullEnergyTimer = recoverModule.getEnergyOfflineRecoveryTimer();
-		fullEnergyTimer = DateUtil.MINUTE_MILLIS;
 		if (fullEnergyTimer <= 0){
 			return;
 		}
