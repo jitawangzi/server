@@ -42,6 +42,7 @@ import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.data.mapper.InviteMapper;
+import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -1765,6 +1766,7 @@ public class PlayerHelper {
 		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
 		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
 		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(MailMapper.class, MapperConstant.deletePlayerData, playerId));
 
 		DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).toCompletionStage().thenCompose(r -> {
 			PlayerData playerData = (PlayerData) r;
