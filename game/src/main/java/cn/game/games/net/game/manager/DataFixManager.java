@@ -8,17 +8,23 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.util.BatchQueryUtil;
+import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.entity.DataFixLog;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
@@ -27,10 +33,15 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.config.RankConfig;
+import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.QuestManager;
+import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.RankRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.util.BinarySearchUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.SpringContextLoader;
 
@@ -211,6 +222,46 @@ public class DataFixManager {
 	 */
 	public void runtimeFixStringArgs(String... args) {
 		log.info("runtimeFixStringArgs");
+
+		String serverId = args[0];
+		String rankIdString = args[1];
+		log.info("rank reward for  server : " + serverId);
+
+		long start = System.currentTimeMillis();
+		String[] split = rankIdString.split(",");
+//		int[] rankIds = new int[] { 1, 2, 3, 4, 6, 7, 8 };
+		int[] rankIds = new int[split.length];
+		for (int i = 0; i < split.length; i++) {
+			rankIds[i] = Integer.parseInt(split[i]);
+		}
+		for (int rankId : rankIds) {
+			RankConfig rankConfig = RankManager.instance().get(rankId);
+			List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
+			if (rewardList == null) {
+				return;
+			}
+			log.info("start rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
+			AtomicInteger totalCount = new AtomicInteger();
+
+			RankType rankType = RankType.get(rankConfig.ID);
+
+			log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
+			BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
+				return RankService.getInstance().getPage(serverId, rankType, offset, 50);
+			};
+			BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
+				totalCount.incrementAndGet();
+				RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
+						r -> r.RewardStage);
+				List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
+				return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false)
+						.toCompletionStage()
+						.toCompletableFuture();
+			}, true);
+
+			log.info("rankId[{}] reward completed, use time[{}] ms,process totalCount[{}] ", rankId, (System.currentTimeMillis() - start),
+					totalCount.get());
+		}
 
 	}
 

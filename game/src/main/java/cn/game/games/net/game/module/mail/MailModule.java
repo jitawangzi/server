@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,7 +35,7 @@ public class MailModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginSuccess };
 
 	@JsonIgnore
-	private Map<Long, Mail>	mails = new HashMap<>();
+	private Map<Long, Mail> mails = new ConcurrentHashMap<>();
 
 	/** 公告邮件比较特殊，保存一个不删除。设置删除标记位，为了服务器一次更新只发一次公告邮件  */
 	@JsonIgnore
