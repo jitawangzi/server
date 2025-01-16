@@ -1757,6 +1757,8 @@ public class PlayerHelper {
 				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
 			}
 			PlayerHelper.clearPlayer(playerId);
+			//删除微信推送的任务
+			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
 		}
 
 		// 删除数据库
