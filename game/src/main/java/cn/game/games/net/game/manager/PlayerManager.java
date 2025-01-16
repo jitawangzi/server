@@ -9,13 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -53,6 +50,9 @@ public class PlayerManager {
 	
 	// playerId => ForbidAccount 封禁的账号
 	private ConcurrentHashMap<Long, ForbidAccount> forbidAccounts = new ConcurrentHashMap<>();
+
+	//正在进行中的离线任务
+	private ConcurrentHashMap<Long,List<OfflineScheduleTask>> runOfflineTaskMap =  new ConcurrentHashMap<>();
 	
 	private static PlayerManager instance = new PlayerManager() ; 
 
@@ -169,6 +169,8 @@ public class PlayerManager {
 
 	public void initAdd(Player p) {
 		id_players.put(p.getPlayerId(), p);
+		//取消玩家离线推送微信任务
+		delOfflineScheduleTask(p.getPlayerId());
 	}
 
 	/**
@@ -389,4 +391,23 @@ public class PlayerManager {
 			});
 		}
 	}
+
+	public void addOfflineScheduleTask(long pid,ScheduledFuture<?> task){
+		final List<OfflineScheduleTask> list;
+		if (runOfflineTaskMap.containsKey(pid)){
+			list = runOfflineTaskMap.get(pid);
+		} else {
+			list = new ArrayList<>();
+			runOfflineTaskMap.put(pid,list);
+		}
+		list.add(new OfflineScheduleTask(task));
+	}
+
+	public void delOfflineScheduleTask(long pid){
+		List<OfflineScheduleTask> taskList = runOfflineTaskMap.remove(pid);
+		if (taskList != null){
+			taskList.forEach(task ->{task.cancelTask();});
+		}
+	}
+
 }

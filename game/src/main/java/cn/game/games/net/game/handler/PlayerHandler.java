@@ -163,8 +163,22 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerFuncOpenRewardRequest_01000305, this::funcOpenReward);
 		putInvoker(PbProtocol.PlayerLevelUpRequest_01000055, this::levelUp);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
+
+		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
+		
 	}
 
+	private void wechatSetting(NetClient client, Object message) {
+		PlayerMsg.WechatSettingRequest_01100601 request = (PlayerMsg.WechatSettingRequest_01100601) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_ENERGY,request.getSetting().getIsOpenNotifyEnergy());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD,request.getSetting().getIsOpenNotifyFirstRechargeReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD,request.getSetting().getIsOpenNotifyAoYouReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD,request.getSetting().getIsOpenNotifyMonthSignReward());
+		client.sendProtocol(PlayerMsg.WechatSettingResponse_01100602.newBuilder().build());
+	}
+
+	//	WechatSettingRequest_01100601
 	private void levelUp(NetClient client, Object message) {
 		PlayerLevelUpRequest_01000055 request = (PlayerLevelUpRequest_01000055) message;
 		PlayerLevelUpResponse_01000056.Builder response = PlayerLevelUpResponse_01000056.newBuilder();

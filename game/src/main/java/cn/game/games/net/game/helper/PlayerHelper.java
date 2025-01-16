@@ -1425,8 +1425,13 @@ public class PlayerHelper {
 		data.setOfflineTime(System.currentTimeMillis());
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
 
+
 		return saveClientCache(playerId).onSuccess(r -> {
 			clearPlayer(playerId);
+
+			//推送玩家离线的微信通知
+			player.addWechatOfflineNotifyTask();
+
 			GameLogger.logout(player);
 			PushService.getInstance().delPlayerTags(playerId);
 		}).compose(v -> {

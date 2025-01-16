@@ -3,8 +3,10 @@ package cn.game.games.net.game.module.player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.IntMapWrapper;
+import org.apache.commons.validator.Var;
 
 /**    
  * 专门处理玩家的一些零散的int和boolean类型变量。 
@@ -81,6 +83,14 @@ public class VarModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.setRenameCount(getVar(VarConstant.RANAME_COUNT));
+
+		//微信设置
+		PlayerMsg.WechatSetting.Builder setting = PlayerMsg.WechatSetting.newBuilder();
+		setting.setIsOpenNotifyEnergy(getBoolVar(VarConstant.WECHAT_NOTIFY_ENERGY));
+		setting.setIsOpenNotifyAoYouReward(getBoolVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD));
+		setting.setIsOpenNotifyFirstRechargeReward(getBoolVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD));
+		setting.setIsOpenNotifyMonthSignReward(getBoolVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD));
+		builder.setWechatSetting(setting);
 	}
 
 	@Override
