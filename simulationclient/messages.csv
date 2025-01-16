@@ -180,3 +180,5 @@
 179,HeroSkinRequest_16000060,0x16000060,,,,,英雄换皮肤
 180,GmPlayerRenameRequest_77000050,0x77000050,,,,,gm改名
 181,GmPlayerDeleteRequest_77000052,0x77000052,,,,,gm删除某个玩家数据
+182,GmPlayerTDLevelRequest_77000054,0x77000054,,,,,gm设置天道修为等级
+183,WechatSettingRequest_01100601,0x01100601,,,,,微信设置相关
