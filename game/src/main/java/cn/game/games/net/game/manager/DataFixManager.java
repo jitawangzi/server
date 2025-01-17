@@ -8,23 +8,17 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.core.base.ServerContext;
-import cn.game.core.util.BatchQueryUtil;
-import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.entity.DataFixLog;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
@@ -33,15 +27,10 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.QuestConfig;
-import cn.game.protocol.generated.config.RankConfig;
-import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.QuestManager;
-import cn.game.protocol.generated.manager.RankManager;
-import cn.game.protocol.generated.manager.RankRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
-import cn.game.util.BinarySearchUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.SpringContextLoader;
 
@@ -223,57 +212,17 @@ public class DataFixManager {
 	public void runtimeFixStringArgs(String... args) {
 		log.info("runtimeFixStringArgs");
 
-		String serverId = args[0];
-		String rankIdString = args[1];
-		log.info("rank reward for  server : " + serverId);
+	}
 
-		long start = System.currentTimeMillis();
-		String[] split = rankIdString.split(",");
-//		int[] rankIds = new int[] { 1, 2, 3, 4, 6, 7, 8 };
-		int[] rankIds = new int[split.length];
-		for (int i = 0; i < split.length; i++) {
-			rankIds[i] = Integer.parseInt(split[i]);
-		}
-		for (int rankId : rankIds) {
-			RankConfig rankConfig = RankManager.instance().get(rankId);
-			List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
-			if (rewardList == null) {
-				return;
-			}
-			log.info("start rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
-			AtomicInteger totalQueryCount = new AtomicInteger();
-			AtomicInteger totalProcessCount = new AtomicInteger();
+	/** 
+	 * ognl -x 3 '@cn.game.games.net.game.manager.DataFixManager@getInstance().runtimeRankReward(new String[]{"server4", "server5"},new int[]{1,2,3,4})'
+	 * @param args
+	 */
+	public void runtimeRankReward(String[] serverIds, int[] rankIds) {
 
-			RankType rankType = RankType.get(rankConfig.ID);
+		log.info("runtimeRankReward rank reward for  server [{}]rankIds[{}] ", serverIds, rankIds);
 
-			log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
-			BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
-				List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, offset, 50);
-				totalQueryCount.addAndGet(entrys.size());
-				return entrys;
-			};
-			BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
-				RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
-						r -> r.RewardStage);
-				List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
-				return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false)
-						.onSuccess(v -> {
-							totalProcessCount.incrementAndGet();
-						})
-						.onFailure(e -> {
-							log.error("serverId[{}]rankId[{}] playerId[{}]rank[{}] rank reward mail error", serverId, rankId,
-									rankEntry.getPlayerId(),
-									rankEntry.getRank(),
-									e);
-						})
-						.toCompletionStage()
-						.toCompletableFuture();
-			}, true).toCompletionStage().toCompletableFuture().join();
-
-			log.info("serverId[{}]rankId[{}]queryCount[{}]processCount[{}] reward completed, use time[{}] ms", serverId, rankId,
-					totalQueryCount.get(), totalProcessCount.get(), (System.currentTimeMillis() - start));
-		}
-
+		RankService.getInstance().reward(serverIds, rankIds);
 	}
 
 	public void init() {

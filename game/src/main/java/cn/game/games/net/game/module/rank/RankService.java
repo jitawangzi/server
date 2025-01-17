@@ -517,39 +517,55 @@ public class RankService {
 		if (rewardList == null) {
 			return;
 		}
+		RankType rankType = RankType.get(rankId);
 		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SET_RANK.key(rankId));
 		if (!lock) {
 			return;
 		}
-		long start = System.currentTimeMillis();
-		log.info("start rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
 		String[] serverIds = getServerIds();
-		AtomicInteger totalCount = new AtomicInteger();
-
-		RankType rankType = RankType.get(rankConfig.ID);
-		for (String serverId : serverIds) {
-			log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
-			BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
-				return getPage(serverId, rankType, offset, DEFAULT_PAGE_SIZE);
-			};
-			BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
-				totalCount.incrementAndGet();
-				RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
-						r -> r.RewardStage);
-				List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
-				return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false)
-						.toCompletionStage()
-						.toCompletableFuture();
-			}, true);
-		}
-
-		log.info("rankId[{}] reward completed, use time[{}] ms,process totalCount[{}] ", rankId, (System.currentTimeMillis() - start),
-				totalCount.get());
-
+		reward(serverIds, rankId);
 		if (rankConfig.ResetRank) {
 			log.info("removeRank, rankId:{}", rankId);
 			removeRank(rankType);
 		}
+	}
+
+	public void reward(String[] serverIds, int... rankIds) {
+		log.info("start rank reward,rankIds[{}]serverIds[{}] server[{}]", rankIds, serverIds, ServerContext.getInstance().getServerId());
+
+		for (int rankId : rankIds) {
+			List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
+			RankConfig rankConfig = RankManager.instance().get(rankId);
+			RankType rankType = RankType.get(rankId);
+			for (String serverId : serverIds) {
+				long start = System.currentTimeMillis();
+				AtomicInteger totalQueryCount = new AtomicInteger();
+				AtomicInteger totalProcessCount = new AtomicInteger();
+				log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
+				BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
+					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, offset, 50);
+					totalQueryCount.addAndGet(entrys.size());
+					return entrys;
+				};
+				BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
+					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
+							r -> r.RewardStage);
+					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
+					return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false).onSuccess(v -> {
+						totalProcessCount.incrementAndGet();
+					}).onFailure(e -> {
+						log.error("serverId[{}]rankId[{}] playerId[{}]rank[{}] rank reward mail error", serverId, rankId,
+								rankEntry.getPlayerId(), rankEntry.getRank(), e);
+					}).toCompletionStage().toCompletableFuture();
+				}, true).onFailure(e -> {
+					log.error("processBatchAsync rank reward error serverId[{}]rankId[{}] exception[{}]", serverId, rankId, e);
+				}).toCompletionStage().toCompletableFuture().join();
+
+				log.info("serverId[{}]rankId[{}]queryCount[{}]processCount[{}] reward completed, use time[{}] ms", serverId, rankId,
+						totalQueryCount.get(), totalProcessCount.get(), (System.currentTimeMillis() - start));
+			}
+		}
+
 	}
 
 	private void initRewardTask(int rankId) {
