@@ -1,5 +1,6 @@
 package cn.game.core.base;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -149,17 +150,26 @@ public class ServerContext {
 		String className = ManagementFactory.getRuntimeMXBean().getName();
 		String pid = className.split("@")[0];
 		Thread attachThread = new Thread(() -> {
+			VirtualMachine vm = null;
 			try {
 				String jarName = "hotupdate-1.0.jar";
 				String agentPath = ClassHelper.findJarPath(jarName);
 				if (agentPath == null) {
 					throw new RuntimeException("Agent JAR not found : " + jarName);
 				}
-				VirtualMachine vm = VirtualMachine.attach(pid);
+				vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);
 				LoggerType.Stdout.logger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
 			} catch (Exception e) {
 				throw new RuntimeException("hotUpdate agent start failed", e);
+			} finally {
+				if (vm != null) {
+					try {
+						vm.detach();
+					} catch (IOException e) {
+						LoggerType.Stdout.logger.error("Failed to detach from VM", e);
+					}
+				}
 			}
 		}, "CodeHotUpdateThread");
 
