@@ -16,6 +16,7 @@ import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
+import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.protocol.protobuf.ServerMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -767,6 +768,9 @@ public class Player  {
 	}
 
 	private void addAoYouRewardNotifyTask() {
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD)){
+			return;
+		}
 		long beginTimer  = DateUtil.DAY_MILLIS/2;
 		long cycleTimer =DateUtil.DAY_MILLIS/2;
 		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(()->{
@@ -780,6 +784,9 @@ public class Player  {
 	}
 
 	private void addMonthSignNotifyTask() {
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD)){
+			return;
+		}
 		long now = System.currentTimeMillis();
 		long beginTimer  = DateUtil.getDayHourTimestamp(DateUtil.toLocalDate(DateUtil.nextDayStartTime(1)) ,9) - now ;
 		long cycleTimer =DateUtil.DAY_MILLIS;
@@ -803,7 +810,9 @@ public class Player  {
 	}
 
 	private void addEnergyNotifyTask() {
-		getAccount().getPlatform();
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_ENERGY)){
+			return;
+		}
 		MoneyRecoverModule recoverModule = getModule(MoneyRecoverModule.class);
 		long fullEnergyTimer = recoverModule.getEnergyOfflineRecoveryTimer();
 		if (fullEnergyTimer <= 0){
