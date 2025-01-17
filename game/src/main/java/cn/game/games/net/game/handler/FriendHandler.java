@@ -193,6 +193,10 @@ public class FriendHandler extends BaseHandler {
 			if (myFriendModule.isFriend(id)) {
 				continue;
 			}
+			// 已经申请过了
+			if (myFriendModule.getMyApplications().contains(id)) {
+				continue;
+			}
 			if (PlayerManager.getInstance().isOnline(id)) {
 				String serverId = PlayerManager.getInstance().getServerId(id);
 				FriendApplyPush_30000022 build = FriendApplyPush_30000022
