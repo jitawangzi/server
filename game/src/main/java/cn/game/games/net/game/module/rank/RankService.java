@@ -543,7 +543,9 @@ public class RankService {
 				AtomicInteger totalProcessCount = new AtomicInteger();
 				log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
 				BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
-					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, offset, 50);
+					// 将offset转换为page，注意offset从0开始，page从1开始
+					int page = (offset / limit) + 1;
+					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, page, limit);
 					totalQueryCount.addAndGet(entrys.size());
 					return entrys;
 				};

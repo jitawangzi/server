@@ -125,11 +125,28 @@ public class BatchQueryUtil {
 			futures.add(itemFuture);
 		}
 
-		CompositeFuture.any(futures).onComplete(ar -> {
-			if (continueOnError || ar.succeeded()) {
+		List<Future> successfulFutures = new ArrayList<>();
+		CompositeFuture.all(futures).onComplete(ar -> {
+			boolean hasErrors = false;
+			// 检查所有future的结果
+			for (Future future : futures) {
+				if (future.failed()) {
+					hasErrors = true;
+					if (!continueOnError) {
+						finalPromise.fail(future.cause());
+						return;
+					}
+				} else {
+					successfulFutures.add(future);
+				}
+			}
+
+			// 如果允许错误且至少有一个成功,或者全部成功,则继续处理下一批
+			if ((continueOnError && !successfulFutures.isEmpty()) || !hasErrors) {
 				processNextBatchAsync(batchQuery, processor, batchSize, offset + batchSize, finalPromise, continueOnError);
 			} else {
-				finalPromise.fail(ar.cause());
+				// 如果不允许错误且有错误发生,使用第一个失败的future的cause
+				futures.stream().filter(Future::failed).findFirst().ifPresent(f -> finalPromise.fail(f.cause()));
 			}
 		});
 	}
