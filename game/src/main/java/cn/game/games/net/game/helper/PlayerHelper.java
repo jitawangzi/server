@@ -10,7 +10,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -26,6 +25,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
@@ -1609,25 +1609,15 @@ public class PlayerHelper {
 	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
-		AtomicInteger loadcount = new AtomicInteger();
-		AtomicInteger execcount = new AtomicInteger();
-		AtomicInteger errorcount = new AtomicInteger();
 		Consumer<PlayerData> processor = playerData -> {
-			System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers loadcount: " + loadcount.incrementAndGet());
-			PlayerHelper.loadPlayerFromDb(playerData).map(player -> {
-				System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers execcount: " + execcount.incrementAndGet());
-				modifyPlayerOffline(function, player);
-				return null;
+			PlayerHelper.loadPlayerFromDb(playerData).compose(player -> {
+				return modifyPlayerOffline(function, player);
 			}).onFailure(r -> {
 				log.error("loadAndProcessPlayers error, playerId: " + playerData.getPlayerId());
-				System.err.println(Thread.currentThread().getName() + " loadAndProcessPlayers errorcount: " + errorcount.getAndIncrement());
-
-			});
+			}).toCompletionStage().toCompletableFuture().join();
 		};
-		BatchQueryUtil.processBatch(batchQuery, processor);
-//		processBatchAsync.onFailure(r -> {
-//			log.error("loadAndProcessPlayers error", r);
-//		});
+		BatchProcessResult processBatchParallel = BatchQueryUtil.processBatchParallel(batchQuery, processor, true);
+		log.info("loadAndProcessPlayers result: " + processBatchParallel);
 	}
 
 	/** 
@@ -1644,9 +1634,8 @@ public class PlayerHelper {
 		boolean online = player != null;
 		if (player == null) {
 			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
-			PlayerHelper.loadPlayerFromDb(playerId).map(p -> {
-				modifyPlayerFinal(function, p, online);
-				return null;
+			PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
+				return modifyPlayerFinal(function, playerDb, online);
 			}).onFailure(e -> {
                 log.error("modifyPlayer error, playerId: " + playerId); 
 			});
@@ -1655,32 +1644,35 @@ public class PlayerHelper {
 		}
 	}
 
-	private static void modifyPlayerFinal(Function<Player, Boolean> function, Player player, boolean online) {
+	private static Future<?> modifyPlayerFinal(Function<Player, Boolean> function, Player player, boolean online) {
 		Player modify = player;
 		if (online) {
 			GameClient gameClient = player.getGameClient();
 			if (gameClient == null) {
 				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
-				return;
+				return Future.failedFuture("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 			}
+			Promise<Boolean> promise = Promise.promise();
 			gameClient.getContext().runOnContext(v -> {
-				function.apply(modify);
+				Boolean apply = function.apply(modify);
+				promise.complete(apply);
 			});
+			return promise.future();
 		} else {
-			modifyPlayerOffline(function, modify);
+			return modifyPlayerOffline(function, modify);
 		}
 	}
 
-	private static void modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
+	private static Future<?> modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
 		Boolean apply = function.apply(player);
-		if (apply != null && apply) {
-			log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
-			Future<List<Object>> saveClientCache = PlayerHelper.saveClientCache(player.getPlayerId());
-//			AsyncUtils.await(saveClientCache);// 简单起见，同步保存
-		}
 		// 修改完玩家数据后，需要从缓存中清除数据
 		PlayerHelper.clearPlayer(player.getPlayerId());
-		RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
+		RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
+		if (apply != null && apply) {
+			log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
+			return PlayerHelper.saveClientCache(player.getPlayerId());
+		}
+		return Future.succeededFuture();
 	}
 
 	/** 

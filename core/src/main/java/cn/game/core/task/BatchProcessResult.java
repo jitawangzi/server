@@ -19,6 +19,11 @@ public class BatchProcessResult {
 		return errors;
 	}
 
+	@Override
+	public String toString() {
+		return "BatchProcessResult [processedCount=" + processedCount + ", errors=" + errors + "]";
+	}
+
 	public static class BatchError {
 		private final int offset;
 		private final int itemIndex; // 在batch中的索引位置
@@ -47,7 +52,6 @@ public class BatchProcessResult {
 		public String getMessage() {
 			return message;
 		}
-
 
 	}
 }
