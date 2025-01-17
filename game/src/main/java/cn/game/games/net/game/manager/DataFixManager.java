@@ -241,26 +241,37 @@ public class DataFixManager {
 				return;
 			}
 			log.info("start rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
-			AtomicInteger totalCount = new AtomicInteger();
+			AtomicInteger totalQueryCount = new AtomicInteger();
+			AtomicInteger totalProcessCount = new AtomicInteger();
 
 			RankType rankType = RankType.get(rankConfig.ID);
 
 			log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
 			BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
-				return RankService.getInstance().getPage(serverId, rankType, offset, 50);
+				List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, offset, 50);
+				totalQueryCount.addAndGet(entrys.size());
+				return entrys;
 			};
 			BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
-				totalCount.incrementAndGet();
 				RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
 						r -> r.RewardStage);
 				List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
 				return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false)
+						.onSuccess(v -> {
+							totalProcessCount.incrementAndGet();
+						})
+						.onFailure(e -> {
+							log.error("serverId[{}]rankId[{}] playerId[{}]rank[{}] rank reward mail error", serverId, rankId,
+									rankEntry.getPlayerId(),
+									rankEntry.getRank(),
+									e);
+						})
 						.toCompletionStage()
 						.toCompletableFuture();
-			}, true);
+			}, true).toCompletionStage().toCompletableFuture().join();
 
-			log.info("rankId[{}] reward completed, use time[{}] ms,process totalCount[{}] ", rankId, (System.currentTimeMillis() - start),
-					totalCount.get());
+			log.info("serverId[{}]rankId[{}]queryCount[{}]processCount[{}] reward completed, use time[{}] ms", serverId, rankId,
+					totalQueryCount.get(), totalProcessCount.get(), (System.currentTimeMillis() - start));
 		}
 
 	}
