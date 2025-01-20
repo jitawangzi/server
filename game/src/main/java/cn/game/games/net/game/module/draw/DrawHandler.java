@@ -107,6 +107,7 @@ public class DrawHandler extends BaseHandler {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
                 return;
             }
+			player.handleEvent(EventTypeEnum.WatchAds);
         } else {
             boolean delResources = PlayerHelper.delResources(player, costEntries, OpType.Draw);
             if (!delResources) {

@@ -25,6 +25,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -489,6 +490,7 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		player.handleEvent(EventTypeEnum.WatchAds);
 		List<RewardInfo> goods = PlayerHelper.addGoods(player, cloudBox, OpType.CloudBox);
 		resp.addAllRewards(goods);
 		client.sendProtocol(resp);
