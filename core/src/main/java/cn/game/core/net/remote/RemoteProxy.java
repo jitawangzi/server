@@ -2,8 +2,10 @@ package cn.game.core.net.remote;
 
 import java.lang.reflect.Method;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.util.ReflectionUtils;
 
+import cn.game.util.SpringContextLoader;
 import cn.game.util.reflect.ClassHelper;
 
 /**    
@@ -49,5 +51,59 @@ public interface RemoteProxy {
 			throw new RuntimeException("RemoteProxy Method invocation failed", e);
 		}
 	}
+
+	/** 
+	 * 调用某类的静态方法
+	 * @param clzss
+	 * @param methodName
+	 * @param paramTypes
+	 * @param args
+	 * @return
+	 */
+	default Object invoke(Class<?> clzss, String methodName, Class<?>[] paramTypes, Object... args) {
+		try {
+			Method method = ClassHelper.findMethod(clzss, methodName, paramTypes);
+			// 可以调用非public方法
+			ReflectionUtils.makeAccessible(method);
+			return method.invoke(null, args);
+		} catch (Exception e) {
+			throw new RuntimeException("RemoteProxy Method invocation failed", e);
+		}
+	}
+
+	/** 
+	 * 调用某类的实例方法
+	 * @param clzss
+	 * @param methodName
+	 * @param paramTypes
+	 * @param args
+	 * @return
+	 */
+	default Object invoke(String className, String methodName, Class<?>[] paramTypes, Object... args) {
+		try {
+			Object bean = null;
+			// 1. 先尝试从Spring容器获取
+			try {
+				bean = SpringContextLoader.getContext().getBean(className);
+			} catch (NoSuchBeanDefinitionException e) {
+				// Spring容器中没有找到，尝试获取单例实例
+				Class<?> clazz = Class.forName(className);
+				bean = ClassHelper.getSingletonInstance(clazz);
+			}
+
+			if (bean == null) {
+				throw new IllegalStateException("No instance found for class: " + className
+						+ ". The instance must be either managed by Spring or be a singleton class.");
+			}
+
+			Method method = ClassHelper.findMethod(bean.getClass(), methodName, paramTypes);
+			ReflectionUtils.makeAccessible(method);
+			return method.invoke(bean, args);
+		} catch (Exception e) {
+			throw new RuntimeException("RemoteProxy Method invocation failed", e);
+		}
+	}
+
+
 
 }

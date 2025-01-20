@@ -1,5 +1,7 @@
 package cn.game.games.net.game.helper;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,6 +27,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
+import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
@@ -55,6 +59,7 @@ import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -105,6 +110,7 @@ import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
+import cn.game.util.reflect.MethodUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -1620,6 +1626,51 @@ public class PlayerHelper {
 		log.info("loadAndProcessPlayers result: " + processBatchParallel);
 	}
 
+	public static Future<?> modifyPlayerNew(long playerId, Function<Player, Boolean> function) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		boolean online = player != null;
+		if (player == null) { // 不在本服or不在线
+			String serverId = PlayerManager.getInstance().getServerId(playerId);
+			if (StringUtils.isEmpty(serverId)) { // 不在线，从数据库中载入
+				return PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
+					log.debug("modifyPlayer from db in current server, playerId: " + playerId + ", serverId: "
+							+ ServerContext.getInstance().getServerId());
+					return modifyPlayerFinal(function, playerDb, online);
+				}).onFailure(e -> {
+					log.error("modifyPlayer error, playerId: " + playerId);
+				});
+			} else {
+				// 在其他服务器，转到其他服务器处理。
+				log.debug("modifyPlayer in other server, playerId: " + playerId + ", serverId: " + serverId);
+				return runCurrentMethodInOtherServer(serverId, PlayerHelper.class, playerId, function);
+			}
+		} else {
+			log.debug("modifyPlayer in current server, playerId: " + playerId + ", serverId: " + ServerContext.getInstance().getServerId());
+			// 本服在线，直接处理
+			return modifyPlayerFinal(function, player, online);
+		}
+	}
+
+	/** 
+	 * 在其他服务器上执行当前方法
+	 * @param serverId  服务器id
+	 * @param thisClass	当前类,支持spring容器管理的实例，和普通单例类、静态方法类
+	 * @param args	方法参数
+	 * @return
+	 */
+	private static Future<?> runCurrentMethodInOtherServer(String serverId, Class<?> thisClass, Object... methodArgs) {
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
+		Optional<Method> currentMethod = MethodUtil.getCurrentMethod(thisClass);
+		Method method = currentMethod.get();
+		if (method.getModifiers() == Modifier.STATIC) {
+			// 当前方法是静态方法， 调用
+			return (Future<?>) gameServerInterface.invoke(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
+		} else {
+			// 如果当前方法是实例方法
+			return (Future<?>) gameServerInterface.invoke(thisClass.getName(), method.getName(), method.getParameterTypes(), methodArgs);
+		}
+	}
+
 	/** 
 	 * 
 	 * 修改玩家数据, 允许在服务器运行时修改
@@ -1629,18 +1680,18 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param function 修改数据的方法，结果true表示数据修改了， false表示数据没有修改
 	 */
-	public static void modifyPlayer(long playerId, Function<Player, Boolean> function) {
+	public static Future<?> modifyPlayer(long playerId, Function<Player, Boolean> function) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		boolean online = player != null;
 		if (player == null) {
 			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
-			PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
+			return PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
 				return modifyPlayerFinal(function, playerDb, online);
 			}).onFailure(e -> {
                 log.error("modifyPlayer error, playerId: " + playerId); 
 			});
 		} else {
-			modifyPlayerFinal(function, player, online);
+			return modifyPlayerFinal(function, player, online);
 		}
 	}
 

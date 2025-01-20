@@ -2,6 +2,7 @@ package cn.game.util.reflect;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -186,5 +187,49 @@ public class ClassHelper {
 			throw new NoSuchMethodError("Method " + methodName + " not found in " + clazz.getName());
 		}
 		return method;
+	}
+
+	public static Object getSingletonInstance(Class<?> clazz) {
+		// 按优先级尝试常见的单例获取方法
+		Method[] methods = clazz.getDeclaredMethods();
+
+		// 按照优先级定义可能的方法名
+		String[] singletonMethodNames = { "getInstance", "getSingleton", "instance", "getDefault", "get" };
+
+		// 1. 先尝试完全匹配的静态无参方法
+		for (String methodName : singletonMethodNames) {
+			try {
+				Method method = clazz.getDeclaredMethod(methodName);
+				if (Modifier.isStatic(method.getModifiers()) && method.getReturnType().isAssignableFrom(clazz)) {
+					method.setAccessible(true);
+					return method.invoke(null);
+				}
+			} catch (NoSuchMethodException e) {
+				// 继续尝试下一个方法名
+				continue;
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to get singleton instance", e);
+			}
+		}
+
+		// 2. 如果没找到完全匹配的，尝试模糊匹配
+		for (Method method : methods) {
+			if (Modifier.isStatic(method.getModifiers()) && method.getParameterCount() == 0
+					&& method.getReturnType().isAssignableFrom(clazz)) {
+
+				String methodName = method.getName().toLowerCase();
+				if (methodName.contains("instance") || methodName.contains("singleton") || methodName.contains("get")) {
+
+					method.setAccessible(true);
+					try {
+						return method.invoke(null);
+					} catch (Exception e) {
+						throw new RuntimeException("Failed to get singleton instance", e);
+					}
+				}
+			}
+		}
+
+		throw new IllegalStateException("No singleton instance accessor found for class: " + clazz.getName());
 	}
 }
