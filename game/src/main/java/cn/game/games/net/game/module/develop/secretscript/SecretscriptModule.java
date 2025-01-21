@@ -78,7 +78,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 		PvPSecretscriptMap.putAll(secretscriptMapMap);
 	}
 
-	public Map<Integer, Integer> getPvPSecretscriptMap() {
-		return PvPSecretscriptMap;
+	public  Map<Integer, Integer> getPvPSecretscriptMap() {
+		return new HashMap<>(PvPSecretscriptMap);
 	}
 }
