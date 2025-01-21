@@ -32,7 +32,6 @@ import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -294,7 +293,7 @@ public class TestHandler extends BaseHandler {
 				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
 			}
 			// 将某人删档
-			TestHelper.deletePlayer(params.getLong(1));
+			PlayerHelper.deletePlayerData(params.getLong(1));
 			break;
 		}
 		case "citem": {
@@ -492,12 +491,14 @@ public class TestHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
 		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
-		for (Hero hero : battleHeroList) {
-			if (hero.getQuality() >= 7) {
-				player.handleEvent(EventTypeEnum.HeroBattle, hero);
-				break;
-			}
-		}
+
+		Future<?> future = PlayerHelper.modifyPlayerNew(240201736L, pp -> {
+			pp.getData().setLevel(999);
+			return true;
+		});
+		future.onComplete(r -> {
+			System.out.println(r);
+		});
 //		List<Goods> goods = PlayerHelper.randomReward(101602);
 //		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
 
