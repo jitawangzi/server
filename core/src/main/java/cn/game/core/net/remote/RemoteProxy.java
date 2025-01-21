@@ -10,8 +10,9 @@ import cn.game.util.reflect.ClassHelper;
 
 /**    
  * 基本的远程代理接口，远程方法默认同步调用
- * 如果方法的返回值类型是io.vertx.core.Future，则是异步调用
+ * 如果方法的返回值类型是io.vertx.core.Future、JDK的 Future、CompletionStage则是异步调用
  * 尽量使用异步调用，避免阻塞线程，低频的调用可以考虑同步
+ * 一般远程方法执行在Vert.x的worker线程中， 需要注意下线程安全问题。 
  * 2024年11月12日 18:48:58
  * @author SYQ
  */

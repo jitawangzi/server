@@ -399,6 +399,22 @@ public class GameServer implements GameServerMBean {
 		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
 	}
 
+	/**
+	 * 获取处理某玩家的逻辑服远程调用接口
+	 * @param 
+	 * @return
+	 */
+	public GameServerInterface getGameServerInterface(long playerId) {
+		String serverId = PlayerManager.getInstance().getServerId(playerId);
+		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
+			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
+			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game);
+
+	}
+
 	/** 
 	 * 获取登陆远程通讯接口，一般不需要指定具体的登陆服id，也就是不使用 PointToPoint 方式
 	 * @param callType

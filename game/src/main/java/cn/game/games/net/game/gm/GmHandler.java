@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
 
-import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -22,14 +21,15 @@ import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.GmMailMapper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -125,30 +125,12 @@ public class GmHandler extends BaseHandler {
 		String newName = req.getName();
 		long playerId = Long.parseLong(playerIdString);
 		Player me = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		
-		PlayerHelper.modifyPlayer(playerId, player -> {
-			String oldName = player.getData().getName();
-			Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
-			checkFuture.compose(b -> {
-				if (!b) {
-					return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
-				}
-				return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
-			}).map(r -> {
-				if (!r) {
-					throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
-				}
-				PlayerNameManager.getInstance()
-						.saveName2Id(newName, player.getData().getPlayerId())
-						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName))
-						.thenCompose(rr -> PlayerHelper.saveSimplePlayer(player).toCompletionStage());
-//				
-				player.getData().setName(newName);
-				client.sendProtocol(resp);
-				return null;
-			}).onFailure(r -> me.handleFail(r));
-			return true;
-		});
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
+		renameFuture.onSuccess(r -> {
+			client.sendProtocol(resp);
+
+		}).onFailure(e -> me.handleFail(e));
 	}
 	private void serverStatus(NetClient client, Object o) {
 		GmServerStatusRequest_77000032 req = (GmServerStatusRequest_77000032) o;

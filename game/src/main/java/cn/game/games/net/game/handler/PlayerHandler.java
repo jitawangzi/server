@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
-import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -29,6 +28,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -47,6 +47,7 @@ import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -853,8 +854,8 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.ID);
 			return;
 		}
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		String oldName = player.getData().getName();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		int renameCount = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
 		int[] cost = renameCount >= GlobalConst.PlayerName.length - 1 ? GlobalConst.PlayerName[GlobalConst.PlayerName.length - 1]
@@ -864,27 +865,15 @@ public class PlayerHandler extends BaseHandler {
 			return;
 		}
 
-		Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
-		checkFuture.compose(b -> {
-			if (!b) {
-				return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
-			}
-			return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
-		}).map(r -> {
-			if (!r) {
-				throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
-			}
-			PlayerNameManager.getInstance()
-					.saveName2Id(newName, player.getData().getPlayerId())
-					.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName));
-
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
+		renameFuture.map(r -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);
 			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
-
-			player.getData().setName(newName);
 			client.sendProtocol(resp);
 			return null;
-		}).onFailure(r -> player.handleFail(resp.build(), r));
+
+		}).onFailure(e -> player.handleFail(e));
 	}
 
 	protected void gender(NetClient client, Object message) {

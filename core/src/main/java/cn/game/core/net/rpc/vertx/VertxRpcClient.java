@@ -6,7 +6,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.eventbus.Message;
-import io.vertx.core.impl.VertxThread;
 
 public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 
@@ -32,12 +31,7 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 
 	@Override
 	public boolean checkAllowSync() {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof VertxThread) {
-			if (!((VertxThread) currentThread).isWorker()) {
-				throw new UnsupportedOperationException("sync request can not run in vertx loop thread ");
-			}
-		}
+//		AsyncUtils.checkEventLoop();
 		return true;
 	}
 

@@ -9,10 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -32,6 +36,7 @@ import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
+import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
@@ -180,6 +185,21 @@ public class PlayerManager {
 	 */
 	public Player getPlayer(long playerId) {
 		return id_players.get(playerId);
+	}
+
+	/**
+	 * 获取指定角色id的角色数据
+	 * 如果角色不在线，则从数据库中加载
+	 * @param playerId
+	 * @return
+	 */
+	public Future<Player> getPlayerAsync(long playerId) {
+		Player player = getPlayer(playerId);
+		if (player != null) {
+			return Future.succeededFuture(player);
+		}
+		// TODO 从数据库加载,后续清理
+		return PlayerHelper.loadPlayerFromDb(playerId);
 	}
 	/**
 	 * 判断某玩家在服务器是否有缓存数据

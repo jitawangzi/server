@@ -1642,7 +1642,8 @@ public class PlayerHelper {
 			} else {
 				// 在其他服务器，转到其他服务器处理。
 				log.debug("modifyPlayer in other server, playerId: " + playerId + ", serverId: " + serverId);
-				return runCurrentMethodInOtherServer(serverId, PlayerHelper.class, playerId, function);
+				Optional<Method> currentMethod = MethodUtil.getCurrentMethod(PlayerHelper.class);
+				return runCurrentMethodInOtherServer(serverId, currentMethod.get(), playerId, function);
 			}
 		} else {
 			log.debug("modifyPlayer in current server, playerId: " + playerId + ", serverId: " + ServerContext.getInstance().getServerId());
@@ -1658,10 +1659,9 @@ public class PlayerHelper {
 	 * @param args	方法参数
 	 * @return
 	 */
-	private static Future<?> runCurrentMethodInOtherServer(String serverId, Class<?> thisClass, Object... methodArgs) {
+	private static Future<?> runCurrentMethodInOtherServer(String serverId, Method method, Object... methodArgs) {
 		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
-		Optional<Method> currentMethod = MethodUtil.getCurrentMethod(thisClass);
-		Method method = currentMethod.get();
+		Class<?> thisClass = method.getDeclaringClass();
 		if (method.getModifiers() == Modifier.STATIC) {
 			// 当前方法是静态方法， 调用
 			return (Future<?>) gameServerInterface.invoke(thisClass, method.getName(), method.getParameterTypes(), methodArgs);

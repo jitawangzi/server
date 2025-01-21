@@ -1,6 +1,8 @@
 package cn.game.core.net.rpc;
 
 import java.text.MessageFormat;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -97,7 +99,8 @@ public interface RpcClient {
 	 * @param serverId  远程的地址。 
 	 * @return
 	 */
-	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String targetAddr) {
+	private Object sendOld(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync,
+			String targetAddr) {
 
 		byte[] datas = KryoUtils.serialize(command);
 //		String targetAddr = serverType == null ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
@@ -162,6 +165,112 @@ public interface RpcClient {
 		}
 		return result2;
 
+	}
+
+	/** 
+	 * 发送远程调用请求到远端
+	 * @param command 具体要执行的方法和参数等
+	 * @param callBackTask  数据返回后的回调任务
+	 * @param returnType   方法返回值类型
+	 * @param sync   是否同步调用
+	 * @param serverId  远程的地址。 
+	 * @return
+	 */
+	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String targetAddr) {
+		byte[] datas = KryoUtils.serialize(command);
+		long startLong = System.currentTimeMillis();
+
+		// 异步调用处理
+		if (!sync) {
+			// vertx的Future方式
+			if (Future.class.isAssignableFrom(returnType)) {
+				return handleVertxFuture(callType, command, datas, targetAddr, startLong);
+			}
+			// JDK的CompletionStage方式
+			if (CompletionStage.class.isAssignableFrom(returnType)) {
+				return handleCompletionStage(callType, command, datas, targetAddr, startLong);
+			}
+			// JDK的Future方式
+			if (java.util.concurrent.Future.class.isAssignableFrom(returnType)) {
+				return handleJdkFuture(callType, command, datas, targetAddr, startLong);
+			}
+			// callback方式异步
+			if (callBackTask != null) {
+				request(targetAddr, datas, r -> {
+					if (r instanceof Throwable) {
+						log.error("put message to targetAddr[{}] failed ,command[{}]exception[{}]", targetAddr, command, r);
+					} else {
+						callBackTask.accept(KryoUtils.deserialize(r.result().body(), Result.class).getResult());
+					}
+				});
+				return null;
+			}
+		}
+
+		// 同步调用处理
+		return handleSyncCall(command, datas, targetAddr);
+	}
+
+	private Future<?> handleVertxFuture(CallType callType, Command command, byte[] datas, String targetAddr, long startLong) {
+		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
+			Future<Message<byte[]>> request = request(targetAddr, datas);
+			return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult())
+					.onFailure(t -> logError(targetAddr, command, startLong, t));
+		} else if (callType == CallType.Broadcast) {
+			broadcast(targetAddr, datas);
+			return Future.succeededFuture();
+		}
+		return Future.failedFuture(new IllegalArgumentException("Unsupported call type: " + callType));
+	}
+
+	private CompletableFuture<?> handleCompletionStage(CallType callType, Command command, byte[] datas, String targetAddr,
+			long startLong) {
+		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
+			Future<Message<byte[]>> request = request(targetAddr, datas);
+			return request.map(r -> KryoUtils.deserialize(r.body(), Result.class).getResult())
+					.onFailure(t -> logError(targetAddr, command, startLong, t))
+					.toCompletionStage()
+					.toCompletableFuture();
+		} else if (callType == CallType.Broadcast) {
+			broadcast(targetAddr, datas);
+			return CompletableFuture.completedFuture(null);
+		}
+		return CompletableFuture.failedFuture(new IllegalArgumentException("Unsupported call type: " + callType));
+	}
+
+	private java.util.concurrent.Future<?> handleJdkFuture(CallType callType, Command command, byte[] datas, String targetAddr,
+			long startLong) {
+		return handleCompletionStage(callType, command, datas, targetAddr, startLong);
+	}
+
+	private Object handleSyncCall(Command command, byte[] datas, String targetAddr) {
+		// 下面是同步方式调用，尽量少用
+		// vertx中一般只允许在worker线程中调用
+		checkAllowSync();
+
+		Future<Message<byte[]>> request = request(targetAddr, datas);
+		try {
+			Message<byte[]> message = request.toCompletionStage().toCompletableFuture().get(Config.remoteCallTimeOut, TimeUnit.SECONDS);
+			Result deserialize = KryoUtils.deserialize(message.body(), Result.class);
+			Object result = deserialize.getResult();
+			if (result instanceof Throwable) {
+				String errorMsg = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
+						Thread.currentThread().getName());
+				log.error(errorMsg, (Throwable) result);
+				throw new RuntimeException((Throwable) result);
+			}
+			return result;
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			String errorMsg = MessageFormat.format("远程调用获取结果异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
+					Thread.currentThread().getName());
+			log.error(errorMsg, e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void logError(String targetAddr, Command command, long startLong, Throwable t) {
+		log.error(MessageFormat.format("request message to targetAddr[{0}] failed ,command[{1}]usetime[{2}]", targetAddr, command,
+				(System.currentTimeMillis() - startLong) / 1000), t);
 	}
 
 }
