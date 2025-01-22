@@ -3,7 +3,10 @@ package cn.game.login.net.handler;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import cn.game.util.*;
+import com.google.gson.JsonObject;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ActiveServerListManager;
@@ -16,6 +19,7 @@ import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.GmOptMapper;
 import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
 import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
@@ -31,10 +35,6 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
-import cn.game.util.JsonUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.ServerType;
-import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
 /**
@@ -64,13 +64,63 @@ public class LoginServerHandler extends BaseHandler {
 
 		registerPayOrderProcessor(new AndroidPayOrderProcessor());
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
+
+		putInvoker(PbProtocol.NotifyWechatSubscribeMessageRequest_7d000043, this::notifyWechatSubscribeMessage);
+
+	}
+
+	/**
+	 * https://developers.weixin.qq.com/minigame/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html
+	 * 微信推送订阅消息
+	 * @param client
+	 * @param o
+	 */
+	private void notifyWechatSubscribeMessage(NetClient client, Object o) {
+		ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043 req = (ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043) o;
+		log.info(String.format("notifyWechatSubscribeMessage:%s",req));
+    		String url =
+     String.format("https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s",IOSPayOrderProcessor.accessToken);
+//    String url =
+//        String.format(
+//            "https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=%s",
+//            "88_796a_xcFp9QpatNgXnXOOLy2gMEBUTWSVfu5Y7FyfdQmo5dnK21h7e0ltwfz-Hq_kjrTnW0HAZokN4x81MGgeHdSMI9u5udhvaq0QyPW5d54aoSAwWTdvNpqlckQXDjAAAIPV");
+		Map<String,Object> params = new HashMap<>();
+		params.put("touser",req.getOpenid());
+		params.put("template_id",req.getTemplateId());
+		Map<String, Map<String,String>> valParam = new HashMap<>();
+		req.getJsonDataMap().forEach((key,val) ->{
+			Map<String,String> valMap = new HashMap<>();
+			valMap.put("value",val);
+			valParam.put(key,valMap);
+		});
+		params.put("data", valParam);
+		HttpHelp.postJSonUrl(url,params,(result)->{
+			log.info(String.format("url:%s, params:%s, result:%s",url,params.toString(),result));
+			client.sendProtocol(ServerMsg.NotifyWechatSubscribeMessageResponse_7d000044.newBuilder().setResult(true).build());
+		},(err)->{
+			client.sendProtocol(ServerMsg.NotifyWechatSubscribeMessageResponse_7d000044.newBuilder().setResult(false).build());
+		});
+
 	}
 
 	private void playerDelete(NetClient client, Object o) {
 		LoginPlayerDeleteRequest_7d000080 req = (LoginPlayerDeleteRequest_7d000080) o;
 		long playerId = req.getPlayerId();
-		UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-		userMapper.deleteByPrimaryKey(playerId);
+		String account = req.getAccount();
+		// 删除账号缓存
+		User user = UserHelper.getUserByName(account);
+		if (user != null) {
+			UserHelper.removeUser(account).thenCompose(r -> UserHelper.removeUser(user.getSessionId())).thenCompose(r -> {
+				return CompletableFuture.supplyAsync(() -> {
+					UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+					userMapper.deleteByPrimaryKey(playerId);
+					return null;
+				});
+			}).exceptionally(e -> {
+				log.error("删除玩家失败", e);
+				return null;
+			});
+		}
 		client.sendProtocol(LoginPlayerDeleteResponse_7d000081.getDefaultInstance());
 	}
 	private void updateGmInfo(NetClient client, Object o) {

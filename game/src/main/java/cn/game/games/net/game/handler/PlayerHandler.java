@@ -21,11 +21,14 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -43,14 +46,19 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
+import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -58,12 +66,15 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.protocol.protobuf.PlayerMsg.ExpLevelInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataRequest_01000200;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataResponse_01000201;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardRequest_01000305;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardResponse_01000306;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderResponse_01000018;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060;
@@ -75,6 +86,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerHeadResponse_01000014;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatResponse_01000006;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerImageRequest_01000019;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerImageResponse_0100001a;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpResponse_01000056;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
@@ -149,9 +162,53 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerAssetDataRequest_01000200, this::assetData);
 		putInvoker(PbProtocol.PlayerQuestionnaireRequest_01000300, this::questionnaireInfo);
 		putInvoker(PbProtocol.PlayerQuestionnaireRewardRequest_01000302, this::questionnaireReward);
+		putInvoker(PbProtocol.PlayerFuncOpenRewardRequest_01000305, this::funcOpenReward);
+		putInvoker(PbProtocol.PlayerLevelUpRequest_01000055, this::levelUp);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
+
+		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
+		
 	}
 
+	private void wechatSetting(NetClient client, Object message) {
+		PlayerMsg.WechatSettingRequest_01100601 request = (PlayerMsg.WechatSettingRequest_01100601) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_ENERGY,request.getSetting().getIsOpenNotifyEnergy());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD,request.getSetting().getIsOpenNotifyFirstRechargeReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD,request.getSetting().getIsOpenNotifyAoYouReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD,request.getSetting().getIsOpenNotifyMonthSignReward());
+		client.sendProtocol(PlayerMsg.WechatSettingResponse_01100602.newBuilder().build());
+	}
+
+	//	WechatSettingRequest_01100601
+	private void levelUp(NetClient client, Object message) {
+		PlayerLevelUpRequest_01000055 request = (PlayerLevelUpRequest_01000055) message;
+		PlayerLevelUpResponse_01000056.Builder response = PlayerLevelUpResponse_01000056.newBuilder();
+		int id = request.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		int[] levelUp = PlayerHelper.levelUp(player, id, 0);
+		response.setExpLevel(ExpLevelInfo.newBuilder().setId(id).setExp(levelUp[0]).setLevel(levelUp[1]).build());
+		client.sendProtocol(response.build());
+	}
+	private void funcOpenReward(NetClient client, Object message) {
+		PlayerFuncOpenRewardRequest_01000305 request = (PlayerFuncOpenRewardRequest_01000305) message;
+		PlayerFuncOpenRewardResponse_01000306.Builder response = PlayerFuncOpenRewardResponse_01000306.newBuilder();
+		int id = request.getId();
+
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.FUNC_OPEN_REWARD);
+		if (idsSet.contains(id)) {
+			client.sendProtocol(response, ErrorMsgEnum.repeat_request.getId());
+			return;
+		}
+		if (InitialUI.get(id).FuncOpenReward.length == 0) {
+			client.sendProtocol(response, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		response.addAllRewards(PlayerHelper.addResources(player, InitialUI.get(id).FuncOpenReward, OpType.FuncOpen));
+		idsSet.add(id);
+		client.sendProtocol(response.build());
+	}
 	private void questionnaireReward(NetClient client, Object message) {
 		PlayerQuestionnaireRewardRequest_01000302 request = (PlayerQuestionnaireRewardRequest_01000302) message;
 		PlayerQuestionnaireRewardResponse_01000303.Builder response = PlayerQuestionnaireRewardResponse_01000303.newBuilder();
@@ -352,7 +409,6 @@ public class PlayerHandler extends BaseHandler {
 				}
 				case NightmareRealm: {
 					ChapterModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
 
 					ret = false;
 					break;
@@ -363,8 +419,34 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case CardBook: {
-
 					ret = false;
+					break;
+				}
+				case Shop: {
+					if (!player.isFuncOpen(InitialUI.Shop)) {
+						continue;
+					}
+					ShopModule shopModule = player.getShopModule();
+//					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
+//					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
+//
+//					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
+//					int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
+//					freeFreshMaxTimes += welfareValue;
+//
+//					ret = freeFreshMaxTimes > heishiRefreshTimes;
+//					if (!ret) {
+						List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
+						if (typeList != null) {
+							for (HeishiConfig heishiConfig : heishiList) {
+								ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
+								if (shopItem != null && shopItem.getItemBuyTimes() == 0) {
+									ret = true;
+									break;
+								}
+							}
+						}
+//					}
 					break;
 				}
 				default:
@@ -409,6 +491,7 @@ public class PlayerHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
+		player.handleEvent(EventTypeEnum.WatchAds);
 		List<RewardInfo> goods = PlayerHelper.addGoods(player, cloudBox, OpType.CloudBox);
 		resp.addAllRewards(goods);
 		client.sendProtocol(resp);
@@ -767,55 +850,30 @@ public class PlayerHandler extends BaseHandler {
 		PlayerNameRequest_01000011 request = (PlayerNameRequest_01000011) message;
 		PlayerNameResponse_01000012.Builder resp = PlayerNameResponse_01000012.newBuilder();
 		String newName = request.getName();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (StringUtils.isEmpty(newName)) {
-			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+		if (StringUtils.isBlank(newName)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.ID);
 			return;
 		}
-		String oldName = player.getData().getName();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
-		Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
-		checkFuture.onSuccess(b -> {
-			if (!b) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-				return;
-			}
-			int var = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
-			if (var > 0) {
-				// 检查消耗的资源TODO
-//			player.isEnough(var, var);
-			}
+		int renameCount = player.getVarModule().getVar(VarConstant.RANAME_COUNT);
+		int[] cost = renameCount >= GlobalConst.PlayerName.length - 1 ? GlobalConst.PlayerName[GlobalConst.PlayerName.length - 1]
+				: GlobalConst.PlayerName[renameCount];
+		if (!PlayerHelper.isEnough(player, cost)) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.ID);
+			return;
+		}
 
-		/*	boolean check = KeywordFilter.getInstance().check(newName);
-			if (!check) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-				return;
-			}*/
-			if (var == 0) {
-				player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
-			}
-			PlayerNameManager.getInstance().tryCreateUser(newName).thenApply(r -> {
-				if (!r) {
-					client.sendProtocol(resp, ErrorMsgEnum.player_name_repeat.getId());
-				} else {
-					PlayerNameManager
-							.getInstance()
-							.saveName2Id(newName, player.getData().getPlayerId())
-							.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName));
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
+		renameFuture.map(r -> {
+			PlayerHelper.delResources(player, cost, OpType.Rename);
+			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
+			client.sendProtocol(resp);
+			return null;
 
-					player.getData().setName(newName);
-					client.sendProtocol(resp);
-				}
-				return null;
-			}).exceptionally(player::handleFailFunction);
-
-		}).onFailure(err ->{
-			err.printStackTrace();
-			client.sendProtocol(resp, ErrorMsgEnum.player_name_illegal.getId());
-
-		});
-
-
+		}).onFailure(e -> player.handleFail(e));
 	}
 
 	protected void gender(NetClient client, Object message) {
@@ -876,8 +934,8 @@ public class PlayerHandler extends BaseHandler {
 				// 客户端新登陆
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
 				if (!isReallyReconnect) {
-					loadOrCreatePlayerData(uid, account, newGameClient)
-							.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+					loadOrCreatePlayerData(uid,account, newGameClient)
+							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));

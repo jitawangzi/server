@@ -70,6 +70,7 @@ public enum LoggerType {
 //    resourcegrab,                                                               // 领地资源抢夺
     orderCreate,                                                                // 创建订单
     orderFinish,                                                                // 订单完成
+    invite,                                                                     // 邀请好友
 //    guildmanagement,                                                            // 公会管理
 //    guildsnap,                                                                  // 公会成员快照
 //    leagueboss,                                                                 // 公会讨伐

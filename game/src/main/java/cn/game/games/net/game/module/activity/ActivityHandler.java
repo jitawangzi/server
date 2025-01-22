@@ -397,11 +397,11 @@ public class ActivityHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        if (!PlayerHelper.isEnough(player, ActivityWestLucky.drawItemId, drawNum)){
+        if (!PlayerHelper.isEnough(player, activityWestLucky.getDrawItemId(), drawNum)){
             client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
             return;
         }
-        PlayerHelper.delResources(player, ActivityWestLucky.drawItemId, drawNum,OpType.ZhuanPanDraw);
+        PlayerHelper.delResources(player, activityWestLucky.getDrawItemId(), drawNum,OpType.ZhuanPanDraw);
         GameLogger.activity(player,activityId,0);
         for (int i = 0; i < drawNum; i++){
             List<Integer> ids = activityWestLucky.draw(false,new ArrayList<>());

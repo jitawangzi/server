@@ -9,6 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 
+/**    
+ * 定时任务调度器，主要可以处理cron表达式类型的任务
+ * 2025年1月16日 16:08:30
+ * @author SYQ
+ */
 public class SchedulerService {
 	private static Logger log = LoggerFactory.getLogger(SchedulerService.class);
 

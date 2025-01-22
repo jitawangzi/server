@@ -14,8 +14,8 @@ public class ActivityFirstChargeBuyRequest_11000010Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010.newBuilder() ;
 
-		builder.setId(31);
-		builder.setChargeId(35);
+		builder.setId(10);
+		builder.setChargeId(1);
 		
 		return builder.build() ; 
 	}

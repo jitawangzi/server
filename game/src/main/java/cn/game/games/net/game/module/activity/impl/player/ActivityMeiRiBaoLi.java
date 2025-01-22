@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.core.event.GameEvent;
+import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.protobuf.Message;
@@ -45,7 +47,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 	@Override
 	public Message buildActivityShowInfo() {
-		ActivityMsg.ActivityLeiChongInfoResponse_11000052.Builder res = ActivityMsg.ActivityLeiChongInfoResponse_11000052.newBuilder();
+		ActivityMsg.ActivityBaoLiInfoResponse_11000062.Builder res = ActivityMsg.ActivityBaoLiInfoResponse_11000062.newBuilder();
 		res.setActivityId(getId());
 		getConfigList().forEach(activityMeiRiBaoLiConfig -> {
 			res.addTaskIds(activityMeiRiBaoLiConfig.taskID);
@@ -116,6 +118,20 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 			player.getActivityModule().destroy(super.id, true);
 		}
 		return resList;
+	}
+
+	@Override
+	public long calcEndTime() {
+		if (endTime > 0){
+			return endTime;
+		}
+		ActivityConfig activityConfig = ActivityManager.instance().get(getId());
+		if (activityConfig.resetType == 4){
+			int endDay = getConfigList().size() - rewardIdList.size();
+			return DateUtil.nextDayStartTime(endDay);
+		} else {
+			return super.calcEndTime();
+		}
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
+import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
@@ -53,6 +55,9 @@ public class PlayerManager {
 	
 	// playerId => ForbidAccount 封禁的账号
 	private ConcurrentHashMap<Long, ForbidAccount> forbidAccounts = new ConcurrentHashMap<>();
+
+	//正在进行中的离线任务
+	private ConcurrentHashMap<Long,List<OfflineScheduleTask>> runOfflineTaskMap =  new ConcurrentHashMap<>();
 	
 	private static PlayerManager instance = new PlayerManager() ; 
 
@@ -134,7 +139,8 @@ public class PlayerManager {
   public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {
 		return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
   }
-	public Future<List< SimplePlayer>> batchGetSimplePlayerListFromRedisAsync(
+
+	public Future<List<SimplePlayer>> batchGetSimplePlayerListFromRedisAsync(
 			List<Long> playerIdList) {
 		return  RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, playerIdList.toArray(new Long[0]));
 	}
@@ -168,6 +174,8 @@ public class PlayerManager {
 
 	public void initAdd(Player p) {
 		id_players.put(p.getPlayerId(), p);
+		//取消玩家离线推送微信任务
+		delOfflineScheduleTask(p.getPlayerId());
 	}
 
 	/**
@@ -177,6 +185,21 @@ public class PlayerManager {
 	 */
 	public Player getPlayer(long playerId) {
 		return id_players.get(playerId);
+	}
+
+	/**
+	 * 获取指定角色id的角色数据
+	 * 如果角色不在线，则从数据库中加载
+	 * @param playerId
+	 * @return
+	 */
+	public Future<Player> getPlayerAsync(long playerId) {
+		Player player = getPlayer(playerId);
+		if (player != null) {
+			return Future.succeededFuture(player);
+		}
+		// TODO 从数据库加载,后续清理
+		return PlayerHelper.loadPlayerFromDb(playerId);
 	}
 	/**
 	 * 判断某玩家在服务器是否有缓存数据
@@ -388,4 +411,23 @@ public class PlayerManager {
 			});
 		}
 	}
+
+	public void addOfflineScheduleTask(long pid,ScheduledFuture<?> task){
+		final List<OfflineScheduleTask> list;
+		if (runOfflineTaskMap.containsKey(pid)){
+			list = runOfflineTaskMap.get(pid);
+		} else {
+			list = new ArrayList<>();
+			runOfflineTaskMap.put(pid,list);
+		}
+		list.add(new OfflineScheduleTask(task));
+	}
+
+	public void delOfflineScheduleTask(long pid){
+		List<OfflineScheduleTask> taskList = runOfflineTaskMap.remove(pid);
+		if (taskList != null){
+			taskList.forEach(task ->{task.cancelTask();});
+		}
+	}
+
 }

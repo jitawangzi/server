@@ -1,5 +1,7 @@
 package cn.game.games.net.game.helper;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +11,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +27,11 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
+import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
+import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -35,6 +42,11 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.data.mapper.ForbidAccountMapper;
+import cn.game.games.net.data.mapper.FriendApplicationMapper;
+import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.data.mapper.InviteMapper;
+import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -46,6 +58,8 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.rank.RankModule;
+import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
@@ -59,10 +73,12 @@ import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
+import cn.game.protocol.generated.manager.HeroBandBookManager;
 import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
@@ -85,14 +101,16 @@ import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
+import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.log.LoggerType;
+import cn.game.util.reflect.MethodUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -423,7 +441,9 @@ public class PlayerHelper {
 				delResources(player, entry.getKey(), entry.getValue(), consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;
@@ -467,7 +487,9 @@ public class PlayerHelper {
 					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
 				}
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;
@@ -494,7 +516,9 @@ public class PlayerHelper {
 				delResources(player, list[j], list[j + 1], consumeType, false);
 				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[j], list[j + 1]));
 			}
-			player.getGameClient().sendProtocol(spendPush.build());
+			if (spendPush.getSpendCount() > 0) {
+				player.getGameClient().sendProtocol(spendPush.build());
+			}
 			return true;
 		}
 		return false;
@@ -536,6 +560,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static List<Goods> randomReward(int randomRewardId) {
+		if (randomRewardId <= 0) {
+			return Collections.EMPTY_LIST;
+		}
 		List<Goods> ret = new ArrayList<>();
 		RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(randomRewardId);
 		for (int[] rewardInfo : randomGivenConfig.MustGiven) {
@@ -725,7 +752,7 @@ public class PlayerHelper {
 
 		int secord = fiveTime - player.getData().getRefreshFiveDay();
 
-		long nowTime = DateUtil.getStamp();
+		long nowTime = DateUtil.currentTimeSeconds();
 
 		// 判断必须要跨一天以上才可以刷
 		int refTime = fiveTime;
@@ -769,7 +796,9 @@ public class PlayerHelper {
 	}
 
 	public static List<RewardInfo> addGoods(Player player, List<Goods> goods, OpType opType) {
-
+		if (goods == null || goods.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
 		List<RewardInfo> ret = new ArrayList<>();
 		for (Goods g : goods) {
 			ret.addAll(addResources(player, g.getId(), g.getCount(), opType));
@@ -1235,6 +1264,7 @@ public class PlayerHelper {
 		return player;
 	}
 
+
 	public static Future<Player> initPlayerData(Player player) {
 
 		if (player.getData().isNew()) {
@@ -1402,8 +1432,13 @@ public class PlayerHelper {
 		data.setOfflineTime(System.currentTimeMillis());
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.getDate(data.getLoginDate()).getTime()) / 1000));
 
+
 		return saveClientCache(playerId).onSuccess(r -> {
 			clearPlayer(playerId);
+
+			//推送玩家离线的微信通知
+			player.addWechatOfflineNotifyTask();
+
 			GameLogger.logout(player);
 			PushService.getInstance().delPlayerTags(playerId);
 		}).compose(v -> {
@@ -1494,6 +1529,32 @@ public class PlayerHelper {
 	}
 
 	/** 
+	 * 手动升级，对于一个玩家只有一种等级的，例如玩家等级，vip等级 等等
+	 * @param expId 经验id
+	 * @param subId	子id，如果同一类型下有多个配置，用这个区分。
+	 * @param curLevel 当前等级
+	 * @param curExp	当前经验
+	 * @return
+	 */
+	public static int[] levelUp(Player player, int expId, int subId) {
+		Asset expAsset = Asset.get(expId);
+		if (expAsset.Type != 2) {
+			throw new IllegalArgumentException("不是经验id");
+		}
+		int curExp = (int) player.getCurrencyModule().get(expAsset);
+		int curLevel = player.getLevel(expAsset);
+		ExpConfig expConfig = getExpConfig(expId, curLevel, subId);
+		ExpConfig nextExpConfig = getExpConfig(expId, curLevel + 1, subId);
+		if (expConfig != null && curExp >= expConfig.experience && nextExpConfig != null) {
+			curExp -= expConfig.experience;
+			curLevel++;
+			player.getPlayerModule().getExpLevelMap().add(expId);
+			player.getCurrencyModule().setCount(expId, curExp);
+		}
+		return new int[] { curExp, curLevel };
+	}
+
+	/** 
 	 * 获取某个升级配置。 
 	 * @param id  经验id
 	 * @param level 等级
@@ -1513,6 +1574,8 @@ public class PlayerHelper {
 			return FairyFriendFavorabilityManager.instance().getUIFairyListIDLV(subId, level);
 		} else if (id == Asset.VIPExp.ID) {
 			return VIPManager.instance().getNullable(level);
+		} else if (id == Asset.CatalogPoints.ID) {
+			return HeroBandBookManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}
@@ -1551,20 +1614,61 @@ public class PlayerHelper {
 	 */
 	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-		BatchQueryUtil.processBatch((offset, limit) -> mapper.getBatch(offset, limit), playerData -> {
-			try {
-				Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerData);
-				Player player = playerFromDb.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
-				Boolean fix = function.apply(player);
-				if (fix) {
-					log.info("修正玩家数据: " + player.getPlayerId());
-					PlayerHelper.saveClientCache(player.getPlayerId()).toCompletionStage().toCompletableFuture().get(30, TimeUnit.SECONDS);
-				}
-				PlayerHelper.clearPlayer(player.getPlayerId());
-			} catch (Exception e) {
-				LoggerType.Stdout.logger.error("Failed to process player: " + playerData.getPlayerId() + ", error: " + e.getMessage());
+		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
+		Consumer<PlayerData> processor = playerData -> {
+			PlayerHelper.loadPlayerFromDb(playerData).compose(player -> {
+				return modifyPlayerOffline(function, player);
+			}).onFailure(r -> {
+				log.error("loadAndProcessPlayers error, playerId: " + playerData.getPlayerId());
+			}).toCompletionStage().toCompletableFuture().join();
+		};
+		BatchProcessResult processBatchParallel = BatchQueryUtil.processBatchParallel(batchQuery, processor, true);
+		log.info("loadAndProcessPlayers result: " + processBatchParallel);
+	}
+
+	public static Future<?> modifyPlayerNew(long playerId, Function<Player, Boolean> function) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		boolean online = player != null;
+		if (player == null) { // 不在本服or不在线
+			String serverId = PlayerManager.getInstance().getServerId(playerId);
+			if (StringUtils.isEmpty(serverId)) { // 不在线，从数据库中载入
+				return PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
+					log.debug("modifyPlayer from db in current server, playerId: " + playerId + ", serverId: "
+							+ ServerContext.getInstance().getServerId());
+					return modifyPlayerFinal(function, playerDb, online);
+				}).onFailure(e -> {
+					log.error("modifyPlayer error, playerId: " + playerId);
+				});
+			} else {
+				// 在其他服务器，转到其他服务器处理。
+				log.debug("modifyPlayer in other server, playerId: " + playerId + ", serverId: " + serverId);
+				Optional<Method> currentMethod = MethodUtil.getCurrentMethod(PlayerHelper.class);
+				return runCurrentMethodInOtherServer(serverId, currentMethod.get(), playerId, function);
 			}
-		});
+		} else {
+			log.debug("modifyPlayer in current server, playerId: " + playerId + ", serverId: " + ServerContext.getInstance().getServerId());
+			// 本服在线，直接处理
+			return modifyPlayerFinal(function, player, online);
+		}
+	}
+
+	/** 
+	 * 在其他服务器上执行当前方法
+	 * @param serverId  服务器id
+	 * @param thisClass	当前类,支持spring容器管理的实例，和普通单例类、静态方法类
+	 * @param args	方法参数
+	 * @return
+	 */
+	private static Future<?> runCurrentMethodInOtherServer(String serverId, Method method, Object... methodArgs) {
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
+		Class<?> thisClass = method.getDeclaringClass();
+		if (method.getModifiers() == Modifier.STATIC) {
+			// 当前方法是静态方法， 调用
+			return (Future<?>) gameServerInterface.invoke(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
+		} else {
+			// 如果当前方法是实例方法
+			return (Future<?>) gameServerInterface.invoke(thisClass.getName(), method.getName(), method.getParameterTypes(), methodArgs);
+		}
 	}
 
 	/** 
@@ -1576,33 +1680,50 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param function 修改数据的方法，结果true表示数据修改了， false表示数据没有修改
 	 */
-	public static void modifyPlayer(long playerId, Function<Player, Boolean> function) {
+	public static Future<?> modifyPlayer(long playerId, Function<Player, Boolean> function) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		boolean online = player != null;
 		if (player == null) {
 			// 先不处理在其他服务器在线的情况， 后续再处理，如果发生先失败
-			Future<Player> playerFromDb = PlayerHelper.loadPlayerFromDb(playerId);
-			// 简单起见，同步获取玩家
-			player = playerFromDb.toCompletionStage().toCompletableFuture().join();
+			return PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
+				return modifyPlayerFinal(function, playerDb, online);
+			}).onFailure(e -> {
+                log.error("modifyPlayer error, playerId: " + playerId); 
+			});
+		} else {
+			return modifyPlayerFinal(function, player, online);
 		}
+	}
+
+	private static Future<?> modifyPlayerFinal(Function<Player, Boolean> function, Player player, boolean online) {
 		Player modify = player;
 		if (online) {
 			GameClient gameClient = player.getGameClient();
 			if (gameClient == null) {
-				log.error("modifyPlayer gameClient is null, playerId: " + playerId);
-				return;
+				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
+				return Future.failedFuture("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 			}
+			Promise<Boolean> promise = Promise.promise();
 			gameClient.getContext().runOnContext(v -> {
-				function.apply(modify);
+				Boolean apply = function.apply(modify);
+				promise.complete(apply);
 			});
+			return promise.future();
 		} else {
-			Boolean apply = function.apply(player);
-			if (apply != null && apply) {
-				PlayerHelper.saveClientCache(playerId);
-			}
-			PlayerHelper.clearPlayer(playerId);
-			RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+			return modifyPlayerOffline(function, modify);
 		}
+	}
+
+	private static Future<?> modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
+		Boolean apply = function.apply(player);
+		// 修改完玩家数据后，需要从缓存中清除数据
+		PlayerHelper.clearPlayer(player.getPlayerId());
+		RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
+		if (apply != null && apply) {
+			log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
+			return PlayerHelper.saveClientCache(player.getPlayerId());
+		}
+		return Future.succeededFuture();
 	}
 
 	/** 
@@ -1665,5 +1786,56 @@ public class PlayerHelper {
 			promise.fail(err);
 		}, data);
 		return promise.future();
+	}
+
+	/** 
+	 * 删除玩家数据，一般只给gm使用
+	 * @param playerId
+	 */
+	public static void deletePlayerData(long playerId) {
+		Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
+		if (playerDelete != null) {
+			GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+			if (gameClientByPlayer != null) {
+				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
+			}
+			PlayerHelper.clearPlayer(playerId);
+			//删除微信推送的任务
+			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
+		}
+
+		// 删除数据库
+		List<DbTask> tasks = new ArrayList<>();
+		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(FriendMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(MailMapper.class, MapperConstant.deletePlayerData, playerId));
+
+		DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).toCompletionStage().thenCompose(r -> {
+			PlayerData playerData = (PlayerData) r;
+			// 名字
+			PlayerNameManager.getInstance().removeName(playerData.getName());
+			// 排行榜
+			for (RankType rankType : RankType.values()) {
+				RankService.getInstance().removeRankAsync(rankType, playerData.getServerId(), playerData.getPlayerId());
+			}
+			// 简要数据
+			String key = CacheType.PLAYER_SIMPLE.key(playerId);
+			return RedisLocalCache.getInstance().deleteAsync(key).thenApply(result -> playerData);
+		}).thenCompose(playerData -> DAO.execute(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
+			// 删除login账号,这里可以使用传递下来的playerData
+			return VxHolder
+					.requestRemoteServer(ServerType.Login,
+							LoginPlayerDeleteRequest_7d000080.newBuilder()
+									.setPlayerId(playerData.getPlayerId())
+									.setAccount(playerData.getDeviceId())
+									.build())
+					.toCompletionStage();
+		}).exceptionally(e -> {
+			log.error("", e);
+			return null;
+		});
 	}
 }

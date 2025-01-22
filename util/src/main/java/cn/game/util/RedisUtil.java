@@ -23,6 +23,8 @@ import com.ctrip.framework.apollo.ConfigService;
 
 /**
  * Redisson操作工具类，封装常用方法
+ * 
+ * 后续看看增加Vert.x的Redis客户端，回调线程更自然。 
  * 2021年3月11日 下午3:07:23
  * @author SYQ
  */

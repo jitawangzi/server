@@ -17,8 +17,8 @@ import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.FairyFriendManager;
 import cn.game.protocol.generated.manager.HCHeroManager;
-import cn.game.protocol.generated.manager.HeroFashionManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.HeroSkinManager;
 import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
@@ -47,8 +47,8 @@ public class ItemHelper {
 			HeroManager.instance().get(id);
 			break;
 		}
-		case Fashion: {
-			HeroFashionManager.instance().get(id);
+		case HeroSkin: {
+			HeroSkinManager.instance().get(id);
 			break;
 		}
 		case Dragon: {

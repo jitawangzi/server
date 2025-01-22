@@ -3,6 +3,7 @@ package cn.game.login.net.clientpacket.vertx;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RAtomicLong;
+import org.redisson.api.RFuture;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
@@ -80,12 +81,20 @@ public class UserHelper {
 	public static User getUserByName(String username) {
 		return RedisUtil.get(CacheType.F_USER_NAME_ID.key(username));
 	}
+
+	public static RFuture<User> getUserByNameAsync(String username) {
+		return RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+	}
 	public static String getServerId(long playerId) {
 		return RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
 	}
 	
-	public static void removeUser(long sessionId) {
-		RedisUtil.deleteAsync(CacheType.PASSPORT_SESSION.key(sessionId)); 
+	public static RFuture<Boolean> removeUser(long sessionId) {
+		return RedisUtil.deleteAsync(CacheType.PASSPORT_SESSION.key(sessionId));
+	}
+
+	public static RFuture<Boolean> removeUser(String name) {
+		return RedisUtil.deleteAsync(CacheType.F_USER_NAME_ID.key(name));
 	}
 
 }

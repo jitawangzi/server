@@ -6,6 +6,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.manager.PlayerManager;
 
+@Deprecated
 public class EventHelper {
 	
 	public static void handleEvent(long playerId, GameEvent gameEvent) {
@@ -17,12 +18,13 @@ public class EventHelper {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		player.getEventModule().registerEventHandler(eventType, eventHandler);
 	}
+
 	public static void unregisterEventHandler(long playerId, EventTypeEnum eventType, EventHandler eventHandler) {
 //		
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		player.getEventModule().unregisterEventHandler(eventType, eventHandler);
 	}
-	
+
 	public static void registerEventHandler(long playerId, EventTypeEnum[] eventTypes, EventHandler eventHandler) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 //

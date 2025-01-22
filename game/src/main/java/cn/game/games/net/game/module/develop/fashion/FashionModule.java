@@ -38,7 +38,7 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
-		return GoodsTypeEnum.Fashion;
+		return GoodsTypeEnum.GemMMM;
 	}
 
 	@Override

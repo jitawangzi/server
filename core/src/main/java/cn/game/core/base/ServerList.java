@@ -29,6 +29,7 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 	/** 开服时间，通常用来判断开服xx天的逻辑，后期不应该改变。  */
 	private String ServerOpenTime;
 
+	/** n个时间段，分成n+1个服务器 */
 	private String[] serverAllocationTimes;
 
     private Integer seq;

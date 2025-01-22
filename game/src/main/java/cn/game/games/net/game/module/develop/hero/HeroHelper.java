@@ -146,6 +146,29 @@ public class HeroHelper {
 		return true;
 	}
 
+	@Deprecated
+	public static int getMaxStar(Collection<Hero> heros, int quality) {
+
+		int maxStar = 0;
+		for (Hero hero : heros) {
+			if (hero.getStar() > maxStar && hero.getQuality() == quality) {
+				maxStar = hero.getStar();
+			}
+		}
+		return maxStar;
+	}
+
+	public static int getMaxStar(int quality) {
+
+		for (int star = 10; star > 0; star--) {
+			HeroBreakConfig uiInitialQualityStar = HeroBreakManager.instance().getUIInitialQualityStar(quality, star);
+			if (uiInitialQualityStar != null) {
+				return star;
+			}
+		}
+		throw new IllegalArgumentException("");
+	}
+
 	public static int getMarqueeId(int heroCount) {
 
 		return heroCount == 10 ? 1 : 3;

@@ -20,8 +20,10 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.develop.hero.QualityStarObj;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.FuncOpenConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -34,6 +36,7 @@ import cn.game.protocol.generated.manager.HeadPortraitManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
+import cn.game.protocol.protobuf.BaseMsg.QualityStar;
 import cn.game.protocol.protobuf.PlayerMsg.CloudBoxInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxPush_01100040;
@@ -85,6 +88,8 @@ public class PlayerModule extends BasePlayerModule {
 	/** 上次世界聊天发言时间 */
 	private int lastChatTime;
 	
+	/** 账号也记录一下，如果离线修复数据时触发bi使用 */
+	private Account account;
 
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
@@ -111,8 +116,8 @@ public class PlayerModule extends BasePlayerModule {
 		}
 	};
 
-	public boolean addId(int type, int configId) {
-		return getOrCreateIdSet(type).add(configId);
+	public boolean addId(IdConstant type, int configId) {
+		return getIdsSet(type).add(configId);
 //		Map<Integer, PlayerIds> map = getOrCreateIdSet(type);
 //		if (map.containsKey(configId)) {
 //			return;
@@ -127,13 +132,13 @@ public class PlayerModule extends BasePlayerModule {
 //		map.put(add.getConfigId(), add);
 	}
 
-	public boolean removeId(int type, int configId) {
+	public boolean removeId(IdConstant type, int configId) {
 //		Map<Integer, PlayerIds> map = getOrCreateIdMap(type);
 //		PlayerIds playerIds = map.remove(configId);
 //		if (playerIds != null) {
 //			playerIds.delete();
 //		}
-		return getOrCreateIdSet(type).remove(configId);
+		return getIdsSet(type).remove(configId);
 	}
 
 //	public void updateTime(int type, int configId) {
@@ -146,21 +151,12 @@ public class PlayerModule extends BasePlayerModule {
 //		}
 //	}
 
-	public boolean hasId(int type, int configId) {
-		return getOrCreateIdSet(type).contains(configId);
+	public boolean hasId(IdConstant type, int configId) {
+		return getIdsSet(type).contains(configId);
 	}
 
-	public Set<Integer> getIdsSet(int type) {
-		return getOrCreateIdSet(type);
-	}
-
-	public Set<Integer> getOrCreateIdSet(int type) {
-		Set<Integer> set = idsSet.get(type);
-		if (set == null) {
-			set = new HashSet<Integer>();
-			idsSet.put(type, set);
-		}
-		return set;
+	public Set<Integer> getIdsSet(IdConstant type) {
+		return idsSet.computeIfAbsent(type.getValue(), k -> new HashSet<>());
 	}
 
 	public IntMapWrapper getExpLevelMap() {
@@ -221,6 +217,14 @@ public class PlayerModule extends BasePlayerModule {
 		this.lastChatTime = lastChatTime;
 	}
 
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
 	public void startCloudBoxTask() {
 		int[] randomCLoud = GlobalConst.RandomCLoud;
 		if (randomCLoud[0] == 1) {
@@ -252,7 +256,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllLevels(expLevelMap.getMap());
 
 		// 礼包
-		builder.addAllChapterPacks(getOrCreateIdSet(IdConstant.CHAPTER_PACK));
+		builder.addAllChapterPacks(getIdsSet(IdConstant.CHAPTER_PACK));
 		
 		if (cloudBox != null && !cloudBox.isEmpty()) {
 			List<GoodsInfo> collect = cloudBox.stream().map(Goods::toGoodsInfo).collect(Collectors.toList());
@@ -263,11 +267,21 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllGuide(guideMap);
 		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
-		builder.addAllHeadboxs(getOrCreateIdSet(IdConstant.HEAD_BOX));
+		builder.addAllHeadboxs(getIdsSet(IdConstant.HEAD_BOX));
+		builder.addAllFuncOpenRewardIds(getIdsSet(IdConstant.FUNC_OPEN_REWARD));
+		builder.addAllHeroSkinIds(getIdsSet(IdConstant.HERO_SKIN));
 		List<FuncOpenConfig> lockHideList = FuncOpenManager.instance().getLockHideList(false);
 		if (lockHideList != null) {
 			builder.addAllCloseFuncs(lockHideList.stream().map(f -> f.ID).collect(Collectors.toList()));
 		}
+
+		HeroModule heroModule = player.getHeroModule();
+		Map<Integer, QualityStarObj> heroStarsMap = heroModule.getIllustrationsHeroStars();
+		heroStarsMap.forEach((k, v) -> {
+			builder.addHeroStars(QualityStar.newBuilder().setHeroId(k).setQuality(v.quality).setStar(v.star));
+		});
+		builder.setRewardLevel(heroModule.getIllustrationRewardLevel());
+
 		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
 	}
 	@Override
@@ -279,6 +293,7 @@ public class PlayerModule extends BasePlayerModule {
 			if (player.isFuncOpen(InitialUI.RandomBox)) {
 				startCloudBoxTask();
 			}
+			setAccount(player.getAccount());
 			break;
 		}
 		case PLAYER_CREATE: {

@@ -210,4 +210,10 @@
     </foreach>
     )
   </update>
+  
+   <delete id="deletePlayerData" parameterType="java.lang.Long">
+    delete from t_friend_application
+    where player_id = #{playerId,jdbcType=BIGINT}
+      or apply_player_id = #{playerId,jdbcType=BIGINT}
+  </delete>
 </mapper>

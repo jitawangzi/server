@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ctrip.framework.apollo.ConfigService;
+
 import cn.game.login.net.clientpacket.vertx.VertxRegisterReq;
 import cn.game.login.net.clientpacket.vertx.VertxServerListReq;
 import cn.game.login.net.clientpacket.vertx.VertxThirdPartyConfirmReq;
@@ -38,8 +40,6 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 public class RestServer extends AbstractVerticle {
 
-	private static int port;
-
 	public static void main(String[] args) {
 		// 获取vertx基类
 		Vertx vertx = Vertx.vertx();
@@ -53,6 +53,10 @@ public class RestServer extends AbstractVerticle {
 	// 重写start方法，加入我们的rest服务处理逻辑
 	@Override
 	public void start() throws Exception {
+
+		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
+		// each namespace and is never null
+		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
 		// 创建带安全选项的 HTTP 服务器配置
 		HttpServerOptions serverOptions = new HttpServerOptions().setHandle100ContinueAutomatically(false)
 				.setMaxInitialLineLength(4096)
@@ -96,7 +100,29 @@ public class RestServer extends AbstractVerticle {
 
 		router.route("/*").handler(staticHandler);
 
-		// 注册业务路由
+		regRouter(router);
+
+		// 错误处理
+		router.route().failureHandler(ctx -> {
+			ctx.response()
+					.setStatusCode(500)
+					.putHeader("Content-Type", "application/json")
+					.end(new JsonObject().put("error", "Internal Server Error").encode());
+		});
+
+		// 启动服务器
+		vertx.createHttpServer(serverOptions)
+				.requestHandler(router)
+				.listen(vertHttpPort)
+				.onSuccess(server -> System.out.println("HTTP server started on port " + vertHttpPort))
+				.onFailure(error -> System.err.println("Failed to start HTTP server: " + error.getMessage()));
+	}
+
+	/** 
+	 * 注册业务路由
+	 * @param router
+	 */
+	protected void regRouter(Router router) {
 		router.route("/account/register").handler(new VertxRegisterReq());
 		router.route("/account/third_party_confirm").handler(new VertxThirdPartyConfirmReq());
 		router.route("/account/server_list").handler(new VertxServerListReq());
@@ -115,21 +141,6 @@ public class RestServer extends AbstractVerticle {
 		router.route("/wx_customer").handler(new WeChatCustomerServiceReq());
 		router.route("/wx_pay_callback").handler(new PayCallbackSuccessReq());
 		router.route("/sojump_callback").handler(new SojumpCallbackReq());
-
-		// 错误处理
-		router.route().failureHandler(ctx -> {
-			ctx.response()
-					.setStatusCode(500)
-					.putHeader("Content-Type", "application/json")
-					.end(new JsonObject().put("error", "Internal Server Error").encode());
-		});
-
-		// 启动服务器
-		vertx.createHttpServer(serverOptions)
-				.requestHandler(router)
-				.listen(port)
-				.onSuccess(server -> System.out.println("HTTP server started on port " + port))
-				.onFailure(error -> System.err.println("Failed to start HTTP server: " + error.getMessage()));
 	}
 	// 处理post请求的handler
 	private void handlePost(RoutingContext context) {
@@ -169,10 +180,6 @@ public class RestServer extends AbstractVerticle {
 		return false;
 	}
 
-	public static void setPort(int p) {
-		port = p;
-	}
-	
 }
 
 

@@ -37,7 +37,7 @@ import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class DrawModule extends BasePlayerModule {
-
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 	/** 当前第几档必送神将,key：GiftCardConfig 表id */
 	@Deprecated
 	private IntMapWrapper giftIndex = new IntMapWrapper();
@@ -46,6 +46,8 @@ public class DrawModule extends BasePlayerModule {
 	private IntMapWrapper drawTimes = new IntMapWrapper();
 	/** 免费单抽的时间 key：DrawConfig 表id */
 	private IntMapWrapper freeDrawTime = new IntMapWrapper();
+	/** 免费单抽的次数 key：DrawConfig 表id */
+	private IntMapWrapper freeDrawCount = new IntMapWrapper();
 	private boolean isFirstTen = true;
 	/** 新手期抽卡次数 */
 	private int guidanceDrawCount;
@@ -75,8 +77,13 @@ public class DrawModule extends BasePlayerModule {
 
 	@Override
 	public void handleEvent(GameEvent event) {
-		// TODO Auto-generated method stub
+		switch (event.getType()) {
 
+		case NewDay: {
+			freeDrawCount.clear();
+			break;
+		}
+		}
 	}
 
 	@Override
@@ -111,6 +118,7 @@ public class DrawModule extends BasePlayerModule {
 				newBuilder.putAllGiftMaxTimes(mapMax);*/
 		newBuilder.setWishHeroId(wishHeroId);
 		newBuilder.setWishHeroTimes(wishHeroTimes);
+		newBuilder.setFreeDrawCount(freeDrawCount.getValue(id));
 		return newBuilder.build();
 	}
 
@@ -204,6 +212,7 @@ public class DrawModule extends BasePlayerModule {
 		}
 		if (freeOnce) {
 			freeDrawTime.setValue(id, DateUtil.currentTimeSeconds());
+			freeDrawCount.add(id, 1);
 		}
 		if (!heroNames.isEmpty()) {
 			String marqueeText = ChatHelper.getHeroMarqueeText(player.getData().getName(), heroNames, count);

@@ -117,11 +117,26 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginGameQuestionnairePush_7d000090, this::questionnairePush);
 		putInvoker(PbProtocol.GameStatusChangeRequest_7d000030, this::gameStatusChange);
 		putInvoker(PbProtocol.GameOpRequest_7d000373, this::gameOp);
-		
+
+
+		putInvoker(PbProtocol.NotifyInviteBindAndLvUpRequest_7d000041, this::InviteLvChange);
+
 
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void InviteLvChange(NetClient client, Object o) {
+		ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041 req = (ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041) o;
+		Player player = PlayerManager.getInstance().getPlayer(req.getPid());
+		if (player != null && player.isOnline()){
+			player.getInviteModule().updateTargetLv(req.getTargetPid(),req.getLv());
+			player.getInviteModule().checkRedHot();
+		}
+		log.info(String.format("InviteLvChange req:%s",req));
+		client.sendProtocol(ServerMsg.NotifyInviteBindAndLvUpResponse_7d000042.newBuilder().setResult(true).build());
+
 	}
 
 	private void gameStatusChange(NetClient client, Object o) {
@@ -354,7 +369,9 @@ public class ServerHandler extends BaseHandler {
 		ProtobufProtocol protocol = new ProtobufProtocol(
 				PbProtocol.getInstance().getMsgId("GamePlayerRequest_7d000015"), request, -1);
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-		dispatch(gameClient, protocol);
+		PlayerHelper.addTask(playerId, v -> {
+			dispatch(gameClient, protocol);
+		});
 
 		client.sendProtocol(resp.build());
 	}

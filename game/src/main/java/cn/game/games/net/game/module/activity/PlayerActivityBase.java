@@ -24,10 +24,14 @@ public abstract class PlayerActivityBase extends ActivityBase {
 	@Override
 	public void init(int id, Player player, boolean isNew) {
 		this.player = player;
-		player.registerEventHandler(getEventTypes(), this);
+		player.registerEventHandler(this);
 		super.init(id, null, isNew);
 	}
 
+	@Override
+	public void unregisterEvent() {
+		player.getEventModule().unregisterEventHandler(this);
+	}
 	@Override
 	public void handleEvent(GameEvent event) {
 	}

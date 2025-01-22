@@ -633,7 +633,23 @@ public class GameLogger extends Logger {
 			SystemLogger.error(e);
 		}
 	}
-
+	/**
+	 * 邀请好友日志
+	 * @param player
+	 * @param invitePid 邀请我的人
+	 */
+	public static void invite(Player player, long invitePid) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.achievement.name(), LoggerType.achievement.version, "C0103"))
+					 ,invitePid};
+			LoggerType.invite.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 	/**
 	 * pve 战斗
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id

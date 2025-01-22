@@ -4,8 +4,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ctrip.framework.apollo.ConfigService;
-
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
@@ -73,9 +71,7 @@ public class LoginServer {
 		ZkHelper.init();
 		RedisUtil.getInstance().init();
 		ServerContext.getInstance().init(serverId, ServerType.Login);
-		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig(); // config instance is singleton for
-																					// each namespace and is never null
-		int vertHttpPort = config.getIntProperty("vertx.http.port", 0);
+
 //		serverId = config.getProperty("login.server.id", "");
 		IdUtil.init();
 //		LogbackConfig.init(config.getBooleanProperty("initLogback", false),
@@ -92,7 +88,6 @@ public class LoginServer {
 //		RedisUtil.setRedisUrl(Config.vertxRedisUrl);
 //		VxHolder.deployVerticleSync(new RedisUtil());
 		// 部署发布rest服务
-		RestServer.setPort(vertHttpPort);
 		DeploymentOptions options = new DeploymentOptions();
 		options.setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE);
 		VxHolder.deployVerticleSync(RestServer.class, options);

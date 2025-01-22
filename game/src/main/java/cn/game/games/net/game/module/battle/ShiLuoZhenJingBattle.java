@@ -3,6 +3,8 @@ package cn.game.games.net.game.module.battle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -39,11 +41,21 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	private List<Integer> randomBuff = new ArrayList<>();
 	/** 是否可以领奖， 只有注册后第二天才可以领奖 */
 	private boolean canReward = false;
+	/** gm命令直接手动关 */
+	@JsonIgnore
+	private boolean zhijieshoudong = false;
 
 	@Override
 	void newDay() {
 		canReward = true;
 		reset();
+	}
+
+	@Override
+	public void onLogin() {
+		if (startBattleId == 0) {
+			nextBattleId();
+		}
 	}
 
 	public void reset() {
@@ -90,10 +102,12 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 				RankService.getInstance().setScoreAsync(player.getServerId(), RankType.ShiLuoZhenJing, player.getPlayerId(), completeBattleId);
 			}
 		}
-		this.battleStage++;
-		// 1打到9，然后10本关
-		if (this.battleStage == 11) {
-			this.battleStage = 1;
+		if (!zhijieshoudong) {
+			this.battleStage++;
+			// 1打到9，然后10本关
+			if (this.battleStage == 11) {
+				this.battleStage = 1;
+			}
 		}
 
 	}
@@ -195,6 +209,14 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 
 	public void setCompleteBattleId(int completeBattleId) {
 		this.completeBattleId = completeBattleId;
+	}
+
+	public void setBattleStage(int battleStage) {
+		this.battleStage = battleStage;
+	}
+
+	public void setZhijieshoudong(boolean zhijieshoudong) {
+		this.zhijieshoudong = zhijieshoudong;
 	}
 
 	private List<RewardInfo> calcRewardInfos(int level, int stage) {

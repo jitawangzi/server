@@ -301,4 +301,10 @@
     player_id
     from t_friend
     where player_id = #{playerId,jdbcType=BIGINT} and friend_id = #{friendId,jdbcType=BIGINT} and relation = #{relation,jdbcType=TINYINT}</select>
+    
+    <delete id="deletePlayerData" parameterType="java.lang.Long">
+    delete from t_friend
+    where player_id = #{playerId,jdbcType=BIGINT}
+      or friend_id = #{playerId,jdbcType=BIGINT}
+  </delete>
 </mapper>

@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GameServerStatus;
@@ -17,6 +19,7 @@ import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
+import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.generated.config.DayCardConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -45,13 +48,21 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	private long freeDayHeroUid;
 
 	/** 领取过图鉴奖励的英雄id,领取到什么品质了 */
+	@JsonIgnore
+	@Deprecated
 	private Map<Integer, Integer> illustrationsHeroQualitys = new HashMap<Integer, Integer>();
 
 	/** 某个英雄id，达到的最大品质。 */
+	@JsonIgnore
+	@Deprecated
 	private Map<Integer, Integer> illustrationsHeroQualitysMax = new HashMap<Integer, Integer>();
 
 	/** 曾经拥有过的英雄id */
 	private List<Integer> ownedHeroIds = new ArrayList<>();
+	/**  */
+	private Map<Integer, QualityStarObj> illustrationsHeroStars = new HashMap<Integer, QualityStarObj>();
+	/** 领取过图鉴等级奖励的等级 */
+	private int illustrationRewardLevel;
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -102,24 +113,14 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			if (ownedHeroIds.contains(configId)) {
 				ownedHeroIds.remove(Integer.valueOf(configId));
 			}
-			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
-				HeroConfig heroConfig = HeroManager.instance().get(configId);
-				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
-			}
 			break;
 		}
 		case HeroQuality: {
-			Hero hero = event.getParameter(0);
-			int configId = hero.getConfigId();
-			HeroConfig heroConfig = HeroManager.instance().get(configId);
-			if (!illustrationsHeroQualitysMax.containsKey(configId)) {
-				illustrationsHeroQualitysMax.put(configId, heroConfig.InitialQuality);
-			} else {
-				int oldQuality = illustrationsHeroQualitysMax.get(configId);
-				if (hero.getQuality() > oldQuality) {
-					illustrationsHeroQualitysMax.put(configId, hero.getQuality());
-				}
-			}
+//			Hero hero = event.getParameter(0);
+//			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+//			illustrationsHeroStars.compute(hero.getConfigId(),
+//					(k, v) -> v == null ? new Pair<Integer, Integer>(heroConfig.InitialQuality, 1)
+//					: new Pair<Integer, Integer>(v.first, v.second + 1));
 			break;
 		}
 		}
@@ -168,6 +169,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			hero.setStar(1);
 			hero.setLevel(1);
 			hero.setPlayerId(playerId);
+			hero.setSkin(0);
 			list.add(hero);
 			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion, true);
 			return list;
@@ -201,6 +203,8 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setStar(1);
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
+		hero.setSkin(heroConfig.HeroSkinID);
+		player.getPlayerModule().addId(IdConstant.HERO_SKIN, heroConfig.HeroSkinID);
 
 		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}
@@ -289,6 +293,17 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return illustrationsHeroQualitysMax;
 	}
 
+	public Map<Integer, QualityStarObj> getIllustrationsHeroStars() {
+		return illustrationsHeroStars;
+	}
+
+	public int getIllustrationRewardLevel() {
+		return illustrationRewardLevel;
+	}
+
+	public void setIllustrationRewardLevel(int illustrationRewardLevel) {
+		this.illustrationRewardLevel = illustrationRewardLevel;
+	}
 	@Override
 	public void checkConfig(int id) {
 		HeroManager.instance().get(id);

@@ -5,6 +5,7 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.util.GameUtil;
 
 @ConditionType(type = ConditionTypeEnum.Gacha)
 public class Gacha extends AbstractCondition {
@@ -23,6 +24,9 @@ public class Gacha extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(GameEvent event) {
+		if (getExtParam().length > 0) {
+			return GameUtil.contains(getExtParam(), event.getIntParameter(1));
+		}
 		return true;
 	}
 

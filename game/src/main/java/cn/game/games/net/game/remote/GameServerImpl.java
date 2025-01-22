@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Player;
@@ -13,8 +15,11 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
 
 public class GameServerImpl implements GameServerInterface {
 
@@ -119,6 +124,34 @@ public class GameServerImpl implements GameServerInterface {
           PlayerManager.getInstance().unblockAccount(pid);
         });
 
+	}
+
+	@Override
+	public Future<?> rename(long playerId, String newName) {
+		return PlayerManager.getInstance().getPlayerAsync(playerId).compose(player -> {
+
+			String oldName = player.getData().getName();
+			Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
+			return checkFuture.compose(b -> {
+				if (!b) {
+					return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
+				}
+				return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
+			}).compose(r -> {
+				if (!r) {
+					throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
+				}
+				CompletionStage<Void> completionStage = PlayerNameManager.getInstance()
+						.saveName2Id(newName, player.getData().getPlayerId())
+						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName))
+						.thenCompose(rr -> PlayerHelper.saveSimplePlayer(player).toCompletionStage())
+						.thenAccept(rr -> {
+							player.getData().setName(newName);
+						});
+				;	
+				return Future.fromCompletionStage(completionStage);
+			});
+		});
 	}
 
 }

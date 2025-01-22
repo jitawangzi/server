@@ -111,6 +111,7 @@ public class GameServer implements GameServerMBean {
 
 	public void start(String[] args) throws Exception {
 
+		long start = System.currentTimeMillis();
 		String serverId = parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
@@ -118,12 +119,11 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
-
-		long start = System.currentTimeMillis();
-		RedisUtil.getInstance().init();
-		ServerContext.getInstance().init(serverId, ServerType.Game);
 		ZkHelper.init();
+		RedisUtil.getInstance().init();
 		IdUtil.init();
+
+		ServerContext.getInstance().init(serverId, ServerType.Game);
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config
@@ -168,7 +168,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
-//		kickClientsAfterChangeTime();
+		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
 
@@ -397,6 +397,22 @@ public class GameServer implements GameServerMBean {
 	 */
 	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
 		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
+	}
+
+	/**
+	 * 获取处理某玩家的逻辑服远程调用接口
+	 * @param 
+	 * @return
+	 */
+	public GameServerInterface getGameServerInterface(long playerId) {
+		String serverId = PlayerManager.getInstance().getServerId(playerId);
+		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
+			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
+			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game);
+
 	}
 
 	/** 

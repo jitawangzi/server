@@ -440,13 +440,6 @@ public final class DateUtil {
 
 	}
 
-	/**当前年份*/
-	public static int getYear() {
-		Calendar calendar = Calendar.getInstance(); 
-		int year = calendar.get(Calendar.YEAR);
-		return year;
-	}
-
 	/**
 	 * 获取当前日期的字符串格式
 	 * 
@@ -515,9 +508,6 @@ public final class DateUtil {
 		return calendar.getTime();
 	}
 	
-	public static int getStamp() {
-		return (int) (System.currentTimeMillis()/1000);
-	}
 
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
@@ -535,17 +525,8 @@ public final class DateUtil {
 	 * @return 相差的天数
 	 */
 	public static int diffDays(long t1, long t2) {
-		// 转换为当地时区
-		ZoneId zoneId = ZoneId.systemDefault();
-		LocalDateTime d1 = Instant.ofEpochMilli(t1).atZone(zoneId).toLocalDateTime();
-		LocalDateTime d2 = Instant.ofEpochMilli(t2).atZone(zoneId).toLocalDateTime();
-
-		// 获取日期部分
-		LocalDate date1 = d1.toLocalDate();
-		LocalDate date2 = d2.toLocalDate();
-
 		// 计算日期差
-		return diffDays(date1, date2);
+		return diffDays(toLocalDate(t1), toLocalDate(t2));
 	}
 
 	/**
@@ -555,7 +536,7 @@ public final class DateUtil {
 	 * @return 相差的天数
 	 */
 	public static int diffDays(LocalDate date1, LocalDate date2) {
-		return (int) ChronoUnit.DAYS.between(date1, date2);
+		return Math.abs((int) ChronoUnit.DAYS.between(date1, date2));
 	}
 
 	/**
@@ -565,7 +546,9 @@ public final class DateUtil {
 	 * @return true 是同一天 ； false 不是同一天
 	 */
 	public static boolean isSameDay(long t1, long t2){
-		return diffDays(t1,t2) == 0;
+		LocalDate date1 = toLocalDate(t1);
+		LocalDate date2 = toLocalDate(t2);
+		return date1.equals(date2);
 	}
 
 
@@ -607,7 +590,7 @@ public final class DateUtil {
 		LocalDateTime specificDateTime = LocalDateTime.parse(dateTimeStr, formatter);
 		LocalDate specificDate = specificDateTime.toLocalDate();
 		LocalDate currentDate = LocalDate.now();
-		return (int) ChronoUnit.DAYS.between(specificDate, currentDate);
+		return diffDays(specificDate, currentDate);
 	}
 	
 	public static int currentTimeSeconds() {
@@ -634,6 +617,20 @@ public final class DateUtil {
 	 */
 	public static int toEpochSecond(LocalDateTime localDateTime) {
 		return (int) localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+	}
+
+	/**
+	 * 将时间戳转换为LocalDate
+	 */
+	public static LocalDate toLocalDate(long timestamp) {
+		return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+	/**
+	 * 将时间戳转换为LocalDateTime
+	 */
+	public static LocalDateTime toLocalDateTime(long timestamp) {
+		return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 
 	/**

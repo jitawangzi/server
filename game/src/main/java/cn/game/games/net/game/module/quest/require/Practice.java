@@ -12,7 +12,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
  */
 @ConditionType(type = ConditionTypeEnum.Practice)
 public class Practice extends AbstractCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.Practice };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.QiangYuan, EventTypeEnum.QianLi };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {

@@ -4,6 +4,7 @@ import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.module.currency.Currency;
+import cn.game.games.net.game.module.develop.hero.skin.HeroSkin;
 import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
 import cn.game.games.net.game.module.develop.pet.Pet;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
@@ -43,6 +44,9 @@ public class RewardHelper {
 
 			HeadBox obj = (HeadBox) item;
 			builder.setHead(obj.getConfigId()).build();
+		} else if (item instanceof HeroSkin) {
+			HeroSkin obj = (HeroSkin) item;
+			builder.setHeroSkin(obj.getConfigId()).build();
 		} else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}

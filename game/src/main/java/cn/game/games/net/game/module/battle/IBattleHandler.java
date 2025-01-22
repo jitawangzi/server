@@ -22,6 +22,11 @@ public abstract class IBattleHandler {
 	}
 	abstract int battleStart(int id);
 	
+	/** 
+	 * 处理一些战斗结束的逻辑
+	 * @param request
+	 * @return	战斗奖励，这里一般处理每个玩法的特殊奖励，通用奖励在这之后处理
+	 */
 	abstract ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request);
 	
 	/** 
@@ -47,6 +52,8 @@ public abstract class IBattleHandler {
 	 * 跨天重置数据
 	 */
 	abstract void newDay();
+
+	abstract void onLogin();
 
 	public boolean hasRedPoint() {
 		return false;

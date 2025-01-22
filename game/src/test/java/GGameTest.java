@@ -4,6 +4,10 @@ import java.util.List;
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
+import cn.game.protocol.generated.config.RankRewardConfig;
+import cn.game.protocol.generated.helper.ManagerHelper;
+import cn.game.protocol.generated.manager.RankRewardManager;
+import cn.game.util.BinarySearchUtil;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -23,6 +27,18 @@ public class GGameTest {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
 		List<PlayerData> batch = mapper.selectAll();
 		System.err.println(batch.size());
+
+		ManagerHelper.init();
+
+		List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(3);
+		for (int i = 1; i < 11; i++) {
+
+			RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, i, r -> r.RewardStage);
+
+			System.out.println(rankStageConfig.ID);
+		}
+		System.out.println("end");
+
 	}
 
 

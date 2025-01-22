@@ -78,5 +78,7 @@ public interface FriendApplicationMapper {
 	 */
 	int updateBatch(@Param("recordList") List<FriendApplication> recordList);
 
+	int deletePlayerData(@Param("playerId") Long playerId);
+
 
 }

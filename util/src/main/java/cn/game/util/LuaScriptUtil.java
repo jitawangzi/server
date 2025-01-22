@@ -86,7 +86,7 @@ public class LuaScriptUtil {
 	 */
 	public static String loadScript(LuaScript script) {
 		RScript rScript = RedisUtil.getRedis().getScript();
-		System.out.println("Script content: " + script.getContent());
+		logger.info("Script content: " + script.getContent());
 		return rScript.scriptLoad(script.getContent());
 	}
 

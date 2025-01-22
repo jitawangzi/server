@@ -256,6 +256,10 @@ public class FriendModule extends BasePlayerModule {
 		return false;
 	}
 
+	public Set<Long> getMyApplications() {
+		return myApplications;
+	}
+
 	public Set<Long> excludeIds() {
 		Set<Long> ret = new HashSet<Long>();
 		ret.addAll(this.friends.keySet());

@@ -374,4 +374,10 @@
     </foreach>
     )
   </update>
+  
+   <delete id="deletePlayerData" parameterType="java.lang.Long">
+    delete from t_mail
+    where player_id = #{playerId,jdbcType=BIGINT}
+  </delete>
+  
 </mapper>

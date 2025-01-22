@@ -110,17 +110,15 @@ public class DevelopModule extends BasePlayerModule {
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case LoginFinish: {
+			if (player.getLevel() >= InitialUI.HeavenlyDaoCultivation.DisplayLevel) {
+				initTianDao();
+			}
 			break;
 		}
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.HeavenlyDaoCultivation) {
-				heavenlyDaoLevel = 1;
-				QuestModule questModule = player.getQuestModule();
-				List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
-				for (QuestConfig questConfig : groupList) {
-					questModule.open(questConfig.ID, false);
-				}
+				initTianDao();
 			} else if (func == InitialUI.Consciousness) {
 				// 初始修炼等级
 				Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
@@ -145,6 +143,18 @@ public class DevelopModule extends BasePlayerModule {
 //			isFirstLoign = true;
 			break;
 		}
+		}
+	}
+
+	private void initTianDao() {
+		if (heavenlyDaoLevel >= 1) {
+			return;
+		}
+		heavenlyDaoLevel = 1;
+		QuestModule questModule = player.getQuestModule();
+		List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
+		for (QuestConfig questConfig : groupList) {
+			questModule.open(questConfig.ID, false);
 		}
 	}
 

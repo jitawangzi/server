@@ -370,7 +370,7 @@ public class ShopHandler extends BaseHandler {
 		ShopRechargeRequest_15000022 req = (ShopRechargeRequest_15000022) message;
 		ShopRechargeResponse_15000023.Builder resp = ShopRechargeResponse_15000023.newBuilder();
 		int id = req.getId();
-		RechargeConfig rechargeConfig = RechargeManager.instance().get(id); 
+		RechargeConfig rechargeConfig = RechargeManager.instance().get(id);
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
 		pay.onComplete(t -> {

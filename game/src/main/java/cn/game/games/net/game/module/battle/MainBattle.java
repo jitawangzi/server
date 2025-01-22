@@ -77,8 +77,6 @@ public class MainBattle extends XiYouBattleHandler {
 			chapter.setBattleTime(request.getBattleTime());
 		}
 
-		List<RewardInfo> rewards = PlayerHelper.addReward(player, win ? battleConfig.WinRandom : battleConfig.FailRandom, OpType.BattleEnd);
-		allRewards.addAll(rewards);
 		String convertAwardFUN = battleConfig.ConvertAwardFUN;
 		if (!StringUtils.isEmpty(convertAwardFUN)) {
 			switch (convertAwardFUN) {

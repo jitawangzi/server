@@ -57,15 +57,18 @@ public class RedisLocalCache {
 	 * @return
 	 */
 	public <T> T get(String key) {
+		return getOrDefault(key, null);
+	}
+
+	public <T> T getOrDefault(String key, T defaultValue) {
 		T value = (T) cache.getIfPresent(key);
 		if (value != null) {
 			return value;
 		}
 		try {
-			return loadSync(key);
+			return loadOrDefaultSync(key, defaultValue);
 		} catch (Exception e) {
-			// 处理异常，可能需要返回null或抛出自定义异常
-			return null;
+			throw new RuntimeException("Failed to get value for key: " + key, e);
 		}
 	}
 
@@ -75,18 +78,29 @@ public class RedisLocalCache {
 	 * @return
 	 */
 	public <T> Future<T> getAsync(String key) {
+		return getOrDefaultAsync(key, null);
+	}
+
+	/** 
+	 * 异步get方法
+	 * @param key
+	 * @return
+	 */
+	public <T> Future<T> getOrDefaultAsync(String key, T defaultValue) {
 		T value = (T) cache.getIfPresent(key);
 		if (value != null) {
 			return Future.succeededFuture(value);
 		}
-
-		return loadAsync(key);
+		return loadOrDefaultAsync(key, defaultValue);
 	}
 
-	private <T> T loadSync(String key) throws Exception {
+	private <T> T loadOrDefaultSync(String key, T defaultValue) {
 		Future future = loadingFutures.computeIfAbsent(key, k -> {
 			Promise promise = Promise.promise();
 			T value = getFromRedis(key);
+			if (value == null && defaultValue != null) {
+				value = defaultValue;
+			}
 			if (value != null) {
                 cache.put(key, value);
             }
@@ -96,17 +110,22 @@ public class RedisLocalCache {
 
 		try {
 			return (T) future.toCompletionStage().toCompletableFuture().get();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to get value for key: " + key, e);
 		} finally {
 			loadingFutures.remove(key);
         }
     }
 
-	private <T> Future<T> loadAsync(String key) {
+	private <T> Future<T> loadOrDefaultAsync(String key, T defaultValue) {
 		return (Future<T>) loadingFutures.computeIfAbsent(key, k -> {
 			Promise<T> promise = Promise.promise();
 			getFromRedisAsync(key).onComplete(ar -> {
 				if (ar.succeeded()) {
 					T value = (T) ar.result();
+					if (value == null && defaultValue != null) {
+						value = defaultValue;
+					}
 					if (value != null) {
 						cache.put(key, value);
 					}
@@ -157,6 +176,19 @@ public class RedisLocalCache {
 			}
 		});
 		return promise.future();
+	}
+
+	/** 
+	 * 失效缓存值
+	 * @param key
+	 */
+	public void invalidate(String key) {
+		cache.invalidate(key);
+	}
+
+	public RFuture<Boolean> deleteAsync(String key) {
+		invalidate(key);
+		return RedisUtil.deleteAsync(key);
 	}
 
 	/** 

@@ -39,6 +39,7 @@
 <!--         <Property name="file_activationcode">activationcode</Property> -->
         <Property name="file_gethero">gethero</Property>
         <Property name="file_heroraise">heroraise</Property>
+        <Property name="file_invite">invite</Property>
 
 
         <!-- *********************** 其他 ************************* -->
@@ -212,6 +213,9 @@
         <AsyncLogger name="heroraise" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="heroraise"/>
         </AsyncLogger>
+        <AsyncLogger name="invite" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="invite"/>
+        </AsyncLogger>
 
 <!--         <AsyncLogger name="arena" level="info" includeLocation="false" additivity="false"> -->
 <!--             <AppenderRef ref="arena"/> -->
@@ -242,7 +246,7 @@
     <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1.} - %msg%n"/>
     <Policies>
         <TimeBasedTriggeringPolicy/>
-        <SizeBasedTriggeringPolicy size="100MB"/>
+        <SizeBasedTriggeringPolicy size="1024MB"/>
     </Policies>
     <DefaultRolloverStrategy max="100"/>
 </RollingRandomAccessFile>
@@ -251,7 +255,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
@@ -262,7 +266,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
             <Filters>
@@ -276,7 +280,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
             <Filters>
@@ -290,7 +294,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
@@ -299,7 +303,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
@@ -662,6 +666,16 @@
         <RollingRandomAccessFile name="heroraise"
                                  immediateFlush="true"
                                  filePattern="${path_cy_game}/${file_heroraise}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="invite"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_invite}.log.${date_suffix}">
             <PatternLayout charset="UTF-8" pattern="%m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/>

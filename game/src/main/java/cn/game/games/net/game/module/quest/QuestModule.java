@@ -45,7 +45,9 @@ import cn.game.util.StringMapWrapper;
 public class QuestModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
 			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
-			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol ,EventTypeEnum.Draw };
+			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol,
+			EventTypeEnum.Draw, EventTypeEnum.QianLi, EventTypeEnum.QiangYuan, EventTypeEnum.ParticipatePVPStart,
+			EventTypeEnum.FairyFriendsTravel, EventTypeEnum.FairyFriendsGift };
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
@@ -393,6 +395,9 @@ public class QuestModule extends BasePlayerModule {
 		QuestConfig questConfig = QuestHelper.getQuestConfig(id);
 
 		int group = questConfig.Type;
+		if (group == 0) {
+			throw new IllegalArgumentException(" quest group is 0 : " + id);
+		}
 		if (this.quests.get(group).get(id) != null) {
 			log.warn(" {} 任务{}重复开启 : ", playerId, questConfig.ID);
 			return null;
@@ -896,6 +901,18 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.RechargeCnt, 1);
 			break;
 		}
+//		case QianLi: {
+//			addCumulativeCount(ConditionTypeEnum.UpgradeAltar, 1);
+//			break;
+//		}
+//		case QiangYuan: {
+//			addCumulativeCount(ConditionTypeEnum.UpgradeHuDao, 1);
+//			break;
+//		}
+//		case ParticipatePVPStart: {
+//			addCumulativeCount(ConditionTypeEnum.ParticipatePVP, 1);
+//			break;
+//		}
 		case ChapterWin: {
 			int id = event.getIntParameter(0);
 			// 这个不用了
@@ -910,6 +927,14 @@ public class QuestModule extends BasePlayerModule {
 			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
 			break;
 		}
+//		case FairyFriendsTravel: {
+//			addCumulativeCount(ConditionTypeEnum.ParticipateFairyFriend, event.getIntParameter(0));
+//			break;
+//		}
+//		case FairyFriendsGift: {
+//			addCumulativeCount(ConditionTypeEnum.CumulativeGift, 1);
+//			break;
+//		}
 		case HeroBreak: {
 //			int star = event.getIntParameter(0);
 			int quality = event.getIntParameter(1);

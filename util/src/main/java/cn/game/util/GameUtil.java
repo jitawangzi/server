@@ -1,7 +1,7 @@
 package cn.game.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -130,7 +130,7 @@ public class GameUtil {
 		return ret;
 	}
 
-	/** 
+	/**
 	 * 是不是同一个大版本
 	 * @param version1
 	 * @param version2
@@ -144,4 +144,33 @@ public class GameUtil {
 				.equals(version2.substring(0, version2.lastIndexOf(".")));
 	}
 
+	/**
+	 * 从 drops 中减去 items 包含的道具数量
+	 * @param drops 原始掉落奖励
+	 * @param items 需要减去的道具数量
+	 * @return
+	 */
+	public static int[][] subItems(int[][] drops, int[][] items) {
+		int[][] newDrops = new int[drops.length][2];
+		Map<Integer,Integer> dropMaps = new HashMap<>();
+		for (int i = 0; i < drops.length; i++) {
+			int itemId = drops[i][0];
+			int itemNum = drops[i][1];
+			dropMaps.put(itemId,itemNum);
+		}
+		for(int i = 0; i < items.length; i++) {
+			int itemId = items[i][0];
+			int itemNum = items[i][1];
+			if (!dropMaps.containsKey(itemId)){
+				continue;
+			}
+			dropMaps.put(itemId,Math.max(0,dropMaps.get(itemId) - itemNum));
+		}
+		for(int i = 0; i < drops.length; i++) {
+			int itemId = drops[i][0];
+			newDrops[i][0] = itemId;
+			newDrops[i][1] = dropMaps.getOrDefault(itemId,0);
+		}
+		return newDrops;
+	}
 }

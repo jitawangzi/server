@@ -26,7 +26,6 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
@@ -38,15 +37,14 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.ChapterHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
@@ -63,6 +61,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -76,7 +75,6 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
-import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
 import cn.game.protocol.protobuf.TestMsg;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008;
 import cn.game.protocol.protobuf.TestMsg.TestAddItemResponse_6f000009;
@@ -99,7 +97,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
-import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -230,6 +227,45 @@ public class TestHandler extends BaseHandler {
 					battle.setCompleteBattleId(battleConfig.preBattle);
 				}
 				battle.setStartBattleId(p1);
+				if (p2 > 0 && p2 <= 10) {
+					battle.setBattleStage(p2);
+				}
+			}
+			break;
+		}
+		case "mymj": {
+			// 设置梦魇秘境关卡id
+			ChapterModule chapterModule = player.getChapterModule();
+			MengYanMiJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+			if (battle != null) {
+				BattleConfig battleConfig = BattleManager.instance().get(p1);
+				if (battleConfig.preBattle > 0) {
+					battle.setCompleteBattleId(battleConfig.preBattle);
+					battle.setMaxBattleId(battleConfig.preBattle);
+				}
+				battle.setStartBattleId(p1);
+			}
+			break;
+		}
+		case "slzjsd": {
+			// 设置失落真经手动关卡。
+			ChapterModule chapterModule = player.getChapterModule();
+			ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+			if (battle != null) {
+				if (p1 > 0) {
+					BattleConfig battleConfig = BattleManager.instance().get(p1);
+					if (battleConfig.preBattle > 0) {
+						battle.setCompleteBattleId(battleConfig.preBattle);
+						battle.setHistoryMaxBattleId(battleConfig.preBattle);
+					}
+					battle.setStartBattleId(p1);
+				}
+				if (p2 > 0 && p2 < 10) {
+					battle.setBattleStage(p2);
+				} else {
+					battle.setBattleStage(10);
+				}
+				battle.setZhijieshoudong(true);
 			}
 			break;
 		}
@@ -257,7 +293,7 @@ public class TestHandler extends BaseHandler {
 				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
 			}
 			// 将某人删档
-			TestHelper.deletePlayer(params.getLong(1));
+			PlayerHelper.deletePlayerData(params.getLong(1));
 			break;
 		}
 		case "citem": {
@@ -275,6 +311,12 @@ public class TestHandler extends BaseHandler {
 			String serverId = params.getStringParameter(1);
 			TestHelper.transferServer(playerId, serverId);
 
+			break;
+		}
+		case "newday": {
+			int nowDay = DateUtil.getDay();
+			player.getData().setRefreshDay(nowDay - 1);
+			PlayerHelper.refreshDay(player);
 			break;
 		}
 		default:
@@ -448,10 +490,17 @@ public class TestHandler extends BaseHandler {
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
-        System.err.println(itemModule);
-        System.err.println(itemModule.getId_items());
-		List<Goods> goods = PlayerHelper.randomReward(101602);
-		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
+		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
+
+		Future<?> future = PlayerHelper.modifyPlayerNew(240201736L, pp -> {
+			pp.getData().setLevel(999);
+			return true;
+		});
+		future.onComplete(r -> {
+			System.out.println(r);
+		});
+//		List<Goods> goods = PlayerHelper.randomReward(101602);
+//		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
 
 //        Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
 //        requestRemoteServer.onComplete(r -> {
@@ -467,7 +516,17 @@ public class TestHandler extends BaseHandler {
         //		future.onComplete(r -> {
         //			System.out.println(r);
         //		});
-        //        testcalcPower(player);
+//		testcalcPower(player);
+//		RankModule rankModule = player.getModule(RankModule.class);
+//		rankModule.updateHeroCombatRank();
+
+		PlayerHelper.modifyPlayer(240201720, pp -> {
+
+			PlayerHelper.addResources(pp, Asset.diamond.ID, 999, OpType.Test);
+
+			return true;
+		});
+
         //		drawTest2(player);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");
@@ -522,6 +581,7 @@ public class TestHandler extends BaseHandler {
         System.out.println("神通增加的战力： " + BattleHelper.calcCombat(playerAttrCalc.getAttrMap()));
         System.out.println();
         System.out.println();
+		float totalCombat = 0;
         for (Hero hero : list) {
             //			if (hero.getLevel() == 1) {
             //				continue; ti
@@ -530,14 +590,19 @@ public class TestHandler extends BaseHandler {
             System.out.println("hero id : " + hero.getConfigId() + " name : " + heroConfig.name + " level : " + hero.getLevel());
             System.out.println("基本属性： " + BattleHelper.makeHeroAttr(hero));
             IntMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
-            System.out.println("单英雄不算外围战力： " + BattleHelper.calcCombat(heroAttr));
+			float heroCombat = BattleHelper.calcCombat(heroAttr);
+			System.out.println("单英雄不算外围战力： " + heroCombat);
             System.out.println();
             heroAttrs.put(hero.getId(), heroAttr);
+			totalCombat += heroCombat;
         }
         System.out.println();
         AttrModule module = player.getModule(AttrModule.class);
         module.calcAllAttr();
-        System.out.println("所有外围增加的战力： " + BattleHelper.calcCombat(module.getPlayerAttrMap()));
+		float wwCombat = BattleHelper.calcCombat(module.getPlayerAttrMap());
+		System.out.println("所有外围增加的战力： " + wwCombat);
+		totalCombat += wwCombat * list.size();
+		System.err.println("总战力： " + totalCombat);
     }
 
     private void drawTest(Player player) {
@@ -731,24 +796,14 @@ public class TestHandler extends BaseHandler {
         }
     }
 
-    private void playerDelete(NetClient client, Object message) {
-        TestPlayerDeleteRequest_6f000044 req = (TestPlayerDeleteRequest_6f000044) message;
-        long playerId = req.getPlayerId();
-        TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
-        Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
-        if (playerDelete != null) {
-            GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-            if (gameClientByPlayer != null) {
-                GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
-            }
-            PlayerHelper.clearPlayer(playerId);
-        }
-        // 删除数据库
-        DAO.execute(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId);
-        // 删除login账号
-        VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerDeleteRequest_7d000080.newBuilder().setPlayerId(playerId).build());
-        client.sendProtocol(defaultInstance);
-    }
+	private void playerDelete(NetClient client, Object message) {
+		TestPlayerDeleteRequest_6f000044 req = (TestPlayerDeleteRequest_6f000044) message;
+		long playerId = req.getPlayerId();
+		TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
+		PlayerHelper.deletePlayerData(playerId);
+		client.sendProtocol(defaultInstance);
+	}
+
 
     private void message(NetClient client, Object message) {
         TestMessageRequest_6f000080 req = (TestMessageRequest_6f000080) message;

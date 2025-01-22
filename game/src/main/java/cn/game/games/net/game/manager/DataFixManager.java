@@ -19,13 +19,17 @@ import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.util.GameUtil;
 import cn.game.util.SpringContextLoader;
@@ -51,7 +55,7 @@ public class DataFixManager {
 		return instance;
 	}
 
-	@DataFix(description = "修正玩家失落真经410任务数据", deprecated = true)
+	@DataFix(description = "修复失落真经任务", deprecated = true)
 	public void fixPlayerQuestSlzj410() {
 
 		Function<Player, Boolean> function = player -> {
@@ -83,6 +87,50 @@ public class DataFixManager {
 				}
 			}
 			return fix;
+		};
+
+		PlayerHelper.loadAndProcessPlayers(function);
+	}
+
+	@DataFix(description = "修复天道修为新增任务", deprecated = true)
+	public void fixPlayerQuestTDAdd() {
+		Function<Player, Boolean> function = player -> {
+			int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+			QuestModule questModule = player.getQuestModule();
+			// 所有天道修改任务
+			List<QuestConfig> groupList = QuestManager.instance().getTypeList(QuestTypeEnum.HeavenlyDao.ID);
+			boolean fix = false;
+			for (QuestConfig questConfig : groupList) {
+				// 当前天道修为等级的任务
+				if (questConfig.OpenCondition == heavenlyDaoLevel) {
+					Quest quest = questModule.open(questConfig.ID, false);
+					if (quest != null) {
+						// 新增了任务
+						fix = true;
+					}
+				}
+			}
+			return fix;
+		};
+
+		PlayerHelper.loadAndProcessPlayers(function);
+	}
+
+	@DataFix(description = "重置灵魄之战数据", deprecated = true)
+	public void fixPlayerLPZZReset() {
+
+		Function<Player, Boolean> function = player -> {
+
+			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
+			if (lingPoBattle == null) {
+				return false;
+			}
+			if (lingPoBattle.getBattleId() == 31001) {
+				return false;
+			}
+			lingPoBattle.setBattleId(31001);
+//			lingPoBattle.setBattleTimes(0);
+			return true;
 		};
 
 		PlayerHelper.loadAndProcessPlayers(function);
@@ -164,6 +212,17 @@ public class DataFixManager {
 	public void runtimeFixStringArgs(String... args) {
 		log.info("runtimeFixStringArgs");
 
+	}
+
+	/** 
+	 * ognl -x 3 '@cn.game.games.net.game.manager.DataFixManager@getInstance().runtimeRankReward(new String[]{"server4", "server5"},new int[]{1,2,3,4})'
+	 * @param args
+	 */
+	public void runtimeRankReward(String[] serverIds, int[] rankIds) {
+
+		log.info("runtimeRankReward rank reward for  server [{}]rankIds[{}] ", serverIds, rankIds);
+
+		RankService.getInstance().reward(serverIds, rankIds);
 	}
 
 	public void init() {

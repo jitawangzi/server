@@ -1,8 +1,14 @@
 package cn.game.core.base;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
+import org.apache.curator.framework.recipes.leader.Participant;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +20,7 @@ import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
+import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -22,9 +29,13 @@ public class ServerContext {
 
 	private static final ServerContext instance = new ServerContext();
 	public static final String SERVER_RUN_MODE = "server.run.mode";
+	private static final String LEADER_PATH = "/server/leader/";
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
+	/** 是否是主节点 */
+	private volatile boolean isLeader;
+	private LeaderLatch leaderLatch;
 
 	private ServerContext() {
 	};
@@ -61,6 +72,7 @@ public class ServerContext {
 		setRunMode();
 		checkServerId(serverId);
 		initHotUpdate();
+		startLeaderTask();
 	}
 
 	/** 
@@ -107,6 +119,14 @@ public class ServerContext {
 		if (lock != null) {
 			lock.forceUnlock();
 		}
+		if (leaderLatch != null) {
+			try {
+				leaderLatch.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.error("leaderLatch close error", e);
+			}
+		}
 	}
 
 	/** 
@@ -130,17 +150,26 @@ public class ServerContext {
 		String className = ManagementFactory.getRuntimeMXBean().getName();
 		String pid = className.split("@")[0];
 		Thread attachThread = new Thread(() -> {
+			VirtualMachine vm = null;
 			try {
 				String jarName = "hotupdate-1.0.jar";
 				String agentPath = ClassHelper.findJarPath(jarName);
 				if (agentPath == null) {
 					throw new RuntimeException("Agent JAR not found : " + jarName);
 				}
-				VirtualMachine vm = VirtualMachine.attach(pid);
+				vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);
 				LoggerType.Stdout.logger.info("hotUpdate agent loaded, pid: " + pid + ", agentPath: " + agentPath);
 			} catch (Exception e) {
 				throw new RuntimeException("hotUpdate agent start failed", e);
+			} finally {
+				if (vm != null) {
+					try {
+						vm.detach();
+					} catch (IOException e) {
+						LoggerType.Stdout.logger.error("Failed to detach from VM", e);
+					}
+				}
 			}
 		}, "CodeHotUpdateThread");
 
@@ -151,6 +180,63 @@ public class ServerContext {
 		attachThread.setDaemon(true);
 		attachThread.start();
 
+	}
+
+	private void startLeaderTask() throws Exception {
+		String latchPath = LEADER_PATH + serverType.name().toLowerCase();
+		log.info("Starting leader election for node: {}, path: {}", serverId, latchPath);
+
+		leaderLatch = new LeaderLatch(ZkHelper.curator, latchPath, serverId);
+		leaderLatch.addListener(new LeaderLatchListener() {
+			@Override
+			public void isLeader() {
+				isLeader = true;
+				log.info("I am leader: {}", serverId);
+			}
+
+			@Override
+			public void notLeader() {
+				isLeader = false;
+				log.info("I am not leader: {}", serverId);
+			}
+		});
+		leaderLatch.start();
+		log.info("Leader elected: {}", getCurrentLeader());
+	}
+
+	/** 
+	 * 同步获取当前leader的id
+	 * 尽量使用异步方法。 
+	 * @return
+	 * @throws Exception
+	 */
+	public String getCurrentLeader() throws Exception {
+		Participant leader = leaderLatch.getLeader();
+		return leader.getId();
+	}
+
+	/** 
+	 * 异步获取当前leader的id
+	 * @return
+	 * @throws Exception
+	 */
+	public CompletionStage<String> getCurrentLeaderAsync() {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return getCurrentLeader();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		
+	}
+
+	/** 
+	 * 当前节点是否是主节点
+	 * @return
+	 */
+	public boolean isLeader() {
+		return isLeader;
 	}
 
 	/** 

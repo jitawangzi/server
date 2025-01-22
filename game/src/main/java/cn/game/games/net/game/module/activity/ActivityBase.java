@@ -56,6 +56,8 @@ public abstract class ActivityBase implements EventHandler {
 	}
 	public abstract Message buildActivityShowInfo();
 
+	public abstract void unregisterEvent();
+
 	public Message buildActivityShowInfo(int id) {
 		return null;
 	}
@@ -127,10 +129,12 @@ public abstract class ActivityBase implements EventHandler {
 	public void shutDown() {
 //		syncActivityState(id);
 		this.state = ActivityState.CLOSE_VALUE;
+		unregisterEvent();
 	}
 
 	/** 彻底销毁活动，不再展示，删除活动数据 */
 	public void destroy() {
+		unregisterEvent();
 	};
 
 	public boolean newDay() {

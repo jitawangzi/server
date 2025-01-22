@@ -5,7 +5,7 @@ import cn.game.util.ServerType;
 public class TVxHolderTest {
 
 	public static void main(String[] args) throws Exception {
-		ServerContext.getInstance().setServerType(ServerType.World);
+		ServerContext.getInstance().setServerType(ServerType.Center);
 		VxHolder.init();
 		VxHolder.vertx.setPeriodic(5000, r -> {
 			System.out.println("exec...");
