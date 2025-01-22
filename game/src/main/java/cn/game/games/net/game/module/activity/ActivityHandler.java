@@ -404,15 +404,19 @@ public class ActivityHandler extends BaseHandler {
         PlayerHelper.delResources(player, activityWestLucky.getDrawItemId(), drawNum,OpType.ZhuanPanDraw);
         GameLogger.activity(player,activityId,0);
         for (int i = 0; i < drawNum; i++){
-            List<Integer> ids = activityWestLucky.draw(false,new ArrayList<>());
             activityWestLucky.addDrawNum();
+            List<Integer> ids = activityWestLucky.draw(false,new ArrayList<>());
             ids.forEach(id ->{
                 ActivityWestLuckyTurntableConfig config = ActivityWestLuckyTurntableManager.instance().get(id);
                 if (config.CircleType == 1 || config.CircleType == 2){
                    resp.addAllDrops(PlayerHelper.addResources(player, config.Reward, OpType.ZhuanPanDraw));
+                    if (config.AdditionalRewards.length > 0){
+                        resp.addAllDrops(PlayerHelper.addResources(player, config.AdditionalRewards, OpType.ZhuanPanDraw));
+                    }
                 }
             });
             resp.addAllDrawIds(ids);
+            resp.setOutDrawNum(activityWestLucky.getTotalNum());
         }
         client.sendProtocol(resp.build());
 
