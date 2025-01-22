@@ -369,7 +369,9 @@ public class ServerHandler extends BaseHandler {
 		ProtobufProtocol protocol = new ProtobufProtocol(
 				PbProtocol.getInstance().getMsgId("GamePlayerRequest_7d000015"), request, -1);
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-		dispatch(gameClient, protocol);
+		PlayerHelper.addTask(playerId, v -> {
+			dispatch(gameClient, protocol);
+		});
 
 		client.sendProtocol(resp.build());
 	}
