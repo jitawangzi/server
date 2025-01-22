@@ -1830,7 +1830,7 @@ public class PlayerHelper {
 					.requestRemoteServer(ServerType.Login,
 							LoginPlayerDeleteRequest_7d000080.newBuilder()
 									.setPlayerId(playerData.getPlayerId())
-									.setAccount(playerData.getAccountId())
+									.setAccount(playerData.getDeviceId())
 									.build())
 					.toCompletionStage();
 		}).exceptionally(e -> {
