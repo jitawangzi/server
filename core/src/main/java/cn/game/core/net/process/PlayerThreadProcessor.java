@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
-import cn.game.core.net.vertx.VxHolder;
-import io.vertx.core.Context;
+import cn.game.core.net.vertx.VxContextRegistry;
 import io.vertx.core.Handler;
-import io.vertx.core.impl.ContextInternal;
 
 public class PlayerThreadProcessor implements Processor {
 
@@ -30,7 +28,6 @@ public class PlayerThreadProcessor implements Processor {
 			try {
 				dispatcher.dispatch(netClient, protocol);
 			} catch (Throwable e) {
-				e.printStackTrace();
 				log.error(netClient + "run msg" + "0x" + Integer.toHexString(protocol.getMsgID()) + "err", e);
 			}
 			if (log.isDebugEnabled()) {
@@ -38,10 +35,6 @@ public class PlayerThreadProcessor implements Processor {
 						.nanoTime() - start) / 1000000f);
 			}
 		};
-		Context context = netClient.getContext();
-		if (context == null) {
-			context = (ContextInternal) VxHolder.vertx.getOrCreateContext();
-		}
-		context.runOnContext(action);
+		VxContextRegistry.getInstance().submitTask(netClient.getPlayerId(), action);
 	}
 }

@@ -5,13 +5,21 @@ import cn.game.core.net.rpc.RPCService;
 import cn.game.core.net.rpc.RPCServiceImpl;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
+import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.ReplyFailure;
 
+/**    
+ * 注意不要处理阻塞逻辑
+ * 2025年1月23日 16:39:11
+ * @author SYQ
+ * @param <T>
+ */
 public class VertxRPCService<T> extends AbstractMessageHandlerService implements RPCService<T> {
 	private RPCServiceImpl<T> rpcService;
 
@@ -23,25 +31,37 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 	@Override
 	public void handleMessage(Message<Object> message) {
 		byte[] data = (byte[]) message.body();
+		Command command = null;
+		try {
+			command = KryoUtils.deserialize(data, Command.class);
+		} catch (Exception e) {
+			message.fail(ReplyFailure.ERROR.toInt(), e.getMessage());
+			return;
+		}
+		long objectId = command.getObjectId();
+		Command commandFinal = command;
 
-		vertx.executeBlocking(promise -> {
+		// 将 RPC 调用逻辑投递到 (id % n) 对应的 event loop
+		VxContextRegistry.getInstance().submitTask(objectId, () -> {
 			Object result = null;
+			Promise<Object> promise = Promise.promise();
 			try {
-				Command command = KryoUtils.deserialize(data, Command.class);
-				result = rpcService.invokeWithCache(command);
+				result = rpcService.invokeWithCache(commandFinal);
 			} catch (Throwable e) {
 				log.error("Error invoking RPC method", e);
+				// 异常包装，稍后 reply
 				result = new RPCServiceImpl.RPCException("Error invoking RPC method", e);
 			}
 			rpcService.handleResult(result, promise);
-		}, false, res -> {
-			if (res.failed()) {
-				message.fail(ReplyFailure.ERROR.toInt(), res.cause().getMessage());
-			} else {
-				Result resp = new Result(res.result());
-				byte[] respData = KryoUtils.serialize(resp);
-				message.reply(respData);
-			}
+			promise.future().onComplete(r -> {
+				if (r.failed() || r.result() instanceof Throwable) {
+					message.fail(ReplyFailure.ERROR.toInt(), ((Throwable) r.result()).getMessage());
+				} else {
+					Result resp = new Result(r.result());
+					byte[] respData = KryoUtils.serialize(resp);
+					message.reply(respData);
+				}
+			});
 		});
 	}
 

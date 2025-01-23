@@ -38,8 +38,8 @@ public interface RpcClient {
 	 */
 	default public Object invoke(CallType callType, String methodName, Class<?>[] clazz, Class<?> returnType, Object[] args,
 			Consumer<?> requestCallback,
-			boolean sync, String targetAddr) {
-		Command command = new Command(methodName, clazz, args);
+			boolean sync, String targetAddr, long objectId) {
+		Command command = new Command(methodName, clazz, args, objectId);
 		return send(callType, command, requestCallback, returnType, sync, targetAddr);
 
 	}

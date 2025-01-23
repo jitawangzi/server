@@ -17,14 +17,17 @@ public class Command implements Serializable {
 	private String methodName;
 	private Object[] args;
 	private Class<?>[] parameterType;
+	/** 用来分线程的 */
+	private long objectId;
 
 	public Command() {
 	}
 
-	public Command(String methodName, Class<?>[] parameterType, Object[] args) {
+	public Command(String methodName, Class<?>[] parameterType, Object[] args, long objectId) {
 		this.methodName = methodName;
 		this.parameterType = parameterType;
 		this.args = args;
+		this.objectId = objectId;
 	}
 
 	public String getMethodName() {
@@ -49,6 +52,14 @@ public class Command implements Serializable {
 
 	public void setParameterType(Class<?>[] parameterType) {
 		this.parameterType = parameterType;
+	}
+
+	public long getObjectId() {
+		return objectId;
+	}
+
+	public void setObjectId(long objectId) {
+		this.objectId = objectId;
 	}
 
 	public String getClassName() {
