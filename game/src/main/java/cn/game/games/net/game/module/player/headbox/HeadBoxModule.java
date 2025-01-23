@@ -47,7 +47,7 @@ public class HeadBoxModule extends GoodsModule<HeadBox, HeadBox> {
 
 	@Override
 	public void checkConfig(int id) {
-
+//		HeadBoxManager.instance().get
 	}
 
 	@Override

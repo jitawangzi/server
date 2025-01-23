@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -268,6 +269,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
 		builder.addAllHeadboxs(getIdsSet(IdConstant.HEAD_BOX));
+		builder.addAllHeadPortraits(getIdsSet(IdConstant.HEAD_PORTRAIT));
 		builder.addAllFuncOpenRewardIds(getIdsSet(IdConstant.FUNC_OPEN_REWARD));
 		builder.addAllHeroSkinIds(getIdsSet(IdConstant.HERO_SKIN));
 		List<FuncOpenConfig> lockHideList = FuncOpenManager.instance().getLockHideList(false);
@@ -299,7 +301,7 @@ public class PlayerModule extends BasePlayerModule {
 		case PLAYER_CREATE: {
 			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
 			// 初始化头像框
-			List<HeadPortraitConfig> list = HeadPortraitManager.instance().list();
+			Collection<HeadPortraitConfig> list = HeadPortraitManager.instance().list();
 			HeroModule heroModule = player.getHeroModule();
 			int headPortrait = 0;
 			for (HeadPortraitConfig headPortraitConfig : list) {

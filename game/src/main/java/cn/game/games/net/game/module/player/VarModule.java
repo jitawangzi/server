@@ -6,7 +6,6 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.IntMapWrapper;
-import org.apache.commons.validator.Var;
 
 /**    
  * 专门处理玩家的一些零散的int和boolean类型变量。 
@@ -20,7 +19,7 @@ public class VarModule extends BasePlayerModule {
 
 	private IntMapWrapper varMap = new IntMapWrapper();
 
-	public void setVar(int type, int value) {
+	public void setVar(VarConstant type, int value) {
 
 //		Integer variable = varMap.get(type);
 //		if (variable == null) {
@@ -38,32 +37,33 @@ public class VarModule extends BasePlayerModule {
 //			newVar.setValue(value);
 //			newVar.update();
 //		}
-		varMap.setValue(type, value);
+		varMap.setValue(type.getValue(), value);
 
 	}
-	public void setVar(int type, boolean value) {
+
+	public void setVar(VarConstant type, boolean value) {
 		setVar(type, value == true ? 1 : 0);
 	}
 
-	public int getVar(int type) {
-		return varMap.getValue(type);
+	public int getVar(VarConstant type) {
+		return varMap.getValue(type.getValue());
 	}
 
 	public int addVar(int type,int value) {
 		return varMap.add(type, value);
 	}
 
-	public int addVar(int type) {
-		return varMap.add(type, 1);
+	public int addVar(VarConstant type) {
+		return varMap.add(type.getValue(), 1);
 	}
 
-	public boolean getBoolVar(int type) {
+	public boolean getBoolVar(VarConstant type) {
 		int variable = getVar(type);
 		return  variable > 0;
 	}
 
-	public void clearVar(int type) {
-		Integer remove = varMap.remove(type);
+	public void clearVar(VarConstant type) {
+		Integer remove = varMap.remove(type.getValue());
 //		if (remove != null) {
 //			Variable v = new Variable();
 //			v.setPlayerId(playerId);
@@ -72,12 +72,12 @@ public class VarModule extends BasePlayerModule {
 //		}
 	}
 
-	public int incrVar(int type) {
+	public int incrVar(VarConstant type) {
 //		int var = getVar(type);
 //		int newVar = var + 1;
 //		setVar(type, newVar);
 //		return newVar;
-		return varMap.add(type, 1);
+		return varMap.add(type.getValue(), 1);
 	}
 
 	@Override
