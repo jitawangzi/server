@@ -1,26 +1,41 @@
 package cn.game.games.net.game.module.player;
 
-public class VarConstant {
+import cn.game.util.UniqueValueEnum;
 
-	/** 玩家改名次数。 */
-	public static final int RANAME_COUNT = 1;
-	/** 玩家改性别次数。 */
-	public static final int GENDER_COUNT = 2;
-	/** 城池等级。  */
-	public static final int WALL_LEVEL = 3;
+public enum VarConstant {
+	/** 玩家改名次数 */
+	RANAME_COUNT(1),
 
-	/**  */
-	public static final int BATTLE_SPEED_ADS_COUNT = 10;
+	/** 玩家改性别次数 */
+	GENDER_COUNT(2),
 
-	//微信设置相关
+	/** 城池等级 */
+	WALL_LEVEL(3),
 
-	/**是否开启遨游奖励满了微信 推送 */
-	public static final int WECHAT_NOTIFY_AOYOU_REWARD = 21;
-	/**是否开启首充次日领取微信 推送 */
-	public static final int WECHAT_NOTIFY_FIRST_RECHARGE_REWARD = 22;
-	/**是否开启月签到微信 推送*/
-	public static final int WECHAT_NOTIFY_MONTH_SIGN_REWARD = 23;
-	/**是否开启体力满了微信 推送 */
-	public static final int WECHAT_NOTIFY_ENERGY = 24;
+	/** 战斗速度广告计数 */
+	BATTLE_SPEED_ADS_COUNT(10),
 
+	// 微信设置相关
+	/** 是否开启遨游奖励满了微信推送 */
+	WECHAT_NOTIFY_AOYOU_REWARD(21),
+
+	/** 是否开启首充次日领取微信推送 */
+	WECHAT_NOTIFY_FIRST_RECHARGE_REWARD(22),
+
+	/** 是否开启月签到微信推送 */
+	WECHAT_NOTIFY_MONTH_SIGN_REWARD(23),
+
+	/** 是否开启体力满了微信推送 */
+	WECHAT_NOTIFY_ENERGY(24);
+
+	private final int value;
+
+	VarConstant(int value) {
+		this.value = value;
+		UniqueValueEnum.checkDuplicateValue(this.getClass(), value);
+	}
+
+	public int getValue() {
+		return value;
+	}
 }

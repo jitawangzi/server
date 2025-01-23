@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.player;
 
-import java.util.HashSet;
-import java.util.Set;
+import cn.game.util.UniqueValueEnum;
 
 public enum IdConstant {
 	/** 章节礼包 */
@@ -13,22 +12,16 @@ public enum IdConstant {
 	/** 功能开启奖励 */
 	FUNC_OPEN_REWARD(4),
 	/** 英雄皮肤 */
-	HERO_SKIN(5);
+	HERO_SKIN(5),
+	/** 头像*/
+	HEAD_PORTRAIT(6),
+	;
 
 	private final int value;
-	private static final Set<Integer> VALUES = new HashSet<>();
 
 	IdConstant(int value) {
 		this.value = value;
-	}
-
-	static {
-		// 检查重复值
-		for (IdConstant constant : values()) {
-			if (!VALUES.add(constant.value)) {
-				throw new IllegalStateException("Duplicate value: " + constant.value);
-			}
-		}
+		UniqueValueEnum.checkDuplicateValue(this.getClass(), value);
 	}
 
 	public int getValue() {

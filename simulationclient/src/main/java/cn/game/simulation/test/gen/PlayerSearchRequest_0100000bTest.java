@@ -8,7 +8,6 @@ import com.google.protobuf.Message;
 
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
@@ -29,7 +28,7 @@ public class PlayerSearchRequest_0100000bTest extends ServerTest{
 			}
 			builder.setPlayerId(playerInfo.getId());
 		} else {
-			builder.setPlayerName("浩瀚青龙剑侠");
+			builder.setPlayerName("240201770");
 		}
 		return builder.build() ; 
 	}

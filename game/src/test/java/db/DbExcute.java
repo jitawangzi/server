@@ -72,7 +72,7 @@ public class DbExcute {
 				Player player = new Player(playerData);
 
 				for (int j = 0; j < 300; j++) {
-					player.getVarModule().setVar(j, j);
+//					player.getVarModule().setVar(j, j);
 				}
 
 				playerData.setModules(JsonUtil.toJsonString(player.getModules()));
@@ -111,7 +111,7 @@ public class DbExcute {
 				Player player = new Player(playerData);
 
 				for (int j = 1500; j < 1800; j++) {
-					player.getVarModule().setVar(j, j);
+//					player.getVarModule().setVar(j, j);
 				}
 
 				playerData.setModules(JsonUtil.toJsonString(player.getModules()));

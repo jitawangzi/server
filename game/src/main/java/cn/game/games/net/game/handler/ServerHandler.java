@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.base.ServerContext;
@@ -55,6 +56,7 @@ import cn.game.protocol.protobuf.ServerMsg.GameDataPushBatch_7d00000b;
 import cn.game.protocol.protobuf.ServerMsg.GameDataPush_7d00000a;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoRequest_7d000050;
 import cn.game.protocol.protobuf.ServerMsg.GameGmPlayerInfoResponse_7d000051;
+import cn.game.protocol.protobuf.ServerMsg.GameMessageForwardRequest_7d000200;
 import cn.game.protocol.protobuf.ServerMsg.GameOpRequest_7d000373;
 import cn.game.protocol.protobuf.ServerMsg.GameOpResponse_7d000374;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerLogoutRequest_7d000101;
@@ -112,6 +114,7 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.NotifyAddGlobalGmMailRequest_7d000060, this::ddGlobalGmMail);
 		putInvoker(PbProtocol.NotifyDelGlobalGmMailRequest_7d000062, this::delGlobalGmMail);
 
+		putInvoker(PbProtocol.GameMessageForwardRequest_7d000200, this::messageForward);
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, this::updateIOSAccessToken);
 		putInvoker(PbProtocol.ServerObjectTestRequest_7d000033, this::objectMessageTest);
 		putInvoker(PbProtocol.LoginGameQuestionnairePush_7d000090, this::questionnairePush);
@@ -139,6 +142,12 @@ public class ServerHandler extends BaseHandler {
 
 	}
 
+	private void messageForward(NetClient client, Object o) {
+		GameMessageForwardRequest_7d000200 req = (GameMessageForwardRequest_7d000200) o;
+		Message from = PbProtocol.getInstance().parseFrom(req.getId(), req.getData());
+		ProtobufProtocol protocol = new ProtobufProtocol(req.getId(), from);
+		dispatch(client, protocol);
+	}
 	private void gameStatusChange(NetClient client, Object o) {
 		GameStatusChangeRequest_7d000030 req = (GameStatusChangeRequest_7d000030) o;
 		GameStatusChangeResponse_7d000031 resp = GameStatusChangeResponse_7d000031.getDefaultInstance();
