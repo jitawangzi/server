@@ -1,0 +1,159 @@
+package cn.game.games.net.cross.zongmen;
+
+import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
+import cn.game.core.task.SchedulerService;
+import cn.game.games.cache.entity.Zongmen;
+import cn.game.games.net.data.mapper.ZongmenMapper;
+import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.util.DAO;
+import cn.game.protocol.generated.enume.RankType;
+import cn.game.util.DateUtil;
+import cn.game.util.RedisUtil;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @ClassName ZongMenManager
+ * @description: 宗门管理
+ * @author: ly
+ * @create: 2025-02-05 14:45 @Version 1.0
+ */
+public class ZongMenManager {
+    private static final ZongMenManager  Instance = new ZongMenManager();
+     static Logger log	= LoggerFactory.getLogger(ZongMenManager.class);
+    long lastCrossDayTimer;
+    /**当前服务器的所有宗门*/
+    private Map<Long,ZongMenInfo> zongMenInfoMap = new ConcurrentHashMap<>();
+    private ZongMenManager() {
+        init();
+    }
+    AtomicInteger zongMenAutoIncrementNum = new AtomicInteger(0);
+    public static ZongMenManager getInstance(){ return Instance;}
+
+    private void init() {
+        lastCrossDayTimer = System.currentTimeMillis();
+        //加载宗门数据
+        loadAllData();
+        //启动定时器 定期存储 宗门数据
+        SchedulerService.getInstance().scheduleAtFixedRate(saveAllZongMenData(),ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
+        //启动定时器 定期触发宗门 时间相关事件
+        SchedulerService.getInstance().scheduleAtFixedRate(timeCrossCheck(),1, TimeUnit.SECONDS);
+    }
+
+    private Runnable timeCrossCheck() {
+        return ()->{
+            long now = System.currentTimeMillis();
+            if (!DateUtil.isSameDay(now, lastCrossDayTimer)){
+                lastCrossDayTimer = now;
+                //跨天触发 宗门事件
+                zongMenInfoMap.values().forEach(zongMenInfo ->{
+                    zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CROSS_DAY);
+                });
+            }
+        };
+    }
+
+    private Runnable saveAllZongMenData() {
+        return ()->{
+            long now = System.currentTimeMillis();
+            int saveNum = 0;
+            for (ZongMenInfo info : zongMenInfoMap.values()) {
+                    if (now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER){
+                        saveNum++;
+                        info.setSaveDataTimer(now);
+                        info.updateModuleData();
+                        DAO.update(info.getData());
+                        saveZongMenTotalPowerRank(info);
+                    }
+            }
+            log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d",System.currentTimeMillis() - now, saveNum,zongMenInfoMap.size()));
+
+        };
+    }
+
+
+    public void loadAllData(){
+        log.info(String.format("开始加载所有的宗门"));
+        long beginTimer = System.currentTimeMillis();
+        DAO.execute(ZongmenMapper.class,"selectByServerNodeIdIndex", ServerContext.getInstance().getServerId())
+                        .onSuccess(res ->{
+                            int num = 0;
+                            if (res != null){
+                                List<Zongmen> list = (List<Zongmen>) res;
+                                list.forEach(zongmen ->{
+                                    ZongMenInfo info = new ZongMenInfo(zongmen);
+                                    zongMenInfoMap.put(info.getId(),info);
+                                });
+                                num = list.size();
+                            }
+                            zongMenAutoIncrementNum.set(num + 1);
+                            log.info(String.format("开始加载所有的宗门结束, use:%d, 数量:%d", System.currentTimeMillis() - beginTimer,num));
+                        })
+                        .onFailure(err ->{
+                            log.error(String.format("加载所有的宗门 出错 "));
+                            err.printStackTrace();
+                        });
+    }
+
+    public void saveSimpleData(ZongMenInfo zongMen){
+        String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(zongMen.getId());
+        RedisUtil.setAsync(redisKey,zongMen.toSimpleZongMen());
+    }
+
+    public ZongMenInfo getZongMenInfo(long zongMenId) {
+        return zongMenInfoMap.get(zongMenId);
+    }
+
+    /**
+     * 创建宗门
+     * @param name 宗门名称
+     * @param createPlayerId 门主pid
+     * @param createPlayerName 门主名称
+     * @param power 门主战力
+     * @return 新的宗门
+     */
+    public Future<ZongMenInfo> createZongMen(String name,long createPlayerId,String createPlayerName,int power) {
+        long newZongMenId = ZongMenHelper.createZongMenId(zongMenAutoIncrementNum.getAndIncrement());
+        //创建宗门
+        ZongMenInfo zongMenInfo = new ZongMenInfo();
+        //宗门初始化
+        zongMenInfo.init(newZongMenId,name,createPlayerId,createPlayerName,power);
+        Promise<ZongMenInfo> promise = Promise.promise();
+        DAO.insert(zongMenInfo.getData()).onSuccess( res ->{
+            if (res != null){
+                //保存 simple data
+                saveSimpleData(zongMenInfo);
+                //存储 redis name--id map
+                saveRedisNameIdMap(name,newZongMenId);
+                //保存宗门战斗力排行榜
+                saveZongMenTotalPowerRank(zongMenInfo);
+                zongMenInfoMap.put(newZongMenId,zongMenInfo);
+                promise.complete(zongMenInfo);
+            } else {
+                promise.complete(null);
+            }
+        } ).onFailure(err ->{
+            err.printStackTrace();
+            promise.complete(null);
+        });
+        return promise.future();
+    }
+
+    private void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
+        RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
+    }
+
+    private void saveRedisNameIdMap(String name, long newZongMenId) {
+        String key = CacheType.ZONG_MEN_NAME_ID.key(name);
+        RedisUtil.setAsync(key,newZongMenId);
+    }
+}

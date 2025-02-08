@@ -144,7 +144,7 @@ public class ServerContext {
 	}
 
 	private void initHotUpdate() {
-		if (!Config.hotUpdate) {
+		if (Config.hotUpdate) {
 			return;
 		}
 		String className = ManagementFactory.getRuntimeMXBean().getName();
@@ -155,7 +155,8 @@ public class ServerContext {
 				String jarName = "hotupdate-1.0.jar";
 				String agentPath = ClassHelper.findJarPath(jarName);
 				if (agentPath == null) {
-					throw new RuntimeException("Agent JAR not found : " + jarName);
+//					throw new RuntimeException("Agent JAR not found : " + jarName);
+					return;
 				}
 				vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);

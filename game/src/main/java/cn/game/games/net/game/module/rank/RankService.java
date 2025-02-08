@@ -10,6 +10,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import io.netty.util.concurrent.Promise;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
@@ -212,6 +213,19 @@ public class RankService {
 		int end = start + pageSize - 1;
 		Collection<ScoredEntry<Long>> players = rank.entryRangeReversed(start, end);
 		return convertToRankEntries(players, page, pageSize);
+	}
+
+
+
+	/**
+	 * 获取排行榜的总数据量
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @return 排行榜数据量
+	 */
+	public CompletionStage<Integer> getRankSizeAsync(String serverId, RankType type){
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return rank.sizeAsync().toCompletableFuture();
 	}
 
 	private RScoredSortedSet<Long> getRankSet(String serverId, RankType type) {

@@ -17,6 +17,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.player.VarConstant;
+import cn.game.games.net.game.module.zongmen.ZongMenModule;
 import cn.game.protocol.protobuf.ServerMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -309,6 +310,9 @@ public class Player  {
 
 	public VipModule getVipModule(){
 		return getModule(VipModule.class);
+	}
+	public ZongMenModule getZongmenModule() {
+		return getModule(ZongMenModule.class);
 	}
 	public Player() {
 	}
@@ -838,5 +842,15 @@ public class Player  {
 		VxHolder.requestRemoteServer(ServerType.Login,req.build());
 	}
 
+    public long getZongMenId(){
+        return getZongmenModule().getZongMenId();
+    }
+    public String getZongMenName(){
+        return getZongmenModule().getZongMenName();
+    }
 
+
+	public String getPlayerName() {
+		return data.getName();
+	}
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import cn.game.protocol.protobuf.ZongMenMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -123,11 +124,28 @@ public class ServerHandler extends BaseHandler {
 
 
 		putInvoker(PbProtocol.NotifyInviteBindAndLvUpRequest_7d000041, this::InviteLvChange);
+		putInvoker(PbProtocol.NotifyZongMenMsgToGame_7d000047, this::zongMenMsgNotify);
 
 
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void zongMenMsgNotify(NetClient client, Object o) {
+		ServerMsg.NotifyZongMenMsgToGame_7d000047 req = (ServerMsg.NotifyZongMenMsgToGame_7d000047) o;
+		long pid = req.getPlayerId();
+		int msgId = req.getMsgId();
+		Message message = PbProtocol.getInstance().parseFrom(msgId, req.getData());
+		Player player = PlayerManager.getInstance().getPlayer(pid);
+		if (player == null) {
+			log.error("zongMenMsgNotify player is null");
+			return;
+		}
+		switch (msgId){
+			//玩家 退出 宗门
+			case PbProtocol.notifyQuitZongMen_40000024 -> player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+		}
 	}
 
 	private void InviteLvChange(NetClient client, Object o) {
