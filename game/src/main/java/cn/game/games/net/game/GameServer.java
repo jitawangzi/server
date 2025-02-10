@@ -327,7 +327,7 @@ public class GameServer implements GameServerMBean {
 		}
 		Object remoteInterface = SpringContextLoader.getContext().getBean("gameRemote");
 		for (int i = 0; i < numVerticles; i++) {
-			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType);
+			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
 			VxHolder.deployVerticleSync(verticle);
 		}
 

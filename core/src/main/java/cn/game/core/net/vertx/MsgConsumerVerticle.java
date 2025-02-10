@@ -14,12 +14,9 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
 
 public class MsgConsumerVerticle extends AbstractMessageHandlerService {
-	private Processor processor;
 
 	public MsgConsumerVerticle(String serverId, ServerType serverType, Processor processor) {
-
-		super(serverId, serverType);
-		this.processor = processor;
+		super(serverId, serverType, processor);
 	}
 
 	@Override

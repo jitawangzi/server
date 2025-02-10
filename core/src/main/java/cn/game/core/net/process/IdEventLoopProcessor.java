@@ -4,13 +4,13 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.vertx.VxContextRegistry;
 
-public class PlayerThreadProcessor extends AbstractProcessor {
+public class IdEventLoopProcessor extends AbstractProcessor {
 
-	public PlayerThreadProcessor() {
+	public IdEventLoopProcessor() {
 	}
 
 	@Override
-	public void process(final NetClient netClient, final IProtocol<?> protocol) {
+	public void process(final NetClient netClient, final IProtocol protocol) {
 		VxContextRegistry.getInstance().submitTask(netClient.getPlayerId(), r -> super.process(netClient, protocol));
 	}
 

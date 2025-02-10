@@ -149,7 +149,7 @@ public class LoginServer {
 		}
 		Object remoteInterface = SpringContextLoader.getContext().getBean("loginRemote");
 		for (int i = 0; i < numVerticles; i++) {
-			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType);
+			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
 			VxHolder.deployVerticleSync(verticle);
 		}
 	}

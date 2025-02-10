@@ -1,11 +1,11 @@
 package cn.game.core.net.rpc.vertx;
 
 import cn.game.core.net.message.AbstractMessageHandlerService;
+import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RPCService;
 import cn.game.core.net.rpc.RPCServiceImpl;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
-import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -23,8 +23,8 @@ import io.vertx.core.eventbus.ReplyFailure;
 public class VertxRPCService<T> extends AbstractMessageHandlerService implements RPCService<T> {
 	private RPCServiceImpl<T> rpcService;
 
-	public VertxRPCService(T wrappedService, String serverId, ServerType serverType) {
-		super(serverId, serverType);
+	public VertxRPCService(T wrappedService, String serverId, ServerType serverType, Processor processor) {
+		super(serverId, serverType, processor);
 		this.rpcService = new RPCServiceImpl<>(wrappedService, serverId, serverType);
 	}
 
@@ -40,9 +40,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 		}
 		long objectId = command.getObjectId();
 		Command commandFinal = command;
-
-		// 将 RPC 调用逻辑投递到 (id % n) 对应的 event loop
-		VxContextRegistry.getInstance().submitTask(objectId, () -> {
+		processor.process(objectId, () -> {
 			Object result = null;
 			Promise<Object> promise = Promise.promise();
 			try {
