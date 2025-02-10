@@ -25,10 +25,12 @@ public class ActivityModule extends BasePlayerModule {
 			EventTypeEnum.NewMonth, EventTypeEnum.LevelUp };
 	/** 已经开始的活动，只是展示的不在这里。  */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@Deprecated
 	private Map<Integer, ActivityBase> activities = new HashMap<Integer, ActivityBase>();
 
 	/** 开启过的一次性的活动 */
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@Deprecated
 	private Set<Integer> disposableIds = new HashSet<>();
 
 	/** 活动数据 */

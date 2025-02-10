@@ -27,7 +27,7 @@ public class ActivitySevenDaysSigninInfoRequest_11000024Test extends ServerTest{
 			}
 		} else {
 
-			builder.setId(12);
+			builder.setId(26);
 		}
 		
 		

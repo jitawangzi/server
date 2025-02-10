@@ -28,7 +28,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public abstract class AbstractActivityManager {
-	protected Logger log = LoggerFactory.getLogger(this.getClass());
+	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 
 	/** 进行中的活动，同id只能有一个活动 */
 	protected Map<Integer, ActivityBase> activities = new ConcurrentHashMap<>();
