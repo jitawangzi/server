@@ -1,9 +1,16 @@
 package cn.game.games.net.cross;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.core.net.rpc.vertx.VertxRPCService;
+import cn.game.core.net.rpc.vertx.VertxRpcClient;
+import cn.game.core.net.vertx.BusinessLogicVerticle;
+import cn.game.core.net.vertx.MsgConsumerVerticle;
+import cn.game.core.net.vertx.VxContextRegistry;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -16,6 +23,7 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
+import io.vertx.core.VertxOptions;
 
 public class CrossServer {
 
@@ -23,6 +31,8 @@ public class CrossServer {
 
 	/** 唯一实例 */
 	private static CrossServer instance = new CrossServer();
+
+	private RpcClient rpcClient;
 
 	private CrossServer() {
 	};
@@ -48,6 +58,11 @@ public class CrossServer {
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
 
+		VxHolder.init();
+
+		initVerticle();
+
+		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
 		crossActivityService.init();
 
@@ -60,6 +75,34 @@ public class CrossServer {
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
 		}
+	}
+
+	private void initVerticle() throws Exception {
+
+		rpcClient = new VertxRpcClient();
+		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+
+		VxHolder.deployVerticleSync(new VertxRpcClient());
+		
+		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
+		VxContextRegistry.getInstance().init(numVerticles);
+		for (int i = 0; i < numVerticles; i++) {
+			BusinessLogicVerticle verticle = new BusinessLogicVerticle(i);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		String serverId = ServerContext.getInstance().getServerId();
+		ServerType serverType = ServerContext.getInstance().getServerType();
+		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
+		for (int i = 0; i < numVerticles; i++) {
+			MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		Object remoteInterface = SpringContextLoader.getContext().getBean("crossRemote");
+		for (int i = 0; i < numVerticles; i++) {
+			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
+
 	}
 
 	/**

@@ -47,7 +47,7 @@ public class VxContextRegistry {
 	 */
 	public void registerContext(int index, Context context) {
 		contexts[index] = context;
-		log.info("Registered context for index={}, thread={}", index, Thread.currentThread().getName());
+		log.debug("Registered context for index={}, thread={}", index, Thread.currentThread().getName());
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class BusinessLogicVerticle extends AbstractVerticle {
 		// 注册到全局 ContextRegistry
 		VxContextRegistry.getInstance().registerContext(index, contextInternal);
 
-		log.info("BusinessLogicVerticle #{} started on thread: {}", index, Thread.currentThread().getName());
+		log.debug("BusinessLogicVerticle #{} started on thread: {}", index, Thread.currentThread().getName());
 		startPromise.complete();
 	}
 }
