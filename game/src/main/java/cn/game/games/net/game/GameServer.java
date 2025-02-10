@@ -26,11 +26,16 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.mq.RocketMQRpcClient;
+import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
+import cn.game.core.net.vertx.BusinessLogicVerticle;
+import cn.game.core.net.vertx.MsgConsumerVerticle;
+import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
@@ -69,6 +74,7 @@ import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.VertxOptions;
 
 /**
  * vertx重构通讯
@@ -304,8 +310,28 @@ public class GameServer implements GameServerMBean {
 		rpcClient = new VertxRpcClient();
 		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
 
-		DeploymentOptions options = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors() * 2);
+		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
+		VxContextRegistry.getInstance().init(numVerticles);
+		for (int i = 0; i < numVerticles; i++) {
+			BusinessLogicVerticle verticle = new BusinessLogicVerticle(i);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
 		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
+
+		String serverId = ServerContext.getInstance().getServerId();
+		ServerType serverType = ServerContext.getInstance().getServerType();
+		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
+		for (int i = 0; i < numVerticles; i++) {
+			MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		Object remoteInterface = SpringContextLoader.getContext().getBean("gameRemote");
+		for (int i = 0; i < numVerticles; i++) {
+			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
+
 	}
 
 	private void initQuartz() throws IOException {
@@ -412,7 +438,7 @@ public class GameServer implements GameServerMBean {
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game);
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, playerId);
 
 	}
 

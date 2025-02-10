@@ -8,6 +8,6 @@ public interface Dispatcher {
 
 	public abstract void put(int module, Handler handler);
 
-	public abstract void dispatch(NetClient client, IProtocol protocol);
+	public abstract void dispatch(NetClient client, IProtocol<?> protocol);
 
 }

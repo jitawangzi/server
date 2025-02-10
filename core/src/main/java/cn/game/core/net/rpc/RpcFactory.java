@@ -30,11 +30,12 @@ public class RpcFactory {
 	 * @param callType 调用类型
 	 * @param serverId	当调用类型是点对点时，需要此参数，远程节点的唯一地址。 
 	 * @param serverType 当调用类型是负载均衡或广播时，需要此参数，远程节点的类型
+	 * @param objectId 用来在远程服务器分配线程使用
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId,
-			ServerType serverType) {
+			ServerType serverType, long objectId) {
 		String targetAddr = callType == CallType.PointToPoint ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
 		Key key = new Key(rpcInterfaceClass, targetAddr, callType);
 
@@ -44,9 +45,16 @@ public class RpcFactory {
 			invocation.setBlock(false);
 			invocation.setTargetAddr(targetAddr);
 			invocation.setCallType(callType);
+			invocation.setObjectId(objectId);
 
 			return Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 		});
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId,
+			ServerType serverType) {
+		return getImpl(rpcInterfaceClass, rpcClient, callType, serverId, serverType, 0);
 	}
 
 	private static Map<String, String> objectMethods;
@@ -70,6 +78,7 @@ public class RpcFactory {
 		private String targetAddr;
 		/** 调用类型 */
 		private CallType callType;
+		private long objectId;
 
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) {
@@ -81,7 +90,7 @@ public class RpcFactory {
 					return method.invoke(proxy, args);
 				}
 				return rpcClient.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
-						block, targetAddr);
+						block, targetAddr, objectId);
 
 			} catch (Exception e) {
 				log.error("rpc invoke 调用出现异常", e);
@@ -108,6 +117,14 @@ public class RpcFactory {
 
 		public void setCallType(CallType callType) {
 			this.callType = callType;
+		}
+
+		public void setObjectId(long objectId) {
+			this.objectId = objectId;
+		}
+
+		public long getObjectId() {
+			return objectId;
 		}
 
 	}

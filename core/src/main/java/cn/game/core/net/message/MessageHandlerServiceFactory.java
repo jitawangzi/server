@@ -11,7 +11,7 @@ public class MessageHandlerServiceFactory {
 		if (serviceImpl instanceof Processor) {
 			return new MsgConsumerVerticle(serverId, serverType, (Processor) serviceImpl);
 		} else {
-			return new VertxRPCService<>(serviceImpl, serverId, serverType);
+			return new VertxRPCService<>(serviceImpl, serverId, serverType, (Processor) serviceImpl);
 		}
 	}
 }

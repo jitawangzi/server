@@ -1,5 +1,6 @@
 package cn.game.core.net.message;
 
+import cn.game.core.net.process.Processor;
 import cn.game.util.ServerType;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -9,10 +10,12 @@ import io.vertx.core.eventbus.Message;
 public abstract class AbstractMessageHandlerService extends AbstractVerticle implements MessageHandlerService {
 	protected final String serverId;
 	protected final ServerType serverType;
+	protected final Processor processor;
 
-	public AbstractMessageHandlerService(String serverId, ServerType serverType) {
+	public AbstractMessageHandlerService(String serverId, ServerType serverType, Processor processor) {
 		this.serverId = serverId;
 		this.serverType = serverType;
+		this.processor = processor;
 	}
 
 	@Override
