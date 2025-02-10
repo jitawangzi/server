@@ -10,7 +10,7 @@ import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.MultiPlayerActivityBase;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-
+/**
 @ActivityType(type = ActivityTypeEnum.Test)
 public class GuildWarActivity extends MultiPlayerActivityBase {
 //	private Map<Integer, GuildWarData> guildDataMap = new ConcurrentHashMap<>();
@@ -68,3 +68,4 @@ public class GuildWarActivity extends MultiPlayerActivityBase {
 		return null;
 	}
 }
+*/

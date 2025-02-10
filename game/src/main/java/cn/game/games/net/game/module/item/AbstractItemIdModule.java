@@ -5,6 +5,7 @@ import java.util.Set;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.protocol.manual.OpType;
@@ -104,4 +105,13 @@ public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T
 	public void removeCache(T item) {
 	}
 
+	@Override
+	public EventTypeEnum[] getEventTypes() {
+		return null;
+	}
+
+	@Override
+	public void handleEvent(GameEvent event) {
+
+	}
 }

@@ -80,12 +80,12 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		}
 		if (object instanceof Item) {
 			list.add(RewardHelper.toRewardInfo((Item) object));
-		} else if (object instanceof List) {
-			for (Object object2 : (List) object) {
+		} else if (object instanceof Collection) {
+			for (Object object2 : (Collection) object) {
 				if (object2 instanceof Item) {
 					list.add(RewardHelper.toRewardInfo((Item) object2));
-				} else if (object2 instanceof List) {
-					for (Object object3 : (List) object2) {
+				} else if (object2 instanceof Collection) {
+					for (Object object3 : (Collection) object2) {
 						if (object3 instanceof Item) {
 							list.add(RewardHelper.toRewardInfo((Item) object3));
 						} else {

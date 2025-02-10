@@ -64,6 +64,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
             res.putDramaMap(k,v.num);
         });
         res.setActivityId(id)
+                .setOutDrawNum(totalNum)
                 .putAllBuyMap(buyIdMap);
         return res.build();
     }
@@ -85,6 +86,14 @@ public class ActivityWestLucky extends PlayerActivityBase {
 
     List<ActivityWestLuckyTurntableConfig> getConfigList(){
         return ActivityWestLuckyTurntableManager.instance().list().stream().filter(c -> c.ActivityiD == id).toList();
+    }
+
+    /**
+     * 进入内圈的保底次数
+     * @return
+     */
+    ActivityWestLuckyTurntableConfig getIntterConfig(){
+        return getConfigList().stream().filter(c -> {return c.CircleType == 4;}).findFirst().get();
     }
 
     public List<Integer> draw(boolean is3Type,List<Integer> findDrawList){
@@ -110,16 +119,26 @@ public class ActivityWestLucky extends PlayerActivityBase {
         List<ActivityWestLuckyTurntableConfig> intterConfigList = configList.stream().filter(c -> {
             int drawNum = getDrawCellNum(c.ID);
             boolean flag = c.CircleType == 2 && c.LimitTimes > 0 && drawNum < c.LimitTimes;
-            if (flag && c.NumberInNoObtain > 0){
-                flag = totalNum >= c.NumberInNoObtain;
-            }
+            /*if (flag && c.MinimumGuarantee > 0){
+                flag = totalNum >= c.MinimumGuarantee;
+            }*/
             return  flag;
         }).collect(Collectors.toList());
 
+        boolean hasIntterConfigs = true;
         if (intterConfigList == null || intterConfigList.isEmpty()) {//内圈没有可抽取的物品 则不随机 进入内圈事件=4
             outConfigList.removeIf(c -> c.CircleType == 4);
+            hasIntterConfigs = false;
         }
+        ActivityWestLuckyTurntableConfig goIntterConfig = getIntterConfig();
         ActivityWestLuckyTurntableConfig config =  Rnd.randomElement(outConfigList, c -> c.Weight);
+
+    // 进入内圈保底次数
+    // 再抽XX次必定进入内圈
+    // 注：只有进内圈事件有保底规则，如果不配置则不存在保底，如果配置保底次数则有保底并且在没有触发保底前进入了内圈则保底次数重置
+    if (hasIntterConfigs &&  goIntterConfig.MinimumGuarantee > 0 && totalNum >= goIntterConfig.MinimumGuarantee) {
+            config = goIntterConfig;
+    }
         if (config != null){
             result.add(config.ID);
             if (config.CircleType == 3){//  连续3次外圈事件=3
@@ -130,11 +149,13 @@ public class ActivityWestLucky extends PlayerActivityBase {
                 }
                 result.addAll(findList.subList(1, findList.size()));
             } else if (config.CircleType == 4) {//进入内圈事件=4
+                totalNum = 0;
                 config =  Rnd.randomElement(intterConfigList, c -> c.Weight);
                 result.add(config.ID);
                 WestLuckyCellData cellData = drawMap.getOrDefault(config.ID, new WestLuckyCellData(config.ID));
                 cellData.num++;
                 drawMap.put(config.ID,cellData);
+
             }
         }
         return result;
@@ -142,6 +163,10 @@ public class ActivityWestLucky extends PlayerActivityBase {
 
     public void addDrawNum(){
         this.totalNum++;
+    }
+
+    public int getTotalNum() {
+        return totalNum;
     }
 
     public Map<Integer, Integer> getBuyIdMap() {
