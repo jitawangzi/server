@@ -1,5 +1,16 @@
 package cn.game.games.net.game.module.zongmen;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.protobuf.Message;
+
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
@@ -10,30 +21,19 @@ import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.chat.ChatHandler;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
-import com.google.inject.Stage;
-import com.google.protobuf.Message;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName ZongMenHandler
@@ -61,7 +61,7 @@ public class ZongMenGameHandler extends BaseHandler {
         serverReq.addParams(param);
       }
     }
-    int reqMsgId = PbProtocol.getInstance().getMsgId(req.getDescriptorForType().getName());
+	int reqMsgId = PbProtocol.getInstance().getMsgId(req.getClass().getSimpleName());
     serverReq.setMsgId(reqMsgId);
     // 回包id
     final int responseMsgId = reqMsgId + 1;
@@ -382,7 +382,8 @@ public class ZongMenGameHandler extends BaseHandler {
               if (nameFail) {
                 // 创建宗门
                 sendMsgToZongMenServer(
-                        player, req, player.getPlayerName(), player.getAttrModule().getPower() + "")
+									player, req, player.getPlayerName(), player.getAttrModule().getPower() + "",
+									VirtualServerManager.instance().get(player.getServerId()).Seq + "")
                     .onSuccess(
                         createZongMenCallback -> {
                           if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功

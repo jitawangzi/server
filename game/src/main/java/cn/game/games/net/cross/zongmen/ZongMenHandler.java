@@ -1,5 +1,10 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.protobuf.Message;
+
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.NetClient;
@@ -11,10 +16,6 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
-import com.google.protobuf.Message;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName ZongMenHandler
@@ -323,6 +324,7 @@ public class ZongMenHandler extends BaseHandler {
     String name = req.getName();
     String createPlayerName = paramList.get(0);
     int power = Integer.parseInt(paramList.get(1));
+	int serverSeq = Integer.parseInt(paramList.get(2));
     ZongMenMsg.createZongMenResponse_40000006.Builder res =
             ZongMenMsg.createZongMenResponse_40000006.newBuilder();
     boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(name));
@@ -336,7 +338,7 @@ public class ZongMenHandler extends BaseHandler {
       return;
     }
     ZongMenManager.getInstance()
-            .createZongMen(name, playerId, createPlayerName, power)
+			.createZongMen(name, playerId, createPlayerName, power, serverSeq)
             .onSuccess(
                     zongMenInfo -> {
                       if (zongMenInfo != null) { // 创建宗门成功

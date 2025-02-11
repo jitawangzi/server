@@ -1,19 +1,19 @@
 package cn.game.games.net.cross.zongmen;
 
-import cn.game.core.base.ServerContext;
-import cn.game.core.cache.CacheType;
-import cn.game.core.cache.RedisLocalCache;
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.util.RedisUtil;
-import com.google.protobuf.Message;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+
+import com.google.protobuf.Message;
+
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.cache.id.IdCache;
+import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.RedisUtil;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 /**
  * @ClassName ZongMenHelper
@@ -23,12 +23,19 @@ import java.util.concurrent.CompletionStage;
  * @create: 2025-02-06 15:00 @Version 1.0
  */
 public class ZongMenHelper {
-    public static long createZongMenId(long size){
-        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
-        return id;
+	private static final long DEFAULT_PREFIX = 888L;
+
+	public static long createZongMenId(int serverId, long size) {
+//        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
+//        return id;
+		// - 宗门编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个宗门编号是88802890123；
+		long id = (DEFAULT_PREFIX * 100000000) + (serverId * 10000L) + size;
+		return id;
+
     }
     public static String getServerIdByZongMenId(long zongMenId){
-        return String.valueOf(zongMenId >> 32);
+//        return String.valueOf(zongMenId >> 32);
+		return IdCache.getZongMenServerId(zongMenId);
     }
 
     /**

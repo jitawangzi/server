@@ -122,8 +122,8 @@ public class ZongMenManager {
      * @param power 门主战力
      * @return 新的宗门
      */
-    public Future<ZongMenInfo> createZongMen(String name,long createPlayerId,String createPlayerName,int power) {
-        long newZongMenId = ZongMenHelper.createZongMenId(zongMenAutoIncrementNum.getAndIncrement());
+	public Future<ZongMenInfo> createZongMen(String name, long createPlayerId, String createPlayerName, int power, int serverSeq) {
+		long newZongMenId = ZongMenHelper.createZongMenId(serverSeq, zongMenAutoIncrementNum.getAndIncrement());
         //创建宗门
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
