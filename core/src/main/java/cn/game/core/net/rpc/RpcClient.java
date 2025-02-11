@@ -177,8 +177,20 @@ public interface RpcClient {
 	 * @return
 	 */
 	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String targetAddr) {
+		// 判断是否是void返回类型
+		boolean isVoid = returnType == void.class || returnType == Void.class;
 		byte[] datas = KryoUtils.serialize(command);
 		long startLong = System.currentTimeMillis();
+
+		// 如果是void类型，直接发送请求并返回null
+		if (isVoid) {
+			request(targetAddr, datas, r -> {
+				if (r instanceof Throwable) {
+					log.error("put message to targetAddr[{}] failed ,command[{}]exception[{}]", targetAddr, command, r);
+				}
+			});
+			return null;
+		}
 
 		// 异步调用处理
 		if (!sync) {
