@@ -115,12 +115,48 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.quitZongMenRequest_40000017, this::quitZongMen);
     putInvoker(PbProtocol.getZongMenInfoRequest_40000021, this::getZongMenInfo);
     putInvoker(PbProtocol.getZongMenLogRequest_40000025, this::getZongMenLogs);
+    putInvoker(PbProtocol.updateMemberAuthRequest_40000041, this::updateMemberAuth);
+    
   }
 
-  @Override
+    @Override
   protected int getModule() {
     return 0x40;
   }
+
+    private void updateMemberAuth(NetClient client, Object o) {
+      ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) o;
+      ZongMenMsg.updateMemberAuthResponse_40000042.Builder res =
+          ZongMenMsg.updateMemberAuthResponse_40000042.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (player.getZongMenId() == 0) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
+            return;
+        }
+        //不能审批自己
+    if (req.getTargetPidListList().contains(player.getPlayerId())){
+        client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
+        return;
+    }
+    if (req.getOptType() != 1 && req.getOptType() != 2 && req.getOptType() != 3) {
+        client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
+        return;
+    }
+      sendMsgToZongMenServer(player, req, player.getPlayerName())
+          .onSuccess(
+              callBack -> {
+                if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
+                  client.sendProtocol(res.build(), callBack.errorCode);
+                } else {
+                  client.sendProtocol(callBack.response);
+                }
+              })
+          .onFailure(
+              err -> {
+                err.printStackTrace();
+                client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
+              });
+    }
 
   private void getZongMenLogs(NetClient client, Object o) {
     ZongMenMsg.getZongMenLogRequest_40000025 req =
