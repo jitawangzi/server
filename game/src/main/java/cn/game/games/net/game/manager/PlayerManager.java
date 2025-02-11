@@ -12,9 +12,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,15 +20,13 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
-import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -38,7 +34,6 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
-import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
 public class PlayerManager {
@@ -48,10 +43,10 @@ public class PlayerManager {
 	// playerId => Player,在线玩家
 	private ConcurrentHashMap<Long, Player> id_players = new ConcurrentHashMap<>();
 
-	/** 缓存玩家在哪个服务器 */
-	private Cache<Long, String> playerServers = CacheBuilder.newBuilder().maximumSize(8192)
-			.expireAfterWrite(10, TimeUnit.MINUTES)
-			.build();
+//	/** 缓存玩家在哪个服务器 */
+//	private Cache<Long, String> playerServers = CacheBuilder.newBuilder().maximumSize(8192)
+//			.expireAfterWrite(10, TimeUnit.MINUTES)
+//			.build();
 	
 	// playerId => ForbidAccount 封禁的账号
 	private ConcurrentHashMap<Long, ForbidAccount> forbidAccounts = new ConcurrentHashMap<>();
@@ -70,14 +65,14 @@ public class PlayerManager {
 	}
 
 	public void online(long playerId, String serverId) {
-		playerServers.put(playerId, serverId);
+		IdCache.getManager(DistributedObjectType.PLAYER).setServerId(playerId, serverId);
 	}
 	public void offline(long playerId) {
-		playerServers.put(playerId, "");
+		IdCache.getManager(DistributedObjectType.PLAYER).setServerId(playerId, "");
 	}
 
 	public void resetOnline(long playerId) {
-		playerServers.invalidate(playerId);
+		IdCache.getManager(DistributedObjectType.PLAYER).invalidateServerId(playerId);
 	}
 
 	/** 
@@ -121,19 +116,7 @@ public class PlayerManager {
 	 * @return
 	 */
 	public String getServerId(long playerId) {
-		try {
-			Player player = PlayerManager.getInstance().getPlayer(playerId);
-			if (player != null) {
-				return ServerContext.getInstance().getServerId();
-			}
-			return playerServers.get(playerId, () -> {
-				String serverId = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
-				return serverId == null ? "" : serverId;
-			});
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return IdCache.getPlayerServerId(playerId);
 	}
 
   public Future<SimplePlayer> getSimplePlayerFromRedisAsync(long playerId) {

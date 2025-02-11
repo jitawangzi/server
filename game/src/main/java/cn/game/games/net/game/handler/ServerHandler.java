@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -544,16 +543,11 @@ public class ServerHandler extends BaseHandler {
 										.setServerId(ServerContext.getInstance().getServerId()).build());
 					}, 5000);
 				});
+			} else {
+				PlayerManager.getInstance().online(playerId, serverId);
 			}
 		} else {
-			String oldServerId = PlayerManager.getInstance().getServerId(playerId);
-			if (!StringUtils.isEmpty(oldServerId)) {
-				if (online) {
-					PlayerManager.getInstance().online(playerId, serverId);
-				} else {
-					PlayerManager.getInstance().offline(playerId);
-				}
-			}
+			PlayerManager.getInstance().offline(playerId);
 		}
 	}
 

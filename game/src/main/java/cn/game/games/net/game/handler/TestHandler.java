@@ -31,6 +31,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
@@ -61,7 +62,6 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -491,6 +491,8 @@ public class TestHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
 		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
+		String playerServerId = IdCache.getPlayerServerId(240201789);
+		System.out.println(playerServerId);
 //		for (Hero hero : battleHeroList) {
 //			if (hero.getQuality() >= 7) {
 //				player.handleEvent(EventTypeEnum.HeroBattle, hero);
@@ -518,12 +520,12 @@ public class TestHandler extends BaseHandler {
 //		RankModule rankModule = player.getModule(RankModule.class);
 //		rankModule.updateHeroCombatRank();
 
-		PlayerHelper.modifyPlayer(240201720, pp -> {
-
-			PlayerHelper.addResources(pp, Asset.diamond.ID, 999, OpType.Test);
-
-			return true;
-		});
+//		PlayerHelper.modifyPlayer(240201720, pp -> {
+//
+//			PlayerHelper.addResources(pp, Asset.diamond.ID, 999, OpType.Test);
+//
+//			return true;
+//		});
         //		drawTest2(player);
         //		drawTest(player);
         //		CommonLogger.error("what the fuck by common logger");
