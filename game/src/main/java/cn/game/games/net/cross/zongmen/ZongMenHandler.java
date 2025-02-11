@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -42,26 +43,29 @@ public class ZongMenHandler extends BaseHandler {
     List<String> paramList = new ArrayList<>(request.getParamsList().stream().toList());
     Message message = PbProtocol.getInstance().parseFrom(msgId, request.getData());
     // TODO log message
-    switch (msgId) {
-      case PbProtocol.getZongMenInfoRequest_40000021 ->
-              getZongMenInfo(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.createZongMenRequest_40000005 ->
-              createZongMen(playerId, message, paramList, client);
-      case PbProtocol.applyJoinZongMenRequest_40000007 ->
-              applyJoinZongMen(playerId, message, paramList, client);
-      case PbProtocol.dissolveZongMenRequest_40000011 ->
-              dissolveZongMen(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.setZongMenSettingRequest_40000013 ->
-              setZongMenSetting(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.getZongMenLogResponse_40000026 ->
-              getZongMenLog(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.setZongMenMemberPositionRequest_40000015 ->
-              setZongMenMemberPosition(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.quitZongMenRequest_40000017 ->
-              quitZongMen(zongMenId,playerId, message, paramList, client);
-      case PbProtocol.updateZongMenAssetRequest_40000037 ->
-              updateZongMenAsset(zongMenId, playerId, message, paramList, client);
-    }
+    ServerContext.getInstance().getProcessor().process(zongMenId, () -> {
+      switch (msgId) {
+        case PbProtocol.getZongMenInfoRequest_40000021 ->
+                getZongMenInfo(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.createZongMenRequest_40000005 ->
+                createZongMen(playerId, message, paramList, client);
+        case PbProtocol.applyJoinZongMenRequest_40000007 ->
+                applyJoinZongMen(playerId, message, paramList, client);
+        case PbProtocol.dissolveZongMenRequest_40000011 ->
+                dissolveZongMen(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.setZongMenSettingRequest_40000013 ->
+                setZongMenSetting(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.getZongMenLogResponse_40000026 ->
+                getZongMenLog(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.setZongMenMemberPositionRequest_40000015 ->
+                setZongMenMemberPosition(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.quitZongMenRequest_40000017 ->
+                quitZongMen(zongMenId,playerId, message, paramList, client);
+        case PbProtocol.updateZongMenAssetRequest_40000037 ->
+                updateZongMenAsset(zongMenId, playerId, message, paramList, client);
+      }
+
+    });
   }
 
   //跟新 贡献度 活跃度 之类的资产

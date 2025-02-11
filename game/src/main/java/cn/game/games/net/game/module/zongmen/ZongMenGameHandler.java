@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -242,6 +243,7 @@ public class ZongMenGameHandler extends BaseHandler {
           checkStrs.add(req.getWx());
       }
       Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+      //非法字符串检测
       List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
       for (String str : checkStrs) {
           checkComplatableList.add((CompletableFuture<Boolean>) PlayerHelper.checkContextData(player,str).toCompletionStage());
@@ -252,6 +254,18 @@ public class ZongMenGameHandler extends BaseHandler {
                 if (checkComplatableList.stream().anyMatch(CompletableFuture::isCompletedExceptionally)) {
                   client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
                   return;
+                }
+                for (CompletableFuture<Boolean> future : checkComplatableList) {
+                    try {
+                        if (future.get().booleanValue() == false) {
+                            client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+                            return;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+                        return;
+                    }
                 }
                 autoForwardZongMenServer(client, res, req, null);
               });
