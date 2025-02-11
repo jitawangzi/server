@@ -33,6 +33,7 @@ public class ZongMenConstants {
         CHANGE_ZONG_MEN_NAME(6,"修改宗门名称"),
         CHANGE_ZONG_MEN_NOTICE(7,"修改宗门公告"),
         CHANGE_ZONG_MEN_DECLARATION(8,"修改宗门宣言"),
+        ZONG_MEN_KICK_MEMBER(9,"踢人"),
         ;
         private int id;
         private String desc;

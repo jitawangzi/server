@@ -154,7 +154,7 @@ public class ZongMenManager {
         return promise.future();
     }
 
-    private void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
+     void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
         RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
 

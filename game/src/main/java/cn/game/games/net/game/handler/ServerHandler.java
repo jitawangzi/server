@@ -139,13 +139,17 @@ public class ServerHandler extends BaseHandler {
 		int msgId = req.getMsgId();
 		Message message = PbProtocol.getInstance().parseFrom(msgId, req.getData());
 		Player player = PlayerManager.getInstance().getPlayer(pid);
-		if (player == null) {
-			log.error("zongMenMsgNotify player is null");
-			return;
-		}
 		switch (msgId){
 			//玩家 退出 宗门
-			case PbProtocol.notifyQuitZongMen_40000024 -> player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+			case PbProtocol.notifyQuitZongMen_40000024 -> {
+				if (player == null) {
+					log.error("zongMenMsgNotify player is null");
+					return;
+				}
+				player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+			}
+			//玩家 加入 宗门
+			case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
 		}
 	}
 
