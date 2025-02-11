@@ -78,8 +78,9 @@ public class HeroSkinModule extends AbstractItemIdModule<HeroSkin> {
 		Set<Integer> idsSet = player.getPlayerModule().getIdsSet(IdConstant.HERO_SKIN);
 		for (Hero hero : list) {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			if (!idsSet.contains(heroConfig.HeroSkinID)) {
-				idsSet.add(heroConfig.HeroSkinID);
+			idsSet.add(heroConfig.HeroSkinID);
+			if (hero.getSkin() == 0) {
+				hero.setSkin(heroConfig.HeroSkinID);
 			}
 		}
 
