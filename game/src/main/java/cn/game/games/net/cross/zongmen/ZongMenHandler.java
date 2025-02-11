@@ -3,6 +3,7 @@ package cn.game.games.net.cross.zongmen;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.core.cache.RedisLocalCache;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
@@ -17,6 +18,7 @@ import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
 import com.google.protobuf.Message;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +70,60 @@ public class ZongMenHandler extends BaseHandler {
                 quitZongMen(zongMenId,playerId, message, paramList, client);
         case PbProtocol.updateZongMenAssetRequest_40000037 ->
                 updateZongMenAsset(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.updateMemberAuthRequest_40000041 ->
+                updateMemberAuth(zongMenId,playerId,message,paramList,client);
       }
 
     });
   }
+  //宗门成员权限管理
+  private void updateMemberAuth(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) message;
+    ZongMenMsg.updateMemberAuthResponse_40000042.Builder res =
+            ZongMenMsg.updateMemberAuthResponse_40000042.newBuilder();
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    String playerName = paramList.get(0);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.updateZongMenAssetResponse_40000038);
+      return;
+    }
+    ZongMenMember member = zongMenInfo.getMember(playerId);
+    PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+    //加入审批检测
+    if (req.getOptType() == 1 || req.getOptType() == 2){
+      if (!permissionsConfig.Approval){
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_permission_not_enough,
+                PbProtocol.updateMemberAuthResponse_40000042);
+        return;
+      }
+    }
+    //踢人 审批
+    if (req.getOptType() == 3 && !permissionsConfig.Remove){
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_permission_not_enough,
+              PbProtocol.updateMemberAuthResponse_40000042);
+      return;
+    }
+    //审批同意添加成员
+    if (req.getOptType() == 1){
+      zongMenInfo.addMemberAuth( req.getTargetPidListList(), playerName);
+    } else if (req.getOptType() == 2){
+      zongMenInfo.removeApplyAuth(req.getTargetPidListList(), playerName);
+    } else if (req.getOptType() == 3){
 
+    }
+
+
+  }
   //跟新 贡献度 活跃度 之类的资产
   private void updateZongMenAsset(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
     ZongMenMsg.updateZongMenAssetRequest_40000037 req = (ZongMenMsg.updateZongMenAssetRequest_40000037) message;
@@ -218,6 +269,7 @@ public class ZongMenHandler extends BaseHandler {
     ZongMenMsg.setZongMenSettingResponse_40000014.Builder res =
             ZongMenMsg.setZongMenSettingResponse_40000014.newBuilder();
     ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    String playerName = paramList.get(0);
     if (zongMenInfo == null) {
       sendErrorCodeMsgToGameServer(
               playerId,
@@ -226,17 +278,107 @@ public class ZongMenHandler extends BaseHandler {
               PbProtocol.dissolveZongMenResponse_40000012);
       return;
     }
+    ZongMenMember member = zongMenInfo.getMember(playerId);
+    PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+//
+    // 修改宗门名称
+    if (!StringUtils.isEmpty(req.getName())) {
+      if (!permissionsConfig.Rename){
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_permission_not_enough,
+                PbProtocol.setZongMenSettingResponse_40000014);
+        return;
+      }
+
+      RedisLocalCache.getInstance()
+              .getAsync(CacheType.ZONG_MEN_NAME_ID.key(req.getName()))
+              .onSuccess(
+                      (result) -> {
+                        if (result == null) {//该名称 未被占用
+                          boolean redisLock =
+                                  LockUtil.tryLockNoWaitSync(
+                                          6, CacheType.ZONG_MEN_NAME_CHANGE_LOCK.key(req.getName()));
+                          if (redisLock) {
+                            //删除旧的宗门 名称 id 映射
+                            zongMenInfo.delZongMenNameIdRedisData();
+                            zongMenInfo.getData().setName(req.getName());
+                            // - 名称修改：玩家昵称修改宗门名称为宗门昵称；
+                            zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME,playerName,req.getName());
+                            //保存新的宗门 名称 id 映射
+                            ZongMenManager.getInstance()
+                                    .saveRedisNameIdMap(req.getName(), zongMenInfo.getId());
+                            sendMsgToGameServer(
+                                    playerId,
+                                    client,
+                                    res.build(),
+                                    PbProtocol.setZongMenSettingResponse_40000014);
+                          } else {
+                            sendErrorCodeMsgToGameServer(
+                                    playerId,
+                                    client,
+                                    ErrorMsgEnum.zong_men_name_repeat,
+                                    PbProtocol.setZongMenSettingResponse_40000014);
+                            return;
+                          }
+                        } else {//该名称 被占用
+                          sendErrorCodeMsgToGameServer(
+                                  playerId,
+                                  client,
+                                  ErrorMsgEnum.zong_men_name_repeat,
+                                  PbProtocol.setZongMenSettingResponse_40000014);
+                          return;
+                        }
+                      }).onFailure(err ->{
+                err.printStackTrace();
+                sendErrorCodeMsgToGameServer(
+                        playerId,
+                        client,
+                        ErrorMsgEnum.zong_men_name_repeat,
+                        PbProtocol.setZongMenSettingResponse_40000014);
+              });
+    }
+
     if (!req.getWxBytes().isEmpty()) {
       zongMenInfo.getModule().setting.setWx(req.getWx());
     }
     if (!req.getNoticeBytes().isEmpty()) {
+      if (!permissionsConfig.Notice){
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_permission_not_enough,
+                PbProtocol.setZongMenSettingResponse_40000014);
+        return;
+      }
       zongMenInfo.getData().setNotice(req.getNotice());
+//    - 公告修改：玩家昵称修改了公告；
+      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NOTICE,playerName);
     }
     if (!req.getDeclarationBytes().isEmpty()) {
+      if (!permissionsConfig.Manifesto){
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_permission_not_enough,
+                PbProtocol.setZongMenSettingResponse_40000014);
+        return;
+      }
       zongMenInfo.getData().setDeclaration(req.getDeclaration());
+//    - 宣言修改：玩家昵称修改了宣言；
+      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION,playerName);
     }
     if (req.getIcon() != 0
             && zongMenInfo.getModule().setting.unlockIconList.contains(req.getIcon())) {
+      if (!permissionsConfig.Icon){
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_permission_not_enough,
+                PbProtocol.setZongMenSettingResponse_40000014);
+        return;
+      }
       zongMenInfo.getData().setIcon(req.getIcon());
     }
     if (req.getAutoJoin() == 1 || req.getAutoJoin() == 2) {
