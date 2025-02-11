@@ -58,6 +58,8 @@ public enum CacheType {
 	ZONG_MEN_JOIN_PLAYER_LOCK,
 	/**** 宗门名称--id */
 	ZONG_MEN_NAME_ID,
+	/**** 宗门名称修改锁 */
+	ZONG_MEN_NAME_CHANGE_LOCK,
 	/**** 宗门创建锁 */
 	ZONG_MEN_CREATE_LOCK,
 	/** 宗门在哪个服务器 */

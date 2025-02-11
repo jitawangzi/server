@@ -227,12 +227,16 @@ public class ZongMenInfo {
         // 删除宗门排行榜
         RankService.getInstance().removeRankAsync(RankType.Battle);
         //删除宗门名称 id 映射
-        RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_NAME_ID.key(getName()));
+        delZongMenNameIdRedisData();
         //删除宗门 simple 对象
         RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_SIMPLE_DATA.key(getId()));
         //删除数据库宗门
         DAO.delete(data);
         ZongMenManager.log.info("解散宗门成功 id:" + getId() + " name:" + getName() + "");
+    }
+
+     void delZongMenNameIdRedisData() {
+        RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_NAME_ID.key(getName()));
     }
 
     public ZongMenModuleData getModule() {
@@ -270,5 +274,11 @@ public class ZongMenInfo {
             member.addcontribution(num);
 
         }
+    }
+
+    public void addMemberAuth(List<Long> targetPidListList, String playerName) {
+    }
+
+    public void removeApplyAuth(List<Long> targetPidListList, String playerName) {
     }
 }

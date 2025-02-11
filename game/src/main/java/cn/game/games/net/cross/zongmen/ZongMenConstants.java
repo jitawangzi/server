@@ -29,7 +29,10 @@ public class ZongMenConstants {
         ZONG_MEN_CREATE(2, "创建宗门"),
         ZONG_MEN_LEVEL_UP(3,"宗门升级"),
         ZONG_MEN_POSITION_CHANGE(4,"权限变动"),
-        QUIT_ZONG_MEN(5,"退出宗门")
+        QUIT_ZONG_MEN(5,"退出宗门"),
+        CHANGE_ZONG_MEN_NAME(6,"修改宗门名称"),
+        CHANGE_ZONG_MEN_NOTICE(7,"修改宗门公告"),
+        CHANGE_ZONG_MEN_DECLARATION(8,"修改宗门宣言"),
         ;
         private int id;
         private String desc;

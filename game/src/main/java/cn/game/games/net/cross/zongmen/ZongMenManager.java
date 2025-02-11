@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +94,8 @@ public class ZongMenManager {
                                 list.forEach(zongmen ->{
                                     ZongMenInfo info = new ZongMenInfo(zongmen);
                                     zongMenInfoMap.put(info.getId(),info);
+                                    info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
+
                                 });
                                 num = list.size();
                             }
@@ -155,7 +158,7 @@ public class ZongMenManager {
         RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
 
-    private void saveRedisNameIdMap(String name, long newZongMenId) {
+     void saveRedisNameIdMap(String name, long newZongMenId) {
         String key = CacheType.ZONG_MEN_NAME_ID.key(name);
         RedisUtil.setAsync(key,newZongMenId);
     }

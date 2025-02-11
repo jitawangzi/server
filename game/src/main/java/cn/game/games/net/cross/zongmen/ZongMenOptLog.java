@@ -42,11 +42,18 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
               addLog(type.getId(),simplePlayer.getName(),oldPosition+"",newPosition+"");
             });
           }
-          case QUIT_ZONG_MEN -> {
+
+          case CHANGE_ZONG_MEN_NAME -> {
+              String changeNamePlayerName = params[0]+"";
+              String newName = params[1]+"";
+              addLog(type.getId(),changeNamePlayerName,newName);
+          }
+          case QUIT_ZONG_MEN,
+               CHANGE_ZONG_MEN_DECLARATION,
+               CHANGE_ZONG_MEN_NOTICE -> {
               String quitPlayerName = params[0]+"";
               addLog(type.getId(),quitPlayerName);
           }
-
       }
   }
 
