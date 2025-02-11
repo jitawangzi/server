@@ -17,7 +17,7 @@ public class IdCache {
 				new DistributedIDManager(DistributedObjectType.PLAYER, new CacheConfig(8192, 10, CacheType.PLAYER_SERVER_ID)));
 		// 工会id缓存配置
 		managers.put(DistributedObjectType.ZONGMEN,
-				new DistributedIDManager(DistributedObjectType.ZONGMEN, new CacheConfig(1024, 60, CacheType.PLAYER_SERVER_ID)));
+				new DistributedIDManager(DistributedObjectType.ZONGMEN, new CacheConfig(1024, 60, CacheType.ZONG_MEN_SERVER_ID)));
 	}
 
 	public static GenericDistributedIDManager getManager(DistributedObjectType type) {

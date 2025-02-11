@@ -14,18 +14,16 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.RequestCallback;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
-import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
-import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
@@ -41,10 +39,12 @@ import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
@@ -422,19 +422,38 @@ public class GameServer implements GameServerMBean {
 	}
 
 	/**
-	 * 获取处理某玩家的逻辑服远程调用接口
-	 * @param 
+	 * 获取处理某类型对象的逻辑服远程调用接口
+	 * @param DistributedObjectType 什么类型的对象
+	 * @param targetId  对象的唯一id
 	 * @return
 	 */
-	public GameServerInterface getGameServerInterface(long playerId) {
-		String serverId = PlayerManager.getInstance().getServerId(playerId);
+	public GameServerInterface getGameServerInterface(DistributedObjectType objectType, long targetId) {
+
+		String serverId = IdCache.getManager(objectType).getServerId(targetId);
 		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
 			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, playerId);
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, targetId);
 
+	}
+
+	/**
+	 * 获取处理某类型对象的跨服远程调用接口
+	 * @param DistributedObjectType 什么类型的对象
+	 * @param targetId  对象的唯一id
+	 * @return
+	 */
+	public CrossServerInterface getCrossServerInterface(DistributedObjectType objectType, long targetId) {
+
+		String serverId = IdCache.getManager(objectType).getServerId(targetId);
+		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
+			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
+			return (CrossServerInterface) SpringContextLoader.getContext().getBean("crossRemote");
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Cross, targetId);
 	}
 
 	/** 
@@ -447,9 +466,9 @@ public class GameServer implements GameServerMBean {
 
 	}
 
-	public void requestDataServer(Message message, RequestCallback callback) {
-		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
-	}
+//	public void requestDataServer(Message message, RequestCallback callback) {
+//		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
+//	}
 	/** 
 	 * 是否用一张表存储玩家所有数据
 	 * @return

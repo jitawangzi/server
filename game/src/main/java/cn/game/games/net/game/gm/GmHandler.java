@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
 
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -125,7 +126,7 @@ public class GmHandler extends BaseHandler {
 		String newName = req.getName();
 		long playerId = Long.parseLong(playerIdString);
 		Player me = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, playerId);
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
 		renameFuture.onSuccess(r -> {
 			client.sendProtocol(resp);

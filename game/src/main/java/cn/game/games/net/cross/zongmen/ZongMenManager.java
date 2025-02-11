@@ -1,5 +1,14 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.task.SchedulerService;
@@ -12,14 +21,6 @@ import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @ClassName ZongMenManager
@@ -137,6 +138,8 @@ public class ZongMenManager {
                 //保存宗门战斗力排行榜
                 saveZongMenTotalPowerRank(zongMenInfo);
                 zongMenInfoMap.put(newZongMenId,zongMenInfo);
+				// 宗门所在服务器
+				saveZongMenServerId(newZongMenId);
                 promise.complete(zongMenInfo);
             } else {
                 promise.complete(null);
@@ -156,4 +159,9 @@ public class ZongMenManager {
         String key = CacheType.ZONG_MEN_NAME_ID.key(name);
         RedisUtil.setAsync(key,newZongMenId);
     }
+
+	private void saveZongMenServerId(long id) {
+		RedisUtil.setAsync(CacheType.ZONG_MEN_SERVER_ID.key(id),
+				ServerContext.getInstance().getServerId());
+	}
 }

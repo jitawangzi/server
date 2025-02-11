@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
@@ -42,17 +43,21 @@ public class ZongMenHandler extends BaseHandler {
     long zongMenId = request.getZongMenId();
     List<String> paramList = new ArrayList<>(request.getParamsList().stream().toList());
     Message message = PbProtocol.getInstance().parseFrom(msgId, request.getData());
-    // TODO log message
-    switch (msgId) {
-      case PbProtocol.getZongMenInfoRequest_40000021 ->
-          getZongMenInfo(zongMenId, playerId, message, paramList, client);
-      case PbProtocol.createZongMenRequest_40000005 ->
-          createZongMen(playerId, message, paramList, client);
-      case PbProtocol.applyJoinZongMenRequest_40000007 ->
-          applyJoinZongMen(playerId, message, paramList, client);
-      case PbProtocol.dissolveZongMenRequest_40000011 -> 
-          dissolveZongMen(zongMenId,playerId, message, paramList, client);
-    }
+    
+    ServerContext.getInstance().getProcessor().process(zongMenId, () -> {
+    	// TODO log message
+    	switch (msgId) {
+    	case PbProtocol.getZongMenInfoRequest_40000021 ->
+    	getZongMenInfo(zongMenId, playerId, message, paramList, client);
+    	case PbProtocol.createZongMenRequest_40000005 ->
+    	createZongMen(playerId, message, paramList, client);
+    	case PbProtocol.applyJoinZongMenRequest_40000007 ->
+    	applyJoinZongMen(playerId, message, paramList, client);
+    	case PbProtocol.dissolveZongMenRequest_40000011 -> 
+    	dissolveZongMen(zongMenId,playerId, message, paramList, client);
+    	}
+    });
+    
   }
 
   private void dissolveZongMen(long zongMenId,long playerId, Message message, List<String> paramList, NetClient client) {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -865,7 +866,7 @@ public class PlayerHandler extends BaseHandler {
 			return;
 		}
 
-		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, playerId);
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
 		renameFuture.map(r -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);

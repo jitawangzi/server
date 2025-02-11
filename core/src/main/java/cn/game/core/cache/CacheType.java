@@ -60,6 +60,8 @@ public enum CacheType {
 	ZONG_MEN_NAME_ID,
 	/**** 宗门创建锁 */
 	ZONG_MEN_CREATE_LOCK,
+	/** 宗门在哪个服务器 */
+	ZONG_MEN_SERVER_ID,
 	//************宗门相关***********
 
 	;
