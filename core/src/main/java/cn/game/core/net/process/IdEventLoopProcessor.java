@@ -18,4 +18,9 @@ public class IdEventLoopProcessor extends AbstractProcessor {
 	public void process(long objectId, Runnable task) {
 		VxContextRegistry.getInstance().submitTask(objectId, task);
 	}
+
+	@Override
+	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
+		VxContextRegistry.getInstance().submitTask(objectId, r -> super.process(netClient, protocol));
+	}
 }

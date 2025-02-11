@@ -12,12 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import cn.game.core.task.SchedulerService;
-import cn.game.core.task.TaskManager;
-import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.currency.MoneyRecoverModule;
-import cn.game.games.net.game.module.player.VarConstant;
-import cn.game.protocol.protobuf.ServerMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +20,7 @@ import com.google.protobuf.Message;
 
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.SchedulerService;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventHandler;
@@ -35,10 +30,12 @@ import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
+import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
@@ -55,6 +52,7 @@ import cn.game.games.net.game.module.invite.InviteModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.PlayerModule;
+import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.VarModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.pvp.OfflineBattleModule;
@@ -82,6 +80,7 @@ import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
+import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
 import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
@@ -92,8 +91,7 @@ import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-
-import static cn.game.protocol.protobuf.PbProtocol.NotifyWechatSubscribeMessageRequest_7d000043;
+import io.vertx.core.impl.ContextInternal;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Player  {
@@ -150,7 +148,7 @@ public class Player  {
 	 * @return
 	 */
 	public long setPeriodicTask(long delay, Handler<Long> handler) {
-		long timer = gameClient.getContext().setPeriodic(delay, handler);
+		long timer = ((ContextInternal) gameClient.getContext()).setPeriodic(delay, handler);
 //		log.info("player : " + playerId + "添加定时任务：" + timer);
 		timerTask.add(timer);
 		return timer;
@@ -166,7 +164,7 @@ public class Player  {
 		if (delay <= 0) {
 			gameClient.getContext().runOnContext(v -> handler.handle(0L));
 		} else {
-			long timer = gameClient.getContext().setTimer(delay, handler);
+			long timer = ((ContextInternal) gameClient.getContext()).setTimer(delay, handler);
 			timerTask.add(timer);
 			return timer;
 		}

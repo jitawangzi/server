@@ -7,6 +7,8 @@ public interface Processor {
 
 	public void process(NetClient gameClient, IProtocol<?> protocol);
 
+	public void process(long objectId, NetClient gameClient, IProtocol<?> protocol);
+
 	public void process(long objectId, Runnable task);
 
 	public void process(Runnable task);

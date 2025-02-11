@@ -33,6 +33,7 @@ public interface NetClient {
 
 	public Context getContext();
 
+	@Deprecated
 	public void setContext(ContextInternal context);
 
 	/**
