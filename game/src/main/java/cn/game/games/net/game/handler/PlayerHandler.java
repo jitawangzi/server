@@ -934,7 +934,7 @@ public class PlayerHandler extends BaseHandler {
 				// 客户端新登陆
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
 				if (!isReallyReconnect) {
-					loadOrCreatePlayerData(uid,account, newGameClient)
+					checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
 							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
 							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
@@ -969,7 +969,7 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	private Future<Player> handleExistingPlayer(PlayerData player, Account account, GameClient client) {
-		return checkOtherServer(player.getPlayerId()).compose(r -> loadPlayerFromDb(player, account, client));
+		return loadPlayerFromDb(player, account, client);
 	}
 
 	private Future<Player> handlePlayerData(PlayerData playerData, Account account, GameClient client) {

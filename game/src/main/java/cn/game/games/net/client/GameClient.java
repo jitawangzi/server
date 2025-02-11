@@ -73,7 +73,7 @@ public class GameClient extends AbstractNetClient {
 	public void copy(GameClient client) {
 		this.playerId = client.getPlayerId();
 		this.recentMessages = client.getRecentMessages();
-		this.context = client.getContext();
+//		this.context = client.getContext();
 		this.lastRecvPacketTime = client.lastRecvPacketTime;
 //		this.curMessageSeq = client.getCurMessageSeq();
 	}
@@ -83,7 +83,7 @@ public class GameClient extends AbstractNetClient {
 	 */
 	public void copyClintLoign(GameClient client) {
 		this.playerId = client.getPlayerId();
-		this.context = client.getContext();
+//		this.context = client.getContext();
 	}
 
 	/** 客户端状态 */

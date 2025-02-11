@@ -13,9 +13,11 @@ public class GameEvent {
 	// ///////////////////////////////////////////////////////////////////
 	private final EventTypeEnum				type;							// 事件类别
 	// private final Source sourceTag; //事件源标识
-	private final Player				source, target;				// 事件的发起者和目标（target may be null）
+	private final transient Player source, target; // 事件的发起者和目标（target may be null）
 	private final Object[]				params;						// 事件参数
-	private final static Object[]		NO_PARAM	= new Object[0];
+	private final static transient Object[] NO_PARAM = new Object[0];
+	private long sourceId;
+	private transient volatile boolean isSendToCross = false;
 
 	/**
 	 * 
@@ -242,6 +244,22 @@ public class GameEvent {
 	public Object[] getParams() {
 
 		return params;
+	}
+
+	public long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(long sourceId) {
+		this.sourceId = sourceId;
+	}
+
+	public boolean isSendToCross() {
+		return isSendToCross;
+	}
+
+	public void setSendToCross(boolean isSendToCross) {
+		this.isSendToCross = isSendToCross;
 	}
 
 }

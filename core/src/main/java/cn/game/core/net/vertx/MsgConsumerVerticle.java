@@ -1,5 +1,7 @@
 package cn.game.core.net.vertx;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.game.core.net.message.AbstractMessageHandlerService;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.IProtocol;
@@ -12,18 +14,19 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.Message;
 
 public class MsgConsumerVerticle extends AbstractMessageHandlerService {
-	private Processor processor;
 
 	public MsgConsumerVerticle(String serverId, ServerType serverType, Processor processor) {
-		super(serverId, serverType);
-		this.processor = processor;
+		super(serverId, serverType, processor);
 	}
 
 	@Override
 	public void handleMessage(Message<Object> message) {
+		String targetIdString = message.headers().get("targetId");
+		long targetId = StringUtils.isEmpty(targetIdString) ? 0 : Long.parseLong(targetIdString);
 		Object body = message.body();
 		IProtocol protocol = convertToProtocol(body);
-		processor.process(new ServerClient(message), protocol);
+		processor.process(targetId, new ServerClient(message), protocol);
+
 	}
 
 	private IProtocol convertToProtocol(Object body) {
@@ -45,8 +48,10 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 
 	@Override
 	public void initConsumer(Handler<Message<Object>> handler) {
+		// 点对点通讯
 		vertx.eventBus().consumer(serverId, handler);
 		if (serverType != null) {
+			// 广播通讯
 			vertx.eventBus().consumer(serverType.name(), handler);
 		}
 	}

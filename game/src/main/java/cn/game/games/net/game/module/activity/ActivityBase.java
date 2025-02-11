@@ -1,11 +1,11 @@
 package cn.game.games.net.game.module.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
@@ -22,6 +22,7 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
 import io.vertx.core.Future;
 
 /**
@@ -62,6 +63,15 @@ public abstract class ActivityBase implements EventHandler {
 		return null;
 	}
 
+	// 新增获取活动参与者列表方法
+	public List<Long> getParticipants() {
+		return new ArrayList<>();
+	}
+
+	// 新增判断玩家是否可以参与活动
+	public boolean canJoin(long playerId) {
+		return true; // 默认都可以参加
+	}
 	public ActivityInfo buildActivityInfo() {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
@@ -141,7 +151,7 @@ public abstract class ActivityBase implements EventHandler {
 		return false;
 	};
 
-	public void init(int id, Player player, boolean isNew) {
+	public void init(int id, Object owner, boolean isNew) {
 
 //		ActivityStateManager.getInstance().registerEventHandler(events, this);
 		this.id = id;
@@ -156,7 +166,8 @@ public abstract class ActivityBase implements EventHandler {
 	 * @return 存储用字符串
 	 */
 	public String toSaveString() {
-		return JSON.toJSONString(this, serializeConfig);
+//		return JSON.toJSONString(this, serializeConfig);
+		return JsonUtil.toJsonStringWithType(this);
 	}
 
 	public int getId() {

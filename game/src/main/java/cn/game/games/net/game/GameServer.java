@@ -26,11 +26,16 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.mq.RocketMQRpcClient;
+import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
+import cn.game.core.net.vertx.BusinessLogicVerticle;
+import cn.game.core.net.vertx.MsgConsumerVerticle;
+import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
@@ -54,6 +59,7 @@ import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.KeywordFilter;
 import cn.game.util.LockUtil;
@@ -68,6 +74,7 @@ import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.VertxOptions;
 
 /**
  * vertx重构通讯
@@ -112,7 +119,7 @@ public class GameServer implements GameServerMBean {
 	public void start(String[] args) throws Exception {
 
 		long start = System.currentTimeMillis();
-		String serverId = parseServerId(args, ServerType.Game);
+		String serverId = GameUtil.parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -303,8 +310,23 @@ public class GameServer implements GameServerMBean {
 		rpcClient = new VertxRpcClient();
 		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
 
-		DeploymentOptions options = new DeploymentOptions().setInstances(Runtime.getRuntime().availableProcessors() * 2);
+		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
+		VxContextRegistry.getInstance().init(numVerticles);
+		for (int i = 0; i < numVerticles; i++) {
+			BusinessLogicVerticle verticle = new BusinessLogicVerticle(i);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
 		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
+
+		String serverId = ServerContext.getInstance().getServerId();
+		ServerType serverType = ServerContext.getInstance().getServerType();
+		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
+		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor));
+		Object remoteInterface = SpringContextLoader.getContext().getBean("gameRemote");
+		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VxHolder.deployVerticleSync(verticle);
+
 	}
 
 	private void initQuartz() throws IOException {
@@ -411,7 +433,7 @@ public class GameServer implements GameServerMBean {
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game);
+		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, playerId);
 
 	}
 
@@ -435,25 +457,6 @@ public class GameServer implements GameServerMBean {
 	public boolean isSinglePlayerTable() {
 //		return false ; 
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
-	}
-
-	private String parseServerId(String[] args, ServerType serverType) {
-		String serverId = null;
-		String serverIdKey = serverType.getServerIdKey();
-		if (args.length == 0) {
-			serverId = System.getProperty(serverIdKey);
-			if (serverId == null) {
-				serverId = System.getenv(serverIdKey);
-			}
-		} else {
-			serverId = args[0];
-		}
-		if (serverId == null) {
-			throw new IllegalArgumentException("没有设置 serverId");
-		}
-		System.setProperty(serverIdKey, serverId);
-
-		return serverId;
 	}
 
 }

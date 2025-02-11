@@ -3,28 +3,27 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.game.helper.MailHelper;
-import cn.game.games.net.game.module.award.Goods;
-import cn.game.protocol.generated.config.ActivityConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.enume.WelfareTypeEnum;
-import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.util.DateUtil;
-import cn.game.util.GameUtil;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivitySevenDaysSigninInfoResponse_11000025;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
 
 @ActivityType(type = ActivityTypeEnum.SevenDaysSignin)
 public class SevenDaysSignin extends PlayerActivityBase {

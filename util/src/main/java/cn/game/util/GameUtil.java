@@ -1,7 +1,9 @@
 package cn.game.util;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -172,5 +174,29 @@ public class GameUtil {
 			newDrops[i][1] = dropMaps.getOrDefault(itemId,0);
 		}
 		return newDrops;
+	}
+
+	/** 
+	 * 解析server id，使用程序运行时参数或者环境变量设置的server id
+	 * @param args
+	 * @param serverType
+	 * @return
+	 */
+	public static String parseServerId(String[] args, ServerType serverType) {
+		String serverId = null;
+		String serverIdKey = serverType.getServerIdKey();
+		if (args.length == 0) {
+			serverId = System.getProperty(serverIdKey);
+			if (serverId == null) {
+				serverId = System.getenv(serverIdKey);
+			}
+		} else {
+			serverId = args[0];
+		}
+		if (serverId == null) {
+			throw new IllegalArgumentException(serverType.name() + "没有设置 serverId, 请使用参数或者环境变量设置。");
+		}
+		System.setProperty(serverIdKey, serverId);
+		return serverId;
 	}
 }

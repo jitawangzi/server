@@ -14,8 +14,8 @@ public class GmPlayerRenameRequest_77000050Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.Builder builder = cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.newBuilder() ; 
 		
-		builder.setPlayerId("240200006");
-		builder.setName("LLLLL");
+		builder.setPlayerId("240201750");
+		builder.setName("LLLLLdddpdd");
 		
 		return builder.build() ; 
 	}

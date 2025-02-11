@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import cn.game.protocol.protobuf.ZongMenMsg;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -30,6 +28,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.event.GameEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.remote.DataGameServerInterface;
@@ -74,6 +73,7 @@ import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -121,6 +121,7 @@ public class ServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginGameQuestionnairePush_7d000090, this::questionnairePush);
 		putInvoker(PbProtocol.GameStatusChangeRequest_7d000030, this::gameStatusChange);
 		putInvoker(PbProtocol.GameOpRequest_7d000373, this::gameOp);
+		putInvoker(PbProtocol.GamePlayerEventPush_7d010100, this::playerEvent);
 
 
 		putInvoker(PbProtocol.NotifyInviteBindAndLvUpRequest_7d000041, this::InviteLvChange);
@@ -148,6 +149,11 @@ public class ServerHandler extends BaseHandler {
 		}
 	}
 
+	private void playerEvent(NetClient client, Object o) {
+		GameEvent gameEvent = (GameEvent) o;
+		long playerId = gameEvent.getSourceId();
+
+	}
 	private void InviteLvChange(NetClient client, Object o) {
 		ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041 req = (ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041) o;
 		Player player = PlayerManager.getInstance().getPlayer(req.getPid());
@@ -555,16 +561,11 @@ public class ServerHandler extends BaseHandler {
 										.setServerId(ServerContext.getInstance().getServerId()).build());
 					}, 5000);
 				});
+			} else {
+				PlayerManager.getInstance().online(playerId, serverId);
 			}
 		} else {
-			String oldServerId = PlayerManager.getInstance().getServerId(playerId);
-			if (!StringUtils.isEmpty(oldServerId)) {
-				if (online) {
-					PlayerManager.getInstance().online(playerId, serverId);
-				} else {
-					PlayerManager.getInstance().offline(playerId);
-				}
-			}
+			PlayerManager.getInstance().offline(playerId);
 		}
 	}
 
