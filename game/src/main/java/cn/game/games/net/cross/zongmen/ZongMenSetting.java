@@ -26,6 +26,8 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
     long lastChangeWxTimer;
     /**自动加入*/
     boolean autoJoin;
+    /*** 天道等级 */
+    int tianDaoLevel;
 
 
     @Override
@@ -109,5 +111,13 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
 
     public void setAutoJoin(boolean autoJoin) {
         this.autoJoin = autoJoin;
+    }
+
+    public int getTianDaoLevel() {
+        return tianDaoLevel;
+    }
+
+    public void setTianDaoLevel(int tianDaoLevel) {
+        this.tianDaoLevel = tianDaoLevel;
     }
 }

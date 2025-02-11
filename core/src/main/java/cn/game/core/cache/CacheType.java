@@ -62,6 +62,8 @@ public enum CacheType {
 	ZONG_MEN_CREATE_LOCK,
 	/** 宗门在哪个服务器 */
 	ZONG_MEN_SERVER_ID,
+	/**** 宗门id--玩家id 用于确认玩家是否拥有宗门，离线的玩家被审批加入宗门使用 */
+	PLAYER_ID_ZONG_MEN_ID,
 	//************宗门相关***********
 
 	;

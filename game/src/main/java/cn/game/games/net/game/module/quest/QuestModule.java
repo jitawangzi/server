@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.BasePlayerModule;
@@ -333,12 +336,28 @@ public class QuestModule extends BasePlayerModule {
 	public List<RewardInfo> receive(List<Integer> id) {
 
 		List<RewardInfo> ret = new ArrayList<>();
+		//如果领取的是宗门任务奖励 则存储宗门奖励 并同步到宗门服务器
+		List<RewardInfo> zongMenDropList = new ArrayList<>();
 		for (Integer e : id) {
 			List<RewardInfo> receive = receive(e);
 			if (receive != null) {
 				ret.addAll(receive);
 			}
+			QuestConfig questConfig = QuestHelper.getQuestConfig(e);
+			if (questConfig.Type == QuestTypeEnum.ZongMen.ID ){
+				zongMenDropList.addAll(receive);
+			}
 		}
+
+		//同步宗门任务掉落 到宗门服务器
+		if (zongMenDropList.size() > 0){
+			ZongMenMsg.updateZongMenAssetRequest_40000037.Builder builder = ZongMenMsg.updateZongMenAssetRequest_40000037.newBuilder();
+			zongMenDropList.forEach(rewardInfo -> {
+				builder.addZongMenAssetMaps(rewardInfo);
+			});
+			ZongMenGameHandler.sendMsgToZongMenServer(player, builder.build());
+		}
+
 		return ret;
 	}
 

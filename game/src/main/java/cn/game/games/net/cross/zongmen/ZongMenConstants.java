@@ -27,7 +27,9 @@ public class ZongMenConstants {
         CROSS_DAY(0,"跨天"),
         JOIN_ZONG_MEN(1,"加入宗门"),
         ZONG_MEN_CREATE(2, "创建宗门"),
-        ZONG_MEN_LEVEL_UP(3,"宗门升级")
+        ZONG_MEN_LEVEL_UP(3,"宗门升级"),
+        ZONG_MEN_POSITION_CHANGE(4,"权限变动"),
+        QUIT_ZONG_MEN(5,"退出宗门")
         ;
         private int id;
         private String desc;

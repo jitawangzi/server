@@ -83,6 +83,11 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
         this.position = position;
     }
 
+    public void addcontribution(int contribution){
+        this.contribution += contribution;
+        this.totalContribution += contribution;
+    }
+
     public ZongMenMsg.ZongMenMemberProto.Builder toProto(){
         ZongMenMsg.ZongMenMemberProto.Builder builder = ZongMenMsg.ZongMenMemberProto.newBuilder();
         builder.setJoinTime((int) (joinTime/1000L));

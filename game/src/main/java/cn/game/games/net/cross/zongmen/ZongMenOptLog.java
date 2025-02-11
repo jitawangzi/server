@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
@@ -21,6 +22,7 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
   public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
     return new ZongMenConstants.ZongMenEvenType[] {
       ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN,
+      ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,
     };
   }
 
@@ -32,6 +34,19 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
               String joinPlayerName = params[1]+"";
               addLog(type.getId(),joinPlayerName);
           }
+          case ZONG_MEN_POSITION_CHANGE -> {
+            long targetPlayerId = (long)params[0];
+            int oldPosition = (int)params[1];
+            int newPosition = (int)params[2];
+            PlayerManager.getInstance().getSimplePlayerFromRedisAsync(targetPlayerId).onSuccess(simplePlayer -> {
+              addLog(type.getId(),simplePlayer.getName(),oldPosition+"",newPosition+"");
+            });
+          }
+          case QUIT_ZONG_MEN -> {
+              String quitPlayerName = params[0]+"";
+              addLog(type.getId(),quitPlayerName);
+          }
+
       }
   }
 

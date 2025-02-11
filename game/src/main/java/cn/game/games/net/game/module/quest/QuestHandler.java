@@ -253,6 +253,15 @@ public class QuestHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		QuestModule questModule = player.getModule(QuestModule.class);
 
+
+		//玩家领取宗门任务 检测
+		for (int id : ids) {
+			QuestConfig questConfig = QuestManager.instance().get(id);
+			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getZongMenId() == 0)  {
+				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
+				return;
+			}
+	    }
 //		List<Integer> ret = new ArrayList<>();
 //		if (id > 0) {
 //			ret.add(id);

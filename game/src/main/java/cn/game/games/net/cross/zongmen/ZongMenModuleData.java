@@ -1,7 +1,10 @@
 package cn.game.games.net.cross.zongmen;
 
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.util.RedisUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.*;
@@ -24,6 +27,8 @@ public class ZongMenModuleData {
     Map<Long, ZongMenMember> menMemberMap = new HashMap<>();
     /**  宗门 设置 */
     ZongMenSetting setting;
+    /**  宗门 活跃度 */
+    int liveness;
 
   /*** 宗门 申请列表 */
   List<Long> applyList = new ArrayList<>();
@@ -70,6 +75,7 @@ public class ZongMenModuleData {
     public void addMember(ZongMenMember member) {
         menMemberMap.put(member.playerId,member);
         registerEventHandler(member);
+        RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId),member.playerId);
     }
 
     public void addApply(long playerId) {
@@ -87,6 +93,7 @@ public class ZongMenModuleData {
 
     public void removeAllMember() {
         menMemberMap.keySet().forEach(playerId -> {
+            RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
             ZongMenHelper.notifyMsgToPlayer(playerId,ZongMenMsg.notifyQuitZongMen_40000024.newBuilder().build(), PbProtocol.notifyQuitZongMen_40000024);
         });
         menMemberMap.clear();
@@ -100,5 +107,11 @@ public class ZongMenModuleData {
         applyList.remove(playerId);
     }
 
+    public int getLiveness() {
+        return liveness;
+    }
 
+    public void setLiveness(int liveness) {
+        this.liveness = liveness;
+    }
 }
