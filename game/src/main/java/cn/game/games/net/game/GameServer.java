@@ -180,6 +180,9 @@ public class GameServer implements GameServerMBean {
 		MailHelper.initLoadGlobalMail();
 
 		DataFixManager.getInstance().init();
+
+		IdCache.init();
+
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
@@ -275,14 +278,13 @@ public class GameServer implements GameServerMBean {
 	}
 
 	private void initScheduleTask() {
-		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {
-			PlayerManager.getInstance().setPlayerServerId();
-		}, 180000, 180000);
-		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {
+		SchedulerService.getInstance().scheduleAtFixedRate(() -> {
 			VxHolder.broadcastRemoteServer(ServerType.Login,
-					GameStatusPublish_7d000017.newBuilder().setServerId(ServerContext.getInstance().getServerId())
-							.setOnlinePlayerCount(PlayerManager.getInstance().getOnlineCount()).build());
-		}, 0, 60000);
+					GameStatusPublish_7d000017.newBuilder()
+							.setServerId(ServerContext.getInstance().getServerId())
+							.setOnlinePlayerCount(PlayerManager.getInstance().getOnlineCount())
+							.build());
+		}, 1, TimeUnit.MINUTES);
 	}
 
 	private void initRemoteInterface() throws Exception {

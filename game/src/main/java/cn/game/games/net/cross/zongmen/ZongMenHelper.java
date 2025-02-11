@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -11,7 +12,6 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.id.IdCache;
 import cn.game.protocol.protobuf.ServerMsg;
-import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -84,13 +84,10 @@ public class ZongMenHelper {
         builder.setData(msg.toByteString());
         builder.setPlayerId(playerId);
         VxHolder.executeBlockingWithTimeout(()->{
-            String serverId = getServerId(playerId);
+			String serverId = IdCache.getPlayerServerId(playerId);
             ZongMenManager.log.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId +" msgId : " + msgId + " msg : " + msg);
             return VxHolder.requestRemoteServer(serverId, builder.build());
         });
     }
 
-    private static String getServerId(long playerId) {
-        return RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(playerId));
-    }
 }

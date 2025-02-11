@@ -12,6 +12,7 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.Config;
@@ -65,6 +66,8 @@ public class CrossServer {
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
 		crossActivityService.init();
+
+		IdCache.init();
 
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 	}

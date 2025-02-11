@@ -1,5 +1,6 @@
 package cn.game.core.cache.id;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -79,9 +80,16 @@ public abstract class GenericDistributedIDManager {
 		serverCache.invalidate(objectId);
 	}
 
-	private String generateRedisKey(long objectId) {
+	public String generateRedisKey(long objectId) {
 		return config.getCacheType().key(objectId);
 	}
 
 	public abstract boolean isObjectInCurrentServer(long objectId);
+
+	/** 
+	 * 获取所有当前进程中管理的id
+	 * 一般在延长serverId时使用
+	 * @return
+	 */
+	public abstract Collection<Long> getAllIds();
 }

@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +15,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.cache.entity.Zongmen;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.data.mapper.ZongmenMapper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
@@ -154,6 +156,14 @@ public class ZongMenManager {
         return promise.future();
     }
 
+	/** 
+	 * 获取所有宗门id
+	 * @return
+	 */
+	public Collection<Long> getAllZongMenIds() {
+		return zongMenInfoMap.keySet();
+	}
+
     private void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
         RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
@@ -164,7 +174,10 @@ public class ZongMenManager {
     }
 
 	private void saveZongMenServerId(long id) {
-		RedisUtil.setAsync(CacheType.ZONG_MEN_SERVER_ID.key(id),
-				ServerContext.getInstance().getServerId());
+		IdCache.getZongMenServerId(id);
+	}
+
+	public void clearZongMenServerId(long id) {
+		RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
 	}
 }

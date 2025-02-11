@@ -26,6 +26,7 @@ import com.google.protobuf.MessageLite.Builder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
@@ -35,6 +36,7 @@ import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
@@ -1281,12 +1283,14 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public static RFuture<Boolean> trySetServerId(long playerId) {
 		RFuture<Boolean> playerLockFuture = RedisUtil.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
 
+	@Deprecated
 	public static RFuture<Void> setServerId(long playerId) {
 		RFuture<Void> playerLockFuture = RedisUtil.setAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
@@ -1336,10 +1340,10 @@ public class PlayerHelper {
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
 		// 方便测试，强制关闭服务器后快速登陆账号使用
-		if (!ServerContext.getInstance().getRunMode().isProduction()) {
-			return Future.succeededFuture();
-		}
-		return VxHolder.toVertxFuture(trySetServerId(playerId)).compose(locked -> {
+//		if (!ServerContext.getInstance().getRunMode().isProduction()) {
+//			return Future.succeededFuture();
+//		}
+		return VxHolder.toVertxFuture(IdCache.trySetServerId(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
 			}
@@ -1578,20 +1582,6 @@ public class PlayerHelper {
 			return HeroBandBookManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
-	}
-
-	/** 
-	 * 获取某玩家虚拟的服务器id
-	 * @param playerId
-	 * @return
-	 */
-	public static String getServerId(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (player != null) {
-			return player.getServerId();
-		}
-		SimplePlayer simplePlayer = RedisLocalCache.getInstance().get(CacheType.PLAYER_SIMPLE.key(playerId));
-		return simplePlayer.getServerId();
 	}
 
 	/** 

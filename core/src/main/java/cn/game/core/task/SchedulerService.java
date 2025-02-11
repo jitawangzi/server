@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.support.PeriodicTrigger;
 
 /**    
  * 定时任务调度器，主要可以处理cron表达式类型的任务
@@ -89,6 +90,23 @@ public class SchedulerService {
 						new java.util.Date(System.currentTimeMillis() + timeUnit.toMillis(initialDelay)), period);
 	}
 
+	/**
+	 * 先等待初始延迟，然后执行一次，之后以固定延迟执行任务（以任务结束时间点为基准）
+	 * @param task 要执行的任务
+	 * @param initialDelay 初始延迟时间
+	 * @param delay 固定延迟时间
+	 * @param timeUnit 时间单位
+	 * @return ScheduledFuture<?> 可用于控制任务的执行
+	 */
+	public ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long initialDelay, long delay, TimeUnit timeUnit) {
+		PeriodicTrigger trigger = new PeriodicTrigger(delay, timeUnit);
+		// 设置初始延迟
+		trigger.setInitialDelay(initialDelay);
+		// 关键配置：设置为 false 表示使用固定延迟模式（任务结束后间隔）
+		trigger.setFixedRate(false);
+		return taskScheduler.schedule(new ErrorHandlingRunnable(task), trigger);
+	}
+
 	/** 
 	 * 立即执行一次，之后固定延迟执行任务，以任务结束时间点为基准
 	 * @param task
@@ -99,7 +117,6 @@ public class SchedulerService {
 	public ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long delay, TimeUnit timeUnit) {
 		return taskScheduler.scheduleWithFixedDelay(new ErrorHandlingRunnable(task), toDuration(delay, timeUnit));
 	}
-
 
 	// 关闭调度器
 	public void shutdown() {
@@ -146,5 +163,15 @@ public class SchedulerService {
 //		SchedulerService
 //				.getInstance()
 //				.scheduleWithFixedDelay(() -> System.out.println("scheduleWithFixedDelay Hello World!"), 5, TimeUnit.SECONDS);
+//		SchedulerService.getInstance().scheduleWithFixedDelayNew(() -> {
+//			System.out.println("scheduleWithFixedDelay Hello World start");
+//			try {
+//				Thread.sleep(5000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			System.out.println("scheduleWithFixedDelay Hello World end");
+//		}, 2, 5, TimeUnit.SECONDS);
 	}
 }

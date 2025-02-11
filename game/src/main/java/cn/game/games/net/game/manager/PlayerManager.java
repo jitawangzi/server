@@ -383,6 +383,7 @@ public class PlayerManager {
 	/** 
 	 * 延长 player id锁
 	 */
+	@Deprecated
 	public void setPlayerServerId() {
 		Collection<Player> values = this.id_players.values();
 		for (Player player : values) {
