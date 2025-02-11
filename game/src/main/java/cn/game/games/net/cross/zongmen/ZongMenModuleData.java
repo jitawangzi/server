@@ -93,14 +93,15 @@ public class ZongMenModuleData {
 
     public void removeAllMember() {
         menMemberMap.keySet().forEach(playerId -> {
-            RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
-            ZongMenHelper.notifyMsgToPlayer(playerId,ZongMenMsg.notifyQuitZongMen_40000024.newBuilder().build(), PbProtocol.notifyQuitZongMen_40000024);
+           removeMember(playerId);
         });
         menMemberMap.clear();
     }
 
     public void removeMember(long playerId) {
         menMemberMap.remove(playerId);
+        RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
+        ZongMenHelper.notifyMsgToPlayer(playerId,ZongMenMsg.notifyQuitZongMen_40000024.newBuilder().build(), PbProtocol.notifyQuitZongMen_40000024);
     }
 
     public void removeApply(long playerId) {

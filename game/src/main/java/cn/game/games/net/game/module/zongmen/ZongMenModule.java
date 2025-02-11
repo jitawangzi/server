@@ -165,10 +165,16 @@ public class ZongMenModule extends BasePlayerModule {
   public void setZongMenInfo(ZongMenMsg.ZongMenInfoProto zongMen) {
     setZongMenId(zongMen.getSimpleInfo().getId());
     setZongMenName(zongMen.getSimpleInfo().getName());
+    refreshZongMenTask();
   }
 
   public void kickZongMen(ZongMenMsg.notifyQuitZongMen_40000024 quitZongMenMsg) {
     clearZongMen();
     player.getGameClient().sendProtocol(quitZongMenMsg);
+  }
+
+  public void joinZongMen(ZongMenMsg.notifyJoinZongMen_40000044 req) {
+    setZongMenInfo(req.getZongMen());
+    player.getGameClient().sendProtocol(req);
   }
 }

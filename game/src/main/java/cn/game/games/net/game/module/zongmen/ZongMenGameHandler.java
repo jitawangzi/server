@@ -419,7 +419,7 @@ public class ZongMenGameHandler extends BaseHandler {
                 // 创建宗门
                 sendMsgToZongMenServer(
 									player, req, player.getPlayerName(), player.getAttrModule().getPower() + "",
-									VirtualServerManager.instance().get(player.getServerId()).Seq + "")
+									VirtualServerManager.instance().get(player.getServerId()) + "")
                     .onSuccess(
                         createZongMenCallback -> {
                           if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功

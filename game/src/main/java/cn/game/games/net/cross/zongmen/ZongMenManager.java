@@ -164,7 +164,7 @@ public class ZongMenManager {
 		return zongMenInfoMap.keySet();
 	}
 
-    private void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
+	void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
         RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
 
