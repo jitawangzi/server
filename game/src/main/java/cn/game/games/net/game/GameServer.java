@@ -102,13 +102,6 @@ public class GameServer implements GameServerMBean {
 
 	public static void main(String args[]) {
 		try {
-      //			ServerContext.parseGameServerId(args);
-      //			LoggerManager.init();
-      //			System.err.println(System.getProperty("log4j2.level"));
-      //			CommonLogger.info("启动逻辑服。。");
-      //			instance.log.info("启动逻辑服。。");
-//      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
-
 			instance.start(args);
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
@@ -285,27 +278,6 @@ public class GameServer implements GameServerMBean {
 							.setOnlinePlayerCount(PlayerManager.getInstance().getOnlineCount())
 							.build());
 		}, 1, TimeUnit.MINUTES);
-	}
-
-	private void initRemoteInterface() throws Exception {
-		String serverId = ServerContext.getInstance().getServerId();
-		com.ctrip.framework.apollo.Config initialProp = ConfigService.getAppConfig();
-		// serverId = initialProp.getProperty("game.serever.id", "");
-		String loginServerId = initialProp.getProperty("login.serever.id", "");
-		String crossServerId = initialProp.getProperty("cross.serever.id", "");
-		// String dataServerId = initialProp.getProperty("data.serever.id", "");
-		String dataServerId = "data_" + serverId;
-
-		serverIds[ServerType.Login.ordinal()] = loginServerId;
-		serverIds[ServerType.Cross.ordinal()] = crossServerId;
-		serverIds[ServerType.Data.ordinal()] = dataServerId;
-
-		for (String string : serverIds) {
-			if (string == null)
-				continue;
-			if (string.equals(""))
-				throw new IllegalArgumentException("serverId can not be null");
-		}
 	}
 
 	private void initVerticle() throws Exception {

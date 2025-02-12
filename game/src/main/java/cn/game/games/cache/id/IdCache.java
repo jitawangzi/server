@@ -37,6 +37,15 @@ public class IdCache {
 	}
 
 	/** 
+	 * 获取某id对象所在服务器id
+	 * @param playerId
+	 * @return
+	 */
+	public static String getServerId(DistributedObjectType type, long id) {
+		return getManager(type).getServerId(id);
+	}
+
+	/** 
 	 * 辅助方法，方便获取玩家所在服务器id
 	 * @param playerId
 	 * @return
