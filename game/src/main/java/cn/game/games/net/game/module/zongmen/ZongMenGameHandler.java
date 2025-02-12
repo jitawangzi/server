@@ -7,6 +7,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import cn.game.protocol.generated.config.QuestPointRewardConfig;
+import cn.game.protocol.generated.manager.QuestPointRewardManager;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.RewardMsg;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.protobuf.Message;
@@ -116,13 +120,42 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.getZongMenInfoRequest_40000021, this::getZongMenInfo);
     putInvoker(PbProtocol.getZongMenLogRequest_40000025, this::getZongMenLogs);
     putInvoker(PbProtocol.updateMemberAuthRequest_40000041, this::updateMemberAuth);
-    
+    putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
+
   }
 
     @Override
   protected int getModule() {
     return 0x40;
   }
+
+    //领取任务活跃度奖励
+    private void rewardLiveness(NetClient client, Object o) {
+      ZongMenMsg.ZongMenActiveRewardRequest_40000045 req = (ZongMenMsg.ZongMenActiveRewardRequest_40000045) o;
+      ZongMenMsg.ZongMenActiveRewardResponse_40000046.Builder res =
+          ZongMenMsg.ZongMenActiveRewardResponse_40000046.newBuilder();
+      Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(6);
+        for (int index : req.getIndexListList()) {
+            if (index > questPointRewardConfig.Reward.length) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
+                return;
+            }
+        }
+        if (player.getZongMenId() == 0) {
+          client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
+          return;
+      }
+
+        autoForwardZongMenServer(client,res,req, (Void)->{
+        req.getIndexListList().forEach(index -> {
+            int[] drop = questPointRewardConfig.Reward[index];
+            res.addAllDrops(PlayerHelper.addResources(player,drop, OpType.ZongMenActive));
+        });
+        client.sendProtocol(res.build());
+         return null;
+      });
+    }
 
     private void updateMemberAuth(NetClient client, Object o) {
       ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) o;
@@ -198,7 +231,7 @@ public class ZongMenGameHandler extends BaseHandler {
   }
 
   private void autoForwardZongMenServer(
-      NetClient client, Message.Builder res, Message req, Function<Void, Void> successCallBack) {
+      NetClient client, Message.Builder res, Message req, Function<Message, Void> successCallBack) {
     Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
     if (player.getZongMenId() == 0) {
       client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
@@ -212,8 +245,9 @@ public class ZongMenGameHandler extends BaseHandler {
               } else {
                 if (successCallBack != null) {
                   successCallBack.apply(null);
+                } else {
+                    client.sendProtocol(callBack.response);
                 }
-                client.sendProtocol(callBack.response);
               }
             })
         .onFailure(
@@ -245,6 +279,7 @@ public class ZongMenGameHandler extends BaseHandler {
                     System.currentTimeMillis()
                         + GlobalConst.ZongmenMemberCD * DateUtil.HOUR_MILLIS);
           }
+          client.sendProtocol(result);
           return null;
         });
   }

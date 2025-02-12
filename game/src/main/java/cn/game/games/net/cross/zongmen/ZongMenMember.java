@@ -2,6 +2,7 @@ package cn.game.games.net.cross.zongmen;
 
 import cn.game.protocol.protobuf.ZongMenMsg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
     int totalContribution;
     /**职位 */
     int position;
+    /** 领取过的宗门活跃度奖励  */
+    List<Integer> rewardLivenessIndexList  = new ArrayList<>();
 
     public ZongMenMember() {
     }
@@ -88,6 +91,14 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
         this.totalContribution += contribution;
     }
 
+    public List<Integer> getRewardLivenessIndexList() {
+        return rewardLivenessIndexList;
+    }
+
+    public void setRewardLivenessIndexList(List<Integer> rewardLivenessIndexList) {
+        this.rewardLivenessIndexList = rewardLivenessIndexList;
+    }
+
     public ZongMenMsg.ZongMenMemberProto.Builder toProto(){
         ZongMenMsg.ZongMenMemberProto.Builder builder = ZongMenMsg.ZongMenMemberProto.newBuilder();
         builder.setJoinTime((int) (joinTime/1000L));
@@ -100,11 +111,16 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
     @Override
     public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
-        return null;
+        return new ZongMenConstants.ZongMenEvenType[]{ZongMenConstants.ZongMenEvenType.CROSS_DAY};
     }
 
     @Override
     public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMenInfo info, Object... params) {
-
+        switch (type){
+            case CROSS_DAY ->{
+                //每日重置 贡献度
+                this.totalContribution = 0;
+            }
+        }
     }
 }

@@ -65,7 +65,7 @@ public class Mail implements Serializable, DbEntity {
 	 */
 	private String title;
 	/**
-	 * 邮件内容
+	 * 閭欢鍐呭
 	 * @mbg.generated
 	 */
 	private String content;

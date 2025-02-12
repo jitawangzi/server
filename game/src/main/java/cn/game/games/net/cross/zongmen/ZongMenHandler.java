@@ -72,10 +72,50 @@ public class ZongMenHandler extends BaseHandler {
                 updateZongMenAsset(zongMenId, playerId, message, paramList, client);
         case PbProtocol.updateMemberAuthRequest_40000041 ->
                 updateMemberAuth(zongMenId,playerId,message,paramList,client);
+        case PbProtocol.ZongMenActiveRewardRequest_40000045 ->
+                ZongMenActiveReward(zongMenId, playerId, message, paramList, client);
       }
 
     });
   }
+
+  //领取宗门活跃度奖励
+  private void ZongMenActiveReward(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.ZongMenActiveRewardRequest_40000045 req = (ZongMenMsg.ZongMenActiveRewardRequest_40000045) message;
+    ZongMenMsg.ZongMenActiveRewardResponse_40000046.Builder res =
+            ZongMenMsg.ZongMenActiveRewardResponse_40000046.newBuilder();
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.ZongMenActiveRewardResponse_40000046);
+      return;
+    }
+    ZongMenMember member = zongMenInfo.getMember(playerId);
+    if (member == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_player_member_not_exist,
+              PbProtocol.ZongMenActiveRewardResponse_40000046);
+      return;
+    }
+    for (int index : req.getIndexListList()) {
+      if (member.getRewardLivenessIndexList().contains(index)) {
+        sendErrorCodeMsgToGameServer(
+                playerId,
+                client,
+                ErrorMsgEnum.zong_men_active_reward_already_get,
+                PbProtocol.ZongMenActiveRewardResponse_40000046);
+        return;
+      }
+      member.getRewardLivenessIndexList().addAll(req.getIndexListList());
+      sendMsgToGameServer(playerId, client,res.build(), PbProtocol.ZongMenActiveRewardResponse_40000046);
+    }
+  }
+
   //宗门成员权限管理
   private void updateMemberAuth(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
     ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) message;
@@ -257,19 +297,21 @@ public class ZongMenHandler extends BaseHandler {
     }
 
     ZongMenMember targetMember = zongMenInfo.getMember(req.getTargetPid());
-
-    if (req.getPosition() >= ZongMenConstants.ZONG_MEN_POSITION_ZHANG_LAO
-            && req.getPosition() <= ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG && req.getPosition() != targetMember.getPosition()) {
-      int oldPosition = targetMember.getPosition();
-      targetMember.setPosition(req.getPosition());
-      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetMember.playerId,oldPosition,req.getPosition());
-    } else {
+    if (member == targetMember || req.getPosition() == targetMember.getPosition()){
       sendErrorCodeMsgToGameServer(
               playerId,
               client,
               ErrorMsgEnum.request_parameter_error,
               PbProtocol.setZongMenMemberPositionResponse_40000016);
       return;
+    }
+    if (req.getPosition() == ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU){// 转让宗主
+      zongMenInfo.zongZhuTransfer(member, targetMember);
+
+    } else {
+      int oldPosition = targetMember.getPosition();
+      targetMember.setPosition(req.getPosition());
+      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetMember.playerId,oldPosition,req.getPosition());
     }
     sendMsgToGameServer(
             playerId, client, res.build(), PbProtocol.setZongMenMemberPositionResponse_40000016);

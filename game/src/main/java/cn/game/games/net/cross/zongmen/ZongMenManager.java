@@ -63,7 +63,10 @@ public class ZongMenManager {
                 lastCrossDayTimer = now;
                 //跨天触发 宗门事件
                 zongMenInfoMap.values().forEach(zongMenInfo ->{
-                    zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CROSS_DAY);
+                    ServerContext.getInstance().getProcessor().process(zongMenInfo.getId(),()->{
+                        zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CROSS_DAY);
+                        zongMenInfo.checkZongZhuTransfer(now);
+                    });
                 });
             }
         };
@@ -76,10 +79,12 @@ public class ZongMenManager {
             for (ZongMenInfo info : zongMenInfoMap.values()) {
                     if (now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER){
                         saveNum++;
-                        info.setSaveDataTimer(now);
-                        info.updateModuleData();
-                        DAO.update(info.getData());
-                        saveZongMenTotalPowerRank(info);
+                        ServerContext.getInstance().getProcessor().process(info.getId(), () ->{
+                            info.setSaveDataTimer(now);
+                            info.updateModuleData();
+                            DAO.update(info.getData());
+                            saveZongMenTotalPowerRank(info);
+                        });
                     }
             }
             log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d",System.currentTimeMillis() - now, saveNum,zongMenInfoMap.size()));
@@ -160,6 +165,7 @@ public class ZongMenManager {
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
         zongMenInfo.init(newZongMenId,name,createPlayerId,createPlayerName,power);
+        zongMenInfo.updateModuleData();
         Promise<ZongMenInfo> promise = Promise.promise();
         DAO.insert(zongMenInfo.getData()).onSuccess( res ->{
             if (res != null){
