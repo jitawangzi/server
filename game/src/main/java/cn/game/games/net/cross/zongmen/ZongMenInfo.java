@@ -9,13 +9,13 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.BasicConfig;
+import cn.game.protocol.generated.config.GuildBasicConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.PermissionsConfig;
+import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.protocol.generated.manager.BasicManager;
-import cn.game.protocol.generated.manager.PermissionsManager;
+import cn.game.protocol.generated.manager.GuildBasicManager;
+import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
@@ -165,7 +165,7 @@ public class ZongMenInfo {
         List<Long> pidList = new ArrayList<>(module.menMemberMap.keySet());
         //该玩家有审批权限 同步 申请列表
         ZongMenMember member = getMember(playerId);
-        PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+        GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
         if (permissionsConfig.Approval){
             pidList.addAll(module.applyList);
         }
@@ -201,7 +201,7 @@ public class ZongMenInfo {
     }
 
     public boolean isFull() {
-        BasicConfig basicConfig = BasicManager.instance().get(getLv());
+        GuildBasicConfig basicConfig = GuildBasicManager.instance().get(getLv());
         return module.menMemberMap.size() >= basicConfig.NumberMax;
     }
 
@@ -256,11 +256,11 @@ public class ZongMenInfo {
 
     public void addExp(int addExp){
         int totalExp = getExp() + addExp;
-        BasicConfig basicConfig = BasicManager.instance().get(getLv());
+        GuildBasicConfig basicConfig = GuildBasicManager.instance().get(getLv());
         while (totalExp >= basicConfig.Exp){
             totalExp -= basicConfig.Exp;
             setLv(getLv() + 1);
-            basicConfig = BasicManager.instance().get(getLv());
+            basicConfig = GuildBasicManager.instance().get(getLv());
             handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this,getLv());
         }
         setExp(totalExp);

@@ -10,8 +10,8 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.protocol.generated.config.PermissionsConfig;
-import cn.game.protocol.generated.manager.PermissionsManager;
+import cn.game.protocol.generated.config.GuildPermissionsConfig;
+import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
@@ -92,7 +92,7 @@ public class ZongMenHandler extends BaseHandler {
       return;
     }
     ZongMenMember member = zongMenInfo.getMember(playerId);
-    PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+    GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
     //加入审批检测
     if (req.getOptType() == 1 || req.getOptType() == 2){
       if (!permissionsConfig.Approval){
@@ -234,7 +234,7 @@ public class ZongMenHandler extends BaseHandler {
               PbProtocol.setZongMenMemberPositionResponse_40000016);
       return;
     }
-    PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+    GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
     if (!permissionsConfig.Posts) {
       sendErrorCodeMsgToGameServer(
               playerId,
@@ -246,7 +246,7 @@ public class ZongMenHandler extends BaseHandler {
 
     //目标职位人数
     int targetPositionNum = zongMenInfo.getPositionMemberNum(req.getPosition());
-    PermissionsConfig targetPermissionsConfig = PermissionsManager.instance().get(req.getPosition());
+    GuildPermissionsConfig targetPermissionsConfig = GuildPermissionsManager.instance().get(req.getPosition());
     if (targetPositionNum >= targetPermissionsConfig.Number) {
       sendErrorCodeMsgToGameServer(
               playerId,
@@ -309,7 +309,7 @@ public class ZongMenHandler extends BaseHandler {
       return;
     }
     ZongMenMember member = zongMenInfo.getMember(playerId);
-    PermissionsConfig permissionsConfig = PermissionsManager.instance().get(member.position);
+    GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
 //
     // 修改宗门名称
     if (!StringUtils.isEmpty(req.getName())) {

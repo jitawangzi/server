@@ -1,6 +1,6 @@
 package cn.game.games.net.cross.zongmen;
 
-import cn.game.protocol.generated.manager.IconManager;
+import cn.game.protocol.generated.manager.GuildIconManager;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
             case ZONG_MEN_LEVEL_UP:
                 //宗门等级提升
                 int level = info.getLv();
-                IconManager.instance().list().stream().filter(icon -> icon.LV == level).forEach(icon -> {
+                GuildIconManager.instance().list().stream().filter(icon -> icon.LV == level).forEach(icon -> {
                     for (int iconId : icon.Icon)  {
                         if (unlockIconList.contains(iconId)) {
                             continue;
