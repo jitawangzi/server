@@ -108,6 +108,9 @@ public class ChapterModule extends BasePlayerModule  {
 	@JsonIgnore
 	private int adRogueCountPerBattle;
 
+	/** 战斗选择的强援技能id */
+	private int rescueSkillId;
+
 	/** 每日挑战数据 */
 	@JsonIgnore
 	@Deprecated
@@ -533,6 +536,14 @@ public class ChapterModule extends BasePlayerModule  {
 
 	public void setAdRogueCountPerBattle(int adRogueCountPerBattle) {
 		this.adRogueCountPerBattle = adRogueCountPerBattle;
+	}
+
+	public int getRescueSkillId() {
+		return rescueSkillId;
+	}
+
+	public void setRescueSkillId(int rescueSkillId) {
+		this.rescueSkillId = rescueSkillId;
 	}
 
 	@Override
