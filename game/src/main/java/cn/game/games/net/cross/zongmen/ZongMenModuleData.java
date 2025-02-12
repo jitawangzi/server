@@ -115,4 +115,6 @@ public class ZongMenModuleData {
     public void setLiveness(int liveness) {
         this.liveness = liveness;
     }
+
+
 }

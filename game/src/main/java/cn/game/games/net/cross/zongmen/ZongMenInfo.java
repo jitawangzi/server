@@ -135,7 +135,7 @@ public class ZongMenInfo {
     }
 
     public void handleEvent(ZongMenConstants.ZongMenEvenType zongMenEvenType,Object... params) {
-        module.handleEvent(ZongMenConstants.ZongMenEvenType.CROSS_DAY, this,params);
+        module.handleEvent(zongMenEvenType, this,params);
     }
 
     public SimpleZongMen toSimpleZongMen(){
@@ -350,5 +350,60 @@ public class ZongMenInfo {
             err -> {
               err.printStackTrace();
             });
+  }
+
+  /**
+   * 检查宗主转让
+   * - 自动转让宗主规则：
+   *   - 宗主3天未上线则进行自动转让宗主（ZongmenSuzerainTransfer）；
+   *   - 自动转让：职位最高且在3天内上线的玩家，同一职位转让至贡献度最高的玩家，贡献度相同则转让给战力最高的玩家；
+   */
+  public void checkZongZhuTransfer(long now) {
+      List<ZongMenMember> memberList = new ArrayList<>(module.menMemberMap.values());
+
+      memberList.sort((m1, m2)->{
+        if (m1.position == m2.position){
+            if (m1.getTotalContribution() == m2.getTotalContribution()){
+                return m1.getPower() - m2.getPower();
+            }
+          return m1.getTotalContribution() - m2.getTotalContribution();
+        }
+        return m1.position < m2.position ? 1 : -1;
+      });
+      ZongMenMember zongZhu = memberList.getFirst();
+      PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
+        if (DateUtil.diffDays(now,player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer){
+            if (memberList.size() <= 1){//宗门没人
+                return;
+            }
+            List<Long> targetPidListList = new ArrayList<>();
+            PlayerManager.getInstance().batchGetSimplePlayerFromRedisAsync(targetPidListList).thenAccept(simplePlayerMap->{
+                //被转让的人
+                ZongMenMember targetZongZhu = null;
+                for(int i = 1; i < memberList.size(); i++) {
+                    long lastLoginTimer = simplePlayerMap.get(memberList.get(i).getPlayerId()).getLastLoginTimer();
+                    if (DateUtil.diffDays(now,lastLoginTimer) < GlobalConst.ZongmenSuzerainTransfer){
+                        targetZongZhu = memberList.get(i);
+                        break;
+                    }
+                }
+                if (targetZongZhu == null){
+                    return;
+                }
+                //转让宗主
+                zongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+                handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,zongZhu.playerId,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU,zongZhu.position);
+                int targetOldPosition = targetZongZhu.position;
+                targetZongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
+                handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetZongZhu.playerId,targetOldPosition,targetZongZhu.position);
+
+            }).exceptionally(err ->{err.printStackTrace();
+                return null;
+            });
+        }
+      }).onFailure(err ->{
+          err.printStackTrace();
+      });
+
   }
 }
