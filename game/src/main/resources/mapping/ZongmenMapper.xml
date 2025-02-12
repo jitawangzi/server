@@ -345,4 +345,9 @@
     </foreach>
     )
   </update>
+  
+  <!-- 查询总数 -->
+<select id="getTotal" resultType="int">
+    SELECT COUNT(*) FROM t_zongmen
+</select>
 </mapper>

@@ -2,8 +2,10 @@ package cn.game.core.base;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
@@ -84,6 +86,7 @@ public class ServerContext {
 		checkServerId(serverId);
 		initHotUpdate();
 		startLeaderTask();
+		waitNodeCount();
 	}
 
 	/** 
@@ -197,6 +200,8 @@ public class ServerContext {
 	private void startLeaderTask() throws Exception {
 		String latchPath = LEADER_PATH + serverType.name().toLowerCase();
 		log.info("Starting leader election for node: {}, path: {}", serverId, latchPath);
+		// 创建一个计数器等待选举结果
+		CountDownLatch electionLatch = new CountDownLatch(1);
 
 		leaderLatch = new LeaderLatch(ZkHelper.curator, latchPath, serverId);
 		leaderLatch.addListener(new LeaderLatchListener() {
@@ -204,16 +209,47 @@ public class ServerContext {
 			public void isLeader() {
 				isLeader = true;
 				log.info("I am leader: {}", serverId);
+//				electionLatch.countDown();
 			}
 
 			@Override
 			public void notLeader() {
 				isLeader = false;
 				log.info("I am not leader: {}", serverId);
+//				electionLatch.countDown();
 			}
 		});
 		leaderLatch.start();
+		// 最多等待10秒
+//		if (electionLatch.await(10, TimeUnit.SECONDS)) {
+//			log.info("Leader elected: {}", getCurrentLeader());
+//		} else {
+//			log.warn("Leader election timed out after 10 seconds");
+//			throw new TimeoutException("Leader election timed out");
+//		}
 		log.info("Leader elected: {}", getCurrentLeader());
+
+	}
+
+	private void waitNodeCount() throws Exception {
+		if (Config.ExpectedNodeCount <= 1) {
+			return;
+		}
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(serverType);
+		if (serverSet.size() < Config.ExpectedNodeCount) {
+			log.info("等待节点数达到预期值: {}", Config.ExpectedNodeCount);
+			int waitCount = 0;
+			while (serverSet.size() < Config.ExpectedNodeCount) {
+				Thread.sleep(1000);
+				serverSet = ActiveServerListManager.getInstance().getServerSet(serverType);
+				waitCount++;
+				if (waitCount > 180) {
+					throw new RuntimeException(
+							serverType.name() + "预期节点数未达到，当前节点数：" + serverSet.size() + "，预期节点数：" + Config.ExpectedNodeCount);
+				}
+			}
+			log.info("节点数达到预期值: {},当前节点数量: {}", Config.ExpectedNodeCount, serverSet.size());
+		}
 	}
 
 	/** 

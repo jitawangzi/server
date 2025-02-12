@@ -1,6 +1,9 @@
 package cn.game.games.net.cross;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.game.core.base.ServerContext;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
@@ -14,6 +17,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
@@ -85,8 +89,6 @@ public class CrossServer {
 		rpcClient = new VertxRpcClient();
 		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
 
-		VxHolder.deployVerticleSync(new VertxRpcClient());
-		
 		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
 		VxContextRegistry.getInstance().init(numVerticles);
 		for (int i = 0; i < numVerticles; i++) {
@@ -112,6 +114,45 @@ public class CrossServer {
 	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
 		RpcClient crossRpcClient = (RpcClient) SpringContextLoader.getContext().getBean("crossRpcClient");
 		return RpcFactory.getImpl(GameServerInterface.class, crossRpcClient, callType, serverId, ServerType.Game);
+	}
+
+	public CrossServerInterface getCrossServerInterface() {
+		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.LoadBalancer, null, ServerType.Cross);
+
+	}
+	/**
+	 * 获取处理某类型对象的跨服远程调用接口
+	 * @param DistributedObjectType 什么类型的对象
+	 * @param targetId  对象的唯一id
+	 * @return
+	 */
+	public CrossServerInterface getCrossServerInterface(DistributedObjectType objectType, long targetId) {
+
+		String serverId = IdCache.getManager(objectType).getServerId(targetId);
+		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
+			// 对象不在线，或者在当前服务器，直接由当前服务器处理
+			return (CrossServerInterface) SpringContextLoader.getContext().getBean("crossRemote");
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Cross, targetId);
+
+	}
+
+	/** 
+	 * 给初始化对象分配服务器
+	 * @param objectType
+	 * @param targetId
+	 * @return
+	 */
+	public CrossServerInterface getCrossServerInterfaceForInit(DistributedObjectType objectType, long targetId) {
+
+		String serverId = IdCache.getManager(objectType).selectServerId(targetId);
+		if (!StringUtils.isEmpty(serverId)) {
+			// 该对象可能已经初始化过了,或者redis中没有正常释放id数据
+			LoggerType.Stdout.logger.warn("对象[{}]id[{}]已经初始化过了", objectType, targetId);
+			return null;
+		}
+		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.LoadBalancer, null, ServerType.Cross);
 	}
 
 }

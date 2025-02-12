@@ -1,8 +1,10 @@
 package cn.game.games.net.data.mapper;
 
-import cn.game.games.cache.entity.Zongmen;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+
+import cn.game.games.cache.entity.Zongmen;
 
 public interface ZongmenMapper {
 
@@ -75,4 +77,6 @@ public interface ZongmenMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<Zongmen> recordList);
+
+	int getTotal();
 }

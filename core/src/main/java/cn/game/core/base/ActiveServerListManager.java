@@ -27,7 +27,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.NodeInfo;
 
 /**    
- * 某zk地址下的存活的server列表。 
+ * 活跃的vert.x节点/server列表。 
  * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
@@ -41,7 +41,7 @@ public class ActiveServerListManager {
 	private ActiveServerListManager() {
 	}
 	
-	/**  */
+	/** key:serverType,value: serverId */
 	private Map<String, Set<String>> serverListMap = new ConcurrentHashMap<String, Set<String>>();
 	/**  game服务器在线人数,先存这 */
 	private Map<String, Integer> playerCountMap = new ConcurrentHashMap<String, Integer>();

@@ -39,10 +39,33 @@ public abstract class GenericDistributedIDManager {
 				.build();
 	}
 
-	/**
+	/** 
 	 * 获取对象所在服务器ID
+	 * 如果对象不存在，返回空字符串，不会每次查询redis
+	 * 大多数情况下使用这个方法来查询对象所在服务器ID
+	 * @param objectId  对象id
+	 * @return
 	 */
 	public String getServerId(long objectId) {
+		return getServerIdInternal(objectId, true);
+	}
+
+	/** 
+	 * 获取对象所在服务器ID，只是查询，不会使用缓存
+	 * @param objectId
+	 * @return
+	 */
+	public String selectServerId(long objectId) {
+		return getServerIdInternal(objectId, false);
+	}
+
+	/** 
+	 * 获取对象所在服务器ID
+	 * @param objectId  对象id
+	 * @param useCacheIfAbsent  如果对象不存在，是否使用缓存，使用缓存则直接返回空字符串，不会再次查询redis
+	 * @return
+	 */
+	public String getServerIdInternal(long objectId, boolean useCacheIfAbsent) {
 		try {
 			// 如果对象在本服务器，直接返回本服务器ID
 			if (isObjectInCurrentServer(objectId)) {
@@ -51,7 +74,12 @@ public abstract class GenericDistributedIDManager {
 			return serverCache.get(objectId, () -> {
 				String redisKey = generateRedisKey(objectId);
 				String serverId = RedisUtil.get(redisKey);
-				return serverId == null ? "" : serverId;
+				if (serverId == null) {
+					if (useCacheIfAbsent) {
+						serverId = "";
+					}
+				}
+				return serverId;
 			});
 		} catch (Exception e) {
 			logger.error("Failed to get server id for {} with id {}", objectType, objectId, e);

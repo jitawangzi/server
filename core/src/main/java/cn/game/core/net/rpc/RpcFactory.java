@@ -34,21 +34,27 @@ public class RpcFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId,
-			ServerType serverType, long objectId) {
+	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId, ServerType serverType,
+			long objectId) {
 		String targetAddr = callType == CallType.PointToPoint ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
-		Key key = new Key(rpcInterfaceClass, targetAddr, callType);
+		// 当objectId=0时使用缓存
+		if (objectId == 0) {
+			Key key = new Key(rpcInterfaceClass, targetAddr, callType);
+			return (T) instanceCache.computeIfAbsent(key, k -> createProxy(rpcInterfaceClass, rpcClient, targetAddr, callType, 0));
+		} else {
+			// 直接创建新实例，不缓存,带有objectId后实例变多，缓存命中率低，不合算。
+			return createProxy(rpcInterfaceClass, rpcClient, targetAddr, callType, objectId);
+		}
+	}
 
-		return (T) instanceCache.computeIfAbsent(key, k -> {
-			Invocation invocation = new Invocation();
-			invocation.setRpcClient(rpcClient);
-			invocation.setBlock(false);
-			invocation.setTargetAddr(targetAddr);
-			invocation.setCallType(callType);
-			invocation.setObjectId(objectId);
-
-			return Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
-		});
+	private static <T> T createProxy(Class<T> rpcInterfaceClass, RpcClient rpcClient, String targetAddr, CallType callType, long objectId) {
+		Invocation invocation = new Invocation();
+		invocation.setRpcClient(rpcClient);
+		invocation.setBlock(false);
+		invocation.setTargetAddr(targetAddr);
+		invocation.setCallType(callType);
+		invocation.setObjectId(objectId);
+		return (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,8 +142,8 @@ public class RpcFactory {
 
 		public Key(Class<?> rpcInterfaceClass, String serverId, CallType callType) {
 			this.rpcInterfaceClass = rpcInterfaceClass;
-			this.serverId = serverId;
 			this.callType = callType;
+			this.serverId = serverId == null ? "" : serverId;
 		}
 
 		@Override

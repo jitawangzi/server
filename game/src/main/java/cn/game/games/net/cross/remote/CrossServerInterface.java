@@ -9,4 +9,6 @@ import cn.game.core.net.remote.RemoteCrossServerInterface;
  */
 public interface CrossServerInterface extends RemoteCrossServerInterface {
 
+	void loadZongmen(int offset, int limit);
+
 }

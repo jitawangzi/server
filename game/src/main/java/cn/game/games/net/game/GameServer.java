@@ -20,6 +20,7 @@ import org.redisson.api.RLock;
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
 
+import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
@@ -61,7 +62,6 @@ import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.KeywordFilter;
 import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -123,6 +123,7 @@ public class GameServer implements GameServerMBean {
 		RedisUtil.getInstance().init();
 		IdUtil.init();
 
+		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init(serverId, ServerType.Game);
 
 //		util.SpringContextLoader.main(args);
@@ -164,7 +165,7 @@ public class GameServer implements GameServerMBean {
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
 		checkPlayerJsonStruct();
-		KeywordFilter.initializeFromFile();
+//		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
@@ -405,7 +406,7 @@ public class GameServer implements GameServerMBean {
 
 		String serverId = IdCache.getManager(objectType).getServerId(targetId);
 		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
-			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
+			// 对象不在线，或者在当前服务器，直接由当前服务器处理
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用

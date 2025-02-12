@@ -17,7 +17,6 @@ import com.ctrip.framework.apollo.ConfigChangeListener;
 import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
-
 /**   
  * 
  * 2016-6-17 上午10:24:35
@@ -91,15 +90,15 @@ public final class Config {
 
 	public static int[] modulesDisabled;
 	public static int[] protocolsDisabled;
-	
+
 	/** 微信发货消息推送相关参数 */
-	public static String  wechat_push_token;
-	public static String  wechat_push_EncodingAESKey;
-	public static String  wechat_appid;
-	public static String  wechat_secret;
-	public static String  wechat_midas_offerId;
-	public static byte  wechat_midas_env;
-	public static String  wechat_midas_AppKey;
+	public static String wechat_push_token;
+	public static String wechat_push_EncodingAESKey;
+	public static String wechat_appid;
+	public static String wechat_secret;
+	public static String wechat_midas_offerId;
+	public static byte wechat_midas_env;
+	public static String wechat_midas_AppKey;
 	public static String wechat_pay_callback_url;
 	public static String wechat_pay_page_url;
 	// 消息统计的时间间隔，分钟
@@ -107,10 +106,10 @@ public final class Config {
 
 	/** 禁用ios支付的客户端版本 */
 	public static String disableIosPayClientVersion;
-  /**
-   * 微信access_token
-   */
-  public static String wechatAccessToken;
+	/**
+	 * 微信access_token
+	 */
+	public static String wechatAccessToken;
 
 	/** 游戏唯一表示 */
 	public static String APP_KEY;
@@ -118,11 +117,13 @@ public final class Config {
 	/**
 	 * 中心服务器地址
 	 */
-  public static String center_server_url;
+	public static String center_server_url;
 	/**
 	 * 1 true， 0 false，是否用微信参数去正式环境请求accessToken
 	 */
 	public static boolean use_wechat_access_token_flag;
+
+	public static int ExpectedNodeCount = 1;
 
 	/**
 	 *
@@ -179,6 +180,7 @@ public final class Config {
 			disableIosPayClientVersion = initialProp.getProperty("disableIosPayClientVersion", "");
 			use_wechat_access_token_flag =  initialProp.getProperty("use_wechat_access_token_flag", "0").equals("1");
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
+			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "2"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 
@@ -204,13 +206,13 @@ public final class Config {
 		try {
 			InputStream inputStream = Config.class.getClassLoader().getResourceAsStream(CHAT_FILTER_FILE);
 			List<String> tmp = new ArrayList<String>();
-			LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inputStream)) ; 
+			LineNumberReader lnr = new LineNumberReader(new InputStreamReader(inputStream));
 			String line = null;
 			while ((line = lnr.readLine()) != null) {
 				if (line.trim().isEmpty() || line.startsWith("#")) {
 					continue;
 				}
-				
+
 				tmp.add(line.trim());
 			}
 			FILTER_LIST = tmp;
@@ -221,7 +223,6 @@ public final class Config {
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * 检测关键字是否存在
@@ -270,6 +271,7 @@ public final class Config {
 		log.info("opType[isManagerIp]managerIp[{}]testIp[testIp]result[{}]", new Object[] { managerIp, testIp, result });
 		return result;
 	}
+
 	/**
 	 * 某功能模块是否禁用
 	 * 
@@ -278,14 +280,14 @@ public final class Config {
 	 */
 	public static boolean isModuleDisabled(int module) {
 		if (modulesDisabled == null || modulesDisabled.length == 0) {
-			return false ; 
+			return false;
 		}
 		for (int i = 0; i < modulesDisabled.length; i++) {
 			if (modulesDisabled[i] == module) {
-				return true ; 
+				return true;
 			}
 		}
-		return false ; 
+		return false;
 	}
 
 	public static boolean isProtocolDisabled(int reqMsgId) {
