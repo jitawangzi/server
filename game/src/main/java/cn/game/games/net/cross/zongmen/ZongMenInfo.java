@@ -391,11 +391,7 @@ public class ZongMenInfo {
                     return;
                 }
                 //转让宗主
-                zongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-                handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,zongZhu.playerId,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU,zongZhu.position);
-                int targetOldPosition = targetZongZhu.position;
-                targetZongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
-                handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetZongZhu.playerId,targetOldPosition,targetZongZhu.position);
+                zongZhuTransfer(zongZhu, targetZongZhu);
 
             }).exceptionally(err ->{err.printStackTrace();
                 return null;
@@ -406,4 +402,12 @@ public class ZongMenInfo {
       });
 
   }
+
+     void zongZhuTransfer(ZongMenMember zongZhu, ZongMenMember targetZongZhu) {
+        zongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+        handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE, zongZhu.playerId,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU, zongZhu.position);
+        int targetOldPosition = targetZongZhu.position;
+        targetZongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
+        handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE, targetZongZhu.playerId,targetOldPosition, targetZongZhu.position);
+    }
 }

@@ -297,19 +297,21 @@ public class ZongMenHandler extends BaseHandler {
     }
 
     ZongMenMember targetMember = zongMenInfo.getMember(req.getTargetPid());
-
-    if (req.getPosition() >= ZongMenConstants.ZONG_MEN_POSITION_ZHANG_LAO
-            && req.getPosition() <= ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG && req.getPosition() != targetMember.getPosition()) {
-      int oldPosition = targetMember.getPosition();
-      targetMember.setPosition(req.getPosition());
-      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetMember.playerId,oldPosition,req.getPosition());
-    } else {
+    if (member == targetMember || req.getPosition() == targetMember.getPosition()){
       sendErrorCodeMsgToGameServer(
               playerId,
               client,
               ErrorMsgEnum.request_parameter_error,
               PbProtocol.setZongMenMemberPositionResponse_40000016);
       return;
+    }
+    if (req.getPosition() == ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU){// 转让宗主
+      zongMenInfo.zongZhuTransfer(member, targetMember);
+
+    } else {
+      int oldPosition = targetMember.getPosition();
+      targetMember.setPosition(req.getPosition());
+      zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetMember.playerId,oldPosition,req.getPosition());
     }
     sendMsgToGameServer(
             playerId, client, res.build(), PbProtocol.setZongMenMemberPositionResponse_40000016);
