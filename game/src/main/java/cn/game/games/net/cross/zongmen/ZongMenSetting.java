@@ -57,7 +57,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
 
     public ZongMenMsg.ZongMenSettingProto.Builder toProto(){
         ZongMenMsg.ZongMenSettingProto.Builder builder = ZongMenMsg.ZongMenSettingProto.newBuilder();
-        builder.setWx(wx);
+        builder.setWx(wx == null ? "" : wx);
         builder.setWxChangeNum(wxChangeNum);
         builder.addAllIconList(unlockIconList);
         builder.setLastChangeNameTimer((int) (lastChangeNameTimer/1000L));

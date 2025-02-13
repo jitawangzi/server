@@ -81,10 +81,10 @@ public class ZongMenModuleData {
         shop.init(info);
     }
 
-    public void addMember(ZongMenMember member) {
+    public void addMember(ZongMenMember member,ZongMenInfo  info)  {
         menMemberMap.put(member.playerId,member);
         registerEventHandler(member);
-        RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId),member.playerId);
+        RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId),info.getId());
     }
 
     public void addApply(long playerId) {

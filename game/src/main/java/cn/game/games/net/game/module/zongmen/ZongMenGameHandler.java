@@ -115,8 +115,8 @@ public class ZongMenGameHandler extends BaseHandler {
             })
         .onFailure(
             err -> {
-              err.printStackTrace();
-              future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+                future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+                err.printStackTrace();
             });
     return future.future();
   }
@@ -524,7 +524,7 @@ public class ZongMenGameHandler extends BaseHandler {
                                     createZongMenCallback.response;
                             // 设置玩家宗门信息
                             player.getZongmenModule().setZongMenInfo(createRes.getZongMen());
-                            client.sendProtocol(res.build());
+                            client.sendProtocol(createRes);
                           } else { // 创建宗门失败
                             client.sendProtocol(res.build(), createZongMenCallback.errorCode);
                           }

@@ -75,7 +75,7 @@ public class ZongMenModule extends BasePlayerModule {
 
   @Override
   public EventTypeEnum[] getEventTypes() {
-    return new EventTypeEnum[] {EventTypeEnum.LoginSuccess,EventTypeEnum.NewDay};
+    return new EventTypeEnum[] {EventTypeEnum.LoginSuccess, EventTypeEnum.NewDay};
   }
 
   @Override
@@ -84,7 +84,7 @@ public class ZongMenModule extends BasePlayerModule {
       case LoginSuccess -> {
         checkZongMen();
       }
-      case NewDay -> {//跨天刷新宗门任务
+      case NewDay -> { // 跨天刷新宗门任务
         refreshZongMenTask();
       }
     }
@@ -92,32 +92,37 @@ public class ZongMenModule extends BasePlayerModule {
 
   private void refreshZongMenTask() {
     if (zongMenId == 0) return;
-    List<QuestConfig> zongMenTaskList =  QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
-    QuestModule questModule =  player.getQuestModule();
+    List<QuestConfig> zongMenTaskList =
+        QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
+    QuestModule questModule = player.getQuestModule();
     for (QuestConfig config : zongMenTaskList) {
       questModule.remove(config.ID);
-      questModule.open(config.ID,true);
+      //      questModule.open(config.ID,true);
     }
   }
 
   private void checkZongMen() {
     // 未加入宗门 检测是否有宗门
     if (zongMenId == 0) {
-      RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(player.getPlayerId()))
+      RedisLocalCache.getInstance()
+          .getAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(player.getPlayerId()))
           .onSuccess(
               msg -> {
                 if (msg == null) {
                   return;
                 }
-                long zongMenId = Long.parseLong(msg+"");
+                long zongMenId = Long.parseLong(msg + "");
                 setZongMenId(zongMenId);
                 getZongMenInfo();
-                List<QuestConfig> zongMenTaskList =  QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
-                QuestModule questModule =  player.getQuestModule();
+                List<QuestConfig> zongMenTaskList =
+                    QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
+                QuestModule questModule = player.getQuestModule();
                 for (QuestConfig config : zongMenTaskList) {
-                  questModule.setState(questModule.get(config.ID),QuestHelper.ACCEPTED,true);
+                  questModule.setState(questModule.get(config.ID), QuestHelper.ACCEPTED, true);
                 }
-                log.info(String.format("玩家[%d]登录成功，离线期间被审批加入宗门  宗门ID[%d]", player.getPlayerId(), zongMenId));
+                log.info(
+                    String.format(
+                        "玩家[%d]登录成功，离线期间被审批加入宗门  宗门ID[%d]", player.getPlayerId(), zongMenId));
               })
           .onFailure(
               err -> {
@@ -126,7 +131,6 @@ public class ZongMenModule extends BasePlayerModule {
     } else {
       getZongMenInfo();
     }
-    getZongMenInfo();
   }
 
   private void getZongMenInfo() {
@@ -138,10 +142,11 @@ public class ZongMenModule extends BasePlayerModule {
               // 玩家宗门 可能被解散了
               if (msg.errorCode == ErrorMsgEnum.zong_men_not_exist.ID) {
                 clearZongMen();
-              } else  if (msg.errorCode == ErrorMsgEnum.ok.ID) {
-                ZongMenMsg.getZongMenInfoResponse_40000022 response = (ZongMenMsg.getZongMenInfoResponse_40000022) msg.response;
-                if (StringUtils.isEmpty(zongMenName)){
-                    setZongMenInfo(response.getInfo());
+              } else if (msg.errorCode == ErrorMsgEnum.ok.ID) {
+                ZongMenMsg.getZongMenInfoResponse_40000022 response =
+                    (ZongMenMsg.getZongMenInfoResponse_40000022) msg.response;
+                if (StringUtils.isEmpty(zongMenName)) {
+                  setZongMenInfo(response.getInfo());
                 }
               }
             })
@@ -156,9 +161,10 @@ public class ZongMenModule extends BasePlayerModule {
     setZongMenName("");
     // 退出宗门 暂停宗门任务进度
     QuestModule questModule = player.getQuestModule();
-    List<QuestConfig> zongMenTaskList =  QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
+    List<QuestConfig> zongMenTaskList =
+        QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
     for (QuestConfig config : zongMenTaskList) {
-        questModule.setState(questModule.get(config.ID), QuestHelper.SHOW, true);
+      questModule.setState(questModule.get(config.ID), QuestHelper.SHOW, true);
     }
   }
 
