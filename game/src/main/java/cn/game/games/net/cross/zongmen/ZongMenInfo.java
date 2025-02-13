@@ -64,6 +64,7 @@ public class ZongMenInfo {
         //初始化各个模块
         module = new ZongMenModuleData();
         module.init();
+        module.afterInit(this);
         module.registerAllModuleEventHandler();
         module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this,createPlayerId,createPlayerName);
         joinZongMen(createPlayerId,createPlayerName,power,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
@@ -188,6 +189,10 @@ public class ZongMenInfo {
     settingProto.setDeclaration(data.getDeclaration());
     builder.setSetting(settingProto.build());
     builder.setLiveness(module.liveness);
+
+    //封装shop
+     builder.setShop(module.shop.toProto(member));
+
     return builder.build();
     }
 
@@ -410,4 +415,33 @@ public class ZongMenInfo {
         targetZongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
         handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE, targetZongZhu.playerId,targetOldPosition, targetZongZhu.position);
     }
+
+    public void refreshShopByWeek() {
+      module.refreshShopByWeek();
+    }
+
+    public boolean isEnoughAsset(int[] costItemArr, int count,ZongMenMember member)  {
+        final  int idType = costItemArr[1];
+        final int useCount = costItemArr[2];
+        if (!ZongMenHelper.isZongMenAsset(idType)){
+            return false;
+        }
+        if (idType == Asset.ZongMenContribute.ID){
+            return member.getTotalContribution() >= useCount * count;
+         }else {
+            return false;
+        }
+    }
+
+    public void costAsset(int[] costItemArr, int count,ZongMenMember member){
+        final  int idType = costItemArr[1];
+        final int useCount = costItemArr[2];
+        if (idType == Asset.ZongMenContribute.ID){
+            member.setTotalContribution(member.getTotalContribution() - useCount * count);
+            //TODO  BI log
+        }
+    }
+
+
+
 }

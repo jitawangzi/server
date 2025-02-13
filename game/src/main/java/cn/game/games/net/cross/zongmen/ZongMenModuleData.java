@@ -27,6 +27,8 @@ public class ZongMenModuleData {
     Map<Long, ZongMenMember> menMemberMap = new HashMap<>();
     /**  宗门 设置 */
     ZongMenSetting setting;
+    /**  宗门 商店 */
+    ZongMenShop shop;
     /**  宗门 活跃度 */
     int liveness;
 
@@ -35,6 +37,7 @@ public class ZongMenModuleData {
 
     void registerAllModuleEventHandler(){
         registerEventHandler(optLog);
+        registerEventHandler(setting);
         registerEventHandler(setting);
         menMemberMap.values().forEach(member -> {
              registerEventHandler(member);
@@ -69,7 +72,10 @@ public class ZongMenModuleData {
     public void init() {
         optLog = new ZongMenOptLog();
         setting = new ZongMenSetting();
-
+        shop = new ZongMenShop();
+    }
+    public void afterInit(ZongMenInfo info){
+        shop.init(info);
     }
 
     public void addMember(ZongMenMember member) {
@@ -117,4 +123,9 @@ public class ZongMenModuleData {
     }
 
 
+    public void refreshShopByWeek() {
+        menMemberMap.values().forEach(member ->{
+            member.refreshWeekShop();
+        });
+    }
 }

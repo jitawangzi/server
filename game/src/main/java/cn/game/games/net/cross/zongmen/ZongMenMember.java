@@ -3,7 +3,9 @@ package cn.game.games.net.cross.zongmen;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ZongMenMember
@@ -27,6 +29,10 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
     int position;
     /** 领取过的宗门活跃度奖励  */
     List<Integer> rewardLivenessIndexList  = new ArrayList<>();
+
+    /** 宗门商店购买的物品数量 */
+    Map<Integer,Integer> buyShopItemNumMap = new HashMap<>();
+
 
     public ZongMenMember() {
     }
@@ -122,5 +128,13 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
                 this.totalContribution = 0;
             }
         }
+    }
+
+    public void refreshWeekShop() {
+        buyShopItemNumMap.clear();
+    }
+    public void addShopItemNum(int itemId,int count){
+        int newCount = buyShopItemNumMap.getOrDefault(itemId,0) + count;
+        buyShopItemNumMap.put(itemId,newCount);
     }
 }
