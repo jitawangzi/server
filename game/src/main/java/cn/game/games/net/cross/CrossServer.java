@@ -18,6 +18,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.cross.remote.CrossServerInterface;
+import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
@@ -72,6 +73,8 @@ public class CrossServer {
 		crossActivityService.init();
 
 		IdCache.init();
+		
+		initLeaderTask();
 
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 	}
@@ -104,6 +107,13 @@ public class CrossServer {
 		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
 
+	}
+
+	private void initLeaderTask() {
+		if (!ServerContext.getInstance().isLeader()) {
+			return;
+		}
+		ZongMenManager.getInstance();
 	}
 
 	/**

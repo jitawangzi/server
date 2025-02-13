@@ -160,8 +160,6 @@ public class GameServer implements GameServerMBean {
 
 		ActivityStateManager.getInstance().start();
 //		ActivityStateManager.getInstance().initGlobal();
-//		UnionManager.getInstance().init();
-//		ChatManager.getInstance().init();
 		PlayerManager.getInstance().init();
 		ClassManager.getInstance().init();
 		PressureTestManager.getInstance().init();
