@@ -5,7 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.db.GenericDataLoader;
+import cn.game.games.cache.id.IdCache;
 import cn.game.util.SpringContextLoader;
 
 public class CrossServerImpl implements CrossServerInterface {
@@ -18,5 +20,10 @@ public class CrossServerImpl implements CrossServerInterface {
 		List list = loader.getBatch(offset, limit);
 		loader.processData(list);
 		return list.size();
+	}
+
+	@Override
+	public boolean isObjectInCurrentServer(DistributedObjectType type, long objectId) {
+		return IdCache.getManager(type).isObjectInCurrentServer(objectId);
 	}
 }

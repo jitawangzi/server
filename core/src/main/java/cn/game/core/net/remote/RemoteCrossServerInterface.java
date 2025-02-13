@@ -6,7 +6,7 @@ package cn.game.core.net.remote;
  * 2021年4月12日 下午2:10:22
  * @author SYQ
  */
-public interface RemoteCrossServerInterface extends RemoteProxy {
+public interface RemoteCrossServerInterface extends RemoteServerInterface {
 
 
 }

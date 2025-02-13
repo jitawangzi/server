@@ -110,9 +110,9 @@ public class CrossServer {
 	}
 
 	private void initLeaderTask() throws Exception {
-		if (!ServerContext.getInstance().isLeader()) {
-			return;
-		}
+//		if (!ServerContext.getInstance().isLeader()) {
+//			return;
+//		}
 		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
 		bean.load();
 	}

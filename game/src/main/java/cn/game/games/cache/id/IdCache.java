@@ -101,6 +101,21 @@ public class IdCache {
 				ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES, TimeUnit.MINUTES);
 	}
 
+//	public static RFuture<Boolean> trySetServerIdNew(DistributedObjectType objectType, long id) {
+//		GenericDistributedIDManager manager = getManager(objectType);
+//		String redisKey = manager.generateRedisKey(id);
+//		RFuture<Boolean> trySetAsync = RedisUtil.trySetAsync(redisKey, ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES,
+//				TimeUnit.MINUTES);
+//		trySetAsync.thenCompose(r -> {
+//			if (r) {
+//				return trySetAsync;
+//			} else {
+//				return null;
+//			}
+//		});
+//
+//	}
+
 	public static void init() {
 		SchedulerService.getInstance().scheduleWithFixedDelay(() -> {
 			setAllCurrentServerId();

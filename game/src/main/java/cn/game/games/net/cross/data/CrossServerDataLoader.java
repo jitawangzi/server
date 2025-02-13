@@ -19,13 +19,13 @@ public class CrossServerDataLoader {
 	private List<GenericDataLoader> loaders;
 
 	public void load() throws Exception {
-		if (ServerContext.getInstance().getServerType() == ServerType.Cross && ServerContext.getInstance().isLeader()) {
+		if (ServerContext.getInstance().getServerType() == ServerType.Cross) {
 			if (loaders != null) {
 				for (GenericDataLoader loader : loaders) {
 					Object mapper = loader.getMapper();
 					Method method = ClassHelper.findMethod(mapper.getClass(), "getTotal");
 					int total = (int) method.invoke(mapper);
-					int pageSize = 100;
+					int pageSize = 10;
 					int totalPages = (total + pageSize - 1) / pageSize;
 
 					for (int page = 0; page < totalPages; page++) {
