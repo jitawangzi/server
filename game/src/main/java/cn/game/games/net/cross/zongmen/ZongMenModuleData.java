@@ -59,8 +59,11 @@ public class ZongMenModuleData {
 
     public void handleEvent(ZongMenConstants.ZongMenEvenType evenType, ZongMenInfo info , Object...params){
         long beginTimer = System.currentTimeMillis();
-
-        eventTypeHandleMaps.get(evenType).forEach(eventHandler -> {
+        List<ZongMenConstants.ZongMenEventHandler> handlers = eventTypeHandleMaps.get(evenType);
+        if (handlers == null || handlers.size() == 0){
+            return;
+        }
+        handlers.forEach(eventHandler -> {
             eventHandler.handleEventType(evenType,info,params);
         });
         long endTimer = System.currentTimeMillis();

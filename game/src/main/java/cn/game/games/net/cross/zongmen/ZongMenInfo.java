@@ -46,7 +46,7 @@ public class ZongMenInfo {
         module = JsonUtil.parseObjectWithType(this.data.getModules());
         module.registerAllModuleEventHandler();
     }
-    public void init(long newZongMenId, String name, long createPlayerId, String createPlayerName,int power) {
+    public void init(int createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName,int power) {
         module = new ZongMenModuleData();
         saveDataTimer = System.currentTimeMillis();
         //初始化 Zongmen 对象
@@ -57,9 +57,10 @@ public class ZongMenInfo {
         data.setIcon(GlobalConst.ZongmenIconRes);
         data.setNotice(GlobalConst.ZongmenGonggao);
         data.setDeclaration(GlobalConst.ZongmenXuanyan);
-        data.setCreateTime(DateUtil.getTimeByPattern(new Date()));
+        data.setCreateTime(DateUtil.getTimeByPattern(new Date(),DateUtil.pattern_en));
         data.setExp(0);
-        data.setServerNodeId(Integer.parseInt(ServerContext.getInstance().getServerId()));
+        data.setCreateServerId(createServerId);
+        data.setServerNodeId(ServerContext.getInstance().getServerId());
 
         //初始化各个模块
         module = new ZongMenModuleData();
@@ -172,13 +173,15 @@ public class ZongMenInfo {
         }
         //redis 同步加载 SimplePlayer
         List<SimplePlayer> simplePlayerList = PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(new ArrayList<>(module.menMemberMap.keySet())).result();
-        simplePlayerList.forEach(simplePlayer -> {
-            if (memberProtoMap.containsKey(simplePlayer.getId())){
-                memberProtoMap.get(simplePlayer.getId()).setSimplePlayer(simplePlayer.toSimplePlayerInfo());
-            } else if(module.applyList.contains(simplePlayer.getId())){//同步申请列表
-                builder.addApplyList(simplePlayer.toSimplePlayerInfo());
-            }
-        });
+        if (simplePlayerList != null){
+            simplePlayerList.forEach(simplePlayer -> {
+                if (memberProtoMap.containsKey(simplePlayer.getId())){
+                    memberProtoMap.get(simplePlayer.getId()).setSimplePlayer(simplePlayer.toSimplePlayerInfo());
+                } else if(module.applyList.contains(simplePlayer.getId())){//同步申请列表
+                    builder.addApplyList(simplePlayer.toSimplePlayerInfo());
+                }
+            });
+        }
         memberProtoMap.values().forEach(memberProto ->{
             builder.addMemberList(memberProto.build());
         });
@@ -375,7 +378,7 @@ public class ZongMenInfo {
         }
         return m1.position < m2.position ? 1 : -1;
       });
-      ZongMenMember zongZhu = memberList.getFirst();
+      ZongMenMember zongZhu = memberList.get(0);
       PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
         if (DateUtil.diffDays(now,player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer){
             if (memberList.size() <= 1){//宗门没人

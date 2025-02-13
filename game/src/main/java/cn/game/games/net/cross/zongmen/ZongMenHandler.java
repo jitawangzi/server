@@ -23,6 +23,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
 import com.google.protobuf.Message;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.List;
  * @author: ly
  * @create: 2025-02-06 15:11 @Version 1.0
  */
+@Component
 public class ZongMenHandler extends BaseHandler {
 
   @Override
@@ -54,6 +56,7 @@ public class ZongMenHandler extends BaseHandler {
     List<String> paramList = new ArrayList<>(request.getParamsList().stream().toList());
     Message message = PbProtocol.getInstance().parseFrom(msgId, request.getData());
     // TODO log message
+    ZongMenManager.log.info(String.format("dispatchMsg pid:%s zongMenId:%s cmd:%s req:%s", playerId, zongMenId, message.getClass().getSimpleName(),message));
     ServerContext.getInstance().getProcessor().process(zongMenId, () -> {
       switch (msgId) {
         case PbProtocol.getZongMenInfoRequest_40000021 ->
@@ -717,6 +720,7 @@ public class ZongMenHandler extends BaseHandler {
     response.setPlayerId(playerId);
     response.setErrorCode(errorCode.getId());
     client.sendProtocol(response.build());
+    ZongMenManager.log.error(String.format("%s %d %d", errorCode.getId()+":"+errorCode.getDesc(), playerId, msgId));
     // TODO log message
   }
 
@@ -728,6 +732,7 @@ public class ZongMenHandler extends BaseHandler {
     response.setPlayerId(playerId);
     response.setData(message.toByteString());
     client.sendProtocol(response.build());
+    ZongMenManager.log.info(String.format("pid:%d msgId:%d message:%s", playerId, msgId,message));
     // TODO log message
 
   }

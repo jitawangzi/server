@@ -49,7 +49,7 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> selectByServerNodeIdIndex(@Param("serverNodeId") Integer serverNodeId);
+	List<Zongmen> selectByServerNodeIdIndex(@Param("serverNodeId") String serverNodeId);
 
 	/**
 	 * @mbg.generated

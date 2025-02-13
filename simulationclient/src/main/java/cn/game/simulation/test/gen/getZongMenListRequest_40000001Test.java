@@ -12,7 +12,8 @@ public class getZongMenListRequest_40000001Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.getZongMenListRequest_40000001.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.getZongMenListRequest_40000001.newBuilder() ; 
-		
+
+		builder.setPage(0);
 		
 		
 		return builder.build() ; 

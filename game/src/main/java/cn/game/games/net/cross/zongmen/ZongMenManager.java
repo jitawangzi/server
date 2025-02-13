@@ -38,12 +38,12 @@ public class ZongMenManager {
     /**当前服务器的所有宗门*/
     private Map<Long,ZongMenInfo> zongMenInfoMap = new ConcurrentHashMap<>();
     private ZongMenManager() {
-        init();
+
     }
     AtomicInteger zongMenAutoIncrementNum = new AtomicInteger(0);
     public static ZongMenManager getInstance(){ return Instance;}
 
-    private void init() {
+    public void init() {
         lastCrossDayTimer = System.currentTimeMillis();
         //加载宗门数据
         loadAllData();
@@ -137,7 +137,7 @@ public class ZongMenManager {
         //创建宗门
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
-        zongMenInfo.init(newZongMenId,name,createPlayerId,createPlayerName,power);
+        zongMenInfo.init(serverSeq,newZongMenId,name,createPlayerId,createPlayerName,power);
         zongMenInfo.updateModuleData();
         Promise<ZongMenInfo> promise = Promise.promise();
         DAO.insert(zongMenInfo.getData()).onSuccess( res ->{
@@ -171,7 +171,7 @@ public class ZongMenManager {
 	}
 
 	void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
-        RankService.getInstance().setScoreAsync("", RankType.Battle,zongMenInfo.getId(),zongMenInfo.callTotalPower());
+        RankService.getInstance().setScoreAsync(zongMenInfo.getData().getCreateServerId()+"", RankType.ZongMen,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
 
      void saveRedisNameIdMap(String name, long newZongMenId) {
