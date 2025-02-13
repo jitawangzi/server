@@ -249,7 +249,7 @@ public class ChapterModule extends BasePlayerModule  {
 				break;
 			}
 		}
-		return battleId;
+		return battleId == 0 ? mainBattleHighest : battleId;
 	}
 
 	/** 
