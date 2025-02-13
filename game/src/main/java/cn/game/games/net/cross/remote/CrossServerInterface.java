@@ -16,7 +16,7 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	 * @param loaderClass 数据加载器类
 	 * @param offset 数据偏移
 	 * @param limit 数据数量
-	 * @return 加载
+	 * @return 加载数量
 	 */
 	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit);
 

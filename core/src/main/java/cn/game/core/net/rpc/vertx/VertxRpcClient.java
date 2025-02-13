@@ -5,6 +5,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
 public class VertxRpcClient extends AbstractVerticle implements RpcClient {
@@ -24,6 +25,11 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 	public <T> Future<Message<T>> request(String addr, T message) {
 		return vertx.eventBus().request(addr, message);
 	}
+	@Override
+	public <T> Future<Message<T>> request(String addr, T message, DeliveryOptions options) {
+		return vertx.eventBus().request(addr, message, options);
+	}
+
 	@Override
 	public <T> void send(String addr, T message) {
 		vertx.eventBus().send(addr, message);

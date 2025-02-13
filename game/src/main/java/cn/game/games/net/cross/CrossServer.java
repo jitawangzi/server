@@ -17,7 +17,6 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
-import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -119,8 +118,8 @@ public class CrossServer {
 //		if (!ServerContext.getInstance().isLeader()) {
 //			return;
 //		}
-		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
-		bean.load();
+//		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
+//		bean.load();
 	}
 
 	/**

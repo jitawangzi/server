@@ -18,6 +18,7 @@ import cn.game.util.KryoUtils;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.DeliveryOptions;
 
 public class RocketMQRpcClient implements RpcClient {
 
@@ -170,5 +171,11 @@ public class RocketMQRpcClient implements RpcClient {
 	public <T> void broadcast(String addr, T message) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public <T> Future<io.vertx.core.eventbus.Message<T>> request(String addr, T message, DeliveryOptions options) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

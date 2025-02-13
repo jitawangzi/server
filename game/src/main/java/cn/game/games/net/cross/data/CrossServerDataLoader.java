@@ -15,6 +15,7 @@ import cn.game.util.reflect.ClassHelper;
 
 @Service
 public class CrossServerDataLoader {
+	private static final int pageSize = 100;
 	@Autowired
 	private List<GenericDataLoader> loaders;
 
@@ -25,13 +26,12 @@ public class CrossServerDataLoader {
 					Object mapper = loader.getMapper();
 					Method method = ClassHelper.findMethod(mapper.getClass(), "getTotal");
 					int total = (int) method.invoke(mapper);
-					int pageSize = 10;
 					int totalPages = (total + pageSize - 1) / pageSize;
 
 					for (int page = 0; page < totalPages; page++) {
 						int offset = page * pageSize;
 						CrossServerInterface crossServerInterface = CrossServer.getInstance().getCrossServerInterface();
-						crossServerInterface.loadDataDistributed(loader.getClass(), offset, totalPages);
+						crossServerInterface.loadDataDistributed(loader.getClass(), offset, pageSize);
 					}
 
 				}

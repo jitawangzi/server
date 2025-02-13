@@ -200,3 +200,4 @@
 199,updateMemberAuthRequest_40000041,0x40000041,,,,,宗门成员权限管理
 200,ZongMenActiveRewardRequest_40000045,0x40000045,,,,,领取宗门活跃度奖励
 201,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
+202,ZongMenBuyShopRequest_40000047,0x40000047,,,,,购买宗门商店物品
