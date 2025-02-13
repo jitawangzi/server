@@ -5,9 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.entity.Zongmen;
-import cn.game.games.net.cross.zongmen.ZongMenManager;
-import cn.game.games.net.data.mapper.ZongmenMapper;
+import cn.game.core.db.GenericDataLoader;
 import cn.game.util.SpringContextLoader;
 
 public class CrossServerImpl implements CrossServerInterface {
@@ -15,10 +13,10 @@ public class CrossServerImpl implements CrossServerInterface {
 	private static final Logger	log	= LoggerFactory.getLogger(CrossServerImpl.class);
 
 	@Override
-	public int loadZongmen(int offset, int limit) {
-		ZongmenMapper mapper = SpringContextLoader.getContext().getBean(ZongmenMapper.class);
-		List<Zongmen> list = mapper.getBatch(offset, limit);
-		ZongMenManager.getInstance().loadZongmenList(list);
+	public int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit) {
+		GenericDataLoader<?> loader = SpringContextLoader.getContext().getBean(loaderClass);
+		List list = loader.getBatch(offset, limit);
+		loader.processData(list);
 		return list.size();
 	}
 }

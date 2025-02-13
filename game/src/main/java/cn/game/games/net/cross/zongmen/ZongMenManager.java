@@ -16,15 +16,12 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.cache.entity.Zongmen;
 import cn.game.games.cache.id.IdCache;
-import cn.game.games.net.cross.CrossServer;
-import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.data.mapper.ZongmenMapper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
-import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -129,18 +126,18 @@ public class ZongMenManager {
 		zongMenAutoIncrementNum.set(num + 1);
 	}
 
-	public static void initAllData() {
-		ZongmenMapper mapper = SpringContextLoader.getContext().getBean(ZongmenMapper.class);
-		int total = mapper.getTotal();
-		int pageSize = 100;
-		int totalPages = (total + pageSize - 1) / pageSize;
-
-		for (int page = 0; page < totalPages; page++) {
-			int offset = page * pageSize;
-			CrossServerInterface crossServerInterface = CrossServer.getInstance().getCrossServerInterface();
-			crossServerInterface.loadZongmen(offset, totalPages);
-		}
-	}
+//	public static void initAllData() {
+//		ZongmenMapper mapper = SpringContextLoader.getContext().getBean(ZongmenMapper.class);
+//		int total = mapper.getTotal();
+//		int pageSize = 100;
+//		int totalPages = (total + pageSize - 1) / pageSize;
+//
+//		for (int page = 0; page < totalPages; page++) {
+//			int offset = page * pageSize;
+//			CrossServerInterface crossServerInterface = CrossServer.getInstance().getCrossServerInterface();
+//			crossServerInterface.loadDataDistributed(offset, totalPages);
+//		}
+//	}
 
     public void saveSimpleData(ZongMenInfo zongMen){
         String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(zongMen.getId());

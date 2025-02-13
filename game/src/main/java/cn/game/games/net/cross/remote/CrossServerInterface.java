@@ -1,5 +1,7 @@
 package cn.game.games.net.cross.remote;
 
+
+import cn.game.core.db.GenericDataLoader;
 import cn.game.core.net.remote.RemoteCrossServerInterface;
 
 /**    
@@ -9,6 +11,13 @@ import cn.game.core.net.remote.RemoteCrossServerInterface;
  */
 public interface CrossServerInterface extends RemoteCrossServerInterface {
 
-	int loadZongmen(int offset, int limit);
+	/**
+	 * 加载分布式数据
+	 * @param loaderClass 数据加载器类
+	 * @param offset 数据偏移
+	 * @param limit 数据数量
+	 * @return 加载
+	 */
+	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit);
 
 }

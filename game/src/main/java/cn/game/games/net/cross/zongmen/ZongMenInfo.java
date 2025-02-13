@@ -1,16 +1,21 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.cache.entity.Zongmen;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.GuildBasicConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.GuildBasicConfig;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
@@ -20,10 +25,6 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
-
-import java.util.*;
-
-import static cn.game.games.net.game.helper.PlayerHelper.addExp;
 
 /**
  * @ClassName ZongMenInfo
@@ -375,7 +376,7 @@ public class ZongMenInfo {
         }
         return m1.position < m2.position ? 1 : -1;
       });
-      ZongMenMember zongZhu = memberList.getFirst();
+      ZongMenMember zongZhu = memberList.get(0);
       PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
         if (DateUtil.diffDays(now,player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer){
             if (memberList.size() <= 1){//宗门没人
