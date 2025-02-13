@@ -15,10 +15,10 @@ public class CrossServerImpl implements CrossServerInterface {
 	private static final Logger	log	= LoggerFactory.getLogger(CrossServerImpl.class);
 
 	@Override
-	public void loadZongmen(int offset, int limit) {
+	public int loadZongmen(int offset, int limit) {
 		ZongmenMapper mapper = SpringContextLoader.getContext().getBean(ZongmenMapper.class);
 		List<Zongmen> list = mapper.getBatch(offset, limit);
 		ZongMenManager.getInstance().loadZongmenList(list);
+		return list.size();
 	}
-
 }

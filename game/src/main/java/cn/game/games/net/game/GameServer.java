@@ -110,9 +110,9 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void start(String[] args) throws Exception {
-
+		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
-		String serverId = GameUtil.parseServerId(args, ServerType.Game);
+		String serverId = GameUtil.parseServerId(args, serverType);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -123,8 +123,10 @@ public class GameServer implements GameServerMBean {
 		RedisUtil.getInstance().init();
 		IdUtil.init();
 
+//		VxHolder.init();
+
 		ActiveServerListManager.getInstance().start(ServerType.values());
-		ServerContext.getInstance().init(serverId, ServerType.Game);
+		ServerContext.getInstance().init(serverId, serverType);
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config

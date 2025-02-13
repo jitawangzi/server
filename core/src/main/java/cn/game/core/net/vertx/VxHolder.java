@@ -79,10 +79,24 @@ public class VxHolder {
 //	private static WebClientOptions webClientOption = new WebClientOptions().setSsl(true).setDefaultPort(443).setConnectTimeout(5000);
 	private static WebClientOptions webClientOption = new WebClientOptions().setDefaultPort(80).setConnectTimeout(5000);
 
+	private static volatile boolean inited = false;
+	
 	private VxHolder() {
 	};
 
+	static {
+		try {
+			init();
+		} catch (Exception e) {
+			log.error("vertx init error", e);
+		}
+	}
+
 	public static void init() throws Exception {
+
+		if (inited) {
+			return;
+		}
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress());
@@ -115,7 +129,8 @@ public class VxHolder {
 		vertx.eventBus().registerCodec(protocolCodec);
 		vertx.eventBus().registerCodec(customMessageCodec);
 
-//		deployVerticles();
+		deployVerticles();
+		inited = true;
 	}
 
 	private static void deployVerticles() throws Exception {
@@ -141,7 +156,7 @@ public class VxHolder {
 				.toCompletionStage()
 				.toCompletableFuture()
 				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
-		log.debug("部署Verticle[{}]成功： ", verticle);
+		log.info("部署Verticle[{}]成功： ", verticle);
 		return string;
 	}
 
@@ -151,14 +166,14 @@ public class VxHolder {
 				.toCompletionStage()
 				.toCompletableFuture()
 				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
-		log.debug("部署Verticle[{}]成功： ", verticleClass);
+		log.info("部署Verticle[{}]成功： ", verticleClass);
 		return string;
 	}
 
 	public static void deployVerticle(Verticle verticle) {
 		Future<String> deployVerticle = vertx.deployVerticle(verticle);
 		deployVerticle.onSuccess(r -> {
-			log.debug("部署Verticle[{}]成功： ", verticle);
+			log.info("部署Verticle[{}]成功： ", verticle);
 		});
 	}
 
@@ -199,33 +214,14 @@ public class VxHolder {
 	 * @return
 	 */
 	public static <T> Future<T> requestRemoteServer(String serverId, Object message) {
-		return requestRemoteServer(serverId, message, 0);
-	}
-
-	/** 
-	 * 给某地址的服务器发送消息。 
-	 * @param <T>
-	 * @param serverId 服务器地址
-	 * @param message 实际的消息，目前支持protobuf的Message和IProtocol类型
-	 * IProtocol 的类型注意设置msgId
-	 * targetId 消息给谁发的，0表示不指定,可以是playerId等
-	 * @return
-	 */
-	public static <T> Future<T> requestRemoteServer(String serverId, Object message, long targetId) {
 		if (message instanceof com.google.protobuf.Message) {
-			DeliveryOptions options = protobufOptions;
-			if (targetId != 0) {
-				options = new DeliveryOptions().setCodecName(protobufMessageCodec.name()).addHeader("targetId", targetId + "");
-			}
-			return vertx.eventBus().request(serverId, message, options).map(msg -> convertResponseObject(msg.body()));
+			return vertx.eventBus().request(serverId, message, protobufOptions).map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
-			return requestRemoteServer(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), targetId);
+			return vertx.eventBus()
+					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions)
+					.map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof IProtocol) {
-			DeliveryOptions options = protocolOptions;
-			if (targetId != 0) {
-				options = new DeliveryOptions().setCodecName(protocolCodec.name()).addHeader("targetId", targetId + "");
-			}
-			return vertx.eventBus().request(serverId, message, options).map(msg -> convertResponseObject(msg.body()));
+			return vertx.eventBus().request(serverId, message, protocolOptions).map(msg -> convertResponseObject(msg.body()));
 		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
