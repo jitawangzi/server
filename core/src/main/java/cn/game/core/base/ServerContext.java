@@ -18,6 +18,8 @@ import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.process.Processor;
+import cn.game.core.net.rpc.RpcClient;
+import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
@@ -41,6 +43,8 @@ public class ServerContext {
 	private LeaderLatch leaderLatch;
 
 	private Processor processor;
+
+	private RpcClient rpcClient = new VertxRpcClient();
 
 	private ServerContext() {
 	};
@@ -67,6 +71,14 @@ public class ServerContext {
 
 	public void setServerType(ServerType serverType) {
 		this.serverType = serverType;
+	}
+
+	public RpcClient getRpcClient() {
+		return rpcClient;
+	}
+
+	public void setRpcClient(RpcClient rpcClient) {
+		this.rpcClient = rpcClient;
 	}
 
 	public Processor getProcessor() {

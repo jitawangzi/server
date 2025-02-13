@@ -17,6 +17,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
+import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -39,8 +40,6 @@ public class CrossServer {
 
 	/** 唯一实例 */
 	private static CrossServer instance = new CrossServer();
-
-	private RpcClient rpcClient;
 
 	private CrossServer() {
 	};
@@ -94,8 +93,7 @@ public class CrossServer {
 
 	private void initVerticle() throws Exception {
 
-		rpcClient = new VertxRpcClient();
-		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+		VxHolder.deployVerticleSync((VertxRpcClient) ServerContext.getInstance().getRpcClient());
 
 		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
 		VxContextRegistry.getInstance().init(numVerticles);
@@ -115,11 +113,11 @@ public class CrossServer {
 	}
 
 	private void initLeaderTask() throws Exception {
-//		if (!ServerContext.getInstance().isLeader()) {
-//			return;
-//		}
-//		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
-//		bean.load();
+		if (!ServerContext.getInstance().isLeader() && !ServerContext.getInstance().getRunMode().isProduction()) {
+			return;
+		}
+		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
+		bean.load();
 	}
 
 	/**
@@ -133,7 +131,8 @@ public class CrossServer {
 	}
 
 	public CrossServerInterface getCrossServerInterface() {
-		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.LoadBalancer, null, ServerType.Cross);
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.LoadBalancer, null,
+				ServerType.Cross);
 
 	}
 	/**
@@ -150,7 +149,8 @@ public class CrossServer {
 			return (CrossServerInterface) SpringContextLoader.getContext().getBean("crossRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Cross, targetId);
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+				ServerType.Cross, targetId);
 
 	}
 
@@ -168,7 +168,8 @@ public class CrossServer {
 			LoggerType.Stdout.logger.warn("对象[{}]id[{}]已经初始化过了", objectType, targetId);
 			return null;
 		}
-		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.LoadBalancer, null, ServerType.Cross);
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.LoadBalancer, null,
+				ServerType.Cross);
 	}
 
 }

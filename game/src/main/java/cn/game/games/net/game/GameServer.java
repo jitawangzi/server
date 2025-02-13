@@ -28,7 +28,6 @@ import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -89,7 +88,6 @@ public class GameServer implements GameServerMBean {
 //	private String serverId;
 	private static final GameServer instance = new GameServer();
 
-	private RpcClient rpcClient;
 	private String[] serverIds = new String[ServerType.values().length];
 	private String wsVerticle;
 
@@ -282,8 +280,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	private void initVerticle() throws Exception {
-		rpcClient = new VertxRpcClient();
-		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+		VxHolder.deployVerticleSync((VertxRpcClient) ServerContext.getInstance().getRpcClient());
 
 		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
 		VxContextRegistry.getInstance().init(numVerticles);
@@ -383,9 +380,6 @@ public class GameServer implements GameServerMBean {
 		return serverIds[serverType.ordinal()];
 	}
 
-	public RpcClient getRpcClient() {
-		return rpcClient;
-	}
 
 	/**
 	 * 获取逻辑服远程调用接口
@@ -393,7 +387,8 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
+		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Game);
 	}
 
 	/**
@@ -410,7 +405,8 @@ public class GameServer implements GameServerMBean {
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, targetId);
+		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+				ServerType.Game, targetId);
 
 	}
 
@@ -428,7 +424,8 @@ public class GameServer implements GameServerMBean {
 			return (CrossServerInterface) SpringContextLoader.getContext().getBean("crossRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(CrossServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Cross, targetId);
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+				ServerType.Cross, targetId);
 	}
 
 	/** 
@@ -437,7 +434,8 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public RemoteLoginServerInterface getRemoteLoginServerInterface(CallType callType) {
-		return RpcFactory.getImpl(RemoteLoginServerInterface.class, rpcClient, callType, null, ServerType.Login);
+		return RpcFactory.getImpl(RemoteLoginServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, null,
+				ServerType.Login);
 
 	}
 

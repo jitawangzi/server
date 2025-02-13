@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.cache.entity.Zongmen;
 import cn.game.games.cache.id.IdCache;
@@ -46,7 +47,7 @@ public class ZongMenManager {
     public void init() {
         lastCrossDayTimer = System.currentTimeMillis();
         //加载宗门数据
-        loadAllData();
+//        loadAllData();
         //启动定时器 定期存储 宗门数据
         SchedulerService.getInstance().scheduleAtFixedRate(saveAllZongMenData(),ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
         //启动定时器 定期触发宗门 时间相关事件
@@ -118,9 +119,11 @@ public class ZongMenManager {
 	public void loadZongmenList(List<Zongmen> list) {
 		int num = 0;
 		list.forEach(zongmen -> {
-			ZongMenInfo info = new ZongMenInfo(zongmen);
-			zongMenInfoMap.put(info.getId(), info);
-			info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
+			if (IdCache.initServerId(DistributedObjectType.ZONGMEN, zongmen.getId())) {
+				ZongMenInfo info = new ZongMenInfo(zongmen);
+				zongMenInfoMap.put(info.getId(), info);
+				info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
+			}
 		});
 		num = list.size();
 		zongMenAutoIncrementNum.set(num + 1);
