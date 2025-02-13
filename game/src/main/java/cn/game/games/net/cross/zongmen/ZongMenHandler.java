@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.protocol.generated.config.ShopItemConfig;
+import cn.game.protocol.generated.config.ZongmenStoreConfig;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
@@ -74,9 +78,113 @@ public class ZongMenHandler extends BaseHandler {
                 updateMemberAuth(zongMenId,playerId,message,paramList,client);
         case PbProtocol.ZongMenActiveRewardRequest_40000045 ->
                 ZongMenActiveReward(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.getZongMenShopRequest_40000027 -> 
+                getZongMenShop(zongMenId,playerId,message,paramList,client);
+        case PbProtocol.ZongMenBuyShopRequest_40000047 ->
+                ZongMenBuyShop(zongMenId, playerId, message, paramList, client);
       }
 
     });
+  }
+
+  // 购买宗门商店物品
+  private void ZongMenBuyShop(
+      long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.ZongMenBuyShopRequest_40000047 req =
+        (ZongMenMsg.ZongMenBuyShopRequest_40000047) message;
+    ZongMenMsg.ZongMenBuyShopResponse_40000048.Builder res =
+        ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder();
+    int playerLv = Integer.parseInt(paramList.get(0));
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.zong_men_not_exist,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    ZongMenMember member = zongMenInfo.getMember(playerId);
+    if (member == null) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.zong_men_player_member_not_exist,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    int itemId = req.getItemId();
+    int count = req.getCount();
+    ZongmenStoreConfig config = ZongmenStoreManager.instance().getNullable(itemId);
+    if (config == null) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.config_data_not_found,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    if (playerLv < config.LevelUnlock) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.level_not_enough,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    ShopItemConfig itemConfig = ShopItemManager.instance().getNullable(config.Item);
+    if (itemConfig == null) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.config_data_not_found,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    if (itemConfig.ShopItemQuota != 0
+        && member.buyShopItemNumMap.getOrDefault(itemConfig.ID, 0) + count
+            > itemConfig.ShopItemQuota) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.shop_item_buy_count_max,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    if (!zongMenInfo.isEnoughAsset(itemConfig.PurchaseParameter, count, member)) {
+      sendErrorCodeMsgToGameServer(
+          playerId,
+          client,
+          ErrorMsgEnum.resource_not_enough,
+          PbProtocol.ZongMenBuyShopResponse_40000048);
+      return;
+    }
+    zongMenInfo.costAsset(itemConfig.PurchaseParameter, count, member);
+    sendMsgToGameServer(playerId, client, res.build(), PbProtocol.ZongMenBuyShopResponse_40000048);
+  }
+
+  private void getZongMenShop(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.getZongMenShopResponse_40000028.Builder res = ZongMenMsg.getZongMenShopResponse_40000028.newBuilder();
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.ZongMenActiveRewardResponse_40000046);
+      return;
+    }
+    ZongMenMember member = zongMenInfo.getMember(playerId);
+    if (member == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_player_member_not_exist,
+              PbProtocol.getZongMenShopResponse_40000028);
+      return;
+    }
+    res.setShopList(zongMenInfo.getModule().shop.toProto(member));
+    sendMsgToGameServer(playerId, client,res.build(), PbProtocol.getZongMenShopResponse_40000028);
   }
 
   //领取宗门活跃度奖励

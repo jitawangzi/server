@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import cn.game.protocol.generated.enume.Asset;
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
@@ -14,6 +15,7 @@ import cn.game.games.cache.id.IdCache;
 import cn.game.protocol.protobuf.ServerMsg;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * @ClassName ZongMenHelper
@@ -88,6 +90,27 @@ public class ZongMenHelper {
             ZongMenManager.log.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId +" msgId : " + msgId + " msg : " + msg);
             return VxHolder.requestRemoteServer(serverId, builder.build());
         });
+    }
+
+    public static boolean isZongMenAsset(int idType){
+        List<Integer> list = new ArrayList<>();
+        list.contains(1);
+        return idType == Asset.ZongMenPoint.ID || idType == Asset.ZongMenExp.ID || idType == Asset.ZongMenContribute.ID;
+    }
+
+    /**
+     * 是否包含 宗门的资源
+     * @param assetArr 资源
+     * @return true 包含 需要去宗门服务器处理 扣除逻辑 ，false 不包含
+     */
+    public static boolean containsZongMenAsset(int[][] assetArr){
+        for (int[] arr : assetArr ) {
+            int idType = arr[0];
+            if (isZongMenAsset(idType)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

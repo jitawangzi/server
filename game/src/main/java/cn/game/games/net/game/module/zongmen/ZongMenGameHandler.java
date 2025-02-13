@@ -7,8 +7,14 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
+import cn.game.protocol.generated.config.ZongmenStoreConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg;
 import org.apache.commons.lang3.StringUtils;
@@ -121,6 +127,8 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.getZongMenLogRequest_40000025, this::getZongMenLogs);
     putInvoker(PbProtocol.updateMemberAuthRequest_40000041, this::updateMemberAuth);
     putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
+    putInvoker(PbProtocol.getZongMenShopRequest_40000027, this::getZongMenShop);
+    putInvoker(PbProtocol.ZongMenBuyShopRequest_40000047, this::buyZongMenShop);
 
   }
 
@@ -128,6 +136,34 @@ public class ZongMenGameHandler extends BaseHandler {
   protected int getModule() {
     return 0x40;
   }
+
+    private void buyZongMenShop(NetClient client, Object o) {
+      ZongMenMsg.ZongMenBuyShopRequest_40000047 req = (ZongMenMsg.ZongMenBuyShopRequest_40000047) o;
+      ZongMenMsg.ZongMenBuyShopResponse_40000048.Builder res =
+          ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder();
+      Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+      autoForwardZongMenServer(client,res,req,(result)->{
+          int itemId = req.getItemId();
+          int count = req.getCount();
+          ZongmenStoreConfig config = ZongmenStoreManager.instance().get(itemId);
+          ShopItemConfig itemConfig = ShopItemManager.instance().get(config.Item);
+          int[][] drops = itemConfig.Item;
+          for(int i = 0; i < drops.length; i++) {
+              drops[i][1] = drops[i][1] * count;
+          }
+            res.addAllDrops(PlayerHelper.addResources(player,drops, OpType.ZongMenShopReward));
+            client.sendProtocol(res.build());
+          return null;
+      });
+    }
+
+  //获取宗门商店
+    private void getZongMenShop(NetClient client, Object o) {
+      ZongMenMsg.getZongMenShopRequest_40000027 req = (ZongMenMsg.getZongMenShopRequest_40000027) o;
+      ZongMenMsg.getZongMenShopResponse_40000028.Builder res =
+          ZongMenMsg.getZongMenShopResponse_40000028.newBuilder();
+      autoForwardZongMenServer(client,res,req,null);
+    }
 
     //领取任务活跃度奖励
     private void rewardLiveness(NetClient client, Object o) {
@@ -297,9 +333,21 @@ public class ZongMenGameHandler extends BaseHandler {
         (ZongMenMsg.setZongMenSettingRequest_40000013) o;
     ZongMenMsg.setZongMenSettingResponse_40000014.Builder res =
         ZongMenMsg.setZongMenSettingResponse_40000014.newBuilder();
+      Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
     List<String> checkStrs = new ArrayList<>();
     if (!StringUtils.isEmpty(req.getName())){
-        checkStrs.add(req.getName());
+        //- 宗门名称：需要花费500元宝（ZongmenNameRevise），最多输入6个字；
+        if (req.getName().length() > 6) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.not_name.ID);
+            return;
+        }
+        if (!player.isEnough( GlobalConst.ZongmenNameRevise[0], GlobalConst.ZongmenNameRevise[1])){
+            client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
+            return;
+        }
+            checkStrs.add(req.getName());
+
     }
       if (!StringUtils.isEmpty(req.getNotice())){
           checkStrs.add(req.getNotice());
@@ -313,7 +361,6 @@ public class ZongMenGameHandler extends BaseHandler {
       if (!StringUtils.isEmpty(req.getWx())){
           checkStrs.add(req.getWx());
       }
-      Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
       //非法字符串检测
       List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
       for (String str : checkStrs) {
@@ -338,7 +385,13 @@ public class ZongMenGameHandler extends BaseHandler {
                         return;
                     }
                 }
-                autoForwardZongMenServer(client, res, req, null);
+                autoForwardZongMenServer(client, res, req, message -> {
+                    if (!StringUtils.isEmpty(req.getName())){//宗门改名 扣除资源
+                        PlayerHelper.delResources(player,GlobalConst.ZongmenNameRevise,OpType.zongMenChangeName);
+                    }
+                    client.sendProtocol(message);
+                    return null;
+                });
               });
   }
 
