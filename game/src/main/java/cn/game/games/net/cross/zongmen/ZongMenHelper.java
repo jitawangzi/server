@@ -40,6 +40,8 @@ public class ZongMenHelper {
 		return IdCache.getZongMenServerId(zongMenId);
     }
 
+
+
     /**
      * 异步获取宗门列表
      *

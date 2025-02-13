@@ -7,6 +7,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import cn.game.core.base.ServerContext;
+import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -16,7 +18,6 @@ import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.RewardMsg;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.protobuf.Message;
@@ -44,6 +45,9 @@ import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @ClassName ZongMenHandler
@@ -52,7 +56,9 @@ import io.vertx.core.Promise;
  * @author: ly
  * @create: 2025-02-06 17:27 @Version 1.0
  */
+@Component
 public class ZongMenGameHandler extends BaseHandler {
+   static Logger log = LoggerFactory.getLogger(ZongMenGameHandler.class);
   public static Future<ZongMenCallbackMsg> sendMsgToZongMenServer(
       Player player, Message req, String... params) {
     // 封装宗门请求
@@ -89,8 +95,10 @@ public class ZongMenGameHandler extends BaseHandler {
         .onSuccess( // 请求成功
             result -> {
               if (result != null) {
+                  log.info(String.format("msgId:%d errorCode:%d pid:%d", result.getMsgId(), result.getErrorCode(), result.getPlayerId()));
                 ServerMsg.ZongMenMsgResponse_7d000046 serverResponse =
                     (ServerMsg.ZongMenMsgResponse_7d000046) result;
+
                 if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
                   Message response =
                       PbProtocol.getInstance()
@@ -498,7 +506,7 @@ public class ZongMenGameHandler extends BaseHandler {
             nameRepeatCheckStage,
             (nameFail, nameRepeatCheck) -> {
               // 名称重复检测
-              if (StringUtils.isEmpty((String) nameRepeatCheck)) {
+              if (nameRepeatCheck != null && !StringUtils.isEmpty((String) nameRepeatCheck)) {
                 client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
                 return null;
               }
@@ -507,7 +515,7 @@ public class ZongMenGameHandler extends BaseHandler {
                 // 创建宗门
                 sendMsgToZongMenServer(
 									player, req, player.getPlayerName(), player.getAttrModule().getPower() + "",
-									VirtualServerManager.instance().get(player.getServerId()) + "")
+									VirtualServerManager.instance().get(player.getServerId()).Seq + "")
                     .onSuccess(
                         createZongMenCallback -> {
                           if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功
@@ -561,33 +569,34 @@ public class ZongMenGameHandler extends BaseHandler {
     ZongMenMsg.getZongMenListResponse_40000002.Builder res =
         ZongMenMsg.getZongMenListResponse_40000002.newBuilder();
     final int page = req.getPage();
-    RankType rankType = RankType.Battle;
+    Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+    RankType rankType = RankType.ZongMen;
     res.setPage(page);
     // 宗门总数
     CompletionStage<Integer> rankSizeStage =
-        RankService.getInstance().getRankSizeAsync("zongmen", rankType);
+        RankService.getInstance().getRankSizeAsync(VirtualServerManager.instance().get(player.getServerId()).Seq + "", rankType);
     // 查询指定页码的战斗力宗门数据
     CompletionStage<List<RankEntry>> zongMenListStage =
-        RankService.getInstance().getPageAsync("zongmen", rankType, page, 20);
+        RankService.getInstance().getPageAsync(VirtualServerManager.instance().get(player.getServerId()).Seq + "", rankType, page, 20);
     // 获取宗门 simpleZongMen 列表
-    CompletionStage<Object> simpleZongMenStage =
         zongMenListStage.thenCombine(
             rankSizeStage,
             (zongMenRankList, rankSize) -> {
               res.setTotal(rankSize);
               List<Long> zongMenIdList =
                   zongMenRankList.stream().map(RankEntry::getPlayerId).collect(Collectors.toList());
-              return ZongMenHelper.getSimpleZongMenListAsync(zongMenIdList);
-            });
-    simpleZongMenStage.thenAccept(
-        simpleZongMenList -> {
-          List<SimpleZongMen> list = (List<SimpleZongMen>) simpleZongMenList;
-          list.forEach(
-              simpleZongMen -> {
-                res.addZongMenList(simpleZongMen.toProto());
+              ZongMenHelper.getSimpleZongMenListAsync(zongMenIdList).thenAccept(list -> {
+                  if (list != null){
+                      list.forEach(
+                              simpleZongMen -> {
+                                  res.addZongMenList(((SimpleZongMen)simpleZongMen).toProto());
+                              });
+                  }
+                  client.sendProtocol(res.build());
               });
-          client.sendProtocol(res.build());
-        });
+              return null;
+            });
+
   }
 
   /** ZongMenCallbackMsg 宗门 RPC 回调 消息 */

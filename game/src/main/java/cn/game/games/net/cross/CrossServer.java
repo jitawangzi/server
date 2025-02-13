@@ -19,7 +19,9 @@ import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
+import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.game.remote.GameServerInterface;
+import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.RedisUtil;
@@ -27,6 +29,7 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ZkHelper;
+import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.VertxOptions;
@@ -54,7 +57,6 @@ public class CrossServer {
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动跨服。。");
-
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
 		IdUtil.init();
@@ -76,6 +78,10 @@ public class CrossServer {
 		
 		initLeaderTask();
 
+		new Thread(WatchServiceManager.getInstance().setWatchDirs("xml", "config"), "WatchServiceManager").start();
+		ManagerHelper.init();
+		//初始化宗门
+		ZongMenManager.getInstance().init();
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 	}
 
