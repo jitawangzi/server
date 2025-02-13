@@ -180,7 +180,7 @@ public final class Config {
 			disableIosPayClientVersion = initialProp.getProperty("disableIosPayClientVersion", "");
 			use_wechat_access_token_flag =  initialProp.getProperty("use_wechat_access_token_flag", "0").equals("1");
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
-			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "3"));
+			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "1"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 
