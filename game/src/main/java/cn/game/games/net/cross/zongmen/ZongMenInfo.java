@@ -74,7 +74,7 @@ public class ZongMenInfo {
 
     void joinZongMen(long joinPlayerId, String playerName,int power,int position) {
         ZongMenMember member = new ZongMenMember(joinPlayerId,power,position);
-        module.addMember(member);
+        module.addMember(member,this);
         module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this,member,playerName);
     }
 

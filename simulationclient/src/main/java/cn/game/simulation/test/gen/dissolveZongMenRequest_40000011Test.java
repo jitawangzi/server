@@ -13,8 +13,7 @@ public class dissolveZongMenRequest_40000011Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.dissolveZongMenRequest_40000011.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.dissolveZongMenRequest_40000011.newBuilder() ; 
 		
-		
-		
+
 		return builder.build() ; 
 	}
 	
