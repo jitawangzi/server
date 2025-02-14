@@ -26,13 +26,13 @@ import io.vertx.core.Promise;
  * @create: 2025-02-06 15:00 @Version 1.0
  */
 public class ZongMenHelper {
-	private static final long DEFAULT_PREFIX = 888L;
+	private static final long DEFAULT_PREFIX = 88L;
 
 	public static long createZongMenId() {
 //        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
 //        return id;
 		// - 宗门编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个宗门编号是88802890123；
-		long id = (DEFAULT_PREFIX * 100000000) + IdUtil.getIdAutoIncrease(IdType.UNION);
+		long id = (DEFAULT_PREFIX * 10000000) + IdUtil.getIdAutoIncrease(IdType.ZONGMEN);
 		return id;
 
     }
