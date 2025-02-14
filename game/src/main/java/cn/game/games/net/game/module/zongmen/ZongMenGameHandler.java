@@ -7,18 +7,10 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import cn.game.core.base.ServerContext;
-import cn.game.games.net.cross.zongmen.ZongMenManager;
-import cn.game.games.net.game.module.award.Goods;
-import cn.game.protocol.generated.config.QuestPointRewardConfig;
-import cn.game.protocol.generated.config.ShopItemConfig;
-import cn.game.protocol.generated.config.ZongmenStoreConfig;
-import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.manager.QuestPointRewardManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ZongmenStoreManager;
-import cn.game.protocol.manual.OpType;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
 
@@ -35,9 +27,16 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.QuestPointRewardConfig;
+import cn.game.protocol.generated.config.ShopItemConfig;
+import cn.game.protocol.generated.config.ZongmenStoreConfig;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.QuestPointRewardManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.VirtualServerManager;
+import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
@@ -45,9 +44,6 @@ import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * @ClassName ZongMenHandler
@@ -515,7 +511,7 @@ public class ZongMenGameHandler extends BaseHandler {
                 // 创建宗门
                 sendMsgToZongMenServer(
 									player, req, player.getPlayerName(), player.getAttrModule().getPower() + "",
-									VirtualServerManager.instance().get(player.getServerId()).Seq + "")
+									player.getServerId())
                     .onSuccess(
                         createZongMenCallback -> {
                           if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功
@@ -578,7 +574,7 @@ public class ZongMenGameHandler extends BaseHandler {
         RankService.getInstance().getRankSizeAsync(VirtualServerManager.instance().get(player.getServerId()).Seq + "", rankType);
     // 查询指定页码的战斗力宗门数据
     CompletionStage<List<RankEntry>> zongMenListStage =
-        RankService.getInstance().getPageAsync(VirtualServerManager.instance().get(player.getServerId()).Seq + "", rankType, page, 20);
+			RankService.getInstance().getPageAsync(player.getServerId(), rankType, page, 20);
     // 获取宗门 simpleZongMen 列表
         zongMenListStage.thenCombine(
             rankSizeStage,

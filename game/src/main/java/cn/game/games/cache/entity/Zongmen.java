@@ -16,7 +16,7 @@ public class Zongmen implements Serializable, DbEntity {
 	 */
 	private String name;
 	/**
-	 * 工会创建时间
+	 * 宗门创建时间
 	 * @mbg.generated
 	 */
 	private String createTime;
@@ -46,15 +46,15 @@ public class Zongmen implements Serializable, DbEntity {
 	 */
 	private Integer exp;
 	/**
-	 * 宗门所在的服务器节点id
+	 * 宗门所在的服务器节点id，暂时用不到
 	 * @mbg.generated
 	 */
 	private String serverNodeId;
 	/**
-	 * 该宗门属于那个服务器id
+	 * 该宗门属于那个逻辑服务器id
 	 * @mbg.generated
 	 */
-	private Integer createServerId;
+	private String createServerId;
 	/**
 	 * 所有模块数据
 	 * @mbg.generated
@@ -194,14 +194,14 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getCreateServerId() {
+	public String getCreateServerId() {
 		return createServerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setCreateServerId(Integer createServerId) {
+	public void setCreateServerId(String createServerId) {
 		this.createServerId = createServerId;
 	}
 

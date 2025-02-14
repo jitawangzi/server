@@ -5,17 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-import cn.game.protocol.generated.enume.Asset;
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.IdUtil;
+import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.id.IdCache;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.protobuf.ServerMsg;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import org.apache.logging.log4j.core.util.Assert;
 
 /**
  * @ClassName ZongMenHelper
@@ -27,11 +28,11 @@ import org.apache.logging.log4j.core.util.Assert;
 public class ZongMenHelper {
 	private static final long DEFAULT_PREFIX = 888L;
 
-	public static long createZongMenId(int serverId, long size) {
+	public static long createZongMenId() {
 //        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
 //        return id;
 		// - 宗门编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个宗门编号是88802890123；
-		long id = (DEFAULT_PREFIX * 100000000) + (serverId * 10000L) + size;
+		long id = (DEFAULT_PREFIX * 100000000) + IdUtil.getIdAutoIncrease(IdType.UNION);
 		return id;
 
     }

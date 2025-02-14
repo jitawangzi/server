@@ -159,12 +159,12 @@ public class ZongMenManager {
      * @param power 门主战力
      * @return 新的宗门
      */
-	public Future<ZongMenInfo> createZongMen(String name, long createPlayerId, String createPlayerName, int power, int serverSeq) {
-		long newZongMenId = ZongMenHelper.createZongMenId(serverSeq, zongMenAutoIncrementNum.getAndIncrement());
+	public Future<ZongMenInfo> createZongMen(String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+		long newZongMenId = ZongMenHelper.createZongMenId();
         //创建宗门
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
-        zongMenInfo.init(serverSeq,newZongMenId,name,createPlayerId,createPlayerName,power);
+		zongMenInfo.init(serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
         zongMenInfo.updateModuleData();
         Promise<ZongMenInfo> promise = Promise.promise();
         DAO.insert(zongMenInfo.getData()).onSuccess( res ->{

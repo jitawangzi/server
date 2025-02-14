@@ -8,14 +8,14 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="lv" jdbcType="TINYINT" property="lv" />
     <result column="icon" jdbcType="INTEGER" property="icon" />
     <result column="notice" jdbcType="VARCHAR" property="notice" />
     <result column="declaration" jdbcType="VARCHAR" property="declaration" />
     <result column="exp" jdbcType="INTEGER" property="exp" />
     <result column="server_node_id" jdbcType="VARCHAR" property="serverNodeId" />
-    <result column="create_server_id" jdbcType="INTEGER" property="createServerId" />
+    <result column="create_server_id" jdbcType="VARCHAR" property="createServerId" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.game.games.cache.entity.Zongmen">
     <!--
@@ -67,9 +67,9 @@
       lv, icon, notice, declaration, 
       exp, server_node_id, create_server_id, 
       modules)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
       #{lv,jdbcType=TINYINT}, #{icon,jdbcType=INTEGER}, #{notice,jdbcType=VARCHAR}, #{declaration,jdbcType=VARCHAR}, 
-      #{exp,jdbcType=INTEGER}, #{serverNodeId,jdbcType=VARCHAR}, #{createServerId,jdbcType=INTEGER}, 
+      #{exp,jdbcType=INTEGER}, #{serverNodeId,jdbcType=VARCHAR}, #{createServerId,jdbcType=VARCHAR}, 
       #{modules,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.game.games.cache.entity.Zongmen">
@@ -121,7 +121,7 @@
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
-        #{createTime,jdbcType=CHAR},
+        #{createTime,jdbcType=VARCHAR},
       </if>
       <if test="lv != null">
         #{lv,jdbcType=TINYINT},
@@ -142,7 +142,7 @@
         #{serverNodeId,jdbcType=VARCHAR},
       </if>
       <if test="createServerId != null">
-        #{createServerId,jdbcType=INTEGER},
+        #{createServerId,jdbcType=VARCHAR},
       </if>
       <if test="modules != null">
         #{modules,jdbcType=LONGVARCHAR},
@@ -158,9 +158,9 @@
       lv, icon, notice, declaration, 
       exp, server_node_id, create_server_id, 
       modules)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
       #{lv,jdbcType=TINYINT}, #{icon,jdbcType=INTEGER}, #{notice,jdbcType=VARCHAR}, #{declaration,jdbcType=VARCHAR}, 
-      #{exp,jdbcType=INTEGER}, #{serverNodeId,jdbcType=VARCHAR}, #{createServerId,jdbcType=INTEGER}, 
+      #{exp,jdbcType=INTEGER}, #{serverNodeId,jdbcType=VARCHAR}, #{createServerId,jdbcType=VARCHAR}, 
       #{modules,jdbcType=LONGVARCHAR})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.game.games.cache.entity.Zongmen">
@@ -174,7 +174,7 @@
         name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
-        create_time = #{createTime,jdbcType=CHAR},
+        create_time = #{createTime,jdbcType=VARCHAR},
       </if>
       <if test="lv != null">
         lv = #{lv,jdbcType=TINYINT},
@@ -195,7 +195,7 @@
         server_node_id = #{serverNodeId,jdbcType=VARCHAR},
       </if>
       <if test="createServerId != null">
-        create_server_id = #{createServerId,jdbcType=INTEGER},
+        create_server_id = #{createServerId,jdbcType=VARCHAR},
       </if>
       <if test="modules != null">
         modules = #{modules,jdbcType=LONGVARCHAR},
@@ -210,14 +210,14 @@
     -->
     update t_zongmen
     set name = #{name,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
       lv = #{lv,jdbcType=TINYINT},
       icon = #{icon,jdbcType=INTEGER},
       notice = #{notice,jdbcType=VARCHAR},
       declaration = #{declaration,jdbcType=VARCHAR},
       exp = #{exp,jdbcType=INTEGER},
       server_node_id = #{serverNodeId,jdbcType=VARCHAR},
-      create_server_id = #{createServerId,jdbcType=INTEGER},
+      create_server_id = #{createServerId,jdbcType=VARCHAR},
       modules = #{modules,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -228,14 +228,14 @@
     -->
     update t_zongmen
     set name = #{name,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
       lv = #{lv,jdbcType=TINYINT},
       icon = #{icon,jdbcType=INTEGER},
       notice = #{notice,jdbcType=VARCHAR},
       declaration = #{declaration,jdbcType=VARCHAR},
       exp = #{exp,jdbcType=INTEGER},
       server_node_id = #{serverNodeId,jdbcType=VARCHAR},
-      create_server_id = #{createServerId,jdbcType=INTEGER}
+      create_server_id = #{createServerId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByServerNodeIdIndex" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
@@ -280,10 +280,10 @@
      values 
     <foreach collection="list" index="index" item="item" separator=",">
       <trim prefix=" (" suffix=")" suffixOverrides=",">
-        #{item.id,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, #{item.createTime,jdbcType=CHAR}, 
+        #{item.id,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}, 
           #{item.lv,jdbcType=TINYINT}, #{item.icon,jdbcType=INTEGER}, #{item.notice,jdbcType=VARCHAR}, 
           #{item.declaration,jdbcType=VARCHAR}, #{item.exp,jdbcType=INTEGER}, #{item.serverNodeId,jdbcType=VARCHAR}, 
-          #{item.createServerId,jdbcType=INTEGER}, #{item.modules,jdbcType=LONGVARCHAR}
+          #{item.createServerId,jdbcType=VARCHAR}, #{item.modules,jdbcType=LONGVARCHAR}
       </trim>
     </foreach>
   </insert>
@@ -312,7 +312,7 @@
       </trim>
       <trim prefix="create_time =case " suffix="end,">
         <foreach collection="recordList" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=CHAR}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createTime,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="lv =case " suffix="end,">
@@ -347,7 +347,7 @@
       </trim>
       <trim prefix="create_server_id =case " suffix="end,">
         <foreach collection="recordList" index="index" item="item">
-          when id = #{item.id,jdbcType=BIGINT} then #{item.createServerId,jdbcType=INTEGER}
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createServerId,jdbcType=VARCHAR}
         </foreach>
       </trim>
       <trim prefix="modules =case " suffix="end,">

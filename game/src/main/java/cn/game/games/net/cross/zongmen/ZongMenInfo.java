@@ -47,7 +47,8 @@ public class ZongMenInfo {
         module = JsonUtil.parseObjectWithType(this.data.getModules());
         module.registerAllModuleEventHandler();
     }
-    public void init(int createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName,int power) {
+
+	public void init(String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
         module = new ZongMenModuleData();
         saveDataTimer = System.currentTimeMillis();
         //初始化 Zongmen 对象
