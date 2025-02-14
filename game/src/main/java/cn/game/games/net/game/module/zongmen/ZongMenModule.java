@@ -188,8 +188,8 @@ public class ZongMenModule extends BasePlayerModule {
     setZongMenId(zongMen.getSimpleInfo().getId());
     setZongMenName(zongMen.getSimpleInfo().getName());
     getApplyJoinList().clear();
-	List<ZongMenMemberProto> memberListList = zongMen.getMemberListList();
-	for (ZongMenMemberProto zongMenMemberProto : memberListList) {
+	List<ZongMenMsg.ZongMenMemberProto> memberListList = zongMen.getMemberListList();
+	for (ZongMenMsg.ZongMenMemberProto zongMenMemberProto : memberListList) {
 		if (zongMenMemberProto.getPid() == playerId) {
 			joinTime = zongMenMemberProto.getJoinTime();
 			break;
