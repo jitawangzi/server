@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.db.GenericDataLoader;
 import cn.game.games.cache.id.IdCache;
+import cn.game.games.net.cross.zongmen.ZongMenBargain;
+import cn.game.games.net.cross.zongmen.ZongMenInfo;
+import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.protocol.generated.config.GuildBargainConfig;
+import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.util.SpringContextLoader;
 
 public class CrossServerImpl implements CrossServerInterface {
@@ -25,5 +30,15 @@ public class CrossServerImpl implements CrossServerInterface {
 	@Override
 	public boolean isObjectInCurrentServer(DistributedObjectType type, long objectId) {
 		return IdCache.getManager(type).isObjectInCurrentServer(objectId);
+	}
+
+	@Override
+	public io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId) {
+		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongmenId);
+		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
+		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
+		int bargainTotalNum = bargain.getBargainTotalNum();
+		int price = guildBargainConfig.Price[1] - bargainTotalNum;
+		return io.vertx.core.Future.succeededFuture(price);
 	}
 }

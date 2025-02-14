@@ -1,11 +1,14 @@
 package cn.game.games.net.game.module.zongmen;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
-import cn.game.games.net.cross.zongmen.ZongMenSetting;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -14,9 +17,7 @@ import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenMemberProto;
 
 /**
  * @ClassName ZongMenModule
@@ -37,6 +38,8 @@ public class ZongMenModule extends BasePlayerModule {
    * 第二次及后续退出时，需要1小时才可加入其它宗门（ZongmenMemberCD）*
    */
   long nextJoinTimer;
+	/** 加入时间 */
+	long joinTime;
 
   public long getZongMenId() {
     return zongMenId;
@@ -70,8 +73,19 @@ public class ZongMenModule extends BasePlayerModule {
     this.nextJoinTimer = nextJoinTimer;
   }
 
-  @Override
-  public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {}
+	public long getJoinTime() {
+		return joinTime;
+	}
+
+	@Override
+	public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {
+		// 宗门信息
+		builder.setZongMenId(zongMenId);
+		if (zongMenName != null) {
+			builder.setZongMenName(zongMenName);
+		}
+		builder.setZongMenQuitCount(disbandCount);
+	}
 
   @Override
   public EventTypeEnum[] getEventTypes() {
@@ -171,6 +185,13 @@ public class ZongMenModule extends BasePlayerModule {
   public void setZongMenInfo(ZongMenMsg.ZongMenInfoProto zongMen) {
     setZongMenId(zongMen.getSimpleInfo().getId());
     setZongMenName(zongMen.getSimpleInfo().getName());
+	List<ZongMenMemberProto> memberListList = zongMen.getMemberListList();
+	for (ZongMenMemberProto zongMenMemberProto : memberListList) {
+		if (zongMenMemberProto.getPid() == playerId) {
+			joinTime = zongMenMemberProto.getJoinTime();
+			break;
+		}
+	}
     refreshZongMenTask();
   }
 

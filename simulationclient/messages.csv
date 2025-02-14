@@ -201,3 +201,6 @@
 200,ZongMenActiveRewardRequest_40000045,0x40000045,,,,,领取宗门活跃度奖励
 201,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
 202,ZongMenBuyShopRequest_40000047,0x40000047,,,,,购买宗门商店物品
+203,ZongMenBargainBuyRequest_40000062,0x40000062,,,,,购买宗门砍价物品
+204,ZongMenBargainRequest_40000060,0x40000060,,,,,宗门砍价
+205,ZongMenBargainPriceRequest_40000064,0x40000064,,,,,查看宗门砍价物品价格

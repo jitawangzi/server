@@ -16,21 +16,26 @@ import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.config.ZongmenStoreConfig;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.VirtualServerManager;
@@ -133,6 +138,8 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
     putInvoker(PbProtocol.getZongMenShopRequest_40000027, this::getZongMenShop);
     putInvoker(PbProtocol.ZongMenBuyShopRequest_40000047, this::buyZongMenShop);
+	putInvoker(PbProtocol.ZongMenBargainRequest_40000060, this::bargain);
+	putInvoker(PbProtocol.ZongMenBargainBuyRequest_40000062, this::buyBargain);
 
   }
 
@@ -141,7 +148,47 @@ public class ZongMenGameHandler extends BaseHandler {
     return 0x40;
   }
 
-    private void buyZongMenShop(NetClient client, Object o) {
+	private void bargain(NetClient client, Object o) {
+		ZongMenMsg.ZongMenBargainRequest_40000060 req = (ZongMenMsg.ZongMenBargainRequest_40000060) o;
+		ZongMenMsg.ZongMenBargainResponse_40000061.Builder res = ZongMenMsg.ZongMenBargainResponse_40000061.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		ZongMenModule zongmenModule = player.getZongmenModule(); 
+		long joinTime = zongmenModule.getJoinTime(); 
+		if (zongmenModule.getDisbandCount() > 0 && System.currentTimeMillis() - joinTime < GlobalConst.ZongmenBargainCD * 1000) {
+			client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
+			return;
+		}
+		autoForwardZongMenServer(client, res, req, null);
+	}
+
+	private void buyBargain(NetClient client, Object o) {
+		ZongMenMsg.ZongMenBargainBuyRequest_40000062 req = (ZongMenMsg.ZongMenBargainBuyRequest_40000062) o;
+		ZongMenMsg.ZongMenBargainBuyResponse_40000063.Builder res = ZongMenMsg.ZongMenBargainBuyResponse_40000063.newBuilder();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (player.getZongMenId() == 0) {
+			client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
+			return;
+		}
+		CrossServerInterface crossServerInterface = GameServer.getInstance()
+				.getCrossServerInterface(DistributedObjectType.ZONGMEN, player.getZongMenId());
+		Future<Integer> priceFuture = crossServerInterface.zongmenBargainPrice(player.getZongMenId());
+		priceFuture.map(price -> {
+			if (price > 0) {
+				GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
+				boolean delResources = PlayerHelper.delResources(player, guildBargainConfig.Price[0], price, OpType.ZongMenBargain);
+				if (!delResources) {
+					client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
+					return null;
+				}
+			}
+			// 记录购买砍价
+			autoForwardZongMenServer(client, res, req, null);
+			return null;
+		}).onFailure(player::handleFail);
+
+	}
+
+	private void buyZongMenShop(NetClient client, Object o) {
       ZongMenMsg.ZongMenBuyShopRequest_40000047 req = (ZongMenMsg.ZongMenBuyShopRequest_40000047) o;
       ZongMenMsg.ZongMenBuyShopResponse_40000048.Builder res =
           ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder();

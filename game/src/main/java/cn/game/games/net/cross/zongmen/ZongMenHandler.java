@@ -13,9 +13,11 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.config.ZongmenStoreConfig;
+import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ZongmenStoreManager;
@@ -24,6 +26,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
+import cn.game.util.Rnd;
 
 /**
  * @ClassName ZongMenHandler
@@ -82,10 +85,66 @@ public class ZongMenHandler extends BaseHandler {
                 getZongMenShop(zongMenId,playerId,message,paramList,client);
         case PbProtocol.ZongMenBuyShopRequest_40000047 ->
                 ZongMenBuyShop(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.ZongMenBargainRequest_40000060 ->
+			bargain(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.ZongMenBargainBuyRequest_40000062 ->
+			buyBargain(zongMenId, playerId, message, paramList, client);
       }
 
     });
   }
+
+	private void bargain(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		if (zongMenInfo == null) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_not_exist, PbProtocol.ZongMenBargainResponse_40000061);
+			return;
+		}
+		ZongMenMember member = zongMenInfo.getMember(playerId);
+		if (member == null) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_player_member_not_exist,
+					PbProtocol.ZongMenBargainResponse_40000061);
+			return;
+		}
+		if (member.isBargain) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.repeat_request, PbProtocol.ZongMenBargainResponse_40000061);
+			return;
+		}
+		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
+		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
+		int bargainTotalNum = bargain.getBargainTotalNum();
+		int bargainCount = Rnd.nextInt(guildBargainConfig.Bargain[0], guildBargainConfig.Bargain[1] + 1);
+		if (bargainCount + bargainTotalNum > guildBargainConfig.Price[1]) {
+			bargainCount = guildBargainConfig.Price[1] - bargainTotalNum;
+		}
+		bargain.setBargainTotalNum(bargainTotalNum + bargainCount);
+		bargain.setMemberBargainNum(bargain.getMemberBargainNum() + 1);
+		
+		member.setBargain(true);
+		member.setBargainTime(System.currentTimeMillis());
+
+	}
+
+	private void buyBargain(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+
+		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		if (zongMenInfo == null) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_not_exist, PbProtocol.ZongMenBargainBuyResponse_40000063);
+			return;
+		}
+		ZongMenMember member = zongMenInfo.getMember(playerId);
+		if (member == null) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_player_member_not_exist,
+					PbProtocol.ZongMenBargainBuyResponse_40000063);
+			return;
+		}
+		if (!member.isBargain) {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_player_not_bargain,
+					PbProtocol.ZongMenBargainBuyResponse_40000063);
+			return;
+		}
+		member.setBargainBuy(true);
+	}
 
   // 购买宗门商店物品
   private void ZongMenBuyShop(
