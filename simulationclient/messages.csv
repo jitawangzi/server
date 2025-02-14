@@ -204,3 +204,4 @@
 203,ZongMenBargainBuyRequest_40000062,0x40000062,,,,,购买宗门砍价物品
 204,ZongMenBargainRequest_40000060,0x40000060,,,,,宗门砍价
 205,ZongMenBargainPriceRequest_40000064,0x40000064,,,,,查看宗门砍价物品价格
+206,ZongMenGmTestRequest_40000053,0x40000053,,,,,
