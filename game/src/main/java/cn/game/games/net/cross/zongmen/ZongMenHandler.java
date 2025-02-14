@@ -94,11 +94,32 @@ public class ZongMenHandler extends BaseHandler {
                   findZongMen(zongMenId,playerId, message, paramList, client);
           case PbProtocol.ChatRequest_31000001 ->
                   zongMenChat(zongMenId,playerId, message, paramList, client);
+        case PbProtocol.ZongMenUpdateMemberFightPower_40000052 ->
+                updateMemberFightPower(zongMenId, playerId, message, paramList, client);
       }
 
     });
   }
-    //宗门聊天
+
+  //玩家战斗力同步
+  private void updateMemberFightPower(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+        ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+        if (zongMenInfo == null) {
+            return;
+        }
+        ZongMenMember member = zongMenInfo.getMember(playerId);
+        if (member == null) {
+            return;
+        }
+        member.setPower(((ZongMenMsg.ZongMenUpdateMemberFightPower_40000052)message).getFightPower() );
+    }
+
+  //宗门商店
+  private void getZongMenShop(long zongMenId, long playerId, Message message, List<String> params){
+
+  }
+
+  //宗门聊天
     private void zongMenChat(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
         ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
         if (zongMenInfo == null) {
@@ -739,7 +760,7 @@ public class ZongMenHandler extends BaseHandler {
       sendErrorCodeMsgToGameServer(
               playerId,
               client,
-              ErrorMsgEnum.zong_men_apply_exist,//TODO zong_men_not_allow_join
+              ErrorMsgEnum.zong_men_not_allow_join,
               PbProtocol.applyJoinZongMenResponse_40000008);
       return;
     }

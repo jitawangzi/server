@@ -96,7 +96,7 @@ public class ZongMenGameHandler extends BaseHandler {
                 .onSuccess( // 请求成功
                         result -> {
                             if (result != null) {
-                                log.info(String.format("sendMsgToZongMenServer callBack msgId:%d %s, errorCode:%d, pid:%d ,result:%s",
+                                log.info(String.format("sendMsgToZongMenServer callBack msgId:%d %s, errorCode:%d, pid:%d ",
                                         result.getMsgId(),req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
                                 ServerMsg.ZongMenMsgResponse_7d000046 serverResponse =
                                         (ServerMsg.ZongMenMsgResponse_7d000046) result;

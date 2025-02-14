@@ -151,6 +151,7 @@ public class ZongMenInfo {
         simpleZongMen.setNum(module.menMemberMap.size());
         simpleZongMen.setIsAutoJoin(getModule().setting.getAutoJoin());
         simpleZongMen.setTianDaoLevel(module.setting.getTianDaoLevel());
+        simpleZongMen.getApplyPidList().addAll(module.applyList);
         return simpleZongMen;
     }
 

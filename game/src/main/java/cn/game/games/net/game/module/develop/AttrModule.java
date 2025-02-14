@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
@@ -154,5 +157,12 @@ public class AttrModule extends BasePlayerModule {
 
 	public Map<Long, IntMapWrapper> getHeroAttrs() {
 		return heroAttrs;
+	}
+
+	//同步战斗力到宗门
+	public void notifyZongMenPower() {
+		if (player.getZongMenId() > 0) {
+			ZongMenGameHandler.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenUpdateMemberFightPower_40000052.newBuilder().setFightPower(power).build());
+		}
 	}
 }

@@ -198,7 +198,7 @@ public class ZongMenManager {
 	}
 
 	void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
-        RankService.getInstance().setScoreAsync(zongMenInfo.getData().getCreateServerId()+"", RankType.ZongMen,zongMenInfo.getId(),zongMenInfo.callTotalPower());
+        RankService.getInstance().setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen,zongMenInfo.getId(),zongMenInfo.callTotalPower());
     }
 
      void saveRedisNameIdMap(String name, long newZongMenId) {
