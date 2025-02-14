@@ -40,6 +40,7 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
             int newPosition = (int)params[2];
             PlayerManager.getInstance().getSimplePlayerFromRedisAsync(targetPlayerId).onSuccess(simplePlayer -> {
               addLog(type.getId(),simplePlayer.getName(),oldPosition+"",newPosition+"");
+
             });
           }
 
@@ -53,6 +54,11 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
                CHANGE_ZONG_MEN_NOTICE -> {
               String quitPlayerName = params[0]+"";
               addLog(type.getId(),quitPlayerName);
+          }
+          case ZONG_MEN_KICK_MEMBER -> {
+              String playerName = params[0]+"";//操作人
+              String kickPlayerName = params[1]+""; //被踢人
+              addLog(type.getId(),playerName,kickPlayerName);
           }
       }
   }

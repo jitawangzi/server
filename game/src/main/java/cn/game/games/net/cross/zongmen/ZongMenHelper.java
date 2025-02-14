@@ -87,13 +87,41 @@ public class ZongMenHelper {
         ServerMsg.NotifyZongMenMsgToGame_7d000047.Builder builder = ServerMsg.NotifyZongMenMsgToGame_7d000047.newBuilder();
         builder.setMsgId(msgId);
         builder.setData(msg.toByteString());
-        builder.setPlayerId(playerId);
+        builder.addPlayerId(playerId);
         VxHolder.executeBlockingWithTimeout(()->{
 			String serverId = IdCache.getPlayerServerId(playerId);
             ZongMenManager.log.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId +" msgId : " + msgId + " msg : " + msg);
             return VxHolder.requestRemoteServer(serverId, builder.build());
         });
     }
+
+    /**
+     * 异步广播发送消息给 gameServer
+     * @param msg
+     * @param msgId
+     * @param notifyPlayerId
+     */
+    public static void broadcastNotifyMsgToPlayer(Message msg, int msgId,List<Long> notifyPlayerId)  {
+        ServerMsg.NotifyZongMenMsgToGame_7d000047.Builder builder = ServerMsg.NotifyZongMenMsgToGame_7d000047.newBuilder();
+        builder.setMsgId(msgId);
+        builder.setData(msg.toByteString());
+        if (notifyPlayerId.size() == 0) return;
+        List<String> serverIdList = new ArrayList<>();
+        StringBuffer pidSb = new StringBuffer("pid:");
+        for (long playerId : notifyPlayerId) {
+            builder.addPlayerId(playerId);
+            String serverId = IdCache.getPlayerServerId(playerId);
+            serverIdList.add(serverId);
+            pidSb.append(playerId).append(",");
+        }
+        pidSb.deleteCharAt(pidSb.length()-1).append("]");
+        ZongMenManager.log.info("notifyMsgToPlayer msgId : " + msgId + " msg : " + msg + " serverIdList : " + serverIdList + " pidSb : " + pidSb);
+        serverIdList.forEach(serverId ->{
+            VxHolder.requestRemoteServer(serverId, builder.build());
+        });
+    }
+
+
 
     public static boolean isZongMenAsset(int idType){
         List<Integer> list = new ArrayList<>();

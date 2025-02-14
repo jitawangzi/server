@@ -16,6 +16,7 @@ import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class ZongMenModule extends BasePlayerModule {
   long zongMenId;
   String zongMenName;
 
-  /** 解散次数 只有宗主才会有该操作* */
+  /** 宗门反复加入次数 * */
   int disbandCount;
 
   /**
@@ -37,6 +38,8 @@ public class ZongMenModule extends BasePlayerModule {
    * 第二次及后续退出时，需要1小时才可加入其它宗门（ZongmenMemberCD）*
    */
   long nextJoinTimer;
+  /** 申请过加入宗门列表 */
+  List<Long> applyJoinList = new ArrayList<>();
 
   public long getZongMenId() {
     return zongMenId;
@@ -159,6 +162,7 @@ public class ZongMenModule extends BasePlayerModule {
   public void clearZongMen() {
     setZongMenId(0);
     setZongMenName("");
+    applyJoinList.clear();
     // 退出宗门 暂停宗门任务进度
     QuestModule questModule = player.getQuestModule();
     List<QuestConfig> zongMenTaskList =
@@ -171,6 +175,7 @@ public class ZongMenModule extends BasePlayerModule {
   public void setZongMenInfo(ZongMenMsg.ZongMenInfoProto zongMen) {
     setZongMenId(zongMen.getSimpleInfo().getId());
     setZongMenName(zongMen.getSimpleInfo().getName());
+    getApplyJoinList().clear();
     refreshZongMenTask();
   }
 
@@ -182,5 +187,16 @@ public class ZongMenModule extends BasePlayerModule {
   public void joinZongMen(ZongMenMsg.notifyJoinZongMen_40000044 req) {
     setZongMenInfo(req.getZongMen());
     player.getGameClient().sendProtocol(req);
+  }
+
+  public List<Long> getApplyJoinList() {
+    return applyJoinList;
+  }
+
+  public void setApplyJoinList(List<Long> applyJoinList) {
+    this.applyJoinList = applyJoinList;
+  }
+  public void removeApplyJoinList(Long zongMenId) {
+    applyJoinList.remove(zongMenId);
   }
 }

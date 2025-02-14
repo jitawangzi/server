@@ -82,9 +82,27 @@ public class ZongMenHandler extends BaseHandler {
                 getZongMenShop(zongMenId,playerId,message,paramList,client);
         case PbProtocol.ZongMenBuyShopRequest_40000047 ->
                 ZongMenBuyShop(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.findZongMenRequest_40000003 ->
+                findZongMen(zongMenId,playerId, message, paramList, client);
       }
 
     });
+  }
+
+  //查找宗门
+  private void findZongMen(long zongMenId,long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.findZongMenResponse_40000004);
+      return;
+    }
+    res.setZongMen(zongMenInfo.toProto());
+    sendMsgToGameServer(playerId, client, res.build(), PbProtocol.findZongMenResponse_40000004);
   }
 
   // 购买宗门商店物品
@@ -241,6 +259,8 @@ public class ZongMenHandler extends BaseHandler {
     }
     ZongMenMember member = zongMenInfo.getMember(playerId);
     GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
+    List<Long> targetPidList = new ArrayList<>();
+    req.getTargetPidListList().forEach(pid ->{targetPidList.add(pid.longValue());});
     //加入审批检测
     if (req.getOptType() == 1 || req.getOptType() == 2){
       if (!permissionsConfig.Approval){
@@ -294,11 +314,11 @@ public class ZongMenHandler extends BaseHandler {
 
     //审批同意添加成员
     if (req.getOptType() == 1){
-      zongMenInfo.addMemberAuth(req.getTargetPidListList(), playerName);
+      zongMenInfo.addMemberAuth(targetPidList, playerName);
     } else if (req.getOptType() == 2){//审批拒绝添加成员
-      zongMenInfo.removeApplyAuth(req.getTargetPidListList(), playerName);
+      zongMenInfo.removeApplyAuth(targetPidList, playerName);
     } else if (req.getOptType() == 3){//踢人
-      zongMenInfo.kickMember(req.getTargetPidListList(), playerName);
+      zongMenInfo.kickMember(targetPidList, playerName);
     }
     sendMsgToGameServer(playerId, client,res.build(), PbProtocol.updateMemberAuthResponse_40000042);
   }
@@ -550,7 +570,7 @@ public class ZongMenHandler extends BaseHandler {
       zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION,playerName);
     }
     if (req.getIcon() != 0
-            && zongMenInfo.getModule().setting.unlockIconList.contains(req.getIcon())) {
+            && zongMenInfo.getModule().setting.unlockIconMap. containsKey(req.getIcon())) {
       if (!permissionsConfig.Icon){
         sendErrorCodeMsgToGameServer(
                 playerId,
@@ -561,8 +581,8 @@ public class ZongMenHandler extends BaseHandler {
       }
       zongMenInfo.getData().setIcon(req.getIcon());
     }
-    if (req.getAutoJoin() == 1 || req.getAutoJoin() == 2) {
-      zongMenInfo.getModule().setting.setAutoJoin(req.getAutoJoin() == 1);
+    if (req.getAutoJoin() != 1 && req.getAutoJoin() != 2 && req.getAutoJoin() != 3) {
+      zongMenInfo.getModule().setting.setAutoJoin(req.getAutoJoin());
     }
     if (req.getTianDaoLevel() != 0) {
       zongMenInfo.getModule().setting.setTianDaoLevel(req.getTianDaoLevel());
@@ -636,8 +656,15 @@ public class ZongMenHandler extends BaseHandler {
       zongMenInfo.joinZongMen(
               playerId, playerName, power, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
       res.setZongMen(zongMenInfo.toProto(playerId));
+    }  else if (zongMenInfo.getModule().setting.autoJoin == 2) {
+        zongMenInfo.applyJoin(playerId);
     } else {
-      zongMenInfo.applyJoin(playerId);
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_apply_exist,//TODO zong_men_not_allow_join
+              PbProtocol.applyJoinZongMenResponse_40000008);
+      return;
     }
     sendMsgToGameServer(
             playerId, client, res.build(), PbProtocol.applyJoinZongMenResponse_40000008);

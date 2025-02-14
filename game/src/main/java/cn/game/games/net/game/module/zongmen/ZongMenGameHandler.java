@@ -55,66 +55,72 @@ import io.vertx.core.Promise;
 @Component
 public class ZongMenGameHandler extends BaseHandler {
    static Logger log = LoggerFactory.getLogger(ZongMenGameHandler.class);
+    public static Future<ZongMenCallbackMsg> sendMsgToZongMenServer( long zongMenId,
+            Player player, Message req, String... params) {
+// 封装宗门请求
+        ServerMsg.ZongMenMsgRequest_7d000045.Builder serverReq =
+                ServerMsg.ZongMenMsgRequest_7d000045.newBuilder();
+        // 设置请求参数
+        // 宗门ids
+        serverReq.setZongMenId(zongMenId);
+        // 玩家id
+        serverReq.setPlayerId(player.getPlayerId());
+        // 请求消息
+        serverReq.setData(req.toByteString());
+        // TODO 上下文设置 后续日志记录
+        if (params != null && params.length > 0) {
+            for (String param : params) {
+                serverReq.addParams(param);
+            }
+        }
+        int reqMsgId = PbProtocol.getInstance().getMsgId(req.getClass().getSimpleName());
+        serverReq.setMsgId(reqMsgId);
+        // 回包id
+        final int responseMsgId = reqMsgId + 1;
+        Promise<ZongMenCallbackMsg> future = Promise.promise();
+        // 异步RPC请求
+        Future<ServerMsg.ZongMenMsgResponse_7d000046> rpcFuture;
+        if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
+            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
+        } else {
+            rpcFuture =
+                    VxHolder.requestRemoteServer(
+                            ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
+        }
+        rpcFuture
+                .onSuccess( // 请求成功
+                        result -> {
+                            if (result != null) {
+                                log.info(String.format("sendMsgToZongMenServer callBack msgId:%d %s, errorCode:%d, pid:%d ,result:%s",
+                                        result.getMsgId(),req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
+                                ServerMsg.ZongMenMsgResponse_7d000046 serverResponse =
+                                        (ServerMsg.ZongMenMsgResponse_7d000046) result;
+
+                                if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
+                                    Message response =
+                                            PbProtocol.getInstance()
+                                                    .parseFrom(responseMsgId, serverResponse.getData().toByteArray());
+                                    log.info(String.format("response:%s",response));
+                                    // 异步请求成功 封装 proto 信息和错误码 回调
+                                    future.complete(new ZongMenCallbackMsg(serverResponse.getErrorCode(), response));
+                                } else {
+                                    // 异步请求失败 封装 错误码 回调
+                                    future.complete(new ZongMenCallbackMsg(serverResponse.getErrorCode(), null));
+                                }
+                            } else {
+                                future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+                            }
+                        })
+                .onFailure(
+                        err -> {
+                            future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+                            err.printStackTrace();
+                        });
+        return future.future();
+    }
   public static Future<ZongMenCallbackMsg> sendMsgToZongMenServer(
       Player player, Message req, String... params) {
-    // 封装宗门请求
-    ServerMsg.ZongMenMsgRequest_7d000045.Builder serverReq =
-        ServerMsg.ZongMenMsgRequest_7d000045.newBuilder();
-    // 设置请求参数
-    // 宗门ids
-    serverReq.setZongMenId(player.getZongMenId());
-    // 玩家id
-    serverReq.setPlayerId(player.getPlayerId());
-    // 请求消息
-    serverReq.setData(req.toByteString());
-    // TODO 上下文设置 后续日志记录
-    if (params != null && params.length > 0) {
-      for (String param : params) {
-        serverReq.addParams(param);
-      }
-    }
-	int reqMsgId = PbProtocol.getInstance().getMsgId(req.getClass().getSimpleName());
-    serverReq.setMsgId(reqMsgId);
-    // 回包id
-    final int responseMsgId = reqMsgId + 1;
-    Promise<ZongMenCallbackMsg> future = Promise.promise();
-    // 异步RPC请求
-    Future<ServerMsg.ZongMenMsgResponse_7d000046> rpcFuture;
-    if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
-      rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
-    } else {
-      rpcFuture =
-          VxHolder.requestRemoteServer(
-              ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
-    }
-    rpcFuture
-        .onSuccess( // 请求成功
-            result -> {
-              if (result != null) {
-                  log.info(String.format("msgId:%d errorCode:%d pid:%d", result.getMsgId(), result.getErrorCode(), result.getPlayerId()));
-                ServerMsg.ZongMenMsgResponse_7d000046 serverResponse =
-                    (ServerMsg.ZongMenMsgResponse_7d000046) result;
-
-                if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
-                  Message response =
-                      PbProtocol.getInstance()
-                          .parseFrom(responseMsgId, serverResponse.getData().toByteArray());
-                  // 异步请求成功 封装 proto 信息和错误码 回调
-                  future.complete(new ZongMenCallbackMsg(serverResponse.getErrorCode(), response));
-                } else {
-                  // 异步请求失败 封装 错误码 回调
-                  future.complete(new ZongMenCallbackMsg(serverResponse.getErrorCode(), null));
-                }
-              } else {
-                future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
-              }
-            })
-        .onFailure(
-            err -> {
-                future.complete(new ZongMenCallbackMsg(ErrorMsgEnum.unknown.ID, null));
-                err.printStackTrace();
-            });
-    return future.future();
+        return sendMsgToZongMenServer(player.getZongMenId(), player, req, params);
   }
 
   @Override
@@ -133,6 +139,7 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
     putInvoker(PbProtocol.getZongMenShopRequest_40000027, this::getZongMenShop);
     putInvoker(PbProtocol.ZongMenBuyShopRequest_40000047, this::buyZongMenShop);
+    putInvoker(PbProtocol.ZongMenGetMyApplyZongMenIdListRequest_40000055, this::getMyApplyZongMenIdList);
 
   }
 
@@ -141,7 +148,45 @@ public class ZongMenGameHandler extends BaseHandler {
     return 0x40;
   }
 
-    private void buyZongMenShop(NetClient client, Object o) {
+  // 获取申请过的宗门列表
+  private void getMyApplyZongMenIdList(NetClient client, Object o) {
+    ZongMenMsg.ZongMenGetMyApplyZongMenIdListRequest_40000055 req =
+        (ZongMenMsg.ZongMenGetMyApplyZongMenIdListRequest_40000055) o;
+    ZongMenMsg.ZongMenGetMyApplyZongMenIdListResponse_40000056.Builder res =
+        ZongMenMsg.ZongMenGetMyApplyZongMenIdListResponse_40000056.newBuilder();
+    Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+    ZongMenModule zongMenModule = player.getZongmenModule();
+    if (player.getZongMenId() != 0 || zongMenModule.applyJoinList.isEmpty()) {
+      client.sendProtocol(res.build());
+      return;
+    }
+    ZongMenHelper.getSimpleZongMenListAsync(zongMenModule.getApplyJoinList())
+        .thenAccept(resultList -> {
+            if (resultList == null){// 没有申请宗门
+                zongMenModule.getApplyJoinList().clear();
+                client.sendProtocol(res.build());
+                return;
+            }
+            resultList.forEach(obj -> {
+                SimpleZongMen simpleZongMen = (SimpleZongMen) obj;
+                if (!simpleZongMen.getApplyPidList().contains(player.getPlayerId())){
+                    zongMenModule.removeApplyJoinList(simpleZongMen.getId());
+                }
+            });
+            zongMenModule.getApplyJoinList().forEach(zongMenId ->{
+                res.addZongMenIdList(zongMenId.intValue());
+            });
+            client.sendProtocol(res.build());
+        })
+        .exceptionally(
+            err -> {
+              client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+              err.printStackTrace();
+              return null;
+            });
+  }
+
+  private void buyZongMenShop(NetClient client, Object o) {
       ZongMenMsg.ZongMenBuyShopRequest_40000047 req = (ZongMenMsg.ZongMenBuyShopRequest_40000047) o;
       ZongMenMsg.ZongMenBuyShopResponse_40000048.Builder res =
           ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder();
@@ -544,21 +589,17 @@ public class ZongMenGameHandler extends BaseHandler {
     ZongMenMsg.findZongMenResponse_40000004.Builder res =
         ZongMenMsg.findZongMenResponse_40000004.newBuilder();
     long zongMenId = req.getId();
-    ZongMenHelper.getSimpleZongMenAsync(zongMenId)
-        .onSuccess(
-            simpleZongMen -> {
-              if (simpleZongMen == null) {
-                client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
-                return;
-              }
-              res.setZongMen(simpleZongMen.toProto());
-              client.sendProtocol(res);
-            })
-        .onFailure(
-            err -> {
-              err.printStackTrace();
-              client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
-            });
+    Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+    sendMsgToZongMenServer(zongMenId,player,req).onSuccess(result ->{
+        if (result.errorCode == ErrorMsgEnum.ok.ID){
+            client.sendProtocol(result.response);
+        }else{
+            client.sendProtocol(res.build(), result.errorCode);
+        }
+    }).onFailure(err ->{
+    client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
+    err.printStackTrace();
+    });
   }
 
   private void zongMenList(NetClient client, Object o) {

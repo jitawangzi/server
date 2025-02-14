@@ -3,8 +3,9 @@ package cn.game.games.net.cross.zongmen;
 import cn.game.protocol.generated.manager.GuildIconManager;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ZongMenSetting
@@ -18,14 +19,16 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
     String wx;
     /**微信号修改次数 */
     int wxChangeNum;
-    /** 解锁的图标 */
-    List<Integer> unlockIconList = new ArrayList<>();
+
+  /** 解锁的图标 key iconId ,value 过期时间戳 -1 永久 */
+  Map<Integer, Long> unlockIconMap = new HashMap<>();
+
     /**上一次修改宗门名称时间戳*/
     long lastChangeNameTimer;
     /**上一次修改微信号时间戳*/
     long lastChangeWxTimer;
-    /**自动加入*/
-    boolean autoJoin;
+    /** 1 快速加入、2 需要验证加入、3 不可加入； */
+    int autoJoin;
     /*** 天道等级 */
     int tianDaoLevel;
 
@@ -43,10 +46,10 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
                 int level = info.getLv();
                 GuildIconManager.instance().list().stream().filter(icon -> icon.LV == level).forEach(icon -> {
                     for (int iconId : icon.Icon)  {
-                        if (unlockIconList.contains(iconId)) {
+                        if (unlockIconMap.containsKey(iconId)) {
                             continue;
                         }
-                        unlockIconList.add(iconId);
+                        unlockIconMap.put(iconId, -1L);
                     }
                 });
                 break;
@@ -59,7 +62,10 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
         ZongMenMsg.ZongMenSettingProto.Builder builder = ZongMenMsg.ZongMenSettingProto.newBuilder();
         builder.setWx(wx == null ? "" : wx);
         builder.setWxChangeNum(wxChangeNum);
-        builder.addAllIconList(unlockIconList);
+        long now = System.currentTimeMillis();
+        unlockIconMap.forEach((ionId, expireTime) -> {
+                builder.putIconList(ionId,  expireTime > 0 ?  ((int) (expireTime - now/1000L)) : expireTime.intValue());
+        });
         builder.setLastChangeNameTimer((int) (lastChangeNameTimer/1000L));
         builder.setLastChangeWxTimer((int) (lastChangeWxTimer/1000L));
         return builder;
@@ -81,12 +87,12 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
         this.wxChangeNum = wxChangeNum;
     }
 
-    public List<Integer> getUnlockIconList() {
-        return unlockIconList;
+    public Map<Integer, Long> getUnlockIconMap() {
+        return unlockIconMap;
     }
 
-    public void setUnlockIconList(List<Integer> unlockIconList) {
-        this.unlockIconList = unlockIconList;
+    public void setUnlockIconMap(Map<Integer, Long> unlockIconMap) {
+        this.unlockIconMap = unlockIconMap;
     }
 
     public long getLastChangeNameTimer() {
@@ -105,11 +111,11 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
         this.lastChangeWxTimer = lastChangeWxTimer;
     }
 
-    public boolean isAutoJoin() {
+    public int getAutoJoin() {
         return autoJoin;
     }
 
-    public void setAutoJoin(boolean autoJoin) {
+    public void setAutoJoin(int autoJoin) {
         this.autoJoin = autoJoin;
     }
 

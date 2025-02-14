@@ -135,22 +135,23 @@ public class ServerHandler extends BaseHandler {
 
 	private void zongMenMsgNotify(NetClient client, Object o) {
 		ServerMsg.NotifyZongMenMsgToGame_7d000047 req = (ServerMsg.NotifyZongMenMsgToGame_7d000047) o;
-		long pid = req.getPlayerId();
 		int msgId = req.getMsgId();
 		Message message = PbProtocol.getInstance().parseFrom(msgId, req.getData());
-		Player player = PlayerManager.getInstance().getPlayer(pid);
-		switch (msgId){
-			//玩家 退出 宗门
-			case PbProtocol.notifyQuitZongMen_40000024 -> {
-				if (player == null) {
-					log.error("zongMenMsgNotify player is null");
-					return;
-				}
-				player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+		req.getPlayerIdList().forEach(pid ->{
+			Player player = PlayerManager.getInstance().getPlayer(pid);
+			if (player == null) {
+				log.error("zongMenMsgNotify player is null");
+				return;
 			}
-			//玩家 加入 宗门
-			case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
-		}
+			switch (msgId){
+				//玩家 退出 宗门
+				case PbProtocol.notifyQuitZongMen_40000024 -> {
+					player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+				}
+				//玩家 加入 宗门
+				case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
+			}
+		});
 	}
 
 	private void playerEvent(NetClient client, Object o) {

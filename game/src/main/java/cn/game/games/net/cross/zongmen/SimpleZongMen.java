@@ -2,6 +2,8 @@ package cn.game.games.net.cross.zongmen;
 
 import cn.game.protocol.protobuf.ZongMenMsg;
 
+import java.util.List;
+
 /**
  * @ClassName SimpleZongMen
  *
@@ -22,14 +24,17 @@ public class SimpleZongMen {
     int lv;
     /**总人数*/
     int num;
-    /**是否允许自动加入 true 自动加入 ,false 不自动加入 */
-    boolean isAutoJoin;
+    /**1 快速加入、2 需要验证加入、3 不可加入； */
+    int isAutoJoin;
     /** 天道的等级 */
     int tianDaoLevel;
+    /**申请的玩家id集合*/
+    List<Long> applyPidList;
+
 
     public ZongMenMsg.ZongMenSimpleInfoProto toProto() {
         ZongMenMsg.ZongMenSimpleInfoProto.Builder builder = ZongMenMsg.ZongMenSimpleInfoProto.newBuilder();
-        builder.setId(id);
+        builder.setId((int) id);
         builder.setName(name);
         builder.setTotalPower(totalPower);
         builder.setIcon(icon);
@@ -89,12 +94,12 @@ public class SimpleZongMen {
         this.num = num;
     }
 
-    public boolean isAutoJoin() {
+    public int getIsAutoJoin() {
         return isAutoJoin;
     }
 
-    public void setAutoJoin(boolean autoJoin) {
-        isAutoJoin = autoJoin;
+    public void setIsAutoJoin(int isAutoJoin) {
+        this.isAutoJoin = isAutoJoin;
     }
 
     public int getTianDaoLevel() {
@@ -103,5 +108,13 @@ public class SimpleZongMen {
 
     public void setTianDaoLevel(int tianDaoLevel) {
         this.tianDaoLevel = tianDaoLevel;
+    }
+
+    public List<Long> getApplyPidList() {
+        return applyPidList;
+    }
+
+    public void setApplyPidList(List<Long> applyPidList) {
+        this.applyPidList = applyPidList;
     }
 }

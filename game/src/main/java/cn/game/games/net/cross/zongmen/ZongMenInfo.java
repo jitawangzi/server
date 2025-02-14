@@ -149,12 +149,13 @@ public class ZongMenInfo {
         simpleZongMen.setName(data.getName());
         simpleZongMen.setIcon(data.getIcon());
         simpleZongMen.setNum(module.menMemberMap.size());
-        simpleZongMen.setAutoJoin(isAutoJoin());
+        simpleZongMen.setIsAutoJoin(getModule().setting.getAutoJoin());
         simpleZongMen.setTianDaoLevel(module.setting.getTianDaoLevel());
         return simpleZongMen;
     }
 
-    public ZongMenMsg.ZongMenInfoProto toProto(long playerId) {
+
+    public ZongMenMsg.ZongMenInfoProto toProto(long... notifyPids) {
         ZongMenMsg.ZongMenInfoProto.Builder builder = ZongMenMsg.ZongMenInfoProto.newBuilder();
         builder.setSimpleInfo(toSimpleZongMen().toProto());
         builder.setExp(getExp());
@@ -168,13 +169,17 @@ public class ZongMenInfo {
 
         List<Long> pidList = new ArrayList<>(module.menMemberMap.keySet());
         //该玩家有审批权限 同步 申请列表
-        ZongMenMember member = getMember(playerId);
-        GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
-        if (permissionsConfig.Approval){
-            pidList.addAll(module.applyList);
+        if (notifyPids != null && notifyPids.length > 0){
+            long playerId = notifyPids[0];
+            ZongMenMember member = getMember(playerId);
+            GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
+            if (permissionsConfig.Approval){
+                pidList.addAll(module.applyList);
+            }
         }
+
         //redis 同步加载 SimplePlayer
-        List<SimplePlayer> simplePlayerList = PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(new ArrayList<>(module.menMemberMap.keySet())).result();
+        List<SimplePlayer> simplePlayerList = PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(pidList).result();
         if (simplePlayerList != null){
             simplePlayerList.forEach(simplePlayer -> {
                 if (memberProtoMap.containsKey(simplePlayer.getId())){
@@ -195,8 +200,7 @@ public class ZongMenInfo {
     builder.setSetting(settingProto.build());
     builder.setLiveness(module.liveness);
 
-    //封装shop
-     builder.setShop(module.shop.toProto(member));
+
 
     return builder.build();
     }
@@ -225,7 +229,7 @@ public class ZongMenInfo {
     }
 
     public boolean isAutoJoin() {
-        return module.setting.isAutoJoin();
+        return module.setting.getAutoJoin() == 1;
     }
 
     public ZongMenMember getMember(long playerId) {
@@ -299,6 +303,7 @@ public class ZongMenInfo {
         .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
         .onSuccess(
             res -> {
+                List<Long> joinPidList = new ArrayList<>();
               res.forEach(
                   simplePlayer -> {
                     if (isFull()) {
@@ -312,16 +317,15 @@ public class ZongMenInfo {
                         simplePlayer.getName(),
                         simplePlayer.combatEffectiveness,
                         ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-                    // 通知被加入的玩家 加入宗门
-                    ZongMenHelper.notifyMsgToPlayer(
-                        simplePlayer.id,
-                        ZongMenMsg.notifyJoinZongMen_40000044
-                            .newBuilder()
-                            .addTargetPids(simplePlayer.getId())
-                            .setZongMen(toProto(simplePlayer.id))
-                            .build(),
-                        PbProtocol.notifyJoinZongMen_40000044);
+                    joinPidList.add(simplePlayer.getId());
+
                   });
+                // 通知被加入的玩家 加入宗门
+                ZongMenHelper.broadcastNotifyMsgToPlayer(ZongMenMsg.notifyJoinZongMen_40000044
+                                .newBuilder()
+                                .setZongMen(toProto())
+                                .build(),
+                        PbProtocol.notifyJoinZongMen_40000044,joinPidList);
               //更新宗门战斗力排行榜
               ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
             })
