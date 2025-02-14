@@ -283,12 +283,6 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setRewardLevel(heroModule.getIllustrationRewardLevel());
 
 		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
-
-		//宗门信息
-		builder.setZongMenId(player.getZongMenId());
-		if (player.getZongMenId() != 0) {
-			builder.setZongMenName(player.getZongMenName());
-		}
 	}
 	@Override
 	public void handleEvent(GameEvent event) {

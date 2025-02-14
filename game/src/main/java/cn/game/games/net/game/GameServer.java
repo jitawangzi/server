@@ -183,6 +183,7 @@ public class GameServer implements GameServerMBean {
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
+
 	}
 
 	/** 

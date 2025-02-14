@@ -20,4 +20,6 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	 */
 	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit);
 
+	io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId);
+
 }

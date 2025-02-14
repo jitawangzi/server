@@ -1,13 +1,16 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.core.cache.CacheType;
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.RedisUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.util.*;
 
 
 /**
@@ -31,6 +34,8 @@ public class ZongMenModuleData {
     ZongMenShop shop;
     /**  宗门 活跃度 */
     int liveness;
+	/** 宗门砍价 */
+	ZongMenBargain bargain;
 
   /*** 宗门 申请列表 */
   List<Long> applyList = new ArrayList<>();
@@ -76,9 +81,11 @@ public class ZongMenModuleData {
         optLog = new ZongMenOptLog();
         setting = new ZongMenSetting();
         shop = new ZongMenShop();
+		bargain = new ZongMenBargain();
     }
     public void afterInit(ZongMenInfo info){
         shop.init(info);
+		bargain.init();
     }
 
     public void addMember(ZongMenMember member,ZongMenInfo  info)  {
@@ -127,8 +134,15 @@ public class ZongMenModuleData {
         this.liveness = liveness;
     }
 
+	public ZongMenBargain getBargain() {
+		return bargain;
+	}
 
-    public void refreshShopByWeek() {
+	public void setBargain(ZongMenBargain bargain) {
+		this.bargain = bargain;
+	}
+
+	public void refreshShopByWeek() {
         menMemberMap.values().forEach(member ->{
             member.refreshWeekShop();
         });

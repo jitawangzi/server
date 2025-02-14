@@ -38,9 +38,10 @@ public class ZongMenModule extends BasePlayerModule {
    * 第二次及后续退出时，需要1小时才可加入其它宗门（ZongmenMemberCD）*
    */
   long nextJoinTimer;
-  /** 申请过加入宗门列表 */
-  List<Long> applyJoinList = new ArrayList<>();
-
+	/** 加入时间 */
+	long joinTime;
+    /** 申请过加入宗门列表 */
+    List<Long> applyJoinList = new ArrayList<>();
   public long getZongMenId() {
     return zongMenId;
   }
@@ -73,8 +74,19 @@ public class ZongMenModule extends BasePlayerModule {
     this.nextJoinTimer = nextJoinTimer;
   }
 
-  @Override
-  public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {}
+	public long getJoinTime() {
+		return joinTime;
+	}
+
+	@Override
+	public void buildPlayerAllInfo(PlayerMsg.PlayerAllInfo.Builder builder) {
+		// 宗门信息
+		builder.setZongMenId(zongMenId);
+		if (zongMenName != null) {
+			builder.setZongMenName(zongMenName);
+		}
+		builder.setZongMenQuitCount(disbandCount);
+	}
 
   @Override
   public EventTypeEnum[] getEventTypes() {
@@ -176,6 +188,13 @@ public class ZongMenModule extends BasePlayerModule {
     setZongMenId(zongMen.getSimpleInfo().getId());
     setZongMenName(zongMen.getSimpleInfo().getName());
     getApplyJoinList().clear();
+	List<ZongMenMemberProto> memberListList = zongMen.getMemberListList();
+	for (ZongMenMemberProto zongMenMemberProto : memberListList) {
+		if (zongMenMemberProto.getPid() == playerId) {
+			joinTime = zongMenMemberProto.getJoinTime();
+			break;
+		}
+	}
     refreshZongMenTask();
   }
 
