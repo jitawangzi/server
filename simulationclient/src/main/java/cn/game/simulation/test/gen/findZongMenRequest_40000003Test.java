@@ -13,7 +13,7 @@ public class findZongMenRequest_40000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.newBuilder() ; 
 		
-		
+		builder.setId(88800010008L);
 		
 		return builder.build() ; 
 	}

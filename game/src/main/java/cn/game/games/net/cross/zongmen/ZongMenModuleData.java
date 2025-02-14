@@ -101,11 +101,13 @@ public class ZongMenModuleData {
     }
 
     public void removeAllMember() {
-        menMemberMap.keySet().forEach(playerId -> {
-           removeMember(playerId);
+        List<Long> pidList = new ArrayList<>(menMemberMap.keySet());
+        pidList.forEach(playerId -> {
+            removeMember(playerId);
         });
         menMemberMap.clear();
     }
+
 
     public void removeMember(long playerId) {
         menMemberMap.remove(playerId);

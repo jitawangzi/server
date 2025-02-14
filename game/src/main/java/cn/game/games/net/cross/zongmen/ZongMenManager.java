@@ -47,7 +47,7 @@ public class ZongMenManager {
     public void init() {
         lastCrossDayTimer = System.currentTimeMillis();
         //加载宗门数据
-//        loadAllData();
+        loadAllData();
         //启动定时器 定期存储 宗门数据
         SchedulerService.getInstance().scheduleAtFixedRate(saveAllZongMenData(),ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
         //启动定时器 定期触发宗门 时间相关事件

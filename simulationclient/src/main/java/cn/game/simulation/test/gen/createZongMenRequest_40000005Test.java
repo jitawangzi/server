@@ -13,7 +13,7 @@ public class createZongMenRequest_40000005Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.newBuilder() ; 
 		
-		builder.setName("测试宗门08");
+		builder.setName("测试宗门10");
 		
 		return builder.build() ; 
 	}

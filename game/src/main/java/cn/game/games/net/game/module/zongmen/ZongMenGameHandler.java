@@ -555,7 +555,8 @@ public class ZongMenGameHandler extends BaseHandler {
                 client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
                 return;
               }
-              client.sendProtocol(simpleZongMen.toProto());
+              res.setZongMen(simpleZongMen.toProto());
+              client.sendProtocol(res);
             })
         .onFailure(
             err -> {
@@ -587,15 +588,24 @@ public class ZongMenGameHandler extends BaseHandler {
                   zongMenRankList.stream().map(RankEntry::getPlayerId).collect(Collectors.toList());
               ZongMenHelper.getSimpleZongMenListAsync(zongMenIdList).thenAccept(list -> {
                   if (list != null){
-                      list.forEach(
-                              simpleZongMen -> {
-                                  res.addZongMenList(((SimpleZongMen)simpleZongMen).toProto());
-                              });
+                      for (Object simpleZongMen : list ) {
+                          if (simpleZongMen != null) {
+                              res.addZongMenList(((SimpleZongMen)simpleZongMen).toProto());
+                                  }
+                      }
                   }
                   client.sendProtocol(res.build());
+              }).exceptionally( err ->{
+                  client.sendProtocol(res.build(), ErrorMsgEnum.unknown.getId());
+                  err.printStackTrace();
+                return null;
               });
               return null;
-            });
+            }).exceptionally(
+                    err->{
+                        client.sendProtocol(res.build(), ErrorMsgEnum.unknown.getId());
+                        err.printStackTrace();
+                return null;});
 
   }
 
