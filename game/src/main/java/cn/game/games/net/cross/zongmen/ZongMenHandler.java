@@ -3,6 +3,7 @@ package cn.game.games.net.cross.zongmen;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.protocol.protobuf.ChatMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -84,9 +85,27 @@ public class ZongMenHandler extends BaseHandler {
                 ZongMenBuyShop(zongMenId, playerId, message, paramList, client);
         case PbProtocol.findZongMenRequest_40000003 ->
                 findZongMen(zongMenId,playerId, message, paramList, client);
+        case PbProtocol.ChatRequest_31000001 ->
+                zongMenChat(zongMenId,playerId, message, paramList, client);
       }
 
     });
+  }
+
+  //宗门聊天
+  private void zongMenChat(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.ChatResponse_31000002);
+      return;
+    }
+    List<Long> memberIdList = new ArrayList<>(zongMenInfo.getModule().menMemberMap.keySet());
+    memberIdList.remove(playerId);
+    ZongMenHelper.broadcastNotifyMsgToPlayer(message,PbProtocol.ChatRequest_31000001,memberIdList);
   }
 
   //查找宗门

@@ -444,6 +444,8 @@ public class ZongMenGameHandler extends BaseHandler {
               });
   }
 
+  //已废弃 不要主动解散宗门了
+  @Deprecated
   private void dissolveZongMen(NetClient client, Object o) {
     ZongMenMsg.dissolveZongMenRequest_40000011 req = (ZongMenMsg.dissolveZongMenRequest_40000011) o;
     ZongMenMsg.dissolveZongMenResponse_40000012.Builder res =

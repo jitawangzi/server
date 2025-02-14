@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import cn.game.protocol.protobuf.ChatMsg;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -150,8 +151,15 @@ public class ServerHandler extends BaseHandler {
 				}
 				//玩家 加入 宗门
 				case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
+				case PbProtocol.ChatRequest_31000001 -> {//宗门聊天
+					zongMenChat(player,(ChatMsg.ChatRequest_31000001) message);
+				}
 			}
 		});
+	}
+
+	private void zongMenChat(Player notifyPlayer, ChatMsg.ChatRequest_31000001 req) {
+		notifyPlayer.getGameClient().sendProtocol(req);
 	}
 
 	private void playerEvent(NetClient client, Object o) {
