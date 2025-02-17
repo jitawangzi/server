@@ -68,6 +68,13 @@ public class CrossServer {
 
 		initVerticle();
 
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				shutdown();
+			}
+		});
+
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
 		crossActivityService.init();
@@ -84,12 +91,17 @@ public class CrossServer {
 
 	}
 
+
 	public static void main(String args[]) {
 		try {
 			instance.start(args);
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
 		}
+	}
+
+	private void shutdown() {
+		IdCache.clearAllCurrentServerId();
 	}
 
 	private void initVerticle() throws Exception {

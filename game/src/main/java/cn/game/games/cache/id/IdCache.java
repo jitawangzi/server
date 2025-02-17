@@ -83,6 +83,17 @@ public class IdCache {
 		}
 	}
 
+	public static void clearAllCurrentServerId() {
+		for (DistributedObjectType distributedObjectType : DistributedObjectType.values()) {
+			GenericDistributedIDManager manager = getManager(distributedObjectType);
+			Collection<Long> allIds = manager.getAllIds();
+			for (Long id : allIds) {
+				String redisKey = manager.generateRedisKey(id);
+				RedisUtil.delete(redisKey);
+			}
+		}
+	}
+
 	public static RFuture<Void> setServerId(DistributedObjectType objectType, long id) {
 		GenericDistributedIDManager manager = getManager(objectType);
 		String redisKey = manager.generateRedisKey(id);
