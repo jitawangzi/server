@@ -2,6 +2,7 @@ package cn.game.games.net.cross.data;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -67,10 +68,12 @@ public class CrossServerDataLoader implements ServerInstanceListener {
 		if (serverType != ServerType.Cross) {
 			return;
 		}
-		SchedulerService.getInstance().scheduleTask(() -> {
+		// TODO 优化一个等待周期，多个加载操作合并为一次
+		ScheduledFuture<?> scheduleTask = SchedulerService.getInstance().scheduleTask(() -> {
 			load();
 			// 等待redis中的id--serverId自然过期再重新加载数据
 		}, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS + 10, TimeUnit.SECONDS);
+
 	}
 
 }

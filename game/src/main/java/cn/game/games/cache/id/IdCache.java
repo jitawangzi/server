@@ -2,7 +2,6 @@ package cn.game.games.cache.id;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -10,15 +9,11 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheConfig;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.GenericDistributedIDManager;
-import cn.game.core.net.remote.RemoteServerInterface;
-import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.task.SchedulerService;
 import cn.game.util.Config;
 import cn.game.util.RedisUtil;
@@ -122,7 +117,6 @@ public class IdCache {
 	 * @param objectType
 	 * @param id
 	 * @return 是否设置成功,true:设置成功,false 设置失败，可能是对象在其他服务器管理了
-	 * @throws RuntimeException 当在生产模式下设置失败时抛出异常
 	 */
 	public static boolean initServerId(DistributedObjectType objectType, long id) {
 		GenericDistributedIDManager manager = getManager(objectType);
@@ -130,6 +124,8 @@ public class IdCache {
 		boolean result = RedisUtil.trySet(redisKey, ServerContext.getInstance().getServerId(),
 				Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
 				TimeUnit.SECONDS);
+		return result;
+		/**
 		if (result) {
 			return result;
 		}
@@ -157,6 +153,7 @@ public class IdCache {
 					TimeUnit.SECONDS);
 		}
 		return true;
+		*/
 
 	}
 
