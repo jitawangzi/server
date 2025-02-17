@@ -796,7 +796,7 @@ public class ChapterHandler extends BaseHandler {
 		if (pay) {
 			List<Integer> payList = new ArrayList<>();
 			int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
-			for (int i = 0; i < paySweepCostAll.length; i++) {
+			for (int i = 0; i < allCount; i++) {
 				payList.add(paySweepCostAll[i][0]);
 				payList.add(paySweepCostAll[i][1]);
 			}
