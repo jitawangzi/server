@@ -38,6 +38,8 @@ public class ServerContext {
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
+	private String serverId;
+	private ServerType serverType;
 	/** 是否是主节点 */
 	private volatile boolean isLeader;
 	private LeaderLatch leaderLatch;
@@ -52,10 +54,6 @@ public class ServerContext {
 	public static ServerContext getInstance() {
 		return instance;
 	}
-
-	private String serverId;
-	private ServerType serverType;
-
 	
 	public String getServerId() {
 		return serverId;
@@ -299,6 +297,7 @@ public class ServerContext {
 	 * @param serverType 服务器类型
 	 * @return
 	 */
+	@Deprecated
 	public String parseServerId(String[] args, ServerType serverType) {
 		String serverId = null;
 		String serverIdKey = serverType.getServerIdKey();

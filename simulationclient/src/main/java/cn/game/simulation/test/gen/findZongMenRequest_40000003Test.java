@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
@@ -13,7 +14,7 @@ public class findZongMenRequest_40000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.newBuilder() ; 
 		
-		builder.setId(88800010008L);
+		builder.setId(8880001);
 		
 		return builder.build() ; 
 	}
