@@ -20,6 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @author SYQ
  */
 public final class DateUtil {
+	/** 固定的起始日期,判断天数、周数等，避免跨年、月等问题 */
+	private static final LocalDate DATE_START = LocalDate.of(2025, 1, 1);
+
 	/** yyyy年MM月dd日 HH时mm分ss秒 */
 	public static final String pattern_zh = "yyyy年MM月dd日 HH时mm分ss秒";
 	/** yyyy-MM-dd HH:mm:ss  默认的日期格式**/
@@ -283,19 +286,6 @@ public final class DateUtil {
 		return targetDateTime.atZone(zoneId).toInstant().toEpochMilli();
 	}
 
-	/**
-	 * 得到当前星期数
-	 * 
-	 * @return 如周一返回1
-	 */
-	public static int getDayOfWeek() {
-		Calendar calendar = Calendar.getInstance();
-		int today = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-		if (today == 0) {
-			today = 7;
-		}
-		return today;
-	}
 
 	/**
 	 * 将毫秒级的timeMillis转化成格式为（HH:mm:ss）的字符串
@@ -404,31 +394,34 @@ public final class DateUtil {
 		return calendar.get(Calendar.DAY_OF_YEAR) - 1;
 	}
 
+	/** 
+	 * 获取当前天数（相对于起始日期）
+	 * @return
+	 */
 	public static int getDay() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.DAY_OF_YEAR);
-	}
-	/**今天是当前月的第几天*/
-	public static int getDayOfMonth() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.DAY_OF_MONTH);
+		return (int) ChronoUnit.DAYS.between(DATE_START, LocalDate.now());
 	}
 
-	public static int getHour() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.HOUR_OF_DAY);
+	/**
+	 * 获取指定日期的天数（相对于起始日期）
+	 */
+	public static int getDayNumber(LocalDate date) {
+		return (int) ChronoUnit.DAYS.between(DATE_START, date);
 	}
 
+	/**
+	 * 获取指定日期的周数（相对于起始日期）
+	 */
 	public static int getWeek() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setFirstDayOfWeek(Calendar.MONDAY);
-		int week = calendar.get(Calendar.WEEK_OF_YEAR);
-		return week;
+		return (int) ChronoUnit.WEEKS.between(DATE_START, LocalDate.now());
 	}
 	
+	/** 
+	 * 获取指定日期的月数（相对于起始日期）
+	 * @return
+	 */
 	public static int getMonth() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.MONTH);
+		return (int) ChronoUnit.MONTHS.between(DATE_START, LocalDate.now());
 	}
 
 	public static long addWeekBeginTimer(int offsetWeek){
