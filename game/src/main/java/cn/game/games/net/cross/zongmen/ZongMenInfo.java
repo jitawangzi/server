@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
@@ -183,6 +181,7 @@ public class ZongMenInfo {
             if (permissionsConfig.Approval){
                 pidList.addAll(module.applyList);
             }
+			builder.setBargain(module.bargain.toProto(member));
         }
 
         //redis 同步加载 SimplePlayer

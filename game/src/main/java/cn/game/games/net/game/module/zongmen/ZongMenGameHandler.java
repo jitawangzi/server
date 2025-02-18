@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
 
-import cn.game.core.cache.CacheType;
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -44,6 +42,7 @@ import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgRequest_41000045;
 import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgResponse_41000046;
 import cn.game.protocol.protobuf.ZongMenMsg;
@@ -87,13 +86,13 @@ public class ZongMenGameHandler extends BaseHandler {
         Promise<ZongMenCallbackMsg> future = Promise.promise();
         // 异步RPC请求
 		Future<ZongMenMsgResponse_41000046> rpcFuture;
-        if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
-            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
-        } else {
-            rpcFuture =
-                    VxHolder.requestRemoteServer(
-                            ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
-        }
+		if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
+			rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
+		} else {
+			rpcFuture = VxHolder.requestRemoteServer(ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
+		}
+//		rpcFuture = VxHolder.requestRemoteServer("xy_cross_syq", serverReq.build());
+
         rpcFuture
                 .onSuccess( // 请求成功
                         result -> {
@@ -222,14 +221,16 @@ public class ZongMenGameHandler extends BaseHandler {
 				.getCrossServerInterface(DistributedObjectType.ZONGMEN, player.getZongMenId());
 		Future<Integer> priceFuture = crossServerInterface.zongmenBargainPrice(player.getZongMenId());
 		priceFuture.map(price -> {
+			GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
 			if (price > 0) {
-				GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
 				boolean delResources = PlayerHelper.delResources(player, guildBargainConfig.Price[0], price, OpType.ZongMenBargain);
 				if (!delResources) {
 					client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
 					return null;
 				}
 			}
+			List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
+			res.addAllRewards(resources);
 			// 记录购买砍价
 			autoForwardZongMenServer(client, res, req, null);
 			return null;
