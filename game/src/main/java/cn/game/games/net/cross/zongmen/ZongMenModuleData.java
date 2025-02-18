@@ -44,12 +44,16 @@ public class ZongMenModuleData {
         registerEventHandler(optLog);
         registerEventHandler(setting);
         registerEventHandler(setting);
+        registerEventHandler(bargain);
         menMemberMap.values().forEach(member -> {
              registerEventHandler(member);
          });
     }
 
     void registerEventHandler(ZongMenConstants.ZongMenEventHandler eventHandler) {
+        if (eventHandler == null){
+            return;
+        }
         for (ZongMenConstants.ZongMenEvenType eventType : eventHandler.getRegisterEvent()) {
             List<ZongMenConstants.ZongMenEventHandler> handleList;
             if (eventTypeHandleMaps.containsKey(eventType)){
@@ -80,6 +84,8 @@ public class ZongMenModuleData {
     public void init() {
         optLog = new ZongMenOptLog();
         setting = new ZongMenSetting();
+        setting.setAutoJoin(2);
+
         shop = new ZongMenShop();
 		bargain = new ZongMenBargain();
     }

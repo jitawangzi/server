@@ -2,6 +2,7 @@ package cn.game.games.net.cross.zongmen;
 
 import cn.game.protocol.protobuf.ZongMenMsg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class SimpleZongMen {
     /** 天道的等级 */
     int tianDaoLevel;
     /**申请的玩家id集合*/
-    List<Long> applyPidList;
+    List<Long> applyPidList = new ArrayList<>();
 
 
     public ZongMenMsg.ZongMenSimpleInfoProto toProto() {

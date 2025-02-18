@@ -70,7 +70,7 @@ public class ZongMenHandler extends BaseHandler {
                 dissolveZongMen(zongMenId, playerId, message, paramList, client);
         case PbProtocol.setZongMenSettingRequest_40000013 ->
                 setZongMenSetting(zongMenId, playerId, message, paramList, client);
-        case PbProtocol.getZongMenLogResponse_40000026 ->
+        case PbProtocol.getZongMenLogRequest_40000025 ->
                 getZongMenLog(zongMenId, playerId, message, paramList, client);
         case PbProtocol.setZongMenMemberPositionRequest_40000015 ->
                 setZongMenMemberPosition(zongMenId, playerId, message, paramList, client);
@@ -96,9 +96,30 @@ public class ZongMenHandler extends BaseHandler {
                   zongMenChat(zongMenId,playerId, message, paramList, client);
         case PbProtocol.ZongMenUpdateMemberFightPower_40000052 ->
                 updateMemberFightPower(zongMenId, playerId, message, paramList, client);
+        case PbProtocol.ZongMenUpdateContributeValueReq_40000057 ->
+                updateContributeValue(zongMenId, playerId, message, paramList, client);
       }
 
     });
+  }
+
+  //同步宗门个人贡献度
+  private void updateContributeValue(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+        ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+        ZongMenMsg.ZongMenUpdateContributeValueReq_40000057 req = (ZongMenMsg.ZongMenUpdateContributeValueReq_40000057) message;
+        ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.Builder res = ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.newBuilder();
+        if (zongMenInfo == null) {
+          sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_not_exist, PbProtocol.ZongMenUpdateContributeValueRes_40000058);
+            return;
+        }
+      ZongMenMember member = zongMenInfo.getMember(playerId);
+      if (member == null) {
+        sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.zong_men_not_exist, PbProtocol.ZongMenUpdateContributeValueRes_40000058);
+        return;
+      }
+      member.setTotalContribution(req.getValue());
+      res.setResult(true);
+      sendMsgToGameServer(playerId, client, res.build(), PbProtocol.ZongMenUpdateContributeValueRes_40000058);
   }
 
   //玩家战斗力同步
@@ -685,6 +706,7 @@ public class ZongMenHandler extends BaseHandler {
     if (req.getTianDaoLevel() != 0) {
       zongMenInfo.getModule().setting.setTianDaoLevel(req.getTianDaoLevel());
     }
+    res.setResult(true);
     sendMsgToGameServer(
             playerId, client, res.build(), PbProtocol.setZongMenSettingResponse_40000014);
   }

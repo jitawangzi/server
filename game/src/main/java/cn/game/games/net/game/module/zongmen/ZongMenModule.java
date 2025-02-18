@@ -5,6 +5,8 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
+import cn.game.games.net.cross.zongmen.ZongMenHandler;
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.cross.zongmen.ZongMenSetting;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -13,6 +15,7 @@ import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +35,8 @@ public class ZongMenModule extends BasePlayerModule {
 
   /** 宗门反复加入次数 * */
   int disbandCount;
+  /** 宗门贡献值 */
+  long contribute;
 
   /**
    * 下次加入宗门的时间 第二次及后续解散时，宗主需要1小时才可加入其它宗门（ZongmenSuzerainCD）
@@ -105,14 +110,14 @@ public class ZongMenModule extends BasePlayerModule {
     }
   }
 
-  private void refreshZongMenTask() {
+  public void refreshZongMenTask() {
     if (zongMenId == 0) return;
     List<QuestConfig> zongMenTaskList =
         QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
     QuestModule questModule = player.getQuestModule();
     for (QuestConfig config : zongMenTaskList) {
       questModule.remove(config.ID);
-      //      questModule.open(config.ID,true);
+      questModule.open(config.ID,true);
     }
   }
 
@@ -129,12 +134,14 @@ public class ZongMenModule extends BasePlayerModule {
                 long zongMenId = Long.parseLong(msg + "");
                 setZongMenId(zongMenId);
                 getZongMenInfo();
-                List<QuestConfig> zongMenTaskList =
+                refreshZongMenTask();
+                player.getShopModule().refreshZongMenShop();
+               /* List<QuestConfig> zongMenTaskList =
                     QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
                 QuestModule questModule = player.getQuestModule();
                 for (QuestConfig config : zongMenTaskList) {
                   questModule.setState(questModule.get(config.ID), QuestHelper.ACCEPTED, true);
-                }
+                }*/
                 log.info(
                     String.format(
                         "玩家[%d]登录成功，离线期间被审批加入宗门  宗门ID[%d]", player.getPlayerId(), zongMenId));
@@ -175,12 +182,14 @@ public class ZongMenModule extends BasePlayerModule {
     setZongMenId(0);
     setZongMenName("");
     applyJoinList.clear();
+    player.getShopModule().clearZongMenShop();
     // 退出宗门 暂停宗门任务进度
     QuestModule questModule = player.getQuestModule();
     List<QuestConfig> zongMenTaskList =
         QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
     for (QuestConfig config : zongMenTaskList) {
-      questModule.setState(questModule.get(config.ID), QuestHelper.SHOW, true);
+      questModule.remove(config.ID);
+//      questModule.setState(questModule.get(config.ID), QuestHelper.SHOW, true);
     }
   }
 
@@ -195,7 +204,6 @@ public class ZongMenModule extends BasePlayerModule {
 			break;
 		}
 	}
-    refreshZongMenTask();
   }
 
   public void kickZongMen(ZongMenMsg.notifyQuitZongMen_40000024 quitZongMenMsg) {
@@ -217,5 +225,30 @@ public class ZongMenModule extends BasePlayerModule {
   }
   public void removeApplyJoinList(Long zongMenId) {
     applyJoinList.remove(zongMenId);
+  }
+
+  public long getContribute() {
+    return contribute;
+  }
+
+  public void setContribute(long contribute) {
+    this.contribute = contribute;
+  }
+
+  public boolean subContribute(long value) {
+    if (this.contribute > value) {
+      this.contribute -= value;
+      ZongMenHelper.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenUpdateContributeValueReq_40000057.newBuilder().setIsAdd(false).setValue((int) contribute).build());
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public void addContribute(int value) {
+    if (value < 0){
+      return;
+    }
+    this.contribute += value;
   }
 }

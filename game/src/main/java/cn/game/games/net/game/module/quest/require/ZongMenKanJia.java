@@ -17,11 +17,11 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 public class ZongMenKanJia extends AbstractCondition {
     @Override
     public EventTypeEnum[] getEventTypes() {
-        return new EventTypeEnum[0];
+        return new EventTypeEnum[]{EventTypeEnum.ZongMenBargain};
     }
 
     @Override
     public boolean checkEventParam(GameEvent event) {
-        return false;
+        return true;
     }
 }

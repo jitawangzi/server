@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -315,8 +316,14 @@ public class PlayerHelper {
 		}
 		List<RewardInfo> rewards = null;
 		try {
-			GoodsModule goodsModule = player.getGoodsModule(id);
-			rewards = goodsModule.addReward(id, value, opType);
+			if (ZongMenHelper.isZongMenAsset(id)){//跟新宗门资源
+				rewards = new ArrayList<>();
+				 rewards.add(ZongMenHelper.addZongMenResources(player, id, value, opType));
+			}else {
+				GoodsModule goodsModule = player.getGoodsModule(id);
+				rewards = goodsModule.addReward(id, value, opType);
+			}
+
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resourceUpdate(player, id, value, opType, true);
@@ -404,8 +411,20 @@ public class PlayerHelper {
 		if (value <= 0) {
 			return true;
 		}
-		GoodsModule goodsModule = player.getGoodsModule(id);
-		boolean ret = goodsModule.del(id, value, consumeType);
+
+		//宗门贡献度
+		boolean ret = false;
+		if (id == Asset.ZongMenContribute.ID){
+			if (player.getZongMenId() == 0){//宗门不存在
+				return false;
+			}else {
+				ret = player.getZongmenModule().subContribute(value);
+			}
+		} else {
+			GoodsModule goodsModule = player.getGoodsModule(id);
+			ret = goodsModule.del(id, value, consumeType);
+		}
+
 
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);

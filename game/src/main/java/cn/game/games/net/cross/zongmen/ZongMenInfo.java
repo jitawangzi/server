@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
@@ -70,6 +73,7 @@ public class ZongMenInfo {
         module.afterInit(this);
         module.registerAllModuleEventHandler();
         module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this,createPlayerId,createPlayerName);
+        module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this,getLv());
         joinZongMen(createPlayerId,createPlayerName,power,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
     }
 
@@ -148,6 +152,7 @@ public class ZongMenInfo {
         simpleZongMen.setLv(data.getLv());
         simpleZongMen.setName(data.getName());
         simpleZongMen.setIcon(data.getIcon());
+        simpleZongMen.setTotalPower((int)module.getTotalPower());
         simpleZongMen.setNum(module.menMemberMap.size());
         simpleZongMen.setIsAutoJoin(getModule().setting.getAutoJoin());
         simpleZongMen.setTianDaoLevel(module.setting.getTianDaoLevel());
@@ -180,7 +185,12 @@ public class ZongMenInfo {
         }
 
         //redis 同步加载 SimplePlayer
-        List<SimplePlayer> simplePlayerList = PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(pidList).result();
+        List<SimplePlayer> simplePlayerList = null;
+        try {
+            simplePlayerList = PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(pidList).toCompletionStage().toCompletableFuture().get(1, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (simplePlayerList != null){
             simplePlayerList.forEach(simplePlayer -> {
                 if (memberProtoMap.containsKey(simplePlayer.getId())){

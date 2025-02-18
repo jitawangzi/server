@@ -126,6 +126,8 @@ public enum EventTypeEnum {
 	/**  参数： 活动id */
 	ActivityDestoryTime(302, "某活动到达销毁时间"),
 
+	/** 宗门砍价 */
+	ZongMenBargain(303, "宗门砍价"),
 	;
 	private int id;
 	private String desc;

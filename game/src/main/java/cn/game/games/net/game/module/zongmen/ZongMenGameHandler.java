@@ -7,6 +7,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import cn.game.games.core.event.EventTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,7 +203,11 @@ public class ZongMenGameHandler extends BaseHandler {
 			client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
 			return;
 		}
-		autoForwardZongMenServer(client, res, req, null);
+		autoForwardZongMenServer(client, res, req, result->{
+            player.handleEvent(EventTypeEnum.ZongMenBargain);
+            client.sendProtocol(result);
+            return null;
+        });
 	}
 
 	private void buyBargain(NetClient client, Object o) {
@@ -375,9 +380,9 @@ public class ZongMenGameHandler extends BaseHandler {
                 client.sendProtocol(res.build(), callBack.errorCode);
               } else {
                 if (successCallBack != null) {
-                  successCallBack.apply(null);
+                  successCallBack.apply(callBack.response);
                 } else {
-                    client.sendProtocol(callBack.response);
+                  client.sendProtocol(callBack.response);
                 }
               }
             })
@@ -484,7 +489,8 @@ public class ZongMenGameHandler extends BaseHandler {
                     if (!StringUtils.isEmpty(req.getName())){//宗门改名 扣除资源
                         PlayerHelper.delResources(player,GlobalConst.ZongmenNameRevise,OpType.zongMenChangeName);
                     }
-                    client.sendProtocol(message);
+                    res.setResult(true);
+                    client.sendProtocol(res);
                     return null;
                 });
               });
@@ -553,6 +559,8 @@ public class ZongMenGameHandler extends BaseHandler {
                   ZongMenMsg.applyJoinZongMenResponse_40000008 applyRes = (ZongMenMsg.applyJoinZongMenResponse_40000008) callBack.response;
                   if (applyRes.hasZongMen()){//玩家直接加入宗门
                       player.getZongmenModule().setZongMenInfo(applyRes.getZongMen());
+                      player.getZongmenModule().refreshZongMenTask();
+                      player.getShopModule().refreshZongMenShop();
                   }
                 client.sendProtocol(callBack.response);
               }
@@ -613,6 +621,8 @@ public class ZongMenGameHandler extends BaseHandler {
                                     createZongMenCallback.response;
                             // 设置玩家宗门信息
                             player.getZongmenModule().setZongMenInfo(createRes.getZongMen());
+                            player.getZongmenModule().refreshZongMenTask();
+                            player.getShopModule().refreshZongMenShop();
                             client.sendProtocol(createRes);
                           } else { // 创建宗门失败
                             client.sendProtocol(res.build(), createZongMenCallback.errorCode);
@@ -695,7 +705,7 @@ public class ZongMenGameHandler extends BaseHandler {
   }
 
   /** ZongMenCallbackMsg 宗门 RPC 回调 消息 */
-  static class ZongMenCallbackMsg {
+ public static class ZongMenCallbackMsg {
     /** 错误码 */
     int errorCode;
 

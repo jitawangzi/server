@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.protocol.protobuf.RewardMsg;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
@@ -38,7 +44,8 @@ public class ZongMenHelper {
     }
     public static String getServerIdByZongMenId(long zongMenId){
 //        return String.valueOf(zongMenId >> 32);
-		return IdCache.getZongMenServerId(zongMenId);
+//		return IdCache.getZongMenServerId(zongMenId);
+		return "LY_ZONG_MEN";
     }
 
 
@@ -144,4 +151,22 @@ public class ZongMenHelper {
         return false;
     }
 
+    public static RewardMsg.RewardInfo addZongMenResources(Player player, int id, int value, OpType opType) {
+    if (id == Asset.ZongMenContribute.ID){
+        player.getZongmenModule().addContribute(value);
+    }
+        RewardMsg.RewardInfo rewardInfo =  RewardMsg.RewardInfo.newBuilder()
+          .setItem(BaseMsg.ItemInfo.newBuilder().setId(id).setCount(value).build())
+          .build();
+        //领取的是宗门任务奖励 则存储宗门奖励 并同步到宗门服务器
+        //同步宗门任务掉落 到宗门服务器
+        ZongMenMsg.updateZongMenAssetRequest_40000037.Builder builder = ZongMenMsg.updateZongMenAssetRequest_40000037.newBuilder();
+        builder.addZongMenAssetMaps(rewardInfo);
+        sendMsgToZongMenServer(player, builder.build());
+    return rewardInfo;
+    }
+
+    public static Future<ZongMenGameHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params){
+        return ZongMenGameHandler.sendMsgToZongMenServer(player, req);
+    }
 }

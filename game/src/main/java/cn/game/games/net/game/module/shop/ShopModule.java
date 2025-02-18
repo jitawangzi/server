@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -27,13 +28,6 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.FundPassManager;
-import cn.game.protocol.generated.manager.HeishiManager;
-import cn.game.protocol.generated.manager.HunhuoManager;
-import cn.game.protocol.generated.manager.RechargeStoreManager;
-import cn.game.protocol.generated.manager.ResidentPackManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ShopManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -226,7 +220,22 @@ public class ShopModule extends BasePlayerModule {
 
 		//刷新每日商店
 		refreshEveryDayShop();
+
+
 		
+	}
+
+	public void refreshZongMenShop() {
+		clearZongMenShop();
+		if (player.getZongMenId() == 0) return;
+		ZongmenStoreManager.instance().list().forEach(shopConfig ->{
+			shopItemsMap.put(17, new ShopItem(shopConfig.Item));
+			log.info(String.format("refreshZongMenShop add ItemId:%d", shopConfig.Item));
+		});
+	}
+
+	public void clearZongMenShop(){
+		shopItemsMap.removeAll(17);
 	}
 
 	/**
@@ -317,6 +326,9 @@ public class ShopModule extends BasePlayerModule {
 
 		// 刷新黑市
 		refreshHeishiItems(0, PlayerHelper.REFRESH_TYPE_WEEK);
+
+		//刷新宗门商店
+		refreshZongMenShop();
 	}
 
 	private void refreshShopByShopType(int shop) {

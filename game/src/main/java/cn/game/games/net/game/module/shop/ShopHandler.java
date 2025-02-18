@@ -396,6 +396,11 @@ public class ShopHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
 			return;
 		}
+		//宗门不存在
+		if (shopId == 17 && player.getZongMenId() == 0){
+			client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
+			return;
+		}
 		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.ShopItemQuota) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());

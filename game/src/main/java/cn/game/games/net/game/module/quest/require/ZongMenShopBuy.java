@@ -17,11 +17,12 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 public class ZongMenShopBuy extends AbstractCondition {
     @Override
     public EventTypeEnum[] getEventTypes() {
-        return new EventTypeEnum[0];
+        return new EventTypeEnum[]{EventTypeEnum.BuyItems};
     }
 
     @Override
     public boolean checkEventParam(GameEvent event) {
-        return false;
+        int shopId =event.getIntParameter(0);
+        return shopId == 17;
     }
 }
