@@ -258,6 +258,24 @@ public class GameClientManager {
 			}
 		}
 	}
+	
+	/**
+	 * 将消息广播给其他CrossServer服务器
+	 * @param message
+	 *            待广播消息
+	 * @param serverIds
+	 *            接收消息的服务器id，如果是null，广播给所有的服务器
+	 */
+	public void broadcastCrossServers(Message message, List<String> serverIds) {
+		if (serverIds == null || serverIds.isEmpty()) {
+			VxHolder.broadcastRemoteServer(ServerType.Cross, message);
+		} else {
+			for (String string : serverIds) {
+				VxHolder.sendRemoteServer(string, message);
+			}
+		}
+	}
+
 	/**
 	 * 将玩家的在线状态广播给其他服务器，暂时广播给所有服务器，以后根据系统，广播给指定服务器
 	 * @param playerId
@@ -269,6 +287,7 @@ public class GameClientManager {
 		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online).setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
+		broadcastCrossServers(message, serverIds);
 //		if (!online) {
 //			PlayerManager.getInstance().offline(playerId);
 //		}
