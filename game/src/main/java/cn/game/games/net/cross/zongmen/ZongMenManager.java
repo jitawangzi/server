@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,8 +207,8 @@ public class ZongMenManager {
         RedisUtil.setAsync(key,newZongMenId);
     }
 
-	private void saveZongMenServerId(long id) {
-		IdCache.getZongMenServerId(id);
+	private RFuture<Void> saveZongMenServerId(long id) {
+		return IdCache.setServerId(DistributedObjectType.ZONGMEN, id);
 	}
 
 	public void clearZongMenServerId(long id) {
