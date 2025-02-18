@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import cn.game.protocol.protobuf.ZongMenMsg;
 import org.apache.commons.lang.math.RandomUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -160,12 +161,12 @@ public class ZongMenManager {
      * @param power 门主战力
      * @return 新的宗门
      */
-	public Future<ZongMenInfo> createZongMen(String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+	public Future<ZongMenInfo> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
 		long newZongMenId = ZongMenHelper.createZongMenId();
         //创建宗门
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
-		zongMenInfo.init(serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
+		zongMenInfo.init(req,serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
         zongMenInfo.updateModuleData();
         Promise<ZongMenInfo> promise = Promise.promise();
         DAO.insert(zongMenInfo.getData()).onSuccess( res ->{

@@ -28,6 +28,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName ZongMenInfo
@@ -51,7 +52,7 @@ public class ZongMenInfo {
         module.registerAllModuleEventHandler();
     }
 
-	public void init(String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
+	public void init(ZongMenMsg.createZongMenRequest_40000005 req,String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
         module = new ZongMenModuleData();
         saveDataTimer = System.currentTimeMillis();
         //初始化 Zongmen 对象
@@ -59,9 +60,9 @@ public class ZongMenInfo {
         data.setName(name);
         data.setId(newZongMenId);
         data.setLv((byte)1);
-        data.setIcon(GlobalConst.ZongmenIconRes);
-        data.setNotice(GlobalConst.ZongmenGonggao);
-        data.setDeclaration(GlobalConst.ZongmenXuanyan);
+        data.setIcon(req.getIcon() == 0 ?  GlobalConst.ZongmenIconRes : req.getIcon());
+        data.setNotice(StringUtils.isEmpty(req.getNotice()) ?  GlobalConst.ZongmenGonggao : req.getNotice());
+        data.setDeclaration(StringUtils.isEmpty(req.getDeclaration()) ?  GlobalConst.ZongmenXuanyan : req.getDeclaration());
         data.setCreateTime(DateUtil.getTimeByPattern(new Date(),DateUtil.pattern_en));
         data.setExp(0);
         data.setCreateServerId(createServerId);

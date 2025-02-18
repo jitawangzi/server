@@ -3,6 +3,7 @@ package cn.game.games.net.cross.zongmen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import cn.game.games.cache.entity.Player;
@@ -168,5 +169,21 @@ public class ZongMenHelper {
 
     public static Future<ZongMenGameHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params){
         return ZongMenGameHandler.sendMsgToZongMenServer(player, req);
+    }
+
+    public static CompletableFuture<Boolean> checkZongMenNameRepeat(Player player, String name) {
+        Promise<Boolean> promise = Promise.promise();
+        RedisLocalCache.getInstance()
+                .getAsync(CacheType.ZONG_MEN_NAME_ID.key(name)).onSuccess( id ->{
+                    if (id != null){
+                        promise.complete(false);
+                    }else{
+                        promise.complete(true);
+                    }
+                }).onFailure(err ->{
+                    promise.complete(false);
+                    err.printStackTrace();
+                });
+        return promise.future().toCompletionStage().toCompletableFuture();
     }
 }

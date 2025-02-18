@@ -92,7 +92,7 @@ public class ZongMenHandler extends BaseHandler {
 			buyBargain(zongMenId, playerId, message, paramList, client);
           case PbProtocol.findZongMenRequest_40000003 ->
                   findZongMen(zongMenId,playerId, message, paramList, client);
-          case PbProtocol.ChatRequest_31000001 ->
+          case PbProtocol.ChatMessagePush_31010001 ->
                   zongMenChat(zongMenId,playerId, message, paramList, client);
         case PbProtocol.ZongMenUpdateMemberFightPower_40000052 ->
                 updateMemberFightPower(zongMenId, playerId, message, paramList, client);
@@ -153,7 +153,7 @@ public class ZongMenHandler extends BaseHandler {
         }
         List<Long> memberIdList = new ArrayList<>(zongMenInfo.getModule().menMemberMap.keySet());
         memberIdList.remove(playerId);
-        ZongMenHelper.broadcastNotifyMsgToPlayer(message,PbProtocol.ChatRequest_31000001,memberIdList);
+        ZongMenHelper.broadcastNotifyMsgToPlayer(message,PbProtocol.ChatMessagePush_31010001,memberIdList);
     }
 
     //查找宗门
@@ -561,7 +561,7 @@ public class ZongMenHandler extends BaseHandler {
       zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,targetMember.playerId,oldPosition,req.getPosition());
     }
     sendMsgToGameServer(
-            playerId, client, res.build(), PbProtocol.setZongMenMemberPositionResponse_40000016);
+            playerId, client, res.setResult(true).setPosition(req.getPosition()).setTargetPid(req.getTargetPid()).build(), PbProtocol.setZongMenMemberPositionResponse_40000016);
   }
 
   private void getZongMenLog(
@@ -747,6 +747,14 @@ public class ZongMenHandler extends BaseHandler {
     int power = Integer.parseInt(paramList.get(0));
     String playerName = paramList.get(1);
     ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+    if (zongMenInfo == null) {
+      sendErrorCodeMsgToGameServer(
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_not_exist,
+              PbProtocol.dissolveZongMenResponse_40000012);
+      return;
+    }
     if (zongMenInfo.isHasMember(playerId)) {
       sendErrorCodeMsgToGameServer(
               playerId,
@@ -811,7 +819,7 @@ public class ZongMenHandler extends BaseHandler {
       return;
     }
     ZongMenManager.getInstance()
-			.createZongMen(name, playerId, createPlayerName, power, serverId)
+			.createZongMen(req,name, playerId, createPlayerName, power, serverId)
             .onSuccess(
                     zongMenInfo -> {
                       if (zongMenInfo != null) { // 创建宗门成功
