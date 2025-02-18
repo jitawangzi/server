@@ -124,6 +124,7 @@ public final class Config {
 	public static boolean use_wechat_access_token_flag;
 
 	public static int ExpectedNodeCount = 1;
+	public static int DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS;
 
 	/**
 	 *
@@ -181,6 +182,8 @@ public final class Config {
 			use_wechat_access_token_flag =  initialProp.getProperty("use_wechat_access_token_flag", "0").equals("1");
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "1"));
+			DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS = Integer
+					.parseInt(initialProp.getProperty("DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_MINUTES", "600"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,9 @@ public class RpcFactory {
 	@SuppressWarnings("unchecked")
 	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId, ServerType serverType,
 			long objectId) {
+		if (callType == CallType.PointToPoint && StringUtils.isBlank(serverId)) {
+			throw new IllegalArgumentException("serverId can't be null when callType is PointToPoint");
+		}
 		String targetAddr = callType == CallType.PointToPoint ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
 		// 当objectId=0时使用缓存
 		if (objectId == 0) {

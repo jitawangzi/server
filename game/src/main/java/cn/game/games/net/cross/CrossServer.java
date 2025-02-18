@@ -2,6 +2,7 @@ package cn.game.games.net.cross;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.process.Processor;
@@ -58,6 +59,7 @@ public class CrossServer {
 		RedisUtil.getInstance().init();
 		ZkHelper.init();
 		IdUtil.init();
+		ActiveServerListManager.getInstance().start(ServerType.Cross);
 		ServerContext.getInstance().init(serverId, ServerType.Cross);
 		// init with apollo config
 		Config.load();
@@ -67,6 +69,13 @@ public class CrossServer {
 		VxHolder.init();
 
 		initVerticle();
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				shutdown();
+			}
+		});
 
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
@@ -84,12 +93,17 @@ public class CrossServer {
 
 	}
 
+
 	public static void main(String args[]) {
 		try {
 			instance.start(args);
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
 		}
+	}
+
+	private void shutdown() {
+		IdCache.clearAllCurrentServerId();
 	}
 
 	private void initVerticle() throws Exception {
@@ -113,10 +127,15 @@ public class CrossServer {
 
 	}
 
-	private void initLeaderTask() throws Exception {
-		if (!ServerContext.getInstance().isLeader() && !ServerContext.getInstance().getRunMode().isProduction()) {
+	private void initLeaderTask() {
+		if (!ServerContext.getInstance().isLeader()) {
 			return;
 		}
+		loadCrossDistributedObject();
+	}
+
+	private void loadCrossDistributedObject() {
+
 		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
 		bean.load();
 	}
@@ -135,6 +154,11 @@ public class CrossServer {
 		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.LoadBalancer, null,
 				ServerType.Cross);
 
+	}
+
+	public CrossServerInterface getCrossServerInterface(CallType callType, String serverId) {
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Cross);
 	}
 	/**
 	 * 获取处理某类型对象的跨服远程调用接口

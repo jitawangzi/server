@@ -2,7 +2,6 @@ package cn.game.games.cache.id;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -10,23 +9,18 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheConfig;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.GenericDistributedIDManager;
-import cn.game.core.net.remote.RemoteServerInterface;
-import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.task.SchedulerService;
+import cn.game.util.Config;
 import cn.game.util.RedisUtil;
 
 public class IdCache {
 	private static final Logger log = LoggerFactory.getLogger(IdCache.class);
 	private static final Map<DistributedObjectType, GenericDistributedIDManager> managers = new ConcurrentHashMap<>();
-
-	private static final int DEFAULT_EXPIRE_MINUTES = 10;
 
 	static {
 		// 玩家id缓存配置
@@ -83,6 +77,17 @@ public class IdCache {
 		}
 	}
 
+	public static void clearAllCurrentServerId() {
+		for (DistributedObjectType distributedObjectType : DistributedObjectType.values()) {
+			GenericDistributedIDManager manager = getManager(distributedObjectType);
+			Collection<Long> allIds = manager.getAllIds();
+			for (Long id : allIds) {
+				String redisKey = manager.generateRedisKey(id);
+				RedisUtil.delete(redisKey);
+			}
+		}
+	}
+
 	public static RFuture<Void> setServerId(DistributedObjectType objectType, long id) {
 		GenericDistributedIDManager manager = getManager(objectType);
 		String redisKey = manager.generateRedisKey(id);
@@ -90,8 +95,8 @@ public class IdCache {
 	}
 
 	private static RFuture<Void> setServerId(String key) {
-		return RedisUtil.setAsync(key, ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES,
-				TimeUnit.MINUTES);
+		return RedisUtil.setAsync(key, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
+				TimeUnit.SECONDS);
 	}
 
 	/**
@@ -103,7 +108,7 @@ public class IdCache {
 		GenericDistributedIDManager manager = getManager(objectType);
 		String redisKey = manager.generateRedisKey(id);
 		return RedisUtil.trySetAsync(redisKey,
-				ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES, TimeUnit.MINUTES);
+				ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, TimeUnit.SECONDS);
 	}
 
 	/** 
@@ -112,13 +117,15 @@ public class IdCache {
 	 * @param objectType
 	 * @param id
 	 * @return 是否设置成功,true:设置成功,false 设置失败，可能是对象在其他服务器管理了
-	 * @throws RuntimeException 当在生产模式下设置失败时抛出异常
 	 */
 	public static boolean initServerId(DistributedObjectType objectType, long id) {
 		GenericDistributedIDManager manager = getManager(objectType);
 		String redisKey = manager.generateRedisKey(id);
-		boolean result = RedisUtil.trySet(redisKey, ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES,
-				TimeUnit.MINUTES);
+		boolean result = RedisUtil.trySet(redisKey, ServerContext.getInstance().getServerId(),
+				Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
+				TimeUnit.SECONDS);
+		return result;
+		/**
 		if (result) {
 			return result;
 		}
@@ -142,16 +149,19 @@ public class IdCache {
 			}
 		}else {
 			// 服务器不在线，强制设置
-			RedisUtil.set(redisKey, ServerContext.getInstance().getServerId(), DEFAULT_EXPIRE_MINUTES, TimeUnit.MINUTES);
+			RedisUtil.set(redisKey, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
+					TimeUnit.SECONDS);
 		}
 		return true;
+		*/
 
 	}
 
 	public static void init() {
 		SchedulerService.getInstance().scheduleWithFixedDelay(() -> {
 			setAllCurrentServerId();
-		}, DEFAULT_EXPIRE_MINUTES / 2, DEFAULT_EXPIRE_MINUTES / 2, TimeUnit.MINUTES);
+		}, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS / 2, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS / 2,
+				TimeUnit.SECONDS);
 	}
 
 }
