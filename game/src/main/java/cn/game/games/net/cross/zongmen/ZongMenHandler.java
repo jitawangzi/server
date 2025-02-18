@@ -14,6 +14,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.core.SimplePlayer;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -28,6 +29,7 @@ import cn.game.protocol.protobuf.ZongMenCrossMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
 import cn.game.util.Rnd;
+import io.vertx.core.Future;
 
 /**
  * @ClassName ZongMenHandler
@@ -199,6 +201,18 @@ public class ZongMenHandler extends BaseHandler {
 
 		member.setBargain(true);
 		member.setBargainTime(System.currentTimeMillis());
+		
+	    ZongMenMsg.ZongMenBargainResponse_40000061.Builder res =
+	            ZongMenMsg.ZongMenBargainResponse_40000061.newBuilder();
+	    sendMsgToGameServer(
+	            playerId, client, res.build(), PbProtocol.ZongMenBargainResponse_40000061);
+	    
+		final int count = bargainCount;
+		Future<SimplePlayer> simplePlayerFutrue = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(member.getPlayerId()));
+		simplePlayerFutrue.onSuccess(r -> {
+			bargain.addBargainLog(r.getName(), count);
+		});
+		
 
 	}
 
