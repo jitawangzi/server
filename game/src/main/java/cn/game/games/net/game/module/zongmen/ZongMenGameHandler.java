@@ -7,7 +7,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import cn.game.games.core.event.EventTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
@@ -44,7 +44,8 @@ import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgRequest_41000045;
+import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgResponse_41000046;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
@@ -64,8 +65,8 @@ public class ZongMenGameHandler extends BaseHandler {
     public static Future<ZongMenCallbackMsg> sendMsgToZongMenServer( long zongMenId,
             Player player, Message req, String... params) {
 // 封装宗门请求
-        ServerMsg.ZongMenMsgRequest_7d000045.Builder serverReq =
-                ServerMsg.ZongMenMsgRequest_7d000045.newBuilder();
+		ZongMenMsgRequest_41000045.Builder serverReq =
+				ZongMenMsgRequest_41000045.newBuilder();
         // 设置请求参数
         // 宗门ids
         serverReq.setZongMenId(zongMenId);
@@ -85,7 +86,7 @@ public class ZongMenGameHandler extends BaseHandler {
         final int responseMsgId = reqMsgId + 1;
         Promise<ZongMenCallbackMsg> future = Promise.promise();
         // 异步RPC请求
-        Future<ServerMsg.ZongMenMsgResponse_7d000046> rpcFuture;
+		Future<ZongMenMsgResponse_41000046> rpcFuture;
         if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
             rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
         } else {
@@ -99,8 +100,7 @@ public class ZongMenGameHandler extends BaseHandler {
                             if (result != null) {
                                 log.info(String.format("sendMsgToZongMenServer callBack msgId:%d %s, errorCode:%d, pid:%d ",
                                         result.getMsgId(),req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
-                                ServerMsg.ZongMenMsgResponse_7d000046 serverResponse =
-                                        (ServerMsg.ZongMenMsgResponse_7d000046) result;
+								ZongMenMsgResponse_41000046 serverResponse = (ZongMenMsgResponse_41000046) result;
 
                                 if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
                                     Message response =

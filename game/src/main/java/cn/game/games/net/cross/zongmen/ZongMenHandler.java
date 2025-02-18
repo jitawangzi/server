@@ -3,7 +3,6 @@ package cn.game.games.net.cross.zongmen;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.protocol.protobuf.ChatMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.protocol.protobuf.ZongMenCrossMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
 import cn.game.util.Rnd;
@@ -41,16 +40,16 @@ public class ZongMenHandler extends BaseHandler {
 
   @Override
   protected void inititialize() {
-    putInvoker(PbProtocol.ZongMenMsgRequest_7d000045, this::dispatchMsg);
+		putInvoker(PbProtocol.ZongMenMsgRequest_41000045, this::dispatchMsg);
   }
 
   @Override
   protected int getModule() {
-    return 0x7d;
+		return 0x41;
   }
 
   private void dispatchMsg(NetClient client, Object o) {
-    ServerMsg.ZongMenMsgRequest_7d000045 request = (ServerMsg.ZongMenMsgRequest_7d000045) o;
+		ZongMenCrossMsg.ZongMenMsgRequest_41000045 request = (ZongMenCrossMsg.ZongMenMsgRequest_41000045) o;
     int msgId = request.getMsgId();
     long playerId = request.getPlayerId();
     long zongMenId = request.getZongMenId();
@@ -858,8 +857,7 @@ public class ZongMenHandler extends BaseHandler {
 
   public void sendErrorCodeMsgToGameServer(
           long playerId, NetClient client, ErrorMsgEnum errorCode, int msgId) {
-    ServerMsg.ZongMenMsgResponse_7d000046.Builder response =
-            ServerMsg.ZongMenMsgResponse_7d000046.newBuilder();
+		ZongMenCrossMsg.ZongMenMsgResponse_41000046.Builder response = ZongMenCrossMsg.ZongMenMsgResponse_41000046.newBuilder();
     response.setMsgId(msgId);
     response.setPlayerId(playerId);
     response.setErrorCode(errorCode.getId());
@@ -869,8 +867,7 @@ public class ZongMenHandler extends BaseHandler {
   }
 
   public void sendMsgToGameServer(long playerId, NetClient client, Message message, int msgId) {
-    ServerMsg.ZongMenMsgResponse_7d000046.Builder response =
-            ServerMsg.ZongMenMsgResponse_7d000046.newBuilder();
+		ZongMenCrossMsg.ZongMenMsgResponse_41000046.Builder response = ZongMenCrossMsg.ZongMenMsgResponse_41000046.newBuilder();
     response.setMsgId(msgId);
     response.setErrorCode(ErrorMsgEnum.ok.getId());
     response.setPlayerId(playerId);
