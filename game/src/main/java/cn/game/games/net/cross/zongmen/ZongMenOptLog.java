@@ -1,7 +1,10 @@
 package cn.game.games.net.cross.zongmen;
 
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.protobuf.ChatMsg;
+import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
 import java.util.ArrayList;
@@ -32,14 +35,14 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
       switch (type){
           case JOIN_ZONG_MEN -> {
               String joinPlayerName = params[1]+"";
-              addLog(type.getId(),joinPlayerName);
+              addLog(info,type.getId(),joinPlayerName);
           }
           case ZONG_MEN_POSITION_CHANGE -> {
             long targetPlayerId = (long)params[0];
             int oldPosition = (int)params[1];
             int newPosition = (int)params[2];
             PlayerManager.getInstance().getSimplePlayerFromRedisAsync(targetPlayerId).onSuccess(simplePlayer -> {
-              addLog(type.getId(),simplePlayer.getName(),oldPosition+"",newPosition+"");
+              addLog(info,type.getId(),simplePlayer.getName(),oldPosition+"",newPosition+"");
 
             });
           }
@@ -47,23 +50,23 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
           case CHANGE_ZONG_MEN_NAME -> {
               String changeNamePlayerName = params[0]+"";
               String newName = params[1]+"";
-              addLog(type.getId(),changeNamePlayerName,newName);
+              addLog(info,type.getId(),changeNamePlayerName,newName);
           }
           case QUIT_ZONG_MEN,
                CHANGE_ZONG_MEN_DECLARATION,
                CHANGE_ZONG_MEN_NOTICE -> {
               String quitPlayerName = params[0]+"";
-              addLog(type.getId(),quitPlayerName);
+              addLog(info,type.getId(),quitPlayerName);
           }
           case ZONG_MEN_KICK_MEMBER -> {
               String playerName = params[0]+"";//操作人
               String kickPlayerName = params[1]+""; //被踢人
-              addLog(type.getId(),playerName,kickPlayerName);
+              addLog(info,type.getId(),playerName,kickPlayerName);
           }
       }
   }
 
-    private void addLog(int type, String... params) {
+    private void addLog(ZongMenInfo info,int type, String... params) {
       long now = System.currentTimeMillis();
       List<String> paramList = new ArrayList<>();
       for (String param : params) {
@@ -74,6 +77,8 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
           optLogDataList.remove(optLogDataList.size() - 1);
       }
       optLogDataList.add(logData);
+      List<Long> notifyPids = new ArrayList<>(info.getModule().menMemberMap.keySet());
+      ZongMenHelper.broadcastNotifyMsgToPlayer(logData.toChatProto(), PbProtocol.ChatMessagePush_31010001,notifyPids);
     }
 
     public List<ZongMenMsg.ZongMenLogProto> toProto(){
@@ -97,5 +102,18 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
     public ZongMenMsg.ZongMenLogProto toProto(){
         return ZongMenMsg.ZongMenLogProto.newBuilder().setType(optType).setCreateTimer((int)(createTimer/1000L)).addAllParams(params).build();
     }
+
+    public ChatMsg.ChatMessagePush_31010001 toChatProto(){
+            ChatMsg.ChatMessagePush_31010001.Builder msg = ChatMsg.ChatMessagePush_31010001.newBuilder();
+            ChatMsg.ChatMessageInfo.Builder builder = ChatMsg.ChatMessageInfo.newBuilder();
+            builder.setChatType(ChatMsg.ChatType.UNINON_CHAT);
+            builder.setOptType(1);
+            StringBuffer sb = new StringBuffer(optType);
+            params.forEach(str ->{sb.append("&").append(str);});
+            builder.setContent(sb.toString());
+            msg.addMessageInfo(builder);
+            return msg.build();
+    }
+
   }
 }

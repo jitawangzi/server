@@ -1,10 +1,7 @@
 package cn.game.games.net.cross.zongmen;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -160,7 +157,7 @@ public class ZongMenHelper {
         player.getZongmenModule().addContribute(value);
     }
         RewardMsg.RewardInfo rewardInfo =  RewardMsg.RewardInfo.newBuilder()
-          .setItem(BaseMsg.ItemInfo.newBuilder().setId(id).setCount(value).build())
+          .setAsset(BaseMsg.AssetInfo.newBuilder().setId(id).setCount(value).build())
           .build();
         //领取的是宗门任务奖励 则存储宗门奖励 并同步到宗门服务器
         //同步宗门任务掉落 到宗门服务器
@@ -188,5 +185,34 @@ public class ZongMenHelper {
                     err.printStackTrace();
                 });
         return promise.future().toCompletionStage().toCompletableFuture();
+    }
+
+    public static List<ZongMenMsg.ZongMenMemberProto.Builder> sortMemberList(Collection<ZongMenMsg.ZongMenMemberProto.Builder> values) {
+        List<ZongMenMsg.ZongMenMemberProto.Builder> list = new ArrayList<>(values);
+//        - 成员排序规则：
+//        - 在线状态：在线、离线（从近到远）；
+//        - 职位、战力：从高到低；
+        list.sort((o1, o2) ->{
+            if (o1.getSimplePlayer().getOnline() == o2.getSimplePlayer().getOnline()){//在线
+                if (o1.getSimplePlayer().getOfflineTime() == o2.getSimplePlayer().getOfflineTime()){//离线（从近到远）
+                    if (o1.getPosition() == o2.getPosition()){//职位
+                            if (o1.getSimplePlayer().getCombatEffectiveness() == o2.getSimplePlayer().getCombatEffectiveness()){//战力
+                                return 0;
+                            } else {
+                                return o1.getSimplePlayer().getCombatEffectiveness() - o2.getSimplePlayer().getCombatEffectiveness();
+                            }
+                    } else {
+                      return o2.getPosition() - o1.getPosition();
+                    }
+                } else {
+                    return o1.getSimplePlayer().getOfflineTime() - o2.getSimplePlayer().getOfflineTime();
+                }
+            } else if (o1.getSimplePlayer().getOnline()){
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        return list;
     }
 }
