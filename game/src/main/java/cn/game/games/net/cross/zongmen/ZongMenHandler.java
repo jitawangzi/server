@@ -3,7 +3,6 @@ package cn.game.games.net.cross.zongmen;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.protocol.protobuf.ChatMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -204,15 +203,14 @@ public class ZongMenHandler extends BaseHandler {
 		
 	    ZongMenMsg.ZongMenBargainResponse_40000061.Builder res =
 	            ZongMenMsg.ZongMenBargainResponse_40000061.newBuilder();
-	    sendMsgToGameServer(
-	            playerId, client, res.build(), PbProtocol.ZongMenBargainResponse_40000061);
+		res.setCount(bargainCount);
+		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.ZongMenBargainResponse_40000061);
 	    
 		final int count = bargainCount;
 		Future<SimplePlayer> simplePlayerFutrue = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(member.getPlayerId()));
 		simplePlayerFutrue.onSuccess(r -> {
 			bargain.addBargainLog(r.getName(), count);
 		});
-		
 
 	}
 
@@ -235,6 +233,9 @@ public class ZongMenHandler extends BaseHandler {
 			return;
 		}
 		member.setBargainBuy(true);
+
+		ZongMenMsg.ZongMenBargainBuyResponse_40000063.Builder res = ZongMenMsg.ZongMenBargainBuyResponse_40000063.newBuilder();
+		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.ZongMenBargainBuyResponse_40000063);
 	}
 
   // 购买宗门商店物品
