@@ -48,7 +48,6 @@ import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgRequest_41000045;
 import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgResponse_41000046;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
-import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -87,13 +86,15 @@ public class ZongMenGameHandler extends BaseHandler {
         Promise<ZongMenCallbackMsg> future = Promise.promise();
         // 异步RPC请求
 		Future<ZongMenMsgResponse_41000046> rpcFuture;
-        if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
-            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
-        } else {
-            rpcFuture =
-                    VxHolder.requestRemoteServer(
-                            ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
-        }
+//        if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
+//            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
+//        } else {
+//            rpcFuture =
+//                    VxHolder.requestRemoteServer(
+//                            ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
+//        }
+		rpcFuture = VxHolder.requestRemoteServer("xy_cross_syq", serverReq.build());
+
         rpcFuture
                 .onSuccess( // 请求成功
                         result -> {
