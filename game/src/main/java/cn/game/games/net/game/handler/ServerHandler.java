@@ -151,14 +151,17 @@ public class ServerHandler extends BaseHandler {
 				}
 				//玩家 加入 宗门
 				case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
-				case PbProtocol.ChatRequest_31000001 -> {//宗门聊天
-					zongMenChat(player,(ChatMsg.ChatRequest_31000001) message);
+				case PbProtocol.ChatMessagePush_31010001 -> {//宗门聊天
+					zongMenChat(player,(ChatMsg.ChatMessagePush_31010001) message);
+				}
+				default -> {
+					log.error(String.format("zongMenMsgNotify msgId:%d is error",req.getMsgId()));
 				}
 			}
 		});
 	}
 
-	private void zongMenChat(Player notifyPlayer, ChatMsg.ChatRequest_31000001 req) {
+	private void zongMenChat(Player notifyPlayer, ChatMsg.ChatMessagePush_31010001 req) {
 		notifyPlayer.getGameClient().sendProtocol(req);
 	}
 

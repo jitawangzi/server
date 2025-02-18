@@ -46,7 +46,7 @@ public class ZongMenHandler extends BaseHandler {
 
   @Override
   protected int getModule() {
-    return 0x7d;
+    return 0x41;
   }
 
   private void dispatchMsg(NetClient client, Object o) {
@@ -152,7 +152,6 @@ public class ZongMenHandler extends BaseHandler {
             return;
         }
         List<Long> memberIdList = new ArrayList<>(zongMenInfo.getModule().menMemberMap.keySet());
-        memberIdList.remove(playerId);
         ZongMenHelper.broadcastNotifyMsgToPlayer(message,PbProtocol.ChatMessagePush_31010001,memberIdList);
     }
 

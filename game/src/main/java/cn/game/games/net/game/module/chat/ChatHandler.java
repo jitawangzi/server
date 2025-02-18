@@ -169,7 +169,11 @@ public class ChatHandler extends BaseHandler {
 						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 						return;
 					}
-					ZongMenGameHandler.sendMsgToZongMenServer(sendPlayer, req);
+					ChatMessageInfo.Builder messageBuilder = ChatMessageInfo.newBuilder();
+					messageBuilder.setChatType(chatType);
+					messageBuilder.setContent(content);
+					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
+					ZongMenGameHandler.sendMsgToZongMenServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
 					break;
 				}
 				default:
