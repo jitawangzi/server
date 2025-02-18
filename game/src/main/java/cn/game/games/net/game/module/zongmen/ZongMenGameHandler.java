@@ -453,9 +453,7 @@ public class ZongMenGameHandler extends BaseHandler {
       if (!StringUtils.isEmpty(req.getNotice())){
           checkStrs.add(req.getNotice());
       }
-      if (!StringUtils.isEmpty(req.getNotice())){
-          checkStrs.add(req.getNotice());
-      }
+
       if (!StringUtils.isEmpty(req.getDeclaration())){
           checkStrs.add(req.getDeclaration());
       }
@@ -588,58 +586,86 @@ public class ZongMenGameHandler extends BaseHandler {
       return;
     }
     String name = req.getName();
-    // 检查宗门名称是否重复
-    CompletionStage<Object> nameRepeatCheckStage =
-        RedisLocalCache.getInstance()
-            .getAsync(CacheType.ZONG_MEN_NAME_ID.key(name))
-            .toCompletionStage();
+    List<String> checkStrs = new ArrayList<>();
+    if (!player.isEnough(
+        GlobalConst.ZongmenCreationConsume[0], GlobalConst.ZongmenCreationConsume[1])) {
+      client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
+      return;
+    }
+
     if (name == null || name.length() > GlobalConst.ZongmenName) {
       client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
       return;
     }
+    if (!StringUtils.isEmpty(req.getNotice())) {
+      checkStrs.add(req.getNotice());
+    }
+
+    if (!StringUtils.isEmpty(req.getDeclaration())) {
+      checkStrs.add(req.getDeclaration());
+    }
+    checkStrs.add(name);
     Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, name);
-    checkFuture
-        .toCompletionStage()
-        .thenCombine(
-            nameRepeatCheckStage,
-            (nameFail, nameRepeatCheck) -> {
-              // 名称重复检测
-              if (nameRepeatCheck != null && !StringUtils.isEmpty((String) nameRepeatCheck)) {
-                client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
-                return null;
+
+    // 非法字符串检测
+    List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
+    for (String str : checkStrs) {
+      checkComplatableList.add(
+          (CompletableFuture<Boolean>)
+              PlayerHelper.checkContextData(player, str).toCompletionStage());
+    }
+    // 检查宗门名称是否重复
+    checkComplatableList.add(ZongMenHelper.checkZongMenNameRepeat(player, name));
+    CompletableFuture.allOf(checkComplatableList.toArray(new CompletableFuture[0]))
+        .thenAcceptAsync(
+            result -> {
+              if (checkComplatableList.stream()
+                  .anyMatch(CompletableFuture::isCompletedExceptionally)) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+                return;
               }
-              // 非法字符串检测
-              if (nameFail) {
-                // 创建宗门
-                sendMsgToZongMenServer(
-									player, req, player.getPlayerName(), player.getAttrModule().getPower() + "",
-									player.getServerId())
-                    .onSuccess(
-                        createZongMenCallback -> {
-                          if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功
-                            ZongMenMsg.createZongMenResponse_40000006 createRes =
-                                (ZongMenMsg.createZongMenResponse_40000006)
-                                    createZongMenCallback.response;
-                            // 设置玩家宗门信息
-                            player.getZongmenModule().setZongMenInfo(createRes.getZongMen());
-                            player.getZongmenModule().refreshZongMenTask();
-                            player.getShopModule().refreshZongMenShop();
-                            client.sendProtocol(createRes);
-                          } else { // 创建宗门失败
-                            client.sendProtocol(res.build(), createZongMenCallback.errorCode);
-                          }
-                        })
-                    // 创建宗门异常
-                    .onFailure(
-                        err -> {
-                          err.printStackTrace();
-                          client.sendProtocol(res, ErrorMsgEnum.unknown.getId());
-                        });
-              } else {
-                client.sendProtocol(res, ErrorMsgEnum.we_chat_context_check_fail.getId());
-                return null;
+              for (CompletableFuture<Boolean> future : checkComplatableList) {
+                try {
+                  if (future.get().booleanValue() == false) {
+                    client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+                    return;
+                  }
+                } catch (Exception e) {
+                  e.printStackTrace();
+                  client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+                  return;
+                }
               }
-              return null;
+              // 创建宗门
+              sendMsgToZongMenServer(
+                      player,
+                      req,
+                      player.getPlayerName(),
+                      player.getAttrModule().getPower() + "",
+                      player.getServerId())
+                  .onSuccess(
+                      createZongMenCallback -> {
+                        if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) { // 创建宗门成功
+                          PlayerHelper.delResources(
+                              player, GlobalConst.ZongmenCreationConsume, OpType.zongMenChangeName);
+                          ZongMenMsg.createZongMenResponse_40000006 createRes =
+                              (ZongMenMsg.createZongMenResponse_40000006)
+                                  createZongMenCallback.response;
+                          // 设置玩家宗门信息
+                          player.getZongmenModule().setZongMenInfo(createRes.getZongMen());
+                          player.getZongmenModule().refreshZongMenTask();
+                          player.getShopModule().refreshZongMenShop();
+                          client.sendProtocol(createRes);
+                        } else { // 创建宗门失败
+                          client.sendProtocol(res.build(), createZongMenCallback.errorCode);
+                        }
+                      })
+                  // 创建宗门异常
+                  .onFailure(
+                      err -> {
+                        err.printStackTrace();
+                        client.sendProtocol(res, ErrorMsgEnum.unknown.getId());
+                      });
             });
   }
 
