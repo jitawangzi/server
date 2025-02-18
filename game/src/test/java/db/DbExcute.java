@@ -65,7 +65,7 @@ public class DbExcute {
 				playerData.setLoginDate(DateUtil.getStringDate());
 				playerData.setVipExpTotal(0);
 				playerData.setVipLevel(1); // 好感度默认1级
-				playerData.setRefreshDay(DateUtil.getDay(0));
+				playerData.setRefreshDay(DateUtil.getDayCustom());
 
 				ObjUtil.setDefaultValue(playerData);
 
@@ -104,7 +104,7 @@ public class DbExcute {
 				playerData.setLoginDate(DateUtil.getStringDate());
 				playerData.setVipExpTotal(0);
 				playerData.setVipLevel(1); // 好感度默认1级
-				playerData.setRefreshDay(DateUtil.getDay(0));
+				playerData.setRefreshDay(DateUtil.getDay());
 
 				ObjUtil.setDefaultValue(playerData);
 

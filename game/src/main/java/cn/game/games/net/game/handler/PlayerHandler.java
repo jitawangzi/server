@@ -1120,8 +1120,8 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setLoginDate(DateUtil.getStringDate());
 		playerData.setVipExpTotal(0);// 废弃待删除
 		playerData.setVipLevel(1); // 废弃待删除
-		playerData.setRefreshDay(DateUtil.getDay(0));
-		playerData.setRefreshFiveDay(DateUtil.getDay(5));
+		playerData.setRefreshDay(DateUtil.getDay());
+		playerData.setRefreshFiveDay(DateUtil.getDayCustom());
 		playerData.setRefreshWeek(DateUtil.getWeek());
 		playerData.setRefreshMonth(DateUtil.getMonth());
 		playerData.setNew(true);
