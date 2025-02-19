@@ -85,7 +85,8 @@ public class ZongMenManager {
                             DAO.update(info.getData());
                             DAO.updateWithBLOBs(info.getData());
                             saveZongMenTotalPowerRank(info);
-                            log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d, power:%d",info.getId(),info.getName(),info.getModule().menMemberMap.size()));
+                            saveSimpleData(info);
+                            log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d",info.getId(),info.getName(),info.getModule().menMemberMap.size()));
                         });
                     }
             }

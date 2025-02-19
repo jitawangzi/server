@@ -87,11 +87,11 @@ public class ZongMenGameHandler extends BaseHandler {
         // 异步RPC请求
 		Future<ZongMenMsgResponse_41000046> rpcFuture;
 		if (player.getZongMenId() == 0) { // 宗门不存在 创建宗门 随机找一个节点
-			rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
-		} else {
-			rpcFuture = VxHolder.requestRemoteServer(ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
-		}
-//		rpcFuture = VxHolder.requestRemoteServer("xy_cross_syq", serverReq.build());
+            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
+        } else {
+            rpcFuture = VxHolder.requestRemoteServer(ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
+        }
+//            rpcFuture = VxHolder.requestRemoteServer("LY_ZONG_MEN", serverReq.build());
 
         rpcFuture
                 .onSuccess( // 请求成功
@@ -697,25 +697,33 @@ public class ZongMenGameHandler extends BaseHandler {
     res.setPage(page);
     // 宗门总数
     CompletionStage<Integer> rankSizeStage =
-        RankService.getInstance().getRankSizeAsync(VirtualServerManager.instance().get(player.getServerId()).Seq + "", rankType);
+        RankService.getInstance().getRankSizeAsync(player.getServerId(), rankType);
     // 查询指定页码的战斗力宗门数据
     CompletionStage<List<RankEntry>> zongMenListStage =
-			RankService.getInstance().getPageAsync(player.getServerId(), rankType, page, 20);
+			RankService.getInstance().getTopNAsync(player.getServerId(), rankType, 30);
     // 获取宗门 simpleZongMen 列表
         zongMenListStage.thenCombine(
             rankSizeStage,
             (zongMenRankList, rankSize) -> {
-              res.setTotal(rankSize);
               List<Long> zongMenIdList =
                   zongMenRankList.stream().map(RankEntry::getPlayerId).collect(Collectors.toList());
               ZongMenHelper.getSimpleZongMenListAsync(zongMenIdList).thenAccept(list -> {
+                  int readRankSize = rankSize;
                   if (list != null){
+                      int i = 0;
                       for (Object simpleZongMen : list ) {
                           if (simpleZongMen != null) {
+                              i++;
                               res.addZongMenList(((SimpleZongMen)simpleZongMen).toProto());
-                                  }
+                          }else {
+                              readRankSize--;
+                          }
+                          if (i >= 20){
+                              break;
+                          }
                       }
                   }
+                  res.setTotal(readRankSize);
                   client.sendProtocol(res.build());
               }).exceptionally( err ->{
                   client.sendProtocol(res.build(), ErrorMsgEnum.unknown.getId());

@@ -52,7 +52,7 @@ public class ZongMenInfo {
 
 	public void init(ZongMenMsg.createZongMenRequest_40000005 req,String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
         module = new ZongMenModuleData();
-        saveDataTimer = System.currentTimeMillis();
+        saveDataTimer = System.currentTimeMillis()+ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER;
         //初始化 Zongmen 对象
         data = new Zongmen();
         data.setName(name);
@@ -366,7 +366,6 @@ public class ZongMenInfo {
                     module.removeMember(simplePlayer.getId());
                     handleEvent(
                         ZongMenConstants.ZongMenEvenType.ZONG_MEN_KICK_MEMBER,
-                        this,
                         playerName,
                         simplePlayer.getName());
                   });

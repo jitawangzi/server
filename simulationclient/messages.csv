@@ -206,3 +206,4 @@
 205,ZongMenBargainPriceRequest_40000064,0x40000064,,,,,查看宗门砍价物品价格
 206,ZongMenGmTestRequest_40000053,0x40000053,,,,,
 207,ZongMenGetMyApplyZongMenIdListRequest_40000055,0x40000055,,,,,获取我已经申请的宗门id列表
+208,ZongMenMsgRequest_41000045,0x41000045,,,,,宗门 gameServer => 发送到zongMenServer 的消息
