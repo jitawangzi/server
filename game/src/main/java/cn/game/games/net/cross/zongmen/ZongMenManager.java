@@ -83,7 +83,9 @@ public class ZongMenManager {
                             info.setSaveDataTimer(now);
                             info.updateModuleData();
                             DAO.update(info.getData());
+                            DAO.updateWithBLOBs(info.getData());
                             saveZongMenTotalPowerRank(info);
+                            log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d, power:%d",info.getId(),info.getName(),info.getModule().menMemberMap.size()));
                         });
                     }
             }
@@ -215,4 +217,9 @@ public class ZongMenManager {
 	public void clearZongMenServerId(long id) {
 		RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
 	}
+
+    public void delZongMen(ZongMenInfo zongMenInfo) {
+        zongMenInfoMap.remove(zongMenInfo.getId());
+        log.info(String.format("删除宗门 id:%d, name:%s",zongMenInfo.getId(),zongMenInfo.getName()));
+    }
 }

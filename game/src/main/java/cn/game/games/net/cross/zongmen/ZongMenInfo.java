@@ -260,6 +260,7 @@ public class ZongMenInfo {
         RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_SIMPLE_DATA.key(getId()));
         //删除数据库宗门
         DAO.delete(data);
+        ZongMenManager.getInstance().delZongMen(this);
         ZongMenManager.log.info("解散宗门成功 id:" + getId() + " name:" + getName() + "");
     }
 

@@ -126,6 +126,7 @@ public class ZongMenModuleData {
         menMemberMap.remove(playerId);
         RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
         ZongMenHelper.notifyMsgToPlayer(playerId,ZongMenMsg.notifyQuitZongMen_40000024.newBuilder().build(), PbProtocol.notifyQuitZongMen_40000024);
+        ZongMenManager.log.info(" removeMember playerId:{}",playerId);
     }
 
     public void removeApply(long playerId) {

@@ -108,7 +108,7 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
             ChatMsg.ChatMessageInfo.Builder builder = ChatMsg.ChatMessageInfo.newBuilder();
             builder.setChatType(ChatMsg.ChatType.UNINON_CHAT);
             builder.setOptType(1);
-            StringBuffer sb = new StringBuffer(optType);
+            StringBuffer sb = new StringBuffer().append(optType);
             params.forEach(str ->{sb.append("&").append(str);});
             builder.setContent(sb.toString());
             msg.addMessageInfo(builder);
