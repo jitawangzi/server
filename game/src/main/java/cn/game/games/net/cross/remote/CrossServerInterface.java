@@ -3,6 +3,7 @@ package cn.game.games.net.cross.remote;
 
 import cn.game.core.db.GenericDataLoader;
 import cn.game.core.net.remote.RemoteCrossServerInterface;
+import io.vertx.core.Future;
 
 /**    
  * Cross提供给Game、Cross服务器调用的远程接口
@@ -20,8 +21,8 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	 */
 	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit);
 
-	io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId);
+	Future<Integer> zongmenBargainPrice(long zongmenId);
 
-	io.vertx.core.Future<Boolean> buyZongmenBargain(long zongmenId, long playerId);
+	Future<Boolean> buyZongmenBargain(long zongmenId, long playerId);
 
 }

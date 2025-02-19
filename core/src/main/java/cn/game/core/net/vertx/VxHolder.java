@@ -224,13 +224,7 @@ public class VxHolder {
 					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions)
 					.map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof IProtocol) {
-			Future<T> future = vertx.eventBus()
-					.request(serverId, message, protocolOptions)
-					.map(msg -> convertResponseObject(msg.body()));
-			future.onFailure(e -> {
-				log.error("requestRemoteServer serverId: " + serverId + " message : " + message + " fail", e);
-			});
-			return future;
+			return vertx.eventBus().request(serverId, message, protocolOptions).map(msg -> convertResponseObject(msg.body()));
 		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
