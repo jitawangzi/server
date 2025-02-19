@@ -82,7 +82,6 @@ public class ZongMenManager {
                         ServerContext.getInstance().getProcessor().process(info.getId(), () ->{
                             info.setSaveDataTimer(now);
                             info.updateModuleData();
-                            DAO.update(info.getData());
                             DAO.updateWithBLOBs(info.getData());
                             saveZongMenTotalPowerRank(info);
                             saveSimpleData(info);
