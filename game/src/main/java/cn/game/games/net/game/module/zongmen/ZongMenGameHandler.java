@@ -558,7 +558,7 @@ public class ZongMenGameHandler extends BaseHandler {
       client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
       return;
     }
-    sendMsgToZongMenServer(
+    sendMsgToZongMenServer(req.getId(),
             player, req, player.getAttrModule().getPower() + "", player.getPlayerName())
         .onSuccess(
             callBack -> {

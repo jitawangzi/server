@@ -200,7 +200,8 @@ public class ZongMenInfo {
                 }
             });
         }
-        memberProtoMap.values().forEach(memberProto ->{
+
+        ZongMenHelper.sortMemberList(memberProtoMap.values()).forEach(memberProto ->{
             builder.addMemberList(memberProto.build());
         });
 
