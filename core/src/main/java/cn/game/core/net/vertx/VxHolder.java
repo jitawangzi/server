@@ -121,6 +121,9 @@ public class VxHolder {
 		vertx.exceptionHandler(e -> {
 			log.error("vertx uncaptured exception： ", e);
 		});
+		if (ServerContext.getInstance().getRunMode().isTest()) {
+			EventBusMessageTimeoutInterceptor.register(vertx);
+		}
 		httpClient = WebClient.create(vertx, webClientOption);
 
 		vertx.eventBus().registerDefaultCodec(ServiceException.class, new ServiceExceptionMessageCodec());
@@ -221,7 +224,13 @@ public class VxHolder {
 					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions)
 					.map(msg -> convertResponseObject(msg.body()));
 		} else if (message instanceof IProtocol) {
-			return vertx.eventBus().request(serverId, message, protocolOptions).map(msg -> convertResponseObject(msg.body()));
+			Future<T> future = vertx.eventBus()
+					.request(serverId, message, protocolOptions)
+					.map(msg -> convertResponseObject(msg.body()));
+			future.onFailure(e -> {
+				log.error("requestRemoteServer serverId: " + serverId + " message : " + message + " fail", e);
+			});
+			return future;
 		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
