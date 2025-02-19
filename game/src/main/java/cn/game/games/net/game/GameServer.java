@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -419,14 +422,31 @@ public class GameServer implements GameServerMBean {
 	 */
 	public CrossServerInterface getCrossServerInterface(DistributedObjectType objectType, long targetId) {
 
+		CallType callType = CallType.PointToPoint;
 		String serverId = IdCache.getManager(objectType).getServerId(targetId);
-		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
-			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
-			return (CrossServerInterface) SpringContextLoader.getContext().getBean("crossRemote");
+		if (StringUtils.isEmpty(serverId)) {
+			callType = CallType.LoadBalancer;
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
 				ServerType.Cross, targetId);
+	}
+
+	/** 
+	 * 获取所有跨服的远程接口，用于点对点通讯。 
+	 * @return
+	 */
+	public List<CrossServerInterface> getAllCrossServerInterface() {
+
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross);
+		List<CrossServerInterface> ret = new ArrayList<>();
+
+		for (String serverId : serverSet) {
+			CrossServerInterface impl = RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+					ServerType.Cross, 0);
+			ret.add(impl);
+		}
+		return ret;
 	}
 
 	/** 

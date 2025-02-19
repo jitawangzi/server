@@ -1,5 +1,8 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.protobuf.ZongMenMsg;
@@ -16,12 +19,15 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 	private int memberBargainNum;
 	/** 刷新出来的砍价物品id ： GuildBargain 表id */
 	private int bargainItemId;
+	/** 砍价数量记录 */
+	private Map<String, Integer> bargainLogMap = new HashMap<>();
 
 	void init() {
 		refreshBargain();
 	}
 
 	private void refreshBargain() {
+		bargainLogMap.clear();
 		bargainTotalNum = 0;
 		memberBargainNum = 0;
 		bargainItemId++ ; 
@@ -66,6 +72,9 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		this.bargainItemId = bargainItemId;
 	}
 
+	public void addBargainLog(String playerName, int num) {
+		bargainLogMap.put(playerName, num);
+	}
 	public ZongMenMsg.ZongMenBargainProto toProto(ZongMenMember member) {
 		return ZongMenMsg.ZongMenBargainProto.newBuilder()
 				.setIsBargain(member.isBargain)
@@ -73,6 +82,7 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 				.setTotalBargainCount(bargainTotalNum)
 				.setTotalMemberCount(memberBargainNum)
 				.setBargainItemId(bargainItemId)
+				.putAllBargainLogMap(bargainLogMap)
 				.build();
     }
 }

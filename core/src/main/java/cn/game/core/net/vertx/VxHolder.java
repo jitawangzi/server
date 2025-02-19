@@ -121,6 +121,9 @@ public class VxHolder {
 		vertx.exceptionHandler(e -> {
 			log.error("vertx uncaptured exception： ", e);
 		});
+		if (ServerContext.getInstance().getRunMode().isTest()) {
+			EventBusMessageTimeoutInterceptor.register(vertx);
+		}
 		httpClient = WebClient.create(vertx, webClientOption);
 
 		vertx.eventBus().registerDefaultCodec(ServiceException.class, new ServiceExceptionMessageCodec());
