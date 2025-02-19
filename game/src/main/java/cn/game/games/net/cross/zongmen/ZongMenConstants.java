@@ -14,8 +14,7 @@ public class ZongMenConstants {
     /** 定时执行存储宗门时间戳 */
     public static final long SAVE_ZONG_MEN_DATA_PERIOD_TIMER = 30;
     /**5 分钟存储一次 **/
-//    public static final long SAVE_ZONG_MEN_DATA_TIMER = 5*60*1000L;
-    public static final long SAVE_ZONG_MEN_DATA_TIMER = 1*60*1000L;
+    public static final long SAVE_ZONG_MEN_DATA_TIMER = 5*60*1000L;
 
     /** 宗门职位 宗主 */
     public static final int ZONG_MEN_POSITION_ZONG_ZHU = 1;

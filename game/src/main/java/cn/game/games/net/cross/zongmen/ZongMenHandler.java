@@ -96,7 +96,7 @@ public class ZongMenHandler extends BaseHandler {
                   findZongMen(zongMenId,playerId, message, paramList, client);
           case PbProtocol.ChatMessagePush_31010001 ->
                   zongMenChat(zongMenId,playerId, message, paramList, client);
-          case PbProtocol.ZongMenUpdateMemberFightPower_40000052 ->
+          case PbProtocol.ZongMenUpdateMemberFightPowerRequest_40000051 ->
                   updateMemberFightPower(zongMenId, playerId, message, paramList, client);
           case PbProtocol.ZongMenUpdateContributeValueReq_40000057 ->
                   updateContributeValue(zongMenId, playerId, message, paramList, client);
@@ -139,7 +139,8 @@ public class ZongMenHandler extends BaseHandler {
         if (member == null) {
             return;
         }
-        member.setPower(((ZongMenMsg.ZongMenUpdateMemberFightPower_40000052)message).getFightPower() );
+        member.setPower(((ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051)message).getFightPower() );
+        sendMsgToGameServer(playerId,client,ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.newBuilder().setResult(true).build(),PbProtocol.ZongMenUpdateContributeValueRes_40000058);
     }
 
   //宗门商店

@@ -9,6 +9,7 @@ import cn.game.games.net.cross.zongmen.ZongMenHandler;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.cross.zongmen.ZongMenSetting;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
@@ -189,8 +190,9 @@ public class ZongMenModule extends BasePlayerModule {
         QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
     for (QuestConfig config : zongMenTaskList) {
       questModule.remove(config.ID);
-//      questModule.setState(questModule.get(config.ID), QuestHelper.SHOW, true);
     }
+    //清除宗门活跃度领取记录
+    player.getPointRewardModule().clearActiveRewardList(PointRewardType.QUEST,QuestTypeEnum.ZongMen.ID);
   }
 
   public void setZongMenInfo(ZongMenMsg.ZongMenInfoProto zongMen) {

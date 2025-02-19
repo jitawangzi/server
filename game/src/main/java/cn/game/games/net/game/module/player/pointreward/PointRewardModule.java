@@ -68,7 +68,10 @@ public class PointRewardModule extends BasePlayerModule {
 	}
 
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int... index) {
-		return addReward(type, subType, 0, index);
+		return addReward(type, subType, 0,true, index);
+	}
+	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, boolean isLocalPoint, int... index) {
+		return addReward(type, subType, 0,isLocalPoint, index);
 	}
 	
 	/**
@@ -77,12 +80,13 @@ public class PointRewardModule extends BasePlayerModule {
 	 * @param type  区分玩法的类型
 	 * @param subType  某些玩法可能有多条这种奖励，一般用对应表的id来区分。 如果一个玩法只有一条这种奖励，则传0
 	 * @param index  多个奖励，领取哪个奖励的索引，-1领取所有能领的奖励
-	 * @param count 积分数值，一般是从player获取，如果没有在Asset里定义的，可以直接从这里传过来。大多用不到这个参数,例如伤害值 
+	 * @param count 积分数值，一般是从player获取，如果没有在Asset里定义的，可以直接从这里传过来。大多用不到这个参数,例如伤害值
+	 * @param isLocalPoint  是否是本地积分，如果是本地积分 则为true，目前只有 宗门的任务积分奖励为false 存储在宗门。
 	 * @return
 	 */
-	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, long count, int... index) {
+	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, long count, boolean isLocalPoint, int... index) {
 
-		if (!canReward(type, subType, count, index)) {
+		if (!canReward(type, subType, count,isLocalPoint, index)) {
 			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
 		}
 
@@ -131,7 +135,7 @@ public class PointRewardModule extends BasePlayerModule {
 
 				long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
 				int needPoint = conditionStage[ix];
-				if (point < needPoint) {
+				if (point < needPoint && isLocalPoint) {
 					return ResultObject.fail(ErrorMsgEnum.illegal_request.getId());
 				}
 
@@ -159,7 +163,7 @@ public class PointRewardModule extends BasePlayerModule {
 	 * @param index
 	 * @return
 	 */
-	public boolean canReward(PointRewardType type, int subType, long count, int... index) {
+	public boolean canReward(PointRewardType type, int subType, long count, boolean isLocalPoint, int... index) {
 
 		PointRewardData data = PointRewardData.valueOf(player, type, subType);
 		int[] conditionStage = data.conditionStage;
@@ -190,7 +194,7 @@ public class PointRewardModule extends BasePlayerModule {
 				if (!activeRewardList.contains(i)) {
 					long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
 					int needPoint = conditionStage[i];
-					if (point < needPoint) {
+					if (point < needPoint && isLocalPoint) {
 						return false;
 					}
 				}
@@ -202,11 +206,12 @@ public class PointRewardModule extends BasePlayerModule {
 				if (activeRewardList.contains(ix)) {
 					return false;
 				}
-
-				long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
-				int needPoint = conditionStage[ix];
-				if (point < needPoint) {
-					return false;
+				if (isLocalPoint){
+					long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
+					int needPoint = conditionStage[ix];
+					if (point < needPoint) {
+						return false;
+					}
 				}
 			}
 		}

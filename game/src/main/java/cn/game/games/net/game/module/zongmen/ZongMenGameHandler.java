@@ -92,12 +92,12 @@ public class ZongMenGameHandler extends BaseHandler {
             rpcFuture = VxHolder.requestRemoteServer(ZongMenHelper.getServerIdByZongMenId(player.getZongMenId()), serverReq.build());
         }
 //            rpcFuture = VxHolder.requestRemoteServer("LY_ZONG_MEN", serverReq.build());
-
+        log.info(String.format("sendMsgToZongMenServer pid:%d, msgId:%d, zongMenId:%d, req:%s",player.getPlayerId(),reqMsgId, zongMenId, req));
         rpcFuture
                 .onSuccess( // 请求成功
                         result -> {
                             if (result != null) {
-                                log.info(String.format("sendMsgToZongMenServer callBack msgId:%d %s, errorCode:%d, pid:%d ",
+                                log.info(String.format("sendMsgToZongMenServerCallBack msgId:%d %s, errorCode:%d, pid:%d ",
                                         result.getMsgId(),req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
 								ZongMenMsgResponse_41000046 serverResponse = (ZongMenMsgResponse_41000046) result;
 
@@ -761,5 +761,21 @@ public class ZongMenGameHandler extends BaseHandler {
       this.errorCode = errorCode;
       this.response = response;
     }
+
+      public int getErrorCode() {
+          return errorCode;
+      }
+
+      public void setErrorCode(int errorCode) {
+          this.errorCode = errorCode;
+      }
+
+      public Message getResponse() {
+          return response;
+      }
+
+      public void setResponse(Message response) {
+          this.response = response;
+      }
   }
 }
