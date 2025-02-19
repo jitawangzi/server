@@ -22,4 +22,6 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 
 	io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId);
 
+	io.vertx.core.Future<Boolean> buyZongmenBargain(long zongmenId, long playerId);
+
 }

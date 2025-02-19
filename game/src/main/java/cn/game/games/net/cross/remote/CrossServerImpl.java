@@ -11,9 +11,11 @@ import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
 import cn.game.games.net.cross.zongmen.ZongMenInfo;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.games.net.cross.zongmen.ZongMenMember;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 
 public class CrossServerImpl implements CrossServerInterface {
 	
@@ -40,5 +42,19 @@ public class CrossServerImpl implements CrossServerInterface {
 		int bargainTotalNum = bargain.getBargainTotalNum();
 		int price = guildBargainConfig.Price[1] - bargainTotalNum;
 		return io.vertx.core.Future.succeededFuture(price);
+	}
+
+	@Override
+	public Future<Boolean> buyZongmenBargain(long zongmenId, long playerId) {
+		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongmenId);
+		ZongMenMember member = zongMenInfo.getMember(playerId);
+		if (!member.isBargain()) {
+			return Future.succeededFuture(false);
+		}
+		if (member.isBargainBuy()) {
+			return Future.succeededFuture(false);
+		}
+		member.setBargainBuy(true);
+		return Future.succeededFuture(true);
 	}
 }
