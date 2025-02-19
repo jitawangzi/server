@@ -223,16 +223,26 @@ public class ZongMenGameHandler extends BaseHandler {
 		priceFuture.map(price -> {
 			GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
 			if (price > 0) {
-				boolean delResources = PlayerHelper.delResources(player, guildBargainConfig.Price[0], price, OpType.ZongMenBargain);
-				if (!delResources) {
-					client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
-					return null;
-				}
+				if (PlayerHelper.isEnough(player, guildBargainConfig.Price[0], price)) {
+					Future<Boolean> buyZongmenBargain = crossServerInterface.buyZongmenBargain(player.getZongMenId(), player.getPlayerId());
+					buyZongmenBargain.onSuccess(result -> {
+						if (result) {
+							boolean delResources = PlayerHelper.delResources(player, guildBargainConfig.Price[0], price,
+									OpType.ZongMenBargain);
+							if (!delResources) {
+								client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
+								return;
+							}
+							List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
+							res.addAllRewards(rewards);
+							client.sendProtocol(res.build());
+						} else {
+							client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
+						}
+					}).onFailure(player::handleFail);
+				} ; 
+
 			}
-			List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
-			res.addAllRewards(resources);
-			// 记录购买砍价
-			autoForwardZongMenServer(client, res, req, null);
 			return null;
 		}).onFailure(player::handleFail);
 
