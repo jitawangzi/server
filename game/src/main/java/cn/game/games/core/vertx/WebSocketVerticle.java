@@ -40,6 +40,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		log.debug("Starting WebSocketVerticle on thread: " + Thread.currentThread().getName());
+
 		Processor processor = (Processor) SpringContextLoader.getContext().getBean("processor");
 		HttpServerOptions serverOptions = new HttpServerOptions().setReusePort(true);
 		vertx.createHttpServer(serverOptions).webSocketHandler(ws -> {

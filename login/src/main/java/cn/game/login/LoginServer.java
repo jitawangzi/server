@@ -1,5 +1,8 @@
 package cn.game.login;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +11,16 @@ import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
 import cn.game.core.cache.CacheType;
+import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
+import cn.game.core.net.vertx.BusinessLogicVerticle;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
+import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.mapper.UserMapper;
@@ -87,15 +93,7 @@ public class LoginServer {
 //		RedisUtil.main(new String[] { Config.vertxRedisUrl });
 //		RedisUtil.setRedisUrl(Config.vertxRedisUrl);
 //		VxHolder.deployVerticleSync(new RedisUtil());
-		// 部署发布rest服务
-		DeploymentOptions options = new DeploymentOptions();
-		options.setInstances(VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE);
-		VxHolder.deployVerticleSync(RestServer.class, options);
-		VxHolder.deployVerticleSync(SpringContextLoader.getContext().getBean(VertxRPCService.class));
-		VxHolder.deployVerticleSync(SpringContextLoader.getContext().getBean(MsgConsumerVerticle.class));
-
-		rpcClient = new VertxRpcClient();
-		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+		initVerticle();
 
 		ServerListManager.getInstance().start();
 		ActiveServerListManager.getInstance().start(ServerType.Game);
@@ -125,6 +123,35 @@ public class LoginServer {
 
 		log.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
 		System.err.println("Login Server startup complete");
+	}
+	private void initVerticle() throws InterruptedException, ExecutionException, TimeoutException, Exception {
+		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
+		VxContextRegistry.getInstance().init(numVerticles);
+		for (int i = 0; i < numVerticles; i++) {
+			BusinessLogicVerticle verticle = new BusinessLogicVerticle(i);
+			VxHolder.deployVerticleSync(verticle);
+		}
+
+		rpcClient = new VertxRpcClient();
+		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+
+		// 部署发布rest服务
+		DeploymentOptions options = new DeploymentOptions();
+		options.setInstances(numVerticles);
+		VxHolder.deployVerticleSync(RestServer.class, options);
+
+		String serverId = ServerContext.getInstance().getServerId();
+		ServerType serverType = ServerContext.getInstance().getServerType();
+		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
+		for (int i = 0; i < numVerticles; i++) {
+			MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
+		Object remoteInterface = SpringContextLoader.getContext().getBean("loginRemote");
+		for (int i = 0; i < numVerticles; i++) {
+			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+			VxHolder.deployVerticleSync(verticle);
+		}
 	}
 
 	public static void main(String[] args) {
