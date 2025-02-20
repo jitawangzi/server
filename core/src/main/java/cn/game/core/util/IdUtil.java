@@ -35,7 +35,7 @@ public class IdUtil {
 	// 记录号段，号段内使用自增的id
 	public static enum IdType {
 
-		PLAYER, HERO, ITEM, UNION, ORDER;
+		PLAYER, HERO, ITEM, UNION, ORDER, ZONGMEN;
 	}
 
 	/** 

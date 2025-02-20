@@ -20,6 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @author SYQ
  */
 public final class DateUtil {
+	/** 固定的起始日期,判断天数、周数等，避免跨年、月等问题 */
+	private static final LocalDate DATE_START = LocalDate.of(2025, 1, 1);
+
 	/** yyyy年MM月dd日 HH时mm分ss秒 */
 	public static final String pattern_zh = "yyyy年MM月dd日 HH时mm分ss秒";
 	/** yyyy-MM-dd HH:mm:ss  默认的日期格式**/
@@ -39,6 +42,9 @@ public final class DateUtil {
 	public final static long MINUTE_MILLIS = 60000;
 	// 一秒钟的毫秒数 1*1000
 	public final static long SECOND_MILLIS = 1000;
+
+	/** 以凌晨5点为分界点 */
+	private static final int DAY_BOUNDARY_HOUR = 5;
 
 	private static ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
 		@Override
@@ -283,19 +289,6 @@ public final class DateUtil {
 		return targetDateTime.atZone(zoneId).toInstant().toEpochMilli();
 	}
 
-	/**
-	 * 得到当前星期数
-	 * 
-	 * @return 如周一返回1
-	 */
-	public static int getDayOfWeek() {
-		Calendar calendar = Calendar.getInstance();
-		int today = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-		if (today == 0) {
-			today = 7;
-		}
-		return today;
-	}
 
 	/**
 	 * 将毫秒级的timeMillis转化成格式为（HH:mm:ss）的字符串
@@ -391,44 +384,67 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 以当天的几点作为一天的分割点
-	 * @param hour
+	 * 获取指定日期时间的天数（相对于起始日期）
+	 * 以凌晨5点为一天的开始
+	 */
+	public static int getDayCustom(LocalDateTime dateTime) {
+		return (int) ChronoUnit.DAYS.between(DATE_START, adjustToBusinessDay(dateTime));
+	}
+
+	/**
+	 * 获取当前的天数（相对于起始日期）
+	 * 以凌晨5点为一天的开始
+	 */
+	public static int getDayCustom() {
+		return getDayCustom(LocalDateTime.now());
+	}
+
+	/** 
+	 * 获取当前天数（相对于起始日期）
 	 * @return
 	 */
-	public static int getDay(int hour) {
-		Calendar calendar = Calendar.getInstance();
-		int h = calendar.get(Calendar.HOUR_OF_DAY);
-		if (h >= hour) {
-			return calendar.get(Calendar.DAY_OF_YEAR);
-		}
-		return calendar.get(Calendar.DAY_OF_YEAR) - 1;
-	}
-
 	public static int getDay() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.DAY_OF_YEAR);
-	}
-	/**今天是当前月的第几天*/
-	public static int getDayOfMonth() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.DAY_OF_MONTH);
+		return (int) ChronoUnit.DAYS.between(DATE_START, LocalDate.now());
 	}
 
-	public static int getHour() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.HOUR_OF_DAY);
+	/**
+	 * 获取指定日期的天数（相对于起始日期）
+	 */
+	public static int getDayNumber(LocalDate date) {
+		return (int) ChronoUnit.DAYS.between(DATE_START, date);
 	}
 
+	/**
+	 * 获取指定日期的周数（相对于起始日期）
+	 */
 	public static int getWeek() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setFirstDayOfWeek(Calendar.MONDAY);
-		int week = calendar.get(Calendar.WEEK_OF_YEAR);
-		return week;
+		return (int) ChronoUnit.WEEKS.between(DATE_START, LocalDate.now());
 	}
 	
+	/** 
+	 * 获取指定日期的月数（相对于起始日期）
+	 * @return
+	 */
 	public static int getMonth() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.get(Calendar.MONTH);
+		return (int) ChronoUnit.MONTHS.between(DATE_START, LocalDate.now());
+	}
+
+	/**
+	 * 将日期时间调整为业务日期
+	 * 如果时间在凌晨5点前，认为属于前一天
+	 */
+	private static LocalDateTime adjustToBusinessDay(LocalDateTime dateTime) {
+		if (dateTime.getHour() < DAY_BOUNDARY_HOUR) {
+			return dateTime.minusDays(1).withHour(DAY_BOUNDARY_HOUR).withMinute(0).withSecond(0).withNano(0);
+		}
+		return dateTime.withHour(DAY_BOUNDARY_HOUR).withMinute(0).withSecond(0).withNano(0);
+	}
+
+	/**
+	 * 判断两个日期时间是否在同一个业务日
+	 */
+	public static boolean isSameBusinessDay(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+		return getDayCustom(dateTime1) == getDayCustom(dateTime2);
 	}
 
 	public static long addWeekBeginTimer(int offsetWeek){

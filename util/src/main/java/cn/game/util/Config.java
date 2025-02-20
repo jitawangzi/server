@@ -128,6 +128,8 @@ public final class Config {
 	public static String CHANGYOU_SDK_URL_BILLING_PRODUCTION;
 	public static String CHANGYOU_SDK_APP_KEY;
 	public static String CHANGYOU_SDK_APPSECRET;
+	public static int ExpectedNodeCount = 1;
+	public static int DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS;
 
 	/**
 	 *
@@ -190,6 +192,9 @@ public final class Config {
 					"http://tmobilebilling.changyou.com/billing");
 			CHANGYOU_SDK_URL_BILLING_PRODUCTION = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING_PRODUCTION",
 					"http://mobilebilling.changyou.com/billing");
+			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "1"));
+			DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS = Integer
+					.parseInt(initialProp.getProperty("DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_MINUTES", "600"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
 

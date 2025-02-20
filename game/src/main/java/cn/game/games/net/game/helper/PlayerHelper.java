@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import com.google.protobuf.MessageLite.Builder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
@@ -35,6 +37,7 @@ import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
@@ -313,8 +316,14 @@ public class PlayerHelper {
 		}
 		List<RewardInfo> rewards = null;
 		try {
-			GoodsModule goodsModule = player.getGoodsModule(id);
-			rewards = goodsModule.addReward(id, value, opType);
+			if (ZongMenHelper.isZongMenAsset(id)){//跟新宗门资源
+				rewards = new ArrayList<>();
+				 rewards.add(ZongMenHelper.addZongMenResources(player, id, value, opType));
+			}else {
+				GoodsModule goodsModule = player.getGoodsModule(id);
+				rewards = goodsModule.addReward(id, value, opType);
+			}
+
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resourceUpdate(player, id, value, opType, true);
@@ -402,8 +411,20 @@ public class PlayerHelper {
 		if (value <= 0) {
 			return true;
 		}
-		GoodsModule goodsModule = player.getGoodsModule(id);
-		boolean ret = goodsModule.del(id, value, consumeType);
+
+		//宗门贡献度
+		boolean ret = false;
+		if (id == Asset.ZongMenContribute.ID){
+			if (player.getZongMenId() == 0){//宗门不存在
+				return false;
+			}else {
+				ret = player.getZongmenModule().subContribute(value);
+			}
+		} else {
+			GoodsModule goodsModule = player.getGoodsModule(id);
+			ret = goodsModule.del(id, value, consumeType);
+		}
+
 
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);
@@ -1281,12 +1302,14 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
+	@Deprecated
 	public static RFuture<Boolean> trySetServerId(long playerId) {
 		RFuture<Boolean> playerLockFuture = RedisUtil.trySetAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
 		return playerLockFuture;
 	}
 
+	@Deprecated
 	public static RFuture<Void> setServerId(long playerId) {
 		RFuture<Void> playerLockFuture = RedisUtil.setAsync(CacheType.PLAYER_SERVER_ID.key(playerId),
 				ServerContext.getInstance().getServerId(), 5, TimeUnit.MINUTES);
@@ -1339,7 +1362,7 @@ public class PlayerHelper {
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			return Future.succeededFuture();
 		}
-		return VxHolder.toVertxFuture(trySetServerId(playerId)).compose(locked -> {
+		return VxHolder.toVertxFuture(IdCache.trySetServerId(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
 			}
@@ -1578,20 +1601,6 @@ public class PlayerHelper {
 			return HeroBandBookManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
-	}
-
-	/** 
-	 * 获取某玩家虚拟的服务器id
-	 * @param playerId
-	 * @return
-	 */
-	public static String getServerId(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (player != null) {
-			return player.getServerId();
-		}
-		SimplePlayer simplePlayer = RedisLocalCache.getInstance().get(CacheType.PLAYER_SIMPLE.key(playerId));
-		return simplePlayer.getServerId();
 	}
 
 	/** 

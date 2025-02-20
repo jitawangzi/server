@@ -11,7 +11,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * 2024年11月4日 17:16:01
  * @author SYQ
  */
-public interface RemoteGameServerInterface extends RemoteProxy {
+public interface RemoteGameServerInterface extends RemoteServerInterface {
 
 	public List<RewardInfo> addResources(long playerId, int id, int value);
 

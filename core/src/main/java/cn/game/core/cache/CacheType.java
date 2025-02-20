@@ -50,6 +50,24 @@ public enum CacheType {
 	IOS_OPENID_ORDER_DATA,
 	/** ios 平台支付订单的锁 */
 	IOS_OPENID_ORDER_DATA_LOCK,
+
+	//************宗门相关***********
+	/**** 宗门简单数据 */
+	ZONG_MEN_SIMPLE_DATA,
+	/**** 玩家加入宗门全局锁 */
+	ZONG_MEN_JOIN_PLAYER_LOCK,
+	/**** 宗门名称--id */
+	ZONG_MEN_NAME_ID,
+	/**** 宗门名称修改锁 */
+	ZONG_MEN_NAME_CHANGE_LOCK,
+	/**** 宗门创建锁 */
+	ZONG_MEN_CREATE_LOCK,
+	/** 宗门在哪个服务器 */
+	ZONG_MEN_SERVER_ID,
+	/**** 玩家id --宗门id 用于确认玩家是否拥有宗门，离线的玩家被审批加入宗门使用 */
+	PLAYER_ID_ZONG_MEN_ID,
+	//************宗门相关***********
+
 	;
 
 	public String key(Object... ks) {

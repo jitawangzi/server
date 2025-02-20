@@ -6,10 +6,12 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -124,6 +126,11 @@ public class GameServerImpl implements GameServerInterface {
           PlayerManager.getInstance().unblockAccount(pid);
         });
 
+	}
+
+	@Override
+	public boolean isObjectInCurrentServer(DistributedObjectType type, long objectId) {
+		return IdCache.getManager(type).isObjectInCurrentServer(objectId);
 	}
 
 	@Override

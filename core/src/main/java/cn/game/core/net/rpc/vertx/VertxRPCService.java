@@ -53,7 +53,8 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 			rpcService.handleResult(result, promise);
 			promise.future().onComplete(r -> {
 				if (r.failed() || r.result() instanceof Throwable) {
-					message.fail(ReplyFailure.ERROR.toInt(), ((Throwable) r.result()).getMessage());
+					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
+					message.fail(ReplyFailure.ERROR.toInt(), errString);
 				} else {
 					Result resp = new Result(r.result());
 					byte[] respData = KryoUtils.serialize(resp);

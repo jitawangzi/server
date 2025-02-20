@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.RunMode;
+import cn.game.core.base.ServerContext;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.transport.Result;
 import cn.game.util.Config;
@@ -18,6 +20,7 @@ import cn.game.util.KryoUtils;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
 public interface RpcClient {
@@ -61,6 +64,16 @@ public interface RpcClient {
 	 * @return  
 	 */
 	public <T> Future<Message<T>> request(String addr, T message);
+
+	/** 
+	 * 发送协议给远程服务器，需要有消息返回
+	 * @param <T>
+	 * @param addr 远程地址
+	 * @param message 消息
+	 * @param options
+	 * @return  
+	 */
+	public <T> Future<Message<T>> request(String addr, T message, DeliveryOptions options);
 
 	/** 
 	 * 给某地址广播消息
@@ -177,8 +190,20 @@ public interface RpcClient {
 	 * @return
 	 */
 	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String targetAddr) {
+		// 判断是否是void返回类型
+		boolean isVoid = returnType == void.class || returnType == Void.class;
 		byte[] datas = KryoUtils.serialize(command);
 		long startLong = System.currentTimeMillis();
+
+		// 如果是void类型，直接发送请求并返回null
+		if (isVoid) {
+			request(targetAddr, datas, r -> {
+				if (r instanceof Throwable) {
+					log.error("put message to targetAddr[{}] failed ,command[{}]exception[{}]", targetAddr, command, r);
+				}
+			});
+			return null;
+		}
 
 		// 异步调用处理
 		if (!sync) {
@@ -247,10 +272,14 @@ public interface RpcClient {
 		// 下面是同步方式调用，尽量少用
 		// vertx中一般只允许在worker线程中调用
 		checkAllowSync();
-
-		Future<Message<byte[]>> request = request(targetAddr, datas);
+		long timeout = Config.remoteCallTimeOut;
+		if (ServerContext.getInstance().getRunMode() == RunMode.TEST) {
+			timeout = 600;
+		}
+		DeliveryOptions options = new DeliveryOptions().setSendTimeout(timeout * 1000);
+		Future<Message<byte[]>> request = request(targetAddr, datas, options);
 		try {
-			Message<byte[]> message = request.toCompletionStage().toCompletableFuture().get(Config.remoteCallTimeOut, TimeUnit.SECONDS);
+			Message<byte[]> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
 			Result deserialize = KryoUtils.deserialize(message.body(), Result.class);
 			Object result = deserialize.getResult();
 			if (result instanceof Throwable) {

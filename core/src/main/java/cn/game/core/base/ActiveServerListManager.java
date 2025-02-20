@@ -27,7 +27,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.NodeInfo;
 
 /**    
- * 某zk地址下的存活的server列表。 
+ * 活跃的vert.x节点/server列表。 
  * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
@@ -41,8 +41,9 @@ public class ActiveServerListManager {
 	private ActiveServerListManager() {
 	}
 	
-	/**  */
+	/** key:serverType,value: serverId */
 	private Map<String, Set<String>> serverListMap = new ConcurrentHashMap<String, Set<String>>();
+	private final Set<ServerInstanceListener> serverListeners = new ConcurrentHashSet<>();
 	/**  game服务器在线人数,先存这 */
 	private Map<String, Integer> playerCountMap = new ConcurrentHashMap<String, Integer>();
 
@@ -133,17 +134,39 @@ public class ActiveServerListManager {
 
 	private void removeServer(String serverId, String serverType) {
 		Set<String> set = serverListMap.get(serverType);
-		if (set != null) {
-			set.remove(serverId);
+		if (set != null && set.remove(serverId)) {
 			log.info("active server node removes ,id[{}] type[{}]", serverId, serverType);
+			ServerType type = ServerType.valueOf(serverType);
+			notifyServerLeave(serverId, type);
 		}
 	}
 
 	public void addServer(String serverId, String serverType) {
 		Set<String> set = serverListMap.get(serverType);
-		if (set != null) {
-			set.add(serverId);
+		if (set != null && set.add(serverId)) {
 			log.info("active server node add ,id[{}] type[{}]", serverId, serverType);
+			ServerType type = ServerType.valueOf(serverType);
+			notifyServerJoin(serverId, type);
+		}
+	}
+
+	private void notifyServerJoin(String serverId, ServerType serverType) {
+		for (ServerInstanceListener listener : serverListeners) {
+			try {
+				listener.onServerJoin(serverId, serverType);
+			} catch (Exception e) {
+				log.error("Error notifying server join to listener", e);
+			}
+		}
+	}
+
+	private void notifyServerLeave(String serverId, ServerType serverType) {
+		for (ServerInstanceListener listener : serverListeners) {
+			try {
+				listener.onServerLeave(serverId, serverType);
+			} catch (Exception e) {
+				log.error("Error notifying server leave to listener", e);
+			}
 		}
 	}
 
@@ -166,4 +189,11 @@ public class ActiveServerListManager {
 		return integer == null ? 0 : integer;
 	}
 
+	public void addServerInstanceListener(ServerInstanceListener listener) {
+		serverListeners.add(listener);
+	}
+
+	public void removeServerInstanceListener(ServerInstanceListener listener) {
+		serverListeners.remove(listener);
+	}
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import cn.game.protocol.protobuf.ChatMsg;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -73,6 +74,7 @@ import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -124,11 +126,43 @@ public class ServerHandler extends BaseHandler {
 
 
 		putInvoker(PbProtocol.NotifyInviteBindAndLvUpRequest_7d000041, this::InviteLvChange);
+		putInvoker(PbProtocol.NotifyZongMenMsgToGame_7d000047, this::zongMenMsgNotify);
 
 
 
 //		putInvoker(PbProtocol.LoginGameArchiveListRequest_7d000301, this::archiveList);
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
+	}
+
+	private void zongMenMsgNotify(NetClient client, Object o) {
+		ServerMsg.NotifyZongMenMsgToGame_7d000047 req = (ServerMsg.NotifyZongMenMsgToGame_7d000047) o;
+		int msgId = req.getMsgId();
+		Message message = PbProtocol.getInstance().parseFrom(msgId, req.getData());
+		req.getPlayerIdList().forEach(pid ->{
+			Player player = PlayerManager.getInstance().getPlayer(pid);
+			if (player == null) {
+				log.error("zongMenMsgNotify player is null");
+				return;
+			}
+			switch (msgId){
+				//玩家 退出 宗门
+				case PbProtocol.notifyQuitZongMen_40000024 -> {
+					player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+				}
+				//玩家 加入 宗门
+				case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
+				case PbProtocol.ChatMessagePush_31010001 -> {//宗门聊天
+					zongMenChat(player,(ChatMsg.ChatMessagePush_31010001) message);
+				}
+				default -> {
+					log.error(String.format("zongMenMsgNotify msgId:%d is error",req.getMsgId()));
+				}
+			}
+		});
+	}
+
+	private void zongMenChat(Player notifyPlayer, ChatMsg.ChatMessagePush_31010001 req) {
+		notifyPlayer.getGameClient().sendProtocol(req);
 	}
 
 	private void playerEvent(NetClient client, Object o) {

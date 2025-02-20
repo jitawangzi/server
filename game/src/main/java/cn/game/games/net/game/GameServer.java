@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -14,22 +17,20 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.producer.RequestCallback;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
-import com.google.protobuf.Message;
 
+import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
-import cn.game.core.net.mq.RocketMQRpcClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -41,10 +42,12 @@ import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
@@ -61,7 +64,6 @@ import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.KeywordFilter;
 import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -89,7 +91,6 @@ public class GameServer implements GameServerMBean {
 //	private String serverId;
 	private static final GameServer instance = new GameServer();
 
-	private RpcClient rpcClient;
 	private String[] serverIds = new String[ServerType.values().length];
 	private String wsVerticle;
 
@@ -102,13 +103,6 @@ public class GameServer implements GameServerMBean {
 
 	public static void main(String args[]) {
 		try {
-      //			ServerContext.parseGameServerId(args);
-      //			LoggerManager.init();
-      //			System.err.println(System.getProperty("log4j2.level"));
-      //			CommonLogger.info("启动逻辑服。。");
-      //			instance.log.info("启动逻辑服。。");
-//      System.setProperty("user.dir", "D:\\Party\\server\\server\\game");
-
 			instance.start(args);
 		} catch (Throwable e) {
 			ServerContext.getInstance().handleStartFail(e);
@@ -117,9 +111,9 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void start(String[] args) throws Exception {
-
+		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
-		String serverId = GameUtil.parseServerId(args, ServerType.Game);
+		String serverId = GameUtil.parseServerId(args, serverType);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -130,7 +124,10 @@ public class GameServer implements GameServerMBean {
 		RedisUtil.getInstance().init();
 		IdUtil.init();
 
-		ServerContext.getInstance().init(serverId, ServerType.Game);
+//		VxHolder.init();
+
+		ActiveServerListManager.getInstance().start(ServerType.values());
+		ServerContext.getInstance().init(serverId, serverType);
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config
@@ -164,14 +161,12 @@ public class GameServer implements GameServerMBean {
 
 		ActivityStateManager.getInstance().start();
 //		ActivityStateManager.getInstance().initGlobal();
-//		UnionManager.getInstance().init();
-//		ChatManager.getInstance().init();
 		PlayerManager.getInstance().init();
 		ClassManager.getInstance().init();
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
 		checkPlayerJsonStruct();
-		KeywordFilter.initializeFromFile();
+//		KeywordFilter.initializeFromFile();
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
@@ -180,6 +175,9 @@ public class GameServer implements GameServerMBean {
 		MailHelper.initLoadGlobalMail();
 
 		DataFixManager.getInstance().init();
+
+		IdCache.init();
+
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
@@ -188,6 +186,7 @@ public class GameServer implements GameServerMBean {
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
+
 	}
 
 	/** 
@@ -275,40 +274,17 @@ public class GameServer implements GameServerMBean {
 	}
 
 	private void initScheduleTask() {
-		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {
-			PlayerManager.getInstance().setPlayerServerId();
-		}, 180000, 180000);
-		TaskManager.getInstance().scheduleGeneralAtFixedRate(() -> {
+		SchedulerService.getInstance().scheduleAtFixedRate(() -> {
 			VxHolder.broadcastRemoteServer(ServerType.Login,
-					GameStatusPublish_7d000017.newBuilder().setServerId(ServerContext.getInstance().getServerId())
-							.setOnlinePlayerCount(PlayerManager.getInstance().getOnlineCount()).build());
-		}, 0, 60000);
-	}
-
-	private void initRemoteInterface() throws Exception {
-		String serverId = ServerContext.getInstance().getServerId();
-		com.ctrip.framework.apollo.Config initialProp = ConfigService.getAppConfig();
-		// serverId = initialProp.getProperty("game.serever.id", "");
-		String loginServerId = initialProp.getProperty("login.serever.id", "");
-		String crossServerId = initialProp.getProperty("cross.serever.id", "");
-		// String dataServerId = initialProp.getProperty("data.serever.id", "");
-		String dataServerId = "data_" + serverId;
-
-		serverIds[ServerType.Login.ordinal()] = loginServerId;
-		serverIds[ServerType.Cross.ordinal()] = crossServerId;
-		serverIds[ServerType.Data.ordinal()] = dataServerId;
-
-		for (String string : serverIds) {
-			if (string == null)
-				continue;
-			if (string.equals(""))
-				throw new IllegalArgumentException("serverId can not be null");
-		}
+					GameStatusPublish_7d000017.newBuilder()
+							.setServerId(ServerContext.getInstance().getServerId())
+							.setOnlinePlayerCount(PlayerManager.getInstance().getOnlineCount())
+							.build());
+		}, 1, TimeUnit.MINUTES);
 	}
 
 	private void initVerticle() throws Exception {
-		rpcClient = new VertxRpcClient();
-		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+		VxHolder.deployVerticleSync((VertxRpcClient) ServerContext.getInstance().getRpcClient());
 
 		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
 		VxContextRegistry.getInstance().init(numVerticles);
@@ -408,9 +384,6 @@ public class GameServer implements GameServerMBean {
 		return serverIds[serverType.ordinal()];
 	}
 
-	public RpcClient getRpcClient() {
-		return rpcClient;
-	}
 
 	/**
 	 * 获取逻辑服远程调用接口
@@ -418,23 +391,62 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
+		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Game);
 	}
 
 	/**
-	 * 获取处理某玩家的逻辑服远程调用接口
-	 * @param 
+	 * 获取处理某类型对象的逻辑服远程调用接口
+	 * @param DistributedObjectType 什么类型的对象
+	 * @param targetId  对象的唯一id
 	 * @return
 	 */
-	public GameServerInterface getGameServerInterface(long playerId) {
-		String serverId = PlayerManager.getInstance().getServerId(playerId);
+	public GameServerInterface getGameServerInterface(DistributedObjectType objectType, long targetId) {
+
+		String serverId = IdCache.getManager(objectType).getServerId(targetId);
 		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
-			// 玩家不在线，或者在当前服务器，直接由当前服务器处理
+			// 对象不在线，或者在当前服务器，直接由当前服务器处理
 			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, rpcClient, CallType.PointToPoint, serverId, ServerType.Game, playerId);
+		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+				ServerType.Game, targetId);
 
+	}
+
+	/**
+	 * 获取处理某类型对象的跨服远程调用接口
+	 * @param DistributedObjectType 什么类型的对象
+	 * @param targetId  对象的唯一id
+	 * @return
+	 */
+	public CrossServerInterface getCrossServerInterface(DistributedObjectType objectType, long targetId) {
+
+		CallType callType = CallType.PointToPoint;
+		String serverId = IdCache.getManager(objectType).getServerId(targetId);
+		if (StringUtils.isEmpty(serverId)) {
+			callType = CallType.LoadBalancer;
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Cross, targetId);
+	}
+
+	/** 
+	 * 获取所有跨服的远程接口，用于点对点通讯。 
+	 * @return
+	 */
+	public List<CrossServerInterface> getAllCrossServerInterface() {
+
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross);
+		List<CrossServerInterface> ret = new ArrayList<>();
+
+		for (String serverId : serverSet) {
+			CrossServerInterface impl = RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+					ServerType.Cross, 0);
+			ret.add(impl);
+		}
+		return ret;
 	}
 
 	/** 
@@ -443,13 +455,14 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public RemoteLoginServerInterface getRemoteLoginServerInterface(CallType callType) {
-		return RpcFactory.getImpl(RemoteLoginServerInterface.class, rpcClient, callType, null, ServerType.Login);
+		return RpcFactory.getImpl(RemoteLoginServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, null,
+				ServerType.Login);
 
 	}
 
-	public void requestDataServer(Message message, RequestCallback callback) {
-		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
-	}
+//	public void requestDataServer(Message message, RequestCallback callback) {
+//		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
+//	}
 	/** 
 	 * 是否用一张表存储玩家所有数据
 	 * @return

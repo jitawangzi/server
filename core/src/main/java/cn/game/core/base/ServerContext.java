@@ -2,6 +2,7 @@ package cn.game.core.base;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -17,6 +18,8 @@ import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.process.Processor;
+import cn.game.core.net.rpc.RpcClient;
+import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
@@ -35,11 +38,15 @@ public class ServerContext {
 	private boolean pressureDev = Boolean.getBoolean("pressureDev");
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
+	private String serverId;
+	private ServerType serverType;
 	/** 是否是主节点 */
 	private volatile boolean isLeader;
 	private LeaderLatch leaderLatch;
 
 	private Processor processor;
+
+	private RpcClient rpcClient = new VertxRpcClient();
 
 	private ServerContext() {
 	};
@@ -47,10 +54,6 @@ public class ServerContext {
 	public static ServerContext getInstance() {
 		return instance;
 	}
-
-	private String serverId;
-	private ServerType serverType;
-
 	
 	public String getServerId() {
 		return serverId;
@@ -66,6 +69,14 @@ public class ServerContext {
 
 	public void setServerType(ServerType serverType) {
 		this.serverType = serverType;
+	}
+
+	public RpcClient getRpcClient() {
+		return rpcClient;
+	}
+
+	public void setRpcClient(RpcClient rpcClient) {
+		this.rpcClient = rpcClient;
 	}
 
 	public Processor getProcessor() {
@@ -84,6 +95,7 @@ public class ServerContext {
 		checkServerId(serverId);
 		initHotUpdate();
 		startLeaderTask();
+		waitOtherNodeStartup();
 	}
 
 	/** 
@@ -155,7 +167,7 @@ public class ServerContext {
 	}
 
 	private void initHotUpdate() {
-		if (!Config.hotUpdate) {
+		if (Config.hotUpdate) {
 			return;
 		}
 		String className = ManagementFactory.getRuntimeMXBean().getName();
@@ -166,7 +178,8 @@ public class ServerContext {
 				String jarName = "hotupdate-1.0.jar";
 				String agentPath = ClassHelper.findJarPath(jarName);
 				if (agentPath == null) {
-					throw new RuntimeException("Agent JAR not found : " + jarName);
+//					throw new RuntimeException("Agent JAR not found : " + jarName);
+					return;
 				}
 				vm = VirtualMachine.attach(pid);
 				vm.loadAgent(agentPath);
@@ -198,6 +211,7 @@ public class ServerContext {
 		log.info("Starting leader election for node: {}, path: {}", serverId, latchPath);
 
 		leaderLatch = new LeaderLatch(ZkHelper.curator, latchPath, serverId);
+
 		leaderLatch.addListener(new LeaderLatchListener() {
 			@Override
 			public void isLeader() {
@@ -211,8 +225,35 @@ public class ServerContext {
 				log.info("I am not leader: {}", serverId);
 			}
 		});
-		leaderLatch.start();
-		log.info("Leader elected: {}", getCurrentLeader());
+		try {
+			leaderLatch.start();
+			log.info("LeaderLatch started successfully");
+		} catch (Exception e) {
+			log.error("Failed to start LeaderLatch", e);
+			throw e;
+		}
+		log.info("Leader elected: {}", leaderLatch.getLeader());
+	}
+
+	private void waitOtherNodeStartup() throws Exception {
+		if (Config.ExpectedNodeCount <= 1 || !isLeader) {
+			return;
+		}
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(serverType);
+		if (serverSet.size() < Config.ExpectedNodeCount) {
+			int waitCount = 0;
+			while (serverSet.size() < Config.ExpectedNodeCount) {
+				log.info("等待[{}]节点数达到预期数量[{}],当前节点{}", serverType, Config.ExpectedNodeCount, serverSet);
+				Thread.sleep(3000);
+				serverSet = ActiveServerListManager.getInstance().getServerSet(serverType);
+				waitCount++;
+				if (waitCount > 100) {
+					throw new RuntimeException(
+							serverType.name() + "预期节点数未达到，当前节点数：" + serverSet.size() + "，预期节点数：" + Config.ExpectedNodeCount);
+				}
+			}
+			log.info("节点数达到预期值: {},当前节点数量: {}", Config.ExpectedNodeCount, serverSet.size());
+		}
 	}
 
 	/** 
@@ -256,6 +297,7 @@ public class ServerContext {
 	 * @param serverType 服务器类型
 	 * @return
 	 */
+	@Deprecated
 	public String parseServerId(String[] args, ServerType serverType) {
 		String serverId = null;
 		String serverIdKey = serverType.getServerIdKey();

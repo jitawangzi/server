@@ -93,7 +93,7 @@ public class DataServer {
 					player.setName(uid + "");
 					player.setLoginDate(DateUtil.getStringDate());
 
-					player.setRefreshDay(DateUtil.getDay(0));
+					player.setRefreshDay(DateUtil.getDay());
 
 					ObjUtil.setDefaultValue(player);
 					long id = dbMaxPlayerId.getAndIncrement();

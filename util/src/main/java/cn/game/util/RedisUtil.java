@@ -130,6 +130,19 @@ public class RedisUtil {
 		return bucket.trySetAsync(value, expire, timeUnit);
 	}
 
+	/**
+	 * 同步设置，带过期时间,key不存在才设置
+	 * @param key
+	 * @param value
+	 * @param expire
+	 * @param timeUnit
+	 * @return 
+	 */
+	public static <V> boolean trySet(String key, V value, int expire, TimeUnit timeUnit) {
+		RBucket<V> bucket = redis.getBucket(key);
+		return bucket.trySet(value, expire, timeUnit);
+	}
+
 	public static <V> RFuture<Boolean> compareAndSetAsync(String key, V expect, V update) {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.compareAndSetAsync(expect, update);

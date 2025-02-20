@@ -745,7 +745,7 @@ public class TestHandler extends BaseHandler {
                     player.setUid(id);
                     player.setName(id + "");
                     player.setLoginDate(DateUtil.getStringDate());
-                    player.setRefreshDay(DateUtil.getDay(0));
+					player.setRefreshDay(DateUtil.getDay());
                     ObjUtil.setDefaultValue(player);
                     player.setPlayerId(id);
                     try {

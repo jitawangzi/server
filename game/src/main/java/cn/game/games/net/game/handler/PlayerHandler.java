@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -404,7 +405,7 @@ public class PlayerHandler extends BaseHandler {
 				}
 				case SpiritBattle: {
 					PointRewardModule pointRewardModule = player.getPointRewardModule();
-					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, -1);
+					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, true,-1);
 					break;
 				}
 				case NightmareRealm: {
@@ -865,7 +866,7 @@ public class PlayerHandler extends BaseHandler {
 			return;
 		}
 
-		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(playerId);
+		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, playerId);
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
 		renameFuture.map(r -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);
@@ -1119,8 +1120,8 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setLoginDate(DateUtil.getStringDate());
 		playerData.setVipExpTotal(0);// 废弃待删除
 		playerData.setVipLevel(1); // 废弃待删除
-		playerData.setRefreshDay(DateUtil.getDay(0));
-		playerData.setRefreshFiveDay(DateUtil.getDay(5));
+		playerData.setRefreshDay(DateUtil.getDay());
+		playerData.setRefreshFiveDay(DateUtil.getDayCustom());
 		playerData.setRefreshWeek(DateUtil.getWeek());
 		playerData.setRefreshMonth(DateUtil.getMonth());
 		playerData.setNew(true);

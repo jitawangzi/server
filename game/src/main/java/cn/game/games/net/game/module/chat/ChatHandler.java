@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.chat;
 
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +66,7 @@ public class ChatHandler extends BaseHandler {
 		atMe = chatBuilder.build();
 		chatBuilder.setAtMe(false);
 		notAtMe = chatBuilder.build();
-
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ChatMessagePush_31010001 atMeMessage = ChatMessagePush_31010001.newBuilder().addMessageInfo(atMe).build();
 		ChatMessagePush_31010001 notAtMeMessage = ChatMessagePush_31010001.newBuilder().addMessageInfo(notAtMe).build();
 
@@ -91,6 +92,7 @@ public class ChatHandler extends BaseHandler {
 			PushService.getInstance().pushMessage(notAtMeMessage, false, serverId);
 			break;
 		}
+		//宗门聊天
 		case UNINON_CHAT: {
 
 			break;
@@ -163,7 +165,15 @@ public class ChatHandler extends BaseHandler {
 					break;
 				}
 				case UNINON_CHAT: {
-
+					if (sendPlayer.getZongMenId() == 0){//宗门不存在
+						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
+						return;
+					}
+					ChatMessageInfo.Builder messageBuilder = ChatMessageInfo.newBuilder();
+					messageBuilder.setChatType(chatType);
+					messageBuilder.setContent(content);
+					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
+					ZongMenGameHandler.sendMsgToZongMenServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
 					break;
 				}
 				default:
