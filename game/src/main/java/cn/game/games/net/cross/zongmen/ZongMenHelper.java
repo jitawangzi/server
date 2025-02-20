@@ -44,8 +44,8 @@ public class ZongMenHelper {
     }
     public static String getServerIdByZongMenId(long zongMenId){
 //        return String.valueOf(zongMenId >> 32);
-//		return IdCache.getZongMenServerId(zongMenId);
-		return "LY_ZONG_MEN";
+		return IdCache.getZongMenServerId(zongMenId);
+//		return "LY_ZONG_MEN";
     }
 
 
