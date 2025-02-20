@@ -90,6 +90,7 @@ public class CrossServer {
 		//初始化宗门
 		ZongMenManager.getInstance().init();
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
+		System.err.println("Cross Server startup complete");
 
 	}
 
