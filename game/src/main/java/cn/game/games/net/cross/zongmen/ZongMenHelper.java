@@ -11,6 +11,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.util.RedisUtil;
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
@@ -44,8 +45,8 @@ public class ZongMenHelper {
     }
     public static String getServerIdByZongMenId(long zongMenId){
 //        return String.valueOf(zongMenId >> 32);
-//		return IdCache.getZongMenServerId(zongMenId);
-		return "LY_ZONG_MEN";
+		return IdCache.getZongMenServerId(zongMenId);
+//		return "LY_ZONG_MEN";
     }
 
 
@@ -193,7 +194,7 @@ public class ZongMenHelper {
 //        - 在线状态：在线、离线（从近到远）；
 //        - 职位、战力：从高到低；
         list.sort((o1, o2) ->{
-            if (o1.getSimplePlayer().getOnline() == o2.getSimplePlayer().getOnline()){//在线
+            if (o1.getSimplePlayer().getOnline() && o2.getSimplePlayer().getOnline()){//在线
                 if (o1.getSimplePlayer().getOfflineTime() == o2.getSimplePlayer().getOfflineTime()){//离线（从近到远）
                     if (o1.getPosition() == o2.getPosition()){//职位
                             if (o1.getSimplePlayer().getCombatEffectiveness() == o2.getSimplePlayer().getCombatEffectiveness()){//战力
@@ -214,5 +215,9 @@ public class ZongMenHelper {
             }
         });
         return list;
+    }
+
+    public static boolean isHasZongMen(long zongMenId,long targetPid) {
+        return RedisUtil.get(CacheType.PLAYER_ID_ZONG_MEN_ID.key(targetPid,zongMenId)) == null ? false : true;
     }
 }
