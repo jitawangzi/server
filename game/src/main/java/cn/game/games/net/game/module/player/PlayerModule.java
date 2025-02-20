@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cn.game.core.base.ServerContext;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.PlayerIds;
 import cn.game.games.core.BasePlayerModule;
@@ -20,7 +19,6 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -290,7 +288,7 @@ public class PlayerModule extends BasePlayerModule {
 	public void handleEvent(GameEvent event) {
 		switch (event.getType()) {
 		case LoginFinish: {
-			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
+//			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
 			initLevel();
 			if (player.isFuncOpen(InitialUI.RandomBox)) {
 				startCloudBoxTask();
@@ -299,7 +297,7 @@ public class PlayerModule extends BasePlayerModule {
 			break;
 		}
 		case PLAYER_CREATE: {
-			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
+//			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());
 			// 初始化头像框
 			Collection<HeadPortraitConfig> list = HeadPortraitManager.instance().list();
 			HeroModule heroModule = player.getHeroModule();

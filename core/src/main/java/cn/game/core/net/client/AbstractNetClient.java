@@ -7,6 +7,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.formula.functions.T;
 
 import cn.game.core.net.protocol.IProtocol;
+import cn.game.core.net.vertx.VxContextRegistry;
+import io.vertx.core.Context;
 import io.vertx.core.impl.ContextInternal;
 
 public abstract class AbstractNetClient implements NetClient
@@ -15,7 +17,7 @@ public abstract class AbstractNetClient implements NetClient
 	protected long playerId;
 	protected String sessionId;
 	protected String ip;
-	protected ContextInternal context;
+//	protected ContextInternal context;
 	protected T player;
 
 	// 消息序号: 消息名，消息发送时间，纳秒
@@ -55,12 +57,12 @@ public abstract class AbstractNetClient implements NetClient
 	}
 
 	@Override
-	public ContextInternal getContext() {
-		return context;
+	public Context getContext() {
+		return VxContextRegistry.getInstance().getContext(getPlayerId());
 	}
 	@Override
 	public void setContext(ContextInternal context) {
-		this.context = context;
+//		this.context = context;
 	}
 	@Override
 	public void close() {

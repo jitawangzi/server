@@ -23,11 +23,9 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 	public void handleMessage(Message<Object> message) {
 		String targetIdString = message.headers().get("targetId");
 		long targetId = StringUtils.isEmpty(targetIdString) ? 0 : Long.parseLong(targetIdString);
-		VxContextRegistry.getInstance().submitTask(targetId, () -> {
-			Object body = message.body();
-			IProtocol protocol = convertToProtocol(body);
-			processor.process(new ServerClient(message), protocol);
-		});
+		Object body = message.body();
+		IProtocol protocol = convertToProtocol(body);
+		processor.process(targetId, new ServerClient(message), protocol);
 
 	}
 
@@ -50,8 +48,10 @@ public class MsgConsumerVerticle extends AbstractMessageHandlerService {
 
 	@Override
 	public void initConsumer(Handler<Message<Object>> handler) {
+		// 点对点通讯
 		vertx.eventBus().consumer(serverId, handler);
 		if (serverType != null) {
+			// 广播通讯
 			vertx.eventBus().consumer(serverType.name(), handler);
 		}
 	}

@@ -47,13 +47,13 @@ public class VxContextRegistry {
 	 */
 	public void registerContext(int index, Context context) {
 		contexts[index] = context;
-		log.info("Registered context for index={}, thread={}", index, Thread.currentThread().getName());
+		log.debug("Registered context for index={}, thread={}", index, Thread.currentThread().getName());
 	}
 
 	/**
 	 * 根据对象id，获取它应该对应的 context
 	 */
-	private Context getContextForId(long objectId) {
+	public Context getContext(long objectId) {
 		if (objectId == 0) {
 			return null;
 		}
@@ -72,7 +72,7 @@ public class VxContextRegistry {
 			return;
 		}
 		// 否则，正常走 (id % n) → Context 逻辑
-		Context ctx = getContextForId(objectId);
+		Context ctx = getContext(objectId);
 		if (ctx == null) {
 			log.warn("No context found for objectId={}, skipping task", objectId);
 			return;

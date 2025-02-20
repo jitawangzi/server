@@ -118,6 +118,14 @@ public enum EventTypeEnum {
 	FairyFriendsTravel(86, "仙友寻缘"),
 	FairyFriendsGift(87, "仙友赠礼"),
 
+	// 服务器级别的时间
+	/**  参数： 活动id */
+	ActivityOpenTime(300, "某活动到达开启时间"),
+	/**  参数： 活动id */
+	ActivityShutDownTime(301, "某活动到达关闭时间"),
+	/**  参数： 活动id */
+	ActivityDestoryTime(302, "某活动到达销毁时间"),
+
 	;
 	private int id;
 	private String desc;

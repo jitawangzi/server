@@ -34,11 +34,16 @@ public abstract class AbstractProcessor implements Processor {
 
 	@Override
 	public void process(long objectId, Runnable task) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:task");
 	}
 
 	@Override
 	public void process(Runnable task) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " task");
+	}
+
+	@Override
+	public void process(long objectId, NetClient gameClient, IProtocol<?> protocol) {
+		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:task:protocol");
 	}
 }

@@ -16,10 +16,12 @@ import org.slf4j.LoggerFactory;
 import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
+import cn.game.core.net.process.Processor;
 import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
 import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerType;
 import cn.game.util.reflect.ClassHelper;
@@ -36,6 +38,8 @@ public class ServerContext {
 	/** 是否是主节点 */
 	private volatile boolean isLeader;
 	private LeaderLatch leaderLatch;
+
+	private Processor processor;
 
 	private ServerContext() {
 	};
@@ -62,6 +66,13 @@ public class ServerContext {
 
 	public void setServerType(ServerType serverType) {
 		this.serverType = serverType;
+	}
+
+	public Processor getProcessor() {
+		if (processor == null) {
+			processor = SpringContextLoader.getContext().getBean(Processor.class);
+		}
+		return processor;
 	}
 
 	/** 

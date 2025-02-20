@@ -141,7 +141,7 @@ public class VxHolder {
 				.toCompletionStage()
 				.toCompletableFuture()
 				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
-		log.info("部署Verticle[{}]成功： ", verticle);
+		log.debug("部署Verticle[{}]成功： ", verticle);
 		return string;
 	}
 
@@ -151,14 +151,14 @@ public class VxHolder {
 				.toCompletionStage()
 				.toCompletableFuture()
 				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
-		log.info("部署Verticle[{}]成功： ", verticleClass);
+		log.debug("部署Verticle[{}]成功： ", verticleClass);
 		return string;
 	}
 
 	public static void deployVerticle(Verticle verticle) {
 		Future<String> deployVerticle = vertx.deployVerticle(verticle);
 		deployVerticle.onSuccess(r -> {
-			log.info("部署Verticle[{}]成功： ", verticle);
+			log.debug("部署Verticle[{}]成功： ", verticle);
 		});
 	}
 

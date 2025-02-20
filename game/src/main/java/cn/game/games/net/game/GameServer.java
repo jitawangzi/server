@@ -59,6 +59,7 @@ import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.KeywordFilter;
 import cn.game.util.LockUtil;
@@ -118,7 +119,7 @@ public class GameServer implements GameServerMBean {
 	public void start(String[] args) throws Exception {
 
 		long start = System.currentTimeMillis();
-		String serverId = parseServerId(args, ServerType.Game);
+		String serverId = GameUtil.parseServerId(args, ServerType.Game);
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -321,15 +322,10 @@ public class GameServer implements GameServerMBean {
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
-		for (int i = 0; i < numVerticles; i++) {
-			MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
-			VxHolder.deployVerticleSync(verticle);
-		}
+		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor));
 		Object remoteInterface = SpringContextLoader.getContext().getBean("gameRemote");
-		for (int i = 0; i < numVerticles; i++) {
-			VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
-			VxHolder.deployVerticleSync(verticle);
-		}
+		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VxHolder.deployVerticleSync(verticle);
 
 	}
 
@@ -461,25 +457,6 @@ public class GameServer implements GameServerMBean {
 	public boolean isSinglePlayerTable() {
 //		return false ; 
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
-	}
-
-	private String parseServerId(String[] args, ServerType serverType) {
-		String serverId = null;
-		String serverIdKey = serverType.getServerIdKey();
-		if (args.length == 0) {
-			serverId = System.getProperty(serverIdKey);
-			if (serverId == null) {
-				serverId = System.getenv(serverIdKey);
-			}
-		} else {
-			serverId = args[0];
-		}
-		if (serverId == null) {
-			throw new IllegalArgumentException("没有设置 serverId");
-		}
-		System.setProperty(serverIdKey, serverId);
-
-		return serverId;
 	}
 
 }

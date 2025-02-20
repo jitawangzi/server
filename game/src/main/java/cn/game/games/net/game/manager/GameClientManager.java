@@ -269,9 +269,9 @@ public class GameClientManager {
 		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online).setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
-		if (!online) {
-			PlayerManager.getInstance().offline(playerId);
-		}
+//		if (!online) {
+//			PlayerManager.getInstance().offline(playerId);
+//		}
 	}
 
 	public void noticeOne(Object message, Long pId) {
