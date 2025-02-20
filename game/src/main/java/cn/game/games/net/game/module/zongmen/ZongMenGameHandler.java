@@ -37,7 +37,6 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -212,7 +211,7 @@ public class ZongMenGameHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ZongMenModule zongmenModule = player.getZongmenModule();
 		long joinTime = zongmenModule.getJoinTime();
-		if (zongmenModule.getDisbandCount() > 0 && System.currentTimeMillis() - joinTime < GlobalConst.ZongmenBargainCD * 1000) {
+		if (zongmenModule.getDisbandCount() > 0 && System.currentTimeMillis() / 1000 - joinTime < GlobalConst.ZongmenBargainCD) {
 			client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
 			return;
 		}
