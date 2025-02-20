@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -94,7 +93,7 @@ public class UnionService {
 					redisson.getBucket(UNION_INFO_KEY + unionId).set(JSON.toJSONString(currentInfo));
 
 					// 记录更新日志
-					addLog(unionId, createUpdateLog(unionId, updateInfo));
+//					addLog(unionId, createUpdateLog(unionId, updateInfo));
 
 					return true;
 				} finally {
@@ -187,13 +186,13 @@ public class UnionService {
 	}
 
 	// 计数器操作
-	public long incrementActivity(String unionId, long delta) {
-		return redisson.getMap(UNION_COUNTER_KEY + unionId).addAndGet("activity", delta);
-	}
+//	public long incrementActivity(String unionId, long delta) {
+//		return redisson.getMap(UNION_COUNTER_KEY + unionId).addAndGet("activity", delta);
+//	}
 
-	public long addResource(String unionId, long amount) {
-		return redisson.getMap(UNION_COUNTER_KEY + unionId).addAndGet("resources", amount);
-	}
+//	public long addResource(String unionId, long amount) {
+//		return redisson.getMap(UNION_COUNTER_KEY + unionId).addAndGet("resources", amount);
+//	}
 
 	public boolean deductResource(String unionId, long amount) {
 		RLock lock = redisson.getLock(UNION_LOCK_KEY + unionId);
@@ -247,29 +246,29 @@ public class UnionService {
 	}
 
 	// 查询完整信息
-	public CompletableFuture<UnionFullInfo> getUnionFullInfoAsync(String unionId) {
-		CompletableFuture<UnionInfo> basicInfoFuture = CompletableFuture.supplyAsync(() -> getUnionInfo(unionId));
-
-		CompletableFuture<Map<String, Object>> countersFuture = CompletableFuture
-				.supplyAsync(() -> redisson.getMap(UNION_COUNTER_KEY + unionId).readAllMap());
-
-		CompletableFuture<List<UnionMember>> membersFuture = CompletableFuture.supplyAsync(() -> getMembers(unionId));
-
-		CompletableFuture<List<UnionLog>> logsFuture = CompletableFuture.supplyAsync(() -> getRecentLogs(unionId, 50));
-
-		return CompletableFuture.allOf(basicInfoFuture, countersFuture, membersFuture, logsFuture).thenApply(v -> {
-			UnionFullInfo fullInfo = new UnionFullInfo();
-			fullInfo.setBasicInfo(basicInfoFuture.join());
-			fullInfo.setCounters(countersFuture.join());
-			fullInfo.setMembers(membersFuture.join());
-			fullInfo.setRecentLogs(logsFuture.join());
-			return fullInfo;
-		});
-	}
+//	public CompletableFuture<UnionFullInfo> getUnionFullInfoAsync(String unionId) {
+//		CompletableFuture<UnionInfo> basicInfoFuture = CompletableFuture.supplyAsync(() -> getUnionInfo(unionId));
+//
+//		CompletableFuture<Map<String, Object>> countersFuture = CompletableFuture
+//				.supplyAsync(() -> redisson.getMap(UNION_COUNTER_KEY + unionId).readAllMap());
+//
+//		CompletableFuture<List<UnionMember>> membersFuture = CompletableFuture.supplyAsync(() -> getMembers(unionId));
+//
+//		CompletableFuture<List<UnionLog>> logsFuture = CompletableFuture.supplyAsync(() -> getRecentLogs(unionId, 50));
+//
+//		return CompletableFuture.allOf(basicInfoFuture, countersFuture, membersFuture, logsFuture).thenApply(v -> {
+//			UnionFullInfo fullInfo = new UnionFullInfo();
+//			fullInfo.setBasicInfo(basicInfoFuture.join());
+//			fullInfo.setCounters(countersFuture.join());
+//			fullInfo.setMembers(membersFuture.join());
+//			fullInfo.setRecentLogs(logsFuture.join());
+//			return fullInfo;
+//		});
+//	}
 
 	// 工具方法
 	private UnionInfo getUnionInfo(String unionId) {
-		String json = redisson.getBucket(UNION_INFO_KEY + unionId).get();
+		String json = (String) redisson.getBucket(UNION_INFO_KEY + unionId).get();
 		return json != null ? JSON.parseObject(json, UnionInfo.class) : null;
 	}
 
@@ -284,7 +283,7 @@ public class UnionService {
 	}
 
 	private boolean checkRemovePermission(String unionId, String operatorId, UnionMember targetMember) {
-		UnionMember operator = JSON.parseObject(redisson.getMap(UNION_MEMBER_KEY + unionId).get(operatorId), UnionMember.class);
+		UnionMember operator = JSON.parseObject((String) redisson.getMap(UNION_MEMBER_KEY + unionId).get(operatorId), UnionMember.class);
 
 		if (operator == null) {
 			return false;

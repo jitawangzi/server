@@ -1,11 +1,7 @@
 package cn.game.games.net.game.module.union;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.game.games.net.game.module.union.UnionService.UnionFullInfo;
 import cn.game.games.net.game.module.union.UnionService.UnionMember;
 
 public class UnionGameService {
@@ -18,14 +14,15 @@ public class UnionGameService {
 
 	// 创建工会
 	public boolean createUnion(String playerId, String unionName) {
-		UnionInfo info = new UnionInfo();
-		info.setUnionId(UUID.randomUUID().toString());
-		info.setName(unionName);
-		info.setLeaderId(playerId);
-		info.setLevel(1);
-		info.setCreateTime(System.currentTimeMillis());
+//		UnionInfo info = new UnionInfo();
+//		info.setUnionId(UUID.randomUUID().toString());
+//		info.setName(unionName);
+//		info.setLeaderId(playerId);
+//		info.setLevel(1);
+//		info.setCreateTime(System.currentTimeMillis());
 
-		return unionService.createUnion(info.getUnionId(), info);
+//		return unionService.createUnion(info.getUnionId(), info);
+		return false;
 	}
 
 	// 玩家加入工会
@@ -42,18 +39,18 @@ public class UnionGameService {
 	// 捐献资源
 	public boolean donate(String unionId, String playerId, long amount) {
 		// 增加资源
-		unionService.addResource(unionId, amount);
+//		unionService.addResource(unionId, amount);
 		// 增加活跃度
-		unionService.incrementActivity(unionId, amount / 100);
+//		unionService.incrementActivity(unionId, amount / 100);
 		return true;
 	}
 
 	// 获取工会信息
-	public UnionFullInfo getUnionInfo(String unionId) {
-		try {
-			return unionService.getUnionFullInfoAsync(unionId).get(5, TimeUnit.SECONDS);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to get union info", e);
-		}
-	}
+//	public UnionFullInfo getUnionInfo(String unionId) {
+//		try {
+//			return unionService.getUnionFullInfoAsync(unionId).get(5, TimeUnit.SECONDS);
+//		} catch (Exception e) {
+//			throw new RuntimeException("Failed to get union info", e);
+//		}
+//	}
 }
