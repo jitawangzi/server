@@ -8,12 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.steam.SteamAPI;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.sdk.ChangYouSdk;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
@@ -28,6 +30,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
@@ -203,6 +206,109 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			}, e -> {
 				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("渠道通信错误")
 						.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL).build();
+				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+				log.error("", e);
+				return;
+			});
+			break;
+		}
+		case CHANGYOU: {
+			JSONObject tokenObject = JSON.parseObject(token);
+			String channelId = tokenObject.getString("channelId");
+			String data = tokenObject.getString("data");
+			Future<String> accountVerificationFuture = ChangYouSdk.getInstance().accountVerification(channelId, 0, data);
+			accountVerificationFuture.onSuccess(r -> {
+				JSONObject respObject = JSON.parseObject(r);
+				String state = respObject.getString("state");
+				String error = respObject.getString("error");
+				JSONObject dataObject = respObject.getJSONObject("data");
+
+				if (!StringUtils.isEmpty(error)) {
+					log.warn("changyou login error {} ", error);
+				}
+				log.debug("changyou login resp {}", r);
+
+				if (state.equals("1")) { // 畅游账号校验成功，执行后续本地账号逻辑
+					
+					String dataStatus = dataObject.getString("status");
+					String userid = dataObject.getString("userid");
+					String oid = dataObject.getString("oid");
+					String access_token = dataObject.getString("access_token");
+					String info = dataObject.getString("info");
+					String extension = dataObject.getString("extension");
+					resp.setExt(dataObject.toJSONString());
+					String username = userid;
+					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
+					future.onComplete((v, throwable) -> {
+						if (throwable != null) {
+							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
+						} else {
+							VxHolder.vertx.executeBlocking(fut -> {
+								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+								User user = v;
+								if (user != null) {
+//									if (!session_key.equals(user.getSessionKey())) {
+//										user.setSessionKey(session_key);
+//										UserHelper.removeUser(user.getSessionId());
+//										user.setSessionId(IdUtil.getId());
+//										UserHelper.setUserBySession(user);
+//									}
+									user.setLoginDate(DateUtil.nowDateStr());
+									user.setLoginTime(DateUtil.nowTimeStr());
+									mapper.updateByPrimaryKey(user);
+								} else {
+									// 从数据库中查询，如果没有账号需要直接创建
+									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
+									if (user == null) {
+										user = UserHelper.createUser(username, "", AccountChannelType.CHANGYOU.name().toLowerCase(),
+												oid, "");
+										// 先不用了。
+//										resp.setIsNew(true);
+									} else {
+										user.setSessionId(IdUtil.getId());
+										UserHelper.setUserNewCache(user);
+										// 更新登录时间
+										user.setLoginDate(DateUtil.nowDateStr());
+										user.setLoginTime(DateUtil.nowTimeStr());
+//										user.setSessionKey(session_key);
+										mapper.updateByPrimaryKey(user);
+									}
+								}
+								byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "")
+										.setUserId(user.getId() + "")
+										.build()
+										.toByteArray();
+								Buffer dataBuffer = Buffer.buffer(byteArray);
+								response.end(dataBuffer);
+								return;
+							}, false).onFailure(e -> {
+								log.error("", e);
+								HttpResult httpResult = HttpResult.newBuilder()
+										.setErrorMsg("可能是账号创建失败")
+										.setErrorCode(AccountErrorCode.ACCOUNT_CREATE_FAIL)
+										.build();
+								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+							});
+						}
+					});
+				} else {
+					log.warn("changyou sdk login fail , token {}  ", token);
+					AccountErrorCode errorCode = AccountErrorCode.CHANNEL_CHECK_FAIL;
+					if (state.equals("2")) {
+						errorCode = AccountErrorCode.ACCOUNT_BANNED;
+					}
+					HttpResult httpResult = HttpResult.newBuilder()
+							.setErrorMsg("state : " + state + ", error : " + error)
+							.setErrorCode(errorCode)
+							.build();
+					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+					return;
+				}
+			}).onFailure(e -> {
+				HttpResult httpResult = HttpResult.newBuilder()
+						.setErrorMsg("畅游账号校验错误")
+						.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL)
+						.build();
 				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				log.error("", e);
 				return;

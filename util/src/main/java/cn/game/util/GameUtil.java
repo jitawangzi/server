@@ -1,7 +1,12 @@
 package cn.game.util;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -172,5 +177,25 @@ public class GameUtil {
 			newDrops[i][1] = dropMaps.getOrDefault(itemId,0);
 		}
 		return newDrops;
+	}
+
+	/**
+	 * 计算输入字符串的 MD5 十六进制结果
+	 *
+	 * @param input 输入字符串
+	 * @return MD5 哈希的 16 进制字符串
+	 */
+	public static String md5Hex(String input) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
+			for (byte b : digest) {
+				sb.append(String.format("%02x", b & 0xff));
+			}
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("MD5 算法不可用", e);
+		}
 	}
 }
