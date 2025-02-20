@@ -1,5 +1,5 @@
 --[[
-脚本名称: update_score_if_greater
+脚本名称: update_set_score_if_greater
 描述: 更新有序集合中成员的分数，仅当新分数大于现有分数时
 参数:
   KEYS[1]: 有序集合的键名

@@ -21,8 +21,16 @@ public class LuaScriptUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LuaScriptUtil.class);
 
 	public enum LuaScript {
-		UPDATE_SCORE_IF_GREATER("update_score_if_greater.lua", "更新值如果新值更大", true),
-		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),;
+		UPDATE_SET_SCORE_IF_GREATER("update_set_score_if_greater.lua", "更新值set分数如果新值更大", true),
+		SUBTRACT_HASH_IF_NON_NEGATIVE("subtract_hash_if_non_negative.lua", "减少hash表中指定字段的数值，确保结果不为负数", true),
+		UPDATE_HASH_CONDITIONAL("update_hash_conditional.lua", "只有当hash表中当前值等于期望值时才进行加减操作", true),
+		INCREMENT_WITH_MAX("increment_with_max.lua", "增加值但不超过最大值", true),
+		ADD_SET_WITH_LIMIT("add_set_with_limit.lua", "向集合添加元素，但限制集合大小不超过指定值", true),
+		ADD_SET_BATCH_WITH_LIMIT("add_set_batch_with_limit.lua", "批量向集合添加元素，但限制集合大小不超过指定值", true),
+		ADD_LIST_WITH_FIFO_LIMIT("add_list_with_fifo_limit.lua", "向列表添加元素，如果超过大小限制则移除最老的元素", true),
+		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
+
+		;
 
 		private final String filename;
 		private final String description;
@@ -108,7 +116,8 @@ public class LuaScriptUtil {
 	 * @return
 	 */
 	public static CompletionStage<Double> updateScoreIfGreater(String key, long member, double newScore) {
-		return executeLuaScript(LuaScript.UPDATE_SCORE_IF_GREATER, LongCodec.INSTANCE, List.of(key), member, newScore).thenApply(result -> {
+		return executeLuaScript(LuaScript.UPDATE_SET_SCORE_IF_GREATER, LongCodec.INSTANCE, List.of(key), member, newScore)
+				.thenApply(result -> {
 			if (result instanceof Number) {
 				return ((Number) result).doubleValue();
 			}
@@ -126,6 +135,17 @@ public class LuaScriptUtil {
 	 */
 	public static CompletionStage<Long> incrementWithMax(String key, long increment, long maxValue) {
 		return executeLuaScript(LuaScript.INCREMENT_WITH_MAX, LongCodec.INSTANCE, List.of(key), increment, maxValue);
+	}
+
+	/** 
+	 * 只有当hash表中当前值等于期望值时才进行加减操作
+	 * @param key
+	 * @param expectedValue 预期值
+	 * @param addValue  增加或减少的值
+	 * @return 更新后的值
+	 */
+	public static CompletionStage<Long> updateHashConditional(String key, long expectedValue, long addValue) {
+		return executeLuaScript(LuaScript.UPDATE_HASH_CONDITIONAL, LongCodec.INSTANCE, List.of(key), expectedValue, addValue);
 	}
 
 }
