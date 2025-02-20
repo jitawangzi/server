@@ -108,6 +108,9 @@ public class ChapterModule extends BasePlayerModule  {
 	@JsonIgnore
 	private int adRogueCountPerBattle;
 
+	/** 战斗选择的强援技能id */
+	private int rescueSkillId;
+
 	/** 每日挑战数据 */
 	@JsonIgnore
 	@Deprecated
@@ -246,7 +249,7 @@ public class ChapterModule extends BasePlayerModule  {
 				break;
 			}
 		}
-		return battleId;
+		return battleId == 0 ? mainBattleHighest : battleId;
 	}
 
 	/** 
@@ -535,6 +538,14 @@ public class ChapterModule extends BasePlayerModule  {
 		this.adRogueCountPerBattle = adRogueCountPerBattle;
 	}
 
+	public int getRescueSkillId() {
+		return rescueSkillId;
+	}
+
+	public void setRescueSkillId(int rescueSkillId) {
+		this.rescueSkillId = rescueSkillId;
+	}
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -686,6 +697,7 @@ public class ChapterModule extends BasePlayerModule  {
 		}
 		builder.setBattleType(type);
 		builder.setBattleId(dungeonId);
+		builder.setRescueSkillId(rescueSkillId);
 
 		lineupMaps.forEach((k, v) -> {
 			BattleLineupInfo.Builder lineupbuilder = BattleLineupInfo.newBuilder();

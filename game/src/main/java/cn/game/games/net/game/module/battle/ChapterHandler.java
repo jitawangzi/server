@@ -76,6 +76,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveResponse_13000011;
+import cn.game.protocol.protobuf.BattleMsg.BattleRescueSkillIdRequest_13000057;
+import cn.game.protocol.protobuf.BattleMsg.BattleRescueSkillIdResponse_13000058;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardRequest_13000022;
 import cn.game.protocol.protobuf.BattleMsg.BattleRewardResponse_13000023;
 import cn.game.protocol.protobuf.BattleMsg.BattleRogueAdvertiseRequest_13000012;
@@ -160,6 +162,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleWorldRewardRequest_13000305, this::worldBossReward);
 		putInvoker(PbProtocol.BattleChapterRewardRequest_13000222, this::battleChapterReward);
 		putInvoker(PbProtocol.BattleRogueAdvertiseRequest_13000012, this::rogueAdvertise);
+		putInvoker(PbProtocol.BattleRescueSkillIdRequest_13000057, this::rescueSkillId);
 
 		//PVP 大道争锋
 		putInvoker(PbProtocol.BattlePvPTargetListRequest_13000111, OfflineBattleHandler::searchTargetList);
@@ -177,6 +180,19 @@ public class ChapterHandler extends BaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void rescueSkillId(NetClient client, Object message) {
+		BattleRescueSkillIdRequest_13000057 req = (BattleRescueSkillIdRequest_13000057) message;
+		BattleRescueSkillIdResponse_13000058.Builder resp = BattleRescueSkillIdResponse_13000058.newBuilder();
+		int id = req.getId();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		chapterModule.setRescueSkillId(id);
 
 		client.sendProtocol(resp);
 	}
@@ -780,7 +796,7 @@ public class ChapterHandler extends BaseHandler {
 		if (pay) {
 			List<Integer> payList = new ArrayList<>();
 			int[][] paySweepCostAll = daoHeartBattle.getPaySweepCostAll();
-			for (int i = 0; i < paySweepCostAll.length; i++) {
+			for (int i = 0; i < allCount; i++) {
 				payList.add(paySweepCostAll[i][0]);
 				payList.add(paySweepCostAll[i][1]);
 			}

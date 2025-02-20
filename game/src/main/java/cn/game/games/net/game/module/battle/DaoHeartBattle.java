@@ -117,9 +117,9 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 
 	public int getMaxPaySweepCount() {
 		if(type == 2) {
-			return GlobalConst.DaoHeartPayCnt;
+			return GlobalConst.DaoHeartPayCnt + player.getWelfareValue(WelfareTypeEnum.PaymentFrequencyDaoxin);
 		}else if (type == 3) {
-			return GlobalConst.InnerDemonsPayCnt;
+			return GlobalConst.InnerDemonsPayCnt + player.getWelfareValue(WelfareTypeEnum.HeartDemonPaymentTimes);
 		} else if (type == 4) {
 			return GlobalConst.DemonKingCnt;
 		}
