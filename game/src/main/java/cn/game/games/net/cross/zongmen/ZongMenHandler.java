@@ -382,106 +382,130 @@ public class ZongMenHandler extends BaseHandler {
     }
   }
 
-  //宗门成员权限管理
-  private void updateMemberAuth(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-    ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) message;
+  // 宗门成员权限管理
+  private void updateMemberAuth(
+      long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.updateMemberAuthRequest_40000041 req =
+        (ZongMenMsg.updateMemberAuthRequest_40000041) message;
     ZongMenMsg.updateMemberAuthResponse_40000042.Builder res =
-            ZongMenMsg.updateMemberAuthResponse_40000042.newBuilder().setResult(true);
+        ZongMenMsg.updateMemberAuthResponse_40000042.newBuilder().setResult(true);
     ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
     String playerName = paramList.get(0);
     if (zongMenInfo == null) {
       sendErrorCodeMsgToGameServer(
-              playerId,
-              client,
-              ErrorMsgEnum.zong_men_not_exist,
-              PbProtocol.updateZongMenAssetResponse_40000038);
+          playerId,
+          client,
+          ErrorMsgEnum.zong_men_not_exist,
+          PbProtocol.updateZongMenAssetResponse_40000038);
       return;
     }
     ZongMenMember member = zongMenInfo.getMember(playerId);
-    GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
+    GuildPermissionsConfig permissionsConfig =
+        GuildPermissionsManager.instance().get(member.position);
     List<Long> targetPidList = new ArrayList<>();
-    req.getTargetPidListList().forEach(pid ->{targetPidList.add(pid.longValue());});
-    //加入审批检测
-    if (req.getOptType() == 1 || req.getOptType() == 2){
-      if (!permissionsConfig.Approval){
+    req.getTargetPidListList()
+        .forEach(
+            pid -> {
+              targetPidList.add(pid.longValue());
+            });
+    // 加入审批检测
+    if (req.getOptType() == 1 || req.getOptType() == 2) {
+      if (!permissionsConfig.Approval) {
         sendErrorCodeMsgToGameServer(
-                playerId,
-                client,
-                ErrorMsgEnum.zong_men_permission_not_enough,
-                PbProtocol.updateMemberAuthResponse_40000042);
+            playerId,
+            client,
+            ErrorMsgEnum.zong_men_permission_not_enough,
+            PbProtocol.updateMemberAuthResponse_40000042);
         return;
-        }
-      for(long targetPid : req.getTargetPidListList()){
-        if (!zongMenInfo.hasApply(targetPid)){
+      }
+      for (long targetPid : req.getTargetPidListList()) {
+        if (!zongMenInfo.hasApply(targetPid)) {
           sendErrorCodeMsgToGameServer(
-                  playerId,
-                  client,
-                  ErrorMsgEnum.request_parameter_error,
-                  PbProtocol.updateMemberAuthResponse_40000042);
+              playerId,
+              client,
+              ErrorMsgEnum.request_parameter_error,
+              PbProtocol.updateMemberAuthResponse_40000042);
           return;
         }
 
-      }
-        if (req.getOptType() == 1 && zongMenInfo.isFull()){
+        if (req.getOptType() == 1
+            && req.getTargetPidListList().size() == 1
+            && ZongMenHelper.isHasZongMen(zongMenId, req.getTargetPidList(0))) {
           sendErrorCodeMsgToGameServer(
-                  playerId,
-                  client,
-                  ErrorMsgEnum.zong_men_full,
-                  PbProtocol.updateMemberAuthResponse_40000042);
-          }
-    }
-    //踢人 审批
-    if (req.getOptType() == 3 ){
-      if (!permissionsConfig.Rename){
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_player_apply_has,
+              PbProtocol.updateMemberAuthResponse_40000042);
+          return;
+        }
+      }
+      if (req.getOptType() == 1 && zongMenInfo.isFull()) {
         sendErrorCodeMsgToGameServer(
-                playerId,
-                client,
-                ErrorMsgEnum.zong_men_permission_not_enough,
-                PbProtocol.updateMemberAuthResponse_40000042);
+            playerId,
+            client,
+            ErrorMsgEnum.zong_men_full,
+            PbProtocol.updateMemberAuthResponse_40000042);
+      }
+    }
+    // 踢人 审批
+    if (req.getOptType() == 3) {
+      if (!permissionsConfig.Rename) {
+        sendErrorCodeMsgToGameServer(
+            playerId,
+            client,
+            ErrorMsgEnum.zong_men_permission_not_enough,
+            PbProtocol.updateMemberAuthResponse_40000042);
         return;
       }
-      for(long targetPid : req.getTargetPidListList()){
-        if (!zongMenInfo.isHasMember(targetPid)){
+      for (long targetPid : req.getTargetPidListList()) {
+        if (!zongMenInfo.isHasMember(targetPid)) {
           sendErrorCodeMsgToGameServer(
-                  playerId,
-                  client,
-                  ErrorMsgEnum.zong_men_player_member_not_exist,
-                  PbProtocol.updateMemberAuthResponse_40000042);
+              playerId,
+              client,
+              ErrorMsgEnum.zong_men_player_member_not_exist,
+              PbProtocol.updateMemberAuthResponse_40000042);
           return;
         }
       }
     }
 
-    //审批同意添加成员
-    if (req.getOptType() == 1){
+    // 审批同意添加成员
+    if (req.getOptType() == 1) {
       zongMenInfo.addMemberAuth(targetPidList, playerName);
-    } else if (req.getOptType() == 2){//审批拒绝添加成员
+    } else if (req.getOptType() == 2) { // 审批拒绝添加成员
       zongMenInfo.removeApplyAuth(targetPidList, playerName);
-    } else if (req.getOptType() == 3){//踢人
+    } else if (req.getOptType() == 3) { // 踢人
       zongMenInfo.kickMember(targetPidList, playerName);
     }
-    sendMsgToGameServer(playerId, client,res.build(), PbProtocol.updateMemberAuthResponse_40000042);
+    sendMsgToGameServer(
+        playerId, client, res.build(), PbProtocol.updateMemberAuthResponse_40000042);
   }
-  //跟新 贡献度 活跃度 之类的资产
-  private void updateZongMenAsset(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-    ZongMenMsg.updateZongMenAssetRequest_40000037 req = (ZongMenMsg.updateZongMenAssetRequest_40000037) message;
+
+  // 跟新 贡献度 活跃度 之类的资产
+  private void updateZongMenAsset(
+      long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
+    ZongMenMsg.updateZongMenAssetRequest_40000037 req =
+        (ZongMenMsg.updateZongMenAssetRequest_40000037) message;
     ZongMenMsg.updateZongMenAssetResponse_40000038.Builder res =
-            ZongMenMsg.updateZongMenAssetResponse_40000038.newBuilder();
+        ZongMenMsg.updateZongMenAssetResponse_40000038.newBuilder();
     ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
     if (zongMenInfo == null) {
       sendErrorCodeMsgToGameServer(
-              playerId,
-              client,
-              ErrorMsgEnum.zong_men_not_exist,
-              PbProtocol.updateZongMenAssetResponse_40000038);
+          playerId,
+          client,
+          ErrorMsgEnum.zong_men_not_exist,
+          PbProtocol.updateZongMenAssetResponse_40000038);
       return;
     }
-    req.getZongMenAssetMapsList().forEach(reward -> {
-      int id = reward.getAsset().getId();
-      int num = (int) reward.getAsset().getCount();
-      zongMenInfo.addZongMenAsset(playerId,id, num);
-    });
-    sendMsgToGameServer(playerId, client,res.build(), PbProtocol.updateZongMenAssetResponse_40000038);
+    req.getZongMenAssetMapsList()
+        .forEach(
+            reward -> {
+              int id = reward.getAsset().getId();
+              int num = (int) reward.getAsset().getCount();
+              zongMenInfo.addZongMenAsset(playerId, id, num);
+            });
+    sendMsgToGameServer(
+        playerId, client, res.build(), PbProtocol.updateZongMenAssetResponse_40000038);
   }
 
   private void quitZongMen(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {

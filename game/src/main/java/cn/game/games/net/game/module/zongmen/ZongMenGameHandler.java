@@ -146,7 +146,8 @@ public class ZongMenGameHandler extends BaseHandler {
     putInvoker(PbProtocol.ZongMenBuyShopRequest_40000047, this::buyZongMenShop);
 	putInvoker(PbProtocol.ZongMenBargainRequest_40000060, this::bargain);
 	putInvoker(PbProtocol.ZongMenBargainBuyRequest_40000062, this::buyBargain);
-      putInvoker(PbProtocol.ZongMenGetMyApplyZongMenIdListRequest_40000055, this::getMyApplyZongMenIdList);
+    putInvoker(PbProtocol.ZongMenGetMyApplyZongMenIdListRequest_40000055, this::getMyApplyZongMenIdList);
+    putInvoker(PbProtocol.ZongMenQuickJoinRequest_40000065, this::quickJoinZongMen);
 
   }
 
@@ -154,6 +155,19 @@ public class ZongMenGameHandler extends BaseHandler {
   protected int getModule() {
     return 0x40;
   }
+
+    //一键快速加入宗门
+    private void quickJoinZongMen(NetClient client, Object o) {
+        ZongMenMsg.ZongMenQuickJoinRequest_40000065 req = (ZongMenMsg.ZongMenQuickJoinRequest_40000065) o;
+        ZongMenMsg.ZongMenQuickJoinResponse_40000066.Builder res = ZongMenMsg.ZongMenQuickJoinResponse_40000066.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ZongMenModule zongmenModule = player.getZongmenModule();
+        if (zongmenModule.getDisbandCount() > 0 && System.currentTimeMillis() < zongmenModule.getNextJoinTimer() ) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
+            return;
+        }
+
+    }
     // 获取申请过的宗门列表
     private void getMyApplyZongMenIdList(NetClient client, Object o) {
         ZongMenMsg.ZongMenGetMyApplyZongMenIdListRequest_40000055 req =

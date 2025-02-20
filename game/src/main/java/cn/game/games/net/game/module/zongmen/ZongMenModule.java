@@ -119,6 +119,10 @@ public class ZongMenModule extends BasePlayerModule {
     for (QuestConfig config : zongMenTaskList) {
       questModule.remove(config.ID);
       questModule.open(config.ID,true);
+      log.info(
+          String.format(
+              "玩家[%d] 刷新宗门任务 宗门ID[%d] 任务ID[%d]",
+              player.getPlayerId(), zongMenId, config.ID));
     }
   }
 
@@ -215,6 +219,8 @@ public class ZongMenModule extends BasePlayerModule {
 
   public void joinZongMen(ZongMenMsg.notifyJoinZongMen_40000044 req) {
     setZongMenInfo(req.getZongMen());
+    refreshZongMenTask();
+    player.getShopModule().refreshZongMenShop();
     player.getGameClient().sendProtocol(req);
   }
 

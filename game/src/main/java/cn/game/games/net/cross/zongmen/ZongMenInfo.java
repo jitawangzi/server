@@ -26,6 +26,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
+import cn.game.util.LockUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -312,41 +313,46 @@ public class ZongMenInfo {
    * @param playerName 审批人
    */
   public void addMemberAuth(List<Long> targetPidListList, String playerName) {
-    PlayerManager.getInstance()
-        .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
-        .onSuccess(
-            res -> {
+    boolean addMemberLock =
+        LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_JOIN_PLAYER_LOCK.key(getId()));
+    if (addMemberLock) {
+      PlayerManager.getInstance()
+          .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
+          .onSuccess(
+              res -> {
                 List<Long> joinPidList = new ArrayList<>();
-              res.forEach(
-                  simplePlayer -> {
-                    if (isFull()) {
-                      return;
-                    }
-                    //删除申请记录
-                    module.removeApply(simplePlayer.getId());
-                    //加入宗门
-                    joinZongMen(
-                        simplePlayer.getId(),
-                        simplePlayer.getName(),
-                        simplePlayer.combatEffectiveness,
-                        ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-                    joinPidList.add(simplePlayer.getId());
-
-                  });
+                res.forEach(
+                    simplePlayer -> {
+                      if (isFull()) {
+                        return;
+                      }
+                      // 删除申请记录
+                      module.removeApply(simplePlayer.getId());
+                      // 加入宗门
+                      joinZongMen(
+                          simplePlayer.getId(),
+                          simplePlayer.getName(),
+                          simplePlayer.combatEffectiveness,
+                          ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+                      joinPidList.add(simplePlayer.getId());
+                    });
                 // 通知被加入的玩家 加入宗门
-                ZongMenHelper.broadcastNotifyMsgToPlayer(ZongMenMsg.notifyJoinZongMen_40000044
-                                .newBuilder()
-                                .setZongMen(toProto())
-                                .build(),
-                        PbProtocol.notifyJoinZongMen_40000044,joinPidList);
-              //更新宗门战斗力排行榜
-              ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
-            })
-        .onFailure(
-            err -> {
-              err.printStackTrace();
-            });
+                ZongMenHelper.broadcastNotifyMsgToPlayer(
+                    ZongMenMsg.notifyJoinZongMen_40000044
+                        .newBuilder()
+                        .setZongMen(toProto())
+                        .build(),
+                    PbProtocol.notifyJoinZongMen_40000044,
+                    joinPidList);
+                // 更新宗门战斗力排行榜
+                ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
+              })
+          .onFailure(
+              err -> {
+                err.printStackTrace();
+              });
     }
+  }
 
     // 删除申请记录
     public void removeApplyAuth(List<Long> targetPidListList, String playerName) {
