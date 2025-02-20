@@ -50,6 +50,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
         this.power = power;
         setJoinTime(System.currentTimeMillis());
         setContribution(0);
+        setTotalContribution(0);
         setPosition(position);
     }
 
@@ -152,7 +153,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
         builder.setPid((int) playerId);
         builder.setPosition(position);
         builder.setTodayContribute(contribution);
-        builder.setTodayContribute(totalContribution);
+        builder.setTotalContribute(totalContribution);
         return builder;
     }
 

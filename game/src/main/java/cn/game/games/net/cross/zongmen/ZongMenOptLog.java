@@ -26,6 +26,11 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
     return new ZongMenConstants.ZongMenEvenType[] {
       ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN,
       ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE,
+      ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME,
+      ZongMenConstants.ZongMenEvenType.QUIT_ZONG_MEN,
+      ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION,
+      ZongMenConstants.ZongMenEvenType.ZONG_MEN_KICK_MEMBER,
+      ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NOTICE,
     };
   }
 
@@ -108,7 +113,7 @@ public class ZongMenOptLog implements ZongMenConstants.ZongMenEventHandler {
             ChatMsg.ChatMessageInfo.Builder builder = ChatMsg.ChatMessageInfo.newBuilder();
             builder.setChatType(ChatMsg.ChatType.UNINON_CHAT);
             builder.setOptType(1);
-            StringBuffer sb = new StringBuffer(optType);
+            StringBuffer sb = new StringBuffer().append(optType);
             params.forEach(str ->{sb.append("&").append(str);});
             builder.setContent(sb.toString());
             msg.addMessageInfo(builder);

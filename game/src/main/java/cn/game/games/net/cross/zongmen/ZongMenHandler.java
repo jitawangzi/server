@@ -96,7 +96,7 @@ public class ZongMenHandler extends BaseHandler {
                   findZongMen(zongMenId,playerId, message, paramList, client);
           case PbProtocol.ChatMessagePush_31010001 ->
                   zongMenChat(zongMenId,playerId, message, paramList, client);
-          case PbProtocol.ZongMenUpdateMemberFightPower_40000052 ->
+          case PbProtocol.ZongMenUpdateMemberFightPowerRequest_40000051 ->
                   updateMemberFightPower(zongMenId, playerId, message, paramList, client);
           case PbProtocol.ZongMenUpdateContributeValueReq_40000057 ->
                   updateContributeValue(zongMenId, playerId, message, paramList, client);
@@ -139,7 +139,8 @@ public class ZongMenHandler extends BaseHandler {
         if (member == null) {
             return;
         }
-        member.setPower(((ZongMenMsg.ZongMenUpdateMemberFightPower_40000052)message).getFightPower() );
+        member.setPower(((ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051)message).getFightPower() );
+        sendMsgToGameServer(playerId,client,ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.newBuilder().setResult(true).build(),PbProtocol.ZongMenUpdateContributeValueRes_40000058);
     }
 
   //宗门商店
@@ -514,7 +515,8 @@ public class ZongMenHandler extends BaseHandler {
     } else {
       zongMenInfo.quitZongMen(member,playerName);
     }
-
+    res.setResult(true);
+    sendMsgToGameServer(playerId, client,res.build(), PbProtocol.quitZongMenResponse_40000018);
   }
 
   private void setZongMenMemberPosition(
@@ -640,19 +642,20 @@ public class ZongMenHandler extends BaseHandler {
                                   LockUtil.tryLockNoWaitSync(
                                           6, CacheType.ZONG_MEN_NAME_CHANGE_LOCK.key(req.getName()));
                           if (redisLock) {
-                            //删除旧的宗门 名称 id 映射
-                            zongMenInfo.delZongMenNameIdRedisData();
-                            zongMenInfo.getData().setName(req.getName());
-                            // - 名称修改：玩家昵称修改宗门名称为宗门昵称；
-                            zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME,playerName,req.getName());
-                            //保存新的宗门 名称 id 映射
-                            ZongMenManager.getInstance()
-                                    .saveRedisNameIdMap(req.getName(), zongMenInfo.getId());
-                            sendMsgToGameServer(
-                                    playerId,
-                                    client,
-                                    res.build(),
-                                    PbProtocol.setZongMenSettingResponse_40000014);
+                              //删除旧的宗门 名称 id 映射
+                              zongMenInfo.delZongMenNameIdRedisData();
+                              zongMenInfo.getData().setName(req.getName());
+                              // - 名称修改：玩家昵称修改宗门名称为宗门昵称；
+                              zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME,playerName,req.getName());
+                              //保存新的宗门 名称 id 映射
+                              ZongMenManager.getInstance()
+                                      .saveRedisNameIdMap(req.getName(), zongMenInfo.getId());
+                              sendMsgToGameServer(
+                                      playerId,
+                                      client,
+                                      res.build(),
+                                      PbProtocol.setZongMenSettingResponse_40000014);
+
                           } else {
                             sendErrorCodeMsgToGameServer(
                                     playerId,
@@ -677,6 +680,7 @@ public class ZongMenHandler extends BaseHandler {
                         ErrorMsgEnum.zong_men_name_repeat,
                         PbProtocol.setZongMenSettingResponse_40000014);
               });
+      return;
     }
 
     if (!req.getWxBytes().isEmpty()) {
@@ -720,7 +724,7 @@ public class ZongMenHandler extends BaseHandler {
       }
       zongMenInfo.getData().setIcon(req.getIcon());
     }
-    if (req.getAutoJoin() != 1 && req.getAutoJoin() != 2 && req.getAutoJoin() != 3) {
+    if (req.getAutoJoin() == 1 || req.getAutoJoin() == 2 || req.getAutoJoin() == 3) {
       zongMenInfo.getModule().setting.setAutoJoin(req.getAutoJoin());
     }
     if (req.getTianDaoLevel() != 0) {

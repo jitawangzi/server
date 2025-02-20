@@ -162,7 +162,7 @@ public class AttrModule extends BasePlayerModule {
 	//同步战斗力到宗门
 	public void notifyZongMenPower() {
 		if (player.getZongMenId() > 0) {
-			ZongMenGameHandler.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenUpdateMemberFightPower_40000052.newBuilder().setFightPower(power).build());
+			ZongMenGameHandler.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051.newBuilder().setFightPower(power).build());
 		}
 	}
 }

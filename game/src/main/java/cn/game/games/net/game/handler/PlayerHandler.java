@@ -405,7 +405,7 @@ public class PlayerHandler extends BaseHandler {
 				}
 				case SpiritBattle: {
 					PointRewardModule pointRewardModule = player.getPointRewardModule();
-					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, -1);
+					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, true,-1);
 					break;
 				}
 				case NightmareRealm: {

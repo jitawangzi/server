@@ -206,3 +206,14 @@
 205,ZongMenBargainPriceRequest_40000064,0x40000064,,,,,查看宗门砍价物品价格
 206,ZongMenGmTestRequest_40000053,0x40000053,,,,,
 207,ZongMenGetMyApplyZongMenIdListRequest_40000055,0x40000055,,,,,获取我已经申请的宗门id列表
+208,ZongMenMsgRequest_41000045,0x41000045,,,,,宗门 gameServer => 发送到zongMenServer 的消息
+209,ZongMenBountyAcceptRequest_40000070,0x40000070,,,,,接悬赏任务
+210,ZongMenBountyAcceptRequest_40000072,0x40000072,,,,,领取当前悬赏任务奖励
+211,ZongMenBountyBattleEndRequest_40000078,0x40000078,,,,,悬赏挑战、 反击  结束战斗
+212,ZongMenBountyBattleReportRequest_4000007a,0x4000007a,,,,,悬赏战报
+213,ZongMenBountyBattleStartRequest_40000076,0x40000076,,,,,悬赏挑战、 反击  开始战斗
+214,ZongMenBountyPlayerRequest_4000007c,0x4000007c,,,,,查看某个玩家当前的悬赏详情
+215,ZongMenBountyTargetRefreshRequest_40000074,0x40000074,,,,,刷新悬赏的目标列表
+216,ZongMenRankListRequest_40000080,0x40000080,,,,,请求宗门排行
+217,ZongMenRankWorshipRequest_40000082,0x40000082,,,,,膜拜宗门排行
+218,ZongMenUpdateMemberFightPowerRequest_40000051,0x40000051,,,,,更新玩家战斗力
