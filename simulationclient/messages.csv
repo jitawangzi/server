@@ -217,3 +217,4 @@
 216,ZongMenRankListRequest_40000080,0x40000080,,,,,请求宗门排行
 217,ZongMenRankWorshipRequest_40000082,0x40000082,,,,,膜拜宗门排行
 218,ZongMenUpdateMemberFightPowerRequest_40000051,0x40000051,,,,,更新玩家战斗力
+219,ZongMenQuickJoinRequest_40000065,0x40000065,,,,,快速一键加入宗门
