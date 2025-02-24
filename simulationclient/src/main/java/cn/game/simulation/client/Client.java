@@ -137,7 +137,8 @@ public class Client extends AbstractNetClient {
 
 	private AtomicBoolean init = new AtomicBoolean(false);
 
-	public static final String defaultChannel = "official";
+//	public static final String defaultChannel = "official";
+	public static final String defaultChannel = "changyou";
 //	public static final String defaultChannel = "wechat";
 //	public static final String defaultChannel = "steam";
 //	int seq = 0;

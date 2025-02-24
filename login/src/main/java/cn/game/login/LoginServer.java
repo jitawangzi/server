@@ -10,7 +10,6 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -30,7 +29,6 @@ import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
@@ -53,7 +51,7 @@ public class LoginServer {
 	private LoginServer() {
 	}
 
-	private RpcClient rpcClient;
+//	private RpcClient rpcClient;
 
 	public void start(String[] args) throws Exception {
 		long start = System.currentTimeMillis();
@@ -121,8 +119,8 @@ public class LoginServer {
 			VxHolder.deployVerticleSync(verticle);
 		}
 
-		rpcClient = new VertxRpcClient();
-		VxHolder.deployVerticleSync((VertxRpcClient) rpcClient);
+//		rpcClient = new VertxRpcClient();
+		VxHolder.deployVerticleSync((VertxRpcClient) ServerContext.getInstance().getRpcClient());
 
 		// 部署发布rest服务
 		DeploymentOptions options = new DeploymentOptions();
@@ -132,18 +130,16 @@ public class LoginServer {
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
-		for (int i = 0; i < numVerticles; i++) {
-			MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
-			VxHolder.deployVerticleSync(verticle);
-		}
-		Object remoteInterface = SpringContextLoader.getContext().getBean("loginRemote");
-		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
+		Object remoteInterface = SpringContextLoader.getContext().getBean("loginRemote");
+		VertxRPCService verticleRpc = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VxHolder.deployVerticleSync(verticleRpc);
 	}
 
 	public static void main(String[] args) {
 		// 设置异常处理类
-		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
+//		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 		// java.util.logging.Logger rootLogger =
 		// LogManager.getLogManager().getLogger("");
 		// Handler[] handlers = rootLogger.getHandlers();
@@ -189,6 +185,7 @@ public class LoginServer {
 	 * @return
 	 */
 	public RemoteGameServerInterface getRemoteGameServerInterface(CallType callType, String serverId) {
-		return RpcFactory.getImpl(RemoteGameServerInterface.class, rpcClient, callType, serverId, ServerType.Game);
+		return RpcFactory.getImpl(RemoteGameServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Game);
 	}
 }
