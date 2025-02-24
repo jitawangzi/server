@@ -1,8 +1,5 @@
 package cn.game.core.sdk;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.Config;
@@ -31,7 +28,7 @@ public class ChangYouSdk {
 	}
 
 	/**
-	 * 账号验证接口：opcode: 10001, tag: 1505377221
+	 * 账号验证接口：opcode: 10001
 	 *
 	 * @param data 请求 data 字段（JSON 字符串）
 	 * @return Future 包含异步结果
@@ -41,7 +38,7 @@ public class ChangYouSdk {
 	}
 
 	/**
-	 * 订单验证接口：opcode: 5003, tag: 5446077
+	 * 订单验证接口：opcode: 5003
 	 *
 	 * @param data 请求 data 字段（JSON 字符串）
 	 * @return Future 包含异步结果
@@ -51,7 +48,7 @@ public class ChangYouSdk {
 	}
 
 	/**
-	 * 订单更新接口：opcode: 5004, tag: 812370
+	 * 订单更新接口：opcode: 5004
 	 *
 	 * @param data 请求 data 字段（JSON 字符串）
 	 * @return Future 包含异步结果
@@ -61,7 +58,7 @@ public class ChangYouSdk {
 	}
 
 	/**
-	 * 礼包码接口：opcode: 7000, tag: 479939
+	 * 礼包码接口：opcode: 7000
 	 *
 	 * @param data 请求 data 字段（JSON 字符串）
 	 * @return Future 包含异步结果
@@ -95,7 +92,7 @@ public class ChangYouSdk {
             String sign = md5Hex.substring(8, 24);
 
 			// 构造请求体（urlencoded 格式），只有一个参数 data
-            String body = "data=" + URLEncoder.encode(data, StandardCharsets.UTF_8.toString());
+//            String body = "data=" + URLEncoder.encode(data, StandardCharsets.UTF_8.toString());
 
 			// 使用 WebClient 发起 POST 请求
 			String URL_BILLING = ServerContext.getInstance().getRunMode().isProduction() ? Config.CHANGYOU_SDK_URL_BILLING_PRODUCTION
@@ -108,7 +105,7 @@ public class ChangYouSdk {
 					.putHeader("channelId", channelId)
 					.putHeader("sign", sign)
 					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.sendBuffer(Buffer.buffer(body), ar -> {
+					.sendBuffer(Buffer.buffer(data), ar -> {
 						if (ar.succeeded()) {
 							promise.complete(ar.result().bodyAsString());
 						} else {

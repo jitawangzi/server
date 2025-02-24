@@ -63,7 +63,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 		log.info("VertxThirdPartyConfirmReq platform[{}]channel[{}]token[{}]", platform, channel, token);
 		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
 
-//		ThirdPartyConfirmResp resp = new ThirdPartyConfirmResp();
 		AccountLoginResponse.Builder resp = AccountLoginResponse.newBuilder();
 
 		switch (channel) {
@@ -217,7 +216,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 			String channelId = tokenObject.getString("channelId");
 			String data = tokenObject.getString("data");
 			Future<String> accountVerificationFuture = ChangYouSdk.getInstance().accountVerification(channelId, 0, data);
-			accountVerificationFuture.onSuccess(r -> {
+			accountVerificationFuture.map(r -> {
 				JSONObject respObject = JSON.parseObject(r);
 				String state = respObject.getString("state");
 				String error = respObject.getString("error");
@@ -228,7 +227,7 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 				}
 				log.debug("changyou login resp {}", r);
 
-				if (state.equals("1")) { // 畅游账号校验成功，执行后续本地账号逻辑
+				if (state.equals("200")) { // 畅游账号校验成功，执行后续本地账号逻辑
 					
 					String dataStatus = dataObject.getString("status");
 					String userid = dataObject.getString("userid");
@@ -238,6 +237,20 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 					String extension = dataObject.getString("extension");
 					resp.setExt(dataObject.toJSONString());
 					String username = userid;
+					if (!dataStatus.equals("1")) {
+						log.warn("changyou sdk login fail , token {}  ", token);
+						AccountErrorCode errorCode = AccountErrorCode.CHANNEL_CHECK_FAIL;
+						if (dataStatus.equals("2")) {
+							errorCode = AccountErrorCode.ACCOUNT_BANNED;
+						}
+						HttpResult httpResult = HttpResult.newBuilder()
+								.setErrorMsg("dataStatus : " + dataStatus + ", error : " + error)
+								.setErrorCode(errorCode)
+								.build();
+						response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+						return null;
+					}
+
 					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
 					future.onComplete((v, throwable) -> {
 						if (throwable != null) {
@@ -247,12 +260,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 								User user = v;
 								if (user != null) {
-//									if (!session_key.equals(user.getSessionKey())) {
-//										user.setSessionKey(session_key);
-//										UserHelper.removeUser(user.getSessionId());
-//										user.setSessionId(IdUtil.getId());
-//										UserHelper.setUserBySession(user);
-//									}
 									user.setLoginDate(DateUtil.nowDateStr());
 									user.setLoginTime(DateUtil.nowTimeStr());
 									mapper.updateByPrimaryKey(user);
@@ -270,7 +277,6 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 										// 更新登录时间
 										user.setLoginDate(DateUtil.nowDateStr());
 										user.setLoginTime(DateUtil.nowTimeStr());
-//										user.setSessionKey(session_key);
 										mapper.updateByPrimaryKey(user);
 									}
 								}
@@ -293,17 +299,14 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 					});
 				} else {
 					log.warn("changyou sdk login fail , token {}  ", token);
-					AccountErrorCode errorCode = AccountErrorCode.CHANNEL_CHECK_FAIL;
-					if (state.equals("2")) {
-						errorCode = AccountErrorCode.ACCOUNT_BANNED;
-					}
 					HttpResult httpResult = HttpResult.newBuilder()
 							.setErrorMsg("state : " + state + ", error : " + error)
-							.setErrorCode(errorCode)
+							.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL)
 							.build();
 					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-					return;
+					return null;
 				}
+				return null;
 			}).onFailure(e -> {
 				HttpResult httpResult = HttpResult.newBuilder()
 						.setErrorMsg("畅游账号校验错误")

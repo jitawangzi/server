@@ -186,8 +186,8 @@ public final class Config {
 			disableIosPayClientVersion = initialProp.getProperty("disableIosPayClientVersion", "");
 			use_wechat_access_token_flag = initialProp.getProperty("use_wechat_access_token_flag", "0").equals("1");
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
-			CHANGYOU_SDK_APP_KEY = initialProp.getProperty("CHANGYOU_SDK_APP_KEY", "1720081940160");
-			CHANGYOU_SDK_APPSECRET = initialProp.getProperty("CHANGYOU_SDK_APPSECRET", "7a916533194b4b4691f3307b68eef373");
+			CHANGYOU_SDK_APP_KEY = initialProp.getProperty("CHANGYOU_SDK_APP_KEY", "1740021442372");
+			CHANGYOU_SDK_APPSECRET = initialProp.getProperty("CHANGYOU_SDK_APPSECRET", "259c216ddbc34919bd79a029483514cf");
 			CHANGYOU_SDK_URL_BILLING_TEST = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING_TEST",
 					"http://tmobilebilling.changyou.com/billing");
 			CHANGYOU_SDK_URL_BILLING_PRODUCTION = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING_PRODUCTION",
