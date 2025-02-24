@@ -92,7 +92,7 @@ public class VxHolder {
 		}
 	}
 
-	public static void init() throws Exception {
+	public static synchronized void init() throws Exception {
 
 		if (inited) {
 			return;

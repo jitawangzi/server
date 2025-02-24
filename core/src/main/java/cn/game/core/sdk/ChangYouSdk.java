@@ -220,7 +220,6 @@ public class ChangYouSdk {
 			// 根据运行模式选择 URL：测试环境或者正式环境
 			String URL_BILLING = ServerContext.getInstance().getRunMode().isProduction() ? Config.CHANGYOU_SDK_URL_BILLING_PRODUCTION
 					: Config.CHANGYOU_SDK_URL_BILLING_TEST;
-
 			// 使用 WebClient 发起 HTTP POST 请求
 			webClient.postAbs(URL_BILLING)
 					.putHeader("appkey", Config.CHANGYOU_SDK_APP_KEY)

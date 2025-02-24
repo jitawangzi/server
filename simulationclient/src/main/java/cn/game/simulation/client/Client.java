@@ -280,6 +280,13 @@ public class Client extends AbstractNetClient {
 		if (defaultChannel == "official") {
 			loginBuilder.setToken(this.name + " " + this.pwd);
 			loginBuilder.setChannel(AccountChannelType.OFFICIAL);
+		} else if (defaultChannel == "changyou") {
+			JSONObject dataObject = new JSONObject();
+			dataObject.put("channelId", "4001");
+			dataObject.put("data",
+					"{\"validateInfo\":\"50d2f67deb4b7ba8f69ce8378a9a386143ae2377c60c71bfe88d4cdce855667cd236be3168216eacc852cac6a4d056269fa5c3ce21b7b45cdff0bd81b5865ed61cbc8d9b336a369f0475b93155de9608587c010f075adbce00460b41a91021e1b896c2d0736439a5d39b6f1dd28bb895b05dde4741f4334875b5dc85b4754d42326c7aad8cdb06581ef2e6f0250d71578793b6b5a446c768de9752f43bd66845effd12ddf29fe9aa9ee4afb637d14ae2f816c87f50ae7b2427b1485208e971c0b2d49e339a559a6b60591ff38dc879dc505538fd4ca929092be0d1350fb0f2c8f1f484b030cd3b0352f14780e87f4c35799df0d6e05f25b86e4b9a6f16bcb4f15752e50c1ec20c09bb4a644cc3590c7c81dfe2c4178ecb847da183f6ee7e198a30f1700feb028e0e\"}");
+			loginBuilder.setToken(dataObject.toJSONString());
+			loginBuilder.setChannel(AccountChannelType.CHANGYOU);
 		} else if (defaultChannel == "wechat") {
 			loginBuilder.setToken("0d1Nbq000lqL7S1niE1005gzLB3Nbq0n");
 			loginBuilder.setChannel(AccountChannelType.WECHAT);
