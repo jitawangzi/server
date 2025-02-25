@@ -485,8 +485,8 @@ public class Player  {
 //			if (getAccount().getPlatform() == 1 || getAccount().getPlatform() == 3){
 //				platform = "IOS";
 //			}
-			String platform = getAccount().sdkPayChannel.equals("0010") ? "Android" : "IOS";
-			if (platform.equals("IOS") && getAccount().version.equals(cn.game.util.Config.disableIosPayClientVersion)) {
+			String system = getAccount().sdkPayChannel.equals("0010") ? "Android" : "IOS";
+			if (system.equals("IOS") && getAccount().version.equals(cn.game.util.Config.disableIosPayClientVersion)) {
 				fail(ErrorMsgEnum.disable_ios_pay);
 			}
 			final int rmbCost = Boolean.getBoolean("AllRecharge1") ? 1 : cost[1];
@@ -499,7 +499,9 @@ public class Player  {
 				return Future.succeededFuture(true);
 			}
 
-			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder().setPlayerId(getPlayerId()).setPlatform(platform)
+			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder()
+					.setPlayerId(getPlayerId())
+					.setPlatform(getAccount().platform + "")
 					.setSessionId(getGameClient().getSessionId())
 					.setGoodsPrice(rmbCost * 100)
 					.setItemId(chargeItemId + "")

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import cn.game.util.*;
-import com.google.gson.JsonObject;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ActiveServerListManager;
@@ -22,7 +20,7 @@ import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
-import cn.game.login.net.clientpacket.vertx.wechat.AndroidPayOrderProcessor;
+import cn.game.login.net.clientpacket.vertx.wechat.AndroidWechatPayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -35,6 +33,11 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidRequest_7d000018;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
+import cn.game.util.HttpHelp;
+import cn.game.util.JsonUtil;
+import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
 /**
@@ -46,7 +49,7 @@ public class LoginServerHandler extends BaseHandler {
 	public static final int UPDATE_WHITE_LIST = 1;
 	public static final int UPDATE_NOTICE = 2;
 
-	Map<String,BasePayOrderProcessor> payOrderProcessorMap = new HashMap<>();
+	Map<Integer, BasePayOrderProcessor> payOrderProcessorMap = new HashMap<>();
 	@Override
 	protected int getModule() {
 		return 0x7d;
@@ -62,7 +65,7 @@ public class LoginServerHandler extends BaseHandler {
 		putInvoker(PbProtocol.LoginUpdateIOSAccessTokenRequest_7d000074, LoginServerHandler::updateIOSAccessToken);
 		putInvoker(PbProtocol.LoginUpdateGmInfoRequest_7d000076, this::updateGmInfo);
 
-		registerPayOrderProcessor(new AndroidPayOrderProcessor());
+		registerPayOrderProcessor(new AndroidWechatPayOrderProcessor());
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
 
 		putInvoker(PbProtocol.NotifyWechatSubscribeMessageRequest_7d000043, this::notifyWechatSubscribeMessage);
@@ -177,7 +180,7 @@ public class LoginServerHandler extends BaseHandler {
 		String sessionId = request.getSessionId();
 		String platform = request.getPlatform();
 		log.info(String.format("paymentCreate:%s", request.toString()));
-		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(platform);
+		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(Integer.parseInt(platform));
 		if (payOrderProcessor == null){
 			log.error(String.format(" BasePayOrderProcessor payOrderProcessor not found platform:%s not support, req:%s", platform,request.toString()));
 			resp.setOrderId(0);

@@ -1,13 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.protocol.protobuf.ServerMsg;
 import io.vertx.core.Future;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.ext.web.RoutingContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @ClassName BasePayOrderProcessor
@@ -37,21 +35,36 @@ public abstract class BasePayOrderProcessor {
     public abstract Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp);
 
     public static enum  PayOrderPlatformEnum {
-        Android("Android"),
-        IOS("IOS");
-        String platform;
+		// 1 IOS APP
+		IOS_APP(1),
+		// 2 安卓 APP
+		ANDROID_APP(2),
+		// 3 IOS小游戏
+    	IOS_WECAHT(3),
+		// 4 安卓小游戏
+		ANDROID_WECAHT(4),
+		// 5 window 微信小游戏
+		WINDOWS_WECAHT(5),
+		// 6 mac微信小游戏
+		MAC_WECAHT(6),
+		;
+        int platform;
 
-        PayOrderPlatformEnum(String platform) {
+        PayOrderPlatformEnum(int platform) {
             this.platform = platform;
         }
 
-        public String getPlatform() {
+        public int getPlatform() {
             return platform;
         }
 
-        public boolean equals(String platform) {
-            return this.platform.equalsIgnoreCase(platform);
+        public boolean equals(int platform) {
+            return this.platform == platform;
         }
+
+		public boolean isIOS() {
+			return this == IOS_APP || this == IOS_WECAHT;
+		}
     }
 
 }

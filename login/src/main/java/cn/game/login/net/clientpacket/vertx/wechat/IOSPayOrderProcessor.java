@@ -1,6 +1,5 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
-import cn.game.core.base.ServerContext;
 import org.apache.commons.lang3.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -18,6 +17,7 @@ import com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest;
 import com.wechat.pay.java.service.payments.jsapi.model.PrepayResponse;
 import com.wechat.pay.java.service.payments.model.Transaction;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
@@ -85,7 +85,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor{
 
 
     public IOSPayOrderProcessor() {
-        super(PayOrderPlatformEnum.IOS);
+		super(PayOrderPlatformEnum.IOS_WECAHT);
     }
 
 

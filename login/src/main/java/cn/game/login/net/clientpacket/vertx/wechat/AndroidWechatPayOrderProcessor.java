@@ -1,39 +1,29 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import com.alibaba.fastjson2.JSONObject;
+
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
-import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
-import cn.game.util.ServerType;
-import cn.game.util.SpringContextLoader;
-import com.alibaba.fastjson2.JSONObject;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.ext.web.RoutingContext;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.function.Consumer;
 
 /**
  * @ClassName AndroidPayOrderProcessor
  *
- * @description:  安卓支付订单处理器
+ * @description:  安卓小游戏支付订单处理器
  * @author: ly
  * @create: 2024-09-24 15:04 @Version 1.0
  */
-public class AndroidPayOrderProcessor extends BasePayOrderProcessor{
-    public AndroidPayOrderProcessor() {
-        super(PayOrderPlatformEnum.Android);
+public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
+    public AndroidWechatPayOrderProcessor() {
+		super(PayOrderPlatformEnum.ANDROID_WECAHT);
     }
 
     @Override
