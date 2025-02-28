@@ -55,7 +55,17 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Friend> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<Friend> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Friend> getBatchCursor(@Param("lastKey1") Long lastKey1, @Param("lastKey2") Long lastKey2, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated

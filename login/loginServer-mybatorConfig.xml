@@ -17,7 +17,8 @@
    	<!-- xml中生成update语句时，不更新的列。  -->
 	<property name="notUpdateColumns" value="player_id"/>
 	<plugin type="org.mybatis.generator.plugins.SelectAllPlugin" />
-  	<plugin type="org.mybatis.generator.plugins.GetBatchPlugin" />
+  	<plugin type="org.mybatis.generator.plugins.GetBatchOffsetPlugin" />
+    <plugin type="org.mybatis.generator.plugins.GetBatchCursorPlugin" />
    	<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
    	<plugin type="org.mybatis.generator.plugins.BlobColumnTransformPlugin" />
    	

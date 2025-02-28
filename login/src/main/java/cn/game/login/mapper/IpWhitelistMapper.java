@@ -51,5 +51,10 @@ public interface IpWhitelistMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<IpWhitelist> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<IpWhitelist> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<IpWhitelist> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
 }

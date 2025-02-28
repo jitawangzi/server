@@ -51,7 +51,12 @@ public interface UserMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<User> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<User> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<User> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
 	User selectByNameAndChannel(@Param("username") String username, @Param("channel") String channel);
 

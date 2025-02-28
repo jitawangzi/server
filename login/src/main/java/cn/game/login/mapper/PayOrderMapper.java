@@ -55,7 +55,12 @@ public interface PayOrderMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PayOrder> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<PayOrder> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<PayOrder> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
 	public List<PayOrder> selectOrderList(
 			@Param("playerId") Long playerId,

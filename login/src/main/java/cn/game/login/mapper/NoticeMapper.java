@@ -56,5 +56,10 @@ public interface NoticeMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Notice> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<Notice> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Notice> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
 }

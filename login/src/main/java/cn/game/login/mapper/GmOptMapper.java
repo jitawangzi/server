@@ -54,7 +54,12 @@ public interface GmOptMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<GmOpt> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<GmOpt> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<GmOpt> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
 
 	List<GmOpt> selectByPage(@Param("begin") int begin, @Param("end") int end);
 

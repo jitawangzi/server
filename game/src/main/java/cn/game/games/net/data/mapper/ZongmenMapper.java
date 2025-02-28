@@ -61,7 +61,17 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<Zongmen> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Zongmen> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated
@@ -78,5 +88,4 @@ public interface ZongmenMapper {
 	 */
 	int updateBatch(@Param("recordList") List<Zongmen> recordList);
 
-	int getTotal();
 }

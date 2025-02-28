@@ -61,7 +61,17 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<FriendApplication> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<FriendApplication> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<FriendApplication> getBatchCursor(@Param("lastKey1") Long lastKey1, @Param("lastKey2") Long lastKey2, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated

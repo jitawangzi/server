@@ -56,7 +56,17 @@ public interface InviteMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Invite> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<Invite> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Invite> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated

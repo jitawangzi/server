@@ -54,7 +54,17 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<DataFixLog> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<DataFixLog> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<DataFixLog> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated
