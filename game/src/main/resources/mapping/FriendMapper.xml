@@ -216,7 +216,7 @@
     -->
     SELECT * FROM t_friend
     <where>
-      (player_id, friend_id) &gt; (#{lastKey1}, #{lastKey2})
+      (player_id, friend_id) &gt; (#{lastPlayerId}#{lastFriendId})
     </where>
      ORDER BY player_id ASC, friend_id ASC
     LIMIT #{limit}

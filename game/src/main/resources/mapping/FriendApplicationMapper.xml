@@ -164,7 +164,7 @@
     -->
     SELECT * FROM t_friend_application
     <where>
-      (player_id, apply_player_id) &gt; (#{lastKey1}, #{lastKey2})
+      (player_id, apply_player_id) &gt; (#{lastPlayerId}#{lastApplyPlayerId})
     </where>
      ORDER BY player_id ASC, apply_player_id ASC
     LIMIT #{limit}

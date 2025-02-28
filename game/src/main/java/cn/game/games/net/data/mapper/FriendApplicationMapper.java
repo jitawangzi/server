@@ -66,7 +66,8 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<FriendApplication> getBatchCursor(@Param("lastKey1") Long lastKey1, @Param("lastKey2") Long lastKey2, @Param("limit") int limit);
+	List<FriendApplication> getBatchCursor(@Param("lastPlayerId") Long lastPlayerId, @Param("lastApplyPlayerId") Long lastApplyPlayerId,
+			@Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
