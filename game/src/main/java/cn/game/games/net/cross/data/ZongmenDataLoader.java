@@ -17,13 +17,13 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
 	private ZongmenMapper zongmenMapper;
 
 	@Override
-	public int getTotal() {
+	public long getTotal() {
 		return zongmenMapper.getTotal();
 	}
 
 	@Override
 	public List<Zongmen> getBatch(int offset, int limit) {
-		return zongmenMapper.getBatch(offset, limit);
+		return zongmenMapper.getBatchOffset(offset, limit);
 	}
 
 	@Override

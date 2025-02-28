@@ -56,7 +56,17 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Mail> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<Mail> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<Mail> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated

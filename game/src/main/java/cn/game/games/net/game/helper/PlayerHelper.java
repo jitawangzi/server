@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
@@ -1623,7 +1623,7 @@ public class PlayerHelper {
 	 */
 	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatch(offset, limit);
+		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatchOffset(offset, limit);
 		Consumer<PlayerData> processor = playerData -> {
 			PlayerHelper.loadPlayerFromDb(playerData).compose(player -> {
 				return modifyPlayerOffline(function, player);

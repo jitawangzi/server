@@ -51,7 +51,17 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<ForbidAccount> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<ForbidAccount> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<ForbidAccount> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated

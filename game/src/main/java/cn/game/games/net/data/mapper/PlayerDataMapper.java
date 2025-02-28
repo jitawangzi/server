@@ -64,7 +64,17 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PlayerData> getBatch(@Param("offset") int offset, @Param("limit") int limit);
+	List<PlayerData> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	List<PlayerData> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	long getTotal();
 
 	/**
 	 * @mbg.generated
