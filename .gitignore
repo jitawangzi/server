@@ -8,6 +8,7 @@
 /build
 /src/main/resources/xml
 /protocol/
+/protocol
 
 # Eclipse
 .project
