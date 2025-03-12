@@ -1,4 +1,4 @@
-package cn.game.core.process;
+package cn.game.core.process.provider;
 
 import java.util.ArrayList;
 import java.util.Collections;

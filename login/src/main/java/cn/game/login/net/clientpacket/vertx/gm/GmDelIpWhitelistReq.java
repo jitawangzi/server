@@ -1,8 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.login.net.handler.LoginServerHandler;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
-import io.vertx.core.Handler;
+
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.login.net.handler.LoginServerHandler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -13,7 +16,8 @@ import io.vertx.ext.web.RoutingContext;
  * @author: ly
  * @create: 2024-09-19 16:25 @Version 1.0
  */
-public class GmDelIpWhitelistReq implements Handler<RoutingContext> {
+@Component
+public class GmDelIpWhitelistReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
@@ -23,4 +27,9 @@ public class GmDelIpWhitelistReq implements Handler<RoutingContext> {
         response.end(result.toString());
         LoginServerHandler.addGmOptRecord("delIpWhiteList","删除IP: "+ ip,"删除结果: "+result.getString("data"),"");
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/del_ip_whitelist";
+	}
 }

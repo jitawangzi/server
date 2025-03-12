@@ -12,16 +12,16 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -32,7 +32,8 @@ import io.vertx.ext.web.RoutingContext;
  * @author: ly
  * @create: 2024-09-13 20:21 @Version 1.0
  */
-public class SojumpCallbackReq implements Handler<RoutingContext> {
+@Component
+public class SojumpCallbackReq implements BaseVertxHandler {
     private static final Logger logger = LoggerFactory.getLogger(SojumpCallbackReq.class);
     static final String SECURITY_KEY = "9359aa7c4ccf4dcf93a04de421482fe3";
     private static final String ALGO = "AES";
@@ -119,5 +120,10 @@ public class SojumpCallbackReq implements Handler<RoutingContext> {
             return null;
         }
     }
+
+	@Override
+	public String getPath() {
+		return "/sojump_callback";
+	}
 
 }

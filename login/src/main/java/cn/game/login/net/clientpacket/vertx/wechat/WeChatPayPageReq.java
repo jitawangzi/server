@@ -1,26 +1,24 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.login.LoginServer;
-import cn.game.login.cache.entity.PayOrder;
-import cn.game.login.mapper.PayOrderMapper;
-import cn.game.util.Config;
-import cn.game.util.LockUtil;
-import cn.game.util.SpringContextLoader;
-import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.redisson.api.RLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.cache.entity.PayOrder;
+import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.util.Config;
+import cn.game.util.SpringContextLoader;
+import io.vertx.core.http.HttpServerRequest;
+import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.templ.freemarker.FreeMarkerTemplateEngine;
 
 /**
  * @ClassName WeChatPayPageReq
@@ -29,7 +27,8 @@ import java.util.UUID;
  * @author: ly
  * @create: 2024-09-29 10:08 @Version 1.0
  */
-public class WeChatPayPageReq implements Handler<RoutingContext> {
+@Component
+public class WeChatPayPageReq implements BaseVertxHandler {
     protected static final Logger log = LoggerFactory.getLogger(WeChatPayPageReq.class);
 
     @Override
@@ -122,5 +121,10 @@ public class WeChatPayPageReq implements Handler<RoutingContext> {
 
         return ret;
     }
+
+	@Override
+	public String getPath() {
+		return "/wx_pay";
+	}
 
 }

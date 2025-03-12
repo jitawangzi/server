@@ -30,9 +30,11 @@ public enum VarConstant {
 
 	private final int value;
 
+	static {
+		UniqueValueEnum.checkDuplicateValues(VarConstant.class, VarConstant::getValue);
+	}
 	VarConstant(int value) {
 		this.value = value;
-		UniqueValueEnum.checkDuplicateValue(this.getClass(), value);
 	}
 
 	public int getValue() {

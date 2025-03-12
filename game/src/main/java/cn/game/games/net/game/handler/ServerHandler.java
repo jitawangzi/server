@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import cn.game.protocol.protobuf.ChatMsg;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ByteString;
@@ -44,6 +43,7 @@ import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.ChatMsg;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
@@ -337,7 +337,7 @@ public class ServerHandler extends BaseHandler {
 		PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
 		long playerId = request.getPlayerId();
 		long uid = request.getUid(); 
-		log.info("wechat ship push, playerId={}, uid={}", playerId, uid);
+		log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null && player.isIslogouting()) {
 			log.error(String.format("充值失败:%b",player.isIslogouting()));
@@ -347,14 +347,14 @@ public class ServerHandler extends BaseHandler {
 		}
 		// 离线玩家单独处理 调用 payItem.getPayType().offlinePay(player,payItem); 处理
 		if (player == null) {
-			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer ->{
+			PlayerHelper.loadPlayerFromDb(playerId).map(offlinePlayer -> {
 				if (offlinePlayer != null){
 					PayItem payItem = offlinePlayer.getPlayerModule().getPayItems(uid);
 					if (payItem == null || payItem.isFinish()) {
 						log.warn("PayItem offline ship fail : " + payItem);
 						resp.setSuccess(false);
 						client.sendProtocol(resp.build());
-						return;
+						return null;
 					}
 					payItem.getPayType().offlinePay(offlinePlayer,payItem);
 					payItem.finish();
@@ -370,6 +370,7 @@ public class ServerHandler extends BaseHandler {
 					});
 					PlayerManager.getInstance().deletePlayer(playerId);
 				}
+				return offlinePlayer;
 			}).onFailure((err)->{
 				log.error("PayItem offline ship fail : ", err);
 				resp.setSuccess(false);

@@ -10,7 +10,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import io.netty.util.concurrent.Promise;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
@@ -21,9 +20,9 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.BatchQueryUtil;
-import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -556,7 +555,7 @@ public class RankService {
 				AtomicInteger totalQueryCount = new AtomicInteger();
 				AtomicInteger totalProcessCount = new AtomicInteger();
 				log.info("exec rank reward,rankId[{}] serverId[{}]", rankId, serverId);
-				BatchQuery<RankEntry> batchQuery = (offset, limit) -> {
+				OffsetBatchQuery<RankEntry> batchQuery = (offset, limit) -> {
 					// 将offset转换为page，注意offset从0开始，page从1开始
 					int page = (offset / limit) + 1;
 					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, page, limit);

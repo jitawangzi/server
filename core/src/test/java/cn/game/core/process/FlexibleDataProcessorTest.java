@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 
 import cn.game.core.async.AsyncProcessor;
 import cn.game.core.exception.BatchProcessException;
+import cn.game.core.process.processor.DataProcessor;
+import cn.game.core.process.provider.DataProvider;
 import cn.game.core.task.BatchProcessResult;
 
 class FlexibleDataProcessorTest {

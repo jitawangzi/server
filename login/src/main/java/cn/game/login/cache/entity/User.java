@@ -1,7 +1,6 @@
 package cn.game.login.cache.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class User implements Serializable {
 
@@ -309,7 +308,9 @@ public class User implements Serializable {
 	}
 
 	/** 登陆时生成的唯一session，不用持久化。 */
-	private long sessionId ; 
+	private long sessionId;
+	/** 登陆时的账号验证相关的扩展数据，在这里只是方便传递参数 */
+	private transient String extInfo;
 
 	public long getSessionId() {
 		return sessionId;
@@ -317,6 +318,14 @@ public class User implements Serializable {
 
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
+	}
+
+	public String getExtInfo() {
+		return extInfo;
+	}
+
+	public void setExtInfo(String extInfo) {
+		this.extInfo = extInfo;
 	}
 
 }

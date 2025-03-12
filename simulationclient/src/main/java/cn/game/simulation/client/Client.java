@@ -281,11 +281,8 @@ public class Client extends AbstractNetClient {
 			loginBuilder.setToken(this.name + " " + this.pwd);
 			loginBuilder.setChannel(AccountChannelType.OFFICIAL);
 		} else if (defaultChannel == "changyou") {
-			JSONObject dataObject = new JSONObject();
-			dataObject.put("channelId", "4001");
-			dataObject.put("data",
-					"{\"validateInfo\":\"50d2f67deb4b7ba8f69ce8378a9a386143ae2377c60c71bfe88d4cdce855667cd236be3168216eacc852cac6a4d056269fa5c3ce21b7b45cdff0bd81b5865ed61cbc8d9b336a369f0475b93155de9608587c010f075adbce00460b41a91021e1b896c2d0736439a5d39b6f1dd28bb895b05dde4741f4334875b5dc85b4754d42326c7aad8cdb06581ef2e6f0250d71578793b6b5a446c768de9752f43bd66845effd12ddf29fe9aa9ee4afb637d14ae2f816c87f50ae7b2427b1485208e971c0b2d49e339a559a6b60591ff38dc879dc505538fd4ca929092be0d1350fb0f2c8f1f484b030cd3b0352f14780e87f4c35799df0d6e05f25b86e4b9a6f16bcb4f15752e50c1ec20c09bb4a644cc3590c7c81dfe2c4178ecb847da183f6ee7e198a30f1700feb028e0e\"}");
-			loginBuilder.setToken(dataObject.toJSONString());
+			loginBuilder.setToken(
+					"{\"validateInfo\":\"be82a5a1d9720cffc6ffd5c84dff7e38793cdb1f949ed022c125012ad17c10bbf3ee8f02d95098bcb3eaa04892c5121ebd1998c5cd017e1da2000381ff5a087bd3647c680bec8f6f0f405e17ccda13378caf72c97e437c44c281b8503e45ce119ae1d960ccaced18469a9eaf7a41d28eabf79d7586b66ca461f551f6d09bb287e73d92360b457b0987e17770b2236f8e9c8777fc291529851220c93d73e7bf8375b794afa5420795c47d441ff4afcd6308105c989f48c9c2227208d76c3b3545266eb4851bb9d00e88d4cdce855667cd236be3168216eacc852cac6a4d056269fa5c3ce21b7b45c267c791cc1c1e5b078cf483d785c69f0\", \"channel_id\": \"3013\", \"opcode\": \"10001\"}");
 			loginBuilder.setChannel(AccountChannelType.CHANGYOU);
 		} else if (defaultChannel == "wechat") {
 			loginBuilder.setToken("0d1Nbq000lqL7S1niE1005gzLB3Nbq0n");
@@ -400,10 +397,10 @@ public class Client extends AbstractNetClient {
 		try {
 			String errorMsg = AccountRegisterResponse.parseFrom(resp).getResult().getErrorMsg();
 			systemOutLog.info(errorMsg);
-		} catch (InvalidProtocolBufferException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
 	}
 
 	public void registerProto(String url) {

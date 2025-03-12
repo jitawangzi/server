@@ -35,7 +35,7 @@ public abstract class GenericDistributedIDManager {
 		this.config = cacheConfig;
 		this.serverCache = CacheBuilder.newBuilder()
 				.maximumSize(cacheConfig.getMaxSize())
-				.expireAfterWrite(cacheConfig.getExpireMinutes(), TimeUnit.MINUTES)
+				.expireAfterWrite(cacheConfig.getExpireSeconds(), TimeUnit.SECONDS)
 				.build();
 	}
 

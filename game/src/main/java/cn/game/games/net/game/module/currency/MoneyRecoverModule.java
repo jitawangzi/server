@@ -161,17 +161,19 @@ public class MoneyRecoverModule extends BasePlayerModule {
 //	Asset.playerEnergy.ID
 
 	/**
-	 * 获取恢复满体力还需要多久
+	 * 某值恢复满还需要多久
 	 * @return 时间戳 毫秒
 	 */
-	public long getEnergyOfflineRecoveryTimer(){
-	  long curEnergy  = player.getCurrencyModule().get(Asset.playerEnergy);
-		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(Asset.playerEnergy.ID);
+	public long getOfflineRecoveryTimer(Asset asset) {
+		long curEnergy = player.getCurrencyModule().get(asset);
+		AssetRestoreConfig recoveryConfig = AssetRestoreManager.instance().getNullable(asset.ID);
 		if (recoveryConfig == null){
 			return 0L;
 		}
-		if (curEnergy >= recoveryConfig.maxShow) return 0L;
-		return (recoveryConfig.maxShow - curEnergy) * 60 * 1000L;
+		int recoverMax = getRecoverMax(asset.ID);
+		if (curEnergy >= recoverMax)
+			return 0L;
+		return (recoverMax - curEnergy) * recoveryConfig.interval * 60 * 1000L;
 	}
 
 	private void startAllRecoveryTask() {
@@ -194,7 +196,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	 * @param id
 	 * @return
 	 */
-	private int getRecoverMax(int id) {
+	public int getRecoverMax(int id) {
 		AssetRestoreConfig assetRestoreConfig = AssetRestoreManager.instance().get(id);
 		int max = assetRestoreConfig.maxShow;
 //		if (assetRestoreConfig.maxType == 1) {

@@ -1,17 +1,14 @@
 package cn.game.games.net.cross.zongmen;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
-import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.BaseMsg;
-import cn.game.protocol.protobuf.RewardMsg;
-import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.util.RedisUtil;
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
@@ -19,9 +16,16 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.id.IdCache;
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -44,7 +48,6 @@ public class ZongMenHelper {
 
     }
     public static String getServerIdByZongMenId(long zongMenId){
-//        return String.valueOf(zongMenId >> 32);
 		return IdCache.getZongMenServerId(zongMenId);
 //		return "LY_ZONG_MEN";
     }

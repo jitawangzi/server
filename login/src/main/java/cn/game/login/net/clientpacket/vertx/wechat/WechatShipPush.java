@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -14,6 +15,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
@@ -21,7 +23,6 @@ import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
@@ -32,7 +33,8 @@ import io.vertx.ext.web.RoutingContext;
  * 2024年3月26日 下午2:26:34
  * @author SYQ
  */
-public class WechatShipPush implements Handler<RoutingContext> {
+@Component
+public class WechatShipPush implements BaseVertxHandler {
 
 	protected static final Logger log = LoggerFactory.getLogger(WechatShipPush.class);
 
@@ -145,5 +147,10 @@ public class WechatShipPush implements Handler<RoutingContext> {
 			payOrder.setPayDate(DateUtil.nowDateStr()); 
 			payOrder.setPayTime(DateUtil.nowTimeStr()) ; 
 		}
+	}
+
+	@Override
+	public String getPath() {
+		return "/wechat/ship/push";
 	}
 }

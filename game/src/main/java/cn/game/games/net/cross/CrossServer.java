@@ -122,8 +122,7 @@ public class CrossServer {
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
 		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor));
 
-		Object remoteInterface = SpringContextLoader.getContext().getBean("crossRemote");
-		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VertxRPCService verticle = new VertxRPCService(null, serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
 
 	}

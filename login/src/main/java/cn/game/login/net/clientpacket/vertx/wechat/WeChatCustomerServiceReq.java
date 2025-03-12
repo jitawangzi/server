@@ -1,30 +1,39 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.redisson.api.RLock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import com.google.gson.JsonObject;
+
 import cn.game.core.cache.CacheType;
-import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
-import cn.game.util.*;
-import com.google.gson.JsonObject;
-import io.vertx.core.Handler;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.util.Config;
+import cn.game.util.HttpHelp;
+import cn.game.util.HttpUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.LockUtil;
+import cn.game.util.RedisUtil;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.redisson.RedissonKeys;
-import org.redisson.api.RLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @ClassName WeChatCustomerServiceReq
@@ -34,7 +43,8 @@ import java.util.regex.Pattern;
  * @author: ly
  * @create: 2024-09-29 10:25 @Version 1.0
  */
-public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
+@Component
+public class WeChatCustomerServiceReq implements BaseVertxHandler {
     protected static final Logger log = LoggerFactory.getLogger(WeChatCustomerServiceReq.class);
     public static String testContentTxt = "";
 
@@ -359,4 +369,9 @@ public class WeChatCustomerServiceReq implements Handler<RoutingContext> {
                 "</xml>";
         return rst;
     }
+
+	@Override
+	public String getPath() {
+		return "/wx_customer";
+	}
 }

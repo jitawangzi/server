@@ -124,8 +124,7 @@ public final class Config {
 	public static boolean use_wechat_access_token_flag;
 
 	// 畅游sdk参数
-	public static String CHANGYOU_SDK_URL_BILLING_TEST;
-	public static String CHANGYOU_SDK_URL_BILLING_PRODUCTION;
+	public static String CHANGYOU_SDK_URL_BILLING;
 	public static String CHANGYOU_SDK_APP_KEY;
 	public static String CHANGYOU_SDK_APPSECRET;
 	public static int ExpectedNodeCount = 1;
@@ -188,10 +187,8 @@ public final class Config {
 			messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval", "5"));
 			CHANGYOU_SDK_APP_KEY = initialProp.getProperty("CHANGYOU_SDK_APP_KEY", "1740021442372");
 			CHANGYOU_SDK_APPSECRET = initialProp.getProperty("CHANGYOU_SDK_APPSECRET", "259c216ddbc34919bd79a029483514cf");
-			CHANGYOU_SDK_URL_BILLING_TEST = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING_TEST",
+			CHANGYOU_SDK_URL_BILLING = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING",
 					"http://tmobilebilling.changyou.com/billing");
-			CHANGYOU_SDK_URL_BILLING_PRODUCTION = initialProp.getProperty("CHANGYOU_SDK_URL_BILLING_PRODUCTION",
-					"http://mobilebilling.changyou.com/billing");
 			ExpectedNodeCount = Integer.parseInt(initialProp.getProperty("ExpectedNodeCount", "1"));
 			DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS = Integer
 					.parseInt(initialProp.getProperty("DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_MINUTES", "600"));

@@ -13,6 +13,9 @@ import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.ReflectionUtils;
 
 public class ClassHelper {
+	/** 按照优先级定义可能的方法名 */
+	private static final String[] singletonMethodNames = { "getInstance", "getSingleton", "instance", "getDefault", "get" };
+
 	public static <T> Set<Class<? extends T>> findSubclasses(String basePackage, Class<? extends T> superClass) {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
 		TypeFilter filter = new AssignableTypeFilter(superClass);
@@ -192,9 +195,6 @@ public class ClassHelper {
 	public static Object getSingletonInstance(Class<?> clazz) {
 		// 按优先级尝试常见的单例获取方法
 		Method[] methods = clazz.getDeclaredMethods();
-
-		// 按照优先级定义可能的方法名
-		String[] singletonMethodNames = { "getInstance", "getSingleton", "instance", "getDefault", "get" };
 
 		// 1. 先尝试完全匹配的静态无参方法
 		for (String methodName : singletonMethodNames) {

@@ -11,8 +11,6 @@ public interface RPCService<T> {
 
 //	void start();
 
-	T getWrappedService();
-
 	boolean shutdown();
 
 }

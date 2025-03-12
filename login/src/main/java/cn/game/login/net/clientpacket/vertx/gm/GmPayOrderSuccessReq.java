@@ -3,12 +3,14 @@ package cn.game.login.net.clientpacket.vertx.gm;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.handler.LoginServerHandler;
 import cn.game.protocol.protobuf.ServerMsg;
@@ -16,7 +18,6 @@ import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -27,7 +28,8 @@ import io.vertx.ext.web.RoutingContext;
  * @author: ly
  * @create: 2024-10-23 10:15 @Version 1.0
  */
-public class GmPayOrderSuccessReq implements Handler<RoutingContext> {
+@Component
+public class GmPayOrderSuccessReq implements BaseVertxHandler {
     protected static Logger log = LoggerFactory.getLogger(GmPayOrderSuccessReq.class);
 
     @Override
@@ -87,4 +89,9 @@ public class GmPayOrderSuccessReq implements Handler<RoutingContext> {
             log.error(err.getMessage());
         });
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/payOrderSuccess";
+	}
 }

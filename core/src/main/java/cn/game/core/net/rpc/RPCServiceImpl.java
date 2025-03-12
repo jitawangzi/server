@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.transport.Command;
 import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
 import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -17,6 +18,7 @@ import io.vertx.core.Vertx;
 public class RPCServiceImpl<T> implements RPCService<T> {
 	protected static final Logger log = LoggerFactory.getLogger(RPCServiceImpl.class);
 
+	@Deprecated
     protected T wrappedService;
 	public String serverId;
 	public ServerType serverType;
@@ -26,11 +28,6 @@ public class RPCServiceImpl<T> implements RPCService<T> {
         this.wrappedService = wrappedService;
         this.serverId = serverId;
 		this.serverType = serverType;
-    }
-
-    @Override
-    public T getWrappedService() {
-        return wrappedService;
     }
 
     @Override
@@ -44,8 +41,11 @@ public class RPCServiceImpl<T> implements RPCService<T> {
 //    }
 
     public Object invokeWithCache(Command command) throws Throwable {
-		Method method = ClassHelper.findMethod(wrappedService.getClass(), command.getMethodName(), command.getParameterType());
-        return method.invoke(wrappedService, command.getArgs());
+		Class<?> beanClass = Class.forName(command.getClassName());
+		// 远程接口的实现类，都由spring管理
+		Object bean = SpringContextLoader.getContext().getBean(beanClass);
+		Method method = ClassHelper.findMethod(beanClass, command.getMethodName(), command.getParameterType());
+		return method.invoke(bean, command.getArgs());
     }
 
     public void handleResult(Object result, Promise<Object> promise) {

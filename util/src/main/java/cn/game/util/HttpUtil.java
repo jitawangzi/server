@@ -8,12 +8,16 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.geometry.spherical.twod.Vertex;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -38,6 +42,7 @@ import org.apache.http.protocol.HTTP;
  */
 public class HttpUtil {
 
+	private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(HttpUtil.class);
 	// 网页默认编码
 	public static final String DEFAULT_PAGE_ENCODING = "utf-8";
 
@@ -341,6 +346,8 @@ public class HttpUtil {
 			connection = (HttpURLConnection) uri.openConnection();
 			// 设置请求方法为POST
 			connection.setRequestMethod("POST");
+			connection.setConnectTimeout(10000);
+			connection.setReadTimeout(10000);
 
 			// 启用输入输出
 			connection.setDoOutput(true);
@@ -357,19 +364,18 @@ public class HttpUtil {
 
 			// 获取响应代码
 			int responseCode = connection.getResponseCode();
-
+			InputStream inputStream = null;
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				// 读取返回的二进制数据
-				try (InputStream inputStream = connection.getInputStream()) {
-					// 处理返回的二进制数据
-					return inputStream.readAllBytes();
-				}
+				inputStream = connection.getInputStream();
 			} else {
-				// 处理请求失败的情况
-				throw new RuntimeException("http error , responseCode: " + responseCode);
+				inputStream = connection.getErrorStream(); // 读取错误信息
+				// 记录错误流内容
+				byte[] errorBytes = inputStream.readAllBytes();
+				log.error("Server error: " + new String(errorBytes));
+				throw new RuntimeException("HTTP Error" + new String(errorBytes));
 			}
+			return inputStream.readAllBytes();
 			// 关闭连接
-
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

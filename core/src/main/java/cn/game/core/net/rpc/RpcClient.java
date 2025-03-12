@@ -1,5 +1,6 @@
 package cn.game.core.net.rpc;
 
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -39,11 +40,10 @@ public interface RpcClient {
 	 * @param sync,是否同步
 	 * @return 同步情况下返回远程结果，异步情况下，requestCallback 不为null时，返回null，否则返回Future对象
 	 */
-	default public Object invoke(CallType callType, String methodName, Class<?>[] clazz, Class<?> returnType, Object[] args,
-			Consumer<?> requestCallback,
-			boolean sync, String targetAddr, long objectId) {
-		Command command = new Command(methodName, clazz, args, objectId);
-		return send(callType, command, requestCallback, returnType, sync, targetAddr);
+	default public Object invoke(CallType callType, Method method, Object[] args,
+			String targetAddr, long objectId) {
+		Command command = new Command(method.getDeclaringClass().getName(), method.getName(), method.getParameterTypes(), args, objectId);
+		return send(callType, command, method.getReturnType(), targetAddr);
 
 	}
 
@@ -189,50 +189,24 @@ public interface RpcClient {
 	 * @param serverId  远程的地址。 
 	 * @return
 	 */
-	private Object send(CallType callType, Command command, Consumer callBackTask, Class<?> returnType, boolean sync, String targetAddr) {
-		// 判断是否是void返回类型
-		boolean isVoid = returnType == void.class || returnType == Void.class;
+	private Object send(CallType callType, Command command, Class<?> returnType, String targetAddr) {
 		byte[] datas = KryoUtils.serialize(command);
 		long startLong = System.currentTimeMillis();
-
-		// 如果是void类型，直接发送请求并返回null
-		if (isVoid) {
-			request(targetAddr, datas, r -> {
-				if (r instanceof Throwable) {
-					log.error("put message to targetAddr[{}] failed ,command[{}]exception[{}]", targetAddr, command, r);
-				}
-			});
-			return null;
+		// 先判断异步方式
+		// vertx的Future方式
+		if (Future.class.isAssignableFrom(returnType)) {
+			return handleVertxFuture(callType, command, datas, targetAddr, startLong);
+		}
+		// JDK的CompletionStage方式
+		if (CompletionStage.class.isAssignableFrom(returnType)) {
+			return handleCompletionStage(callType, command, datas, targetAddr, startLong);
+		}
+		// JDK的Future方式
+		if (java.util.concurrent.Future.class.isAssignableFrom(returnType)) {
+			return handleJdkFuture(callType, command, datas, targetAddr, startLong);
 		}
 
-		// 异步调用处理
-		if (!sync) {
-			// vertx的Future方式
-			if (Future.class.isAssignableFrom(returnType)) {
-				return handleVertxFuture(callType, command, datas, targetAddr, startLong);
-			}
-			// JDK的CompletionStage方式
-			if (CompletionStage.class.isAssignableFrom(returnType)) {
-				return handleCompletionStage(callType, command, datas, targetAddr, startLong);
-			}
-			// JDK的Future方式
-			if (java.util.concurrent.Future.class.isAssignableFrom(returnType)) {
-				return handleJdkFuture(callType, command, datas, targetAddr, startLong);
-			}
-			// callback方式异步
-			if (callBackTask != null) {
-				request(targetAddr, datas, r -> {
-					if (r instanceof Throwable) {
-						log.error("put message to targetAddr[{}] failed ,command[{}]exception[{}]", targetAddr, command, r);
-					} else {
-						callBackTask.accept(KryoUtils.deserialize(r.result().body(), Result.class).getResult());
-					}
-				});
-				return null;
-			}
-		}
-
-		// 同步调用处理
+		// 其他情况同步调用处理
 		return handleSyncCall(command, datas, targetAddr);
 	}
 
@@ -277,8 +251,8 @@ public interface RpcClient {
 			timeout = 600;
 		}
 		DeliveryOptions options = new DeliveryOptions().setSendTimeout(timeout * 1000);
-		Future<Message<byte[]>> request = request(targetAddr, datas, options);
 		try {
+			Future<Message<byte[]>> request = request(targetAddr, datas, options);
 			Message<byte[]> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
 			Result deserialize = KryoUtils.deserialize(message.body(), Result.class);
 			Object result = deserialize.getResult();
@@ -289,7 +263,7 @@ public interface RpcClient {
 				throw new RuntimeException((Throwable) result);
 			}
 			return result;
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+		} catch (Exception e) {
 			String errorMsg = MessageFormat.format("远程调用获取结果异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
 					Thread.currentThread().getName());
 			log.error(errorMsg, e);

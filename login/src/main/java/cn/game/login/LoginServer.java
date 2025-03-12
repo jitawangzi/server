@@ -110,6 +110,7 @@ public class LoginServer {
 
 		LoggerType.Stdout.logger.info("登录服启动成功。耗时[{}]s", (System.currentTimeMillis() - start) / 1000);
 		System.err.println("Login Server startup complete");
+
 	}
 	private void initVerticle() throws InterruptedException, ExecutionException, TimeoutException, Exception {
 		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
@@ -132,8 +133,7 @@ public class LoginServer {
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
 		MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
-		Object remoteInterface = SpringContextLoader.getContext().getBean("loginRemote");
-		VertxRPCService verticleRpc = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VertxRPCService verticleRpc = new VertxRPCService(null, serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticleRpc);
 	}
 

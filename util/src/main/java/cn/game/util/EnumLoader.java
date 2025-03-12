@@ -7,6 +7,11 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.stereotype.Component;
 
+/**    
+ * 扫描指定包下的所有枚举类，以便触发静态代码块执行，检查枚举重复值
+ * 2025年1月28日 10:29:27
+ * @author SYQ
+ */
 @Component
 public class EnumLoader {
 

@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.springframework.stereotype.Component;
+
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
@@ -23,6 +25,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.core.Future;
 
+@Component
 public class GameServerImpl implements GameServerInterface {
 
 	@Override

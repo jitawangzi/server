@@ -1,9 +1,11 @@
 package cn.game.login.net.clientpacket.vertx;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,16 +32,29 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
-public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
+@VertxRoute("/account/third_party_confirm")
+public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 
-	protected static final Logger log = LoggerFactory.getLogger(VertxThirdPartyConfirmReq.class);
+	private static final Logger log = LoggerFactory.getLogger(VertxThirdPartyConfirmReq.class);
+	private final Map<AccountChannelType, ThirdPartyAuthHandler> handlers = new EnumMap<>(AccountChannelType.class);
+	private final UserMapper userMapper;
+
+	public VertxThirdPartyConfirmReq() {
+		this.userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);
+		initHandlers();
+	}
+
+	private void initHandlers() {
+		handlers.put(AccountChannelType.OFFICIAL, new OfficialAuthHandler());
+		handlers.put(AccountChannelType.WECHAT, new WechatAuthHandler());
+		handlers.put(AccountChannelType.CHANGYOU, new ChangyouAuthHandler());
+		handlers.put(AccountChannelType.NONE, new NoneAuthHandler());
+	}
 
 	@Override
 	public void handle(RoutingContext context) {
@@ -48,357 +63,246 @@ public class VertxThirdPartyConfirmReq implements Handler<RoutingContext> {
 //		String platform = bodyAsJson.getString("platform");
 //		String channel = bodyAsJson.getString("channel");
 //		String token = bodyAsJson.getString("token");
-//		
-		byte[] bytes = context.getBody().getBytes();
-		AccountLogin from = null;
+		final AccountLogin request;
 		try {
-			from = AccountLogin.parseFrom(bytes);
+			request = AccountLogin.parseFrom(context.getBody().getBytes());
 		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
+			sendErrorResponse(context, "Invalid request format", AccountErrorCode.INVALID_REQUEST);
+			return;
 		}
-		AccountChannelType channel = from.getChannel();
-		String token = from.getToken();
-		String platform = "";
 
-		log.info("VertxThirdPartyConfirmReq platform[{}]channel[{}]token[{}]", platform, channel, token);
-		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
+		final AccountChannelType channel = request.getChannel();
+		final String token = request.getToken();
+		final HttpServerResponse response = context.response().putHeader("content-type", "text/json");
 
-		AccountLoginResponse.Builder resp = AccountLoginResponse.newBuilder();
+		log.info("VertxThirdPartyConfirmReq : Processing channel[{}] login request token[{}]", channel, token);
 
-		switch (channel) {
-		case OFFICIAL: {
-			String[] split = token.split(" ");
-			String username = split[0];
-			String pwd = split.length > 1 ? split[1] : "";
+		ThirdPartyAuthHandler handler = handlers.get(channel);
+		if (handler == null) {
+			sendErrorResponse(context, "Unsupported channel", AccountErrorCode.CHANNEL_NOT_SUPPORT);
+			return;
+		}
 
-			RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
-			future.onComplete((v, throwable) -> {
-				if (throwable != null) {
-					log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
-				} else {
-					VxHolder.vertx.executeBlocking(fut -> {
-//							String ret = r.result() == null ? null : r.result().toString();
-						UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-						User user = v;
-						if (user == null) {
-							user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
-							if (user == null) {
-								HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("账号不存在")
-										.setErrorCode(AccountErrorCode.ACCOUNT_NOT_EXIST).build();
-								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-								return;
-							}
-							// 创建session
-							long sessionId = IdUtil.getId();
-							user.setSessionId(sessionId);
-							UserHelper.setUserNewCache(user); 
-						}
-						boolean checkPwd = false ; 
-						if (ServerContext.getInstance().getRunMode().isProduction()) {
-							checkPwd = PasswordUtil.checkPassword(pwd, user.getPass());
-						} else {
-							checkPwd = Objects.equals(pwd, user.getPass());
-						}
-						if (!checkPwd) {
-							HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("密码错误")
-									.setErrorCode(AccountErrorCode.PASSWORD_ERROR).build();
-							response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-							return;
-						}
+		handler.handleAuth(context, token, (user, error) -> {
+			if (error != null) {
+				sendErrorResponse(context, error.getMessage(), error.getCode());
+			} else {
+				sendSuccessResponse(response, user);
+			}
+		});
+	}
 
-						// 更新登录时间
-						user.setLoginDate(DateUtil.nowDateStr());
-						user.setLoginTime(DateUtil.nowTimeStr());
-						mapper.updateByPrimaryKey(user);
+	private interface ThirdPartyAuthHandler {
+		void handleAuth(RoutingContext context, String token, BiConsumer<User, AccountError> callback);
+	}
 
-						byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "").setUserId(user.getId() + "")
-								.build().toByteArray();
-						Buffer data = Buffer.buffer(byteArray);
-						response.end(data);
-						return;
-//							resp.setPassport_session_id(sessionId + "");
-//							resp.setUserId(user.getId());
-//							response.end(resp.toJSON().toString());
-					}, false);
+	private class OfficialAuthHandler implements ThirdPartyAuthHandler {
+		@Override
+		public void handleAuth(RoutingContext context, String token, BiConsumer<User, AccountError> callback) {
+			String[] credentials = token.split(" ");
+			if (credentials.length == 0 || credentials.length > 2) {
+				callback.accept(null, new AccountError("Invalid credentials", AccountErrorCode.INVALID_REQUEST));
+				return;
+			}
+
+			String username = credentials[0];
+			String password = credentials.length > 1 ? credentials[1] : "";
+
+			RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username)).onComplete((asyncResult, e) -> {
+				if (e != null) {
+					callback.accept(null, new AccountError("Cache load failed", AccountErrorCode.SYSTEM_ERROR));
+					return;
 				}
+
+				User user = (User) asyncResult;
+				if (user == null) {
+					user = userMapper.selectByNameAndChannel(username, AccountChannelType.OFFICIAL.name().toLowerCase());
+					if (user == null) {
+						callback.accept(null, new AccountError("Account not exists", AccountErrorCode.ACCOUNT_NOT_EXIST));
+						return;
+					}
+					cacheAndCreateSession(user);
+				}
+
+				if (!validatePassword(password, user.getPass())) {
+					callback.accept(null, new AccountError("Password error", AccountErrorCode.PASSWORD_ERROR));
+					return;
+				}
+				updateLoginInfo(user);
+				callback.accept(user, null);
 			});
-			break;
 		}
-		case WECHAT: {
-			String code = token;
-//			String grant_type = "authorization_code";
-			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, Config.wechat_appid, Config.wechat_secret, code);
-			VxHolder.get(url, r -> {
-				String errorcodestring = r.getString("errcode");
-				int errcode = Integer.parseInt(errorcodestring == null ? "0" : errorcodestring);
-				String errmsg = r.getString("errmsg");
-				log.debug("wechat login errcode {} ", errcode);
-				log.debug("wechat login errmsg {}", errmsg);
-				if (errcode == 0) { // 微信账号校验成功，执行后续本地账号逻辑
-					String openid = r.getString("openid");
-					resp.setExt(openid);
-					String session_key = r.getString("session_key");
-					String unionid = r.getString("unionid") == null ? openid : r.getString("unionid");
-					String username = openid;
-					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
-					future.onComplete((v, throwable) -> {
-						if (throwable != null) {
-							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
-						} else {
-							VxHolder.vertx.executeBlocking(fut -> {
-								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-								User user = v;
-								if (user != null) {
-									if (!session_key.equals(user.getSessionKey())) {
-										user.setSessionKey(session_key);
-										UserHelper.removeUser(user.getSessionId());
-										user.setSessionId(IdUtil.getId());
-										UserHelper.setUserBySession(user);
-									}
-									user.setLoginDate(DateUtil.nowDateStr());
-									user.setLoginTime(DateUtil.nowTimeStr());
-									mapper.updateByPrimaryKey(user);
-								} else {
-									// 从数据库中查询，如果没有账号需要直接创建
-									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
-									if (user == null) {
-										user = UserHelper.createUser(username, "",
-												AccountChannelType.WECHAT.name().toLowerCase(), unionid, session_key);
-										// 先不用了。
-//										resp.setIsNew(true);
-									} else {
-										user.setSessionId(IdUtil.getId());
-										UserHelper.setUserNewCache(user);
-										// 更新登录时间
-										user.setLoginDate(DateUtil.nowDateStr());
-										user.setLoginTime(DateUtil.nowTimeStr());
-										user.setSessionKey(session_key);
-										mapper.updateByPrimaryKey(user);
-									}
-								}
-								byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "")
-										.setUserId(user.getId() + "").build().toByteArray();
-								Buffer data = Buffer.buffer(byteArray);
-								response.end(data);
-								return;
-							}, false).onFailure(e -> {
-								log.error("", e);
-								HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("可能是账号创建失败")
-										.setErrorCode(AccountErrorCode.ACCOUNT_CREATE_FAIL).build();
-								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-							});
-						}
-					});
-				} else {
-					log.warn("wechat login fail , token {} ,errcode {} ", token, errcode);
+	}
+
+	private class WechatAuthHandler implements ThirdPartyAuthHandler {
+		@Override
+		public void handleAuth(RoutingContext context, String token, BiConsumer<User, AccountError> callback) {
+			String url = String.format(WechatHelper.WX_AUTH_URL_STRING, Config.wechat_appid, Config.wechat_secret, token);
+
+			VxHolder.get(url, authResult -> {
+				Integer errcode = authResult.getInteger("errcode");
+				if (errcode != null && errcode != 0) {
 					// -1 系统繁忙，此时请开发者稍候再试
 //					0	请求成功	
 //					40029	code 无效	
 //					45011	频率限制，每个用户每分钟100次	
 //					40226	高风险等级用户，小程序登录拦截 。风险等级详见用户安全解方案
-
-					HttpResult httpResult = HttpResult.newBuilder().setErrorMsg(errcode + " : " + errmsg)
-							.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL).build();
-					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+					callback.accept(null, new AccountError("Wechat auth failed: " + errcode, AccountErrorCode.CHANNEL_CHECK_FAIL));
 					return;
 				}
-			}, e -> {
-				HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("渠道通信错误")
-						.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL).build();
-				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-				log.error("", e);
-				return;
-			});
-			break;
+
+				String openid = authResult.getString("openid");
+				processThirdPartyAuth(context, openid, AccountChannelType.WECHAT, authResult.getString("session_key"),
+						authResult.getString("unionid"), openid, callback);
+			}, error -> handleChannelCommunicationError(error, callback));
 		}
-		case CHANGYOU: {
+	}
+
+	private class ChangyouAuthHandler implements ThirdPartyAuthHandler {
+		@Override
+		public void handleAuth(RoutingContext context, String token, BiConsumer<User, AccountError> callback) {
 			JSONObject tokenObject = JSON.parseObject(token);
-			String channelId = tokenObject.getString("channelId");
-			String data = tokenObject.getString("data");
-			Future<String> accountVerificationFuture = ChangYouSdk.getInstance().accountVerification(channelId, 0, data);
-			accountVerificationFuture.map(r -> {
-				JSONObject respObject = JSON.parseObject(r);
-				String state = respObject.getString("state");
-				String error = respObject.getString("error");
-				JSONObject dataObject = respObject.getJSONObject("data");
+			String channelId = tokenObject.getString("channel_id");
+			tokenObject.remove("channel_id");
+			tokenObject.remove("opcode");
 
-				if (!StringUtils.isEmpty(error)) {
-					log.warn("changyou login error {} ", error);
-				}
-				log.debug("changyou login resp {}", r);
+			ChangYouSdk.getInstance()
+					.accountVerification(channelId, 0, tokenObject.toJSONString())
+					.onSuccess(response -> processChangyouResponse(response, context, callback))
+					.onFailure(error -> handleChannelCommunicationError(error, callback));
+		}
 
-				if (state.equals("200")) { // 畅游账号校验成功，执行后续本地账号逻辑
-					
-					String dataStatus = dataObject.getString("status");
-					String userid = dataObject.getString("userid");
-					String oid = dataObject.getString("oid");
-					String access_token = dataObject.getString("access_token");
-					String info = dataObject.getString("info");
-					String extension = dataObject.getString("extension");
-					resp.setExt(dataObject.toJSONString());
-					String username = userid;
-					if (!dataStatus.equals("1")) {
-						log.warn("changyou sdk login fail , token {}  ", token);
-						AccountErrorCode errorCode = AccountErrorCode.CHANNEL_CHECK_FAIL;
-						if (dataStatus.equals("2")) {
-							errorCode = AccountErrorCode.ACCOUNT_BANNED;
-						}
-						HttpResult httpResult = HttpResult.newBuilder()
-								.setErrorMsg("dataStatus : " + dataStatus + ", error : " + error)
-								.setErrorCode(errorCode)
-								.build();
-						response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-						return null;
-					}
-
-					RFuture<User> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
-					future.onComplete((v, throwable) -> {
-						if (throwable != null) {
-							log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
-						} else {
-							VxHolder.vertx.executeBlocking(fut -> {
-								UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-								User user = v;
-								if (user != null) {
-									user.setLoginDate(DateUtil.nowDateStr());
-									user.setLoginTime(DateUtil.nowTimeStr());
-									mapper.updateByPrimaryKey(user);
-								} else {
-									// 从数据库中查询，如果没有账号需要直接创建
-									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
-									if (user == null) {
-										user = UserHelper.createUser(username, "", AccountChannelType.CHANGYOU.name().toLowerCase(),
-												oid, "");
-										// 先不用了。
-//										resp.setIsNew(true);
-									} else {
-										user.setSessionId(IdUtil.getId());
-										UserHelper.setUserNewCache(user);
-										// 更新登录时间
-										user.setLoginDate(DateUtil.nowDateStr());
-										user.setLoginTime(DateUtil.nowTimeStr());
-										mapper.updateByPrimaryKey(user);
-									}
-								}
-								byte[] byteArray = resp.setPassportSessionId(user.getSessionId() + "")
-										.setUserId(user.getId() + "")
-										.build()
-										.toByteArray();
-								Buffer dataBuffer = Buffer.buffer(byteArray);
-								response.end(dataBuffer);
-								return;
-							}, false).onFailure(e -> {
-								log.error("", e);
-								HttpResult httpResult = HttpResult.newBuilder()
-										.setErrorMsg("可能是账号创建失败")
-										.setErrorCode(AccountErrorCode.ACCOUNT_CREATE_FAIL)
-										.build();
-								response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-							});
-						}
-					});
-				} else {
-					log.warn("changyou sdk login fail , token {}  ", token);
-					HttpResult httpResult = HttpResult.newBuilder()
-							.setErrorMsg("state : " + state + ", error : " + error)
-							.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL)
-							.build();
-					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-					return null;
-				}
-				return null;
-			}).onFailure(e -> {
-				HttpResult httpResult = HttpResult.newBuilder()
-						.setErrorMsg("畅游账号校验错误")
-						.setErrorCode(AccountErrorCode.CHANNEL_CHECK_FAIL)
-						.build();
-				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-				log.error("", e);
+		private void processChangyouResponse(String response, RoutingContext context, BiConsumer<User, AccountError> callback) {
+			log.info("Changyou auth response: {}", response);
+			JSONObject respObj = JSON.parseObject(response);
+			if (!"200".equals(respObj.getString("state"))) {
+				callback.accept(null, new AccountError("Changyou auth failed", AccountErrorCode.CHANNEL_CHECK_FAIL));
 				return;
-			});
-			break;
-		}
-		case NONE: {
-			SteamAPI.ISteamUserAuth.AuthenticateUserTicket(SteamAPI.KEY, SteamAPI.APP_ID, token, rr -> {
+			}
+			JSONObject data = respObj.getJSONObject("data");
+			String dataStatus = data.getString("status");
 
-				log.info(rr.toString());
-				JsonObject jsonObject = rr.getJsonObject("response");
-				JsonObject paramsObject = jsonObject.getJsonObject("params");
-				String username = paramsObject == null ? null : paramsObject.getString("steamid");
-				if (StringUtils.isEmpty(username)) {
-//						resp.setRet(-1, "steam 校验失败 " + rr);
-//						response.end(resp.toJSON().toString());
-					return;
+			if (!dataStatus.equals("1")) {
+				AccountErrorCode errorCode = AccountErrorCode.CHANNEL_CHECK_FAIL;
+				if (dataStatus.equals("2")) {
+					errorCode = AccountErrorCode.ACCOUNT_BANNED;
 				}
-				RFuture<Object> future = RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username));
-
-				future.onComplete((v, throwable) -> {
-					if (throwable != null) {
-						log.error("load cache error, {} {} ", CacheType.F_USER_NAME_ID, username);
-					} else {
-
-						VxHolder.vertx.executeBlocking(fut -> {
-							String ret = (String) v;
-							UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-							User user = null;
-							if (!StringUtils.isEmpty(ret)) {
-								user = JSON.parseObject(ret, User.class);
-							} else {
-								try {
-									user = mapper.selectByNameAndChannel(username, channel.name().toLowerCase());
-								} catch (Exception e1) {
-									e1.printStackTrace();
-								}
-								if (user == null) {
-									// 创建账号
-									user = new User();
-									user.setUserType((byte) 1);
-									user.setUsername(username);
-									user.setChannelLabel(channel.name().toLowerCase());
-//										user.setChannelCode(channel);
-//										user.setPass(pwd);
-									user.setCreateDate(DateUtil.nowDateStr());
-									user.setCreateTime(DateUtil.nowTimeStr());
-									user.setIsGm(false);
-									user.setLoginDate(DateUtil.nowDateStr());
-									user.setLoginTime(DateUtil.nowTimeStr());
-									mapper.insert(user);
-								} else {
-									// 更新登录时间
-									user.setLoginDate(DateUtil.nowDateStr());
-									user.setLoginTime(DateUtil.nowTimeStr());
-									mapper.updateByPrimaryKey(user);
-								}
-								RedisUtil.setAsync(CacheType.F_USER_NAME_ID.key(username), JSON.toJSONString(user));
-							}
-
-							// 创建session
-							long sessionId = IdUtil.getId();
-							user.setSessionId(sessionId);
-							UserHelper.setUserBySession(user);
-							response.end(Buffer.buffer(resp.setPassportSessionId(sessionId + "")
-									.setUserId(user.getId() + "").build().toByteArray()));
-							return;
-
-						}, false);
-
-					}
-				});
-			}, e -> {
-//					resp.setRet(-1, "steam 校验失败");
-//					response.end(resp.toJSON().toString());
+				callback.accept(null, new AccountError("Changyou auth failed", errorCode));
 				return;
-			});
+			}
 
-			break;
+			processThirdPartyAuth(context, data.getString("userid"), AccountChannelType.CHANGYOU, "", data.getString("oid"),
+					data.toJSONString(), callback);
 		}
-		default:
+	}
 
-			HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("不支持的渠道")
-					.setErrorCode(AccountErrorCode.CHANNEL_NOT_SUPPORT).build();
-			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-			break;
+	private class NoneAuthHandler implements ThirdPartyAuthHandler {
+		@Override
+		public void handleAuth(RoutingContext context, String token, BiConsumer<User, AccountError> callback) {
+			SteamAPI.ISteamUserAuth.AuthenticateUserTicket(SteamAPI.KEY, SteamAPI.APP_ID, token,
+					result -> processSteamResponse(result, callback), error -> handleChannelCommunicationError(error, callback));
 		}
 
+		private void processSteamResponse(JsonObject result, BiConsumer<User, AccountError> callback) {
+			JsonObject params = result.getJsonObject("response").getJsonObject("params");
+			String steamId = params.getString("steamid");
+			processThirdPartyAuth(null, steamId, AccountChannelType.NONE, "", steamId, "", callback);
+		}
+	}
+
+	private void processThirdPartyAuth(RoutingContext context, String username, AccountChannelType channel, String sessionKey,
+			String unionId, String ext, BiConsumer<User, AccountError> callback) {
+		RedisUtil.getAsync(CacheType.F_USER_NAME_ID.key(username)).onComplete((asyncResult, e) -> {
+			User user = (User) asyncResult;
+			if (user != null) {
+				user.setExtInfo(ext);
+				updateSessionIfNeeded(user, sessionKey);
+				updateLoginInfo(user);
+				callback.accept(user, null);
+			} else {
+				createOrLoadUser(username, channel, unionId, sessionKey, ext, callback);
+			}
+		});
+	}
+
+	private void createOrLoadUser(String username, AccountChannelType channel, String unionId, String sessionKey, String ext,
+			BiConsumer<User, AccountError> callback) {
+		VxHolder.vertx.executeBlocking(promise -> {
+			User user = userMapper.selectByNameAndChannel(username, channel.name().toLowerCase());
+			if (user == null) {
+				user = UserHelper.createUser(username, "", channel.name().toLowerCase(), unionId, sessionKey);
+			} else {
+				cacheAndCreateSession(user);
+			}
+			user.setExtInfo(ext);
+			updateLoginInfo(user);
+			promise.complete(user);
+		}, false)
+				.onSuccess(user -> callback.accept((User) user, null))
+				.onFailure(
+						error -> callback.accept(null, new AccountError("Account creation failed", AccountErrorCode.ACCOUNT_CREATE_FAIL)));
+	}
+
+	private void updateSessionIfNeeded(User user, String newSessionKey) {
+		if (!StringUtils.isEmpty(newSessionKey) && !StringUtils.equals(user.getSessionKey(), newSessionKey)) {
+			UserHelper.removeUser(user.getSessionId());
+			user.setSessionId(IdUtil.getId());
+			user.setSessionKey(newSessionKey);
+			UserHelper.setUserBySession(user);
+		}
+	}
+
+	private void cacheAndCreateSession(User user) {
+		long sessionId = IdUtil.getId();
+		user.setSessionId(sessionId);
+		UserHelper.setUserNewCache(user);
+	}
+
+	private void updateLoginInfo(User user) {
+		user.setLoginDate(DateUtil.nowDateStr());
+		user.setLoginTime(DateUtil.nowTimeStr());
+		userMapper.updateByPrimaryKey(user);
+	}
+
+	private boolean validatePassword(String input, String stored) {
+		return ServerContext.getInstance().getRunMode().isProduction() ? PasswordUtil.checkPassword(input, stored)
+				: Objects.equals(input, stored);
+	}
+
+	private void sendErrorResponse(RoutingContext context, String message, AccountErrorCode code) {
+		HttpResult result = HttpResult.newBuilder().setErrorMsg(message).setErrorCode(code).build();
+		context.response().end(Buffer.buffer(AccountLoginResponse.newBuilder().setResult(result).build().toByteArray()));
+	}
+
+	private void sendSuccessResponse(HttpServerResponse response, User user) {
+		AccountLoginResponse responseProto = AccountLoginResponse.newBuilder()
+				.setPassportSessionId(String.valueOf(user.getSessionId()))
+				.setUserId(String.valueOf(user.getId()))
+				.setExt(user.getExtInfo() == null ? "" : user.getExtInfo())
+				.build();
+		response.end(Buffer.buffer(responseProto.toByteArray()));
+	}
+
+	private void handleChannelCommunicationError(Throwable error, BiConsumer<User, AccountError> callback) {
+		log.error("Channel communication error", error);
+		callback.accept(null, new AccountError("Channel communication error", AccountErrorCode.CHANNEL_CHECK_FAIL));
+	}
+
+	private static class AccountError {
+		final String message;
+		final AccountErrorCode code;
+
+		AccountError(String message, AccountErrorCode code) {
+			this.message = message;
+			this.code = code;
+		}
+
+		String getMessage() {
+			return message;
+		}
+
+		AccountErrorCode getCode() {
+			return code;
+		}
 	}
 }

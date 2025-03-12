@@ -80,6 +80,7 @@ public class RpcFactory {
 
 		private RpcClient rpcClient;
 		/** 回调任务，只有在异步调用时才有用 */
+		@Deprecated
 		private Consumer<?> callBackTask;
 		/** 是否同步阻塞调用 ,暂时不用了，使用 返回值类型和 callBackTask 来区分异步*/
 		@Deprecated
@@ -99,8 +100,7 @@ public class RpcFactory {
 				if (objectMethods.get(mname) != null) {
 					return method.invoke(proxy, args);
 				}
-				return rpcClient.invoke(callType, method.getName(), method.getParameterTypes(), method.getReturnType(), args, callBackTask,
-						block, targetAddr, objectId);
+				return rpcClient.invoke(callType, method, args, targetAddr, objectId);
 
 			} catch (Exception e) {
 				log.error("rpc invoke 调用出现异常", e);

@@ -11,6 +11,7 @@ import io.vertx.core.Future;
  * 2020年11月2日 下午12:55:18
  * @author SYQ
  */
+@Deprecated
 public interface DataGameServerInterface extends RemoteProxy {
 
 	/**

@@ -1,4 +1,5 @@
-package cn.game.core.process;
+package cn.game.core.process.processor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.async.AsyncProcessor;
 import cn.game.core.exception.BatchProcessException;
+import cn.game.core.process.ProcessingConfig;
+import cn.game.core.process.provider.DataProvider;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.task.BatchProcessResult.BatchError;
 

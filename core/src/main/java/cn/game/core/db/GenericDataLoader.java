@@ -6,7 +6,7 @@ public interface GenericDataLoader<T> {
 
 	long getTotal();
 
-	List<T> getBatch(int offset, int limit);
+	List<T> getBatch(long lastId, int limit);
 
 	Object getMapper();
 

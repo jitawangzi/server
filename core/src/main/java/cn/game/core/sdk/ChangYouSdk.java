@@ -3,8 +3,11 @@ package cn.game.core.sdk;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import cn.game.core.base.ServerContext;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.sdk.ChangYouPaymentNotification.ChangYouPushInfo;
+import cn.game.core.sdk.ChangYouPaymentNotification.ChangYouReceipt;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
@@ -138,49 +141,74 @@ public class ChangYouSdk {
 	 * @return PaymentNotification 对象，包含支付通知中订单及相关信息
 	 * @throws Exception 若解析失败或签名校验不通过时抛出异常
 	 */
-	public PaymentNotification parsePaymentNotification(String bodyStr) throws Exception {
+	public ChangYouPaymentNotification parsePaymentNotification(String bodyStr) {
+
+		String[] json = parsePaymentNotificationString(bodyStr);
+		// 解析 receiptJson 为 PaymentNotification 对象，
+		ChangYouReceipt receipt = JsonUtil.parseObject(json[0], ChangYouReceipt.class);
+		ChangYouPushInfo pushInfo = JsonUtil.parseObject(json[1], ChangYouPushInfo.class);
+		ChangYouPaymentNotification notification = new ChangYouPaymentNotification();
+		notification.setReceipt(receipt);
+		notification.setPushInfo(pushInfo);
+		notification.setReceiptJson(json[0]);
+		notification.setReceiptJsonOriginal(json[2]);
+
+		return notification;
+	}
+
+	private String[] parsePaymentNotificationString(String bodyStr) {
 		// 按 & 分隔参数，要求格式为 key=value&key=value
 		String[] pairs = bodyStr.split("&");
 		String receiptParam = null;
 		String pushInfoParam = null;
 		String signParam = null;
 
-		for (String pair : pairs) {
-			// 使用 split("=", 2) 确保 value 部分中可能存在 "=" 号时不会被拆分多次
-			String[] kv = pair.split("=", 2);
-			if (kv.length == 2) {
-				String key = kv[0];
-				String value = kv[1];
-				if ("receipt".equals(key)) {
-					// 如果接收到的参数未经过解码，则使用 URLDecoder 解码
-					receiptParam = java.net.URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
-				} else if ("pushInfo".equals(key)) {
-					pushInfoParam = java.net.URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
-				} else if ("sign".equals(key)) {
-					signParam = value;
+		String[] ret;
+		try {
+			for (String pair : pairs) {
+				// 使用 split("=", 2) 确保 value 部分中可能存在 "=" 号时不会被拆分多次
+				String[] kv = pair.split("=", 2);
+				if (kv.length == 2) {
+					String key = kv[0];
+					String value = kv[1];
+					if ("receipt".equals(key)) {
+						// 如果接收到的参数未经过解码，则使用 URLDecoder 解码
+						receiptParam = java.net.URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+					} else if ("pushInfo".equals(key)) {
+						pushInfoParam = java.net.URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+					} else if ("sign".equals(key)) {
+						signParam = value;
+					}
 				}
 			}
-		}
-		if (receiptParam == null || pushInfoParam == null || signParam == null) {
-			throw new Exception("支付通知参数不完整，缺少 receipt、pushInfo 或 sign");
+			if (receiptParam == null || pushInfoParam == null || signParam == null) {
+				throw new Exception("支付通知参数不完整，缺少 receipt、pushInfo 或 sign");
+			}
+
+			// 签名校验：按照文档要求，对参数进行排序并拼接为 "pushInfo=<pushInfo>&receipt=<receipt>"
+			String signStr = "pushInfo=" + pushInfoParam + "&receipt=" + receiptParam;
+			String computedSign = GameUtil.md5Hex(signStr);
+			if (!computedSign.equals(signParam)) {
+				throw new Exception("支付通知签名校验失败");
+			}
+//			{"receipt":"eyJhcmVhTmFtZSI6IiAi"}
+			JSONObject receiptJsonObject = new JSONObject();
+			receiptJsonObject.put("receipt", receiptParam);
+
+			// 对 receipt 进行 Base64 解码还原 JSON 字符串
+			byte[] decodedBytes = java.util.Base64.getDecoder().decode(receiptParam);
+			String receiptJson = new String(decodedBytes, StandardCharsets.UTF_8);
+
+			ret = new String[3];
+			ret[0] = receiptJson;
+			ret[1] = pushInfoParam;
+			ret[2] = receiptJsonObject.toJSONString();
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
-		// 签名校验：按照文档要求，对参数进行排序并拼接为 "pushInfo=<pushInfo>&receipt=<receipt>"
-		String signStr = "pushInfo=" + pushInfoParam + "&receipt=" + receiptParam;
-		String computedSign = GameUtil.md5Hex(signStr);
-		if (!computedSign.equals(signParam)) {
-			throw new Exception("支付通知签名校验失败");
-		}
-
-		// 对 receipt 进行 Base64 解码还原 JSON 字符串
-		byte[] decodedBytes = java.util.Base64.getDecoder().decode(receiptParam);
-		String receiptJson = new String(decodedBytes, StandardCharsets.UTF_8);
-
-		// 解析 receiptJson 为 PaymentNotification 对象，
-		PaymentNotification notification = JsonUtil.parseObject(receiptJson, PaymentNotification.class);
-		// 可将 pushInfo 也保存到 notification 中，便于后续使用
-		notification.setPushInfo(pushInfoParam);
-		return notification;
+		return ret;
 	}
 
 	/**
@@ -217,11 +245,8 @@ public class ChangYouSdk {
 			// 构造请求体（urlencoded 格式），只有一个参数 data
 			String body = "data=" + URLEncoder.encode(data, StandardCharsets.UTF_8.toString());
 
-			// 根据运行模式选择 URL：测试环境或者正式环境
-			String URL_BILLING = ServerContext.getInstance().getRunMode().isProduction() ? Config.CHANGYOU_SDK_URL_BILLING_PRODUCTION
-					: Config.CHANGYOU_SDK_URL_BILLING_TEST;
 			// 使用 WebClient 发起 HTTP POST 请求
-			webClient.postAbs(URL_BILLING)
+			webClient.postAbs(Config.CHANGYOU_SDK_URL_BILLING)
 					.putHeader("appkey", Config.CHANGYOU_SDK_APP_KEY)
 					.putHeader("tag", String.valueOf(tag))
 					.putHeader("opcode", opcode)
@@ -240,4 +265,5 @@ public class ChangYouSdk {
         }
 		return promise.future();
     }
+
 }

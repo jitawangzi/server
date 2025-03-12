@@ -61,9 +61,9 @@ public interface RemoteProxy {
 	 * @param args
 	 * @return
 	 */
-	default Object invoke(Class<?> clzss, String methodName, Class<?>[] paramTypes, Object... args) {
+	default Object invokeStatic(Class<?> clazz, String methodName, Class<?>[] paramTypes, Object... args) {
 		try {
-			Method method = ClassHelper.findMethod(clzss, methodName, paramTypes);
+			Method method = ClassHelper.findMethod(clazz, methodName, paramTypes);
 			// 可以调用非public方法
 			ReflectionUtils.makeAccessible(method);
 			return method.invoke(null, args);
@@ -80,20 +80,19 @@ public interface RemoteProxy {
 	 * @param args
 	 * @return
 	 */
-	default Object invoke(String className, String methodName, Class<?>[] paramTypes, Object... args) {
+	default Object invoke(Class<?> clazz, String methodName, Class<?>[] paramTypes, Object... args) {
 		try {
 			Object bean = null;
 			// 1. 先尝试从Spring容器获取
 			try {
-				bean = SpringContextLoader.getContext().getBean(className);
+				bean = SpringContextLoader.getContext().getBean(clazz);
 			} catch (NoSuchBeanDefinitionException e) {
 				// Spring容器中没有找到，尝试获取单例实例
-				Class<?> clazz = Class.forName(className);
 				bean = ClassHelper.getSingletonInstance(clazz);
 			}
 
 			if (bean == null) {
-				throw new IllegalStateException("No instance found for class: " + className
+				throw new IllegalStateException("No instance found for class: " + clazz.getName()
 						+ ". The instance must be either managed by Spring or be a singleton class.");
 			}
 

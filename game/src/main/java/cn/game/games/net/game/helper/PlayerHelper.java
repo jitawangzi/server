@@ -30,9 +30,9 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
-import cn.game.core.util.BatchQueryUtil.BatchQuery;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -1623,7 +1623,7 @@ public class PlayerHelper {
 	 */
 	public static void loadAndProcessPlayers(Function<Player, Boolean> function) {
 		PlayerDataMapper mapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-		BatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatchOffset(offset, limit);
+		OffsetBatchQuery<PlayerData> batchQuery = (offset, limit) -> mapper.getBatchOffset(offset, limit);
 		Consumer<PlayerData> processor = playerData -> {
 			PlayerHelper.loadPlayerFromDb(playerData).compose(player -> {
 				return modifyPlayerOffline(function, player);
@@ -1635,6 +1635,7 @@ public class PlayerHelper {
 		log.info("loadAndProcessPlayers result: " + processBatchParallel);
 	}
 
+	@Deprecated
 	public static Future<?> modifyPlayerNew(long playerId, Function<Player, Boolean> function) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		boolean online = player != null;
@@ -1668,12 +1669,13 @@ public class PlayerHelper {
 	 * @param args	方法参数
 	 * @return
 	 */
+	@Deprecated
 	private static Future<?> runCurrentMethodInOtherServer(String serverId, Method method, Object... methodArgs) {
 		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(CallType.PointToPoint, serverId);
 		Class<?> thisClass = method.getDeclaringClass();
 		if (method.getModifiers() == Modifier.STATIC) {
 			// 当前方法是静态方法， 调用
-			return (Future<?>) gameServerInterface.invoke(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
+			return (Future<?>) gameServerInterface.invokeStatic(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
 		} else {
 			// 如果当前方法是实例方法
 			return (Future<?>) gameServerInterface.invoke(thisClass.getName(), method.getName(), method.getParameterTypes(), methodArgs);

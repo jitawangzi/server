@@ -252,6 +252,9 @@ public class RedisLocalCache {
 	 * @return
 	 */
 	public <T> List<T> multiGet(CacheType cacheType, String... keys) {
+		if (keys == null || keys.length == 0) {
+			throw new IllegalArgumentException("keys must not be empty");
+		}
 		List<String> list = new ArrayList<>(keys.length);
 		for (String key : keys) {
 			list.add(cacheType.key(key));
@@ -284,6 +287,9 @@ public class RedisLocalCache {
 	 * @return
 	 */
 	public <T> List<T> multiGet(List<String> keys) {
+		if (keys == null || keys.isEmpty()) {
+			return Collections.emptyList();
+		}
 		List<T> result = new ArrayList<>(Collections.nCopies(keys.size(), null));
 		List<String> missingKeys = new ArrayList<>();
 		Map<String, Integer> keyIndexMap = new HashMap<>();
@@ -345,6 +351,11 @@ public class RedisLocalCache {
 	 */
 	public <T> Future<List<T>> multiGetAsync(List<String> keys) {
 		Promise<List<T>> promise = Promise.promise();
+		if (keys == null || keys.isEmpty()) {
+			promise.complete(Collections.emptyList());
+			return promise.future();
+		}
+
 		List<T> result = new ArrayList<>(Collections.nCopies(keys.size(), null));
 		List<String> missingKeys = new ArrayList<>();
 		Map<String, Integer> keyIndexMap = new HashMap<>();

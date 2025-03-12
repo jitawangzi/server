@@ -3,13 +3,15 @@ package cn.game.login.net.clientpacket.vertx.wechat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import io.vertx.core.Handler;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
-public class WechatTest implements Handler<RoutingContext> {
+@Component
+public class WechatTest implements BaseVertxHandler {
 
 	String token = "token" ; 
 	
@@ -32,6 +34,11 @@ public class WechatTest implements Handler<RoutingContext> {
 			log.error("微信测试失败");
 		}
 
+	}
+
+	@Override
+	public String getPath() {
+		return "/wechat/test";
 	}
 
 }

@@ -1,6 +1,8 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
-import io.vertx.core.Handler;
+import org.springframework.stereotype.Component;
+
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -10,9 +12,15 @@ import io.vertx.ext.web.RoutingContext;
  * @author: ly
  * @create: 2024-10-10 15:14 @Version 1.0
  */
-public class PayCallbackSuccessReq implements Handler<RoutingContext> {
+@Component
+public class PayCallbackSuccessReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext event) {
         IOSPayOrderProcessor.notifyPayOrder(event);
     }
+
+	@Override
+	public String getPath() {
+		return "/wx_pay_callback";
+	}
 }

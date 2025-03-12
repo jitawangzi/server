@@ -1,8 +1,11 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.login.net.handler.LoginServerHandler;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
-import io.vertx.core.Handler;
+
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.login.net.handler.LoginServerHandler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
@@ -14,7 +17,8 @@ import io.vertx.ext.web.RoutingContext;
  * @author: ly
  * @create: 2024-09-19 17:04 @Version 1.0
  */
-public class GmAddNoticeReq implements Handler<RoutingContext> {
+@Component
+public class GmAddNoticeReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
@@ -48,4 +52,9 @@ public class GmAddNoticeReq implements Handler<RoutingContext> {
         response.end(result.toString());
         LoginServerHandler.addGmOptRecord("addNotice", reqBody.toString(),result.getString("data"),"");
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/addNotice";
+	}
 }

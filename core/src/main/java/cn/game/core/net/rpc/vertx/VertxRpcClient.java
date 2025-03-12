@@ -1,6 +1,7 @@
 package cn.game.core.net.rpc.vertx;
 
 import cn.game.core.net.rpc.RpcClient;
+import cn.game.core.util.AsyncUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -37,7 +38,7 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 
 	@Override
 	public boolean checkAllowSync() {
-//		AsyncUtils.checkEventLoop();
+		AsyncUtils.checkEventLoop();
 		return true;
 	}
 

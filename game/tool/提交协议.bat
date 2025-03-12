@@ -1,7 +1,7 @@
 @echo off
 chcp 936 > nul
 
-cd /D D:\src\First_party\program\tools\Proto
+cd /D %metafolder%\..\Proto
 
 git pull
 
@@ -15,8 +15,7 @@ if %errorlevel% neq 0 (
 
 git add all.proto ProtosMessageID.ts ProtosMessageName.ts
 
-
-cd /D D:\src\First_party\program\tools\Excels
+cd /D %metafolder%\..\Excels
 
 git pull
 

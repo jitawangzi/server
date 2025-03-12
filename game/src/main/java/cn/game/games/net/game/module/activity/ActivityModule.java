@@ -83,7 +83,7 @@ public class ActivityModule extends BasePlayerModule {
 				}
 			}
 		}
-		checkExpired();
+//		checkExpired();
 	};
 
 
@@ -91,6 +91,7 @@ public class ActivityModule extends BasePlayerModule {
 	public void onLogin() {
 		// 可能符合开启条件的新任务。
 		playerActivityManager.checkAndOpenActivitys(player);
+		playerActivityManager.endTimeTask();
 	}
 
 	/** 
@@ -98,7 +99,7 @@ public class ActivityModule extends BasePlayerModule {
 	 */
 	private void checkExpired() {
 		playerActivityManager.checkExpired();
-		playerActivityManager.endTimeTask();
+//		playerActivityManager.endTimeTask();
 	}
 	/**
 	 * 关闭活动，依然保留活动数据

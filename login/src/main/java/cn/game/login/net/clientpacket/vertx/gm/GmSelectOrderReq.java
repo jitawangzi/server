@@ -1,19 +1,21 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.core.net.vertx.VxHolder;
-import cn.game.login.cache.entity.PayOrder;
-import cn.game.login.mapper.PayOrderMapper;
-import cn.game.login.mapper.UserMapper;
-import cn.game.util.JsonUtil;
-import cn.game.util.SpringContextLoader;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.JsonObject;
-import io.vertx.core.Handler;
+
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.login.cache.entity.PayOrder;
+import cn.game.login.mapper.PayOrderMapper;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.util.JsonUtil;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.List;
 
 /**
  * @ClassName GmSelectOrderReq
@@ -22,7 +24,8 @@ import java.util.List;
  * @author: ly
  * @create: 2024-09-13 20:21 @Version 1.0
  */
-public class GmSelectOrderReq implements Handler<RoutingContext> {
+@Component
+public class GmSelectOrderReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
@@ -93,4 +96,9 @@ public class GmSelectOrderReq implements Handler<RoutingContext> {
         order.setId(12312312313123123L);
     System.out.println(JsonUtil.toJsonStr(jsonPayPrder(order)));
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/order_list";
+	}
 }

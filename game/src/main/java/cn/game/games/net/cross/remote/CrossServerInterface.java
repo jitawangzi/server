@@ -15,11 +15,11 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	/**
 	 * 加载分布式数据
 	 * @param loaderClass 数据加载器类
-	 * @param offset 数据偏移
-	 * @param limit 数据数量
+	 * @param lastId 最后一次查询的id，分页参数
+	 * @param limit 数据数量，分页参数
 	 * @return 加载数量
 	 */
-	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit);
+	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, long lastId, int limit);
 
 	Future<Integer> zongmenBargainPrice(long zongmenId);
 

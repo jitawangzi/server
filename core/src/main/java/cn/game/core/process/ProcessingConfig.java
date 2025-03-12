@@ -5,6 +5,8 @@ import java.util.concurrent.ExecutorService;
 
 public class ProcessingConfig {
 
+	public static final ProcessingConfig DEFAULT = new ProcessingConfig();
+
 	private ProcessingMode mode = ProcessingMode.SEQUENTIAL;
 	private BatchCompletionMode batchCompletionMode = BatchCompletionMode.ALL_COMPLETE;
 	private int parallelism = Runtime.getRuntime().availableProcessors();

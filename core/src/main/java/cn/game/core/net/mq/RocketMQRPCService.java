@@ -28,9 +28,4 @@ public class RocketMQRPCService<T> implements RPCService<T> {
 		return true;
 	}
 
-	@Override
-	public T getWrappedService() {
-		return wrappedService;
-	}
-
 }

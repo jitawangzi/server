@@ -22,8 +22,8 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
 	}
 
 	@Override
-	public List<Zongmen> getBatch(int offset, int limit) {
-		return zongmenMapper.getBatchOffset(offset, limit);
+	public List<Zongmen> getBatch(long lastId, int limit) {
+		return zongmenMapper.getBatchCursor(lastId, limit);
 	}
 
 	@Override

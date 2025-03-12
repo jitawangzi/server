@@ -94,7 +94,7 @@ public class FriendHandler extends BaseHandler {
 		List<Friend> allFriends = friendModule.getAllFriends();
 		List<String> ids = allFriends.stream().map(r -> r.getFriendId()).map(r -> CacheType.PLAYER_SIMPLE.key(r)).collect(Collectors.toList());
 		Future<List<SimplePlayer>> multiGetAsync = RedisLocalCache.getInstance().multiGetAsync(ids);
-		multiGetAsync.onSuccess(result -> {
+		multiGetAsync.map(result -> {
 			for (int i = 0; i < result.size(); i++) {
 				SimplePlayer simplePlayer = result.get(i);
 				FriendInfo.Builder friendBuilder = FriendInfo.newBuilder();
@@ -104,6 +104,7 @@ public class FriendHandler extends BaseHandler {
 				response.addFriends(friendBuilder);
 			}
 			client.sendProtocol(response.build());
+			return null;
 		}).onFailure(player::handleFail);
 	}
 

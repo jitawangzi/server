@@ -26,13 +26,13 @@ import cn.game.protocol.protobuf.Account.ServerInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
-import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.ext.web.RoutingContext;
 
-public class VertxServerListReq implements Handler<RoutingContext> {
+@VertxRoute("/account/server_list")
+public class VertxServerListReq implements BaseVertxHandler {
 
 	protected static final Logger log = LoggerFactory.getLogger(VertxServerListReq.class);
 
@@ -265,4 +265,9 @@ public class VertxServerListReq implements Handler<RoutingContext> {
 		}
 		return item.build();
 	}
+
+//	@Override
+//	public String getPath() {
+//		return "/account/server_list";
+//	}
 }

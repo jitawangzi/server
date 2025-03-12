@@ -15,11 +15,11 @@ import cn.game.login.cache.entity.GmOpt;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.GmOptMapper;
-import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
+import cn.game.login.net.clientpacket.vertx.wechat.AndroidAppPayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.AndroidWechatPayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.BasePayOrderProcessor;
 import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
@@ -67,6 +67,7 @@ public class LoginServerHandler extends BaseHandler {
 
 		registerPayOrderProcessor(new AndroidWechatPayOrderProcessor());
 		registerPayOrderProcessor(new IOSPayOrderProcessor());
+		registerPayOrderProcessor(new AndroidAppPayOrderProcessor());
 
 		putInvoker(PbProtocol.NotifyWechatSubscribeMessageRequest_7d000043, this::notifyWechatSubscribeMessage);
 
@@ -193,15 +194,13 @@ public class LoginServerHandler extends BaseHandler {
 			if (payOrder != null){
 				log.info("create new order:" +  payOrder.toString());
 				resp.setOrderId(payOrder.getId());
-				PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-				mapper.insert(payOrder);
 			} else {
 				resp.setOrderId(0);
 				log.error(String.format(" BasePayOrderProcessor payOrderProcessor  create payOrder fail, req:%s", request.toString()));
 			}
 			client.sendProtocol(resp.build());
 		}).onFailure(e -> {
-			e.printStackTrace();
+			log.error("paymentCreate fail", e);
 			resp.setOrderId(0);
 			client.sendProtocol(resp.build());
 		});

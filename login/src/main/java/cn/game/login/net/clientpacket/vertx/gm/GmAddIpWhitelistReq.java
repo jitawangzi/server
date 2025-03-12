@@ -1,12 +1,16 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
-import cn.game.login.net.handler.LoginServerHandler;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
-import io.vertx.core.Handler;
+
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
+import cn.game.login.net.handler.LoginServerHandler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 /**
  * @ClassName GmAddIpWhitelistReq
  *
@@ -14,7 +18,8 @@ import java.util.regex.Matcher;
  * @author: ly
  * @create: 2024-09-19 16:12 @Version 1.0
  */
-public class GmAddIpWhitelistReq implements Handler<RoutingContext> {
+@Component
+public class GmAddIpWhitelistReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
@@ -43,4 +48,9 @@ public class GmAddIpWhitelistReq implements Handler<RoutingContext> {
         Matcher matcher = IPV4_PATTERN.matcher(ip);
         return matcher.matches();
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/add_ip_whitelist";
+	}
 }

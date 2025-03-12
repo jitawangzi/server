@@ -91,7 +91,6 @@ public class GameServer implements GameServerMBean {
 //	private String serverId;
 	private static final GameServer instance = new GameServer();
 
-	private String[] serverIds = new String[ServerType.values().length];
 	private String wsVerticle;
 
 	private GameServer() {
@@ -161,7 +160,7 @@ public class GameServer implements GameServerMBean {
 
 		ActivityStateManager.getInstance().start();
 //		ActivityStateManager.getInstance().initGlobal();
-		PlayerManager.getInstance().init();
+		PlayerManager.getInstance().init2();
 		ClassManager.getInstance().init();
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
@@ -170,6 +169,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
+//		initAllSimplePlayers();
 		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
@@ -221,6 +221,23 @@ public class GameServer implements GameServerMBean {
 			throw e;
 		} finally {
 			lock.unlock();
+		}
+	}
+
+	private void initAllSimplePlayers() {
+		try {
+			Function<Player, Boolean> function = player -> {
+				PlayerHelper.saveSimplePlayerToRedisSync(player);
+				// 初始化名字，名字--id
+				PlayerNameManager.getInstance().addExistingUsername(player.getData().getName());
+				PlayerNameManager.getInstance().saveName2IdSync(player.getData().getName(), player.getData().getPlayerId());
+				return false;
+			};
+			PlayerHelper.loadAndProcessPlayers(function);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
 		}
 	}
 	/** 
@@ -299,8 +316,7 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
 		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor));
-		Object remoteInterface = SpringContextLoader.getContext().getBean("gameRemote");
-		VertxRPCService verticle = new VertxRPCService(remoteInterface, serverId, serverType, processor);
+		VertxRPCService verticle = new VertxRPCService(null, serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
 
 	}
@@ -380,11 +396,6 @@ public class GameServer implements GameServerMBean {
 		return StringUtils.isEmpty(serverId) || ServerContext.getInstance().getServerId().equals(serverId);
 	}
 
-	public String getServerId(ServerType serverType) {
-		return serverIds[serverType.ordinal()];
-	}
-
-
 	/**
 	 * 获取逻辑服远程调用接口
 	 * @param serverId 逻辑服id,如果不是指定某个id的服务器,则传null
@@ -406,7 +417,7 @@ public class GameServer implements GameServerMBean {
 		String serverId = IdCache.getManager(objectType).getServerId(targetId);
 		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
 			// 对象不在线，或者在当前服务器，直接由当前服务器处理
-			return (GameServerInterface) SpringContextLoader.getContext().getBean("gameRemote");
+			return (GameServerInterface) SpringContextLoader.getContext().getBean(GameServerInterface.class);
 		}
 		// 其他服务器在线，通过远程调用
 		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,

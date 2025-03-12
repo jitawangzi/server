@@ -14,14 +14,15 @@ public enum IdConstant {
 	/** 英雄皮肤 */
 	HERO_SKIN(5),
 	/** 头像*/
-	HEAD_PORTRAIT(6),
-	;
+	HEAD_PORTRAIT(6),;
 
 	private final int value;
+	static {
+		UniqueValueEnum.checkDuplicateValues(IdConstant.class, IdConstant::getValue);
+	}
 
 	IdConstant(int value) {
 		this.value = value;
-		UniqueValueEnum.checkDuplicateValue(this.getClass(), value);
 	}
 
 	public int getValue() {

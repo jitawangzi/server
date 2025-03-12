@@ -1,14 +1,17 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSONObject;
+
 import cn.game.login.cache.entity.GmOpt;
 import cn.game.login.mapper.GmOptMapper;
+import cn.game.login.net.clientpacket.vertx.BaseVertxHandler;
 import cn.game.util.SpringContextLoader;
-import com.alibaba.fastjson.JSONObject;
-import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.List;
 
 /**
  * @ClassName GmOptListReq
@@ -17,7 +20,8 @@ import java.util.List;
  * @author: ly
  * @create: 2024-09-20 16:59 @Version 1.0
  */
-public class GmOptListReq implements Handler<RoutingContext> {
+@Component
+public class GmOptListReq implements BaseVertxHandler {
     @Override
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
@@ -31,4 +35,9 @@ public class GmOptListReq implements Handler<RoutingContext> {
         result.put("count", mapper.count());
         response.end(result.toString());
     }
+
+	@Override
+	public String getPath() {
+		return "/gm/optList";
+	}
 }

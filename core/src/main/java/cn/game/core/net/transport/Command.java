@@ -14,16 +14,22 @@ public class Command implements Serializable {
 
 	/**  */
 	private static final long serialVersionUID = 8797909840036157425L;
+	/** 方法所在类 */
+	private String className;
+	/** 方法名 */
 	private String methodName;
-	private Object[] args;
+	/** 方法参数类型 */
 	private Class<?>[] parameterType;
+	/** 方法参数值 */
+	private Object[] args;
 	/** 用来分线程的 */
 	private long objectId;
 
 	public Command() {
 	}
 
-	public Command(String methodName, Class<?>[] parameterType, Object[] args, long objectId) {
+	public Command(String className, String methodName, Class<?>[] parameterType, Object[] args, long objectId) {
+		this.className = className;
 		this.methodName = methodName;
 		this.parameterType = parameterType;
 		this.args = args;
@@ -62,7 +68,12 @@ public class Command implements Serializable {
 		this.objectId = objectId;
 	}
 
+
 	public String getClassName() {
+		return className;
+	}
+
+	public String getParameterDesc() {
 		if (this.parameterType == null) {
 			return "" ; 
 		}

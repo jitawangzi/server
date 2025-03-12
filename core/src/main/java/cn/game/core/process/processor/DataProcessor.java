@@ -1,5 +1,7 @@
-package cn.game.core.process;
+package cn.game.core.process.processor;
 
+import cn.game.core.process.ProcessingConfig;
+import cn.game.core.process.provider.DataProvider;
 import cn.game.core.task.BatchProcessResult;
 
 public interface DataProcessor<T> {

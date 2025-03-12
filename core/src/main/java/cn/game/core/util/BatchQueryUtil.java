@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.async.AsyncProcessor;
 import cn.game.core.exception.BatchProcessException;
+import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.task.BatchProcessResult.BatchError;
 import io.vertx.core.CompositeFuture;
@@ -25,8 +26,13 @@ import io.vertx.core.Promise;
 /**    
  * 分页查询处理的工具类
  * 2024年11月8日 10:16:28
+ * 
+ * @link BatchProcessorUtil
+ * 
  * @author SYQ
  */
+
+@Deprecated
 public class BatchQueryUtil {
 	private static final Logger logger = LoggerFactory.getLogger(BatchQueryUtil.class);
 
@@ -41,11 +47,11 @@ public class BatchQueryUtil {
 	 * @param processor 查询出来的数据处理器
 	 * 
 	 */
-	public static <T> void processBatch(BatchQuery<T> batchQuery, Consumer<T> processor) {
+	public static <T> void processBatch(OffsetBatchQuery<T> batchQuery, Consumer<T> processor) {
 		processBatch(batchQuery, processor, 100);
 	}
 
-	public static <T> void processBatch(BatchQuery<T> batchQuery, Consumer<T> processor, int batchSize) {
+	public static <T> void processBatch(OffsetBatchQuery<T> batchQuery, Consumer<T> processor, int batchSize) {
 		int offset = 0;
 		while (true) {
 			List<T> batch = batchQuery.query(offset, batchSize);
@@ -68,18 +74,18 @@ public class BatchQueryUtil {
 	 * @param processor
 	 * @return
 	 */
-	public static <T> Future<Void> processBatchAsync(BatchQuery<T> batchQuery, AsyncProcessor<T> processor, boolean continueOnError) {
+	public static <T> Future<Void> processBatchAsync(OffsetBatchQuery<T> batchQuery, AsyncProcessor<T> processor, boolean continueOnError) {
 		return processBatchAsync(batchQuery, processor, 100, continueOnError);
 	}
 
-	public static <T> Future<Void> processBatchAsync(BatchQuery<T> batchQuery, AsyncProcessor<T> processor, int batchSize,
+	public static <T> Future<Void> processBatchAsync(OffsetBatchQuery<T> batchQuery, AsyncProcessor<T> processor, int batchSize,
 			boolean continueOnError) {
 		Promise<Void> promise = Promise.promise();
 		processNextBatchAsync(batchQuery, processor, batchSize, 0, promise, continueOnError);
 		return promise.future();
 	}
 
-	private static <T> void processNextBatchAsync(BatchQuery<T> batchQuery, AsyncProcessor<T> processor, int batchSize, int offset,
+	private static <T> void processNextBatchAsync(OffsetBatchQuery<T> batchQuery, AsyncProcessor<T> processor, int batchSize, int offset,
 			Promise<Void> finalPromise, boolean continueOnError) {
 
 		List<T> batch;
@@ -161,7 +167,7 @@ public class BatchQueryUtil {
 	 * @param continueOnError	异常时是否继续处理下一个数据
 	 * @return
 	 */
-	public static <T> BatchProcessResult processBatchParallel(BatchQuery<T> batchQuery, Consumer<T> processor, boolean continueOnError) {
+	public static <T> BatchProcessResult processBatchParallel(OffsetBatchQuery<T> batchQuery, Consumer<T> processor, boolean continueOnError) {
 		return processBatchParallel(batchQuery, processor, null, 100, continueOnError);
 	}
 
@@ -177,7 +183,7 @@ public class BatchQueryUtil {
 	 * @param continueOnError 出错时是否继续处理下一个数据
 	 * @return
 	 */
-	public static <T> BatchProcessResult processBatchParallel(BatchQuery<T> batchQuery, Consumer<T> processor, ExecutorService executor,
+	public static <T> BatchProcessResult processBatchParallel(OffsetBatchQuery<T> batchQuery, Consumer<T> processor, ExecutorService executor,
 			int batchSize, boolean continueOnError) {
 
 		int totalProcessed = 0;
@@ -258,10 +264,6 @@ public class BatchQueryUtil {
 		}
 	}
 
-	public interface BatchQuery<T> {
-		List<T> query(int offset, int limit);
-	}
-
 	/**
 	 * 完全并行处理批量数据，所有批次同时加载和处理
 	 * 适用于异步处理逻辑（返回CompletableFuture的处理器）
@@ -274,7 +276,7 @@ public class BatchQueryUtil {
 	 * @param continueOnError 出错时是否继续处理
 	 * @return 处理结果，包含处理总数和错误信息
 	 */
-	public static <T> BatchProcessResult processBatchParallelAsync(BatchQuery<T> batchQuery,
+	public static <T> BatchProcessResult processBatchParallelAsync(OffsetBatchQuery<T> batchQuery,
 			Function<T, CompletableFuture<Void>> asyncProcessor, boolean continueOnError) {
 		return processBatchParallelAsync(batchQuery, asyncProcessor, null, 100, continueOnError);
 	}
@@ -291,7 +293,7 @@ public class BatchQueryUtil {
 	 * @param continueOnError 出错时是否继续处理
 	 * @return 处理结果，包含处理总数和错误信息
 	 */
-	public static <T> BatchProcessResult processBatchParallelAsync(BatchQuery<T> batchQuery,
+	public static <T> BatchProcessResult processBatchParallelAsync(OffsetBatchQuery<T> batchQuery,
 			Function<T, CompletableFuture<Void>> asyncProcessor, ExecutorService executor, int batchSize, boolean continueOnError) {
 
 		// 用于收集所有批次的Future

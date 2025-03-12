@@ -65,11 +65,6 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 	}
 
 	@Override
-	public T getWrappedService() {
-		return rpcService.getWrappedService();
-	}
-
-	@Override
 	public void initConsumer(Handler<Message<Object>> handler) {
 		vertx.eventBus().consumer(VxHolder.rpcServiceAddr(rpcService.serverId), handler);
 		if (serverType != null) {

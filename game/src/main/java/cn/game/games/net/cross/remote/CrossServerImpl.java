@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.db.GenericDataLoader;
@@ -17,14 +18,15 @@ import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
+@Component
 public class CrossServerImpl implements CrossServerInterface {
 	
 	private static final Logger	log	= LoggerFactory.getLogger(CrossServerImpl.class);
 
 	@Override
-	public int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, int offset, int limit) {
+	public int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, long lastId, int limit) {
 		GenericDataLoader<?> loader = SpringContextLoader.getContext().getBean(loaderClass);
-		List list = loader.getBatch(offset, limit);
+		List list = loader.getBatch(lastId, limit);
 		loader.processData(list);
 		return list.size();
 	}

@@ -64,22 +64,4 @@ public class ConditionFactory {
 		Condition condition = ClassManager.getInstance().createConditionClassInstance(type);
 		return condition;
 	}
-	public static void main(String args[]) {
-
-		// int type = 1;
-		//
-		// DictResourceCondition config = new DictResourceCondition();
-		// config.setValue(3);
-		//
-		// QuestCondition createRequire = createQuestCondition(config, type,
-		// null);
-		// createRequire.init(config, null);
-		//
-		// String jsonString = JSON.toJSONString(createRequire);
-		//
-		// QuestCondition createRequire2 =
-		// createQuestConditionfromSaveString(config, jsonString, type, null);
-		// System.out.println(createRequire2.getRequireCount());
-
-	}
 }

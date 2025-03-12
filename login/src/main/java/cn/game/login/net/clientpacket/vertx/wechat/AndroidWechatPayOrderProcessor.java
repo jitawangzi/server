@@ -6,11 +6,13 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
+import cn.game.login.mapper.PayOrderMapper;
 import cn.game.login.net.clientpacket.vertx.UserHelper;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -61,6 +63,9 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
 
         VxHolder.vertx.executeBlocking(r -> {
 
+			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+			mapper.insert(payOrder);
+
             String rawDate = signData.toJSONString();
             //?
             String paySig = WechatHelper.calcPaymentGameItemPaySig(rawDate);
@@ -73,8 +78,6 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
             resp.setOrderId(outTradeNo);
             resp.setOrder(newBuilder.build());
             promise.complete(payOrder);
-//            PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-//            mapper.insert(payOrder);
 //
 //            client.sendProtocol();
         }).onFailure(e -> {

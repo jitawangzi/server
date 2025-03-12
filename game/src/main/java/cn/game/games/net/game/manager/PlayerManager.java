@@ -15,10 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -36,6 +39,7 @@ import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
 import io.vertx.core.Future;
 
+@Component
 public class PlayerManager {
 	private static final Logger log = LoggerFactory.getLogger(PlayerManager.class);
 	private static final Logger loginlog = LoggerFactory.getLogger("loginLog");
@@ -47,20 +51,25 @@ public class PlayerManager {
 //	private Cache<Long, String> playerServers = CacheBuilder.newBuilder().maximumSize(8192)
 //			.expireAfterWrite(10, TimeUnit.MINUTES)
 //			.build();
-	
 	// playerId => ForbidAccount 封禁的账号
 	private ConcurrentHashMap<Long, ForbidAccount> forbidAccounts = new ConcurrentHashMap<>();
 
 	//正在进行中的离线任务
 	private ConcurrentHashMap<Long,List<OfflineScheduleTask>> runOfflineTaskMap =  new ConcurrentHashMap<>();
 	
-	private static PlayerManager instance = new PlayerManager() ; 
+	private static PlayerManager instance;
 
 	public static PlayerManager getInstance() {
 		return instance ; 
 	}
+
+	@PostConstruct
+	private void init() {
+		instance = this; // 静态代理初始化
+	}
+
 	/** 初始化一些数据 */
-	public void init() {
+	public void init2() {
 		initForbidAccount();
 	}
 

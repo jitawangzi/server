@@ -77,6 +77,7 @@ import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -95,8 +96,8 @@ import io.vertx.core.Promise;
 import io.vertx.core.impl.ContextInternal;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
-public class Player  {
-	private static  transient Logger log = LoggerFactory.getLogger(Player.class);
+public class Player {
+	private static transient Logger log = LoggerFactory.getLogger(Player.class);
 
 	private long playerId;
 	private transient static Set<Class<? extends BasePlayerModule>> allModuleClass;
@@ -112,8 +113,8 @@ public class Player  {
 			BasePlayerModule instance = null;
 			try {
 				instance = c.getDeclaredConstructor().newInstance();
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-					| SecurityException e) {
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+					| NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 			}
 			if (!instance.isComplete()) {
@@ -270,6 +271,7 @@ public class Player  {
 	public VarModule getVarModule() {
 		return getModule(VarModule.class);
 	}
+
 	public MailModule getMailModule() {
 		return getModule(MailModule.class);
 	}
@@ -310,19 +312,21 @@ public class Player  {
 		return getModule(DevelopModule.class);
 	}
 
-	public VipModule getVipModule(){
+	public VipModule getVipModule() {
 		return getModule(VipModule.class);
 	}
+
 	public ZongMenModule getZongmenModule() {
 		return getModule(ZongMenModule.class);
 	}
+
 	public Player() {
 	}
 
 	public Player(PlayerData data) {
 		this.data = data;
 		this.playerId = data.getPlayerId();
-		initPlayerModule() ; 
+		initPlayerModule();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -357,13 +361,15 @@ public class Player  {
 			}
 		}
 	}
-	
-	public BasePlayerModule  createBasePlayerModuleInstance(Class<? extends BasePlayerModule> clazz,HashMap<String, BasePlayerModule> modulesFromDb) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String name = clazz.getName() ; 
-		if (modulesFromDb !=null) {
-			BasePlayerModule basePlayerModule = modulesFromDb.get(name); 
+
+	public BasePlayerModule createBasePlayerModuleInstance(Class<? extends BasePlayerModule> clazz,
+			HashMap<String, BasePlayerModule> modulesFromDb) throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String name = clazz.getName();
+		if (modulesFromDb != null) {
+			BasePlayerModule basePlayerModule = modulesFromDb.get(name);
 			if (basePlayerModule != null) {
-				return basePlayerModule ; 
+				return basePlayerModule;
 			}
 		}
 		return clazz.getDeclaredConstructor().newInstance();
@@ -379,8 +385,7 @@ public class Player  {
 		return getGoodsModule(id).isEnough(id, count);
 	}
 
-	public Collection<BasePlayerModule> getAllModule()
-	{
+	public Collection<BasePlayerModule> getAllModule() {
 		return modules.values();
 	}
 
@@ -432,25 +437,25 @@ public class Player  {
 		GmPlayerInfo.Builder builder = GmPlayerInfo.newBuilder();
 		builder.setPlayerId(String.valueOf(getData().getPlayerId()));
 		builder.setChannel(getData().getChannelId());
-		builder.setServerId(getData().getServerId()); 
+		builder.setServerId(getData().getServerId());
 		builder.setPlantform("未知");
-		builder.setName(getData().getName()); 
+		builder.setName(getData().getName());
 		builder.setLevel(getLevel());
 		builder.putAllAssets(getCurrencyModule().getCurrencyMap().getMap());
 		builder.setUnionId("不存在");
-		builder.setUnionName("不存在"); 
-		builder.setIsOnline(getGameClient()!=null); 
-		builder.setCreateTime((int) (DateUtil.parse(getData().getCreateDate()).getTime()/1000)) ; 
+		builder.setUnionName("不存在");
+		builder.setIsOnline(getGameClient() != null);
+		builder.setCreateTime((int) (DateUtil.parse(getData().getCreateDate()).getTime() / 1000));
 		builder.setLastLoginTime((int) (DateUtil.parse(getData().getLoginDate()).getTime() / 1000));
 		ChapterModule chapterModule = getChapterModule();
 
 		builder.setCurBattleId(chapterModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());
 		builder.setChargeCumulation(getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge));
-		
+
 		return builder.build();
 	}
-	
+
 	/** 
 	 * 支付，有可能支付普通货币，也有可能支付rmb
 	 * 一般普通货币支付的，尽量不要调用这个方法，这个方法尽量处理rmb支付的。 
@@ -460,20 +465,20 @@ public class Player  {
 	 * @param cost   费用，第一个是支付类型，第二个是支付的id，第三个是支付的数量
 	 * @return
 	 */
-	public Future<Boolean> pay(PayType payType,int id, int[] cost,int... otherId) {
+	public Future<Boolean> pay(PayType payType, int id, int[] cost, int... otherId) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return Future.succeededFuture(true);
 		}
-		int costType = cost[0] ; 
+		int costType = cost[0];
 
-		Promise<Boolean> promise = Promise.promise(); 
-		
+		Promise<Boolean> promise = Promise.promise();
+
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
 			boolean delResources = PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
 			if (!delResources) {
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
 				promise.complete(false);
-			}else {
+			} else {
 				promise.complete(true);
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
@@ -511,16 +516,21 @@ public class Player  {
 			requestRemoteServer.map(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r;
 				if (body.getOrderId() == 0) {
-					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(), ErrorMsgEnum.payment_order_create_fail.getId());
+					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(),
+							ErrorMsgEnum.payment_order_create_fail.getId());
+					promise.complete(false);
 				} else {
-					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder().setOrder(body.getOrder()).setOrderId(body.getOrderId()+"").build());
+					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
+							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
+							.setOrderId(body.getOrderId() + "")
+							.build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
 					payItem.setOrderId(body.getOrderId());
 					payItem.setRmb(rmbCost);
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
-					if (otherId != null){
+					if (otherId != null) {
 						payItem.addPaySubIds(otherId);
 					}
 					getPlayerModule().addPayItems(payItem);
@@ -528,14 +538,14 @@ public class Player  {
 				return null;
 			}).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);
-				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId()); 
+				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId());
 				promise.complete(false);
-			}); 
+			});
 		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
 			handleEvent(EventTypeEnum.WatchAds);
 			promise.complete(true);
 		}
-		return promise.future() ; 
+		return promise.future();
 	}
 
 	/** 
@@ -558,15 +568,14 @@ public class Player  {
 		// Vip加成
 		VipModule vipModule = getVipModule();
 		VIPConfig curVipConfig = vipModule.getCurVipConfig();
-		if (curVipConfig != null && curVipConfig.Benefit.containsKey(type.ID)){
+		if (curVipConfig != null && curVipConfig.Benefit.containsKey(type.ID)) {
 			ret += curVipConfig.Benefit.get(type.ID);
 		}
 		// 仙友加成
 		FairyFriendModule fairyFriendModule = getModule(FairyFriendModule.class);
 		Collection<FairyFriend> list = fairyFriendModule.list();
 		for (FairyFriend fairyFriend : list) {
-			FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager
-					.instance()
+			FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager.instance()
 					.getUIFairyListIDLV(fairyFriend.getConfigId(), fairyFriend.getLevel());
 			if (favorabilityConfig == null) {
 				continue;
@@ -612,11 +621,10 @@ public class Player  {
 		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
 		builder.setTiandaoLevel(getDevelopModule().getHeavenlyDaoLevel());
 		builder.setCombatEffectiveness(getAttrModule().getPower());
-		
+
 		return builder.build();
 
 	}
-
 
 	/** 
 	 * 获取玩家等级
@@ -716,7 +724,6 @@ public class Player  {
 		this.gameClient = gameClient;
 	}
 
-
 	public Account getAccount() {
 		return account == null ? getPlayerModule().getAccount() : account;
 	}
@@ -733,126 +740,131 @@ public class Player  {
 		this.isOnline = isOnline;
 	}
 
-	public int getVipLevel(){
-    return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
+	public int getVipLevel() {
+		return getPlayerModule().getExpLevelMap().getValue(Asset.VIPExp.ID);
 	}
-
-
 
 	public OfflineBattleModule getOfflineBattleModule() {
 		return getModule(OfflineBattleModule.class);
 	}
+
 	public SecretscriptModule getSecretscriptModule() {
-        return getModule(SecretscriptModule.class);
-    }
+		return getModule(SecretscriptModule.class);
+	}
+
 	public String getServerId() {
 		return getData().getServerId();
 	}
 
 	public long getLastLoginTimer() {
-		return  DateUtil.parse(getData().getLoginDate()).getTime();
+		return DateUtil.parse(getData().getLoginDate()).getTime();
 	}
 
 	public long getCreateTimer() {
 		return DateUtil.parse(getData().getCreateDate()).getTime();
 	}
 
-	public String getOpenId(){
+	public String getOpenId() {
 		return getAccount().deviceId;
 	}
 
-	public InviteModule getInviteModule(){
+	public InviteModule getInviteModule() {
 		return getModule(InviteModule.class);
 	}
 
 	public void addWechatOfflineNotifyTask() {
-		log.info(String.format("开始启动离线微信推送消息任务 pid:%s",playerId));
-		//体力恢复通知
+		log.info(String.format("开始启动离线微信推送消息任务 pid:%s", playerId));
+		// 体力恢复通知
 		addEnergyNotifyTask();
-		//每日签到通知
+		// 每日签到通知
 		addMonthSignNotifyTask();
-		//遨游12小时通知
+		// 遨游12小时通知
 		addAoYouRewardNotifyTask();
 	}
 
 	private void addAoYouRewardNotifyTask() {
-		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD)){
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD)) {
 			return;
 		}
-		long beginTimer  = DateUtil.DAY_MILLIS/2;
-		long cycleTimer =DateUtil.DAY_MILLIS/2;
-		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(()->{
-			//玩家已经在线，则取消所有离线任务执行
-			if (checkDelScheduleTask()) return;
-			Map<String,String> jsonData = new HashMap<>();
-			jsonData.put("thing1","遨游");
-			jsonData.put("thing3","遨游奖励已积累12小时，快来领取吧！");
-			notifyWechatMessage("cid_jVD3G3GHZwViuad1R2pMCymtEjWUO1rRM-GsM88",jsonData);
-		}, beginTimer,cycleTimer, TimeUnit.MILLISECONDS));
+		long beginTimer = DateUtil.DAY_MILLIS / 2;
+		long cycleTimer = DateUtil.DAY_MILLIS / 2;
+		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(() -> {
+			// 玩家已经在线，则取消所有离线任务执行
+			if (checkDelScheduleTask())
+				return;
+			Map<String, String> jsonData = new HashMap<>();
+			jsonData.put("thing1", "遨游");
+			jsonData.put("thing3", "遨游奖励已积累12小时，快来领取吧！");
+			notifyWechatMessage("cid_jVD3G3GHZwViuad1R2pMCymtEjWUO1rRM-GsM88", jsonData);
+		}, beginTimer, cycleTimer, TimeUnit.MILLISECONDS));
 	}
 
 	private void addMonthSignNotifyTask() {
-		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD)){
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD)) {
 			return;
 		}
 		long now = System.currentTimeMillis();
-		long beginTimer  = DateUtil.getDayHourTimestamp(DateUtil.toLocalDate(DateUtil.nextDayStartTime(1)) ,9) - now ;
-		long cycleTimer =DateUtil.DAY_MILLIS;
-		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(()->{
-			//玩家已经在线，则取消所有离线任务执行
-			if (checkDelScheduleTask()) return;
-			Map<String,String> jsonData = new HashMap<>();
-			jsonData.put("thing1","月签到活动");
-			jsonData.put("thing2","签到就送10连抽，快来玩呀~");
-			notifyWechatMessage("dCPC6flZ2WKHQkIYmbB9idIB55qwPDMxq-Tw54AOCyQ",jsonData);
-		}, beginTimer,cycleTimer, TimeUnit.MILLISECONDS));
+		long beginTimer = DateUtil.getDayHourTimestamp(DateUtil.toLocalDate(DateUtil.nextDayStartTime(1)), 9) - now;
+		long cycleTimer = DateUtil.DAY_MILLIS;
+		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleAtFixedRate(() -> {
+			// 玩家已经在线，则取消所有离线任务执行
+			if (checkDelScheduleTask())
+				return;
+			Map<String, String> jsonData = new HashMap<>();
+			jsonData.put("thing1", "月签到活动");
+			jsonData.put("thing2", "签到就送10连抽，快来玩呀~");
+			notifyWechatMessage("dCPC6flZ2WKHQkIYmbB9idIB55qwPDMxq-Tw54AOCyQ", jsonData);
+		}, beginTimer, cycleTimer, TimeUnit.MILLISECONDS));
 	}
 
 	private boolean checkDelScheduleTask() {
-		if (PlayerManager.getInstance().isOnline(playerId)){
+		if (PlayerManager.getInstance().isOnline(playerId)) {
 			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
-			log.info(String.format("checkDelScheduleTask 玩家已经在线，取消推送消息 pid:%s",playerId));
+			log.info(String.format("checkDelScheduleTask 玩家已经在线，取消推送消息 pid:%s", playerId));
 			return true;
 		}
 		return false;
 	}
 
 	private void addEnergyNotifyTask() {
-		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_ENERGY)){
+		if (!getVarModule().getBoolVar(VarConstant.WECHAT_NOTIFY_ENERGY)) {
 			return;
 		}
 		MoneyRecoverModule recoverModule = getModule(MoneyRecoverModule.class);
-		long fullEnergyTimer = recoverModule.getEnergyOfflineRecoveryTimer();
-		if (fullEnergyTimer <= 0){
+		long fullEnergyTimer = recoverModule.getOfflineRecoveryTimer(Asset.playerEnergy);
+		if (fullEnergyTimer <= 0) {
 			return;
 		}
-		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleTask(()->{
-			//玩家已经在线，则取消所有离线任务执行
-			if (checkDelScheduleTask()) return;
-			Map<String,String> jsonData = new HashMap<>();
-			jsonData.put("thing7","体力恢复");
-			jsonData.put("thing15","体力已恢复至30点，来！再战！");
-			notifyWechatMessage("Gm2S04eEGITHXFnSiKF9k17FY33SXON5UN1zJWGFJZE",jsonData);
+		int recoverMax = recoverModule.getRecoverMax(Asset.playerEnergy.ID);
+		PlayerManager.getInstance().addOfflineScheduleTask(playerId, SchedulerService.getInstance().scheduleTask(() -> {
+			// 玩家已经在线，则取消所有离线任务执行
+			if (checkDelScheduleTask())
+				return;
+			Map<String, String> jsonData = new HashMap<>();
+			jsonData.put("thing7", "体力恢复");
+			jsonData.put("thing15", "体力已恢复至" + recoverMax + "点，来！再战！");
+			notifyWechatMessage("Gm2S04eEGITHXFnSiKF9k17FY33SXON5UN1zJWGFJZE", jsonData);
 		}, fullEnergyTimer, TimeUnit.MILLISECONDS));
 	}
 
 	private void notifyWechatMessage(String templateId, Map<String, String> jsonData) {
 		String openid = getOpenId();
-		ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043.Builder req = ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043.newBuilder();
+		ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043.Builder req = ServerMsg.NotifyWechatSubscribeMessageRequest_7d000043
+				.newBuilder();
 		req.setOpenid(openid);
 		req.setTemplateId(templateId);
 		req.putAllJsonData(jsonData);
 		log.info(String.format("notifyWechatMessage:%s", req));
-		VxHolder.requestRemoteServer(ServerType.Login,req.build());
+		VxHolder.requestRemoteServer(ServerType.Login, req.build());
 	}
 
-    public long getZongMenId(){
-        return getZongmenModule().getZongMenId();
-    }
-    public String getZongMenName(){
-        return getZongmenModule().getZongMenName();
-    }
+	public long getZongMenId() {
+		return getZongmenModule().getZongMenId();
+	}
 
+	public String getZongMenName() {
+		return getZongmenModule().getZongMenName();
+	}
 
 	public String getPlayerName() {
 		return data.getName();
