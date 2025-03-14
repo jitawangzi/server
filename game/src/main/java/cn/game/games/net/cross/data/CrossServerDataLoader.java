@@ -1,6 +1,5 @@
 package cn.game.games.net.cross.data;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +18,12 @@ import cn.game.games.net.cross.CrossServer;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
-import cn.game.util.reflect.ClassHelper;
 
 @Component
-public class CrossServerDataLoader implements ServerInstanceListener {
+public class CrossServerDataLoader<T> implements ServerInstanceListener {
 	private static final int pageSize = 100;
 	@Autowired
-	private List<GenericDataLoader> loaders;
+	private List<GenericDataLoader<T>> loaders;
 
 	@PostConstruct
 	public void init() {
@@ -35,23 +33,23 @@ public class CrossServerDataLoader implements ServerInstanceListener {
 	public synchronized void load() {
 		if (ServerContext.getInstance().getServerType() == ServerType.Cross && ServerContext.getInstance().isLeader()) {
 			if (loaders != null) {
-				for (GenericDataLoader loader : loaders) {
-					Object mapper = loader.getMapper();
-					Method method = ClassHelper.findMethod(mapper.getClass(), "getTotal");
-					int total;
-					try {
-						total = (int) method.invoke(mapper);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-					int totalPages = (total + pageSize - 1) / pageSize;
-
-					for (int page = 0; page < totalPages; page++) {
-						int offset = page * pageSize;
+				for (GenericDataLoader<T> loader : loaders) {
+					Long lastId = 0L; // 初始ID值
+					List<T> batch;
+					while (true) {
+						// 查询一批数据
+						batch = (List<T>) loader.getBatch(lastId, pageSize);
+						if (batch == null || batch.isEmpty()) {
+							break;
+						}
 						CrossServerInterface crossServerInterface = CrossServer.getInstance().getCrossServerInterface();
-						crossServerInterface.loadDataDistributed(loader.getClass(), offset, pageSize);
-					}
+						crossServerInterface.loadDataDistributed(loader.getClass(), lastId, pageSize);
 
+						// 更新lastId为当前处理的最后一条记录的ID
+						lastId = loader.getLastId(batch.get(batch.size() - 1));
+						// TODO 查了两遍数据库，后续优化一下
+
+					}
 				}
 			}
 		}

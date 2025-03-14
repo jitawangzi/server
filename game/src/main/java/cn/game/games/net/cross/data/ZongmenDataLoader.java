@@ -17,11 +17,6 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
 	private ZongmenMapper zongmenMapper;
 
 	@Override
-	public long getTotal() {
-		return zongmenMapper.getTotal();
-	}
-
-	@Override
 	public List<Zongmen> getBatch(long lastId, int limit) {
 		return zongmenMapper.getBatchCursor(lastId, limit);
 	}
@@ -34,6 +29,11 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
 	@Override
 	public void processData(List<Zongmen> data) {
 		ZongMenManager.getInstance().loadZongmenList(data);
+	}
+
+	@Override
+	public long getLastId(Zongmen t) {
+		return t.getId();
 	}
 
 }

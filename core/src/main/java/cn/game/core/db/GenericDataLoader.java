@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface GenericDataLoader<T> {
 
-	long getTotal();
+	long getLastId(T t);
 
 	List<T> getBatch(long lastId, int limit);
 
