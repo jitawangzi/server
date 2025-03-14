@@ -12,6 +12,7 @@
 		<module>../protocol</module>
 		<module>../core</module>
 		<module>../game</module>
+		<module>../login</module>
 	</modules>
 
 	<url>http://maven.apache.org</url>
@@ -21,8 +22,18 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<vertx.version>4.2.1</vertx.version>
 		<skipTests>true</skipTests>
+		
+	    <!-- 内部模块版本 -->
+	    <util.version>${project.version}</util.version>
+	    <protocol.version>${project.version}</protocol.version>
+	    <core.version>${project.version}</core.version>
+	    <game.version>${project.version}</game.version>
+	    <login.version>${project.version}</login.version>
+		
+		<!-- 第三方依赖版本 -->
+		<vertx.version>4.2.1</vertx.version>
+		<spring.version>5.3.32</spring.version>
 	</properties>
 	<build>
 		<plugins>
@@ -63,7 +74,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- 这里先不启用这个插件，容易提示出错，需要的时候在打开 -->
 			<!-- 
 				<plugin>
@@ -106,63 +117,123 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-				
+
 				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<!-- 拷贝项目依赖包到lib/目录下 -->
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<!-- 间接依赖也拷贝 -->
-							<excludeTransitive>false</excludeTransitive>
-							<!-- 带上版本号 -->
-							<stripVersion>false</stripVersion>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>package</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<!-- 拷贝项目依赖包到lib/目录下 -->
+								<outputDirectory>${project.build.directory}/lib</outputDirectory>
+								<!-- 间接依赖也拷贝 -->
+								<excludeTransitive>false</excludeTransitive>
+								<!-- 带上版本号 -->
+								<stripVersion>false</stripVersion>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-	<dependencies>
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-<!--		<dependency>-->
-<!--			<groupId>junit</groupId>-->
-<!--			<artifactId>junit</artifactId>-->
-<!--			<version>4.10</version>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
-		
-		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-<dependency>
-    <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-api</artifactId>
-    <version>5.11.3</version>
-    <scope>test</scope>
-</dependency>
+	
+	 <!-- 依赖管理（仅定义版本，不实际引入依赖） -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- 内部模块依赖 -->
+      <dependency>
+        <groupId>cn.game</groupId>
+        <artifactId>util</artifactId>
+        <version>${util.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.game</groupId>
+        <artifactId>protocol</artifactId>
+        <version>${protocol.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.game</groupId>
+        <artifactId>core</artifactId>
+        <version>${core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.game</groupId>
+        <artifactId>game</artifactId>
+        <version>${game.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.game</groupId>
+        <artifactId>login</artifactId>
+        <version>${login.version}</version>
+      </dependency>
 
-<dependency>
-    <groupId>org.testcontainers</groupId>
-    <artifactId>testcontainers</artifactId>
-    <version>1.20.4</version>
-    <scope>test</scope>
-</dependency>
-		
-		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-<!-- https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter -->
-<dependency>
-    <groupId>org.testcontainers</groupId>
-    <artifactId>junit-jupiter</artifactId>
-    <version>1.20.4</version>
-    <scope>test</scope>
-</dependency>
+      <!-- 第三方依赖 -->
+          <!-- 显式覆盖特定组件 -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>2.16.1</version>
+    </dependency>
+    		<!--
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-guava -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-guava</artifactId>
+		<version>2.16.1</version>
+		</dependency>
+      
+       <!-- vert.x 官方 BOM -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-dependencies</artifactId>
+        <version>${vertx.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+    </dependency>
+          <!-- Spring Framework 官方 BOM -->
+	    <dependency>
+	      <groupId>org.springframework</groupId>
+	      <artifactId>spring-framework-bom</artifactId>
+	      <version>${spring.version}</version> 
+	      <type>pom</type>
+	      <scope>import</scope>
+	    </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- 所有子模块共享的依赖 -->
+	<dependencies>
+		<!--
+		https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.11.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.20.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--
+		https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<!-- https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.20.4</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
@@ -241,12 +312,12 @@
 			<version>1.9.4</version>
 		</dependency>
 
-<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-<!--<dependency>-->
-<!--    <groupId>commons-io</groupId>-->
-<!--    <artifactId>commons-io</artifactId>-->
-<!--    <version>2.11.0</version>-->
-<!--</dependency>-->
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<!--<dependency>-->
+		<!--    <groupId>commons-io</groupId>-->
+		<!--    <artifactId>commons-io</artifactId>-->
+		<!--    <version>2.11.0</version>-->
+		<!--</dependency>-->
 
 
 		<!--
@@ -280,28 +351,7 @@
 		</dependency>
 
 
-		<!--
-		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.13.3</version>
-		</dependency>
-
-		<!--
-		https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-guava -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-guava</artifactId>
-			<version>2.16.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.hubspot.jackson/jackson-datatype-protobuf -->
-<dependency>
-    <groupId>com.hubspot.jackson</groupId>
-    <artifactId>jackson-datatype-protobuf</artifactId>
-    <version>0.9.15</version>
-</dependency>
-
+		
 
 		<!-- 日志相关，用logback作为日志框架 
 		<dependency>
@@ -388,17 +438,17 @@
 
 
 		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>33.2.1-jre</version>
-</dependency>
-    <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java-util</artifactId>
-        <version>4.27.2</version>
-    </dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>33.2.1-jre</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java-util</artifactId>
+			<version>4.27.2</version>
+		</dependency>
 
 		<!--
 		https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
@@ -426,7 +476,6 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-core</artifactId>
-			<version>${vertx.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -439,35 +488,30 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.vertx/vertx-web-client -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web-client</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.vertx/vertx-web-common -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web-common</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.vertx/vertx-redis-client -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-redis-client</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.vertx/vertx-codegen -->
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-codegen</artifactId>
-			<version>${vertx.version}</version>
 			<!-- <classifier>processor</classifier> -->
 			<exclusions>
 				<exclusion>
@@ -487,7 +531,6 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-zookeeper</artifactId>
 			<!-- <version>${vertx.version}</version> -->
-			<version>4.2.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -517,13 +560,11 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-service-proxy</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-dropwizard-metrics</artifactId>
-			<version>${vertx.version}</version>
 		</dependency>
 
 
@@ -539,7 +580,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>5.3.24</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
@@ -551,7 +591,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>5.3.24</version>
 		</dependency>
 
 		<!--
@@ -559,7 +598,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>5.3.24</version>
 		</dependency>
 
 		<!--
@@ -567,21 +605,18 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>5.3.24</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>5.3.24</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>5.3.24</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
@@ -659,22 +694,37 @@
 			<version>3.1.2</version>
 		</dependency>
 
-
 		<!--
 		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-guava</artifactId>
+		</dependency>
+
+
+		<!--
+		https://mvnrepository.com/artifact/com.hubspot.jackson/jackson-datatype-protobuf -->
+		<dependency>
+			<groupId>com.hubspot.jackson</groupId>
+			<artifactId>jackson-datatype-protobuf</artifactId>
+			<version>0.9.15</version>
+		</dependency>
+		
 		<!--
 		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.13.3</version>
 		</dependency>
 		<!--
 		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.13.3</version>
 		</dependency>
 
 		<!--
@@ -825,7 +875,7 @@
 			<groupId>de.javakaffee</groupId>
 			<artifactId>kryo-serializers</artifactId>
 			<version>0.45</version>
-		</dependency>		
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -837,13 +887,13 @@
 
 	<distributionManagement>
 		<repository>
-			<!-- 需要与settings.xml文件中一致 -->
+			<!--                         需要与settings.xml文件中一致 -->
 			<id>maven-releases</id>
-			<url>http://192.168.1.67:7081/repository/maven-releases/</url>
+			<url>http://test:8099/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>maven-snapshots</id>
-			<url>http://192.168.1.67:7081/repository/maven-snapshots/</url>
+			<url>http://test:8099/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 

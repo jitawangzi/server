@@ -20,23 +20,22 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+	<!-- 内部模块依赖（无需指定版本,从父模块继承） -->
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>util</artifactId>
-			<version>1.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>core</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>protocol</artifactId>
-			<version>1.0</version>
 		</dependency>
 		
+		<!-- 第三方依赖（如果在父模块中预定义了。则无需指定版本，如果只有这个这个模块使用，则可以直接指定版本） -->
 		<!-- https://mvnrepository.com/artifact/org.lionsoul/ip2region -->
 		<dependency>
 		    <groupId>org.lionsoul</groupId>
