@@ -24,13 +24,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<skipTests>true</skipTests>
 		
-	    <!-- 内部模块版本 -->
-	    <util.version>${project.version}</util.version>
-	    <protocol.version>${project.version}</protocol.version>
-	    <core.version>${project.version}</core.version>
-	    <game.version>${project.version}</game.version>
-	    <login.version>${project.version}</login.version>
-		
 		<!-- 第三方依赖版本 -->
 		<vertx.version>4.2.1</vertx.version>
 		<spring.version>5.3.32</spring.version>
@@ -150,27 +143,27 @@
       <dependency>
         <groupId>cn.game</groupId>
         <artifactId>util</artifactId>
-        <version>${util.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cn.game</groupId>
         <artifactId>protocol</artifactId>
-        <version>${protocol.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cn.game</groupId>
         <artifactId>core</artifactId>
-        <version>${core.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cn.game</groupId>
         <artifactId>game</artifactId>
-        <version>${game.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>cn.game</groupId>
         <artifactId>login</artifactId>
-        <version>${login.version}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- 第三方依赖 -->
