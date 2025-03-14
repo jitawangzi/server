@@ -2,12 +2,10 @@
 :: cd %metafolder%\output
 :: svn cleanup .
 :: svn update .
- 
 
-:: call %workspace%\game\tool\ant\bin\ant -buildfile=build.xml
+call %workspace%\game\tool\packet.bat
 
-
-call %workspace%\game\tool\packet_login.bat
+::call %workspace%\game\tool\packet_login.bat
 ::  mvn package
 
 cd /D %workspace%\login
