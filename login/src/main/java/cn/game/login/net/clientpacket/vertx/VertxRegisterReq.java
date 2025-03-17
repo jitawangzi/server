@@ -67,13 +67,6 @@ public class VertxRegisterReq implements BaseVertxHandler {
 				} catch (Exception e) {
 					// 捕获异常并传递到主线程
 					promise.fail(e);
-					log.error("createUser error ", e);
-					HttpResult httpResult = HttpResult.newBuilder()
-							.setErrorMsg("账号已经存在")
-							.setErrorCode(AccountErrorCode.ACCOUNT_EXIST)
-							.build();
-					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-
 				}
 			}, false).onComplete(ar -> {
 				if (ar.succeeded()) {
@@ -81,12 +74,12 @@ public class VertxRegisterReq implements BaseVertxHandler {
 				} else {
 					log.error("createUser error ", ar.cause());
 					HttpResult httpResult = HttpResult.newBuilder()
-							.setErrorMsg("账号已经存在")
+							.setErrorMsg("账号可能已经存在")
 							.setErrorCode(AccountErrorCode.ACCOUNT_EXIST)
 							.build();
 					response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+					context.fail(ar.cause());
 				}
-				context.fail(ar.cause());
 			});
 		});
 	}
