@@ -19,7 +19,7 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	 * @param limit 数据数量，分页参数
 	 * @return 加载数量
 	 */
-	int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, long lastId, int limit);
+	<T, ID extends Number> int loadDataDistributed(Class<? extends GenericDataLoader<T, ID>> loaderClass, ID lastId, int limit);
 
 	Future<Integer> zongmenBargainPrice(long zongmenId);
 

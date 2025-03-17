@@ -83,6 +83,11 @@ public interface InviteMapper {
 	 */
 	int updateBatch(@Param("recordList") List<Invite> recordList);
 
+	/**
+	 * @mbg.generated
+	 */
+	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 	int deletePlayerData(@Param("playerId") Long playerId);
 
 }

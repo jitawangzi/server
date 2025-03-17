@@ -88,4 +88,9 @@ public interface ZongmenMapper {
 	 */
 	int updateBatch(@Param("recordList") List<Zongmen> recordList);
 
+	/**
+	 * @mbg.generated
+	 */
+	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 }

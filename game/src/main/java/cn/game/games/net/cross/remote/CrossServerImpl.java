@@ -24,9 +24,9 @@ public class CrossServerImpl implements CrossServerInterface {
 	private static final Logger	log	= LoggerFactory.getLogger(CrossServerImpl.class);
 
 	@Override
-	public int loadDataDistributed(Class<? extends GenericDataLoader> loaderClass, long lastId, int limit) {
-		GenericDataLoader<?> loader = SpringContextLoader.getContext().getBean(loaderClass);
-		List list = loader.getBatch(lastId, limit);
+	public <T, ID extends Number> int loadDataDistributed(Class<? extends GenericDataLoader<T, ID>> loaderClass, ID lastId, int limit) {
+		GenericDataLoader<T, ID> loader = SpringContextLoader.getContext().getBean(loaderClass);
+		List<T> list = loader.getBatch(lastId, limit);
 		loader.processData(list);
 		return list.size();
 	}

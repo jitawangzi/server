@@ -83,6 +83,11 @@ public interface MailMapper {
 	 */
 	int updateBatch(@Param("recordList") List<Mail> recordList);
 
+	/**
+	 * @mbg.generated
+	 */
+	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 	int deletePlayerData(@Param("playerId") Long playerId);
 
 }

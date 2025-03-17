@@ -11,19 +11,14 @@ import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.data.mapper.ZongmenMapper;
 
 @Component
-public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
+public class ZongmenDataLoader implements GenericDataLoader<Zongmen, Long> {
 
 	@Autowired
 	private ZongmenMapper zongmenMapper;
 
 	@Override
-	public List<Zongmen> getBatch(long lastId, int limit) {
+	public List<Zongmen> getBatch(Long lastId, int limit) {
 		return zongmenMapper.getBatchCursor(lastId, limit);
-	}
-
-	@Override
-	public Object getMapper() {
-		return zongmenMapper;
 	}
 
 	@Override
@@ -32,8 +27,8 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen> {
 	}
 
 	@Override
-	public long getLastId(Zongmen t) {
-		return t.getId();
+	public Long getLastIdOfBatch(Long lastId, int limit) {
+		return zongmenMapper.getLastIdOfBatch(lastId, limit);
 	}
 
 }

@@ -78,4 +78,9 @@ public interface ForbidAccountMapper {
 	 */
 	int updateBatch(@Param("recordList") List<ForbidAccount> recordList);
 
+	/**
+	 * @mbg.generated
+	 */
+	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 }

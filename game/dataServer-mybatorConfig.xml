@@ -31,6 +31,8 @@
         <plugin type="org.mybatis.generator.plugins.BatchInsertPlugin" />
         <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
         <plugin type="org.mybatis.generator.plugins.MysqlBatchUpdatePlugin" />
+        <plugin type="org.mybatis.generator.plugins.GetLastIdPlugin" />
+        
 
 		<!-- 自定义生成的注释 -->
 		<commentGenerator type="org.mybatis.generator.internal.CustomCommentGenerator">
@@ -42,7 +44,7 @@
 		</commentGenerator>
 
 		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-			connectionURL="jdbc:mysql://10.12.175.10:3306/game?serverTimezone=Asia/Shanghai" userId="root" password="root">
+			connectionURL="jdbc:mysql://localhost:3306/game?serverTimezone=Asia/Shanghai" userId="root" password="root">
 			<property name="nullCatalogMeansCurrent" value="true" />
 		</jdbcConnection>
 		

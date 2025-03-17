@@ -91,6 +91,11 @@ public interface PlayerDataMapper {
 	 */
 	int updateBatch(@Param("recordList") List<PlayerData> recordList);
 
+	/**
+	 * @mbg.generated
+	 */
+	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 	List<Player> selectPlayersByUid(Long uid);
 
 	int discardPlayer(Long id);

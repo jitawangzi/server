@@ -80,4 +80,9 @@ public interface DataFixLogMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<DataFixLog> recordList);
+
+	/**
+	 * @mbg.generated
+	 */
+	Integer getLastIdOfBatch(@Param("lastId") Integer lastId, @Param("limit") int limit);
 }

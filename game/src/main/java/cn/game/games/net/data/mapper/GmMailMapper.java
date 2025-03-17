@@ -68,6 +68,10 @@ public interface GmMailMapper {
 	 * @mbg.generated
 	 */
 	int updateBatch(@Param("recordList") List<GmMail> recordList);
+	/**
+	 * @mbg.generated
+	 */
+	Integer getLastIdOfBatch(@Param("lastId") Integer lastId, @Param("limit") int limit);
 	List<GmMail> selectGlobalMailList();
 	List<GmMail> selectGmMailList(
 			@Param("startTimer")Date startTimer,
