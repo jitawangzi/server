@@ -1,7 +1,5 @@
 package cn.game.games.net.cross.data;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +18,7 @@ import cn.game.games.net.cross.CrossServer;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
+import cn.game.util.reflect.ClassHelper;
 
 @Component
 public class CrossServerDataLoader<T, ID extends Number> implements ServerInstanceListener {
@@ -37,9 +36,8 @@ public class CrossServerDataLoader<T, ID extends Number> implements ServerInstan
 			if (loaders != null) {
 				for (GenericDataLoader<T, ID> loader : loaders) {
 					// 获取ID的实际类型
-					Class<?> idType = getLoaderIdType(loader);
+					Class<?> idType = ClassHelper.getGenericParameterType(loader, 1);
 					ID lastId;
-
 					// 根据类型初始化lastId
 					if (idType == Long.class) {
 						lastId = (ID) Long.valueOf(0L);
@@ -65,44 +63,6 @@ public class CrossServerDataLoader<T, ID extends Number> implements ServerInstan
 			}
 		}
 
-	}
-
-	// 辅助方法：通过反射获取ID类型
-	private Class<?> getLoaderIdType(GenericDataLoader<T, ID> loader) {
-		Class<?> loaderClass = loader.getClass();
-
-		// 检查类实现的接口
-		Type[] interfaces = loaderClass.getGenericInterfaces();
-		for (Type type : interfaces) {
-			if (type instanceof ParameterizedType) {
-				ParameterizedType pType = (ParameterizedType) type;
-				if (pType.getRawType() == GenericDataLoader.class) {
-					return extractClass(pType.getActualTypeArguments()[1]);
-				}
-			}
-		}
-
-		// 检查父类
-		Type superClass = loaderClass.getGenericSuperclass();
-		if (superClass instanceof ParameterizedType) {
-			ParameterizedType pType = (ParameterizedType) superClass;
-			if (pType.getRawType() == GenericDataLoader.class) {
-				return extractClass(pType.getActualTypeArguments()[1]);
-			}
-		}
-
-		throw new RuntimeException("无法确定ID类型");
-	}
-
-	// 提取实际类型
-	private Class<?> extractClass(Type type) {
-		if (type instanceof Class) {
-			return (Class<?>) type;
-		} else if (type instanceof ParameterizedType) {
-			return (Class<?>) ((ParameterizedType) type).getRawType();
-		} else {
-			throw new RuntimeException("不支持的泛型类型: " + type);
-		}
 	}
 
 	@Override

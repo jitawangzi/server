@@ -3,8 +3,12 @@ package cn.game.util.reflect;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -231,5 +235,105 @@ public class ClassHelper {
 		}
 
 		throw new IllegalStateException("No singleton instance accessor found for class: " + clazz.getName());
+	}
+
+	/**
+	 * 从泛型接口或泛型父类中提取指定位置的泛型参数类型
+	 *
+	 * @param obj 目标对象
+	 * @param targetType 目标泛型类或接口,例如实现了多个接口，用来区分哪一个
+	 * @param paramIndex 泛型参数位置索引(从0开始)
+	 * @return 参数类型的Class对象
+	 */
+	public static Class<?> getGenericParameterType(Object obj, Class<?> targetType, int paramIndex) {
+		Class<?> clazz = obj.getClass();
+
+		// 检查类实现的接口
+		Type[] interfaces = clazz.getGenericInterfaces();
+		for (Type type : interfaces) {
+			if (type instanceof ParameterizedType) {
+				ParameterizedType pType = (ParameterizedType) type;
+				if (pType.getRawType().equals(targetType)) {
+					Type[] typeArgs = pType.getActualTypeArguments();
+					if (paramIndex >= 0 && paramIndex < typeArgs.length) {
+						return extractClass(typeArgs[paramIndex]);
+					}
+				}
+			}
+		}
+
+		// 检查父类
+		Type superClass = clazz.getGenericSuperclass();
+		if (superClass instanceof ParameterizedType) {
+			ParameterizedType pType = (ParameterizedType) superClass;
+			if (pType.getRawType().equals(targetType)) {
+				Type[] typeArgs = pType.getActualTypeArguments();
+				if (paramIndex >= 0 && paramIndex < typeArgs.length) {
+					return extractClass(typeArgs[paramIndex]);
+				}
+			}
+		}
+
+		throw new RuntimeException("无法确定泛型参数类型");
+	}
+
+	/**
+	 * 从泛型接口或泛型父类中提取指定位置的泛型参数类型
+	 * 当类只有一个泛型接口或一个泛型父类时，自动检测并提取泛型参数
+	 * 
+	 * @param obj 目标对象
+	 * @param paramIndex 泛型参数位置索引(从0开始)
+	 * @return 参数类型的Class对象
+	 * @throws RuntimeException 如果找到多个泛型类型或没有找到泛型类型
+	 */
+	public static Class<?> getGenericParameterType(Object obj, int paramIndex) {
+		Class<?> clazz = obj.getClass();
+		List<ParameterizedType> parameterizedTypes = new ArrayList<>();
+
+		// 检查类实现的接口
+		Type[] interfaces = clazz.getGenericInterfaces();
+		for (Type type : interfaces) {
+			if (type instanceof ParameterizedType) {
+				parameterizedTypes.add((ParameterizedType) type);
+			}
+		}
+
+		// 检查父类
+		Type superClass = clazz.getGenericSuperclass();
+		if (superClass instanceof ParameterizedType) {
+			parameterizedTypes.add((ParameterizedType) superClass);
+		}
+
+		// 判断泛型类型数量
+		if (parameterizedTypes.isEmpty()) {
+			throw new RuntimeException("未找到泛型接口或父类");
+		} else if (parameterizedTypes.size() > 1) {
+			throw new RuntimeException("找到多个泛型类型，请使用带targetType参数的方法明确指定");
+		}
+
+		// 只有一个泛型类型，直接使用
+		ParameterizedType pType = parameterizedTypes.get(0);
+		Type[] typeArgs = pType.getActualTypeArguments();
+		if (paramIndex >= 0 && paramIndex < typeArgs.length) {
+			return extractClass(typeArgs[paramIndex]);
+		} else {
+			throw new RuntimeException("泛型参数索引无效: " + paramIndex);
+		}
+	}
+
+	/**
+	 * 提取Type对象的实际Class类型
+	 *
+	 * @param type 类型对象
+	 * @return Class对象
+	 */
+	public static Class<?> extractClass(Type type) {
+		if (type instanceof Class) {
+			return (Class<?>) type;
+		} else if (type instanceof ParameterizedType) {
+			return (Class<?>) ((ParameterizedType) type).getRawType();
+		} else {
+			throw new RuntimeException("不支持的泛型类型: " + type);
+		}
 	}
 }
