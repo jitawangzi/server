@@ -226,14 +226,13 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		try {
 			refreshOnceAccessToken(System.currentTimeMillis());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("", e);
 		}
 		new Thread(() -> {
 			long lastRefreshTimer = 0;
 
 			while (true) {
 				try {
-
 					long now = System.currentTimeMillis();
 					long difTimer = 2 * DateUtil.MINUTE_MILLIS;
 					if (now - lastRefreshTimer >= difTimer) {
@@ -244,8 +243,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 						Thread.sleep(1 * DateUtil.MINUTE_MILLIS);
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
+					log.error("", e);
 				}
 			}
 		}).start();

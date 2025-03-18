@@ -27,7 +27,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.NodeInfo;
 
 /**    
- * 活跃的vert.x节点/server列表。 
+ * 活跃的vert.x节点/server 列表。 
  * 2024年2月1日 下午4:20:41
  * @author SYQ
  */
