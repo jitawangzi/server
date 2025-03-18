@@ -1,26 +1,8 @@
 package cn.game.core.net.process;
 
-import cn.game.core.net.client.NetClient;
-import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.vertx.VxContextRegistry;
-
-public class PlayerThreadProcessor extends AbstractProcessor {
+@Deprecated
+public class PlayerThreadProcessor extends IdEventLoopProcessor {
 
 	public PlayerThreadProcessor() {
-	}
-
-	@Override
-	public void process(final NetClient netClient, final IProtocol<?> protocol) {
-		VxContextRegistry.getInstance().submitTask(netClient.getPlayerId(), r -> super.process(netClient, protocol));
-	}
-
-	@Override
-	public void process(long objectId, Runnable task) {
-		VxContextRegistry.getInstance().submitTask(objectId, task);
-	}
-
-	@Override
-	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
-		VxContextRegistry.getInstance().submitTask(objectId, r -> super.process(netClient, protocol));
 	}
 }

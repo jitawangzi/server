@@ -6,8 +6,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import io.vertx.core.Context;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.impl.VertxThread;
 
 /**    
@@ -113,6 +116,26 @@ public class AsyncUtils {
 			currentAccumulation = accumulator.apply(result, currentAccumulation);
 			return Future.succeededFuture();
 		}
+	}
+
+	/** 
+	 * 执行任务并返回结果的Future
+	 * @param <T>
+	 * @param context
+	 * @param supplier
+	 * @return
+	 */
+	public static <T> Future<T> runOnContextWithResult(Context context, Supplier<T> supplier) {
+		Promise<T> promise = Promise.promise();
+		context.runOnContext(v -> {
+			try {
+				T result = supplier.get();
+				promise.complete(result);
+			} catch (Exception e) {
+				promise.fail(e);
+			}
+		});
+		return promise.future();
 	}
 
 }

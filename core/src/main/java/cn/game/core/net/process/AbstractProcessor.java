@@ -1,5 +1,7 @@
 package cn.game.core.net.process;
 
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import io.vertx.core.Future;
 
 public abstract class AbstractProcessor implements Processor {
 
@@ -44,6 +47,11 @@ public abstract class AbstractProcessor implements Processor {
 
 	@Override
 	public void process(long objectId, NetClient gameClient, IProtocol<?> protocol) {
-		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:task:protocol");
+		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:gameClient:protocol");
+	}
+
+	@Override
+	public <T> Future<T> process(long objectId, Supplier<T> supplier) {
+		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:supplier");
 	}
 }

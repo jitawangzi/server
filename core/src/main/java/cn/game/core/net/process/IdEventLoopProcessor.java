@@ -1,8 +1,11 @@
 package cn.game.core.net.process;
 
+import java.util.function.Supplier;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.vertx.VxContextRegistry;
+import io.vertx.core.Future;
 
 public class IdEventLoopProcessor extends AbstractProcessor {
 
@@ -10,7 +13,7 @@ public class IdEventLoopProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	public void process(final NetClient netClient, final IProtocol protocol) {
+	public void process(final NetClient netClient, final IProtocol<?> protocol) {
 		VxContextRegistry.getInstance().submitTask(netClient.getPlayerId(), r -> super.process(netClient, protocol));
 	}
 
@@ -22,5 +25,10 @@ public class IdEventLoopProcessor extends AbstractProcessor {
 	@Override
 	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
 		VxContextRegistry.getInstance().submitTask(objectId, r -> super.process(netClient, protocol));
+	}
+
+	@Override
+	public <T> Future<T> process(long objectId, Supplier<T> supplier) {
+		return VxContextRegistry.getInstance().submitTaskWithResult(objectId, supplier);
 	}
 }

@@ -1,9 +1,13 @@
 package cn.game.core.net.vertx;
 
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.util.AsyncUtils;
 import io.vertx.core.Context;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
 /**
@@ -81,11 +85,33 @@ public class VxContextRegistry {
 		ctx.runOnContext(v -> task.run());
 	}
 
+	/** 
+	 * 将任务投递到 (objectId) 对应 context，执行supplier逻辑并返回结果
+	 * @param <T>
+	 * @param objectId
+	 * @param supplier
+	 * @return
+	 */
+	public <T> Future<T> submitTaskWithResult(long objectId, Supplier<T> supplier) {
+		// 当 objectId == 0 时，直接在“当前线程”执行。
+		Context ctx = null;
+		if (objectId == 0) {
+			ctx = VxHolder.vertx.getOrCreateContext();
+		}
+		ctx = getContext(objectId);
+		if (ctx == null) {
+			log.warn("No context found for objectId={}, skipping task", objectId);
+			return Future.failedFuture("No context found for objectId=" + objectId);
+		}
+		return AsyncUtils.runOnContextWithResult(ctx, supplier);
+	}
+
 	/**
 	 * 将任务投递到 (objectId) 对应 context
 	 */
 	public void submitTask(long objectId, Handler<Void> action) {
 		submitTask(objectId, () -> action.handle(null));
 	}
+
 }
 
