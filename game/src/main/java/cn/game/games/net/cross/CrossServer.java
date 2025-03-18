@@ -105,6 +105,7 @@ public class CrossServer {
 
 	private void shutdown() {
 		IdCache.clearAllCurrentServerId();
+		ZongMenManager.getInstance().saveAllZongMenData();
 	}
 
 	private void initVerticle() throws Exception {

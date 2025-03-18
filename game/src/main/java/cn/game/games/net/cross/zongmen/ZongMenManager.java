@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import cn.game.protocol.protobuf.ZongMenMsg;
 import org.apache.commons.lang.math.RandomUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -23,6 +21,7 @@ import cn.game.games.net.data.mapper.ZongmenMapper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
@@ -43,7 +42,6 @@ public class ZongMenManager {
     private ZongMenManager() {
 
     }
-    AtomicInteger zongMenAutoIncrementNum = new AtomicInteger(0);
     public static ZongMenManager getInstance(){ return Instance;}
 
     public void init() {
@@ -51,7 +49,8 @@ public class ZongMenManager {
         //加载宗门数据
 //        loadAllData();
         //启动定时器 定期存储 宗门数据
-        SchedulerService.getInstance().scheduleAtFixedRate(saveAllZongMenData(),ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
+		SchedulerService.getInstance()
+				.scheduleAtFixedRate(() -> saveAllZongMenData(), ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
         //启动定时器 定期触发宗门 时间相关事件
         SchedulerService.getInstance().scheduleAtFixedRate(timeCrossCheck(),1, TimeUnit.SECONDS);
     }
@@ -72,28 +71,27 @@ public class ZongMenManager {
         };
     }
 
-    private Runnable saveAllZongMenData() {
-        return ()->{
-            long now = System.currentTimeMillis();
-            int saveNum = 0;
-            for (ZongMenInfo info : zongMenInfoMap.values()) {
-                    if (now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER){
-                        saveNum++;
-                        ServerContext.getInstance().getProcessor().process(info.getId(), () ->{
-                            info.setSaveDataTimer(now);
-                            info.updateModuleData();
-                            DAO.updateWithBLOBs(info.getData());
-                            saveZongMenTotalPowerRank(info);
-                            saveSimpleData(info);
-                            log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d",info.getId(),info.getName(),info.getModule().menMemberMap.size()));
-                        });
-                    }
-            }
-            log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d",System.currentTimeMillis() - now, saveNum,zongMenInfoMap.size()));
+	public void saveAllZongMenData() {
 
-        };
+		long now = System.currentTimeMillis();
+		int saveNum = 0;
+		for (ZongMenInfo info : zongMenInfoMap.values()) {
+			if (now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER) {
+				saveNum++;
+				ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
+					info.setSaveDataTimer(now);
+					info.updateModuleData();
+					DAO.updateWithBLOBs(info.getData());
+					saveZongMenTotalPowerRank(info);
+					saveSimpleData(info);
+					log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d", info.getId(), info.getName(),
+							info.getModule().menMemberMap.size()));
+				});
+			}
+		}
+		log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - now, saveNum,
+				zongMenInfoMap.size()));
     }
-
 
     public void loadAllData(){
         log.info(String.format("开始加载所有的宗门"));
@@ -111,7 +109,6 @@ public class ZongMenManager {
                                 });
                                 num = list.size();
                             }
-                            zongMenAutoIncrementNum.set(num + 1);
                             log.info(String.format("开始加载所有的宗门结束, use:%d, 数量:%d", System.currentTimeMillis() - beginTimer,num));
                         })
                         .onFailure(err ->{
@@ -121,7 +118,6 @@ public class ZongMenManager {
     }
 
 	public void loadZongmenList(List<Zongmen> list) {
-		int num = 0;
 		list.forEach(zongmen -> {
 			if (IdCache.initServerId(DistributedObjectType.ZONGMEN, zongmen.getId())) {
 				ZongMenInfo info = new ZongMenInfo(zongmen);
@@ -129,22 +125,7 @@ public class ZongMenManager {
 				info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
 			}
 		});
-		num = list.size();
-		zongMenAutoIncrementNum.set(num + 1);
 	}
-
-//	public static void initAllData() {
-//		ZongmenMapper mapper = SpringContextLoader.getContext().getBean(ZongmenMapper.class);
-//		int total = mapper.getTotal();
-//		int pageSize = 100;
-//		int totalPages = (total + pageSize - 1) / pageSize;
-//
-//		for (int page = 0; page < totalPages; page++) {
-//			int offset = page * pageSize;
-//			CrossServerInterface crossServerInterface = CrossServer.getInstance().getCrossServerInterface();
-//			crossServerInterface.loadDataDistributed(offset, totalPages);
-//		}
-//	}
 
     public void saveSimpleData(ZongMenInfo zongMen){
         String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(zongMen.getId());
