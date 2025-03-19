@@ -71,34 +71,39 @@ public class GameServerStatus {
 			@Override
 			public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
 				ChildData data = event.getData();
-				if (data != null) {
-					String serverId = ZkHelper.getNodeNameFromPath(data.getPath());
-					String curServerId = ServerContext.getInstance().getServerId();
-					if (!serverId.equalsIgnoreCase(curServerId)) {
-						return;
+				try {
+					if (data != null) {
+						String serverId = ZkHelper.getNodeNameFromPath(data.getPath());
+						String curServerId = ServerContext.getInstance().getServerId();
+						if (!serverId.equalsIgnoreCase(curServerId)) {
+							return;
+						}
+						switch (event.getType()) {
+						case CHILD_ADDED: {
+							ServerList server = JSON.parseObject(data.getData(), ServerList.class);
+							log.info("Game节点添加：id[{}] {}", serverId, server);
+							serverInfo = server;
+							promise.complete(server.getPort());
+							break;
+						}
+						case CHILD_UPDATED: {
+							ServerList server = JSON.parseObject(data.getData(), ServerList.class);
+							log.info("Game节点更新：id[{}] {}", serverId, server);
+							serverInfo = server;
+							break;
+						}
+						case CHILD_REMOVED:
+							log.info("Game节点移除：[{}]", serverId);
+							// 处理节点移除事件
+							serverInfo = null;
+							break;
+						default:
+							break;
+						}
 					}
-					switch (event.getType()) {
-					case CHILD_ADDED: {
-						ServerList server = JSON.parseObject(data.getData(), ServerList.class);
-						log.info("Game节点添加：id[{}] {}", serverId, server);
-						serverInfo = server;
-						promise.complete(server.getPort());
-						break;
-					}
-					case CHILD_UPDATED: {
-						ServerList server = JSON.parseObject(data.getData(), ServerList.class);
-						log.info("Game节点更新：id[{}] {}", serverId, server);
-						serverInfo = server;
-						break;
-					}
-					case CHILD_REMOVED:
-						log.info("Game节点移除：[{}]", serverId);
-						// 处理节点移除事件
-						serverInfo = null;
-						break;
-					default:
-						break;
-					}
+				} catch (Exception e) {
+					log.error("监听GameServer节点异常", e);
+					promise.fail(e);
 				}
 			}
 		});

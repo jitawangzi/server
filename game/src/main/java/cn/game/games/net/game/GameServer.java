@@ -282,7 +282,7 @@ public class GameServer implements GameServerMBean {
 		}
 	}
 	private void initGameServerConfig() throws Exception {
-		GameServerStatus.getInstance().start().toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+		GameServerStatus.getInstance().start().toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		if (GameServerStatus.getInstance().getServerInfo() == null) {
 			throw new IllegalArgumentException(
 					"GameServerInfo is null，cant find serverId from zookeeper ,serverId "

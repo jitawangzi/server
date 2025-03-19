@@ -1,15 +1,23 @@
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.process.Processor;
+import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.process.BatchProcessorUtil;
 import cn.game.core.process.ProcessingConfig;
 import cn.game.core.process.ProcessingMode;
 import cn.game.core.process.processor.DataProcessor;
 import cn.game.core.process.provider.DataProvider;
 import cn.game.core.task.BatchProcessResult;
+import cn.game.core.util.AsyncUtils;
+import cn.game.core.util.VertxFutureConverter;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.data.mapper.FriendMapper;
@@ -20,6 +28,7 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ZkHelper;
+import io.vertx.core.Context;
 
 /**    
  * 一些GameServer的测试代码
@@ -38,7 +47,62 @@ public class GGameTest {
 
 		ManagerHelper.init();
 		
-		
+//		batchProcess(playerDataMapper, friendMapper);
+
+		extracted();
+
+	}
+
+	private static void extracted() {
+		Supplier<String> supplier = () -> {
+			return "hello sync";
+		};
+		Supplier<Future<String>> supplierJdkFuture = () -> {
+			return CompletableFuture.supplyAsync(() -> {
+				return "hello CompletableFuture";
+			});
+		};
+		Supplier<CompletionStage<String>> supplierCompletionStage = () -> {
+			return CompletableFuture.supplyAsync(() -> {
+				return "hello CompletionStage";
+			});
+		};
+
+		Processor processor = ServerContext.getInstance().getProcessor();
+		Context context = VxContextRegistry.getInstance().getContext(1);
+		context.runOnContext(r44 -> {
+			io.vertx.core.Future<String> f1 = processor.process(1, supplier, null);
+			io.vertx.core.Future<String> f2 = processor.process(2, supplierJdkFuture, VertxFutureConverter.jdkFutureConverter());
+			io.vertx.core.Future<String> f3 = processor.process(3, supplierCompletionStage,
+					VertxFutureConverter.completionStageConverter());
+
+			f1.onComplete(r -> {
+				System.err.println(Thread.currentThread().getName() + r.result());
+			});
+			f2.onComplete(r -> {
+				System.err.println(Thread.currentThread().getName() + r.result());
+			});
+			f3.onComplete(r -> {
+				System.err.println(Thread.currentThread().getName() + r.result());
+			});
+		});
+
+		io.vertx.core.Future<String> f4 = AsyncUtils.runOnContextAuto(context, supplier);
+		io.vertx.core.Future<String> f5 = AsyncUtils.runOnContextAuto(context, true, supplierJdkFuture);
+		io.vertx.core.Future<String> f6 = AsyncUtils.runOnContextAuto(context, true, supplierCompletionStage);
+		f4.onComplete(r -> {
+			System.err.println("f4 " + Thread.currentThread().getName() + r.result());
+		});
+		f5.onComplete(r -> {
+			System.err.println("f5 " + Thread.currentThread().getName() + r.result());
+		});
+		f6.onComplete(r -> {
+			System.err.println("f6 " + Thread.currentThread().getName() + r.result());
+		});
+	}
+
+
+	private static void batchProcess(PlayerDataMapper playerDataMapper, FriendMapper friendMapper) {
 		BiFunction<Object[], Integer, List<Friend>> queryFunction = (cursors, batchSize) -> {
 			return friendMapper.getBatchCursor((Long) cursors[0], (Long) cursors[1], batchSize);
 		} ; 
@@ -70,7 +134,6 @@ public class GGameTest {
 
 		result = processorPlayer.process(cursorProviderPlayer, config);
 		System.out.println(result);
-
 	}
 
 

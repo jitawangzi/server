@@ -183,6 +183,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 				onFail(response, 500, "发货失败");
 			}
 		}).onFailure(err -> {
+			log.error("充值通知game失败", err);
 		});
 
 	}

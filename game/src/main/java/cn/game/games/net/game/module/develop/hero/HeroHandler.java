@@ -691,7 +691,7 @@ public class HeroHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
             return;
         }
-        if (pos < 1 || pos > 5) {
+		if (pos < 1 || pos > 6) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
