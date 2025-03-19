@@ -1,5 +1,6 @@
 package cn.game.core.net.process;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import cn.game.core.net.client.NetClient;
@@ -10,11 +11,17 @@ public interface Processor {
 
 	public void process(NetClient gameClient, IProtocol<?> protocol);
 
+	public void process(Runnable task);
+
+	// 带objectId的方法，会根据objectId找到对应的线程执行
 	public void process(long objectId, NetClient gameClient, IProtocol<?> protocol);
 
 	public void process(long objectId, Runnable task);
 
+	// 执行同步逻辑，返回结果
 	public <T> Future<T> process(long objectId, Supplier<T> supplier);
 
-	public void process(Runnable task);
+	// 执行异步逻辑，返回结果
+	public <T, R> Future<T> process(long objectId, Supplier<R> supplier, Function<R, Future<T>> mapper);
+
 }

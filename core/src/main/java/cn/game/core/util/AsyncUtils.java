@@ -2,6 +2,7 @@ package cn.game.core.util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,6 +12,7 @@ import java.util.function.Supplier;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.impl.VertxThread;
 
 /**    
@@ -23,6 +25,9 @@ import io.vertx.core.impl.VertxThread;
  */
 public class AsyncUtils {
 
+	/** 
+	 * 检查当前线程是不是eventLoop线程, 如果不是则抛出异常
+	 */
 	public static void checkEventLoop() {
 		Thread currentThread = Thread.currentThread();
 		if (currentThread instanceof VertxThread && ((VertxThread) currentThread).isWorker() == false) {
@@ -32,7 +37,17 @@ public class AsyncUtils {
 	}
 
 	/** 
-	 * 同步等待Vertx 的Future完成
+	 * 检查当前线程是不是Vertx线程, 如果不是则抛出异常
+	 */
+	public static void checkVertxThread() {
+		Thread currentThread = Thread.currentThread();
+		if (currentThread instanceof VertxThread == false) {
+			throw new IllegalStateException("this operation must be in vertx thread. " + " Current thread: " + currentThread.getName());
+		}
+	}
+
+	/** 
+	 * 同步等待Vertx 的Future完成,谨慎使用
 	 * @param <T>
 	 * @param future
 	 * @param timeout
@@ -118,24 +133,114 @@ public class AsyncUtils {
 		}
 	}
 
-	/** 
-	 * 执行任务并返回结果的Future
-	 * @param <T>
-	 * @param context
-	 * @param supplier
-	 * @return
+	/**
+	 * 在指定context中执行任务，并把任务的结果封装成Future返回。 
+	 * 任务的返回值支持同步结果和各种异步结果类型
+	 * @param <T> 结果类型
+	 * @param <R> 任务返回类型（可以是同步结果或异步结果容器） 
+	 * @param context 执行上下文
+	 * @param callOnCallerThread 是否在调用者线程执行回调
+	 * （true=调用者线程，false=执行线程）
+	 * 	注意这个参数只针对调用者线程是vertx的线程才有效。
+	 * @param supplier 任务提供者
+	 * @param mapper 将任务结果映射到Future<T>的函数，如果为null则直接使用supplier结果作为同步结果
+	 * @return 包含结果的Future
 	 */
-	public static <T> Future<T> runOnContextWithResult(Context context, Supplier<T> supplier) {
+	@SuppressWarnings("unchecked")
+	public static <T, R> Future<T> runOnContext(Context context, boolean callOnCallerThread, Supplier<R> supplier,
+			Function<R, Future<T>> mapper) {
 		Promise<T> promise = Promise.promise();
+		if (callOnCallerThread && Thread.currentThread() instanceof VertxThread == false) {
+			promise.fail("callOnCallerThread 只针对调用者线程是vertx的线程才有效");
+			return promise.future();
+		}
+		// 捕获调用者上下文
+		Context callerContext = Vertx.currentContext();
+
 		context.runOnContext(v -> {
 			try {
-				T result = supplier.get();
-				promise.complete(result);
+				R result = supplier.get();
+				try {
+					if (mapper == null) {
+						// 同步结果处理
+						if (callOnCallerThread) {
+							callerContext.runOnContext(v2 -> promise.complete((T) result));
+						} else {
+							promise.complete((T) result);
+						}
+					} else {
+						// 异步结果处理
+						Future<T> future = mapper.apply(result);
+						if (callOnCallerThread) {
+							future.onComplete(ar -> {
+								callerContext.runOnContext(v2 -> {
+									if (ar.succeeded())
+										promise.complete(ar.result());
+									else
+										promise.fail(ar.cause());
+								});
+							});
+						} else {
+							future.onComplete(promise);
+						}
+					}
+				} catch (ClassCastException e) {
+					handleFailure(promise, new RuntimeException("Type conversion error", e), callerContext, callOnCallerThread);
+				} catch (Exception e) {
+					handleFailure(promise, new RuntimeException("Error processing result", e), callerContext, callOnCallerThread);
+				}
 			} catch (Exception e) {
-				promise.fail(e);
+				handleFailure(promise, e, callerContext, callOnCallerThread);
 			}
 		});
+
 		return promise.future();
 	}
 
+	// 默认回调行为的重载（默认在执行线程回调）
+	public static <T, R> Future<T> runOnContext(Context context, Supplier<R> supplier, Function<R, Future<T>> mapper) {
+		return runOnContext(context, false, supplier, mapper);
+	}
+
+	// 辅助方法：统一处理失败情况
+	private static <T> void handleFailure(Promise<T> promise, Throwable t, Context callerContext, boolean callOnCallerThread) {
+		if (callOnCallerThread && callerContext != null) {
+			callerContext.runOnContext(v -> promise.fail(t));
+		} else {
+			promise.fail(t);
+		}
+	}
+
+	/** 
+	 * 
+	 * 智能类型检测的通用方法
+	 * 自动检测返回类型并应用合适的转换器
+	 * @param <T>
+	 * @param context
+	 * @param callOnCallerThread
+	 * @param supplier
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Future<T> runOnContextAuto(Context context, boolean callOnCallerThread, Supplier<?> supplier) {
+		return runOnContext(context, callOnCallerThread, supplier, result -> {
+			if (result == null) {
+				return Future.succeededFuture(null);
+			} else if (result instanceof Future) {
+				return (Future<T>) result;
+			} else if (result instanceof CompletionStage) {
+				return (Future<T>) VertxFutureConverter.completionStageConverter().apply((CompletionStage<Object>) result);
+			} else if (result instanceof java.util.concurrent.Future) {
+				return (Future<T>) VertxFutureConverter.jdkFutureConverter().apply((java.util.concurrent.Future<Object>) result);
+			} else {
+				// 默认当作同步结果处理
+				return Future.succeededFuture((T) result);
+			}
+		});
+	}
+
+	// 默认回调在执行线程中执行
+	public static <T> Future<T> runOnContextAuto(Context context, Supplier<?> supplier) {
+		return runOnContextAuto(context, false, supplier);
+	}
 }

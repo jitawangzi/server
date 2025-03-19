@@ -78,8 +78,8 @@ public final class Config {
 
 	/** 服务器心跳包间隔 */
 	public static int heart;
-	/** 同步远程调用的超时时间,5s */
-	public static int remoteCallTimeOut = 5;
+	/** 同步远程调用的超时时间,10s */
+	public static int remoteCallTimeOut = 10;
 
 	public static int remoteCallTimeOutMillisecond = remoteCallTimeOut * 1000;
 

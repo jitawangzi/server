@@ -1,5 +1,6 @@
 package cn.game.core.net.process;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import cn.game.core.net.client.NetClient;
@@ -30,5 +31,11 @@ public class IdEventLoopProcessor extends AbstractProcessor {
 	@Override
 	public <T> Future<T> process(long objectId, Supplier<T> supplier) {
 		return VxContextRegistry.getInstance().submitTaskWithResult(objectId, supplier);
+	}
+
+	@Override
+	public <T, R> Future<T> process(long objectId, Supplier<R> supplier, Function<R, Future<T>> mapper) {
+		return VxContextRegistry.getInstance().submitTaskWithResult(objectId, supplier, mapper);
+
 	}
 }
