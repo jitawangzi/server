@@ -69,12 +69,10 @@
 			</plugin>
 
 			<!-- 这里先不启用这个插件，容易提示出错，需要的时候在打开 -->
-			<!-- 
-				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				</plugin>
- -->
+<!--				<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-dependency-plugin</artifactId>-->
+<!--				</plugin>-->
 		</plugins>
 
 		<pluginManagement>
