@@ -2,12 +2,12 @@ package cn.game.core.util;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -147,7 +147,7 @@ public class AsyncUtils {
 	 * @return 包含结果的Future
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T, R> Future<T> runOnContext(Context context, boolean callOnCallerThread, Supplier<R> supplier,
+	public static <T, R> Future<T> runOnContext(Context context, boolean callOnCallerThread, Callable<R> supplier,
 			Function<R, Future<T>> mapper) {
 		Promise<T> promise = Promise.promise();
 		if (callOnCallerThread && Thread.currentThread() instanceof VertxThread == false) {
@@ -159,7 +159,7 @@ public class AsyncUtils {
 
 		context.runOnContext(v -> {
 			try {
-				R result = supplier.get();
+				R result = supplier.call();
 				try {
 					if (mapper == null) {
 						// 同步结果处理
@@ -198,7 +198,7 @@ public class AsyncUtils {
 	}
 
 	// 默认回调行为的重载（默认在执行线程回调）
-	public static <T, R> Future<T> runOnContext(Context context, Supplier<R> supplier, Function<R, Future<T>> mapper) {
+	public static <T, R> Future<T> runOnContext(Context context, Callable<R> supplier, Function<R, Future<T>> mapper) {
 		return runOnContext(context, false, supplier, mapper);
 	}
 
@@ -222,7 +222,7 @@ public class AsyncUtils {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Future<T> runOnContextAuto(Context context, boolean callOnCallerThread, Supplier<?> supplier) {
+	public static <T> Future<T> runOnContextAuto(Context context, boolean callOnCallerThread, Callable<?> supplier) {
 		return runOnContext(context, callOnCallerThread, supplier, result -> {
 			if (result == null) {
 				return Future.succeededFuture(null);
@@ -240,7 +240,7 @@ public class AsyncUtils {
 	}
 
 	// 默认回调在执行线程中执行
-	public static <T> Future<T> runOnContextAuto(Context context, Supplier<?> supplier) {
+	public static <T> Future<T> runOnContextAuto(Context context, Callable<?> supplier) {
 		return runOnContextAuto(context, false, supplier);
 	}
 }

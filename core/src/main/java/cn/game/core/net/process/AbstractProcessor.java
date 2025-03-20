@@ -1,7 +1,7 @@
 package cn.game.core.net.process;
 
+import java.util.concurrent.Callable;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +52,12 @@ public abstract class AbstractProcessor implements Processor {
 	}
 
 	@Override
-	public <T> Future<T> process(long objectId, Supplier<T> supplier) {
+	public <T> Future<T> process(long objectId, Callable<T> supplier) {
 		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:supplier");
 	}
 
 	@Override
-	public <T, R> Future<T> process(long objectId, Supplier<R> supplier, Function<R, Future<T>> mapper) {
+	public <T, R> Future<T> process(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper) {
 		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:supplier:mapper");
 	}
 }

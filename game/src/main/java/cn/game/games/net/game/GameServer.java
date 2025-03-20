@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ import javax.management.ObjectName;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
@@ -75,8 +77,12 @@ import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
+import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.impl.VertxInternal;
 
 /**
  * vertx重构通讯
@@ -113,6 +119,9 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, serverType);
+		ServerContext.getInstance().setServerId(serverId);
+		ServerContext.getInstance().setServerType(serverType);
+
 		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -120,10 +129,11 @@ public class GameServer implements GameServerMBean {
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
 		ZkHelper.init();
-		RedisUtil.getInstance().init();
+		VxHolder.init();
+		// 初始化redis，复用vertx的eventloop
+		RedisUtil.getInstance().init(((VertxInternal) VxHolder.vertx).getEventLoopGroup());
 		IdUtil.init();
 
-//		VxHolder.init();
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init(serverId, serverType);
@@ -187,6 +197,91 @@ public class GameServer implements GameServerMBean {
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
 
+		Context context = VxHolder.vertx.getOrCreateContext();
+
+		context.runOnContext(v -> {
+			// 这段代码运行在 Vert.x 的 EventLoop 线程（如 vert.x-eventloop-thread-0）
+			System.out.println("context.runOnContext Vert.x thread: " + Thread.currentThread().getName());
+
+			RLock lock = RedisUtil.getRedis().getLock("myLock");
+			lock.tryLockAsync(10, 60, TimeUnit.SECONDS).whenComplete((result, ex) -> {
+				// 回调运行在 Redisson 的 Netty 线程（如 redisson-netty-4）
+				System.out.println("context.runOnContext Redisson callback thread: " + Thread.currentThread().getName());
+
+				// 如果需要回到 Vert.x 的 EventLoop 线程：
+				VxHolder.vertx.runOnContext(v2 -> {
+					System.out.println("context.runOnContext Back to Vert.x thread: " + Thread.currentThread().getName());
+				});
+			});
+		});
+		VxHolder.vertx.runOnContext(v -> {
+			// 这段代码运行在 Vert.x 的 EventLoop 线程（如 vert.x-eventloop-thread-0）
+			System.out.println("vertx.runOnContext Vert.x thread: " + Thread.currentThread().getName());
+
+			RLock lock = RedisUtil.getRedis().getLock("myLock");
+			lock.tryLockAsync(10, 60, TimeUnit.SECONDS).whenComplete((result, ex) -> {
+				// 回调运行在 Redisson 的 Netty 线程（如 redisson-netty-4）
+				System.out.println("vertx.runOnContext Redisson callback thread: " + Thread.currentThread().getName());
+
+				// 如果需要回到 Vert.x 的 EventLoop 线程：
+				VxHolder.vertx.runOnContext(v2 -> {
+					System.out.println("vertx.runOnContext Back to Vert.x thread: " + Thread.currentThread().getName());
+				});
+			});
+		});
+
+		context.runOnContext(v -> {
+			VxHolder.runWithLock(() -> Future.succeededFuture("hello world"), "123");
+		});
+		testRedissonThreadBehavior(VxHolder.vertx, RedisUtil.getRedis());
+
+		// 在实际应用环境中插入此测试代码
+		RLock directLock = RedisUtil.getRedis().getLock("test-direct-lock");
+		directLock.tryLockAsync().whenComplete((locked, err) -> {
+			LoggerType.Stdout.logger.info("直接调用回调，线程: {}", Thread.currentThread().getName());
+		});
+		RLock lock = RedisUtil.getRedis().getLock("test-direct-lock2");
+
+		// 在应用环境中测试不同的包装方式
+		CompletionStage<Boolean> redissonFuture = lock.tryLockAsync();
+
+		// 方式1：直接使用Redisson的Future
+		redissonFuture.whenComplete((locked, err) -> {
+			LoggerType.Stdout.logger.info("方式1回调，线程: {}", Thread.currentThread().getName());
+		});
+
+		// 方式2：转换为Vert.x Future
+		Future<Boolean> vertxFuture = Future.future(promise -> {
+			redissonFuture.whenComplete((locked, err) -> {
+				if (err != null)
+					promise.fail(err);
+				else
+					promise.complete(locked);
+			});
+		});
+
+		vertxFuture.onComplete(ar -> {
+			LoggerType.Stdout.logger.info("方式2回调，线程: {}", Thread.currentThread().getName());
+		});
+
+	}
+
+	public void testRedissonThreadBehavior(Vertx vertx, RedissonClient redissonClient) {
+		vertx.runOnContext(v -> {
+			System.out.println("开始获取锁，线程: " + Thread.currentThread().getName());
+
+			RLock lock = redissonClient.getLock("test-lock");
+			lock.tryLockAsync(10, 30, TimeUnit.SECONDS).whenComplete((locked, throwable) -> {
+				System.out.println("锁获取回调，线程: " + Thread.currentThread().getName());
+
+				if (locked) {
+					System.out.println("释放锁...");
+					lock.unlockAsync().whenComplete((result, error) -> {
+						System.out.println("锁释放回调，线程: " + Thread.currentThread().getName());
+					});
+				}
+			});
+		});
 	}
 
 	/** 

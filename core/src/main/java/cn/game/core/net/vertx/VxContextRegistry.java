@@ -1,7 +1,7 @@
 package cn.game.core.net.vertx;
 
+import java.util.concurrent.Callable;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class VxContextRegistry {
 	 * @param supplier
 	 * @return
 	 */
-	public <T> Future<T> submitTaskWithResult(long objectId, Supplier<T> supplier) {
+	public <T> Future<T> submitTaskWithResult(long objectId, Callable<T> supplier) {
 		return submitTaskWithResult(objectId, supplier, null);
 	}
 
@@ -104,7 +104,7 @@ public class VxContextRegistry {
 	 * @param supplier
 	 * @return
 	 */
-	public <T, R> Future<T> submitTaskWithResult(long objectId, Supplier<R> supplier, Function<R, Future<T>> mapper) {
+	public <T, R> Future<T> submitTaskWithResult(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper) {
 		// 当 objectId == 0 时，直接在“当前线程”执行。
 		Context ctx = null;
 		if (objectId == 0) {

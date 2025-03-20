@@ -2,11 +2,11 @@ package cn.game.core.net.vertx;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import cn.game.core.net.vertx.codec.CustomMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufProtocolCodec;
 import cn.game.core.net.vertx.codec.ProtocolCodec;
+import cn.game.core.util.AsyncUtils;
 import cn.game.util.IpUtil;
 import cn.game.util.LockUtil;
 import cn.game.util.ServerType;
@@ -384,54 +385,39 @@ public class VxHolder {
 	 * @param lockKeys 锁的key，支持多个key。
 	 * @return
 	 */
-	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Supplier<Future<T>> operations,
+	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Callable<Future<T>> operations,
 			String... lockKeys) {
-		Promise<T> promise = Promise.promise();
 		RLock lock = LockUtil.initLock(lockKeys);
 		Context context = VxHolder.vertx.getOrCreateContext();
 		long threadId = Thread.currentThread().getId();
-
-		lock.tryLockAsync(waitTime, leaseTime, unit).whenComplete((locked, throwable) -> {
+		return Future.<Boolean>future(promise -> lock.tryLockAsync(waitTime, leaseTime, unit).whenComplete((locked, throwable) -> {
+			// 这里可能在redisson的线程中执行
 			if (throwable != null) {
-				log.error("Error acquiring lock for keys: " + Arrays.toString(lockKeys), throwable);
+				log.error("Error acquiring lock: " + Arrays.toString(lockKeys), throwable);
 				promise.fail(throwable);
-				return;
-			}
-			if (!locked) {
-				log.warn("Failed to acquire lock for keys: " + Arrays.toString(lockKeys));
+			} else if (!locked) {
+				log.warn("Failed to acquire lock: " + Arrays.toString(lockKeys));
 				promise.fail("Failed to acquire lock");
-				return;
+			} else {
+				promise.complete(true);
 			}
+		})).compose(locked -> {
 			log.debug("Lock acquired for keys: {}", Arrays.toString(lockKeys));
-			context.runOnContext(v -> {
-				Future<T> operationFuture;
+			// 检查是否已经在正确的Context上
+			if (Context.isOnVertxThread() && context.equals(Vertx.currentContext())) {
+				// 已经在正确的context上，直接执行
 				try {
-					operationFuture = operations.get();
+					return operations.call();
 				} catch (Exception e) {
-					log.error("Error getting operation future for keys: " + Arrays.toString(lockKeys), e);
-					promise.fail(e);
-					releaseLock(lock, threadId, lockKeys);
-					return;
+					throw new RuntimeException(e);
 				}
-				operationFuture.onComplete(result -> {
-					if (result.succeeded()) {
-						promise.complete(result.result());
-					} else {
-						promise.fail(result.cause());
-					}
-					releaseLock(lock, threadId, lockKeys);
-				});
-				// 使用 leaseTime 作为业务逻辑的最大执行时间
-				VxHolder.vertx.setTimer(unit.toMillis(leaseTime), id -> {
-					if (!promise.future().isComplete()) {
-						log.warn("Operation timed out for keys: " + Arrays.toString(lockKeys));
-						promise.fail("Operation timed out");
-						// 注意：这里不需要手动释放锁，因为 leaseTime 到期后锁会自动释放
-					}
-				});
-			});
+			} else {
+				// 需要切换context
+				return AsyncUtils.runOnContextAuto(context, operations);
+			}
+		}).onComplete(result -> {
+			releaseLock(lock, threadId, lockKeys);
 		});
-		return promise.future();
 	}
 
 	/** 
@@ -441,7 +427,7 @@ public class VxHolder {
 	 * @param lockKey
 	 * @return
 	 */
-	public static <T> Future<T> runWithLock(Supplier<Future<T>> operations, String... lockKey) {
+	public static <T> Future<T> runWithLock(Callable<Future<T>> operations, String... lockKey) {
 		return runWithLock(5, 30, TimeUnit.SECONDS, operations, lockKey);
 	}
 

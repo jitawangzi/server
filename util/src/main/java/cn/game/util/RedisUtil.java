@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
+import io.netty.channel.EventLoopGroup;
+
 /**
  * Redisson操作工具类，封装常用方法
  * 
@@ -62,13 +64,19 @@ public class RedisUtil {
 //			e.printStackTrace();
 //		}
 //	}
-	public void init() throws IOException {
+	public void init(EventLoopGroup eventLoopGroup) throws IOException {
 
 		Config redisConfig = ConfigService.getConfig("redisson");
 		String content = redisConfig.getProperty("redisson", "");
 		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(content);
+		if (eventLoopGroup != null) {
+			config.setEventLoopGroup(eventLoopGroup);
+		}
 		redis = Redisson.create(config);
+	}
 
+	public void init() throws IOException {
+		init(null);
 	}
 
 	public void initFromFile() throws IOException {

@@ -1,11 +1,11 @@
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.process.Processor;
@@ -54,15 +54,15 @@ public class GGameTest {
 	}
 
 	private static void extracted() {
-		Supplier<String> supplier = () -> {
+		Callable<String> supplier = () -> {
 			return "hello sync";
 		};
-		Supplier<Future<String>> supplierJdkFuture = () -> {
+		Callable<Future<String>> supplierJdkFuture = () -> {
 			return CompletableFuture.supplyAsync(() -> {
 				return "hello CompletableFuture";
 			});
 		};
-		Supplier<CompletionStage<String>> supplierCompletionStage = () -> {
+		Callable<CompletionStage<String>> supplierCompletionStage = () -> {
 			return CompletableFuture.supplyAsync(() -> {
 				return "hello CompletionStage";
 			});

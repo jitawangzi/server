@@ -25,7 +25,7 @@
 		<skipTests>true</skipTests>
 		
 		<!-- 第三方依赖版本 -->
-		<vertx.version>4.2.1</vertx.version>
+		<vertx.version>4.5.13</vertx.version>
 		<spring.version>5.3.32</spring.version>
 	</properties>
 	<build>
@@ -168,6 +168,25 @@
 
       <!-- 第三方依赖 -->
           <!-- 显式覆盖特定组件 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.23.1</version>
+			<exclusions>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.23.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.23.1</version>
+		</dependency>
+          
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -188,6 +207,12 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.16.1</version>
 		</dependency>
+      <!-- 不指定netty的版本，跟随vertx，假如升级了vertx则会自动升级netty -->
+<!--      		<dependency>-->
+<!--			<groupId>io.netty</groupId>-->
+<!--			<artifactId>netty-all</artifactId>-->
+<!--			<version>4.1.119.Final</version>-->
+<!--		</dependency>-->
       
        <!-- vert.x 官方 BOM -->
       <dependency>
@@ -253,7 +278,6 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.23.1</version>
 			<exclusions>
 			</exclusions>
 		</dependency>
@@ -261,13 +285,11 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.23.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.23.1</version>
 		</dependency>
 		<!-- log4j依赖-->
 		<!-- https://mvnrepository.com/artifact/com.lmax/disruptor -->
@@ -439,11 +461,9 @@
 
 
 		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>33.2.1-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
@@ -549,7 +569,12 @@
 		<dependency>
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
-			<version>4.0.1</version>
+			<version>5.8.0</version>
+		</dependency>
+		<dependency>
+   			<groupId>org.apache.curator</groupId>
+    		<artifactId>curator-recipes</artifactId>
+   			<version>5.8.0</version>
 		</dependency>
 
 		<!-- <dependency> -->
@@ -573,7 +598,6 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.69.Final</version>
 		</dependency>
 
 
