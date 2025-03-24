@@ -200,7 +200,7 @@ public class GameEntityManagerExample {
         // 标签操作
         String testItemId = "item_zone1_1";
         System.out.println("Item labels before: " + fullManager.getLabels(testItemId));
-        fullManager.addLabel(testItemId, "rare");
+		fullManager.addLabelPath(testItemId, "rare");
         System.out.println("Item labels after adding 'rare': " + fullManager.getLabels(testItemId));
         
         // 获取标签统计

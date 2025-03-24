@@ -326,7 +326,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		listeners.remove(listener);
 	}
 
-	private void notifyListeners(Consumer<ManagerEventListener<T>> action) {
+	protected void notifyListeners(Consumer<ManagerEventListener<T>> action) {
 		if (!config.isEventNotificationEnabled() || listeners == null) {
 			return;
 		}
