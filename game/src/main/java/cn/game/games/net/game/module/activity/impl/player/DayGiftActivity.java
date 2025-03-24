@@ -52,6 +52,9 @@ public class DayGiftActivity extends PlayerActivityBase {
 				endDay = 0;
 				rewardMail();
 				dayGiftMap.clear();
+			}else {
+				// 自动购买所有礼包
+				buyAll();
 			}
 		} else {
 			rewardMail();
@@ -76,11 +79,21 @@ public class DayGiftActivity extends PlayerActivityBase {
 		if (endDay > 0) {
 			throw new LogicException(ErrorMsgEnum.repeat_request.ID);
 		}
+		rewardMail();
+
 		int day = DateUtil.getDay();
 		endDay = day + 10;
 
-
+		buyAll();
 		GameLogger.activity(player, id, 0);
+	}
+
+	private void buyAll() {
+		// TODO 一次性购买所有礼包
+		for (int i = 1; i < 10; i++) {
+			dayGiftMap.put(i, 1);
+		}
+
 	}
 
 	public void buy(int cid) {

@@ -463,6 +463,7 @@ public class Player {
 	 * @param payType  支付类型，购买的什么类型的东西
 	 * @param id   针对支付类型的id，例如购买月卡，id就是月卡id
 	 * @param cost   费用，第一个是支付类型，第二个是支付的id，第三个是支付的数量
+	 * @param otherId   其他id,例如活动id等
 	 * @return
 	 */
 	public Future<Boolean> pay(PayType payType, int id, int[] cost, int... otherId) {
