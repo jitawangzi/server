@@ -2,6 +2,7 @@ package cn.game.core.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,38 +14,121 @@ import java.util.function.Consumer;
  * 抽象管理器模板基类
  */
 public abstract class AbstractManagerTemplate<ID, T> {
+	// 管理器配置
+	protected final ManagerConfig config;
+
+	// 事件监听器列表
+	private final List<ManagerEventListener<T>> listeners;
+
+	/**
+	 * 创建管理器实例
+	 * @param config 管理器配置
+	 */
+	protected AbstractManagerTemplate(ManagerConfig config) {
+		this.config = config;
+		this.listeners = config.isEventNotificationEnabled() ? new ArrayList<>() : null;
+	}
+
+	/**
+	 * 使用默认最小配置创建管理器实例
+	 */
+	protected AbstractManagerTemplate() {
+		this(ManagerConfig.minimal());
+	}
+
 	// === 存储操作抽象方法 ===
 	protected abstract void doAdd(ID id, T obj, String... labels);
-
-	protected abstract void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels);
 
 	protected abstract T doGet(ID id);
 
 	protected abstract Collection<T> doGetByLabels(String... labels);
 
-	protected abstract Collection<T> doGetBatch(Collection<ID> ids);
-
-	protected abstract Collection<T> doGetPagedAndSorted(int page, int size, Comparator<T> comparator, String... labels);
+	protected abstract Collection<ID> doGetIdsByLabels(String... labels);
 
 	protected abstract Collection<T> doGetAll();
 
-	protected abstract Collection<T> doFindByPredicate(Predicate<T> predicate);
+	protected abstract Collection<ID> doGetIdsAll();
 
 	protected abstract boolean doRemove(ID id);
 
-	protected abstract boolean doRemoveBatch(Collection<ID> ids);
-
 	protected abstract void doClear();
 
-	protected abstract void doAddBatch(Map<ID, T> objects, String... labels);
+	// === 可选的存储操作抽象方法 ===
+	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels) {
+		throw new UnsupportedOperationException("Expiry feature not supported");
+	}
 
-	protected abstract void setMaxCapacity(int capacity);
+	protected Collection<T> doGetBatch(Collection<ID> ids) {
+		List<T> result = new ArrayList<>();
+		for (ID id : ids) {
+			T obj = doGet(id);
+			if (obj != null) {
+				result.add(obj);
+			}
+		}
+		return result;
+	}
 
-	protected abstract void setEvictionPolicy(EvictionPolicy policy);
+	protected Collection<T> doGetPagedAndSorted(int page, int size, Comparator<T> comparator, String... labels) {
+		// 首先获取满足标签条件的所有对象
+		Collection<T> allMatching = doGetByLabels(labels);
 
-	protected abstract Map<String, Integer> getLabelStatistics();
+		// 排序
+		List<T> sorted = new ArrayList<>(allMatching);
+		if (comparator != null) {
+			sorted.sort(comparator);
+		}
 
-	protected abstract int getTotalObjectCount();
+		// 分页
+		int fromIndex = page * size;
+		int toIndex = Math.min(fromIndex + size, sorted.size());
+
+		if (fromIndex >= sorted.size()) {
+			return Collections.emptyList();
+		}
+
+		return sorted.subList(fromIndex, toIndex);
+	}
+
+	protected Collection<T> doFindByPredicate(Predicate<T> predicate) {
+		List<T> result = new ArrayList<>();
+		for (T obj : doGetAll()) {
+			if (predicate.test(obj)) {
+				result.add(obj);
+			}
+		}
+		return result;
+	}
+
+	protected boolean doRemoveBatch(Collection<ID> ids) {
+		boolean allRemoved = true;
+		for (ID id : ids) {
+			allRemoved &= doRemove(id);
+		}
+		return allRemoved;
+	}
+
+	protected void doAddBatch(Map<ID, T> objects, String... labels) {
+		for (Map.Entry<ID, T> entry : objects.entrySet()) {
+			doAdd(entry.getKey(), entry.getValue(), labels);
+		}
+	}
+
+	protected void setMaxCapacity(int capacity) {
+		throw new UnsupportedOperationException("Capacity limit feature not supported");
+	}
+
+	protected void setEvictionPolicy(EvictionPolicy policy) {
+		throw new UnsupportedOperationException("Eviction policy feature not supported");
+	}
+
+	protected Map<String, Integer> getLabelStatistics() {
+		throw new UnsupportedOperationException("Label statistics feature not supported");
+	}
+
+	protected int getTotalObjectCount() {
+		throw new UnsupportedOperationException("Object counting feature not supported");
+	}
 
 	// === 基础操作模板方法 ===
 	public final void add(ID id, T obj, String... labels) {
@@ -58,6 +142,10 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	public final void addWithExpiry(ID id, T obj, long time, TimeUnit unit, String... labels) {
+		if (!config.isExpiryEnabled()) {
+			throw new UnsupportedOperationException("Expiry feature is not enabled");
+		}
+
 		if (obj == null || id == null) {
 			throw new IllegalArgumentException("Object or id cannot be null");
 		}
@@ -177,6 +265,10 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	public final void setCapacity(int capacity) {
+		if (!config.isCapacityLimitEnabled()) {
+			throw new UnsupportedOperationException("Capacity limit feature is not enabled");
+		}
+
 		if (capacity <= 0) {
 			throw new IllegalArgumentException("Capacity must be greater than zero");
 		}
@@ -184,6 +276,10 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	public final void setEvictionStrategy(EvictionPolicy policy) {
+		if (!config.isEvictionEnabled()) {
+			throw new UnsupportedOperationException("Eviction policy feature is not enabled");
+		}
+
 		if (policy == null) {
 			throw new IllegalArgumentException("Eviction policy cannot be null");
 		}
@@ -212,19 +308,29 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	// === 事件监听机制 ===
-	private final List<ManagerEventListener<T>> listeners = new ArrayList<>();
-
 	public void addListener(ManagerEventListener<T> listener) {
+		if (!config.isEventNotificationEnabled()) {
+			throw new UnsupportedOperationException("Event notification feature is not enabled");
+		}
+
 		if (listener != null) {
 			listeners.add(listener);
 		}
 	}
 
 	public void removeListener(ManagerEventListener<T> listener) {
+		if (!config.isEventNotificationEnabled()) {
+			throw new UnsupportedOperationException("Event notification feature is not enabled");
+		}
+
 		listeners.remove(listener);
 	}
 
 	private void notifyListeners(Consumer<ManagerEventListener<T>> action) {
+		if (!config.isEventNotificationEnabled() || listeners == null) {
+			return;
+		}
+
 		for (ManagerEventListener<T> listener : listeners) {
 			try {
 				action.accept(listener);
