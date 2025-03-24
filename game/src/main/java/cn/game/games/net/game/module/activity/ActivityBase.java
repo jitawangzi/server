@@ -91,6 +91,8 @@ public abstract class ActivityBase implements EventHandler {
 	 * @return
 	 */
 	public abstract List<RewardInfo> receive(int id);
+
+	@Deprecated
 	public   Future<List<RewardInfo>> asyncReceive(int id){
         return Future.succeededFuture(receive(id));
 	}
@@ -147,6 +149,11 @@ public abstract class ActivityBase implements EventHandler {
 		unregisterEvent();
 	};
 
+	/** 
+	 * 
+	 * 跨天
+	 * @return true 跨天活动数据有修改 ，不过现在没什么用了
+	 */
 	public boolean newDay() {
 		return false;
 	};

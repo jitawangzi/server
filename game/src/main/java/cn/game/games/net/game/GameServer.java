@@ -114,10 +114,11 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, serverType);
+		LoggerManager.init();
+
 		ServerContext.getInstance().setServerId(serverId);
 		ServerContext.getInstance().setServerType(serverType);
 
-		LoggerManager.init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());

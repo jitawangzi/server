@@ -218,3 +218,7 @@
 217,ZongMenRankWorshipRequest_40000082,0x40000082,,,,,膜拜宗门排行
 218,ZongMenUpdateMemberFightPowerRequest_40000051,0x40000051,,,,,更新玩家战斗力
 219,ZongMenQuickJoinRequest_40000065,0x40000065,,,,,快速一键加入宗门
+220,ActivityDayGiftBuyRequest_11000102,0x11000102,,,,,购买每日特惠礼包
+221,ActivityDayGiftPackageBuyRequest_11000106,0x11000106,,,,,打包购买每日特惠礼包
+222,ActivityDayGiftRequest_11000100,0x11000100,,,,,查看每日特惠礼包数据
+223,ActivityDayGiftRewardRequest_11000104,0x11000104,,,,,领取每日特惠礼包奖励

@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.impl.player.*;
@@ -46,6 +45,15 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_110000
 import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawResponse_11000094;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyResponse_11000096;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRequest_11000100;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftResponse_11000101;
+import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftBuyRequest_11000102;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftBuyResponse_11000103;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRewardRequest_11000104;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRewardResponse_11000105;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftPackageBuyRequest_11000106;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftPackageBuyResponse_11000107;
 
 /**
  * 活动处理器
@@ -76,8 +84,11 @@ public class ActivityHandler extends BaseHandler {
         putInvoker(PbProtocol.ActivityWestLuckyInfoRequest_11000091, this::westLuckyInfo);
         putInvoker(PbProtocol.ActivityWestLuckyDrawRequest_11000093, this::westLuckyDraw);
         putInvoker(PbProtocol.ActivityWestLuckyBuyRequest_11000095, this::westLuckyBuy);
+        putInvoker(PbProtocol.ActivityDayGiftRequest_11000100, this::dayGift);
+        putInvoker(PbProtocol.ActivityDayGiftBuyRequest_11000102, this::dayGiftBuy);
+        putInvoker(PbProtocol.ActivityDayGiftRewardRequest_11000104, this::dayGiftReward);
+        putInvoker(PbProtocol.ActivityDayGiftPackageBuyRequest_11000106, this::dayGiftPackageBuy);
     }
-
 
     private void empty(NetClient client, Object message) {
         ActivityFirstChargeBuyRequest_11000010 req = (ActivityFirstChargeBuyRequest_11000010) message;
@@ -373,7 +384,7 @@ public class ActivityHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
         ActivityMsg.ActivityWestLuckyInfoResponse_11000092.Builder res = ActivityMsg.ActivityWestLuckyInfoResponse_11000092.newBuilder();
-        if (activityWestLucky == null){
+        if (activityWestLucky == null) {
             client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
@@ -388,29 +399,29 @@ public class ActivityHandler extends BaseHandler {
         resp.setActivityId(activityId);
         resp.setDrawNum(drawNum);
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (drawNum != 1 && drawNum != 10){
+        if (drawNum != 1 && drawNum != 10) {
             client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
         ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
-        if (activityWestLucky == null){
+        if (activityWestLucky == null) {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        if (!PlayerHelper.isEnough(player, activityWestLucky.getDrawItemId(), drawNum)){
+        if (!PlayerHelper.isEnough(player, activityWestLucky.getDrawItemId(), drawNum)) {
             client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
             return;
         }
-        PlayerHelper.delResources(player, activityWestLucky.getDrawItemId(), drawNum,OpType.ZhuanPanDraw);
-        GameLogger.activity(player,activityId,0);
-        for (int i = 0; i < drawNum; i++){
+        PlayerHelper.delResources(player, activityWestLucky.getDrawItemId(), drawNum, OpType.ZhuanPanDraw);
+        GameLogger.activity(player, activityId, 0);
+        for (int i = 0; i < drawNum; i++) {
             activityWestLucky.addDrawNum();
-            List<Integer> ids = activityWestLucky.draw(false,new ArrayList<>());
-            ids.forEach(id ->{
+            List<Integer> ids = activityWestLucky.draw(false, new ArrayList<>());
+            ids.forEach(id -> {
                 ActivityWestLuckyTurntableConfig config = ActivityWestLuckyTurntableManager.instance().get(id);
-                if (config.CircleType == 1 || config.CircleType == 2){
-                   resp.addAllDrops(PlayerHelper.addResources(player, config.Reward, OpType.ZhuanPanDraw));
-                    if (config.AdditionalRewards.length > 0){
+                if (config.CircleType == 1 || config.CircleType == 2) {
+                    resp.addAllDrops(PlayerHelper.addResources(player, config.Reward, OpType.ZhuanPanDraw));
+                    if (config.AdditionalRewards.length > 0) {
                         resp.addAllDrops(PlayerHelper.addResources(player, config.AdditionalRewards, OpType.ZhuanPanDraw));
                     }
                 }
@@ -419,10 +430,7 @@ public class ActivityHandler extends BaseHandler {
             resp.setOutDrawNum(activityWestLucky.getTotalNum());
         }
         client.sendProtocol(resp.build());
-
     }
-
-
 
     private void westLuckyBuy(NetClient client, Object message) {
         ActivityWestLuckyBuyRequest_11000095 req = (ActivityWestLuckyBuyRequest_11000095) message;
@@ -433,37 +441,68 @@ public class ActivityHandler extends BaseHandler {
         resp.setActivityId(activityId);
         resp.setId(id);
         ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
-        if (activityWestLucky == null){
+        if (activityWestLucky == null) {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
         ActivityWestLuckyPackConfig config = ActivityWestLuckyPackManager.instance().getNullable(id);
-        if (config == null){
+        if (config == null) {
             client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
         int buyNum = activityWestLucky.getBuyIdMap().getOrDefault(id, 0);
-        if (buyNum >= config.Quota){
+        if (buyNum >= config.Quota) {
             client.sendProtocol(resp, ErrorMsgEnum.buy_over_limit.getId());
             return;
         }
-
-        player.pay(PayType.FirstCharge,id, config.PurchaseParameter, id).onSuccess(
-            t->{
-                if (t){
-                    GameLogger.activity(player,activityId,id);
-                    resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
-                    activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
-                    client.sendProtocol(resp.build());
-                } else {
-                    client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
-                }
+        player.pay(PayType.FirstCharge, id, config.PurchaseParameter, id).onSuccess(t -> {
+            if (t) {
+                GameLogger.activity(player, activityId, id);
+                resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
+                activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
+                client.sendProtocol(resp.build());
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
             }
-        ).onFailure(
-                err->{
-                    err.printStackTrace();
-                    client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-                }
-        );
+        }).onFailure(err -> {
+            err.printStackTrace();
+            client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+        });
+    }
+
+    private void dayGift(NetClient client, Object message) {
+        ActivityDayGiftRequest_11000100 req = (ActivityDayGiftRequest_11000100) message;
+        int id = req.getId();
+        ActivityDayGiftResponse_11000101 defaultInstance = ActivityDayGiftResponse_11000101.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ActivityDayGiftResponse_11000101.Builder resp = ActivityDayGiftResponse_11000101.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void dayGiftBuy(NetClient client, Object message) {
+        ActivityDayGiftBuyRequest_11000102 req = (ActivityDayGiftBuyRequest_11000102) message;
+        int id = req.getId();
+        int giftId = req.getGiftId();
+        ActivityDayGiftBuyResponse_11000103 defaultInstance = ActivityDayGiftBuyResponse_11000103.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(defaultInstance);
+    }
+
+    private void dayGiftReward(NetClient client, Object message) {
+        ActivityDayGiftRewardRequest_11000104 req = (ActivityDayGiftRewardRequest_11000104) message;
+        int id = req.getId();
+        int giftId = req.getGiftId();
+        ActivityDayGiftRewardResponse_11000105 defaultInstance = ActivityDayGiftRewardResponse_11000105.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ActivityDayGiftRewardResponse_11000105.Builder resp = ActivityDayGiftRewardResponse_11000105.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void dayGiftPackageBuy(NetClient client, Object message) {
+        ActivityDayGiftPackageBuyRequest_11000106 req = (ActivityDayGiftPackageBuyRequest_11000106) message;
+        int id = req.getId();
+        ActivityDayGiftPackageBuyResponse_11000107 defaultInstance = ActivityDayGiftPackageBuyResponse_11000107.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(defaultInstance);
     }
 }

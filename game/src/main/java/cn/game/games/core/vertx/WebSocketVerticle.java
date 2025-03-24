@@ -42,7 +42,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 		log.debug("Starting WebSocketVerticle on thread: " + Thread.currentThread().getName());
 
 		Processor processor = (Processor) SpringContextLoader.getContext().getBean("processor");
-		HttpServerOptions serverOptions = new HttpServerOptions().setReusePort(true);
+		HttpServerOptions serverOptions = new HttpServerOptions().setReusePort(true).setRegisterWebSocketWriteHandlers(true);
 		vertx.createHttpServer(serverOptions).webSocketHandler(ws -> {
 //			System.out.println("client connected: " + ws.textHandlerID());
 //			System.out.println("client connected: " + ws.binaryHandlerID());
@@ -54,12 +54,13 @@ public class WebSocketVerticle extends AbstractVerticle {
 					int length = byteBuf.readInt();
 					int seq = byteBuf.readInt();
 					int msgID = byteBuf.readInt();
+					String connectionId = ws.binaryHandlerID();
 
 					byte[] data = new byte[byteBuf.readableBytes()];
 					byteBuf.readBytes(data);
 					Message message = PbProtocol.getInstance().parseFrom(msgID, data);
 
-					GameClient client = GameClientManager.getInstance().getGameClientByConnection(ws.binaryHandlerID());
+					GameClient client = GameClientManager.getInstance().getGameClientByConnection(connectionId);
 					if (client == null) {
 						client = new GameClient(ws);
 						if (msgID == PbProtocol.PlayerLoginRequest_01000001) {
@@ -91,7 +92,7 @@ public class WebSocketVerticle extends AbstractVerticle {
 					client.setLastRecvPacketTime(System.currentTimeMillis());
 					processor.process(client, protocol);
 				} catch (Exception e) {
-					log.warn("{} message parse failed ", ws.binaryHandlerID());
+					log.warn(ws.binaryHandlerID() + " message parse failed ", e);
 //					ws.close();
 				}
 //				handlerState.addTotalPacketReceived();

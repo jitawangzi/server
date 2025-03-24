@@ -102,6 +102,9 @@ public class GameClientManager {
 	}
 	public GameClient removeGameClientConnection(String id) {
 		log.info("removeGameClientConnection id: " + id);
+		if (id == null) {
+			return null;
+		}
 		return connections.remove(id);
 	}
 
