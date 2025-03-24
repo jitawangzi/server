@@ -224,7 +224,7 @@ public class RankService {
 	 */
 	public CompletionStage<Integer> getRankSizeAsync(String serverId, RankType type){
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		return rank.sizeAsync().toCompletableFuture();
+		return rank.sizeAsync();
 	}
 
 	private RScoredSortedSet<Long> getRankSet(String serverId, RankType type) {

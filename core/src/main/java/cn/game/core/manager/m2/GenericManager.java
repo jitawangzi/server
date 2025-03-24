@@ -1,4 +1,4 @@
-package cn.game.core.manager;
+package cn.game.core.manager.m2;
 
 import java.util.Collection;
 
