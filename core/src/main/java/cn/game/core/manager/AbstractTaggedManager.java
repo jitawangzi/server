@@ -1,10 +1,13 @@
 package cn.game.core.manager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +36,68 @@ public abstract class AbstractTaggedManager<ID, T> extends AbstractManagerTempla
 	 */
 	protected AbstractTaggedManager() {
 		super(ManagerConfig.minimal());
+	}
+
+	/**
+	 * 添加带标签的对象
+	 */
+	protected abstract void doAdd(ID id, T obj, String... tags);
+
+	/**
+	 * 添加带标签和过期时间的对象
+	 */
+	protected abstract void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... tags);
+
+	/**
+	 * 批量添加带标签的对象
+	 */
+	protected abstract void doAddBatch(Map<ID, T> objects, String... tags);
+
+	/**
+	 * 根据标签获取对象
+	 */
+	protected abstract Collection<T> doGetByLabels(String... tags);
+
+	/**
+	 * 根据标签获取ID列表
+	 */
+	protected abstract Collection<ID> doGetIdsByLabels(String... tags);
+
+	/**
+	 * 根据标签分页排序获取对象
+	 */
+	protected Collection<T> doGetPagedAndSorted(int page, int size, Comparator<T> comparator, String... tags) {
+		// 首先获取满足标签条件的所有对象
+		Collection<T> allMatching = doGetByLabels(tags);
+
+		// 排序
+		List<T> sorted = new ArrayList<>(allMatching);
+		if (comparator != null) {
+			sorted.sort(comparator);
+		}
+
+		// 分页
+		int fromIndex = page * size;
+		int toIndex = Math.min(fromIndex + size, sorted.size());
+
+		if (fromIndex >= sorted.size()) {
+			return Collections.emptyList();
+		}
+
+		return sorted.subList(fromIndex, toIndex);
+	}
+
+	/**
+	 * 获取标签统计
+	 */
+	protected Map<String, Integer> getLabelStatistics() {
+		Map<String, Integer> stats = new HashMap<>();
+
+		for (Map.Entry<String, Set<T>> entry : tagToObjects.entrySet()) {
+			stats.put(entry.getKey(), entry.getValue().size());
+		}
+
+		return stats;
 	}
 
 	@Override
@@ -109,41 +174,9 @@ public abstract class AbstractTaggedManager<ID, T> extends AbstractManagerTempla
 		return new HashSet<>(tagToObjects.keySet());
 	}
 
-	/**
-	 * 更新对象的标签
-	 */
-	protected void updateObjectTags(ID id, T obj, String... tags) {
-		// 清理旧标签
-		Set<String> oldTags = idToTags.get(id);
-		if (oldTags != null) {
-			for (String tag : oldTags) {
-				Set<T> taggedObjects = tagToObjects.get(tag);
-				if (taggedObjects != null) {
-					taggedObjects.remove(obj);
-					if (taggedObjects.isEmpty()) {
-						tagToObjects.remove(tag);
-					}
-				}
-			}
-		}
-
-		// 设置新标签
-		if (tags != null && tags.length > 0) {
-			Set<String> tagSet = new HashSet<>(Arrays.asList(tags));
-			idToTags.put(id, tagSet);
-
-			// 更新标签到对象的映射
-			for (String tag : tags) {
-				tagToObjects.computeIfAbsent(tag, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(obj);
-			}
-		} else {
-			idToTags.remove(id);
-		}
-	}
-
 	@Override
 	public void setTags(ID id, String... newTags) {
-		T obj = doGet(id);
+		T obj = idToObject.get(id);
 		if (obj == null) {
 			return;
 		}
@@ -165,29 +198,29 @@ public abstract class AbstractTaggedManager<ID, T> extends AbstractManagerTempla
 
 	@Override
 	public void addTag(ID id, String tag) {
-		if (tag == null) {
+		if (tag == null || tag.isEmpty()) {
 			return;
 		}
 
-		T obj = doGet(id);
+		T obj = idToObject.get(id);
 		if (obj == null) {
 			return;
 		}
 
 		Set<String> tags = idToTags.computeIfAbsent(id, k -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
-		tags.add(tag);
-
-		// 更新标签到对象的映射
-		tagToObjects.computeIfAbsent(tag, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(obj);
+		if (tags.add(tag)) {
+			// 更新标签到对象的映射
+			tagToObjects.computeIfAbsent(tag, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(obj);
+		}
 	}
 
 	@Override
 	public boolean removeTag(ID id, String tag) {
-		if (tag == null) {
+		if (tag == null || tag.isEmpty()) {
 			return false;
 		}
 
-		T obj = doGet(id);
+		T obj = idToObject.get(id);
 		if (obj == null) {
 			return false;
 		}
@@ -215,5 +248,80 @@ public abstract class AbstractTaggedManager<ID, T> extends AbstractManagerTempla
 		}
 
 		return removed;
+	}
+
+	/**
+	 * 默认实现，可由子类重写
+	 */
+	@Override
+	protected boolean doRemove(ID id) {
+		T removed = idToObject.get(id);
+		if (removed == null) {
+			return false;
+		}
+
+		// 清理标签映射
+		Set<String> tags = idToTags.remove(id);
+		if (tags != null) {
+			for (String tag : tags) {
+				Set<T> objects = tagToObjects.get(tag);
+				if (objects != null) {
+					objects.remove(removed);
+					if (objects.isEmpty()) {
+						tagToObjects.remove(tag);
+					}
+				}
+			}
+		}
+
+		// 调用父类移除存储
+		return super.doRemove(id);
+	}
+
+	/**
+	 * 默认实现，可由子类重写
+	 */
+	@Override
+	protected void doClear() {
+		// 清理标签映射
+		idToTags.clear();
+		tagToObjects.clear();
+
+		// 调用父类清理存储
+		super.doClear();
+	}
+
+	/**
+	 * 更新对象的标签
+	 */
+	protected void updateObjectTags(ID id, T obj, String... tags) {
+		// 清理旧标签
+		Set<String> oldTags = idToTags.get(id);
+		if (oldTags != null) {
+			for (String tag : oldTags) {
+				Set<T> taggedObjects = tagToObjects.get(tag);
+				if (taggedObjects != null) {
+					taggedObjects.remove(obj);
+					if (taggedObjects.isEmpty()) {
+						tagToObjects.remove(tag);
+					}
+				}
+			}
+		}
+
+		// 设置新标签
+		if (tags != null && tags.length > 0) {
+			Set<String> tagSet = new HashSet<>(Arrays.asList(tags));
+			idToTags.put(id, tagSet);
+
+			// 更新标签到对象的映射
+			for (String tag : tags) {
+				if (tag != null && !tag.isEmpty()) {
+					tagToObjects.computeIfAbsent(tag, k -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(obj);
+				}
+			}
+		} else {
+			idToTags.remove(id);
+		}
 	}
 }

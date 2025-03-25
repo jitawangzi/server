@@ -2,11 +2,10 @@ package cn.game.core.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -21,6 +20,9 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 	// 事件监听器列表
 	private final List<ManagerEventListener<T>> listeners;
 
+	// 主ID映射，用于直接ID访问 - 所有子类共享此存储结构
+	protected final ConcurrentHashMap<ID, T> idToObject;
+
 	/**
 	 * 创建管理器实例
 	 * @param config 管理器配置
@@ -28,6 +30,7 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 	protected AbstractManagerTemplate(ManagerConfig config) {
 		this.config = config;
 		this.listeners = config.isEventNotificationEnabled() ? new ArrayList<>() : null;
+		this.idToObject = new ConcurrentHashMap<>();
 	}
 
 	/**
@@ -37,31 +40,52 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 		this(ManagerConfig.minimal());
 	}
 
-	// === 存储操作抽象方法 ===
-	protected abstract void doAdd(ID id, T obj);
+	// === 存储操作方法 ===
 
-	protected abstract void doAdd(ID id, T obj, String... labels);
-
-	protected abstract T doGet(ID id);
-
-	protected abstract Collection<T> doGetByLabels(String... labels);
-
-	protected abstract Collection<ID> doGetIdsByLabels(String... labels);
-
-	protected abstract Collection<T> doGetAll();
-
-	protected abstract Collection<ID> doGetIdsAll();
-
-	protected abstract boolean doRemove(ID id);
-
-	protected abstract void doClear();
-
-	// === 可选的存储操作抽象方法 ===
-	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs) {
-		throw new UnsupportedOperationException("Expiry feature not supported");
+	/**
+	 * 基础添加对象实现
+	 */
+	protected void doAdd(ID id, T obj) {
+		idToObject.put(id, obj);
 	}
 
-	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels) {
+	/**
+	 * 基础获取对象实现
+	 */
+	protected T doGet(ID id) {
+		return idToObject.get(id);
+	}
+
+	/**
+	 * 获取所有对象的基础实现
+	 */
+	protected Collection<T> doGetAll() {
+		return new ArrayList<>(idToObject.values());
+	}
+
+	/**
+	 * 获取所有ID的基础实现
+	 */
+	protected Collection<ID> doGetIdsAll() {
+		return new ArrayList<>(idToObject.keySet());
+	}
+
+	/**
+	 * 移除对象的基础实现
+	 */
+	protected boolean doRemove(ID id) {
+		return idToObject.remove(id) != null;
+	}
+
+	/**
+	 * 清空所有对象的基础实现
+	 */
+	protected void doClear() {
+		idToObject.clear();
+	}
+
+	// === 可选的存储操作方法 ===
+	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs) {
 		throw new UnsupportedOperationException("Expiry feature not supported");
 	}
 
@@ -74,27 +98,6 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 			}
 		}
 		return result;
-	}
-
-	protected Collection<T> doGetPagedAndSorted(int page, int size, Comparator<T> comparator, String... labels) {
-		// 首先获取满足标签条件的所有对象
-		Collection<T> allMatching = doGetByLabels(labels);
-
-		// 排序
-		List<T> sorted = new ArrayList<>(allMatching);
-		if (comparator != null) {
-			sorted.sort(comparator);
-		}
-
-		// 分页
-		int fromIndex = page * size;
-		int toIndex = Math.min(fromIndex + size, sorted.size());
-
-		if (fromIndex >= sorted.size()) {
-			return Collections.emptyList();
-		}
-
-		return sorted.subList(fromIndex, toIndex);
 	}
 
 	protected Collection<T> doFindByPredicate(Predicate<T> predicate) {
@@ -116,15 +119,7 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 	}
 
 	protected void doAddBatch(Map<ID, T> objects) {
-		for (Map.Entry<ID, T> entry : objects.entrySet()) {
-			doAdd(entry.getKey(), entry.getValue());
-		}
-	}
-
-	protected void doAddBatch(Map<ID, T> objects, String... labels) {
-		for (Map.Entry<ID, T> entry : objects.entrySet()) {
-			doAdd(entry.getKey(), entry.getValue(), labels);
-		}
+		idToObject.putAll(objects);
 	}
 
 	protected void setMaxCapacity(int capacity) {
@@ -135,12 +130,8 @@ public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 		throw new UnsupportedOperationException("Eviction policy feature not supported");
 	}
 
-	protected Map<String, Integer> getLabelStatistics() {
-		throw new UnsupportedOperationException("Label statistics feature not supported");
-	}
-
 	protected int getTotalObjectCount() {
-		throw new UnsupportedOperationException("Object counting feature not supported");
+		return idToObject.size();
 	}
 
 	// === 基础操作模板方法 ===

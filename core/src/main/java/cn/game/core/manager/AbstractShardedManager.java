@@ -25,9 +25,6 @@ import java.util.stream.Collectors;
  * 支持按ID检索和按层级标签检索
  */
 public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManager<ID, T> implements HierarchicalManager<ID, T> {
-	// 主ID映射，用于直接ID访问
-	private final ConcurrentHashMap<ID, T> idToObject = new ConcurrentHashMap<>();
-
 	// ID到标签路径的映射
 	private final ConcurrentHashMap<ID, List<String[]>> idToLabelPaths = new ConcurrentHashMap<>();
 
@@ -98,14 +95,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 	}
 
 	/**
-	 * 基础添加对象实现
-	 */
-	@Override
-	protected void doAdd(ID id, T obj) {
-		doAdd(id, obj, new String[0]);
-	}
-
-	/**
 	 * 添加对象到存储
 	 * 可以同时添加到多个层级路径
 	 * 
@@ -125,6 +114,35 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		}
 
 		doAddWithPaths(id, obj, labelPaths);
+	}
+
+	@Override
+	protected void doAddBatch(Map<ID, T> objects, String... tags) {
+		for (Map.Entry<ID, T> entry : objects.entrySet()) {
+			doAdd(entry.getKey(), entry.getValue(), tags);
+		}
+	}
+
+	/**
+	 * 实现抽象标签管理器的标签查询方法
+	 */
+	@Override
+	protected Collection<T> doGetByLabels(String... tags) {
+		if (tags == null || tags.length == 0) {
+			return doGetAll();
+		}
+
+		// 将标签列表作为一个单一路径
+		return getByPath(tags);
+	}
+
+	/**
+	 * 实现抽象标签管理器的ID查询方法
+	 */
+	@Override
+	protected Collection<ID> doGetIdsByLabels(String... tags) {
+		Collection<T> objects = doGetByLabels(tags);
+		return objects.stream().map(obj -> getIdByObject(obj)).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 	/**
@@ -157,8 +175,8 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 
 		long currentTime = System.currentTimeMillis();
 
-		// 1. 添加到主存储
-		idToObject.put(id, obj);
+		// 1. 添加到主存储 - 使用父类中的idToObject
+		super.idToObject.put(id, obj);
 
 		// 2. 根据配置更新可选存储
 		if (lastAccessMapping != null) {
@@ -190,7 +208,9 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		for (String[] path : labelPaths) {
 			if (path != null) {
 				for (String segment : path) {
-					allTags.add(segment);
+					if (segment != null && !segment.isEmpty()) {
+						allTags.add(segment);
+					}
 				}
 			}
 		}
@@ -265,11 +285,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 	}
 
 	@Override
-	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs) {
-		doAddWithExpiry(id, obj, expiryTimeMs, new String[0]);
-	}
-
-	@Override
 	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels) {
 		if (!config.isExpiryEnabled()) {
 			throw new UnsupportedOperationException("Expiry feature is not enabled");
@@ -310,7 +325,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 
 	@Override
 	protected T doGet(ID id) {
-		T obj = idToObject.get(id);
+		T obj = super.idToObject.get(id);
 		if (obj != null) {
 			// 如果启用了统计功能，更新访问统计
 			updateAccessStats(id);
@@ -345,16 +360,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 
 		Long expiryTime = expiryMapping.get(id);
 		return expiryTime != null && System.currentTimeMillis() > expiryTime;
-	}
-
-	@Override
-	protected Collection<T> doGetByLabels(String... labels) {
-		if (labels == null || labels.length == 0) {
-			return doGetAll();
-		}
-
-		// 将标签列表作为一个单一路径
-		return getByPath(labels);
 	}
 
 	/**
@@ -436,17 +441,11 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		}
 	}
 
-	@Override
-	protected Collection<ID> doGetIdsByLabels(String... labels) {
-		Collection<T> objects = doGetByLabels(labels);
-		return objects.stream().map(obj -> getIdByObject(obj)).filter(Objects::nonNull).collect(Collectors.toList());
-	}
-
 	/**
 	 * 根据对象查找ID
 	 */
 	private ID getIdByObject(T obj) {
-		for (Map.Entry<ID, T> entry : idToObject.entrySet()) {
+		for (Map.Entry<ID, T> entry : super.idToObject.entrySet()) {
 			if (entry.getValue().equals(obj)) {
 				return entry.getKey();
 			}
@@ -460,7 +459,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		if (config.isExpiryEnabled()) {
 			cleanupExpiredEntries();
 		}
-		return new ArrayList<>(idToObject.values());
+		return new ArrayList<>(super.idToObject.values());
 	}
 
 	@Override
@@ -469,12 +468,12 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		if (config.isExpiryEnabled()) {
 			cleanupExpiredEntries();
 		}
-		return new ArrayList<>(idToObject.keySet());
+		return new ArrayList<>(super.idToObject.keySet());
 	}
 
 	@Override
 	protected Collection<T> doFindByPredicate(Predicate<T> predicate) {
-		return idToObject.entrySet()
+		return super.idToObject.entrySet()
 				.stream()
 				.peek(entry -> updateAccessStats(entry.getKey()))
 				.map(Map.Entry::getValue)
@@ -484,7 +483,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 
 	@Override
 	protected boolean doRemove(ID id) {
-		T removed = idToObject.remove(id);
+		T removed = super.idToObject.get(id);
 		if (removed == null) {
 			return false;
 		}
@@ -506,13 +505,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 			insertionTimeMapping.remove(id);
 		}
 
-		// 清理标签映射
-		super.idToTags.remove(id);
-		for (Set<T> objects : super.tagToObjects.values()) {
-			objects.remove(removed);
-		}
-		super.tagToObjects.values().removeIf(Set::isEmpty);
-
 		// 从层级存储中移除
 		List<String[]> paths = idToLabelPaths.remove(id);
 		if (paths != null) {
@@ -524,7 +516,8 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 			hierarchyStorage.remove(id.toString());
 		}
 
-		return true;
+		// 调用父类移除方法处理标签和存储
+		return super.doRemove(id);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -570,13 +563,9 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 
 	@Override
 	protected void doClear() {
+		// 清理层级存储和路径映射
 		hierarchyStorage.clear();
-		idToObject.clear();
 		idToLabelPaths.clear();
-
-		// 清理标签映射
-		super.idToTags.clear();
-		super.tagToObjects.clear();
 
 		// 清理可选映射
 		if (config.isExpiryEnabled() && expiryMapping != null) {
@@ -594,6 +583,9 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		if (insertionTimeMapping != null) {
 			insertionTimeMapping.clear();
 		}
+
+		// 调用父类清理方法处理标签和存储
+		super.doClear();
 	}
 
 	@Override
@@ -631,11 +623,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		return stats;
 	}
 
-	@Override
-	protected int getTotalObjectCount() {
-		return idToObject.size();
-	}
-
 	/**
 	 * 强制执行容量限制
 	 */
@@ -644,7 +631,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 			return;
 		}
 
-		while (idToObject.size() >= maxCapacity && !idToObject.isEmpty()) {
+		while (super.idToObject.size() >= maxCapacity && !super.idToObject.isEmpty()) {
 			ID idToEvict = selectIdForEviction();
 			if (idToEvict != null) {
 				doRemove(idToEvict);
@@ -658,7 +645,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 	 * 根据淘汰策略选择要淘汰的ID
 	 */
 	private ID selectIdForEviction() {
-		if (idToObject.isEmpty() || !config.isEvictionEnabled()) {
+		if (super.idToObject.isEmpty() || !config.isEvictionEnabled()) {
 			return null;
 		}
 
@@ -686,7 +673,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 			break;
 
 		case RANDOM:
-			List<ID> keys = new ArrayList<>(idToObject.keySet());
+			List<ID> keys = new ArrayList<>(super.idToObject.keySet());
 			if (!keys.isEmpty()) {
 				return keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
 			}
@@ -694,7 +681,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 		}
 
 		// 如果无法应用策略，返回第一个元素
-		return idToObject.isEmpty() ? null : idToObject.keySet().iterator().next();
+		return super.idToObject.isEmpty() ? null : super.idToObject.keySet().iterator().next();
 	}
 
 	/**
@@ -727,7 +714,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 	 */
 	@Override
 	public void setLabelPaths(ID id, String[]... labelPaths) {
-		T obj = idToObject.get(id);
+		T obj = super.idToObject.get(id);
 		if (obj == null) {
 			return;
 		}
@@ -768,7 +755,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 	 */
 	@Override
 	public void addLabelPath(ID id, String... labelPath) {
-		T obj = idToObject.get(id);
+		T obj = super.idToObject.get(id);
 		if (obj == null || labelPath == null || labelPath.length == 0) {
 			return;
 		}
@@ -821,29 +808,44 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManage
 				idToLabelPaths.remove(id);
 
 				// 如果对象不在任何路径下，重新添加到根节点
-				T obj = idToObject.get(id);
+				T obj = super.idToObject.get(id);
 				if (obj != null) {
 					hierarchyStorage.put(id.toString(), obj);
 				}
 			}
-        }
+
+			// 更新标签
+			updateTagsFromPaths(id);
+		}
 
 		return removed;
 	}
 
-	@Override
-	public boolean hasTag(ID id, String tag) {
-		// 这个方法在父类AbstractTaggedManager中已经实现
-		return super.hasTag(id, tag);
-	}
-
 	/**
-	 * 获取所有标签
+	 * 根据路径更新对象的标签
 	 */
-	@Override
-	public Set<String> getAllTags() {
-		// 使用父类中的getAllTags实现
-		return super.getAllTags();
+	private void updateTagsFromPaths(ID id) {
+		T obj = super.idToObject.get(id);
+		if (obj == null) {
+			return;
+		}
+
+		List<String[]> paths = idToLabelPaths.get(id);
+		Set<String> allTags = new HashSet<>();
+
+		if (paths != null) {
+			for (String[] path : paths) {
+				if (path != null) {
+					for (String segment : path) {
+						if (segment != null && !segment.isEmpty()) {
+							allTags.add(segment);
+						}
+					}
+				}
+			}
+        }
+
+		updateObjectTags(id, obj, allTags.toArray(new String[0]));
 	}
 
 	/**

@@ -84,16 +84,6 @@ public class GameEntityManagerExample {
 		}
 
 		@Override
-		protected Collection<GameEntity> doGetByLabels(String... labels) {
-			throw new UnsupportedOperationException("Standard Manager does not support labels");
-		}
-
-		@Override
-		protected Collection<String> doGetIdsByLabels(String... labels) {
-			throw new UnsupportedOperationException("Standard Manager does not support labels");
-		}
-
-		@Override
 		protected Collection<GameEntity> doGetAll() {
 			return storage.values();
 		}
@@ -118,11 +108,6 @@ public class GameEntityManagerExample {
 			return storage.size();
 		}
 
-		@Override
-		protected void doAdd(String id, GameEntity obj, String... labels) {
-			// TODO Auto-generated method stub
-
-		}
 	}
 
 	// 标签管理器示例 - 实现TaggedManager接口
@@ -191,6 +176,18 @@ public class GameEntityManagerExample {
 		protected Collection<String> doGetIdsByLabels(String... labels) {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		protected void doAddWithExpiry(String id, GameEntity obj, long expiryTimeMs, String... tags) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		protected void doAddBatch(Map<String, GameEntity> objects, String... tags) {
+			// TODO Auto-generated method stub
+
 		}
     }
     
