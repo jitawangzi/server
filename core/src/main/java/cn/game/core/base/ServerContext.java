@@ -91,8 +91,6 @@ public class ServerContext {
 	 * @throws Exception
 	 */
 	public void init() throws Exception {
-		setRunMode();
-		checkServerId(serverId);
 		initHotUpdate();
 		startLeaderTask();
 		waitOtherNodeStartup();
@@ -105,16 +103,22 @@ public class ServerContext {
 	 * @throws Exception
 	 */
 	public void init(String serverId, ServerType serverType) throws Exception {
+		initBase(serverId, serverType);
+		init();
+	}
+
+	public void initBase(String serverId, ServerType serverType) throws Exception {
 		setServerId(serverId);
 		setServerType(serverType);
-		init();
+		setRunMode();
+		checkServerId(serverId);
 	}
 
 	public RunMode getRunMode() {
 		return runMode;
 	}
 
-	private void setRunMode() {
+	public void setRunMode() {
 		String mode = System.getProperty(SERVER_RUN_MODE);
 		if (mode == null) {
 			mode = System.getenv(SERVER_RUN_MODE);
@@ -289,34 +293,5 @@ public class ServerContext {
 	 */
 	public boolean isLeader() {
 		return isLeader;
-	}
-
-	/** 
-	 * 解析服务器唯一id
-	 * @param args 服务器启动参数
-	 * @param serverType 服务器类型
-	 * @return
-	 */
-	@Deprecated
-	public String parseServerId(String[] args, ServerType serverType) {
-		String serverId = null;
-		String serverIdKey = serverType.getServerIdKey();
-		if (args.length == 0) {
-			serverId = System.getProperty(serverIdKey);
-			if (serverId == null) {
-				serverId = System.getenv(serverIdKey);
-			}
-		} else {
-			serverId = args[0];
-		}
-		if (serverId == null) {
-			throw new IllegalArgumentException("没有设置 serverId");
-		}
-		System.setProperty(serverIdKey, serverId);
-
-		this.serverId = serverId;
-		this.serverType = serverType;
-
-		return serverId;
 	}
 }

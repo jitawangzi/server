@@ -116,23 +116,27 @@ public class GameServer implements GameServerMBean {
 		String serverId = GameUtil.parseServerId(args, serverType);
 		LoggerManager.init();
 
-		ServerContext.getInstance().setServerId(serverId);
-		ServerContext.getInstance().setServerType(serverType);
+		ServerContext.getInstance().initBase(serverId, serverType);
 
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
-		ZkHelper.init();
-		VxHolder.init();
-		// 初始化redis，复用vertx的eventloop
-		RedisUtil.getInstance().init(((VertxInternal) VxHolder.vertx).getEventLoopGroup());
-		IdUtil.init();
+		LoggerType.Stdout.logger.info("加载完config");
 
+		ZkHelper.init();
+		LoggerType.Stdout.logger.info("加载完zk");
+		VxHolder.init();
+		LoggerType.Stdout.logger.info("加载vx");
+		// 初始化redisson，复用vertx的eventloop
+		RedisUtil.getInstance().init(((VertxInternal) VxHolder.vertx).getEventLoopGroup());
+		LoggerType.Stdout.logger.info("加载redis");
+		IdUtil.init();
+		LoggerType.Stdout.logger.info("加载id");
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
-		ServerContext.getInstance().init(serverId, serverType);
+		ServerContext.getInstance().init();
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config
