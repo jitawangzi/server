@@ -24,15 +24,6 @@ public interface TaggedManager<ID, T> extends Manager<ID, T> {
 	 */
 	void add(ID id, T obj, String... tags);
 
-	/**
-	 * 添加带标签和过期时间的对象
-	 * 
-	 * @param id 对象标识符
-	 * @param obj 对象
-	 * @param expiryTimeMs 过期时间(毫秒)
-	 * @param tags 标签数组
-	 */
-	void addWithExpiry(ID id, T obj, long expiryTimeMs, String... tags);
 
 	/**
 	 * 批量添加带标签的对象

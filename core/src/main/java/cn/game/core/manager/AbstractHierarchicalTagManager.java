@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import cn.game.util.Pair;
+
 /**
  * 抽象层级标签管理器
  * <p>
@@ -259,9 +261,9 @@ public abstract class AbstractHierarchicalTagManager<ID, T> extends AbstractTagg
 	 */
 	@Override
 	public Map<String[], Collection<T>> getPathMap() {
-		Map<String[], Collection<T>> result = new HashMap<>();
+		// 使用一个临时映射来按内容聚合实体
+		Map<String, Pair<String[], Collection<T>>> contentMap = new HashMap<>();
 
-		// 为每个ID获取对象和路径
 		for (Map.Entry<ID, List<String[]>> entry : idToLabelPaths.entrySet()) {
 			ID id = entry.getKey();
 			T obj = doGet(id);
@@ -269,10 +271,18 @@ public abstract class AbstractHierarchicalTagManager<ID, T> extends AbstractTagg
 			if (obj != null) {
 				List<String[]> paths = entry.getValue();
 				for (String[] path : paths) {
-					Collection<T> objects = result.computeIfAbsent(path, k -> new ArrayList<>());
-					objects.add(obj);
+					// 解决map的String[]作为key时的比较问题，确保相同内容的String[]，都是一个key
+					String key = Arrays.toString(path);
+					Pair<String[], Collection<T>> pair = contentMap.computeIfAbsent(key, k -> new Pair<>(path, new ArrayList<>()));
+					pair.second.add(obj);
 				}
 			}
+		}
+
+		// 构建最终结果
+		Map<String[], Collection<T>> result = new HashMap<>();
+		for (Pair<String[], Collection<T>> pair : contentMap.values()) {
+			result.put(pair.first, pair.second);
 		}
 
 		return result;
