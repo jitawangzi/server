@@ -12,8 +12,9 @@ import java.util.function.Consumer;
 
 /**
  * 抽象管理器模板基类
+ * 实现基础Manager接口
  */
-public abstract class AbstractManagerTemplate<ID, T> {
+public abstract class AbstractManagerTemplate<ID, T> implements Manager<ID, T> {
 	// 管理器配置
 	protected final ManagerConfig config;
 
@@ -37,6 +38,8 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	// === 存储操作抽象方法 ===
+	protected abstract void doAdd(ID id, T obj);
+
 	protected abstract void doAdd(ID id, T obj, String... labels);
 
 	protected abstract T doGet(ID id);
@@ -54,6 +57,10 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	protected abstract void doClear();
 
 	// === 可选的存储操作抽象方法 ===
+	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs) {
+		throw new UnsupportedOperationException("Expiry feature not supported");
+	}
+
 	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels) {
 		throw new UnsupportedOperationException("Expiry feature not supported");
 	}
@@ -108,6 +115,12 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		return allRemoved;
 	}
 
+	protected void doAddBatch(Map<ID, T> objects) {
+		for (Map.Entry<ID, T> entry : objects.entrySet()) {
+			doAdd(entry.getKey(), entry.getValue());
+		}
+	}
+
 	protected void doAddBatch(Map<ID, T> objects, String... labels) {
 		for (Map.Entry<ID, T> entry : objects.entrySet()) {
 			doAdd(entry.getKey(), entry.getValue(), labels);
@@ -131,17 +144,19 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	// === 基础操作模板方法 ===
-	public final void add(ID id, T obj, String... labels) {
+	@Override
+	public final void add(ID id, T obj) {
 		if (obj == null || id == null) {
 			throw new IllegalArgumentException("Object or id cannot be null");
 		}
 		beforeAdd(obj);
-		doAdd(id, obj, labels);
+		doAdd(id, obj);
 		afterAdd(obj);
 		notifyListeners(listener -> listener.onObjectAdded(obj));
 	}
 
-	public final void addWithExpiry(ID id, T obj, long time, TimeUnit unit, String... labels) {
+	@Override
+	public final void addWithExpiry(ID id, T obj, long time, TimeUnit unit) {
 		if (!config.isExpiryEnabled()) {
 			throw new UnsupportedOperationException("Expiry feature is not enabled");
 		}
@@ -150,12 +165,13 @@ public abstract class AbstractManagerTemplate<ID, T> {
 			throw new IllegalArgumentException("Object or id cannot be null");
 		}
 		beforeAdd(obj);
-		doAddWithExpiry(id, obj, unit.toMillis(time), labels);
+		doAddWithExpiry(id, obj, unit.toMillis(time));
 		afterAdd(obj);
 		notifyListeners(listener -> listener.onObjectAdded(obj));
 	}
 
-	public final void addBatch(Map<ID, T> objects, String... labels) {
+	@Override
+	public final void addBatch(Map<ID, T> objects) {
 		if (objects == null || objects.isEmpty()) {
 			return;
 		}
@@ -164,7 +180,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		objects.values().forEach(this::beforeAdd);
 
 		// 执行批量添加
-		doAddBatch(objects, labels);
+		doAddBatch(objects);
 
 		// 执行后置处理
 		objects.values().forEach(obj -> {
@@ -173,6 +189,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		});
 	}
 
+	@Override
 	public final T get(ID id) {
 		T obj = doGet(id);
 		if (obj != null) {
@@ -181,36 +198,28 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		return obj;
 	}
 
+	@Override
 	public final Collection<T> getBatch(Collection<ID> ids) {
 		Collection<T> result = doGetBatch(ids);
 		result.forEach(obj -> notifyListeners(listener -> listener.onObjectAccessed(obj)));
 		return result;
 	}
 
-	public final Collection<T> getByLabels(String... labels) {
-		Collection<T> result = doGetByLabels(labels);
-		result.forEach(obj -> notifyListeners(listener -> listener.onObjectAccessed(obj)));
-		return result;
-	}
-
-	public final Collection<T> getPagedAndSorted(int page, int size, Comparator<T> comparator, String... labels) {
-		Collection<T> result = doGetPagedAndSorted(page, size, comparator, labels);
-		result.forEach(obj -> notifyListeners(listener -> listener.onObjectAccessed(obj)));
-		return result;
-	}
-
+	@Override
 	public final Collection<T> getAll() {
 		Collection<T> result = doGetAll();
 		result.forEach(obj -> notifyListeners(listener -> listener.onObjectAccessed(obj)));
 		return result;
 	}
 
+	@Override
 	public final Collection<T> findByPredicate(Predicate<T> predicate) {
 		Collection<T> result = doFindByPredicate(predicate);
 		result.forEach(obj -> notifyListeners(listener -> listener.onObjectAccessed(obj)));
 		return result;
 	}
 
+	@Override
 	public final boolean remove(ID id) {
 		T obj = get(id);
 		if (obj != null) {
@@ -225,6 +234,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		return false;
 	}
 
+	@Override
 	public final int removeBatch(Collection<ID> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return 0;
@@ -254,6 +264,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		return objectsToRemove.size();
 	}
 
+	@Override
 	public final void clear() {
 		Collection<T> allObjects = doGetAll();
 		allObjects.forEach(this::beforeRemove);
@@ -264,6 +275,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		});
 	}
 
+	@Override
 	public final void setCapacity(int capacity) {
 		if (!config.isCapacityLimitEnabled()) {
 			throw new UnsupportedOperationException("Capacity limit feature is not enabled");
@@ -275,21 +287,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		setMaxCapacity(capacity);
 	}
 
-	public final void setEvictionStrategy(EvictionPolicy policy) {
-		if (!config.isEvictionEnabled()) {
-			throw new UnsupportedOperationException("Eviction policy feature is not enabled");
-		}
-
-		if (policy == null) {
-			throw new IllegalArgumentException("Eviction policy cannot be null");
-		}
-		setEvictionPolicy(policy);
-	}
-
-	public final Map<String, Integer> getStatistics() {
-		return getLabelStatistics();
-	}
-
+	@Override
 	public final int count() {
 		return getTotalObjectCount();
 	}
@@ -308,6 +306,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 	}
 
 	// === 事件监听机制 ===
+	@Override
 	public void addListener(ManagerEventListener<T> listener) {
 		if (!config.isEventNotificationEnabled()) {
 			throw new UnsupportedOperationException("Event notification feature is not enabled");
@@ -318,6 +317,7 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		}
 	}
 
+	@Override
 	public void removeListener(ManagerEventListener<T> listener) {
 		if (!config.isEventNotificationEnabled()) {
 			throw new UnsupportedOperationException("Event notification feature is not enabled");
@@ -341,20 +341,8 @@ public abstract class AbstractManagerTemplate<ID, T> {
 		}
 	}
 
-	// === 辅助接口 ===
-	public interface Predicate<T> {
-		boolean test(T obj);
-	}
-
-	public interface ManagerEventListener<T> {
-		void onObjectAdded(T obj);
-
-		void onObjectRemoved(T obj);
-
-		void onObjectAccessed(T obj);
-	}
-
-	public enum EvictionPolicy {
-		LEAST_RECENTLY_USED, LEAST_FREQUENTLY_USED, FIRST_IN_FIRST_OUT, RANDOM
+	@Override
+	public void shutdown() {
+		// 基础实现，由子类扩展
 	}
 }

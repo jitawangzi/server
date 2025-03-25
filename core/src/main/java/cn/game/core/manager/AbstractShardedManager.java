@@ -6,10 +6,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
  * 统一的层级标签管理器实现
  * 支持按ID检索和按层级标签检索
  */
-public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTemplate<ID, T> {
+public abstract class AbstractShardedManager<ID, T> extends AbstractTaggedManager<ID, T> implements HierarchicalManager<ID, T> {
 	// 主ID映射，用于直接ID访问
 	private final ConcurrentHashMap<ID, T> idToObject = new ConcurrentHashMap<>();
 
@@ -47,7 +49,6 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	private EvictionPolicy evictionPolicy;
 	// 过期清理调度器
 	private final ScheduledExecutorService expiryScheduler;
-
 
 	/**
 	 * 使用指定配置创建管理器
@@ -97,6 +98,14 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	}
 
 	/**
+	 * 基础添加对象实现
+	 */
+	@Override
+	protected void doAdd(ID id, T obj) {
+		doAdd(id, obj, new String[0]);
+	}
+
+	/**
 	 * 添加对象到存储
 	 * 可以同时添加到多个层级路径
 	 * 
@@ -125,6 +134,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param obj 对象实例
 	 * @param labelPaths 层级标签路径数组，每个数组代表一个完整路径
 	 */
+	@Override
 	public void addWithPaths(ID id, T obj, String[]... labelPaths) {
 		if (obj == null || id == null) {
 			throw new IllegalArgumentException("Object or id cannot be null");
@@ -175,7 +185,18 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 			idToLabelPaths.put(id, paths);
 		}
 
-		// 4. 添加到层级存储结构
+		// 4. 更新常规标签映射
+		Set<String> allTags = new HashSet<>();
+		for (String[] path : labelPaths) {
+			if (path != null) {
+				for (String segment : path) {
+					allTags.add(segment);
+				}
+			}
+		}
+		updateObjectTags(id, obj, allTags.toArray(new String[0]));
+
+		// 5. 添加到层级存储结构
 		if (labelPaths.length == 0) {
 			// 如果没有路径，直接添加到根节点
 			hierarchyStorage.put(id.toString(), obj);
@@ -244,6 +265,11 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	}
 
 	@Override
+	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs) {
+		doAddWithExpiry(id, obj, expiryTimeMs, new String[0]);
+	}
+
+	@Override
 	protected void doAddWithExpiry(ID id, T obj, long expiryTimeMs, String... labels) {
 		if (!config.isExpiryEnabled()) {
 			throw new UnsupportedOperationException("Expiry feature is not enabled");
@@ -260,6 +286,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	/**
 	 * 使用层级路径添加带过期时间的对象
 	 */
+	@Override
 	public void addWithPathsAndExpiry(ID id, T obj, long time, TimeUnit unit, String[]... labelPaths) {
 		if (!config.isExpiryEnabled()) {
 			throw new UnsupportedOperationException("Expiry feature is not enabled");
@@ -336,6 +363,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param path 层级路径
 	 * @return 该路径下的所有对象
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Collection<T> getByPath(String... path) {
 		if (path == null || path.length == 0) {
@@ -478,6 +506,13 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 			insertionTimeMapping.remove(id);
 		}
 
+		// 清理标签映射
+		super.idToTags.remove(id);
+		for (Set<T> objects : super.tagToObjects.values()) {
+			objects.remove(removed);
+		}
+		super.tagToObjects.values().removeIf(Set::isEmpty);
+
 		// 从层级存储中移除
 		List<String[]> paths = idToLabelPaths.remove(id);
 		if (paths != null) {
@@ -538,6 +573,10 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 		hierarchyStorage.clear();
 		idToObject.clear();
 		idToLabelPaths.clear();
+
+		// 清理标签映射
+		super.idToTags.clear();
+		super.tagToObjects.clear();
 
 		// 清理可选映射
 		if (config.isExpiryEnabled() && expiryMapping != null) {
@@ -686,6 +725,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param id 对象ID
 	 * @param labelPaths 新的标签路径数组
 	 */
+	@Override
 	public void setLabelPaths(ID id, String[]... labelPaths) {
 		T obj = idToObject.get(id);
 		if (obj == null) {
@@ -705,6 +745,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param id 对象ID
 	 * @return 标签路径列表
 	 */
+	@Override
 	public List<String[]> getLabelPaths(ID id) {
 		List<String[]> paths = idToLabelPaths.get(id);
 		if (paths == null) {
@@ -725,6 +766,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param id 对象ID
 	 * @param labelPath 新的标签路径
 	 */
+	@Override
 	public void addLabelPath(ID id, String... labelPath) {
 		T obj = idToObject.get(id);
 		if (obj == null || labelPath == null || labelPath.length == 0) {
@@ -748,6 +790,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 	 * @param labelPath 要移除的标签路径
 	 * @return 是否成功移除
 	 */
+	@Override
 	public boolean removeLabelPath(ID id, String... labelPath) {
 		if (labelPath == null || labelPath.length == 0) {
 			return false;
@@ -783,49 +826,30 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 					hierarchyStorage.put(id.toString(), obj);
 				}
 			}
-		}
+        }
 
 		return removed;
 	}
 
-	/**
-	 * 判断对象是否具有指定标签
-	 */
-	public boolean hasLabel(ID id, String label) {
-		List<String[]> labels = idToLabelPaths.get(id);
-		if (labels == null) {
-            return false;
-        }
-		for (String[] path : labels) {
-			for (String segment : path) {
-				if (segment.equals(label)) {
-					return true;
-				}
-			}
-		}
-		return false;
+	@Override
+	public boolean hasTag(ID id, String tag) {
+		// 这个方法在父类AbstractTaggedManager中已经实现
+		return super.hasTag(id, tag);
 	}
 
 	/**
-	 * 获取对象的标签
+	 * 获取所有标签
 	 */
-	public List<String> getLabels(ID id) {
-		List<String[]> labels = idToLabelPaths.get(id);
-		if (labels == null) {
-			return Collections.emptyList();
-		}
-		List<String> ret = new ArrayList<>();
-		for (String[] path : labels) {
-            for (String segment : path) {
-				ret.add(segment);
-            }
-        }
-		return ret;
+	@Override
+	public Set<String> getAllTags() {
+		// 使用父类中的getAllTags实现
+		return super.getAllTags();
 	}
 
 	/**
 	 * 关闭管理器，释放资源
 	 */
+	@Override
 	public void shutdown() {
 		if (config.isExpiryEnabled() && expiryScheduler != null) {
 			expiryScheduler.shutdown();
@@ -836,7 +860,7 @@ public abstract class AbstractShardedManager<ID, T> extends AbstractManagerTempl
 			} catch (InterruptedException e) {
 				expiryScheduler.shutdownNow();
 				Thread.currentThread().interrupt();
-			}
-		}
+            }
+        }
 	}
 }
