@@ -168,10 +168,10 @@ public class HeroHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-        if (heroConfig.InitialQuality < 6) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-            return;
-        }
+//        if (heroConfig.InitialQuality < 6) {
+//            client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//            return;
+//        }
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         HeroModule heroModule = player.getHeroModule();
         List<Hero> heros = (List<Hero>) heroModule.getByConfigId(heroId);
@@ -214,7 +214,8 @@ public class HeroHandler extends BaseHandler {
                 return;
             }
         }
-        List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.CatalogPoints.ID, GlobalConst.HeroHandBookEXP, OpType.llustrationsReward);
+		List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.CatalogPoints.ID,
+				GlobalConst.HeroHandBookEXP.get(heroConfig.InitialQuality), OpType.llustrationsReward);
         resp.addAllReward(resources);
         // 给奖励
         client.sendProtocol(resp.build());

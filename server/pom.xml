@@ -559,6 +559,10 @@
 					<groupId>com.google.guava</groupId>
 					<artifactId>guava</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.zookeeper</groupId>
+					<artifactId>zookeeper</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<!--
@@ -568,6 +572,12 @@
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
 			<version>5.8.0</version>
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.apache.zookeeper</groupId>-->
+<!--					<artifactId>zookeeper</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
 		</dependency>
 		<dependency>
    			<groupId>org.apache.curator</groupId>

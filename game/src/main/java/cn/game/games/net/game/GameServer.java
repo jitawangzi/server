@@ -123,17 +123,11 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
-		LoggerType.Stdout.logger.info("加载完config");
-
 		ZkHelper.init();
-		LoggerType.Stdout.logger.info("加载完zk");
 		VxHolder.init();
-		LoggerType.Stdout.logger.info("加载vx");
 		// 初始化redisson，复用vertx的eventloop
 		RedisUtil.getInstance().init(((VertxInternal) VxHolder.vertx).getEventLoopGroup());
-		LoggerType.Stdout.logger.info("加载redis");
 		IdUtil.init();
-		LoggerType.Stdout.logger.info("加载id");
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init();
