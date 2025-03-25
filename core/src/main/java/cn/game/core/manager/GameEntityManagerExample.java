@@ -192,14 +192,14 @@ public class GameEntityManagerExample {
     }
     
     // 最小化分片存储
-    public static class MinimalEntityManager extends AbstractShardedManager<String, GameEntity> {
+    public static class MinimalEntityManager extends AbstractHierarchicalTagManager<String, GameEntity> {
         public MinimalEntityManager() {
             super(ManagerConfig.minimal());
         }
     }
     
     // 带缓存功能的分片存储
-    public static class CachedEntityManager extends AbstractShardedManager<String, GameEntity> {
+    public static class CachedEntityManager extends AbstractHierarchicalTagManager<String, GameEntity> {
         public CachedEntityManager(int cacheSize) {
             super(ManagerConfig.builder()
                     .withCapacityLimit(cacheSize)
@@ -210,7 +210,7 @@ public class GameEntityManagerExample {
     }
     
     // 完整功能的分片存储
-    public static class FullFeaturedEntityManager extends AbstractShardedManager<String, GameEntity> {
+    public static class FullFeaturedEntityManager extends AbstractHierarchicalTagManager<String, GameEntity> {
         public FullFeaturedEntityManager() {
             super(ManagerConfig.full());
         }
@@ -560,7 +560,7 @@ public class GameEntityManagerExample {
 	 */
 	private static void testAdvancedHierarchicalFeatures() {
 		System.out.println("\n========== 高级层级结构和路径功能测试 ==========");
-		AbstractShardedManager<String, GameEntity> hierarchyManager = new AbstractShardedManager<String, GameEntity>(ManagerConfig.full()) {
+		AbstractHierarchicalTagManager<String, GameEntity> hierarchyManager = new AbstractHierarchicalTagManager<String, GameEntity>(ManagerConfig.full()) {
 		};
 
 		// 创建带有多级路径的对象
@@ -661,7 +661,7 @@ public class GameEntityManagerExample {
 	/**
 	 * 辅助方法：测试路径查询
 	 */
-	private static void testPathQuery(AbstractShardedManager<String, GameEntity> manager, String description, String... path) {
+	private static void testPathQuery(AbstractHierarchicalTagManager<String, GameEntity> manager, String description, String... path) {
 		Collection<GameEntity> entities = manager.getByPath(path);
 
 		// 统计不同类型的实体数量

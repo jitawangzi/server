@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 抽象标签管理器
  * 实现标签功能
+ * 基础的多个水平标签管理器
  */
 public abstract class AbstractTaggedManager<ID, T> extends AbstractManagerTemplate<ID, T> implements TaggedManager<ID, T> {
 	// ID到标签的映射
