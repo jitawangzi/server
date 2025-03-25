@@ -7,18 +7,16 @@ import java.util.Map;
 
 import com.google.protobuf.Message;
 
-import cn.game.core.exception.LogicException;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
-import cn.game.games.net.game.module.award.Goods;
+import cn.game.protocol.generated.config.ActivityMeiRiTeHuiConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
-import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.generated.manager.ActivityMeiRiTeHuiManager;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftResponse_11000101;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.DateUtil;
 
 /**    
  * 每日特惠礼包，常驻活动
@@ -29,9 +27,8 @@ import cn.game.util.DateUtil;
 public class DayGiftActivity extends PlayerActivityBase {
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
-	/** key    */
-	private Map<Integer, Integer> dayGiftMap = new HashMap<Integer, Integer>();
-	private int endDay;
+	/** key id,value 购买次数    */
+	private Map<Integer, Integer> buyCountMap = new HashMap<Integer, Integer>();
 
 	@Override
 	public boolean hasRed() {
@@ -46,77 +43,44 @@ public class DayGiftActivity extends PlayerActivityBase {
 
 	@Override
 	public boolean newDay() {
-		if (endDay > 0) {
-			int nowDay = DateUtil.getDay();
-			if (nowDay >= endDay) {
-				endDay = 0;
-				rewardMail();
-				dayGiftMap.clear();
-			}else {
-				// 自动购买所有礼包
-				buyAll();
-			}
-		} else {
-			rewardMail();
-			dayGiftMap.clear();
-		}
+		buyCountMap.clear();
 		return true;
 	};
 
-	/** 
-	 * 如果玩家没有领，发邮件给奖励
-	 */
-	public void rewardMail() {
-		dayGiftMap.forEach((k, v) -> {
-			if (v == 1) {
-				List<Goods> goods = new ArrayList<>();
-				MailHelper.sendMail(player.getPlayerId(), 1, goods, true);
+	public List<RewardInfo> packageBuy() {
+		List<RewardInfo> ret = new ArrayList<>();
+		for (ActivityMeiRiTeHuiConfig meiRiTeHuiConfig : ActivityMeiRiTeHuiManager.instance().list()) {
+			if (meiRiTeHuiConfig.ID == 1) {
+				continue;
 			}
-		});
+			if (meiRiTeHuiConfig.ID == 99) {
+				List<RewardInfo> reward = PlayerHelper.addResources(player, meiRiTeHuiConfig.Item2, OpType.ActivityMeiRiTeHui);
+				ret.addAll(reward);
+				continue;
+			}
+			List<RewardInfo> reward = PlayerHelper.addResources(player, meiRiTeHuiConfig.Item1, OpType.ActivityMeiRiTeHui);
+			ret.addAll(reward);
+			buyCountMap.compute(meiRiTeHuiConfig.ID, (k, v) -> v == null ? 1 : v + 1);
+		}
+		buyCountMap.compute(99, (k, v) -> v == null ? 1 : v + 1);
+		return ret;
 	}
 
-	public void packageBuy() {
-		if (endDay > 0) {
-			throw new LogicException(ErrorMsgEnum.repeat_request.ID);
-		}
-		rewardMail();
-
-		int day = DateUtil.getDay();
-		endDay = day + 10;
-
-		buyAll();
-		GameLogger.activity(player, id, 0);
+	public int getBuyCount(int cid) {
+		Integer integer = buyCountMap.get(cid);
+		return integer == null ? 0 : integer;
 	}
 
-	private void buyAll() {
-		// TODO 一次性购买所有礼包
-		for (int i = 1; i < 10; i++) {
-			dayGiftMap.put(i, 1);
-		}
-
-	}
-
-	public void buy(int cid) {
-		if (dayGiftMap.containsKey(cid)) {
-			throw new LogicException(ErrorMsgEnum.repeat_request.ID);
-		}
-		dayGiftMap.put(cid, 1);
-
-		GameLogger.activity(player, id, cid);
-	}
-
-	public List<RewardInfo> reward(int cid) {
-		Integer integer = dayGiftMap.get(cid);
-		if (integer == null || integer != 1) {
-			throw new LogicException(ErrorMsgEnum.pre_condition_check_error.ID);
-		}
-//		return PlayerHelper.addResources(player, firstChargeConfig.Item, OpType.FirstCharge);
-		return null;
+	public List<RewardInfo> buy(int giftId) {
+		ActivityMeiRiTeHuiConfig meiRiTeHuiConfig = ActivityMeiRiTeHuiManager.instance().get(giftId);
+		List<RewardInfo> reward = PlayerHelper.addResources(player, meiRiTeHuiConfig.Item1, OpType.ActivityMeiRiTeHui);
+		buyCountMap.compute(giftId, (k, v) -> v == null ? 1 : v + 1);
+		return reward;
 	}
 
 	@Override
 	public List<RewardInfo> receive(int id) {
-		return reward(id);
+		return null;
 	}
 
 	@Override
@@ -127,7 +91,7 @@ public class DayGiftActivity extends PlayerActivityBase {
 	@Override
 	public Message buildActivityShowInfo() {
 		ActivityDayGiftResponse_11000101.Builder builder = ActivityDayGiftResponse_11000101.newBuilder();
-		builder.putAllBuyMap(dayGiftMap);
+		builder.putAllBuyCountMap(buyCountMap);
 		return builder.build();
 	}
 

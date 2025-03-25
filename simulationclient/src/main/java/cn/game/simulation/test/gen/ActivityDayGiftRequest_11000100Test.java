@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
@@ -13,7 +14,7 @@ public class ActivityDayGiftRequest_11000100Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRequest_11000100.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRequest_11000100.newBuilder() ; 
 		
-		
+		builder.setId(38);
 		
 		return builder.build() ; 
 	}

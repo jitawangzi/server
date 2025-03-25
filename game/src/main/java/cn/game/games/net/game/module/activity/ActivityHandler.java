@@ -27,12 +27,14 @@ import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivi
 import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.config.ActivityMeiRiTeHuiConfig;
 import cn.game.protocol.generated.config.ActivityQingShenConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
 import cn.game.protocol.generated.config.FirstChargeConfig;
 import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.generated.manager.ActivityMeiRiTeHuiManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyTurntableManager;
 import cn.game.protocol.generated.manager.FirstChargeManager;
@@ -42,12 +44,8 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftBuyRequest_11000102;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftBuyResponse_11000103;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftPackageBuyRequest_11000106;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftPackageBuyResponse_11000107;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRequest_11000100;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftResponse_11000101;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRewardRequest_11000104;
-import cn.game.protocol.protobuf.ActivityMsg.ActivityDayGiftRewardResponse_11000105;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyRequest_11000010;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeBuyResponse_11000011;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007;
@@ -104,8 +102,6 @@ public class ActivityHandler extends BaseHandler {
         putInvoker(PbProtocol.ActivityWestLuckyBuyRequest_11000095, this::westLuckyBuy);
         putInvoker(PbProtocol.ActivityDayGiftRequest_11000100, this::dayGift);
         putInvoker(PbProtocol.ActivityDayGiftBuyRequest_11000102, this::dayGiftBuy);
-        putInvoker(PbProtocol.ActivityDayGiftRewardRequest_11000104, this::dayGiftReward);
-        putInvoker(PbProtocol.ActivityDayGiftPackageBuyRequest_11000106, this::dayGiftPackageBuy);
     }
 
     private void empty(NetClient client, Object message) {
@@ -506,7 +502,9 @@ public class ActivityHandler extends BaseHandler {
         ActivityDayGiftBuyRequest_11000102 req = (ActivityDayGiftBuyRequest_11000102) message;
         int id = req.getId();
         int giftId = req.getGiftId();
-        ActivityDayGiftBuyResponse_11000103 defaultInstance = ActivityDayGiftBuyResponse_11000103.getDefaultInstance();
+		ActivityDayGiftBuyResponse_11000103 defaultInstance = ActivityDayGiftBuyResponse_11000103.getDefaultInstance();
+		ActivityDayGiftBuyResponse_11000103.Builder resp = ActivityDayGiftBuyResponse_11000103.newBuilder();
+
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		DayGiftActivity activity = (DayGiftActivity) player.getActivityModule().get(id);
@@ -514,49 +512,26 @@ public class ActivityHandler extends BaseHandler {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
 			return;
 		}
-		Future<Boolean> pay = player.pay(PayType.DayGift, giftId, null, id);
+		ActivityMeiRiTeHuiConfig meiRiTeHuiConfig = ActivityMeiRiTeHuiManager.instance().get(giftId);
+
+		if (activity.getBuyCount(giftId) >= meiRiTeHuiConfig.Quota) {
+			player.fail(ErrorMsgEnum.times_limit);
+		}
+		
+		Future<Boolean> pay = player.pay(PayType.DayGift, giftId, meiRiTeHuiConfig.PurchaseParameter, id);
 		pay.map(r -> {
-			activity.buy(giftId);
-			client.sendProtocol(defaultInstance);
+			List<RewardInfo> rewardInfos ; 
+			if (giftId == 99) {
+				rewardInfos = activity.packageBuy();
+			} else {
+				rewardInfos = activity.buy(giftId);
+			}
+			resp.addAllRewards(rewardInfos);
+			client.sendProtocol(resp.build());
+			GameLogger.activity(player, id, giftId);
 			return null;
 		}).onFailure(player::handleFail);
 
     }
 
-    private void dayGiftReward(NetClient client, Object message) {
-        ActivityDayGiftRewardRequest_11000104 req = (ActivityDayGiftRewardRequest_11000104) message;
-        int id = req.getId();
-        int giftId = req.getGiftId();
-        ActivityDayGiftRewardResponse_11000105 defaultInstance = ActivityDayGiftRewardResponse_11000105.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-
-		DayGiftActivity activity = (DayGiftActivity) player.getActivityModule().get(id);
-		if (activity == null) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-			return;
-		}
-		List<RewardInfo> reward = activity.reward(giftId);
-        ActivityDayGiftRewardResponse_11000105.Builder resp = ActivityDayGiftRewardResponse_11000105.newBuilder();
-		resp.addAllRewards(reward);
-        client.sendProtocol(resp.build());
-    }
-
-    private void dayGiftPackageBuy(NetClient client, Object message) {
-        ActivityDayGiftPackageBuyRequest_11000106 req = (ActivityDayGiftPackageBuyRequest_11000106) message;
-        int id = req.getId();
-        ActivityDayGiftPackageBuyResponse_11000107 defaultInstance = ActivityDayGiftPackageBuyResponse_11000107.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-
-		DayGiftActivity activity = (DayGiftActivity) player.getActivityModule().get(id);
-		if (activity == null) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-			return;
-		}
-		Future<Boolean> pay = player.pay(PayType.DayGift, 0, null, id);
-		pay.map(r -> {
-			activity.packageBuy();
-			client.sendProtocol(defaultInstance);
-			return null;
-		}).onFailure(player::handleFail);
-    }
 }
