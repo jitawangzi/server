@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * 层级数据管理器接口
  * 扩展标签管理器，添加层级路径操作功能
  */
-public interface HierarchicalManager<ID, T> extends TaggedManager<ID, T> {
+public interface HierarchicalManager<ID, T> extends HierarchicalTagManager<ID, T> {
 
 	/**
 	 * 使用层级路径添加对象
@@ -38,7 +38,7 @@ public interface HierarchicalManager<ID, T> extends TaggedManager<ID, T> {
 	/**
 	 * 添加一个标签路径到对象
 	 */
-	void addLabelPath(ID id, String... labelPath);
+	boolean addLabelPath(ID id, String... labelPath);
 
 	/**
 	 * 移除对象的标签路径
