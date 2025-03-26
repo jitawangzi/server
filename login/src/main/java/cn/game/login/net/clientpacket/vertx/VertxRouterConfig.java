@@ -43,7 +43,12 @@ public class VertxRouterConfig {
 		router.route().handler(new SecurityHandler());
 
 		// 3. Body处理器
-		router.route().handler(BodyHandler.create().setBodyLimit(1024 * 1024)); // 1MB限制
+		router.route()
+				.handler(BodyHandler.create()
+						.setHandleFileUploads(false)
+						.setMergeFormAttributes(false)
+						.setDeleteUploadedFilesOnEnd(true)
+						.setBodyLimit(1024 * 1024)); // 1MB限制
 
 		// 4. 后置Body解析验证
 		router.route().handler(createBodyValidationHandler());
