@@ -9,16 +9,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * 抽象对象管理器实现
  * 提供基础的对象管理功能和事件通知机制
- * 
+ *
  * @param <ID> 对象标识符类型
  * @param <T> 对象类型
  */
 public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
+
 	// 对象存储
 	protected Map<ID, T> storage = new ConcurrentHashMap<>();
 
@@ -67,16 +69,80 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 	}
 
 	/**
+	 * 执行操作并处理事件的模板方法
+	 * 
+	 * @param <R> 返回类型
+	 * @param operation 要执行的操作
+	 * @param obj 相关对象
+	 * @param beforeAction 执行前动作
+	 * @param afterAction 执行后动作
+	 * @param eventAction 事件动作
+	 * @return 操作结果
+	 */
+	protected <R> R executeWithEvents(Supplier<R> operation, T obj, Consumer<T> beforeAction, Consumer<T> afterAction,
+			Consumer<ManagerEventListener<T>> eventAction) {
+
+		// 执行前动作
+		if (obj != null && beforeAction != null) {
+			beforeAction.accept(obj);
+		}
+
+		// 执行操作
+		R result = operation.get();
+
+		// 执行后动作
+		if (obj != null && afterAction != null) {
+			afterAction.accept(obj);
+		}
+
+		// 通知事件
+		if (obj != null && config.isEventNotificationEnabled() && listeners != null && !listeners.isEmpty()) {
+			notifyListeners(eventAction);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 执行返回void的操作并处理事件的模板方法
+	 * 
+	 * @param operation 要执行的操作
+	 * @param obj 相关对象
+	 * @param beforeAction 执行前动作
+	 * @param afterAction 执行后动作
+	 * @param eventAction 事件动作
+	 */
+	protected void executeWithEvents(Runnable operation, T obj, Consumer<T> beforeAction, Consumer<T> afterAction,
+			Consumer<ManagerEventListener<T>> eventAction) {
+
+		// 执行前动作
+		if (obj != null && beforeAction != null) {
+			beforeAction.accept(obj);
+		}
+
+		// 执行操作
+		operation.run();
+
+		// 执行后动作
+		if (obj != null && afterAction != null) {
+			afterAction.accept(obj);
+		}
+
+		// 通知事件
+		if (obj != null && config.isEventNotificationEnabled() && listeners != null && !listeners.isEmpty()) {
+			notifyListeners(eventAction);
+		}
+	}
+
+	/**
 	 * 添加对象
 	 */
 	@Override
 	public final void add(ID id, T obj) {
-		beforeAdd(obj);
-		doAdd(id, obj);
-		afterAdd(obj);
-		if (config.isEventNotificationEnabled() && listeners != null) {
-			notifyListeners(listener -> listener.onObjectAdded(obj));
-		}
+		executeWithEvents(() -> {
+			doAdd(id, obj);
+			return null;
+		}, obj, this::beforeAdd, this::afterAdd, listener -> listener.onObjectAdded(obj));
 	}
 
 	/**
@@ -156,7 +222,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (ids == null || ids.isEmpty()) {
 			return Collections.emptyList();
 		}
-
 		List<T> result = new ArrayList<>(ids.size());
 		for (ID id : ids) {
 			T obj = doGet(id);
@@ -164,7 +229,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 				result.add(obj);
 			}
 		}
-
 		return result;
 	}
 
@@ -206,7 +270,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (predicate == null) {
 			return Collections.emptyList();
 		}
-
 		return storage.values().stream().filter(predicate).collect(Collectors.toList());
 	}
 
@@ -220,17 +283,7 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 			return false;
 		}
 
-		beforeRemove(obj);
-		boolean removed = doRemove(id);
-
-		if (removed) {
-			afterRemove(obj);
-			if (config.isEventNotificationEnabled() && listeners != null) {
-				notifyListeners(listener -> listener.onObjectRemoved(obj));
-			}
-		}
-
-		return removed;
+		return executeWithEvents(() -> doRemove(id), obj, this::beforeRemove, this::afterRemove, listener -> listener.onObjectRemoved(obj));
 	}
 
 	/**
@@ -248,7 +301,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (ids == null || ids.isEmpty()) {
 			return 0;
 		}
-
 		// 先获取所有要删除的对象
 		Map<ID, T> objectsToRemove = new HashMap<>();
 		for (ID id : ids) {
@@ -258,10 +310,8 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 				beforeRemove(obj);
 			}
 		}
-
 		// 执行批量删除
 		boolean result = doRemoveBatch(ids);
-
 		// 处理后置回调和事件
 		if (result) {
 			boolean needsNotification = config.isEventNotificationEnabled() && listeners != null && !listeners.isEmpty();
@@ -272,7 +322,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 				}
 			}
 		}
-
 		return objectsToRemove.size();
 	}
 
@@ -283,7 +332,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (ids == null || ids.isEmpty()) {
 			return false;
 		}
-
 		ids.forEach(storage::remove);
 		return true;
 	}
@@ -296,7 +344,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		Collection<T> allObjects = doGetAll();
 		allObjects.forEach(this::beforeRemove);
 		doClear();
-
 		boolean needsNotification = config.isEventNotificationEnabled() && listeners != null && !listeners.isEmpty();
 		for (T obj : allObjects) {
 			afterRemove(obj);
@@ -337,11 +384,9 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (listener == null) {
 			return;
 		}
-
 		if (listeners == null) {
 			listeners = new ArrayList<>();
 		}
-
 		listeners.add(listener);
 	}
 
@@ -353,7 +398,6 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 		if (listeners == null || listener == null) {
 			return false;
 		}
-
 		return listeners.remove(listener);
 	}
 
@@ -371,7 +415,7 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 	/**
 	 * 批量通知对象访问事件
 	 * 只有在启用了事件通知且有监听器时才进行通知
-	 * 
+	 *
 	 * @param objects 需要通知的对象集合
 	 * @param eventAction 事件动作
 	 */
@@ -385,7 +429,7 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 
 	/**
 	 * 批量通知对象的访问事件
-	 * 
+	 *
 	 * @param objects 被访问的对象集合
 	 */
 	protected void notifyBatchAccessed(Collection<T> objects) {
@@ -394,7 +438,7 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 
 	/**
 	 * 批量通知对象的添加事件
-	 * 
+	 *
 	 * @param objects 被添加的对象集合
 	 */
 	protected void notifyBatchAdded(Collection<T> objects) {
@@ -403,7 +447,7 @@ public abstract class AbstractManager<ID, T> implements Manager<ID, T> {
 
 	/**
 	 * 批量通知对象的移除事件
-	 * 
+	 *
 	 * @param objects 被移除的对象集合
 	 */
 	protected void notifyBatchRemoved(Collection<T> objects) {
