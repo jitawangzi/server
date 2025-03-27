@@ -71,8 +71,12 @@ public class DrawHandler extends BaseHandler {
         DrawModule drawModule = player.getModule(DrawModule.class);
         boolean ten = req.getTen();
         boolean freeOnce = req.getFreeOnce();
+		int countReq = req.getCount();
         int id = req.getId();
-        int drawCount = ten ? 10 : 1;
+		int drawCount = countReq > 0 ? countReq : ten ? 10 : 1;
+		if (drawCount > GlobalConst.SpecialOfferGiftPackRaffle) {
+			drawCount = GlobalConst.SpecialOfferGiftPackRaffle;
+		}
         DrawConfig drawConfig = DrawManager.instance().get(id);
         List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
         if (!freeOnce) {

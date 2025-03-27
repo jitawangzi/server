@@ -50,7 +50,7 @@ public class DayGiftActivity extends PlayerActivityBase {
 	public List<RewardInfo> packageBuy() {
 		List<RewardInfo> ret = new ArrayList<>();
 		for (ActivityMeiRiTeHuiConfig meiRiTeHuiConfig : ActivityMeiRiTeHuiManager.instance().list()) {
-			if (meiRiTeHuiConfig.ID == 1) {
+			if (meiRiTeHuiConfig.ID == 1 && buyCountMap.get(meiRiTeHuiConfig.ID) != null) {
 				continue;
 			}
 			if (meiRiTeHuiConfig.ID == 99) {
