@@ -63,8 +63,11 @@ public class DrawHandler extends BaseHandler {
         DrawRequest_37000003 req = (DrawRequest_37000003) message;
         DrawResponse_37000004.Builder resp = DrawResponse_37000004.newBuilder();
         long playerId = client.getPlayerId();
+		int id = req.getId();
+		DrawConfig drawConfig = DrawManager.instance().get(id);
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+
+		if (!player.isFuncOpen(InitialUI.get(drawConfig.OpenLevel))) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -72,12 +75,10 @@ public class DrawHandler extends BaseHandler {
         boolean ten = req.getTen();
         boolean freeOnce = req.getFreeOnce();
 		int countReq = req.getCount();
-        int id = req.getId();
 		int drawCount = countReq > 0 ? countReq : ten ? 10 : 1;
 		if (drawCount > GlobalConst.SpecialOfferGiftPackRaffle) {
 			drawCount = GlobalConst.SpecialOfferGiftPackRaffle;
 		}
-        DrawConfig drawConfig = DrawManager.instance().get(id);
         List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
         if (!freeOnce) {
             int costItemId = drawConfig.DrawConsumeId[0];
