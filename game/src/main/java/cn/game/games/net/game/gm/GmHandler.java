@@ -233,17 +233,20 @@ public class GmHandler extends BaseHandler {
       sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "查询邮件");
       return;
     }
+    Object[] params = {
+    	    req.getStartTime() == 0 ? null : new java.sql.Date(req.getStartTime()*1000L),
+    	    req.getEndTime() == 0 ? null : new java.sql.Date(req.getEndTime()*1000L),
+    	    req.getType() == 0 ? null : (req.getType() == 1 ? 0 : 1),
+    	    req.getTitle() == null ? null : req.getTitle(),
+    	    req.getContent() == null ? null : req.getContent(),
+    	    req.getStatus() == 0 ? null : (req.getStatus() == 1 ? 0 : 2),
+    	    (page - 1) * size,
+    	    size
+    	};
     DAO.execute(
             GmMailMapper.class,
             "selectGmMailList",
-            req.getStartTime()== 0 ? null : new java.sql.Date(req.getStartTime()*1000L),
-            req.getEndTime() == 0 ? null : new java.sql.Date(req.getEndTime()*1000L),
-            req.getType() == 0 ? null : (req.getType() == 1 ? 0 : 1),
-            req.getTitle() == null ? null : req.getTitle(),
-            req.getContent() == null ? null : req.getContent(),
-            req.getStatus() == 0 ? null : (req.getStatus() == 1 ? 0 : 2) ,//1 暂未审核 2 审核成功  3审核失败。0 全部状态
-            (page - 1) * size,
-            size)
+            params)
         .onSuccess(
             result -> {
               List<GmMail> list = (List<GmMail>) result;

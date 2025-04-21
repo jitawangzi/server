@@ -12,14 +12,14 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.manager.DragonManager;
-import cn.game.protocol.generated.manager.DragonSkillManager;
+//import cn.game.protocol.generated.manager.DragonManager;
+//import cn.game.protocol.generated.manager.DragonSkillManager;
 import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.FairyFriendManager;
 import cn.game.protocol.generated.manager.HCHeroManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.HeroSkinManager;
-import cn.game.protocol.generated.manager.HeroSwordManager;
+//import cn.game.protocol.generated.manager.HeroSwordManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 
@@ -51,18 +51,18 @@ public class ItemHelper {
 			HeroSkinManager.instance().get(id);
 			break;
 		}
-		case Dragon: {
-			DragonManager.instance().get(id);
-			break;
-		}
-		case DragonSkill: {
-			DragonSkillManager.instance().get(id);
-			break;
-		}
-		case Sword: {
-			HeroSwordManager.instance().get(id);
-			break;
-		}
+//		case Dragon: {
+//			DragonManager.instance().get(id);
+//			break;
+//		}
+//		case DragonSkill: {
+//			DragonSkillManager.instance().get(id);
+//			break;
+//		}
+//		case Sword: {
+//			HeroSwordManager.instance().get(id);
+//			break;
+//		}
 		case Merge_Equip: {
 			EquipManager.instance().get(id);
 			break;

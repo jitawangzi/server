@@ -3,8 +3,8 @@ package cn.game.games.net.game.module.develop.dragon;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.GameEvent;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
-import cn.game.protocol.generated.config.DragonConfig;
-import cn.game.protocol.generated.manager.DragonManager;
+//import cn.game.protocol.generated.config.DragonConfig;
+//import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.DragonInfo;
@@ -36,10 +36,10 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 		if (this.dragonUid == 0) {
 			this.dragonUid = hero.getId();
 		}
-		DragonConfig dragonConfig = DragonManager.instance().get(hero.getConfigId());
-		if (dragonConfig.DragonConsumeSkillId > 0) {
-			player.getDragonSkillModule().add(dragonConfig.DragonConsumeSkillId, OpType.Init);
-		}
+//		DragonConfig dragonConfig = DragonManager.instance().get(hero.getConfigId());
+//		if (dragonConfig.DragonConsumeSkillId > 0) {
+//			player.getDragonSkillModule().add(dragonConfig.DragonConsumeSkillId, OpType.Init);
+//		}
 
 	}
 
