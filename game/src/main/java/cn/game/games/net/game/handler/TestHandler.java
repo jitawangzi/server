@@ -92,7 +92,7 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteResponse_6f000045;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutRequest_6f000042;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutResponse_6f000043;
-import cn.game.protocol.protobuf.TestMsg.TestRequest_6f000020;
+import cn.game.protocol.protobuf.TestMsg.TestRunRequest_6f000020;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
@@ -127,7 +127,7 @@ public class TestHandler extends BaseHandler {
         logger.warn("===================================test command is enable =================================");
         putInvoker(PbProtocol.TestGmCmdRequest_6f000001, this::gmCmd);
         putInvoker(PbProtocol.TestAddItemRequest_6f000008, this::addItem);
-        putInvoker(PbProtocol.TestRequest_6f000020, this::test);
+		putInvoker(PbProtocol.TestRunRequest_6f000020, this::test);
         putInvoker(PbProtocol.TestMissionFinishRequest_6f000022, this::finishMission);
         putInvoker(PbProtocol.TestClearResourceAndItemRequest_6f000040, this::clearResourceAndItem);
         putInvoker(PbProtocol.TestPlayerDeleteRequest_6f000044, this::playerDelete);
@@ -486,7 +486,7 @@ public class TestHandler extends BaseHandler {
     }
 
     protected void test(NetClient client, Object message) {
-        TestRequest_6f000020 req = (TestRequest_6f000020) message;
+		TestRunRequest_6f000020 req = (TestRunRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         ItemModule itemModule = player.getItemModule();
