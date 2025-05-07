@@ -412,7 +412,7 @@ public class GameServer implements GameServerMBean {
 
 	/**
 	 * 获取处理某类型对象的逻辑服远程调用接口
-	 * @param DistributedObjectType 什么类型的对象
+	 * @param @DistributedObjectType 什么类型的对象
 	 * @param targetId  对象的唯一id
 	 * @return
 	 */
@@ -431,7 +431,7 @@ public class GameServer implements GameServerMBean {
 
 	/**
 	 * 获取处理某类型对象的跨服远程调用接口
-	 * @param DistributedObjectType 什么类型的对象
+	 * @param @DistributedObjectType 什么类型的对象
 	 * @param targetId  对象的唯一id
 	 * @return
 	 */
