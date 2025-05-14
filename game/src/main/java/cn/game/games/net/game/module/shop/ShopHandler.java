@@ -194,11 +194,7 @@ public class ShopHandler extends BaseHandler {
 			shopModule.setFreeOpenBoxCount(shopModule.getFreeOpenBoxCount() + 1);
 			player.handleEvent(EventTypeEnum.WatchAds);
 		} else {
-			boolean delResources = PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
-			if (!delResources) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
 		}
 		int[][] boxRandomId = GlobalConst.BoxRandomId;
 		int idIndex = 0;
@@ -262,11 +258,7 @@ public class ShopHandler extends BaseHandler {
 			int payCost = GlobalConst.HeishiPayfrseh[heishiPayTimes >= GlobalConst.HeishiPayfrseh.length - 1
 					? GlobalConst.HeishiPayfrseh.length - 1
 					: heishiPayTimes];
-			boolean delResources = PlayerHelper.delResources(player, Asset.diamond.ID, payCost, OpType.HeishiFresh);
-			if (!delResources) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, Asset.diamond.ID, payCost, OpType.HeishiFresh);
 		}
 		heishiRefreshTimesMap.add(shopId);
 //		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);

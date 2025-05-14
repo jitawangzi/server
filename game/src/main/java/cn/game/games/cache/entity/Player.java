@@ -475,12 +475,12 @@ public class Player {
 		Promise<Boolean> promise = Promise.promise();
 
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
-			boolean delResources = PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
-			if (!delResources) {
+			if (PlayerHelper.isEnough(this, cost[1], cost[2])) {
+				PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
+				promise.complete(true);
+			} else {
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
 				promise.complete(false);
-			} else {
-				promise.complete(true);
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
 			if (Boolean.getBoolean("DisableRecharge")) {

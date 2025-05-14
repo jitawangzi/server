@@ -64,10 +64,7 @@ public class HCHeroHandler extends BaseHandler {
 		}
 		HCHeroArousalConfig arousalConfig = HCHeroArousalManager.instance().getUIHeroIDStar(id, 0);
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!PlayerHelper.delResources(player, arousalConfig.StarCost, OpType.HCHeroComposite)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, arousalConfig.StarCost, OpType.HCHeroComposite);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, id, 1);
 		if (!resources.isEmpty()) {
 			resp.setHero(resources.get(0).getHcHero());
@@ -125,10 +122,7 @@ public class HCHeroHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.level_limit.getId());
 			return;
 		}
-		if (!PlayerHelper.delResources(player, curConfig.StarCost, OpType.HCHeroStarUp)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, curConfig.StarCost, OpType.HCHeroStarUp);
 		hero.setStar(hero.getStar() + 1);
 
 		client.sendProtocol(resp.build());
@@ -183,10 +177,7 @@ public class HCHeroHandler extends BaseHandler {
 		} else {
 			HCHeroConfig hcHeroConfig = HCHeroManager.instance().get(hero.getConfigId());
 			HCHeroUpgradeConfig upgradeConfig = HCHeroUpgradeManager.instance().getUIQualityLv(hcHeroConfig.Quality, hero.getLevel());
-			if (!PlayerHelper.delResources(player, upgradeConfig.UpgradeCost, OpType.HCHeroLvUp)) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, upgradeConfig.UpgradeCost, OpType.HCHeroLvUp);
 		}
 
 		hero.setLevel(hero.getLevel() + 1);

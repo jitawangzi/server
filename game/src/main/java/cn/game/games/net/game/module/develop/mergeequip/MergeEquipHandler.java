@@ -109,11 +109,7 @@ public class MergeEquipHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		boolean delResources = PlayerHelper.delResources(player, equipConfig.EquipUpgrade, OpType.MergeEquipLvUp);
-		if (!delResources) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, equipConfig.EquipUpgrade, OpType.MergeEquipLvUp);
 		mergeEquip.setLevel(mergeEquip.getLevel() + 1);
 
 		client.sendProtocol(resp.build());

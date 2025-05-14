@@ -64,10 +64,7 @@ public class OfflineBattleHandler {
     if (module.freeRefreshNum >= GlobalConst.DaDaoFreeCnt1) {
       if (req.getUseCost()) {
         int[] cost = GlobalConst.DaDaoPayCnt[module.costRefreshNUm];
-        if (!PlayerHelper.delResources(player, cost[0], cost[1], OpType.DA_DAO_Buy, true)) {
-          client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
-          return;
-        }
+		PlayerHelper.delResources(player, cost[0], cost[1], OpType.DA_DAO_Buy, true);
         module.costRefreshNUm++;
       } else {
         client.sendProtocol(res, ErrorMsgEnum.da_dao_free_refresh_is_max.ID);
@@ -346,7 +343,7 @@ public class OfflineBattleHandler {
       return;
     }
     int[] costs = GlobalConst.DaDaoChallengeTicketCost[module.buyNum];
-    if (PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy)) {
+    PlayerHelper.delResources(player, costs, OpType.DA_DAO_Buy); 
       module.buyNum++;
 
       List<RewardMsg.RewardInfo> drops =
@@ -354,8 +351,5 @@ public class OfflineBattleHandler {
       res.setBuyNum(module.buyNum);
       res.addAllRewards(drops);
       client.sendProtocol(res);
-    } else {
-      client.sendProtocol(res, ErrorMsgEnum.resource_not_enough.ID);
-    }
   }
 }

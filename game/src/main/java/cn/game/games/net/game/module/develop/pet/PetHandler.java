@@ -79,10 +79,7 @@ public class PetHandler extends BaseHandler {
 		}
 		SoulPetlLvupConfig soulPetlLvupConfig = SoulPetlLvupManager.instance().get(0);
 		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
-		if (!PlayerHelper.delResources(player, soulPetConfig.PieceID, soulPetlLvupConfig.LvConsumeItem, OpType.SoulPet)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, soulPetConfig.PieceID, soulPetlLvupConfig.LvConsumeItem, OpType.SoulPet);
 		petModule.add(id, OpType.SoulPet);
 
         client.sendProtocol(defaultInstance);
@@ -124,10 +121,7 @@ public class PetHandler extends BaseHandler {
 		cost[2] = Asset.gold.ID ;
 		cost[3] = soulPetlLvupConfig.LvConsumeMoney ;
 		
-		if (!PlayerHelper.delResources(player, cost, OpType.SoulPet)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, cost, OpType.SoulPet);
 		pet.setLevel(pet.getLevel() + 1);
 
         client.sendProtocol(defaultInstance);
@@ -167,10 +161,7 @@ public class PetHandler extends BaseHandler {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		if (!PlayerHelper.delResources(player, 205060, itemCount, OpType.SoulPet)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, 205060, itemCount, OpType.SoulPet);
 		pet.setBreakLevel(pet.getLevel());
 
         client.sendProtocol(defaultInstance);
@@ -193,10 +184,7 @@ public class PetHandler extends BaseHandler {
 		}
 		SoulPetConfig soulPetConfig = SoulPetManager.instance().get(id);
 
-		if (!PlayerHelper.delResources(player, 205030, soulPetConfig.SkillResetConsume, OpType.SoulPet)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, 205030, soulPetConfig.SkillResetConsume, OpType.SoulPet);
 		int randomIndex = Rnd.randomIndex(soulPetConfig.SkillNumProbability);
 		int skillCount = soulPetConfig.SkillNum[randomIndex];
 		List<Integer> skillsList = new ArrayList<>();

@@ -119,6 +119,27 @@ public class GameUtil {
 		return ret;
 	}
 
+	/** 
+	 * 给数量做加成
+	 * @param array 0：id 1：数量
+	 * @param addition,加成值，除10000使用
+	 * @return
+	 */
+	public static int[] arrayMultiple(int[] array, int multiple) {
+		if (multiple <= 1) {
+			return array;
+		}
+		int[] ret = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			if (i % 2 == 0) {
+				ret[i] = array[i];
+			} else {
+				ret[i] = array[i] * multiple;
+			}
+		}
+		return ret;
+	}
+
 	public static int[] transformIdAndCount(List<Integer> idList, List<Integer> countList) {
 		if (idList == null || countList == null) {
 			return EMPTY_INT_ARRAY;

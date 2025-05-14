@@ -21,12 +21,14 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite.Builder;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
@@ -83,6 +85,7 @@ import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.HeroBandBookManager;
 import cn.game.protocol.generated.manager.QiankunMirrorLvManager;
+import cn.game.protocol.generated.manager.RSGTreeLvManager;
 import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
@@ -232,17 +235,32 @@ public class PlayerHelper {
 		return player.getGoodsModule(id).isEnough(id, count);
 	}
 
+	/** 
+	 * @param player
+	 * @param consumeId
+	 * @return
+	 */
+	public static boolean isEnough(Player player, int consumeId) {
+
+		if (consumeId == 0) {
+			return true;
+		}
+		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
+
+		return isEnough(player, consumeConfig.cost);
+	}
+
 	/**
 	 * 合并同id 的资源和道具的数量。
 	 * @param rewards
 	 */
 	public static void mergeRewards(List<RewardInfo> rewards) {
-		cn.game.protocol.protobuf.BaseMsg.ItemInfo.Builder itemBuilder = ItemInfo.newBuilder();
-		cn.game.protocol.protobuf.BaseMsg.AssetInfo.Builder assetBuilder = AssetInfo.newBuilder();
+		ItemInfo.Builder itemBuilder = ItemInfo.newBuilder();
+		AssetInfo.Builder assetBuilder = AssetInfo.newBuilder();
 
 		Iterator<RewardInfo> iterator = rewards.iterator();
 		while (iterator.hasNext()) {
-			RewardMsg.RewardInfo rewardInfo = (RewardMsg.RewardInfo) iterator.next();
+			RewardInfo rewardInfo = (RewardInfo) iterator.next();
 			if (rewardInfo.hasItem()) {
 				ItemInfo item = rewardInfo.getItem();
 				if (itemBuilder.getId() == 0 || itemBuilder.getId() == item.getId()) {
@@ -280,7 +298,7 @@ public class PlayerHelper {
 		List<RewardInfo> ret = new ArrayList<>();
 		Iterator<RewardInfo> iterator = rewards.iterator();
 		while (iterator.hasNext()) {
-			RewardMsg.RewardInfo rewardInfo = (RewardMsg.RewardInfo) iterator.next();
+			RewardInfo rewardInfo = (RewardInfo) iterator.next();
 			if (rewardInfo.hasItem()) {
 				ItemInfo item = rewardInfo.getItem();
 				ret.addAll(addResources(player, item.getId(), item.getCount() * multiple, OpType.BattleEndMultipleReward));
@@ -354,32 +372,31 @@ public class PlayerHelper {
 	 * @return
 	 */
 	@Deprecated
-	public static boolean delResources(Player player, int id, int value, int mode, OpType consumeType) {
+	public static void delResources(Player player, int id, int value, int mode, OpType consumeType) {
 		if (value <= 0) {
-			return true;
+			return ;
 		}
 		if (mode != 0) {
 			if (value > 100) {
-				return true;
+				return ;
 			}
 			long playerValue = player.getGoodsModule(id).getCount(id);
 			value = Math.round(playerValue * (100 - value) / 100f);
 		}
 
-		return delResources(player, id, value, consumeType, true);
-
+		 delResources(player, id, value, consumeType, true);
 	}
 
-	/** 
+	/**
 	 * 扣除玩家的物品
+	 *
 	 * @param player
-	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
-	 * @param value 减少的数量
+	 * @param id          物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+	 * @param value       减少的数量
 	 * @param consumeType 消耗类型
-	 * @return
 	 */
-	public static boolean delResources(Player player, int id, long value, OpType consumeType) {
-		return delResources(player, id, value, consumeType, true);
+	public static void delResources(Player player, int id, long value, OpType consumeType) {
+		delResources(player, id, value, consumeType, true);
 	}
 
 	/** 
@@ -389,34 +406,34 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
-	public static boolean delResources(Player player, int consumeId, OpType consumeType) {
+	public static void delResources(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
-			return true;
+			return;
 		}
 		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
-		return delResources(player, consumeConfig.cost, consumeType);
+		delResources(player, consumeConfig.cost, consumeType);
 	}
 
 	/**
 	 * 进行某操作时扣除资源，包括所有大类型
+	 *
 	 * @param player
-	 * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
-	 * @param value 减少的数量
-	 * @param consumeType 	    消耗类型
-	 * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
-	 * @return
+	 * @param id          物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+	 * @param value       减少的数量
+	 * @param consumeType 消耗类型
+	 * @param notify      是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 */
-	public static boolean delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
+	public static void delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
 
 		if (value <= 0) {
-			return true;
+			return ;
 		}
 
 		//宗门贡献度
 		boolean ret = false;
 		if (id == Asset.ZongMenContribute.ID){
 			if (player.getZongMenId() == 0){//宗门不存在
-				return false;
+				return ;
 			}else {
 				ret = player.getZongmenModule().subContribute(value);
 			}
@@ -424,7 +441,6 @@ public class PlayerHelper {
 			GoodsModule goodsModule = player.getGoodsModule(id);
 			ret = goodsModule.del(id, value, consumeType);
 		}
-
 
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);
@@ -436,8 +452,9 @@ public class PlayerHelper {
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
 			BIHelper.resourceUpdate(player, id, value, consumeType, false);
+			return;
 		}
-		return ret;
+		player.fail(ErrorMsgEnum.resource_not_enough);
 	}
 
 	/**
@@ -445,12 +462,11 @@ public class PlayerHelper {
 	 * @param player 玩家
 	 * @param list，entry key:物品id,entry value:数量
 	 * @param consumeType 消耗类型
-	 * @return
 	 */
-	public static boolean delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType) {
+	public static void delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType) {
 
 		if (list == null || list.isEmpty()) {
-			return true;
+			return;
 		}
 
 		if (isEnough(player, list)) {
@@ -465,9 +481,9 @@ public class PlayerHelper {
 			if (spendPush.getSpendCount() > 0) {
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
-			return true;
+			return;
 		}
-		return false;
+		player.fail(ErrorMsgEnum.resource_not_enough);
 	}
 
 	/**
@@ -475,14 +491,14 @@ public class PlayerHelper {
 	 * @param player
 	 * @param map，key:物品id,value:数量
 	 * @param consumeType 消耗类型
-	 * @return
+	 * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
 	 */
-	public static boolean delResources(Player player, Map<Integer, Integer> map, OpType consumeType) {
+	public static void delResources(Player player, Map<Integer, Integer> map, OpType consumeType) {
 
 		if (map == null || map.isEmpty()) {
-			return true;
+			return;
 		}
-		return delResources(player, map.entrySet(), consumeType);
+		delResources(player, map.entrySet(), consumeType);
 	}
 
 	/** 
@@ -492,10 +508,10 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
-	public static boolean delResources(Player player, int[][] list, OpType consumeType) {
+	public static void delResources(Player player, int[][] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
-			return true;
+			return;
 		}
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
@@ -511,9 +527,9 @@ public class PlayerHelper {
 			if (spendPush.getSpendCount() > 0) {
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
-			return true;
+			return;
 		}
-		return false;
+		player.fail(ErrorMsgEnum.resource_not_enough);
 	}
 
 	/** 
@@ -521,12 +537,12 @@ public class PlayerHelper {
 	 * @param player
 	 * @param list ，数组0是id，1是数量,也可以向后扩展，例如 2是id，3是数量
 	 * @param consumeType
-	 * @return
+	 * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
 	 */
-	public static boolean delResources(Player player, int[] list, OpType consumeType) {
+	public static void delResources(Player player, int[] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
-			return true;
+			return;
 		}
 		if (isEnough(player, list)) {
 			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
@@ -540,9 +556,9 @@ public class PlayerHelper {
 			if (spendPush.getSpendCount() > 0) {
 				player.getGameClient().sendProtocol(spendPush.build());
 			}
-			return true;
+			return;
 		}
-		return false;
+		player.fail(ErrorMsgEnum.resource_not_enough);
 	}
 
 	/**
@@ -576,7 +592,6 @@ public class PlayerHelper {
 
 	/**
 	 * 只是随机出来具体的奖励，不加到玩家身上,较少直接用到
-	 * @param player
 	 * @param randomRewardId {@link RandomGivenConfig#ID}
 	 * @return
 	 */
@@ -940,11 +955,11 @@ public class PlayerHelper {
 			if (StringUtils.isEmpty(serverId)) {
 				serverId = ServerContext.getInstance().getServerId();
 			}
-			com.google.protobuf.Message m = null;
-			if (message instanceof com.google.protobuf.Message) {
-				m = (com.google.protobuf.Message) message;
+			Message m = null;
+			if (message instanceof Message) {
+				m = (Message) message;
 			} else if (message instanceof Builder) {
-				m = (com.google.protobuf.Message) ((Builder) message).build();
+				m = (Message) ((Builder) message).build();
 			} else {
 				throw new IllegalArgumentException("not support message ：" + message);
 			}
@@ -992,11 +1007,11 @@ public class PlayerHelper {
 			// 玩家不在线
 			return;
 		}
-		com.google.protobuf.Message m = null;
-		if (message instanceof com.google.protobuf.Message) {
-			m = (com.google.protobuf.Message) message;
+		Message m = null;
+		if (message instanceof Message) {
+			m = (Message) message;
 		} else if (message instanceof Builder) {
-			m = (com.google.protobuf.Message) ((Builder) message).build();
+			m = (Message) ((Builder) message).build();
 		} else {
 			throw new IllegalArgumentException("not support message ：" + message);
 		}
@@ -1013,7 +1028,7 @@ public class PlayerHelper {
 	 * @param serverId
 	 *            目标服务器id
 	 */
-	public static void sendToRemotePlayer(long playerId, String serverId, com.google.protobuf.Message message) {
+	public static void sendToRemotePlayer(long playerId, String serverId, Message message) {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 		GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
 
@@ -1031,7 +1046,7 @@ public class PlayerHelper {
 	 * @param playerIds
 	 * @param serverIds
 	 */
-	public static void sendToRemotePlayers(com.google.protobuf.Message message, List<Long> playerIds, List<String> serverIds) {
+	public static void sendToRemotePlayers(Message message, List<Long> playerIds, List<String> serverIds) {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 
 		for (int i = 0; i < playerIds.size(); i++) {
@@ -1099,7 +1114,7 @@ public class PlayerHelper {
 	/**
 	 * 基础的条件检查
 	 * @param player
-	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
+	 * @param condition 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
 	public static boolean checkCondition(Player player, int condition) {
@@ -1139,43 +1154,30 @@ public class PlayerHelper {
 			return player.getQuestModule().getCumulativeCount(type);
 		}
 		if (type.countType == 1) {
-			switch (type) {
-			// 直接根据当前数据获取的：
-			case PlayerLevel: {
-				return player.getLevel();
-			}
-			case ChapterFinish: {
-				ChapterModule chapterModule = player.getModule(ChapterModule.class);
-				return chapterModule.isBattlePass(id) ? 1 : 0;
-			}
-			case CultivatesImmortals: {
-				return player.getDevelopModule().getHeavenlyDaoLevel();
-			}
-			default: {
-				throw new IllegalArgumentException(" not suport countType1 condition  " + type);
-			}
-			}
+            return switch (type) {
+                // 直接根据当前数据获取的：
+                case PlayerLevel -> player.getLevel();
+                case ChapterFinish -> {
+                    ChapterModule chapterModule = player.getModule(ChapterModule.class);
+                    yield chapterModule.isBattlePass(id) ? 1 : 0;
+                }
+                case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
+                default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);
+            };
 		}
 		throw new IllegalArgumentException(" not suport condition  " + type);
 	}
 
 	public static boolean operator(int value, int configValue, int operator) {
-		switch (operator) {
-		case 1:
-			return value > configValue;
-		case 2:
-			return value >= configValue;
-		case 3:
-			return value == configValue;
-		case 4:
-			return value <= configValue;
-		case 5:
-			return value < configValue;
-		case 6:
-			return value != configValue;
-		default:
-			return false;
-		}
+        return switch (operator) {
+            case 1 -> value > configValue;
+            case 2 -> value >= configValue;
+            case 3 -> value == configValue;
+            case 4 -> value <= configValue;
+            case 5 -> value < configValue;
+            case 6 -> value != configValue;
+            default -> false;
+        };
 	}
 
 	/**
@@ -1555,8 +1557,6 @@ public class PlayerHelper {
 	 * 手动升级，对于一个玩家只有一种等级的，例如玩家等级，vip等级 等等
 	 * @param expId 经验id
 	 * @param subId	子id，如果同一类型下有多个配置，用这个区分。
-	 * @param curLevel 当前等级
-	 * @param curExp	当前经验
 	 * @return
 	 */
 	public static int[] levelUp(Player player, int expId, int subId) {
@@ -1599,6 +1599,8 @@ public class PlayerHelper {
 			return VIPManager.instance().getNullable(level);
 		} else if (id == Asset.CatalogPoints.ID) {
 			return HeroBandBookManager.instance().getNullable(level);
+		} else if (id == Asset.RSGTreeExp.ID) {
+			return RSGTreeLvManager.instance().getNullable(level);
 		}
 		throw new IllegalArgumentException("没有实现的经验id： " + id);
 	}
@@ -1665,8 +1667,7 @@ public class PlayerHelper {
 	/** 
 	 * 在其他服务器上执行当前方法
 	 * @param serverId  服务器id
-	 * @param thisClass	当前类,支持spring容器管理的实例，和普通单例类、静态方法类
-	 * @param args	方法参数
+	 * @param methodArgs	方法参数
 	 * @return
 	 */
 	@Deprecated

@@ -11,6 +11,7 @@ import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.Money;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -77,7 +78,6 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 
 	@Override
 	public boolean del(int configId, long count, OpType... args) {
-
 		if (count <= 0) {
 			return true;
 		}

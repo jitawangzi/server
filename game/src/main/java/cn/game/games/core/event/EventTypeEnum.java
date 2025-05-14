@@ -8,7 +8,7 @@ public enum EventTypeEnum {
 	PLAYER_CREATE(100, "创建新玩家"),
 	/** 开始登陆,似乎用处不大，可以用LoginFinish代替 */
 	Login(101, "开始登陆"),
-	/** 登陆完成 */
+	/** 登陆完成,真正的从数据库加载后的登陆 */
 	LoginFinish(102, "登陆完成"),
 	/** 重连 */
 	Reconnect(103, "重连"),

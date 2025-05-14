@@ -370,6 +370,14 @@ public class PlayerModule extends BasePlayerModule {
 		}
 	}
 
+	public void initLevel(Asset asset) {
+		if (asset.Type == 2) {
+			if (!expLevelMap.hasValue(asset.ID)) {
+				expLevelMap.add(asset.ID, 1);
+			}
+		}
+	}
+
 	@Override
 	protected int getInitOrder() {
 		return INIT_PRIORITY_HIGH;

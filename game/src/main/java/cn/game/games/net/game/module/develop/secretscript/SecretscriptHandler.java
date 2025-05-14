@@ -93,10 +93,7 @@ public class SecretscriptHandler extends BaseHandler {
 		costEntries.add(new SimpleEntry<>(costId, lvConfig.LvConsumeSpecialItem));
         costEntries.add(new SimpleEntry<>(207008, lvConfig.LvConsumeNormalItem));
         costEntries.add(new SimpleEntry<>(Asset.gold.ID, lvConfig.LvConsumeMoney));
-        if (!PlayerHelper.delResources(player, costEntries, OpType.Secretscript)) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-            return;
-        }
+		PlayerHelper.delResources(player, costEntries, OpType.Secretscript);
         secretscript.setLevel(secretscript.getLevel() + 1);
         client.sendProtocol(defaultInstance);
     }

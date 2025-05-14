@@ -47,7 +47,8 @@ public class GameServerImpl implements GameServerInterface {
 	@Override
 	public boolean delResources(long playerId, int id, int value) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		return PlayerHelper.delResources(player, id, value, OpType.GM);
+		PlayerHelper.delResources(player, id, value, OpType.GM);
+		return true;
 	}
 
 	@Override

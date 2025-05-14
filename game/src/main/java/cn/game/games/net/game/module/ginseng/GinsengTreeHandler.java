@@ -1,0 +1,206 @@
+package cn.game.games.net.game.module.ginseng;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import cn.game.core.net.client.NetClient;
+import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.RSGTreeLvConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.RSGTreeLvManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeBugRequest_39000005;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeBugResponse_39000006;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeFertilizationRequest_39000011;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeFertilizationResponse_39000012;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHangUpRequest_39000015;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHangUpResponse_39000016;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestRequest_39000013;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestResponse_39000014;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfoRequest_39000001;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfoResponse_39000002;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInsecticidesRequest_39000007;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInsecticidesResponse_39000008;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringRequest_39000003;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringResponse_39000004;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
+import cn.game.util.IntMapWrapper;
+
+@Component
+public class GinsengTreeHandler extends BaseHandler {
+
+    @Override
+    protected int getModule() {
+        return 0x39;
+    }
+
+    @Override
+    protected void inititialize() {
+        putInvoker(PbProtocol.GinsengTreeInfoRequest_39000001, this::info);
+        putInvoker(PbProtocol.GinsengTreeWateringRequest_39000003, this::watering);
+        putInvoker(PbProtocol.GinsengTreeBugRequest_39000005, this::bug);
+        putInvoker(PbProtocol.GinsengTreeInsecticidesRequest_39000007, this::insecticides);
+        putInvoker(PbProtocol.GinsengTreeFertilizationRequest_39000011, this::fertilization);
+        putInvoker(PbProtocol.GinsengTreeHarvestRequest_39000013, this::harvest);
+        putInvoker(PbProtocol.GinsengTreeHangUpRequest_39000015, this::hangUp);
+    }
+
+    private void info(NetClient client, Object message) {
+        GinsengTreeInfoRequest_39000001 req = (GinsengTreeInfoRequest_39000001) message;
+        GinsengTreeInfoResponse_39000002 defaultInstance = GinsengTreeInfoResponse_39000002.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeInfoResponse_39000002.Builder resp = GinsengTreeInfoResponse_39000002.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        resp.setTreeInfo(module.buildGinsengTreeInfo());
+        client.sendProtocol(resp.build());
+    }
+
+    private void watering(NetClient client, Object message) {
+        GinsengTreeWateringRequest_39000003 req = (GinsengTreeWateringRequest_39000003) message;
+        GinsengTreeWateringResponse_39000004 defaultInstance = GinsengTreeWateringResponse_39000004.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeWateringResponse_39000004.Builder resp = GinsengTreeWateringResponse_39000004.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        int waterTimes = module.getWaterTimes();
+        if (waterTimes >= GlobalConst.RSGTreeWaterFreeCnt) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.times_limit.ID);
+            return;
+        }
+        module.setWaterTimes(waterTimes + 1);
+        int oldLevel = player.getLevel(Asset.RSGTreeExp);
+        // 加经验
+        PlayerHelper.addResources(player, Asset.RSGTreeExp.ID, GlobalConst.RSGTreeWaterExp);
+        int newLevel = player.getLevel(Asset.RSGTreeExp);
+        if (oldLevel != newLevel) {
+            // 升级了
+            player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
+            RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
+            if (rsgTreeLvConfig != null) {
+                // 这里是升级的奖励
+                List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+                resp.addAllRewards(rewards);
+            }
+        }
+        // 浇水奖励
+        List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeWaterLeave, OpType.GinsengTreeWarter);
+        resp.addAllRewards(resources);
+        client.sendProtocol(resp.build());
+    }
+
+    private void bug(NetClient client, Object message) {
+        GinsengTreeBugRequest_39000005 req = (GinsengTreeBugRequest_39000005) message;
+        GinsengTreeBugResponse_39000006 defaultInstance = GinsengTreeBugResponse_39000006.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeBugResponse_39000006.Builder resp = GinsengTreeBugResponse_39000006.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        int bugs = module.getBugs();
+        if (bugs <= 0) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
+            return;
+        }
+        module.setBugs(bugs - 1);
+        List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave, OpType.GinsengTreeBug);
+        resp.addAllRewards(resources);
+        client.sendProtocol(resp.build());
+    }
+
+    private void insecticides(NetClient client, Object message) {
+        GinsengTreeInsecticidesRequest_39000007 req = (GinsengTreeInsecticidesRequest_39000007) message;
+        int count = req.getCount();
+        GinsengTreeInsecticidesResponse_39000008 defaultInstance = GinsengTreeInsecticidesResponse_39000008.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeInsecticidesResponse_39000008.Builder resp = GinsengTreeInsecticidesResponse_39000008.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        int insecticidesTimes = module.getInsecticidesTimes();
+        if (insecticidesTimes + count >= GlobalConst.RSGTreeInsecticideMax) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.times_limit.ID);
+            return;
+        }
+        int[] cost = GameUtil.arrayMultiple(GlobalConst.RSGTreeInsecticidePrice, count);
+		PlayerHelper.delResources(player, cost, OpType.GinsengTreeInsecticidesBug);
+        module.setInsecticidesTimes(insecticidesTimes + count);
+        module.setBugs(0);
+        int insecticidesEndTime = module.getInsecticidesEndTime() == 0 ? DateUtil.currentTimeSeconds() : module.getInsecticidesEndTime();
+        module.setInsecticidesEndTime(insecticidesEndTime + GlobalConst.RSGTreeInsecticideTime * count);
+        resp.setTreeInfo(module.buildGinsengTreeInfo());
+        client.sendProtocol(resp.build());
+    }
+
+    private void fertilization(NetClient client, Object message) {
+        GinsengTreeFertilizationRequest_39000011 req = (GinsengTreeFertilizationRequest_39000011) message;
+        GinsengTreeFertilizationResponse_39000012 defaultInstance = GinsengTreeFertilizationResponse_39000012.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeFertilizationResponse_39000012.Builder resp = GinsengTreeFertilizationResponse_39000012.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+		PlayerHelper.delResources(player, 212001, 1, OpType.GinsengTreeInsectic);
+        int oldLevel = player.getLevel(Asset.RSGTreeExp);
+        // 加经验
+        PlayerHelper.addResources(player, Asset.RSGTreeExp.ID, GlobalConst.RSGTreeFertilizerExp);
+        int newLevel = player.getLevel(Asset.RSGTreeExp);
+        if (oldLevel != newLevel) {
+            // 升级了
+            player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
+            RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
+            if (rsgTreeLvConfig != null) {
+                // 这里是升级的奖励
+                List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+                resp.addAllRewards(rewards);
+            }
+        }
+        List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeFertilizerLeave, OpType.GinsengTreeInsectic);
+        resp.addAllRewards(resources);
+        // 减少果实时间
+        module.fertilization();
+        resp.setTreeInfo(module.buildGinsengTreeInfo());
+        client.sendProtocol(resp.build());
+    }
+
+    private void harvest(NetClient client, Object message) {
+        GinsengTreeHarvestRequest_39000013 req = (GinsengTreeHarvestRequest_39000013) message;
+        int pos = req.getPos();
+        GinsengTreeHarvestResponse_39000014 defaultInstance = GinsengTreeHarvestResponse_39000014.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeHarvestResponse_39000014.Builder resp = GinsengTreeHarvestResponse_39000014.newBuilder();
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        IntMapWrapper map = module.getFruitMap();
+        if (!map.hasValue(pos) || map.getValue(pos) > DateUtil.currentTimeSeconds()) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
+            return;
+        }
+        map.remove(pos);
+		// TODO 收获奖励
+        client.sendProtocol(resp.build());
+    }
+
+    private void hangUp(NetClient client, Object message) {
+        GinsengTreeHangUpRequest_39000015 req = (GinsengTreeHangUpRequest_39000015) message;
+        GinsengTreeHangUpResponse_39000016 defaultInstance = GinsengTreeHangUpResponse_39000016.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeHangUpResponse_39000016.Builder resp = GinsengTreeHangUpResponse_39000016.newBuilder();
+		GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+
+//		int hangUpStartTime = module.getHangUpStartTime();
+
+		module.setHangUpStartTime(DateUtil.currentTimeSeconds());
+		module.calcHangUpReward();
+
+		Map<Integer, Integer> map = module.getHangUpRandomRewardMap().getMap();
+		List<RewardInfo> resources = PlayerHelper.addResources(player, map, OpType.GinsengTreeHangUp);
+		resp.addAllRewards(resources);
+
+		// TODO 固定奖励
+
+        client.sendProtocol(resp.build());
+    }
+}

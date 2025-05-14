@@ -71,8 +71,7 @@ public class DrawModule extends BasePlayerModule {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return events;
 	}
 
 	@Override

@@ -20,6 +20,12 @@ import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroInfoRequest_37000011;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroInfoResponse_37000012;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitRequest_37000015;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitResponse_37000016;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013;
+import cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshResponse_37000014;
 import cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005;
 import cn.game.protocol.protobuf.DrawMsg.DrawHeroWishResponse_37000006;
 import cn.game.protocol.protobuf.DrawMsg.DrawListRequest_37000001;
@@ -44,6 +50,9 @@ public class DrawHandler extends BaseHandler {
         putInvoker(PbProtocol.DrawListRequest_37000001, this::page);
         putInvoker(PbProtocol.DrawRequest_37000003, this::draw);
         putInvoker(PbProtocol.DrawHeroWishRequest_37000005, this::heroWish);
+        putInvoker(PbProtocol.DrawHeroInfoRequest_37000011, this::heroInfo);
+        putInvoker(PbProtocol.DrawHeroRefreshRequest_37000013, this::heroRefresh);
+        putInvoker(PbProtocol.DrawHeroRecruitRequest_37000015, this::heroRecruit);
     }
 
     private void page(NetClient client, Object message) {
@@ -63,22 +72,21 @@ public class DrawHandler extends BaseHandler {
         DrawRequest_37000003 req = (DrawRequest_37000003) message;
         DrawResponse_37000004.Builder resp = DrawResponse_37000004.newBuilder();
         long playerId = client.getPlayerId();
-		int id = req.getId();
-		DrawConfig drawConfig = DrawManager.instance().get(id);
+        int id = req.getId();
+        DrawConfig drawConfig = DrawManager.instance().get(id);
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-
-		if (!player.isFuncOpen(InitialUI.get(drawConfig.OpenLevel))) {
+        if (!player.isFuncOpen(InitialUI.get(drawConfig.OpenLevel))) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
             return;
         }
         DrawModule drawModule = player.getModule(DrawModule.class);
         boolean ten = req.getTen();
         boolean freeOnce = req.getFreeOnce();
-		int countReq = req.getCount();
-		int drawCount = countReq > 0 ? countReq : ten ? 10 : 1;
-		if (drawCount > GlobalConst.SpecialOfferGiftPackRaffle) {
-			drawCount = GlobalConst.SpecialOfferGiftPackRaffle;
-		}
+        int countReq = req.getCount();
+        int drawCount = countReq > 0 ? countReq : ten ? 10 : 1;
+        if (drawCount > GlobalConst.SpecialOfferGiftPackRaffle) {
+            drawCount = GlobalConst.SpecialOfferGiftPackRaffle;
+        }
         List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
         if (!freeOnce) {
             int costItemId = drawConfig.DrawConsumeId[0];
@@ -112,16 +120,12 @@ public class DrawHandler extends BaseHandler {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
                 return;
             }
-			player.handleEvent(EventTypeEnum.WatchAds);
+            player.handleEvent(EventTypeEnum.WatchAds);
         } else {
-            boolean delResources = PlayerHelper.delResources(player, costEntries, OpType.Draw);
-            if (!delResources) {
-                client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-                return;
-            }
+			PlayerHelper.delResources(player, costEntries, OpType.Draw);
         }
         List<List<RewardInfo>> allRewards = drawModule.draw(id, drawCount, freeOnce);
-        for(int i = 0; i < drawCount; i++) {
+        for (int i = 0; i < drawCount; i++) {
             player.handleEvent(EventTypeEnum.Draw, 1, id);
         }
         resp.addAllRewards(allRewards.get(0));
@@ -140,21 +144,56 @@ public class DrawHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        boolean battlePass = player.getChapterModule().isBattlePass(GlobalConst.OrientationFree); 
-		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		if ((monthCardModule.getMonthCard(1) == null || monthCardModule.getMonthCard(2) == null) && !battlePass) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.condition_check_error.ID);
-			return;
-		}
-		if (!GameUtil.contains(GlobalConst.DirectionalDraw, heroId)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
-			return;
-		}
-		HeroManager.instance().get(heroId);
-
-		DrawModule drawModule = player.getModule(DrawModule.class);
-		drawModule.setWishHeroId(heroId);
-
+        boolean battlePass = player.getChapterModule().isBattlePass(GlobalConst.OrientationFree);
+        MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+        if ((monthCardModule.getMonthCard(1) == null || monthCardModule.getMonthCard(2) == null) && !battlePass) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.condition_check_error.ID);
+            return;
+        }
+        if (!GameUtil.contains(GlobalConst.DirectionalDraw, heroId)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+            return;
+        }
+        HeroManager.instance().get(heroId);
+        DrawModule drawModule = player.getModule(DrawModule.class);
+        drawModule.setWishHeroId(heroId);
         client.sendProtocol(defaultInstance);
+    }
+
+    private void heroInfo(NetClient client, Object message) {
+        DrawHeroInfoRequest_37000011 req = (DrawHeroInfoRequest_37000011) message;
+        DrawHeroInfoResponse_37000012 defaultInstance = DrawHeroInfoResponse_37000012.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        DrawHeroInfoResponse_37000012.Builder resp = DrawHeroInfoResponse_37000012.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void heroRefresh(NetClient client, Object message) {
+        DrawHeroRefreshRequest_37000013 req = (DrawHeroRefreshRequest_37000013) message;
+        DrawHeroRefreshResponse_37000014 defaultInstance = DrawHeroRefreshResponse_37000014.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        DrawHeroRefreshResponse_37000014.Builder resp = DrawHeroRefreshResponse_37000014.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void heroRecruit(NetClient client, Object message) {
+        DrawHeroRecruitRequest_37000015 req = (DrawHeroRecruitRequest_37000015) message;
+        int multiple = req.getMultiple();
+        DrawHeroRecruitResponse_37000016 defaultInstance = DrawHeroRecruitResponse_37000016.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.PleaseGod)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        DrawHeroRecruitResponse_37000016.Builder resp = DrawHeroRecruitResponse_37000016.newBuilder();
+        client.sendProtocol(resp.build());
     }
 }

@@ -35,6 +35,10 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	public BasePlayerModule() {
 	}
 
+	/** 
+	 * 登陆后下发的数据，在这里构建
+	 * @param builder
+	 */
 	public abstract void buildPlayerAllInfo(PlayerAllInfo.Builder builder);
 
 	public final void initDefault(Player player) {

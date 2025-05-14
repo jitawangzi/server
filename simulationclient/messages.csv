@@ -222,3 +222,13 @@
 221,ActivityDayGiftPackageBuyRequest_11000106,0x11000106,,,,,打包购买每日特惠礼包
 222,ActivityDayGiftRequest_11000100,0x11000100,,,,,查看每日特惠礼包数据
 223,ActivityDayGiftRewardRequest_11000104,0x11000104,,,,,领取每日特惠礼包奖励
+224,DrawHeroInfoRequest_37000011,0x37000011,,,,,请求英雄招募数据
+225,DrawHeroRecruitRequest_37000015,0x37000015,,,,,新神将招募
+226,DrawHeroRefreshRequest_37000013,0x37000013,,,,,新神将招募刷新，花费元宝
+227,GinsengTreeBugRequest_39000005,0x39000005,,,,,人参果树手动除虫
+228,GinsengTreeFertilizationRequest_39000011,0x39000011,,,,,人参果树施肥
+229,GinsengTreeHarvestRequest_39000013,0x39000013,,,,,收获人参果树果实
+230,GinsengTreeInfoRequest_39000001,0x39000001,,,,,请求人参果树数据
+231,GinsengTreeInsecticidesRequest_39000007,0x39000007,,,,,人参果树购买杀虫剂除虫
+232,GinsengTreeWateringRequest_39000003,0x39000003,,,,,人参果树浇水
+233,GinsengTreeHangUpRequest_39000015,0x39000015,,,,,领取人参果树挂机奖励

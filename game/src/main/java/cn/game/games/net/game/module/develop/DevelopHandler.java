@@ -108,11 +108,7 @@ public class DevelopHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		boolean delResources = PlayerHelper.delResources(player, spiritualRootConfig.PurpleConsume, OpType.QianKunMirror);
-		if (!delResources) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, spiritualRootConfig.PurpleConsume, OpType.QianKunMirror);
 		int removeIndex = -1;
 		for (int i = 0; i < qiankunMirrorBuilder.getSpiritualRootIdsCount(); i++) {
 			if (qiankunMirrorBuilder.getSpiritualRootIds(i) == spiritualRootConfig.preID) {
@@ -181,10 +177,7 @@ public class DevelopHandler extends BaseHandler {
 		}
 		DevelopModule developModule = player.getDevelopModule();
 		Builder qiankunMirrorBuilder = developModule.getQiankunMirrorBuilder();
-		if (!PlayerHelper.delResources(player, Asset.QiankunSpiritualEssence.ID, 1, OpType.QianKunMirror)) {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-            return;
-		}
+		PlayerHelper.delResources(player, Asset.QiankunSpiritualEssence.ID, 1, OpType.QianKunMirror);
 		int pos = qiankunMirrorBuilder.getStartPos();
 		int nextPos = pos + 1 > 5 ? 0 : pos + 1;
 
@@ -252,10 +245,7 @@ public class DevelopHandler extends BaseHandler {
 			int calcPotentialConsumeValue = DevelopHelper.calcPotentialConsumeValue(consume[1], consume[2], consume[3], level);
 			consumeList.add(new AbstractMap.SimpleEntry(consume[0], calcPotentialConsumeValue));
 		}
-		if (!PlayerHelper.delResources(player, consumeList, OpType.PotentialLvUp)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, consumeList, OpType.PotentialLvUp);
 		developModule.getPotentiaLvMap().add(id, 1);
 		developModule.setIsPotentiaBreak(id, false);
 
@@ -290,10 +280,7 @@ public class DevelopHandler extends BaseHandler {
 		for (int[] consume : potentialConfig.PotentialBreak) {
 			consumeList.add(new AbstractMap.SimpleEntry(consume[1], consume[2]));
 		}
-		if (!PlayerHelper.delResources(player, consumeList, OpType.PotentialBreak)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, consumeList, OpType.PotentialBreak);
 		developModule.setIsPotentiaBreak(id, true);
 		developModule.getPotentiaBreakLevelMap().add(id, 1);
 		client.sendProtocol(resp.build());
@@ -328,10 +315,7 @@ public class DevelopHandler extends BaseHandler {
 			int calcPotentialConsumeValue = DevelopHelper.calcPotentialConsumeValue(consume[1], consume[2], consume[3], level);
 			consumeList.add(new AbstractMap.SimpleEntry(consume[0], calcPotentialConsumeValue));
 		}
-		if (!PlayerHelper.delResources(player, consumeList, OpType.RescueLvUp)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, consumeList, OpType.RescueLvUp);
 		developModule.getPotentiaLvMap().add(id, 1);
 		player.handleEvent(EventTypeEnum.QiangYuan);
 		client.sendProtocol(resp.build());

@@ -63,12 +63,35 @@ public class IntMapWrapper {
 	}
 
 	public boolean del(int id, int value) {
+		return del(id, value, false);
+	}
+
+	/** 
+	 * 
+	 * @param id
+	 * @param value
+	 * @param allowNegative  减少的时候，是否允许负值
+	 * @return
+	 */
+	public boolean del(int id, int value, boolean allowNegative) {
 		Integer cur = map.get(id);
-		if (cur == null || cur < value) {
+		if (cur == null || (!allowNegative && cur < value)) {
 			return false;
 		}
 		map.put(id, cur - value);
 		return true;
+	}
+
+	public int size() {
+		return map.size();
+	}
+
+	/** 
+	 * 减少所有值，如果减少到小于0，则设置为0
+	 * @param value
+	 */
+	public void reduceAllValues(int value) {
+		map.replaceAll((k, v) -> v - value < 0 ? 0 : v - value);
 	}
 
 	public Integer remove(int id) {

@@ -28,9 +28,7 @@ public abstract class HCBattleHandler extends IBattleHandler {
 //			return ErrorMsgEnum.times_limit.getId();
 //		}
 
-		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
-			return ErrorMsgEnum.resource_not_enough.getId();
-		}
+		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart);
 		return 0;
 	}
 

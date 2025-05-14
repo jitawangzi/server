@@ -49,10 +49,10 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 //			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
 //			return;
 //		}
-
-		if (!PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart)) {
+		if (!PlayerHelper.isEnough(player, battleConfig.cost)) {
 			return ErrorMsgEnum.resource_not_enough.getId();
 		}
+		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart);
 		return 0;
 	}
 

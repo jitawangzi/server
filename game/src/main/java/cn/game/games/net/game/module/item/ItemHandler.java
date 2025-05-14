@@ -64,11 +64,7 @@ public class ItemHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 				return;
 			}
-			boolean delResources = PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
-			if (!delResources) {
-				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-				continue;
-			}
+			PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
 			ItemUse itemUse = ItemUse.valueOf(item.ItemType);
 			List<RewardInfo> rewards = itemUse.use(player, id, count, param);
 			resp.addAllReward(rewards);
@@ -83,11 +79,7 @@ public class ItemHandler extends BaseHandler {
         ItemSellResponse_0b000008 defaultInstance = ItemSellResponse_0b000008.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		int[] transformIdAndCount = GameUtil.transformIdAndCount(idList, countList); 
-		boolean delResources = PlayerHelper.delResources(player, transformIdAndCount, OpType.ItemSell);
-		if (!delResources) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, transformIdAndCount, OpType.ItemSell);
 		List<RewardInfo> rewards = new ArrayList<>();
 		for (int i = 0; i < idList.size(); i++) {
 			int id = idList.get(i);

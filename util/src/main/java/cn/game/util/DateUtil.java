@@ -531,7 +531,7 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int diffDays(long timeMillis) {
-		return diffDays(timeMillis, System.currentTimeMillis());
+		return diffDays(toLocalDate(timeMillis), LocalDate.now());
 	}
 
 	/**
@@ -552,7 +552,32 @@ public final class DateUtil {
 	 * @return 相差的天数
 	 */
 	public static int diffDays(LocalDate date1, LocalDate date2) {
-		return Math.abs((int) ChronoUnit.DAYS.between(date1, date2));
+		return diffDays(date1, date2, ChronoUnit.DAYS);
+	}
+
+	/** 
+	 * 计算两个日期之间的时间差
+	 * @param date1
+	 * @param date2
+	 * @param unit 时间单位
+	 * @return
+	 */
+	public static int diffDays(LocalDate date1, LocalDate date2, ChronoUnit unit) {
+		return Math.abs((int) unit.between(date1, date2));
+	}
+
+	public static int diff(LocalDateTime time1, LocalDateTime time2, ChronoUnit unit) {
+	    return Math.abs((int) unit.between(time1, time2));
+	}
+
+	/** 
+	 * 计算当前时间和特定时间之间相隔的时间差
+	 * @param timeMillis
+	 * @param unit
+	 * @return
+	 */
+	public static int diff(long timeMillis, ChronoUnit unit) {
+		return diff(toLocalDateTime(timeMillis), LocalDateTime.now(), unit);
 	}
 
 	/**

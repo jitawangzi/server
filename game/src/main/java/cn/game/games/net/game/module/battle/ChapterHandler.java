@@ -289,10 +289,7 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 			return;
 		}
-		if (!PlayerHelper.delResources(player, GlobalConst.JDTMConsume, OpType.WorldBoss)) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, GlobalConst.JDTMConsume, OpType.WorldBoss);
 		battle.setBuyTimes(battle.getBuyTimes() + 1);
 		client.sendProtocol(resp);
 	}
@@ -412,10 +409,7 @@ public class ChapterHandler extends BaseHandler {
 		int cost = changeBattleTimes >= GlobalConst.SpiritBattleChangeCost.length
 				? GlobalConst.SpiritBattleChangeCost[GlobalConst.SpiritBattleChangeCost.length - 1]
 				: GlobalConst.SpiritBattleChangeCost[changeBattleTimes];
-		if (!PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattleChange)) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattleChange);
 		lingPoBattle.setBattleId(battleId);
 		lingPoBattle.setChangeBattleTimes(changeBattleTimes + 1);
 
@@ -454,10 +448,7 @@ public class ChapterHandler extends BaseHandler {
 
 		// 检查花费
 		int cost = (int) Math.ceil(((double) (maxCount - curCount)) / GlobalConst.SpiritBattlePointFull);
-		if (!PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattlePointFull)) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, Asset.gold.ID, cost, OpType.LingPoBattlePointFull);
 		// 补满
 		currencyModule.setCount(cid, maxCount);
 
@@ -559,10 +550,7 @@ public class ChapterHandler extends BaseHandler {
 			player.handleEvent(EventTypeEnum.WatchAds);
 
 		} else if (type == 3) {
-			if (!PlayerHelper.delResources(player, GlobalConst.ResurrectionConsume, OpType.Relive)) {
-				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, GlobalConst.ResurrectionConsume, OpType.Relive);
 		}
 		
 		chapterModule.setReliveCountPerBattle(chapterModule.getReliveCountPerBattle() + 1);
@@ -804,10 +792,7 @@ public class ChapterHandler extends BaseHandler {
 			for (int i = 0; i < payArray.length; i++) {
 				payArray[i] = payList.get(i);
 			}
-			if (!PlayerHelper.delResources(player, payArray, opType)) {
-				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, payArray, opType);
 		}
 		for (int i = 0; i < allCount; i++) {
 
@@ -860,10 +845,7 @@ public class ChapterHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
 				return;
 			}
-			if (!PlayerHelper.delResources(player, daoHeartBattle.getPaySweepCost(), opType)) {
-				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-				return;
-			}
+			PlayerHelper.delResources(player, daoHeartBattle.getPaySweepCost(), opType);
 			daoHeartBattle.setPaySweep(daoHeartBattle.getPaySweep() + 1);
 		}
 		
@@ -965,11 +947,7 @@ public class ChapterHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
 			return;
 		}
-		boolean delResources = PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
-		if (!delResources) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
 		chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
 		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
 		resp.addAllReward(reward);
@@ -995,11 +973,7 @@ public class ChapterHandler extends BaseHandler {
 		if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
 			player.handleEvent(EventTypeEnum.WatchAds);
 		}
-		boolean delResources = PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
-		if (!delResources) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
 		chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
 		List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
 		resp.addAllReward(reward);
@@ -1063,10 +1037,7 @@ public class ChapterHandler extends BaseHandler {
 					return;
 				}
 				// 消耗
-				if (!PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol)) {
-					client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-					return;
-				}
+				PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol);
 				chapterModule.setQuickPatrolCount(quickPatrolCount + 1);
 			}
 		}

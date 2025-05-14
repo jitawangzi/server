@@ -144,10 +144,7 @@ public class HeroHandler extends BaseHandler {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
                 return;
             }
-            if (!PlayerHelper.delResources(player, heroConfig.Fragment, count, OpType.HeroFragmentCompose)) {
-                client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-                return;
-            }
+			PlayerHelper.delResources(player, heroConfig.Fragment, count, OpType.HeroFragmentCompose);
             MarqueeConfig marqueeConfig = MarqueeManager.instance().get(HeroHelper.getMarqueeId(count));
             if (heroConfig.InitialQuality >= marqueeConfig.Para) {
                 String marqueeText = ChatHelper.getHeroMarqueeText(player.getData().getName(), Arrays.asList(heroConfig.name), 1);

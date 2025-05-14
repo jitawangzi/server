@@ -65,11 +65,7 @@ public class FairyFriendHandler extends BaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		boolean delResources = PlayerHelper.delResources(player, Asset.TravelStamina.ID, GlobalConst.FairyFriendConsume * count, OpType.FairyFriend);
-		if (!delResources) {
-			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
+		PlayerHelper.delResources(player, Asset.TravelStamina.ID, GlobalConst.FairyFriendConsume * count, OpType.FairyFriend);
 		FairyFriendModule module = player.getModule(FairyFriendModule.class);
 		Map<FairyFriend, Integer> updateFairyFriends = new HashMap<FairyFriend, Integer>();
 		for (int i = 0; i < count; i++) {
@@ -170,10 +166,7 @@ public class FairyFriendHandler extends BaseHandler {
 			return;
 		}
 		// 校验数量。
-		if (!PlayerHelper.delResources(player, itemId, count, OpType.FairyFriend)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-			return;
-        }
+		PlayerHelper.delResources(player, itemId, count, OpType.FairyFriend);
 		int addExp = GlobalConst.FairyFriendGift.get(itemId) * count;
 		int[] exp = PlayerHelper.addExp(Asset.Favorability.ID, id, fairyFriend.getLevel(), fairyFriend.getExp(), addExp);
 		fairyFriend.setExp(exp[0]);

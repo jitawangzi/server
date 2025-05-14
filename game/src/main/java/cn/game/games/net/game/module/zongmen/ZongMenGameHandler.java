@@ -232,12 +232,8 @@ public class ZongMenGameHandler extends BaseHandler {
 					Future<Boolean> buyZongmenBargain = crossServerInterface.buyZongmenBargain(player.getZongMenId(), player.getPlayerId());
 					buyZongmenBargain.onSuccess(result -> {
 						if (result) {
-							boolean delResources = PlayerHelper.delResources(player, guildBargainConfig.Price[0], price,
+							PlayerHelper.delResources(player, guildBargainConfig.Price[0], price,
 									OpType.ZongMenBargain);
-							if (!delResources) {
-								client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
-								return;
-							}
 							List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
 							res.addAllRewards(rewards);
 							client.sendProtocol(res.build());
