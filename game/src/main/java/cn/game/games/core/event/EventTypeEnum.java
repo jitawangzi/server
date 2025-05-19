@@ -118,6 +118,8 @@ public enum EventTypeEnum {
 	FairyFriendsTravel(86, "仙友寻缘"),
 	FairyFriendsGift(87, "仙友赠礼"),
 
+	HeroRecruit(90, "英雄招募"),
+
 	// 服务器级别的时间
 	/**  参数： 活动id */
 	ActivityOpenTime(300, "某活动到达开启时间"),

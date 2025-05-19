@@ -644,6 +644,7 @@ public final class Rnd {
 	
 	/**
 	 * 包含两个数字的的数组，0为最小数，1为最大数，在范围中随机
+	 * 也允许数组中只有一个元素
 	 * @param value
 	 * @return
 	 */

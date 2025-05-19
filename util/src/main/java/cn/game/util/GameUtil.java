@@ -120,9 +120,9 @@ public class GameUtil {
 	}
 
 	/** 
-	 * 给数量做加成
+	 * 给数量做倍数
 	 * @param array 0：id 1：数量
-	 * @param addition,加成值，除10000使用
+	 * @param multiple 倍数
 	 * @return
 	 */
 	public static int[] arrayMultiple(int[] array, int multiple) {
@@ -135,6 +135,29 @@ public class GameUtil {
 				ret[i] = array[i];
 			} else {
 				ret[i] = array[i] * multiple;
+			}
+		}
+		return ret;
+	}
+
+	/** 
+	 * 给数量做倍数
+	 * @param array 0：id 1：数量
+	 * @param multiple 倍数
+	 * @return
+	 */
+	public static int[][] arrayMultiple(int[][] array, int multiple) {
+		if (multiple <= 1) {
+			return array;
+		}
+		int[][] ret = new int[array.length][array[0].length];
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				if (j % 2 == 0) {
+					ret[i][j] = array[i][j];
+				} else {
+					ret[i][j] = array[i][j] * multiple;
+				}
 			}
 		}
 		return ret;

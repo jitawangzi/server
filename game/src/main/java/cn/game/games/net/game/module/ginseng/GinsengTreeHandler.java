@@ -1,7 +1,6 @@
 package cn.game.games.net.game.module.ginseng;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -11,6 +10,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RSGTreeLvConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -25,6 +25,8 @@ import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHangUpRequest_3900001
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHangUpResponse_39000016;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestRequest_39000013;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestResponse_39000014;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHeroRequest_39000017;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHeroResponse_39000018;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfoRequest_39000001;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfoResponse_39000002;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInsecticidesRequest_39000007;
@@ -54,6 +56,7 @@ public class GinsengTreeHandler extends BaseHandler {
         putInvoker(PbProtocol.GinsengTreeFertilizationRequest_39000011, this::fertilization);
         putInvoker(PbProtocol.GinsengTreeHarvestRequest_39000013, this::harvest);
         putInvoker(PbProtocol.GinsengTreeHangUpRequest_39000015, this::hangUp);
+        putInvoker(PbProtocol.GinsengTreeHeroRequest_39000017, this::hero);
     }
 
     private void info(NetClient client, Object message) {
@@ -128,7 +131,7 @@ public class GinsengTreeHandler extends BaseHandler {
             return;
         }
         int[] cost = GameUtil.arrayMultiple(GlobalConst.RSGTreeInsecticidePrice, count);
-		PlayerHelper.delResources(player, cost, OpType.GinsengTreeInsecticidesBug);
+        PlayerHelper.delResources(player, cost, OpType.GinsengTreeInsecticidesBug);
         module.setInsecticidesTimes(insecticidesTimes + count);
         module.setBugs(0);
         int insecticidesEndTime = module.getInsecticidesEndTime() == 0 ? DateUtil.currentTimeSeconds() : module.getInsecticidesEndTime();
@@ -143,7 +146,7 @@ public class GinsengTreeHandler extends BaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         GinsengTreeFertilizationResponse_39000012.Builder resp = GinsengTreeFertilizationResponse_39000012.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
-		PlayerHelper.delResources(player, 212001, 1, OpType.GinsengTreeInsectic);
+        PlayerHelper.delResources(player, 212001, 1, OpType.GinsengTreeInsectic);
         int oldLevel = player.getLevel(Asset.RSGTreeExp);
         // 加经验
         PlayerHelper.addResources(player, Asset.RSGTreeExp.ID, GlobalConst.RSGTreeFertilizerExp);
@@ -179,7 +182,7 @@ public class GinsengTreeHandler extends BaseHandler {
             return;
         }
         map.remove(pos);
-		// TODO 收获奖励
+        // TODO 收获奖励
         client.sendProtocol(resp.build());
     }
 
@@ -188,19 +191,52 @@ public class GinsengTreeHandler extends BaseHandler {
         GinsengTreeHangUpResponse_39000016 defaultInstance = GinsengTreeHangUpResponse_39000016.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         GinsengTreeHangUpResponse_39000016.Builder resp = GinsengTreeHangUpResponse_39000016.newBuilder();
-		GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+        //		int hangUpStartTime = module.getHangUpStartTime();
+        module.setHangUpStartTime(DateUtil.currentTimeSeconds());
 
-//		int hangUpStartTime = module.getHangUpStartTime();
+		int minutes = module.calcHangUpReward();
+		// 随机奖励
+		IntMapWrapper rewardMap = new IntMapWrapper();
+		rewardMap.getMap().putAll(module.getHangUpRandomRewardMap().getMap());
 
-		module.setHangUpStartTime(DateUtil.currentTimeSeconds());
-		module.calcHangUpReward();
+		// 固定奖励
+		int level = player.getLevel(Asset.RSGTreeExp);
+		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
+		int[][] rewardArray = GameUtil.arrayMultiple(rsgTreeLvConfig.Reward, minutes);
+		for (int[] is : rewardArray) {
+			rewardMap.add(is[0], is[1]);
+		}
+		// 所有奖励做一个英雄数量加成
+		int heroSize = module.getHeroIdList().size();
+		if (heroSize > 0) {
+			rewardMap.getMap().replaceAll((k, v) -> v + ((int) (heroSize / 10000f) * v));
+		}
 
-		Map<Integer, Integer> map = module.getHangUpRandomRewardMap().getMap();
-		List<RewardInfo> resources = PlayerHelper.addResources(player, map, OpType.GinsengTreeHangUp);
+		List<RewardInfo> resources = PlayerHelper.addResources(player, rewardMap.getMap(), OpType.GinsengTreeHangUp);
 		resp.addAllRewards(resources);
 
-		// TODO 固定奖励
-
         client.sendProtocol(resp.build());
+    }
+
+    private void hero(NetClient client, Object message) {
+        GinsengTreeHeroRequest_39000017 req = (GinsengTreeHeroRequest_39000017) message;
+        int heroId = req.getHeroId();
+        GinsengTreeHeroResponse_39000018 defaultInstance = GinsengTreeHeroResponse_39000018.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
+
+        HeroModule heroModule = player.getHeroModule(); 
+		if (!heroModule.has(heroId)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
+            return;
+		}
+		List<Integer> heroIdList = module.getHeroIdList();
+		if (heroIdList.contains(heroId)) {
+			heroIdList.remove(Integer.valueOf(heroId));
+		} else {
+			heroIdList.add(heroId);
+		}
+        client.sendProtocol(defaultInstance);
     }
 }

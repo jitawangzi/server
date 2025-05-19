@@ -265,7 +265,8 @@ public class GameServer implements GameServerMBean {
 	 * @throws Exception
 	 */
 	private void checkPlayerJsonStruct() throws Exception {
-		File file = new File("player.json");
+		String fileNameString = "player.json";
+		File file = new File(fileNameString);
 		if (file.exists()) {
 //			String json = FileUtils.readFileToString(file, Charset.defaultCharset());
 			String json = Files.readFirstLine(file, Charset.defaultCharset());
@@ -274,7 +275,9 @@ public class GameServer implements GameServerMBean {
 			try {
 				player = JsonUtil.parseObjectWithType(json);
 			} catch (Exception e) {
-				throw new RuntimeException("Player结构有变化，json反序列化失败，修正数据兼容后重试", e); // 反序列化失败，
+				throw new RuntimeException(
+						"Player结构有变化，json反序列化失败，修正数据兼容后重试。" + " ---- 如果十分肯定是开发过程中的正常调整，不会影响到线上数据，可以删除" + fileNameString + "文件后重新启动", e); // 反序列化失败，
+
 			}
 			Files.write(JsonUtil.toJsonStringWithType(player), file, Charset.defaultCharset());
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());

@@ -69,6 +69,10 @@ public class DrawModule extends BasePlayerModule {
 	private int wishHeroId;
 	private int wishHeroTimes = GlobalConst.OrientationFrequency;
 
+	// 新的抽卡
+
+	private HeroRecruit heroRecruit = new HeroRecruit();
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -83,6 +87,11 @@ public class DrawModule extends BasePlayerModule {
 			break;
 		}
 		}
+	}
+
+	@Override
+	public void onLogin() {
+		heroRecruit.setPlayer(player);
 	}
 
 	@Override
@@ -307,6 +316,62 @@ public class DrawModule extends BasePlayerModule {
 
 	public void setWishHeroId(int wishHeroId) {
 		this.wishHeroId = wishHeroId;
+	}
+
+	public static EventTypeEnum[] getEvents() {
+		return events;
+	}
+
+	public IntMapWrapper getGiftIndex() {
+		return giftIndex;
+	}
+
+	public IntMapWrapper getDrawTimes() {
+		return drawTimes;
+	}
+
+	public IntMapWrapper getFreeDrawTime() {
+		return freeDrawTime;
+	}
+
+	public IntMapWrapper getFreeDrawCount() {
+		return freeDrawCount;
+	}
+
+	public boolean isFirstTen() {
+		return isFirstTen;
+	}
+
+	public int getGuidanceDrawCount() {
+		return guidanceDrawCount;
+	}
+
+	public List<Integer> getGuidanceGroupList() {
+		return guidanceGroupList;
+	}
+
+	public int getCurGuidanceGroup() {
+		return curGuidanceGroup;
+	}
+
+	public int getCurGuidanceGroupIndex() {
+		return curGuidanceGroupIndex;
+	}
+
+	public List<Integer> getSupremeRandomGroupList() {
+		return supremeRandomGroupList;
+	}
+
+	public Map<Integer, List<Integer>> getSupremeRandomGroupMap() {
+		return supremeRandomGroupMap;
+	}
+
+	public int getWishHeroTimes() {
+		return wishHeroTimes;
+	}
+
+	public HeroRecruit getHeroRecruit() {
+		return heroRecruit;
 	}
 
 }

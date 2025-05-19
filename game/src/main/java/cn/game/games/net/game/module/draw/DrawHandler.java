@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Lists;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
@@ -15,9 +17,12 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.DrawConfig;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DrawManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.DrawMsg.DrawHeroInfoRequest_37000011;
@@ -36,6 +41,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.util.Rnd;
 
 @Component
 public class DrawHandler extends BaseHandler {
@@ -168,7 +174,15 @@ public class DrawHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		DrawModule drawModule = player.getModule(DrawModule.class);
+		HeroRecruit heroRecruit = drawModule.getHeroRecruit();
         DrawHeroInfoResponse_37000012.Builder resp = DrawHeroInfoResponse_37000012.newBuilder();
+		if (heroRecruit.checkRefresh()) {
+			heroRecruit.refresh();
+		}
+
+		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
+        
         client.sendProtocol(resp.build());
     }
 
@@ -180,20 +194,107 @@ public class DrawHandler extends BaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+		int clientGold = req.getGold();
+		DrawModule drawModule = player.getModule(DrawModule.class);
+		HeroRecruit heroRecruit = drawModule.getHeroRecruit();
+		if (heroRecruit.getRecruitedPosList().size() == 0) { // 没有招募过
+			int t = GlobalConst.GachaRefreshTime - (DateUtil.currentTimeSeconds() - heroRecruit.getHeroRefreshTime());
+			int minute = t / 60 + 1;
+
+			if (clientGold < minute) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.draw_refresh_gold.getId());
+				return;
+			}
+			PlayerHelper.delResources(player, Asset.diamond.ID, minute, OpType.DrawHeroRefresh);
+		}
+		heroRecruit.refresh();
+
         DrawHeroRefreshResponse_37000014.Builder resp = DrawHeroRefreshResponse_37000014.newBuilder();
+		resp.addAllItemId(heroRecruit.getItemIdList());
+		resp.addAllItemCount(heroRecruit.getItemCountList());
+		// 刚刷完其实就是最大时间
+		resp.setFreeRefreshRemaningSeconds(GlobalConst.GachaRefreshTime);
+        
         client.sendProtocol(resp.build());
     }
 
     private void heroRecruit(NetClient client, Object message) {
         DrawHeroRecruitRequest_37000015 req = (DrawHeroRecruitRequest_37000015) message;
         int multiple = req.getMultiple();
+//		int pos = req.getPos();
         DrawHeroRecruitResponse_37000016 defaultInstance = DrawHeroRecruitResponse_37000016.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (!player.isFuncOpen(InitialUI.PleaseGod)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
+//		if (pos < 0 || pos > 2) {
+//			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.getId());
+//			return;
+//		}
+		if (multiple < 0 || multiple > 0 && multiple > 3) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		DrawModule drawModule = player.getModule(DrawModule.class);
+		HeroRecruit heroRecruit = drawModule.getHeroRecruit();
+		List<Integer> recruitedPosList = heroRecruit.getRecruitedPosList();
+
+		List<Integer> allPos = Lists.newArrayList(0, 1, 2);
+		allPos.removeAll(recruitedPosList);
+
+		int pos = Rnd.randomOne(allPos);
+
+//		if (recruitedPosList.contains(pos)) {
+//			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
+//			return;
+//		}
         DrawHeroRecruitResponse_37000016.Builder resp = DrawHeroRecruitResponse_37000016.newBuilder();
+
+        
+		if (multiple > 1) {
+			heroRecruit.setMultiple(multiple);
+		}
+		multiple = heroRecruit.getMultiple();
+
+		int times = recruitedPosList.size();
+		int[] is = GlobalConst.GachaConsume1[times];
+		if (multiple > 1) {
+			is = GameUtil.arrayMultiple(is, multiple);
+		}
+
+		PlayerHelper.delResources(player, is, OpType.DrawHero);
+		List<Integer> itemIdList = heroRecruit.getItemIdList();
+		int id = itemIdList.get(pos);
+		int count = heroRecruit.getItemCountList().get(pos);
+		if (multiple > 1) {
+			count *= multiple;
+		}
+		List<RewardInfo> resources = PlayerHelper.addResources(player, id, count, OpType.DrawHero); 
+		resp.addAllItems(resources);
+		recruitedPosList.add(pos);
+		heroRecruit.setRecruitCount(heroRecruit.getRecruitCount() + 1);
+		// 如果
+		boolean needRefresh = true;
+		if (recruitedPosList.size() < 3) {
+			for (int i = 0; i < itemIdList.size(); i++) {
+				if (!recruitedPosList.contains(i)) {
+					ItemConfig itemConfig = ItemManager.instance().get(itemIdList.get(i));
+					if (itemConfig.Quality >= 4) {
+						needRefresh = false;
+						break;
+					}
+				}
+			}
+		}
+		if (needRefresh) {
+			heroRecruit.refresh();
+		}
+
+		player.handleEvent(EventTypeEnum.HeroRecruit);
+
+		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
+
         client.sendProtocol(resp.build());
     }
 }

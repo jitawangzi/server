@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.ginseng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.core.BasePlayerModule;
@@ -45,6 +46,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	/** 挂机的随机奖励部分，key 道具或资源id，value 数量 */
 	private IntMapWrapper hangUpRandomRewardMap = new IntMapWrapper();
+	private List<Integer> heroIdList = new ArrayList<>();
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -134,14 +136,15 @@ public class GinsengTreeModule extends BasePlayerModule {
 		calcHangUpReward();
 
 		builder.putAllHangUpRandomRewardMap(hangUpRandomRewardMap.getMap());
+		builder.addAllHeroIdList(heroIdList);
 
 		return builder.build();
 	}
 	// 计算挂机奖励
-	public void calcHangUpReward() {
+	public int calcHangUpReward() {
 		int minutes =  (DateUtil.currentTimeSeconds() - hangUpRewardCalcTime)/60 ; 
 		if (minutes <= 0) {
-			return;
+			return 0;
 		}
 		int level = player.getLevel(Asset.RSGTreeExp);
 		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
@@ -155,6 +158,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 			}
 		}
 		hangUpRewardCalcTime += minutes * 60;
+		return minutes;
 	}
 	public void fertilization() {
 		fruitMap.reduceAllValues(GlobalConst.RSGTreeFertilizerAcce);
@@ -227,6 +231,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	public void setHangUpRewardCalcTime(int hangUpRewardCalcTime) {
 		this.hangUpRewardCalcTime = hangUpRewardCalcTime;
+	}
+
+	public List<Integer> getHeroIdList() {
+		return heroIdList;
 	}
 
 }

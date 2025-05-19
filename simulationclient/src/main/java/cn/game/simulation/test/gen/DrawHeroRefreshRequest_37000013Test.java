@@ -1,7 +1,8 @@
 package cn.game.simulation.test.gen;
 
-import com.google.protobuf.Message;
 import org.springframework.stereotype.Component;
+
+import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
@@ -13,7 +14,7 @@ public class DrawHeroRefreshRequest_37000013Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.newBuilder() ; 
 		
-		
+		builder.setGold(50000);
 		
 		return builder.build() ; 
 	}
@@ -22,7 +23,7 @@ public class DrawHeroRefreshRequest_37000013Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.newBuilder() ; 
 		
-		
+		builder.setGold(50000);
 		
 		return builder.build() ; 
 	}

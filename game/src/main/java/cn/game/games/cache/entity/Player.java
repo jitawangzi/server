@@ -48,6 +48,7 @@ import cn.game.games.net.game.module.develop.pet.PetModule;
 import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.func.FuncModule;
+import cn.game.games.net.game.module.guarantee.GuaranteeModule;
 import cn.game.games.net.game.module.invite.InviteModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
@@ -314,6 +315,10 @@ public class Player {
 
 	public VipModule getVipModule() {
 		return getModule(VipModule.class);
+	}
+
+	public GuaranteeModule getGuaranteeModule() {
+		return getModule(GuaranteeModule.class);
 	}
 
 	public ZongMenModule getZongmenModule() {
