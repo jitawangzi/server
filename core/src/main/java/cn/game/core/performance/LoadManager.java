@@ -23,9 +23,12 @@ public class LoadManager {
 	// 阈值配置
 	private static final double WARNING_THRESHOLD = 0.6;
 	private static final double CRITICAL_THRESHOLD = 0.8;
-	private static final double WORKER_CRITICAL = 0.8;
+
 	private static final double QUEUE_CRITICAL = 0.9;
+	private static final double WORKER_CRITICAL = 0.8;
 	private static final double CPU_CRITICAL = 0.9;
+	private static final double MEMORY_CRITICAL = 0.8;
+	private static final double DISK_CRITICAL = 0.8;
 
 	// 单例实例
 	private static final LoadManager INSTANCE = new LoadManager();
@@ -156,11 +159,15 @@ public class LoadManager {
 
 	private LoadState evaluateCompositeState(double score, double[] rawMetrics) {
 		// 独立指标检查优先
-		if (rawMetrics[1] >= WORKER_CRITICAL)
-			return LoadState.CRITICAL;
 		if (rawMetrics[0] >= QUEUE_CRITICAL)
 			return LoadState.CRITICAL;
+		if (rawMetrics[1] >= WORKER_CRITICAL)
+			return LoadState.CRITICAL;
 		if (rawMetrics[2] >= CPU_CRITICAL)
+			return LoadState.CRITICAL;
+		if (rawMetrics[3] >= MEMORY_CRITICAL)
+			return LoadState.CRITICAL;
+		if (rawMetrics[4] >= DISK_CRITICAL)
 			return LoadState.CRITICAL;
 
 		// 综合评分检查
@@ -189,11 +196,11 @@ public class LoadManager {
 		}
 
 		// 独立指标专项限制
-		if (rawMetrics[1] >= WORKER_CRITICAL) {
-			DegradeStrategy.limit(LoadLimitTypeEnum.BlockingOperation);
-		}
 		if (rawMetrics[0] >= QUEUE_CRITICAL) {
 			DegradeStrategy.limit(LoadLimitTypeEnum.NoBlockingOperation);
+		}
+		if (rawMetrics[1] >= WORKER_CRITICAL) {
+			DegradeStrategy.limit(LoadLimitTypeEnum.BlockingOperation);
 		}
 		if (rawMetrics[2] >= CPU_CRITICAL) {
 		}
