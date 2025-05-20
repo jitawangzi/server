@@ -5,7 +5,9 @@ import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.StampedLock;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -16,6 +18,8 @@ import oshi.hardware.CentralProcessor;
 import oshi.hardware.HWDiskStore;
 
 public class LoadManager {
+	private Logger log = LoggerFactory.getLogger(LoadManager.class);
+
 	// 配置参数
 	private static final int SAMPLE_INTERVAL = 5_000;
 	private static final double[] WEIGHTS = { 0.3, 0.2, 0.2, 0.2, 0.1 };
@@ -32,7 +36,6 @@ public class LoadManager {
 
 	// 单例实例
 	private static final LoadManager INSTANCE = new LoadManager();
-	private final StampedLock lock = new StampedLock();
 	private final AtomicReference<LoadState> currentState = new AtomicReference<>(LoadState.NORMAL);
 	private final AtomicInteger currentScore = new AtomicInteger(0);
 
@@ -72,6 +75,7 @@ public class LoadManager {
 
 	public void init(Vertx vertx) {
 		this.registry = BackendRegistries.getDefaultNow();
+		// 提前初始化CPU使用基准数据，避免首次采集数据失真
 		this.prevCpuTicks = processor.getSystemCpuLoadTicks();
 		registerMetrics();
 		startSampling(vertx);
@@ -90,45 +94,42 @@ public class LoadManager {
 	}
 
 	private void startSampling(Vertx vertx) {
-		vertx.setPeriodic(SAMPLE_INTERVAL, id -> vertx.executeBlocking(promise -> {
+		vertx.setPeriodic(SAMPLE_INTERVAL, id -> vertx.executeBlocking(() -> {
 			try {
 				updateLoadState();
-				promise.complete();
 			} catch (Exception e) {
-				promise.fail(e);
+				log.error("Error updating load state", e);
 			}
+			return null;
 		}, false));
 	}
 
-	private synchronized void updateLoadState() {
-		long stamp = lock.writeLock();
-		try {
-			// 1. 收集原始指标
-			double[] rawMetrics = collectRawMetrics();
+	private void updateLoadState() {
 
-			// 2. 更新缓存
-			updateCache(rawMetrics);
+		// 1. 收集原始指标
+		double[] rawMetrics = collectRawMetrics();
 
-			// 3. 计算滑动平均
-			double[] avgMetrics = calculateAverageMetrics();
+		// 2. 更新缓存
+		updateCache(rawMetrics);
 
-			// 4. 计算综合评分
-			double score = calculateScore(avgMetrics);
+		// 3. 计算滑动平均
+		double[] avgMetrics = calculateAverageMetrics();
 
-			// 5. 评估状态（综合评分 + 独立指标）
-			LoadState newState = evaluateCompositeState(score, rawMetrics);
+		// 4. 计算综合评分
+		double score = calculateScore(avgMetrics);
 
-			// 6. 更新状态
-			currentScore.set((int) (score * 100));
-			LoadState oldState = currentState.getAndSet(newState);
+		// 5. 评估状态（综合评分 + 独立指标）
+		LoadState newState = evaluateCompositeState(score, rawMetrics);
 
-			// 7. 执行降级策略
-			if (oldState != newState) {
-				executeDegrade(newState, rawMetrics);
-			}
-		} finally {
-			lock.unlockWrite(stamp);
+		// 6. 更新状态
+		currentScore.set((int) (score * 100));
+		LoadState oldState = currentState.getAndSet(newState);
+
+		// 7. 执行降级策略
+		if (oldState != newState) {
+			executeDegrade(newState, rawMetrics);
 		}
+	
 	}
 
 	private double[] collectRawMetrics() {
