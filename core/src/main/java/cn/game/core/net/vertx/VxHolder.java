@@ -43,13 +43,16 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
+import io.vertx.micrometer.MicrometerMetricsOptions;
+import io.vertx.micrometer.VertxJmxMetricsOptions;
+import io.vertx.micrometer.VertxPrometheusOptions;
 import io.vertx.serviceproxy.ServiceException;
 import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
@@ -110,7 +113,20 @@ public class VxHolder {
 
 		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
 		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(eventBusOptions);
-		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
+		//
+//		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
+		options.setMetricsOptions(new MicrometerMetricsOptions()
+				// 启用 JMX
+				.setJmxMetricsOptions(new VertxJmxMetricsOptions().setEnabled(true).setStep(10) // 指标刷新间隔
+				)
+				// 启用 Prometheus（按需开启）
+				.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(cn.game.util.Config.ENABLE_VERTX_PROMETHEUS)
+						.setStartEmbeddedServer(true) // 启动内置 HTTP 服务器
+						.setEmbeddedServerOptions(
+								new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
+						.setEmbeddedServerEndpoint("/metrics"))
+				.setEnabled(true));
+
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);
 		}

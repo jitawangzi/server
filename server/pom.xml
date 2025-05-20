@@ -595,11 +595,14 @@
 			<artifactId>vertx-service-proxy</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-dropwizard-metrics</artifactId>
-		</dependency>
-
+<!--		<dependency>-->
+<!--			<groupId>io.vertx</groupId>-->
+<!--			<artifactId>vertx-dropwizard-metrics</artifactId>-->
+<!--		</dependency>-->
+<dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-micrometer-metrics</artifactId>
+</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
 		<dependency>
@@ -830,17 +833,36 @@
 			<version>4.4</version>
 		</dependency>
 
+<!-- micrometer核心监控 -->
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-core</artifactId>
+    <version>1.12.5</version>
+</dependency>
 
+<!-- JMX 支持 -->
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-jmx</artifactId>
+    <version>1.12.5</version>
+</dependency>
 		<!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient -->
 		<dependency>
 			<groupId>io.prometheus</groupId>
 			<artifactId>simpleclient</artifactId>
 			<version>0.16.0</version>
 		</dependency>
+		<!-- Prometheus 支持（可选） -->
 		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
-			<version>1.10.2</version>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-registry-prometheus</artifactId>
+		    <version>1.12.5</version>
+		</dependency>
+<!--		系统层监控-->
+		<dependency>
+	    <groupId>com.github.oshi</groupId>
+	    <artifactId>oshi-core</artifactId>
+	    <version>6.8.0</version>
 		</dependency>
 
 		<dependency>

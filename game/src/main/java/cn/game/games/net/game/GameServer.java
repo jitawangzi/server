@@ -38,6 +38,7 @@ import cn.game.core.net.vertx.BusinessLogicVerticle;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.performance.LoadManager;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
@@ -75,9 +76,14 @@ import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
+import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxInternal;
+import io.vertx.micrometer.backends.BackendRegistries;
 
 /**
  * vertx重构通讯
@@ -490,4 +496,30 @@ public class GameServer implements GameServerMBean {
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
 	}
 
+
+	public void initLoadManager() {
+
+		// 初始化负载管理器
+		LoadManager loadManager = LoadManager.getInstance();
+		loadManager.init(VxHolder.vertx);
+
+		// 获取 Prometheus 注册表
+		PrometheusMeterRegistry registry = (PrometheusMeterRegistry) BackendRegistries.getDefaultNow();
+
+		// 添加 MeterFilter 来标准化 URI 标签
+		registry.config().meterFilter(new MeterFilter() {
+			@Override
+			public Meter.Id map(Meter.Id id) {
+				// 统一路由指标标签
+				if (id.getName().startsWith("http.server.requests")) {
+					return id.withTag(Tag.of("uri", getNormalizedUri(id)));
+				}
+				return id;
+			}
+			private String getNormalizedUri(Meter.Id id) {
+				// 根据实际路由逻辑返回统一 URI
+				return id.getTag("uri"); // 或自定义映射逻辑
+			}
+		});
+	}
 }

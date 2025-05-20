@@ -129,6 +129,8 @@ public final class Config {
 	public static String CHANGYOU_SDK_APPSECRET;
 	public static int ExpectedNodeCount = 1;
 	public static int DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS;
+	public static boolean ENABLE_VERTX_PROMETHEUS;
+	public static int VERTX_PROMETHEU_HTTP_PORT;
 
 	/**
 	 *
@@ -194,6 +196,8 @@ public final class Config {
 					.parseInt(initialProp.getProperty("DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_MINUTES", "600"));
 
 			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
+			ENABLE_VERTX_PROMETHEUS = Boolean.parseBoolean(initialProp.getProperty("ENABLE_VERTX_PROMETHEUS", "false"));
+			VERTX_PROMETHEU_HTTP_PORT = Integer.parseInt(initialProp.getProperty("VERTX_PROMETHEU_HTTP_PORT", "8380"));
 
 			initialProp.addChangeListener(new ConfigChangeListener() {
 				@Override
