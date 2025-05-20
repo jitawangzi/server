@@ -195,7 +195,13 @@ public class GinsengTreeHandler extends BaseHandler {
         //		int hangUpStartTime = module.getHangUpStartTime();
         module.setHangUpStartTime(DateUtil.currentTimeSeconds());
 
+
 		int minutes = module.calcHangUpReward();
+
+		if (module.getHangUpRandomRewardMap().getMap().isEmpty()) {
+			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+			return;
+		}
 		// 随机奖励
 		IntMapWrapper rewardMap = new IntMapWrapper();
 		rewardMap.getMap().putAll(module.getHangUpRandomRewardMap().getMap());
@@ -215,7 +221,7 @@ public class GinsengTreeHandler extends BaseHandler {
 
 		List<RewardInfo> resources = PlayerHelper.addResources(player, rewardMap.getMap(), OpType.GinsengTreeHangUp);
 		resp.addAllRewards(resources);
-
+		module.getHangUpRandomRewardMap().clear();
         client.sendProtocol(resp.build());
     }
 

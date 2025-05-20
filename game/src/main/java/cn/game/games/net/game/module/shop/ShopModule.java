@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -23,11 +22,21 @@ import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.HunhuoConfig;
+import cn.game.protocol.generated.config.RSGTreeShopConfig;
 import cn.game.protocol.generated.config.RechargeStoreConfig;
 import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.FundPassManager;
+import cn.game.protocol.generated.manager.HeishiManager;
+import cn.game.protocol.generated.manager.HunhuoManager;
+import cn.game.protocol.generated.manager.RSGTreeShopManager;
+import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.ResidentPackManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ShopManager;
+import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -221,7 +230,7 @@ public class ShopModule extends BasePlayerModule {
 		//刷新每日商店
 		refreshEveryDayShop();
 
-
+		refreshGinsengTreeItems();
 		
 	}
 
@@ -304,6 +313,22 @@ public class ShopModule extends BasePlayerModule {
 			shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
 		}
 
+	}
+
+	public void refreshGinsengTreeItems() {
+		// 刷新体力商店
+		int shop = 18;
+		shopItemsMap.removeAll(shop);
+		int level = player.getLevel(Asset.RSGTreeExp);
+		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
+		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
+			if (level >= rsgTreeShopConfig.Condition) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+				if (shopItemConfig != null) {
+					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+				}
+			}
+		}
 	}
 
 	public void refreshHunhuoItems(int shop) {
@@ -427,6 +452,8 @@ public class ShopModule extends BasePlayerModule {
 				initShop();
 			} else if (func == InitialUI.Passport) {
 				initFundPass();
+			} else if (func == InitialUI.RSGTree) {
+				refreshGinsengTreeItems();
 			}
 			break;
 		}

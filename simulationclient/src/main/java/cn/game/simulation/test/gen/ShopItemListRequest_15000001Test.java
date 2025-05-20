@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import com.google.protobuf.Message;
 
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
@@ -15,7 +14,7 @@ public class ShopItemListRequest_15000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.newBuilder() ; 
 		
-		builder.setShopId(15);
+		builder.setShopId(18);
 		
 		return builder.build() ; 
 	}

@@ -66,7 +66,6 @@ public class VipModule extends BasePlayerModule {
             case LevelUp  -> {
                 int type = event.getIntParameter(0);
                 int level = event.getIntParameter(1);
-                long curExp = event.getLongParameter(2);
                 if (type == Asset.VIPExp.ID){
                     //旧的免费礼包未领取  在VIP升级后，没有领取的每日奖励通过邮件发送ID=8；
                     if (level > 0 && !getRewardFreeGiftList().contains(level - 1)){
