@@ -16,11 +16,22 @@ import oshi.hardware.HWDiskStore;
  * 生产级负载管理器（线程安全、低开销）
  */
 public class LoadManager {
-	private static final int SAMPLE_INTERVAL = 1_000; // 1秒采样
-	private static final double[] WEIGHTS = { 0.4, 0.3, 0.2, 0.1 }; // 队列、CPU、内存、磁盘权重
+
+	// 10秒采样
+	private static final int SAMPLE_INTERVAL = 10_000;
+
+	// 队列、CPU、内存、磁盘权重
+	private static final double[] WEIGHTS = { 0.4, 0.3, 0.2, 0.1 };
+
+	// 负载警告和危险阈值
+	private static final double WARNING_THRESHOLD = 0.6;
+	private static final double CRITICAL_THRESHOLD = 0.8;
+
 	// 增加指标压缩器
 	private final MovingAverage cpuAvg = new MovingAverage(5);
 	private final MovingAverage memAvg = new MovingAverage(5);
+	private final MovingAverage diskAvg = new MovingAverage(3);
+	private final MovingAverage queueAvg = new MovingAverage(3);
 
 	// 状态枚举
 	public enum LoadState {
@@ -39,7 +50,14 @@ public class LoadManager {
 	private final AtomicReference<LoadState> currentState = new AtomicReference<>(LoadState.NORMAL);
 	private final AtomicInteger currentScore = new AtomicInteger(0);
 	private final SystemInfo systemInfo = new SystemInfo();
+
 	private MeterRegistry registry;
+
+	// 性能指标缓存
+	private double lastCpuLoad = 0.0;
+	private double lastMemUsage = 0.0;
+	private double lastDiskIO = 0.0;
+	private double lastQueueSize = 0.0;
 
 	// 私有构造
 	private LoadManager() {
@@ -57,6 +75,14 @@ public class LoadManager {
 		Gauge.builder("load.state", () -> currentState.get().ordinal())
 				.description("负载状态(0=NORMAL,1=WARNING,2=CRITICAL)")
 				.register(registry);
+
+		Gauge.builder("load.cpu", () -> lastCpuLoad).description("CPU负载").register(registry);
+
+		Gauge.builder("load.memory", () -> lastMemUsage).description("内存使用率").register(registry);
+
+		Gauge.builder("load.disk", () -> lastDiskIO).description("磁盘IO").register(registry);
+
+		Gauge.builder("load.queue", () -> lastQueueSize).description("事件循环队列大小").register(registry);
 	}
 
 	private void startSampling(Vertx vertx) {
@@ -69,6 +95,10 @@ public class LoadManager {
 					promise.fail(e);
 				}
 			}, false, res -> {
+				if (res.failed()) {
+					// 可以添加日志记录
+					System.err.println("Failed to update load state: " + res.cause().getMessage());
+				}
 			});
 		});
 	}
@@ -76,6 +106,7 @@ public class LoadManager {
 	private void updateLoadState() {
 		long stamp = lock.tryOptimisticRead();
 		double[] metrics = collectMetrics();
+
 		if (!lock.validate(stamp)) {
 			stamp = lock.readLock();
 			try {
@@ -90,29 +121,46 @@ public class LoadManager {
 
 		long writeStamp = lock.writeLock();
 		try {
+			// 更新当前分数和状态
 			currentScore.set((int) (score * 100));
-			currentState.set(newState);
-			executeDegrade(newState);
+			LoadState oldState = currentState.getAndSet(newState);
+
+			// 只有状态变化时才执行降级策略
+			if (oldState != newState) {
+				executeDegrade(newState);
+			}
 		} finally {
 			lock.unlockWrite(writeStamp);
 		}
 	}
 
 	private double[] collectMetrics() {
-		// 应用层指标
-		double queueSize = registry.find("vertx.eventloop.queue.size").gauge().value();
+		// 应用层指标 - 事件循环队列大小
+		double queueSize = registry.find("vertx.eventloop.queue.size").gauge() != null
+				? registry.find("vertx.eventloop.queue.size").gauge().value()
+				: 0.0;
 
 		// 系统层指标（OSHI）
 		GlobalMemory memory = systemInfo.getHardware().getMemory();
-		double cpuLoad = systemInfo.getHardware().getProcessor().getSystemLoadAverage(1)[0];
-		double memUsage = 1 - (memory.getAvailable() / (double) memory.getTotal());
-		double diskIo = systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum();
-		// 应用容器感知
-		double containerCpu = ContainerAwareMetrics.getContainerCpuUsage(cpuLoad);
-		double containerMem = ContainerAwareMetrics.getContainerMemUsage((long) (memUsage * 1e6));
+		double cpuLoad = systemInfo.getHardware().getProcessor().getSystemLoadAverage(1)[0] / Runtime.getRuntime().availableProcessors(); // 标准化CPU负载
 
-		// 应用滑动平均
-		return new double[] { queueSize, cpuAvg.next(containerCpu), memAvg.next(containerMem), diskIo };
+		double memUsage = 1 - (memory.getAvailable() / (double) memory.getTotal());
+
+		// 计算磁盘IO（标准化到0-1范围）
+		double diskIo = systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum();
+
+		// 标准化磁盘IO (假设最大10000ms为1.0)
+		diskIo = Math.min(diskIo / 10000.0, 1.0);
+
+		// 更新缓存的指标值
+		lastCpuLoad = cpuLoad;
+		lastMemUsage = memUsage;
+		lastDiskIO = diskIo;
+		lastQueueSize = queueSize;
+
+		// 更新并返回滑动平均值
+		return new double[] { queueAvg.next(queueSize / 100.0), // 标准化队列大小
+				cpuAvg.next(cpuLoad), memAvg.next(memUsage), diskAvg.next(diskIo) };
 	}
 
 	private double calculateScore(double[] metrics) {
@@ -120,33 +168,64 @@ public class LoadManager {
 		for (int i = 0; i < metrics.length; i++) {
 			score += metrics[i] * WEIGHTS[i];
 		}
-		return score;
+		return Math.min(score, 1.0); // 确保分数不超过1.0
 	}
 
 	private LoadState evaluateState(double score) {
-		// 动态基线调整（示例：基于历史数据）
-//		double baseline = BaselineManager.getBaseline();
-		double baseline = 0.5; // 示例基线值,待完善
-		if (score > baseline * 1.3)
+		if (score >= CRITICAL_THRESHOLD) {
 			return LoadState.CRITICAL;
-		if (score > baseline * 1.1)
+		} else if (score >= WARNING_THRESHOLD) {
 			return LoadState.WARNING;
-		return LoadState.NORMAL;
-	}
-	private void executeDegrade(LoadState state) {
-		switch (state) {
-		case CRITICAL:
-			DegradeStrategy.limit(LoadLimitTypeEnum.Login);
-			break;
-		case WARNING:
-			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
-			break;
-		default:
-			DegradeStrategy.recoverAll();
+		} else {
+			return LoadState.NORMAL;
 		}
 	}
 
+	private void executeDegrade(LoadState state) {
+		// 先恢复所有限制，然后根据当前状态应用新的限制
+		DegradeStrategy.recoverAll();
+
+		switch (state) {
+		case CRITICAL:
+			// 在危险状态时限制登录和全体聊天
+			DegradeStrategy.limit(LoadLimitTypeEnum.Login);
+			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
+			break;
+		case WARNING:
+			// 在警告状态只限制全体聊天
+			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
+			break;
+		default:
+			// NORMAL状态不需要限制
+			break;
+		}
+	}
+
+	/**
+	 * 获取当前负载状态
+	 */
 	public LoadState getCurrentState() {
 		return currentState.get();
+	}
+
+	/**
+	 * 获取当前负载分数（0-100）
+	 */
+	public int getCurrentScore() {
+		return currentScore.get();
+	}
+
+	/**
+	 * 获取当前CPU负载
+	 */
+	public double getCurrentCpuLoad() {
+		return lastCpuLoad;
+	}
+
+	/**
+	 * 获取当前内存使用率
+	 */
+	public double getCurrentMemUsage() {
+		return lastMemUsage;
 	}
 }
