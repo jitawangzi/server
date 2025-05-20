@@ -9,6 +9,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.vertx.core.Vertx;
 import io.vertx.micrometer.backends.BackendRegistries;
 import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
 import oshi.hardware.HWDiskStore;
 
@@ -17,49 +18,55 @@ import oshi.hardware.HWDiskStore;
  */
 public class LoadManager {
 
-	// 10秒采样
-	private static final int SAMPLE_INTERVAL = 10_000;
+	// 采样间隔 5秒
+	private static final int SAMPLE_INTERVAL = 5_000;
 
-	// 队列、CPU、内存、磁盘权重
-	private static final double[] WEIGHTS = { 0.4, 0.3, 0.2, 0.1 };
+	// 权重分配：队列、Worker线程池、CPU、内存、磁盘
+	private static final double[] WEIGHTS = { 0.3, 0.2, 0.3, 0.15, 0.05 }; // 提高CPU权重
 
-	// 负载警告和危险阈值
+	// 阈值配置
 	private static final double WARNING_THRESHOLD = 0.6;
 	private static final double CRITICAL_THRESHOLD = 0.8;
+	private static final double SINGLE_METRIC_CRITICAL = 0.9; // 单项指标阈值
 
-	// 增加指标压缩器
-	private final MovingAverage cpuAvg = new MovingAverage(5);
-	private final MovingAverage memAvg = new MovingAverage(5);
+	private long[] prevCpuTicks;
+
+	// 滑动平均窗口
+	private final MovingAverage cpuAvg = new MovingAverage(3);
+	private final MovingAverage memAvg = new MovingAverage(3);
 	private final MovingAverage diskAvg = new MovingAverage(3);
 	private final MovingAverage queueAvg = new MovingAverage(3);
+	private final MovingAverage workerAvg = new MovingAverage(3);
 
 	// 状态枚举
 	public enum LoadState {
 		NORMAL, WARNING, CRITICAL
 	}
 
-	// 单例模式
+	// 单例实例
 	private static final LoadManager INSTANCE = new LoadManager();
 
 	public static LoadManager getInstance() {
 		return INSTANCE;
 	}
 
-	// 指标缓存
+	// 线程安全控制
 	private final StampedLock lock = new StampedLock();
 	private final AtomicReference<LoadState> currentState = new AtomicReference<>(LoadState.NORMAL);
 	private final AtomicInteger currentScore = new AtomicInteger(0);
-	private final SystemInfo systemInfo = new SystemInfo();
 
+	// 系统信息
+	private final SystemInfo systemInfo = new SystemInfo();
+	private final CentralProcessor processor = systemInfo.getHardware().getProcessor();
 	private MeterRegistry registry;
 
-	// 性能指标缓存
-	private double lastCpuLoad = 0.0;
-	private double lastMemUsage = 0.0;
-	private double lastDiskIO = 0.0;
-	private double lastQueueSize = 0.0;
+	// 性能指标缓存（volatile保证可见性）
+	private volatile double lastCpuLoad = 0.0;
+	private volatile double lastMemUsage = 0.0;
+	private volatile double lastDiskIO = 0.0;
+	private volatile double lastQueueSize = 0.0;
+	private volatile double lastWorkerPoolUsage = 0.0;
 
-	// 私有构造
 	private LoadManager() {
 	}
 
@@ -70,108 +77,110 @@ public class LoadManager {
 	}
 
 	private void registerMetrics() {
-		Gauge.builder("load.score", currentScore::get).description("综合负载评分").register(registry);
+		Gauge.builder("load.score", currentScore::get).register(registry);
+		Gauge.builder("load.state", () -> currentState.get().ordinal()).register(registry);
+		Gauge.builder("load.cpu", () -> lastCpuLoad).register(registry);
+		Gauge.builder("load.memory", () -> lastMemUsage).register(registry);
+		Gauge.builder("load.disk", () -> lastDiskIO).register(registry);
+		Gauge.builder("load.queue", () -> lastQueueSize).register(registry);
+		Gauge.builder("load.worker", () -> lastWorkerPoolUsage).register(registry);
+	}
 
-		Gauge.builder("load.state", () -> currentState.get().ordinal())
-				.description("负载状态(0=NORMAL,1=WARNING,2=CRITICAL)")
-				.register(registry);
-
-		Gauge.builder("load.cpu", () -> lastCpuLoad).description("CPU负载").register(registry);
-
-		Gauge.builder("load.memory", () -> lastMemUsage).description("内存使用率").register(registry);
-
-		Gauge.builder("load.disk", () -> lastDiskIO).description("磁盘IO").register(registry);
-
-		Gauge.builder("load.queue", () -> lastQueueSize).description("事件循环队列大小").register(registry);
+	private void initCpuTicks() {
+		prevCpuTicks = processor.getSystemCpuLoadTicks();
 	}
 
 	private void startSampling(Vertx vertx) {
-		vertx.setPeriodic(SAMPLE_INTERVAL, id -> {
-			vertx.executeBlocking(promise -> {
-				try {
-					updateLoadState();
-					promise.complete();
-				} catch (Exception e) {
-					promise.fail(e);
-				}
-			}, false, res -> {
-				if (res.failed()) {
-					// 可以添加日志记录
-					System.err.println("Failed to update load state: " + res.cause().getMessage());
-				}
-			});
-		});
+		vertx.setPeriodic(SAMPLE_INTERVAL, id -> vertx.executeBlocking(promise -> {
+			try {
+				updateLoadState();
+				promise.complete();
+			} catch (Exception e) {
+				promise.fail(e);
+			}
+		}, false));
 	}
 
 	private void updateLoadState() {
-		long stamp = lock.tryOptimisticRead();
-		double[] metrics = collectMetrics();
-
-		if (!lock.validate(stamp)) {
-			stamp = lock.readLock();
-			try {
-				metrics = collectMetrics();
-			} finally {
-				lock.unlockRead(stamp);
-			}
-		}
-
-		double score = calculateScore(metrics);
-		LoadState newState = evaluateState(score);
-
-		long writeStamp = lock.writeLock();
+		long stamp = lock.writeLock(); // 全程写锁保证原子性
 		try {
-			// 更新当前分数和状态
+			double[] metrics = collectMetrics();
+			double score = calculateScore(metrics);
+			LoadState newState = evaluateState(score, metrics);
+
 			currentScore.set((int) (score * 100));
 			LoadState oldState = currentState.getAndSet(newState);
 
-			// 只有状态变化时才执行降级策略
 			if (oldState != newState) {
 				executeDegrade(newState);
 			}
 		} finally {
-			lock.unlockWrite(writeStamp);
+			lock.unlockWrite(stamp);
 		}
 	}
 
 	private double[] collectMetrics() {
-		// 应用层指标 - 事件循环队列大小
-		double queueSize = registry.find("vertx.eventloop.queue.size").gauge() != null
-				? registry.find("vertx.eventloop.queue.size").gauge().value()
-				: 0.0;
+		// 1. 事件循环队列大小（标准化）
+		double queueSize = registry.find("vertx.eventloop.queue.size").gauge().value();
+		queueSize = Math.min(queueSize / 100.0, 1.0); // 假设队列超过100认为满载
 
-		// 系统层指标（OSHI）
+		// 2. Worker线程池使用率
+		double workerPoolUsage = calculateWorkerPoolUsage();
+
+		// 3. 系统指标（使用oshi正确方法）
+		// CPU使用率（已考虑多核）
+		double cpuLoad = getCpuLoad();
+		cpuLoad = (Double.isNaN(cpuLoad) || cpuLoad < 0) ? 0 : Math.min(cpuLoad, 1.0);
+
+		// 内存使用率
 		GlobalMemory memory = systemInfo.getHardware().getMemory();
-		double cpuLoad = systemInfo.getHardware().getProcessor().getSystemLoadAverage(1)[0] / Runtime.getRuntime().availableProcessors(); // 标准化CPU负载
+		double memUsage = 1.0 - (memory.getAvailable() / (double) memory.getTotal());
 
-		double memUsage = 1 - (memory.getAvailable() / (double) memory.getTotal());
+		// 磁盘IO（标准化）
+		double diskIo = systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum() / 10_000.0; // 假设10000ms为满载
 
-		// 计算磁盘IO（标准化到0-1范围）
-		double diskIo = systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum();
-
-		// 标准化磁盘IO (假设最大10000ms为1.0)
-		diskIo = Math.min(diskIo / 10000.0, 1.0);
-
-		// 更新缓存的指标值
+		// 更新缓存
 		lastCpuLoad = cpuLoad;
 		lastMemUsage = memUsage;
 		lastDiskIO = diskIo;
 		lastQueueSize = queueSize;
+		lastWorkerPoolUsage = workerPoolUsage;
 
-		// 更新并返回滑动平均值
-		return new double[] { queueAvg.next(queueSize / 100.0), // 标准化队列大小
-				cpuAvg.next(cpuLoad), memAvg.next(memUsage), diskAvg.next(diskIo) };
+		// 返回滑动平均后的指标
+		return new double[] { queueAvg.next(queueSize), workerAvg.next(workerPoolUsage), cpuAvg.next(cpuLoad), memAvg.next(memUsage),
+				diskAvg.next(diskIo) };
+	}
+
+	private double calculateWorkerPoolUsage() {
+		double poolSize = registry.find("vertx.worker.pool.size").gauge().value();
+		if (poolSize <= 0)
+			return 0.0;
+
+		double active = registry.find("vertx.worker.pool.active").gauge().value();
+		double queued = registry.find("vertx.worker.queue.size").gauge().value();
+
+		double threadUsage = active / poolSize;
+		double queueFactor = Math.min(queued / poolSize, 1.0);
+		return (threadUsage * 0.7) + (queueFactor * 0.3);
 	}
 
 	private double calculateScore(double[] metrics) {
-		double score = 0;
+		double weightedSum = 0;
 		for (int i = 0; i < metrics.length; i++) {
-			score += metrics[i] * WEIGHTS[i];
+			weightedSum += metrics[i] * WEIGHTS[i];
 		}
-		return Math.min(score, 1.0); // 确保分数不超过1.0
+		return Math.min(weightedSum, 1.0);
 	}
 
-	private LoadState evaluateState(double score) {
+	private LoadState evaluateState(double score, double[] metrics) {
+		// 先检查单项指标是否超过紧急阈值
+		for (double metric : metrics) {
+			if (metric >= SINGLE_METRIC_CRITICAL) {
+				return LoadState.CRITICAL;
+			}
+		}
+
+		// 再根据综合评分判断
 		if (score >= CRITICAL_THRESHOLD) {
 			return LoadState.CRITICAL;
 		} else if (score >= WARNING_THRESHOLD) {
@@ -182,50 +191,89 @@ public class LoadManager {
 	}
 
 	private void executeDegrade(LoadState state) {
-		// 先恢复所有限制，然后根据当前状态应用新的限制
 		DegradeStrategy.recoverAll();
-
 		switch (state) {
 		case CRITICAL:
-			// 在危险状态时限制登录和全体聊天
 			DegradeStrategy.limit(LoadLimitTypeEnum.Login);
 			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
+			DegradeStrategy.limit(LoadLimitTypeEnum.LeaderboardUpdate);
 			break;
 		case WARNING:
-			// 在警告状态只限制全体聊天
 			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
 			break;
-		default:
-			// NORMAL状态不需要限制
-			break;
+		default: // NORMAL不操作
 		}
 	}
 
-	/**
-	 * 获取当前负载状态
-	 */
-	public LoadState getCurrentState() {
-		return currentState.get();
+	private double getCpuLoad() {
+		long[] newTicks = processor.getSystemCpuLoadTicks();
+		double load = processor.getSystemCpuLoadBetweenTicks(prevCpuTicks);
+		prevCpuTicks = newTicks;
+		return load;
 	}
 
-	/**
-	 * 获取当前负载分数（0-100）
-	 */
-	public int getCurrentScore() {
-		return currentScore.get();
+	public MovingAverage getCpuAvg() {
+		return cpuAvg;
 	}
 
-	/**
-	 * 获取当前CPU负载
-	 */
-	public double getCurrentCpuLoad() {
+	public MovingAverage getMemAvg() {
+		return memAvg;
+	}
+
+	public MovingAverage getDiskAvg() {
+		return diskAvg;
+	}
+
+	public MovingAverage getQueueAvg() {
+		return queueAvg;
+	}
+
+	public MovingAverage getWorkerAvg() {
+		return workerAvg;
+	}
+
+	public StampedLock getLock() {
+		return lock;
+	}
+
+	public AtomicReference<LoadState> getCurrentState() {
+		return currentState;
+	}
+
+	public AtomicInteger getCurrentScore() {
+		return currentScore;
+	}
+
+	public SystemInfo getSystemInfo() {
+		return systemInfo;
+	}
+
+	public CentralProcessor getProcessor() {
+		return processor;
+	}
+
+	public MeterRegistry getRegistry() {
+		return registry;
+	}
+
+	public double getLastCpuLoad() {
 		return lastCpuLoad;
 	}
 
-	/**
-	 * 获取当前内存使用率
-	 */
-	public double getCurrentMemUsage() {
+	public double getLastMemUsage() {
 		return lastMemUsage;
 	}
+
+	public double getLastDiskIO() {
+		return lastDiskIO;
+	}
+
+	public double getLastQueueSize() {
+		return lastQueueSize;
+	}
+
+	public double getLastWorkerPoolUsage() {
+		return lastWorkerPoolUsage;
+	}
+
 }
