@@ -48,7 +48,9 @@ public class LoadManager {
 	private final MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
 
 	// 滑动平均窗口
+	// vertx eventloop队列
 	private final MovingAverage queueAvg = new MovingAverage(3);
+	// vertx worker池队列
 	private final MovingAverage workerAvg = new MovingAverage(3);
 	private final MovingAverage cpuAvg = new MovingAverage(3);
 	private final MovingAverage heapMemAvg = new MovingAverage(3);
@@ -197,12 +199,19 @@ public class LoadManager {
 		}
 	}
 
-	// -- Vert.x 核心指标采集 --//
+	/** 
+	 * Vert.x eventloop核心指标采集
+	 * @return
+	 */
 	private double getEventLoopQueueMetric() {
 		Double value = registry.find("vertx.eventloop.queue.size").gauge().value();
 		return normalize(value != null ? value : 0.0, 0, 1000);
 	}
 
+	/** 
+	 * Vert.x worker核心指标采集
+	 * @return
+	 */
 	private double getWorkerPoolMetric() {
 		Double active = registry.find("vertx.worker.pool.active").gauge().value();
 		Double queued = registry.find("vertx.worker.queue.size").gauge().value();
@@ -210,7 +219,10 @@ public class LoadManager {
 		return normalize(usage, 0, 200);
 	}
 
-	// -- OSHI 硬件指标采集 --//
+	/** 
+	 * OSHI cpu硬件指标采集
+	 * @return
+	 */
 	private double getCpuUsage() {
 		long[] newTicks = processor.getSystemCpuLoadTicks();
 		double load = processor.getSystemCpuLoadBetweenTicks(prevCpuTicks);
@@ -219,16 +231,23 @@ public class LoadManager {
 		return load;
 	}
 
-	// -- JMX 内存指标采集 --//
+	/** 
+	 * OSHI 硬盘指标采集
+	 * @return
+	 */
+	private double getRawDiskUsage() {
+		return systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum() / 10_000.0;
+	}
+
+	/** 
+	 * JMX 内存指标采集
+	 * @return
+	 */
 	private double getHeapMemoryUsage() {
 		MemoryUsage usage = memoryMxBean.getHeapMemoryUsage();
 		if (usage.getMax() <= 0)
 			return 0.0;
 		return (double) usage.getUsed() / usage.getMax();
-	}
-
-	private double getRawDiskUsage() {
-		return systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum() / 10_000.0;
 	}
 
 	private double normalize(double value, double min, double max) {

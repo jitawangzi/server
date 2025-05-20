@@ -25,12 +25,12 @@ public enum LoadLimitTypeEnum {
 
 	/**
 	 * 阻塞操作限制
-	 * 一般是vertx的worker线程池超载了，减少阻塞操作，例如玩家在线保存频率
+	 * vertx的worker线程池超载了，减少阻塞操作，例如玩家在线保存频率
 	 */
 	BlockingOperation,
 	/**
 	 * 非阻塞操作限制
-	 * 一般是vertx的eventloop线程超载了
+	 * vertx的eventloop线程超载了
 	 */
 	NoBlockingOperation,
 
