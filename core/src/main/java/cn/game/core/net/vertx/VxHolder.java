@@ -116,15 +116,15 @@ public class VxHolder {
 		//
 //		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
 		options.setMetricsOptions(new MicrometerMetricsOptions()
-				// 启用 JMX
-				.setJmxMetricsOptions(new VertxJmxMetricsOptions().setEnabled(true).setStep(10) // 指标刷新间隔
-				)
-				// 启用 Prometheus（按需开启）
-				.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(cn.game.util.Config.ENABLE_VERTX_PROMETHEUS)
-						.setStartEmbeddedServer(true) // 启动内置 HTTP 服务器
-						.setEmbeddedServerOptions(
-								new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
-						.setEmbeddedServerEndpoint("/metrics"))
+						// 启用 JMX
+						.setJmxMetricsOptions(new VertxJmxMetricsOptions().setEnabled(true).setStep(10) // 指标刷新间隔
+						)
+						// 启用 Prometheus（按需开启）
+						.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true)
+								.setStartEmbeddedServer(true) // 启动内置 HTTP 服务器
+								.setEmbeddedServerOptions(
+										new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
+								.setEmbeddedServerEndpoint("/metrics"))
 				.setEnabled(true));
 
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {

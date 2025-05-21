@@ -594,7 +594,7 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-service-proxy</artifactId>
 		</dependency>
-
+<!--	暂时也先保留dropwizard方式-->
 <!--		<dependency>-->
 <!--			<groupId>io.vertx</groupId>-->
 <!--			<artifactId>vertx-dropwizard-metrics</artifactId>-->

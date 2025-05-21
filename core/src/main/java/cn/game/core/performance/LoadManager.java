@@ -3,15 +3,22 @@ package cn.game.core.performance;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.net.vertx.VxHolder;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.netty.channel.EventLoopGroup;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.vertx.core.Vertx;
+import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.impl.WorkerPool;
 import io.vertx.micrometer.backends.BackendRegistries;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -62,6 +69,10 @@ public class LoadManager {
 	private final MovingAverage heapMemAvg = new MovingAverage(3);
 	private final MovingAverage diskAvg = new MovingAverage(3);
 
+	// 专用监控线程
+	private Thread monitorThread;
+	private volatile boolean running = false;
+
 	public enum LoadState {
 		NORMAL, WARNING, CRITICAL
 	}
@@ -78,7 +89,57 @@ public class LoadManager {
 		// 提前初始化CPU使用基准数据，避免首次采集数据失真
 		this.prevCpuTicks = processor.getSystemCpuLoadTicks();
 		registerMetrics();
-		startSampling(vertx);
+		// 启动监控线程
+		startMonitorThread();
+	}
+
+	private void startMonitorThread() {
+		running = true;
+		monitorThread = new Thread(() -> {
+			Thread.currentThread().setName("system-monitor-thread");
+			// 设置低优先级，避免影响业务处理
+			Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+
+			while (running) {
+				try {
+					// 采集并更新系统指标
+					collectAndUpdateMetrics();
+					// 指定的采样间隔
+					Thread.sleep(SAMPLE_INTERVAL);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					break;
+				} catch (Exception e) {
+					log.error("Error in monitor thread", e);
+					// 发生错误时增加延迟，避免频繁错误消耗资源
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException ie) {
+						Thread.currentThread().interrupt();
+						break;
+					}
+				}
+			}
+		});
+
+		// 设置为守护线程，不阻止JVM退出
+		monitorThread.setDaemon(true);
+		monitorThread.start();
+
+		log.info("System monitor thread started");
+	}
+
+	public void shutdown() {
+		running = false;
+		if (monitorThread != null) {
+			monitorThread.interrupt();
+			try {
+				// 等待线程优雅退出
+				monitorThread.join(1000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
 	private void registerMetrics() {
@@ -93,21 +154,16 @@ public class LoadManager {
 		Gauge.builder("cache.worker", () -> lastWorkerUsage).register(registry);
 	}
 
-	private void startSampling(Vertx vertx) {
-		vertx.setPeriodic(SAMPLE_INTERVAL, id -> vertx.executeBlocking(() -> {
-			try {
-				updateLoadState();
-			} catch (Exception e) {
-				log.error("Error updating load state", e);
-			}
-			return null;
-		}, false));
-	}
 
-	private void updateLoadState() {
+	private void collectAndUpdateMetrics() {
 
 		// 1. 收集原始指标
 		double[] rawMetrics = collectRawMetrics();
+		// 四舍五入到2位小数
+		for (int i = 0; i < rawMetrics.length; i++) {
+			rawMetrics[i] = Math.round(rawMetrics[i] * 100.0) / 100.0;
+		}
+		log.info("updateLoadState:" + Arrays.toString(rawMetrics));
 
 		// 2. 更新缓存
 		updateCache(rawMetrics);
@@ -208,12 +264,19 @@ public class LoadManager {
 	}
 
 	/** 
-	 * Vert.x eventloop核心指标采集
+	 * Vert.x eventloop队列核心指标采集，不建议在生产环境使用
 	 * @return
 	 */
 	private double getEventLoopQueueMetric() {
-		Double value = registry.find("vertx.eventloop.queue.size").gauge().value();
-		return normalize(value != null ? value : 0.0, 0, 1000);
+		int value = 0;
+		EventLoopGroup eventLoopGroup = ((VertxInternal) VxHolder.vertx).getEventLoopGroup();
+		for (EventExecutor eventExecutor : eventLoopGroup) {
+			if (eventExecutor instanceof SingleThreadEventExecutor) {
+				int pendingTasks = ((SingleThreadEventExecutor) eventExecutor).pendingTasks();
+				value += pendingTasks;
+			}
+		}
+		return normalize(value, 0, 1000);
 	}
 
 	/** 
@@ -221,10 +284,21 @@ public class LoadManager {
 	 * @return
 	 */
 	private double getWorkerPoolMetric() {
-		Double active = registry.find("vertx.worker.pool.active").gauge().value();
-		Double queued = registry.find("vertx.worker.queue.size").gauge().value();
-		double usage = (active != null ? active : 0.0) + (queued != null ? queued : 0.0);
-		return normalize(usage, 0, 200);
+		VertxInternal vertxInternal = (VertxInternal) VxHolder.vertx;
+		WorkerPool workerPool = vertxInternal.getWorkerPool();
+
+		// 获取关键指标
+//		int queueSize = workerPool.metrics().numberOfWaitingTasks(); // 队列中等待的任务数
+//		int activeTasks = workerPool.metrics().numberOfRunningTasks(); // 当前正在运行的任务数量
+//		int poolSize = workerPool.metrics().numberOfWorkers(); // worker线程池总大小
+		// 获取Worker线程队列pending任务数指标
+		Double pendingTasks = registry.get("vertx.pool.queue.pending").gauge().value();
+//		Double activeTasks = registry.get("vertx.worker.pool.in.use").gauge().value();
+
+//		Double active = registry.find("vertx.worker.pool.queue.pending").gauge().value();
+//		Double queued = registry.find("vertx.worker.pool.in.use").gauge().value();
+//		double usage = (active != null ? active : 0.0) + (queued != null ? queued : 0.0);
+		return normalize(pendingTasks != null ? pendingTasks : 0.0, 0, 200);
 	}
 
 	/** 

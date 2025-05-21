@@ -77,8 +77,10 @@ import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.jmx.JmxMeterRegistry;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
@@ -164,6 +166,7 @@ public class GameServer implements GameServerMBean {
 			}
 		});
 		initScheduleTask();
+		initLoadManager();
 		// ******************** 业务逻辑启动 **************************
 
 		ManagerHelper.init();
@@ -496,30 +499,52 @@ public class GameServer implements GameServerMBean {
 		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
 	}
 
-
-	public void initLoadManager() {
-
-		// 初始化负载管理器
+	// 初始化负载管理器
+	private void initLoadManager() {
 		LoadManager loadManager = LoadManager.getInstance();
 		loadManager.init(VxHolder.vertx);
 
-		// 获取 Prometheus 注册表
-		PrometheusMeterRegistry registry = (PrometheusMeterRegistry) BackendRegistries.getDefaultNow();
-
-		// 添加 MeterFilter 来标准化 URI 标签
-		registry.config().meterFilter(new MeterFilter() {
-			@Override
-			public Meter.Id map(Meter.Id id) {
-				// 统一路由指标标签
-				if (id.getName().startsWith("http.server.requests")) {
-					return id.withTag(Tag.of("uri", getNormalizedUri(id)));
+		// 获取默认注册表
+		MeterRegistry registry = BackendRegistries.getDefaultNow();
+		// 检查注册表类型，并根据不同类型进行相应配置
+		if (registry instanceof PrometheusMeterRegistry) {
+			// Prometheus 特定配置
+			PrometheusMeterRegistry prometheusRegistry = (PrometheusMeterRegistry) registry;
+			prometheusRegistry.config().meterFilter(new MeterFilter() {
+				@Override
+				public Meter.Id map(Meter.Id id) {
+					// 统一路由指标标签
+					if (id.getName().startsWith("http.server.requests")) {
+						return id.withTag(Tag.of("uri", getNormalizedUri(id)));
+					}
+					return id;
 				}
-				return id;
-			}
-			private String getNormalizedUri(Meter.Id id) {
-				// 根据实际路由逻辑返回统一 URI
-				return id.getTag("uri"); // 或自定义映射逻辑
-			}
-		});
+
+				private String getNormalizedUri(Meter.Id id) {
+					// 根据实际路由逻辑返回统一 URI
+					return id.getTag("uri"); // 或自定义映射逻辑
+				}
+			});
+		} else if (registry instanceof JmxMeterRegistry) {
+			// JMX 特定配置（如果需要）
+			JmxMeterRegistry jmxRegistry = (JmxMeterRegistry) registry;
+			// 可以添加JMX特定配置，如果有需要的话
+			System.out.println("JMX registry detected, no special configuration needed");
+		} else if (registry != null) {
+			// 其他类型注册表的通用配置
+			registry.config().meterFilter(new MeterFilter() {
+				@Override
+				public Meter.Id map(Meter.Id id) {
+					// 通用的标签处理
+					if (id.getName().startsWith("http.server.requests")) {
+						return id.withTag(Tag.of("uri", id.getTag("uri")));
+					}
+					return id;
+				}
+			});
+		} else {
+			// 没有找到注册表
+			System.err.println("Warning: No metrics registry found");
+		}
 	}
 }
