@@ -1,7 +1,9 @@
 package cn.game.core.performance;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -48,6 +50,9 @@ public class LoadManager {
 	private Thread monitorThread;
 	private volatile boolean running = false;
 
+	// 状态变化监听器
+	private final List<LoadStateChangeListener> stateChangeListeners = new CopyOnWriteArrayList<>();
+
 	// 单例实例
 	private static final LoadManager INSTANCE = new LoadManager();
 
@@ -58,6 +63,38 @@ public class LoadManager {
 
 	public static LoadManager getInstance() {
 		return INSTANCE;
+	}
+
+	/**
+	 * 负载状态变化监听器接口
+	 */
+	public interface LoadStateChangeListener {
+		/**
+		 * 当负载状态变化时调用
+		 * @param oldState 旧状态
+		 * @param newState 新状态
+		 * @param currentScore 当前得分
+		 */
+		void onStateChange(LoadState oldState, LoadState newState, int currentScore);
+	}
+
+	/**
+	 * 注册负载状态变化监听器
+	 * @param listener 状态变化监听器
+	 */
+	public void addStateChangeListener(LoadStateChangeListener listener) {
+		if (listener != null) {
+			stateChangeListeners.add(listener);
+		}
+	}
+
+	/**
+	 * 取消注册负载状态变化监听器
+	 * @param listener 要移除的监听器
+	 * @return 是否成功移除
+	 */
+	public boolean removeStateChangeListener(LoadStateChangeListener listener) {
+		return stateChangeListeners.remove(listener);
 	}
 
 	/**
@@ -179,11 +216,24 @@ public class LoadManager {
 		currentScore.set((int) (finalScore * 100));
 		// 获取旧状态并设置新状态
 		LoadState oldState = currentState.getAndSet(finalNewState);
-		// 如果状态发生变化，执行降级策略
+		// 如果状态发生变化，执行降级策略并通知监听器
 		if (oldState != finalNewState) {
 			executeDegrade(finalNewState);
+			notifyStateChangeListeners(oldState, finalNewState, currentScore.get());
 		}
+	}
 
+	/**
+	 * 通知所有负载状态变化监听器
+	 */
+	private void notifyStateChangeListeners(LoadState oldState, LoadState newState, int score) {
+		for (LoadStateChangeListener listener : stateChangeListeners) {
+			try {
+				listener.onStateChange(oldState, newState, score);
+			} catch (Exception e) {
+				log.error("Error notifying load state change listener", e);
+			}
+		}
 	}
 
 	/**
@@ -298,5 +348,4 @@ public class LoadManager {
 		}
 		return sb.toString();
 	}
-
 }

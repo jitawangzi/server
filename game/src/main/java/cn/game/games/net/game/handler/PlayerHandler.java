@@ -19,6 +19,8 @@ import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.performance.DegradeStrategy;
+import cn.game.core.performance.LoadLimitTypeEnum;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -930,6 +932,11 @@ public class PlayerHandler extends BaseHandler {
 	}
 
 	protected void login(NetClient client, Object message) {
+
+		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
+			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
+			return;
+		}
 
 		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
 		String passportSessionId = req.getSessionId();

@@ -194,7 +194,7 @@ public class ServerHandler extends BaseHandler {
 		int status = req.getStatus();
 		int err = 0;
 		try {
-			GameServerStatus.getInstance().updateServerStatus(ServerContext.getInstance().getServerId(), status);
+			GameServerStatus.getInstance().updateServerStatus(ServerContext.getInstance().getServerId(), 0, status);
 		} catch (Exception e) {
 			log.error("", e);
 			err = 1;

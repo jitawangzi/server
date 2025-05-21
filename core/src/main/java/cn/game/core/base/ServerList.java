@@ -11,6 +11,7 @@ public class ServerList  implements Serializable,Comparable<ServerList>{
 	public static final int STATUS_NEW_SERVER = 3;//开新服
 	public static final int STATUS_FULL = 4;// 服务器人满了
 	public static final int STATUS_SHUTDOWN = 5;// 停服，服务器关闭状态，都不可进
+	public static final int STATUS_OVERLOAD = 6;// 服务器过载
 	
     private String serverId;
 

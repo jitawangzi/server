@@ -114,10 +114,11 @@ public class GameServerStatus {
 	/** 
 	 * 更改zk中配置的服务器状态
 	 * @param serverId
-	 * @param status
+	 * @param oldStatus  如果改变状态之前，需要处在一个指定的状态，如果不需要，则传0
+	 * @param newStatus  新设置的状态
 	 * @throws Exception
 	 */
-	public void updateServerStatus(String serverId, int status) throws Exception {
+	public void updateServerStatus(String serverId, int oldStatus, int newStatus) throws Exception {
 		CuratorFramework client = ZkHelper.curator;
 		Config config = ConfigService.getConfig("zookeeper");
 		String path = config.getProperty("game.server.path", "") + "/" + serverId;
@@ -126,10 +127,12 @@ public class GameServerStatus {
 		String data = new String(dataBytes, StandardCharsets.UTF_8);
 
 		ServerList serverList = JsonUtil.parseObject(data, ServerList.class);
-		serverList.setStatus(status);
+		if (oldStatus == 0 || oldStatus == serverList.getStatus()) {
+			serverList.setStatus(newStatus);
+			String updatedData = JsonUtil.toJsonString(serverList);
+			client.setData().forPath(path, updatedData.getBytes(StandardCharsets.UTF_8));
+		}
 
-		String updatedData = JsonUtil.toJsonString(serverList);
-		client.setData().forPath(path, updatedData.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public int canLogin(String version) {

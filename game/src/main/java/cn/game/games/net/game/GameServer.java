@@ -25,6 +25,7 @@ import com.google.common.io.Files;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
+import cn.game.core.base.ServerList;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
@@ -502,7 +503,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	// 初始化负载管理器
-	private void initLoadManager() {
+	private void initLoadManager() throws Exception {
 		LoadManager loadManager = LoadManager.getInstance();
 		loadManager.init(VxHolder.vertx);
 
@@ -511,6 +512,26 @@ public class GameServer implements GameServerMBean {
 
 		// 注册应用特定的自定义收集器（
 		loadManager.registerCollector(new PlayerConcurrencyCollector());
+		
+		// 系统启动时，先尝试恢复到正常状态
+		GameServerStatus.getInstance()
+				.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD, ServerList.STATUS_RUN);
+
+		loadManager.addStateChangeListener((oldState, newState, currentScore) -> {
+			try {
+				if (newState == LoadState.CRITICAL) {
+					GameServerStatus.getInstance()
+							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_RUN, ServerList.STATUS_OVERLOAD);
+				} else if (newState == LoadState.NORMAL || newState == LoadState.WARNING) {
+					GameServerStatus.getInstance()
+							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD, ServerList.STATUS_RUN);
+				}
+			} catch (Exception e) {
+				LoggerType.Stdout.logger.error("LoadState update to zookeeper failed oldState{} newState{} currentScore{}", oldState,
+						newState,
+						currentScore);
+			}
+		});
 
 		// 监听状态变化
 		VxHolder.vertx.setPeriodic(5000, id -> {
