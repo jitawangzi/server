@@ -14,6 +14,7 @@
         <Property name="file_stdout">stdout</Property>
         <Property name="file_system">system</Property>
         <Property name="file_net">net</Property>
+        <Property name="file_monitor">monitor</Property>
 <!--         <Property name="file_netcheck">netcheck</Property> -->
 
         <!-- *********************** 一级 ************************* -->
@@ -88,6 +89,11 @@
         <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
             <AppenderRef ref="Net"/>
         </AsyncLogger>
+        
+        <AsyncLogger name="Monitor" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="Monitor"/>
+        </AsyncLogger>
+        
         <AsyncLogger name="Db" level="debug" includeLocation="false" additivity="false">
             <AppenderRef ref="Db"/>
         </AsyncLogger>
@@ -291,6 +297,15 @@
 
         <RollingRandomAccessFile name="Net" fileName="${path_system}/${file_net}.log"
                                  filePattern="${path_system}/%d{yyyy-MM-dd}/${file_net}.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="Monitor" fileName="${path_system}/${file_monitor}.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/${file_monitor}.%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>

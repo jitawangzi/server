@@ -21,6 +21,7 @@ public enum LoggerType {
     NetCheck,                                                                     // 网络监控
 	SystemOut,
 	Stdout,
+	Monitor,
 
     /* *********************** 一级 ************************* */
     heart("v3"),                                                     // 心跳

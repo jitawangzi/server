@@ -39,6 +39,7 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.performance.LoadManager;
+import cn.game.core.performance.evaluation.LoadState;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
@@ -46,6 +47,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
+import cn.game.games.core.collector.PlayerConcurrencyCollector;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
@@ -503,6 +505,25 @@ public class GameServer implements GameServerMBean {
 	private void initLoadManager() {
 		LoadManager loadManager = LoadManager.getInstance();
 		loadManager.init(VxHolder.vertx);
+
+		// 调整某些指标的权重
+		loadManager.setMetricWeight("vertx.eventloop", 0.3); // 提高事件循环监控的权重
+
+		// 注册应用特定的自定义收集器（
+		loadManager.registerCollector(new PlayerConcurrencyCollector());
+
+		// 监听状态变化
+		VxHolder.vertx.setPeriodic(5000, id -> {
+			LoadState currentState = loadManager.getCurrentState();
+			int score = loadManager.getCurrentScore();
+			LoggerType.Monitor.logger.info("Current system state: {}, score: {}", currentState, score);
+			LoggerType.Monitor.logger.info("Metric:{}", loadManager.showMetrics());
+		});
+
+		// 在应用关闭时
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			loadManager.shutdown();
+		}));
 
 		// 获取默认注册表
 		MeterRegistry registry = BackendRegistries.getDefaultNow();

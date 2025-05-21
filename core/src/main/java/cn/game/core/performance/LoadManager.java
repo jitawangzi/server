@@ -1,98 +1,130 @@
 package cn.game.core.performance;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.core.net.vertx.VxHolder;
+import com.alibaba.fastjson2.JSONObject;
+
+import cn.game.core.performance.evaluation.LoadEvaluator;
+import cn.game.core.performance.evaluation.LoadState;
+import cn.game.core.performance.metric.MetricCollector;
+import cn.game.core.performance.metric.MetricRegistry;
+import cn.game.core.performance.metric.system.CpuMetricCollector;
+import cn.game.core.performance.metric.system.DiskMetricCollector;
+import cn.game.core.performance.metric.system.MemoryMetricCollector;
+import cn.game.core.performance.metric.system.NetworkMetricCollector;
+import cn.game.core.performance.metric.vertx.VertxEventLoopMetricCollector;
+import cn.game.core.performance.metric.vertx.VertxWorkerPoolMetricCollector;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.netty.channel.EventLoopGroup;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxInternal;
-import io.vertx.core.impl.WorkerPool;
 import io.vertx.micrometer.backends.BackendRegistries;
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-import oshi.hardware.HWDiskStore;
 
+/**
+ * 负载管理器，作为系统监控的主协调类
+ */
 public class LoadManager {
-	private Logger log = LoggerFactory.getLogger(LoadManager.class);
 
-	// 配置参数
+	private final Logger log = LoggerFactory.getLogger(LoadManager.class);
+
+	// 采样间隔
 	private static final int SAMPLE_INTERVAL = 5_000;
-	private static final double[] WEIGHTS = { 0.3, 0.2, 0.2, 0.2, 0.1 };
 
-	// 阈值配置
-	private static final double WARNING_THRESHOLD = 0.6;
-	private static final double CRITICAL_THRESHOLD = 0.8;
-
-	private static final double QUEUE_CRITICAL = 0.9;
-	private static final double WORKER_CRITICAL = 0.8;
-	private static final double CPU_CRITICAL = 0.9;
-	private static final double MEMORY_CRITICAL = 0.8;
-	private static final double DISK_CRITICAL = 0.8;
-
-	// 单例实例
-	private static final LoadManager INSTANCE = new LoadManager();
+	// 负载状态和评分
 	private final AtomicReference<LoadState> currentState = new AtomicReference<>(LoadState.NORMAL);
 	private final AtomicInteger currentScore = new AtomicInteger(0);
 
-	// 性能指标缓存
-	private volatile double lastCpuLoad = 0.0;
-	private volatile double lastHeapUsage = 0.0;
-	private volatile double lastDiskIO = 0.0;
-	private volatile double lastQueueSize = 0.0;
-	private volatile double lastWorkerUsage = 0.0;
-
-	// 监控组件
-	private final SystemInfo systemInfo = new SystemInfo();
-	private final CentralProcessor processor = systemInfo.getHardware().getProcessor();
+	// 监控相关组件
+	private final MetricRegistry metricRegistry = MetricRegistry.getInstance();
+	private final LoadEvaluator evaluator;
 	private MeterRegistry registry;
-	private long[] prevCpuTicks;
-	private final MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
-
-	// 滑动平均窗口
-	// vertx eventloop队列
-	private final MovingAverage queueAvg = new MovingAverage(3);
-	// vertx worker池队列
-	private final MovingAverage workerAvg = new MovingAverage(3);
-	private final MovingAverage cpuAvg = new MovingAverage(3);
-	private final MovingAverage heapMemAvg = new MovingAverage(3);
-	private final MovingAverage diskAvg = new MovingAverage(3);
 
 	// 专用监控线程
 	private Thread monitorThread;
 	private volatile boolean running = false;
 
-	public enum LoadState {
-		NORMAL, WARNING, CRITICAL
-	}
+	// 单例实例
+	private static final LoadManager INSTANCE = new LoadManager();
 
 	private LoadManager() {
+		// 初始化评估器
+		this.evaluator = new LoadEvaluator(0.6, 0.8);
 	}
 
 	public static LoadManager getInstance() {
 		return INSTANCE;
 	}
 
+	/**
+	 * 初始化负载管理器
+	 * @param vertx Vertx实例
+	 */
 	public void init(Vertx vertx) {
 		this.registry = BackendRegistries.getDefaultNow();
-		// 提前初始化CPU使用基准数据，避免首次采集数据失真
-		this.prevCpuTicks = processor.getSystemCpuLoadTicks();
+
+		// 注册基础指标收集器
+		registerDefaultCollectors(vertx);
+
+		// 设置指标权重
+		configureWeights();
+
+		// 注册Micrometer监控指标
 		registerMetrics();
-		// 启动监控线程
+
+		// 启动专用监控线程
 		startMonitorThread();
 	}
 
+	/**
+	 * 注册默认的指标收集器
+	 */
+	private void registerDefaultCollectors(Vertx vertx) {
+		// 系统基础指标
+		metricRegistry.register(new CpuMetricCollector());
+		metricRegistry.register(new MemoryMetricCollector());
+		metricRegistry.register(new DiskMetricCollector());
+		metricRegistry.register(new NetworkMetricCollector());
+
+		// Vertx特定指标
+		if (vertx != null) {
+			metricRegistry.register(new VertxEventLoopMetricCollector(vertx));
+			metricRegistry.register(new VertxWorkerPoolMetricCollector(vertx));
+		}
+	}
+
+	/**
+	 * 配置各指标权重
+	 */
+	private void configureWeights() {
+		evaluator.setWeight("cpu", 0.15)
+				.setWeight("memory", 0.15)
+				.setWeight("disk", 0.15)
+				.setWeight("network", 0.15)
+				.setWeight("vertx.eventloop", 0.25)
+				.setWeight("vertx.workerpool", 0.15);
+	}
+
+	/**
+	 * 注册监控指标到Micrometer
+	 */
+	private void registerMetrics() {
+		Gauge.builder("load.score", currentScore::get).register(registry);
+		Gauge.builder("load.state", () -> currentState.get().ordinal()).register(registry);
+
+		// 注册所有指标收集器的最新值
+		for (MetricCollector collector : metricRegistry.getCollectors().values()) {
+			Gauge.builder("metrics." + collector.getName(), collector::getLatestValue).register(registry);
+		}
+	}
+
+	/**
+	 * 启动专用监控线程
+	 */
 	private void startMonitorThread() {
 		running = true;
 		monitorThread = new Thread(() -> {
@@ -102,7 +134,7 @@ public class LoadManager {
 
 			while (running) {
 				try {
-					// 采集并更新系统指标
+					// 收集并更新系统指标
 					collectAndUpdateMetrics();
 					// 指定的采样间隔
 					Thread.sleep(SAMPLE_INTERVAL);
@@ -111,9 +143,8 @@ public class LoadManager {
 					break;
 				} catch (Exception e) {
 					log.error("Error in monitor thread", e);
-					// 发生错误时增加延迟，避免频繁错误消耗资源
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(1000);
 					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 						break;
@@ -122,125 +153,66 @@ public class LoadManager {
 			}
 		});
 
-		// 设置为守护线程，不阻止JVM退出
 		monitorThread.setDaemon(true);
 		monitorThread.start();
 
 		log.info("System monitor thread started");
 	}
 
-	public void shutdown() {
-		running = false;
-		if (monitorThread != null) {
-			monitorThread.interrupt();
-			try {
-				// 等待线程优雅退出
-				monitorThread.join(1000);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
-
-	private void registerMetrics() {
-		Gauge.builder("load.score", currentScore::get).register(registry);
-		Gauge.builder("load.state", () -> currentState.get().ordinal()).register(registry);
-
-		// 原始指标缓存监控
-		Gauge.builder("cache.cpu", () -> lastCpuLoad).register(registry);
-		Gauge.builder("cache.heap", () -> lastHeapUsage).register(registry);
-		Gauge.builder("cache.disk", () -> lastDiskIO).register(registry);
-		Gauge.builder("cache.queue", () -> lastQueueSize).register(registry);
-		Gauge.builder("cache.worker", () -> lastWorkerUsage).register(registry);
-	}
-
-
+	/**
+	 * 收集并更新系统指标
+	 */
 	private void collectAndUpdateMetrics() {
+		// 收集所有指标
+		Map<String, Double> metrics = metricRegistry.collectAll();
 
-		// 1. 收集原始指标
-		double[] rawMetrics = collectRawMetrics();
-		// 四舍五入到2位小数
-		for (int i = 0; i < rawMetrics.length; i++) {
-			rawMetrics[i] = Math.round(rawMetrics[i] * 100.0) / 100.0;
+		// 评估系统状态
+		LoadState newState = evaluator.evaluate(metrics);
+
+		// 计算综合评分
+		double score = calculateScore(metrics);
+
+		final LoadState finalNewState = newState;
+		final double finalScore = score;
+
+		// 更新评分
+		currentScore.set((int) (finalScore * 100));
+		// 获取旧状态并设置新状态
+		LoadState oldState = currentState.getAndSet(finalNewState);
+		// 如果状态发生变化，执行降级策略
+		if (oldState != finalNewState) {
+			executeDegrade(finalNewState);
 		}
-		log.info("updateLoadState:" + Arrays.toString(rawMetrics));
 
-		// 2. 更新缓存
-		updateCache(rawMetrics);
+	}
 
-		// 3. 计算滑动平均
-		double[] avgMetrics = calculateAverageMetrics();
+	/**
+	 * 计算综合评分
+	 */
+	private double calculateScore(Map<String, Double> metrics) {
+		double totalScore = 0.0;
+		double totalWeight = 0.0;
 
-		// 4. 计算综合评分
-		double score = calculateScore(avgMetrics);
+		for (Map.Entry<String, Double> entry : metrics.entrySet()) {
+			String name = entry.getKey();
+			double value = entry.getValue();
+			double weight = evaluator.getWeight(name);
 
-		// 5. 评估状态（综合评分 + 独立指标）
-		LoadState newState = evaluateCompositeState(score, rawMetrics);
-
-		// 6. 更新状态
-		currentScore.set((int) (score * 100));
-		LoadState oldState = currentState.getAndSet(newState);
-
-		// 7. 执行降级策略
-		if (oldState != newState) {
-			executeDegrade(newState, rawMetrics);
+			totalScore += value * weight;
+			totalWeight += weight;
 		}
-	
+
+		return totalWeight > 0 ? totalScore / totalWeight : 0;
 	}
 
-	private double[] collectRawMetrics() {
-		return new double[] { getEventLoopQueueMetric(), getWorkerPoolMetric(), getCpuUsage(), getHeapMemoryUsage(),
-				getRawDiskUsage() };
-	}
-
-	private void updateCache(double[] metrics) {
-		lastQueueSize = metrics[0];
-		lastWorkerUsage = metrics[1];
-		lastCpuLoad = metrics[2];
-		lastHeapUsage = metrics[3];
-		lastDiskIO = metrics[4];
-	}
-
-	private double[] calculateAverageMetrics() {
-		return new double[] { queueAvg.next(lastQueueSize), workerAvg.next(lastWorkerUsage), cpuAvg.next(lastCpuLoad),
-				heapMemAvg.next(lastHeapUsage), diskAvg.next(lastDiskIO) };
-	}
-
-	private double calculateScore(double[] metrics) {
-		double score = 0;
-		for (int i = 0; i < metrics.length; i++) {
-			score += metrics[i] * WEIGHTS[i];
-		}
-		return Math.min(score, 1.0);
-	}
-
-	private LoadState evaluateCompositeState(double score, double[] rawMetrics) {
-		// 独立指标检查优先
-		if (rawMetrics[0] >= QUEUE_CRITICAL)
-			return LoadState.CRITICAL;
-		if (rawMetrics[1] >= WORKER_CRITICAL)
-			return LoadState.CRITICAL;
-		if (rawMetrics[2] >= CPU_CRITICAL)
-			return LoadState.CRITICAL;
-		if (rawMetrics[3] >= MEMORY_CRITICAL)
-			return LoadState.CRITICAL;
-		if (rawMetrics[4] >= DISK_CRITICAL)
-			return LoadState.CRITICAL;
-
-		// 综合评分检查
-		if (score >= CRITICAL_THRESHOLD)
-			return LoadState.CRITICAL;
-		if (score >= WARNING_THRESHOLD)
-			return LoadState.WARNING;
-		return LoadState.NORMAL;
-	}
-
-	private void executeDegrade(LoadState state, double[] rawMetrics) {
+	/**
+	 * 执行降级策略
+	 */
+	private void executeDegrade(LoadState state) {
 		DegradeStrategy.recoverAll();
 
-		// 综合状态限制
+		// 根据状态执行降级策略
 		switch (state) {
-
 		case CRITICAL:
 			DegradeStrategy.limit(LoadLimitTypeEnum.Login);
 			DegradeStrategy.limit(LoadLimitTypeEnum.GlobalChat);
@@ -252,95 +224,79 @@ public class LoadManager {
 			break;
 		}
 
-		// 独立指标专项限制
-		if (rawMetrics[0] >= QUEUE_CRITICAL) {
+		// 基于特定指标的单独限制
+		MetricCollector eventLoopCollector = metricRegistry.getCollector("vertx.eventloop");
+		if (eventLoopCollector != null && eventLoopCollector.getLatestValue() >= eventLoopCollector.getCriticalThreshold()) {
 			DegradeStrategy.limit(LoadLimitTypeEnum.NoBlockingOperation);
 		}
-		if (rawMetrics[1] >= WORKER_CRITICAL) {
+
+		MetricCollector workerPoolCollector = metricRegistry.getCollector("vertx.workerpool");
+		if (workerPoolCollector != null && workerPoolCollector.getLatestValue() >= workerPoolCollector.getCriticalThreshold()) {
 			DegradeStrategy.limit(LoadLimitTypeEnum.BlockingOperation);
 		}
-		if (rawMetrics[2] >= CPU_CRITICAL) {
-		}
 	}
 
-	/** 
-	 * Vert.x eventloop队列核心指标采集，不建议在生产环境使用
-	 * @return
+	/**
+	 * 关闭负载管理器
 	 */
-	private double getEventLoopQueueMetric() {
-		int value = 0;
-		EventLoopGroup eventLoopGroup = ((VertxInternal) VxHolder.vertx).getEventLoopGroup();
-		for (EventExecutor eventExecutor : eventLoopGroup) {
-			if (eventExecutor instanceof SingleThreadEventExecutor) {
-				int pendingTasks = ((SingleThreadEventExecutor) eventExecutor).pendingTasks();
-				value += pendingTasks;
+	public void shutdown() {
+		running = false;
+		if (monitorThread != null) {
+			monitorThread.interrupt();
+			try {
+				monitorThread.join(1000);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 			}
 		}
-		return normalize(value, 0, 1000);
+		metricRegistry.shutdownAll();
 	}
 
-	/** 
-	 * Vert.x worker核心指标采集
-	 * @return
+	/**
+	 * 注册自定义指标收集器
 	 */
-	private double getWorkerPoolMetric() {
-		VertxInternal vertxInternal = (VertxInternal) VxHolder.vertx;
-		WorkerPool workerPool = vertxInternal.getWorkerPool();
-
-		// 获取关键指标
-//		int queueSize = workerPool.metrics().numberOfWaitingTasks(); // 队列中等待的任务数
-//		int activeTasks = workerPool.metrics().numberOfRunningTasks(); // 当前正在运行的任务数量
-//		int poolSize = workerPool.metrics().numberOfWorkers(); // worker线程池总大小
-		// 获取Worker线程队列pending任务数指标
-		Double pendingTasks = registry.get("vertx.pool.queue.pending").gauge().value();
-//		Double activeTasks = registry.get("vertx.worker.pool.in.use").gauge().value();
-
-//		Double active = registry.find("vertx.worker.pool.queue.pending").gauge().value();
-//		Double queued = registry.find("vertx.worker.pool.in.use").gauge().value();
-//		double usage = (active != null ? active : 0.0) + (queued != null ? queued : 0.0);
-		return normalize(pendingTasks != null ? pendingTasks : 0.0, 0, 200);
+	public void registerCollector(MetricCollector collector) {
+		metricRegistry.register(collector);
+		evaluator.setWeight(collector.getName(), 0.1); // 默认权重
+		// 更新Micrometer指标
+		Gauge.builder("metrics." + collector.getName(), collector::getLatestValue).register(registry);
 	}
 
-	/** 
-	 * OSHI cpu硬件指标采集
-	 * @return
+	/**
+	 * 设置指标权重
 	 */
-	private double getCpuUsage() {
-		long[] newTicks = processor.getSystemCpuLoadTicks();
-		double load = processor.getSystemCpuLoadBetweenTicks(prevCpuTicks);
-		prevCpuTicks = newTicks;
-		load = Double.isNaN(load) ? 0 : Math.min(load, 1.0);
-		return load;
+	public void setMetricWeight(String metricName, double weight) {
+		evaluator.setWeight(metricName, weight);
 	}
 
-	/** 
-	 * OSHI 硬盘指标采集
-	 * @return
+	/**
+	 * 获取当前系统负载状态
 	 */
-	private double getRawDiskUsage() {
-		return systemInfo.getHardware().getDiskStores().stream().mapToDouble(HWDiskStore::getTransferTime).sum() / 10_000.0;
-	}
-
-	/** 
-	 * JMX 内存指标采集
-	 * @return
-	 */
-	private double getHeapMemoryUsage() {
-		MemoryUsage usage = memoryMxBean.getHeapMemoryUsage();
-		if (usage.getMax() <= 0)
-			return 0.0;
-		return (double) usage.getUsed() / usage.getMax();
-	}
-
-	private double normalize(double value, double min, double max) {
-		return Math.max(0, Math.min(1, (value - min) / (max - min)));
-	}
-
 	public LoadState getCurrentState() {
 		return currentState.get();
 	}
 
+	/**
+	 * 获取当前系统负载评分
+	 */
 	public int getCurrentScore() {
 		return currentScore.get();
 	}
+
+	/** 
+	 * 获取所有监控指标，最新获取到的数值
+	 * @return
+	 */
+	public String showMetrics() {
+		JSONObject sb = new JSONObject();
+		Map<String, MetricCollector> collectors = metricRegistry.getCollectors();
+		TreeSet<String> treeSet = new TreeSet<String>(collectors.keySet());
+		for (String key : treeSet) {
+			double value = Math.round(collectors.get(key).getLatestValue() * 100.0) / 100.0;
+//			sb.append(key).append(": ").append(Math.round(value.getLatestValue() * 100.0) / 100.0).append(" ");
+			sb.put(key, value);
+		}
+		return sb.toString();
+	}
+
 }

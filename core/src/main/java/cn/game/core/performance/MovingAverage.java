@@ -32,6 +32,7 @@ public class MovingAverage {
 
 	/**
 	 * 获取当前平均值，不添加新数据
+	 * 目前这个实现在值不满的时候，平均值不太精确，不过基本不影响结果
 	 */
 	public double current() {
 		return Arrays.stream(window, 0, filled ? window.length : index).average().orElse(0.0);
