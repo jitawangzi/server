@@ -16,7 +16,7 @@ import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.PlayerIds;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.account.Account;
@@ -285,7 +285,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case LoginFinish: {
 //			PlayerManager.getInstance().online(playerId, ServerContext.getInstance().getServerId());

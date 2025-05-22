@@ -6,7 +6,7 @@ import java.util.Map;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -26,7 +26,7 @@ public class RankModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 
 		case LevelUp: {

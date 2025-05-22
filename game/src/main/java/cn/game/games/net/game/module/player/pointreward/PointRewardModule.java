@@ -9,7 +9,7 @@ import java.util.Map;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -222,7 +222,7 @@ public class PointRewardModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case FuncOpen: {
 			break;

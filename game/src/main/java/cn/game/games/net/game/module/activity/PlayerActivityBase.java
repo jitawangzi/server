@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.GameEvent;
-import cn.game.games.core.event.GlobalEvent;
+import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.event.server.ServerEvent;
+import cn.game.games.core.event.server.ServerEventRegistration;
+import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006;
@@ -38,7 +40,7 @@ public abstract class PlayerActivityBase extends ActivityBase {
 	/** 
 	 * 发送给全体活动，或者跨服活动
 	 */
-	protected void publishEvent(GameEvent event) {
+	protected void publishEvent(PlayerEvent event) {
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
 		if (!activityConfig.isMultiplayer) {
 			return;
@@ -52,7 +54,7 @@ public abstract class PlayerActivityBase extends ActivityBase {
 			// TODO 找到目标服务器
 			VxHolder.sendRemoteServer(ServerType.Cross, new ObjectProtocol(PbProtocol.GamePlayerEventPush_7d010100, event));
 		} else {
-			GlobalEvent.getInstance().handleEvent(event);
+			ServerEventRegistration.getInstance().handleEvent(new ServerEvent(ServerEventTypeEnum.PlayerEvent, event.getParams()));
 		}
 	}
 
@@ -61,6 +63,6 @@ public abstract class PlayerActivityBase extends ActivityBase {
 		player.getEventModule().unregisterEventHandler(this);
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 	}
 }

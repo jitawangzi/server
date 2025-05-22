@@ -2,19 +2,19 @@ package cn.game.games.net.common.module.activity;
 
 import java.util.Collection;
 
-import cn.game.games.core.event.EventHandler;
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
-import cn.game.games.core.event.GlobalEvent;
+import cn.game.core.event.EventHandler;
+import cn.game.games.core.event.server.ServerEvent;
+import cn.game.games.core.event.server.ServerEventRegistration;
+import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 
-public class ActivityService implements EventHandler {
+public class ActivityService implements EventHandler<ServerEventTypeEnum, ServerEvent> {
 	/** 活动数据 */
 	private GlobalActivityManager globalActivityManager;
-	private EventTypeEnum[] eventTypes = new EventTypeEnum[] { EventTypeEnum.ActivityOpenTime, EventTypeEnum.ActivityShutDownTime,
-			EventTypeEnum.ActivityDestoryTime };
+	private ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] { ServerEventTypeEnum.ActivityOpenTime,
+			ServerEventTypeEnum.ActivityShutDownTime, ServerEventTypeEnum.ActivityDestoryTime };
 
 	public GlobalActivityManager defaultGlobalActivityManager() {
 		return new GlobalActivityManager();
@@ -30,16 +30,16 @@ public class ActivityService implements EventHandler {
 			}
 			globalActivityManager.checkAndOpenActivitys(null);
 		}
-		GlobalEvent.getInstance().registerEventHandler(this);
+		ServerEventRegistration.getInstance().registerEventHandler(this);
 	}
 
 	@Override
-	public EventTypeEnum[] getEventTypes() {
+	public ServerEventTypeEnum[] getEventTypes() {
 		return eventTypes;
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(ServerEvent event) {
         switch (event.getType()) {
         case ActivityOpenTime:{
         	int id = event.getIntParameter(0); 

@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -23,7 +23,7 @@ public class PassLostScriptures extends AbstractCondition {
 	}
 
 	@Override
-	public boolean checkEventParam(GameEvent event) {
+	public boolean checkEventParam(PlayerEvent event) {
 		int battleId = event.getParameter(0);
 		int subId = event.getParameter(1);
 		BattleConfig battleConfig = BattleManager.instance().getNullable(battleId);

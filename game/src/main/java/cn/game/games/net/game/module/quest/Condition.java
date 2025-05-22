@@ -3,9 +3,9 @@ package cn.game.games.net.game.module.quest;
 import java.util.function.Consumer;
 
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventHandler;
+import cn.game.games.core.event.PlayerEventHandler;
 
-public interface Condition extends EventHandler {
+public interface Condition extends PlayerEventHandler {
 
 	/**
 	 * 完成数量统计

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -25,7 +25,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 
 		case NewDay: {

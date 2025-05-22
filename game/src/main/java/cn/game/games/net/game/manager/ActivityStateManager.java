@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GlobalEvent;
+import cn.game.games.core.event.server.ServerEventRegistration;
+import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -317,7 +317,7 @@ public class ActivityStateManager {
 				} else {
 //					activityModule.open(id, true);
 					activeActivitys.add(id);
-					GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityOpenTime, id);
+					ServerEventRegistration.getInstance().handleEvent(ServerEventTypeEnum.ActivityOpenTime, id);
 				}
 			});
 		}
@@ -349,7 +349,7 @@ public class ActivityStateManager {
 						});
 					}
 				} else {
-					GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityShutDownTime, id);
+					ServerEventRegistration.getInstance().handleEvent(ServerEventTypeEnum.ActivityShutDownTime, id);
 //					activityModule.shutdown(id);
 					activeActivitys.remove(id);
 				}
@@ -384,7 +384,7 @@ public class ActivityStateManager {
 			} else {
 				removeState(id);
 //				activityModule.destroy(id);
-				GlobalEvent.getInstance().handleEvent(EventTypeEnum.ActivityDestoryTime, id);
+				ServerEventRegistration.getInstance().handleEvent(ServerEventTypeEnum.ActivityDestoryTime, id);
 			}
 //			});
 		}

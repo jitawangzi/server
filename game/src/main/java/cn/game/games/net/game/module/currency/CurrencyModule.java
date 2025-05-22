@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.ItemModule;
@@ -34,7 +34,7 @@ public class CurrencyModule extends GoodsModule<Currency, Currency> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 
 		switch (event.getType()) {
 

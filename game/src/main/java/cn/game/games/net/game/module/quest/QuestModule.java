@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.ConditionCountMapper;
 import cn.game.games.net.data.mapper.QuestMapper;
@@ -862,7 +862,7 @@ public class QuestModule extends BasePlayerModule {
 		return 100;
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case NewWeek: {
 			refreshQuest(QuestTypeEnum.Weekly);

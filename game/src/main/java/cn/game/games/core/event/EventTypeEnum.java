@@ -1,7 +1,7 @@
 package cn.game.games.core.event;
 
 /**
- * 事件类型
+ * 玩家的事件类型
  */
 public enum EventTypeEnum {
 	/** 创建新玩家 */
@@ -119,14 +119,6 @@ public enum EventTypeEnum {
 	FairyFriendsGift(87, "仙友赠礼"),
 
 	HeroRecruit(90, "英雄招募"),
-
-	// 服务器级别的时间
-	/**  参数： 活动id */
-	ActivityOpenTime(300, "某活动到达开启时间"),
-	/**  参数： 活动id */
-	ActivityShutDownTime(301, "某活动到达关闭时间"),
-	/**  参数： 活动id */
-	ActivityDestoryTime(302, "某活动到达销毁时间"),
 
 	/** 宗门砍价 */
 	ZongMenBargain(303, "宗门砍价"),

@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.develop.equip;
 
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.EquipMapper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.manual.GoodsTypeEnum;
@@ -24,7 +24,7 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		}
 	}

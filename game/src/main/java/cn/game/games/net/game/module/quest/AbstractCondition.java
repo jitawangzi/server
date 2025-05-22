@@ -7,7 +7,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.manager.ConditionManager;
@@ -102,14 +102,14 @@ public abstract class AbstractCondition implements Condition {
 	 * @param event
 	 * @return true，符合，需要变更条件数据，通常情况就是增加计数
 	 */
-	public abstract boolean checkEventParam(GameEvent event);
+	public abstract boolean checkEventParam(PlayerEvent event);
 
 	/**
 	 * 更新需求数量，默认增加1次/个
 	 * 
 	 * @param event
 	 */
-	public void updateRequireCount(GameEvent event) {
+	public void updateRequireCount(PlayerEvent event) {
 		finishCount++;
 	}
 
@@ -172,7 +172,7 @@ public abstract class AbstractCondition implements Condition {
 
 	// 子类不用复写此方法
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		if (!checkEventParam(event))
 			return;
 		updateRequireCount(event);

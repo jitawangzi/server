@@ -5,7 +5,7 @@ import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.currency.Currency;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -60,7 +60,7 @@ public class HeroSkinModule extends AbstractItemIdModule<HeroSkin> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 
 		switch (event.getType()) {
 

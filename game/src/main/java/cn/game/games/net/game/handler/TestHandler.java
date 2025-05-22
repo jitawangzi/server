@@ -33,7 +33,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GoodsModule;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -142,7 +142,7 @@ public class TestHandler extends BaseHandler {
         String cmd = req.getCmd();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        GameEvent params = new GameEvent(cmd.split(" "));
+        PlayerEvent params = new PlayerEvent(cmd.split(" "));
 		int paramsCount = params.getParams().length;
 		// 默认的参数变量
 		int p1 = 0;

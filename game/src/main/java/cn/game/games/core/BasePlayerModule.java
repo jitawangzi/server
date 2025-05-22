@@ -9,14 +9,15 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.event.EventHandler;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventHandler;
+import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 
-public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, EventHandler {
+public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, PlayerEventHandler {
 	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected transient Player player;
@@ -47,7 +48,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 			this.playerId = player.getPlayerId();
 			setDefaultDbMapperClass();
 			if (this instanceof EventHandler) {
-				player.registerEventHandler((EventHandler) this);
+				player.registerEventHandler((PlayerEventHandler) this);
 			}
 			init();
 			initAfter();

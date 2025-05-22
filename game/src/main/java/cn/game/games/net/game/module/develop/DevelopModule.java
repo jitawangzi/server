@@ -6,7 +6,7 @@ import java.util.Map;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.PotentialConfig;
@@ -107,7 +107,7 @@ public class DevelopModule extends BasePlayerModule {
 
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case LoginFinish: {
 			if (player.getLevel() >= InitialUI.HeavenlyDaoCultivation.DisplayLevel) {

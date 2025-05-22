@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
 import cn.game.protocol.generated.config.FairyFriendConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -28,7 +28,7 @@ public class FairyFriendModule extends AbstractItemModule<FairyFriend> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case LevelUp: {
 			int exp = event.getIntParameter(0);

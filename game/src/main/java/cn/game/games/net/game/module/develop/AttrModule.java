@@ -15,7 +15,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
@@ -112,7 +112,7 @@ public class AttrModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		// TODO Auto-generated method stub
 
 	}

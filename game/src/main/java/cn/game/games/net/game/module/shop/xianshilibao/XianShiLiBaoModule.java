@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.shop.xianshilibao;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
@@ -69,7 +69,7 @@ public class XianShiLiBaoModule extends BasePlayerModule {
         return ActivityXianShiLiBaoManager.instance().list().stream().filter(c ->c.Group == groupId).collect(Collectors.toList());
     }
     @Override
-    public void handleEvent(GameEvent event) {
+    public void handleEvent(PlayerEvent event) {
         switch (event.getType()){
             case BattleEnd -> {
                 int battleId = event.getIntParameter(0);

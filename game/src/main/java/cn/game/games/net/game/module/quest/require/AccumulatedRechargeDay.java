@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.activity.impl.player.ActivityMeiRiBaoLi;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
@@ -24,7 +24,7 @@ public class AccumulatedRechargeDay extends AbstractCondition {
     }
 
     @Override
-    public boolean checkEventParam(GameEvent event) {
+    public boolean checkEventParam(PlayerEvent event) {
         int activityId = getExtParam()[0];
         int day = getExtParam()[1];
         if (player.getActivityModule().get(activityId) == null){
@@ -36,7 +36,7 @@ public class AccumulatedRechargeDay extends AbstractCondition {
     }
 
     @Override
-    public void updateRequireCount(GameEvent event) {
+    public void updateRequireCount(PlayerEvent event) {
         int rechargeNum = event.getIntParameter(0);
         addCount(rechargeNum);
     }

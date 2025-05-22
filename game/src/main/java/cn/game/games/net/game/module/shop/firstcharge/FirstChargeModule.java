@@ -5,7 +5,7 @@ import java.util.List;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
 /**    
@@ -25,7 +25,7 @@ public class FirstChargeModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		// TODO Auto-generated method stub
 
 	}

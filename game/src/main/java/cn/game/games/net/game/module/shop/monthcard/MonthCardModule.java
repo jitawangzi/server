@@ -9,7 +9,7 @@ import java.util.Map;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.award.Goods;
@@ -79,7 +79,7 @@ public class MonthCardModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 
 		switch (event.getType()) {
 		// 正常应该是在功能开启时初始化商店。

@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.player;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.IntMapWrapper;
@@ -107,7 +107,7 @@ public class VarModule extends BasePlayerModule {
 //		}
 //	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
 			incrVar(VarConstant.WALL_LEVEL);

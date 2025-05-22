@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.develop.hccommon;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 
@@ -17,7 +17,7 @@ public class HCCommonModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 
 		case NewDay: {

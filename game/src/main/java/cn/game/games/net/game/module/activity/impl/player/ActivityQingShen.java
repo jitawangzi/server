@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.protobuf.Message;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.helper.MailHelper;
@@ -118,7 +118,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		if (event.getType() == EventTypeEnum.QuestReward){
 			int taskId = event.getIntParameter(0);
 			List<ActivityQingShenConfig> roundConfigList = getRoundConfigList(this.round);

@@ -2,7 +2,7 @@ package cn.game.games.net.game.module.player.headbox;
 
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -22,7 +22,7 @@ public class HeadBoxModule extends GoodsModule<HeadBox, HeadBox> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 
 		switch (event.getType()) {
 

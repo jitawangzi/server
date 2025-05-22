@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.develop.dragon;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 //import cn.game.protocol.generated.config.DragonConfig;
 //import cn.game.protocol.generated.manager.DragonManager;
@@ -22,7 +22,7 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
 			break;

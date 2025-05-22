@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
@@ -22,7 +22,7 @@ public class CompleteTask extends AbstractCondition {
     }
 
     @Override
-    public boolean checkEventParam(GameEvent event) {
+    public boolean checkEventParam(PlayerEvent event) {
         int taskId = event.getIntParameter(0);
         int[] extParam = getExtParam();
         int requireTaskId =  extParam.length > 0 ? extParam[0] : 0;

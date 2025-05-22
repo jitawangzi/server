@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import cn.game.games.cache.entity.HCHero;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.HCHeroConfig;
 import cn.game.protocol.generated.manager.HCHeroManager;
@@ -31,7 +31,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 
 		case PLAYER_CREATE: {

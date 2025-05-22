@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.game.games.cache.entity.Invite;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -69,11 +69,11 @@ public class InviteModule extends BasePlayerModule {
         invite.setDstPid(playerId);
         DAO.insert(invite).onSuccess((h)->{
             GameLogger.invite(player,invitePid);
-            notifyLvUpToInvitePlayer(new GameEvent(EventTypeEnum.LevelUp,Asset.playerExp.ID,0));
+            notifyLvUpToInvitePlayer(new PlayerEvent(EventTypeEnum.LevelUp,Asset.playerExp.ID,0));
         });
     }
 
-    private void notifyLvUpToInvitePlayer(GameEvent event) {
+    private void notifyLvUpToInvitePlayer(PlayerEvent event) {
         if (this.invitePid == 0){
             return;
         }
@@ -130,7 +130,7 @@ public class InviteModule extends BasePlayerModule {
     }
 
     @Override
-    public void handleEvent(GameEvent event) {
+    public void handleEvent(PlayerEvent event) {
         switch (event.getType()){
             case PLAYER_CREATE -> {
                 long invitePid = player.getAccount().getInvitePid();

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.protocol.generated.config.GuaranteeConfig;
 import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
 import cn.game.protocol.generated.manager.GuaranteeManager;
@@ -51,7 +51,7 @@ public class GuaranteeModule extends BasePlayerModule {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case HeroRecruit: {
 			add(GuaranteeTypeEnum.DrawRefresh);

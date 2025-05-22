@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.activity.impl.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
@@ -42,7 +42,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	private long lastRechargeTimer;
 	private long finishRechargeTimer;
 	@JsonIgnore
-	private GameEvent oldRechargeEvent;
+	private PlayerEvent oldRechargeEvent;
 	private static transient EventTypeEnum[] events = new EventTypeEnum[] {};
 
 	@Override
@@ -81,7 +81,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	public int getTotalRecharge() {
 		return totalRecharge;
 	}
-	public void addTotalRecharge(int recharge,GameEvent event){
+	public void addTotalRecharge(int recharge,PlayerEvent event){
 		if (oldRechargeEvent != event){
 			this.totalRecharge += recharge;
 			this.oldRechargeEvent = event;

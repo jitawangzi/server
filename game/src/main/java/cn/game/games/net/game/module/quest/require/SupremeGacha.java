@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
@@ -23,7 +23,7 @@ public class SupremeGacha extends AbstractCondition {
     }
 
     @Override
-    public boolean checkEventParam(GameEvent event) {
+    public boolean checkEventParam(PlayerEvent event) {
         int typeId = event.getIntParameter(1);
         if (typeId != 2){
             return false;
@@ -32,7 +32,7 @@ public class SupremeGacha extends AbstractCondition {
     }
 
     @Override
-    public void updateRequireCount(GameEvent event) {
+    public void updateRequireCount(PlayerEvent event) {
         int count = event.getIntParameter(0);
         addCount(count);
     }

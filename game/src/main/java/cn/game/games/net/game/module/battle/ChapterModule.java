@@ -18,7 +18,7 @@ import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
@@ -566,7 +566,7 @@ public class ChapterModule extends BasePlayerModule  {
 		});
 	}
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case NewDay: {
 			newDay();

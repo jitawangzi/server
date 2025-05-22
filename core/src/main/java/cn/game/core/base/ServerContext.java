@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
+import cn.game.core.event.EventRegistration;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -47,6 +48,8 @@ public class ServerContext {
 	private Processor processor;
 
 	private RpcClient rpcClient = new VertxRpcClient();
+
+	private EventRegistration<?, ?> eventRegistration;
 
 	private ServerContext() {
 	};
@@ -293,5 +296,13 @@ public class ServerContext {
 	 */
 	public boolean isLeader() {
 		return isLeader;
+	}
+
+	public EventRegistration<?, ?> getEventRegistration() {
+		return eventRegistration;
+	}
+
+	public void setEventRegistration(EventRegistration<?, ?> eventRegistration) {
+		this.eventRegistration = eventRegistration;
 	}
 }

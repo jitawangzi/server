@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
@@ -23,7 +23,7 @@ public class StorePurchases extends AbstractCondition {
 	};
 
 	@Override
-	public boolean checkEventParam(GameEvent event) {
+	public boolean checkEventParam(PlayerEvent event) {
 		int shopId = event.getIntParameter(0);
 		return shopId == 2;
 	}

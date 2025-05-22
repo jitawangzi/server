@@ -28,7 +28,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.remote.DataGameServerInterface;
@@ -166,7 +166,7 @@ public class ServerHandler extends BaseHandler {
 	}
 
 	private void playerEvent(NetClient client, Object o) {
-		GameEvent gameEvent = (GameEvent) o;
+		PlayerEvent gameEvent = (PlayerEvent) o;
 		long playerId = gameEvent.getSourceId();
 
 	}

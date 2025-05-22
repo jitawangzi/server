@@ -1,7 +1,7 @@
 package cn.game.games.net.game.module.quest.require;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.activity.impl.player.ActivityMeiRiBaoLi;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
@@ -23,7 +23,7 @@ public class AccumulatedRechargeTotalDay extends AbstractCondition {
     }
 
     @Override
-    public boolean checkEventParam(GameEvent event) {
+    public boolean checkEventParam(PlayerEvent event) {
 //        日进斗金：第一天充值了10元，第二天充了30，相当于只完成了第一个的任务
         int activityId = getExtParam()[0];
         int day = getExtParam()[1];
@@ -45,7 +45,7 @@ public class AccumulatedRechargeTotalDay extends AbstractCondition {
   }
 
     @Override
-    public void updateRequireCount(GameEvent event) {
+    public void updateRequireCount(PlayerEvent event) {
         addCount(1);
         int activityId = getExtParam()[0];
         ActivityMeiRiBaoLi meiRiBaoLi = (ActivityMeiRiBaoLi) player.getActivityModule().get(activityId);

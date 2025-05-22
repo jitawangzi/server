@@ -6,7 +6,7 @@ import java.util.List;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.ItemMapper;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -32,7 +32,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		}
 	}

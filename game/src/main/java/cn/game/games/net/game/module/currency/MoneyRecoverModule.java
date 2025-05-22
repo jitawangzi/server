@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.AssetRestoreConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -35,7 +35,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 	private Map<Integer, Long> idUpdateTimeMap = new HashMap<Integer, Long>();
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
 			break;

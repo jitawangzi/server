@@ -10,7 +10,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventHandler;
+import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.quest.Quest;
@@ -31,7 +31,7 @@ import io.vertx.core.Future;
  * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
-public abstract class ActivityBase implements EventHandler {
+public abstract class ActivityBase implements PlayerEventHandler {
 	protected final static  transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
 
 

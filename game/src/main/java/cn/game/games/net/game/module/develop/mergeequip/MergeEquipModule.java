@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.game.games.core.event.EventTypeEnum;
-import cn.game.games.core.event.GameEvent;
+import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
 import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
@@ -46,7 +46,7 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 	}
 
 	@Override
-	public void handleEvent(GameEvent event) {
+	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case HCChapterFirstWin: {
 			int battleId = event.getIntParameter(0);
