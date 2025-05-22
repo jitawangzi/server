@@ -300,7 +300,9 @@ public class HeroHandler extends BaseHandler {
         //			return o1.getLevel() - o2.getLevel();
         //		});
         int itemId = GlobalConst.HeroLvItem;
+		int itemId2 = 213001;
         int itemCount = 0;
+		int itemCount2 = 0;
         int moneyId = Asset.gold.ID;
         int moneyCount = 0;
         Set<Hero> updateHeros = new HashSet<Hero>();
@@ -332,7 +334,9 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-                if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)
+						|| !player.isEnough(itemId2, itemCount2 + heroLvConfig.LvConsumeItem2)) {
                     continue;
                 }
                 HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -340,6 +344,7 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 itemCount += heroLvConfig.LvConsumeItem;
+				itemCount2 += heroLvConfig.LvConsumeItem2;
                 moneyCount += heroLvConfig.LvConsumeMoney;
                 hero.setLevel(curLevel + 1);
                 updateHeros.add(hero);
@@ -360,6 +365,7 @@ public class HeroHandler extends BaseHandler {
         List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
         deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
         deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+		deleteItems.add(new AbstractMap.SimpleEntry(itemId2, itemCount2));
         PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
         for (Hero entry : updateHeros) {
             resp.addHeros(entry.toHeroLevelInfo());
@@ -405,7 +411,9 @@ public class HeroHandler extends BaseHandler {
             return o1.getQuality() - o2.getQuality();
         });
         int itemId = GlobalConst.HeroLvItem;
+		int itemId2 = 213001;
         int itemCount = 0;
+		int itemCount2 = 0;
         int moneyId = Asset.gold.ID;
         int moneyCount = 0;
         Set<Hero> updateHeros = new HashSet<Hero>();
@@ -427,7 +435,9 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-                if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)
+						|| !player.isEnough(itemId2, itemCount2 + heroLvConfig.LvConsumeItem2)) {
                     continue;
                 }
                 HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -435,6 +445,7 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 itemCount += heroLvConfig.LvConsumeItem;
+				itemCount2 += heroLvConfig.LvConsumeItem2;
                 moneyCount += heroLvConfig.LvConsumeMoney;
                 hero.setLevel(curLevel + 1);
                 updateHeros.add(hero);
@@ -454,6 +465,7 @@ public class HeroHandler extends BaseHandler {
         List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
         deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
         deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+		deleteItems.add(new AbstractMap.SimpleEntry(itemId2, itemCount2));
         PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
         for (Hero entry : updateHeros) {
             resp.addHeros(entry.toHeroLevelInfo());
@@ -480,7 +492,9 @@ public class HeroHandler extends BaseHandler {
             return;
         }
         int itemId = GlobalConst.HeroLvItem;
+		int itemId2 = 213001;
         int itemCount = 0;
+		int itemCount2 = 0;
         int moneyId = Asset.gold.ID;
         int moneyCount = 0;
         Set<Hero> updateHeros = new HashSet<Hero>();
@@ -501,7 +515,9 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 HeroLvConfig heroLvConfig = HeroLvManager.instance().get(curLevel);
-                if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+				if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+						|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)
+						|| !player.isEnough(itemId2, itemCount2 + heroLvConfig.LvConsumeItem2)) {
                     break loop;
                 }
                 HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(curLevel + 1);
@@ -509,6 +525,7 @@ public class HeroHandler extends BaseHandler {
                     continue;
                 }
                 itemCount += heroLvConfig.LvConsumeItem;
+				itemCount2 += heroLvConfig.LvConsumeItem2;
                 moneyCount += heroLvConfig.LvConsumeMoney;
                 hero.setLevel(curLevel + 1);
                 updateHeros.add(hero);
@@ -524,6 +541,7 @@ public class HeroHandler extends BaseHandler {
         List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
         deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
         deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+		deleteItems.add(new AbstractMap.SimpleEntry(itemId2, itemCount2));
         PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
         //		player.updateOfflineAttrData();
         for (Hero entry : updateHeros) {
@@ -555,7 +573,9 @@ public class HeroHandler extends BaseHandler {
         int curLevel = hero.getLevel();
         int maxLevel = curLevel;
         int itemId = GlobalConst.HeroLvItem;
+		int itemId2 = 213001;
         int itemCount = 0;
+		int itemCount2 = 0;
         int moneyId = Asset.gold.ID;
         int moneyCount = 0;
         for (int level = curLevel; ; level++) {
@@ -563,7 +583,9 @@ public class HeroHandler extends BaseHandler {
                 break;
             }
             HeroLvConfig heroLvConfig = HeroLvManager.instance().get(level);
-            if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem) || !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)) {
+			if (!player.isEnough(itemId, itemCount + heroLvConfig.LvConsumeItem)
+					|| !player.isEnough(moneyId, moneyCount + heroLvConfig.LvConsumeMoney)
+					|| !player.isEnough(itemId2, itemCount2 + heroLvConfig.LvConsumeItem2)) {
                 break;
             }
             HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(level + 1);
@@ -571,6 +593,7 @@ public class HeroHandler extends BaseHandler {
                 break;
             }
             itemCount += heroLvConfig.LvConsumeItem;
+			itemCount2 += heroLvConfig.LvConsumeItem2;
             moneyCount += heroLvConfig.LvConsumeMoney;
             maxLevel = level + 1;
         }
@@ -583,6 +606,7 @@ public class HeroHandler extends BaseHandler {
             List<Entry<Integer, Integer>> deleteItems = new ArrayList<>(2);
             deleteItems.add(new AbstractMap.SimpleEntry(moneyId, moneyCount));
             deleteItems.add(new AbstractMap.SimpleEntry(itemId, itemCount));
+			deleteItems.add(new AbstractMap.SimpleEntry(itemId2, itemCount2));
             PlayerHelper.delResources(player, deleteItems, OpType.HeroLevelUp);
         }
         resp.setLevel(maxLevel);
@@ -604,14 +628,17 @@ public class HeroHandler extends BaseHandler {
             }
             int level = hero.getLevel();
             int itemCount = 0;
+			int itemCount2 = 0;
             int money = 0;
             HeroLvConfig heroLvConfig;
             for (int i = 1; i < level; i++) {
                 heroLvConfig = HeroLvManager.instance().get(i);
                 itemCount += heroLvConfig.LvConsumeItem;
+				itemCount2 += heroLvConfig.LvConsumeItem2;
                 money += heroLvConfig.LvConsumeMoney;
             }
             PlayerHelper.addResources(player, GlobalConst.HeroLvItem, itemCount, OpType.HeroLvReset);
+			PlayerHelper.addResources(player, 213001, itemCount2, OpType.HeroLvReset);
             PlayerHelper.addResources(player, Asset.gold.ID, money, OpType.HeroLvReset);
             hero.setLevel(1);
         }
@@ -903,12 +930,14 @@ public class HeroHandler extends BaseHandler {
             return;
         }
         HeroLvConfig curConfig = HeroLvManager.instance().getNullable(hero.getLevel());
-        if (!player.isEnough(GlobalConst.HeroLvItem, curConfig.LvConsumeItem) || !player.isEnough(Asset.gold.ID, curConfig.LvConsumeMoney)) {
+		if (!player.isEnough(GlobalConst.HeroLvItem, curConfig.LvConsumeItem) || !player.isEnough(Asset.gold.ID, curConfig.LvConsumeMoney)
+				|| !player.isEnough(213001, curConfig.LvConsumeItem2)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
             return;
         }
         int oldCombat = BattleHelper.calcHeroCombat(hero);
         PlayerHelper.delResources(player, GlobalConst.HeroLvItem, curConfig.LvConsumeItem, OpType.HeroLevelUp);
+		PlayerHelper.delResources(player, 213001, curConfig.LvConsumeItem2, OpType.HeroLevelUp);
         PlayerHelper.delResources(player, Asset.gold.ID, curConfig.LvConsumeMoney, OpType.HeroLevelUp);
         hero.setLevel(hero.getLevel() + 1);
         //		player.updateOfflineAttrData();
