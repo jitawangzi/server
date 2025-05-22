@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.server.ServerEventBus;
-import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;

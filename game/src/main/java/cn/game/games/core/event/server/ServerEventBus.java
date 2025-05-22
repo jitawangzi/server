@@ -1,6 +1,7 @@
 package cn.game.games.core.event.server;
 
 import cn.game.core.event.AbstractEventBus;
+import cn.game.core.event.ServerEventTypeEnum;
 
 public class ServerEventBus extends AbstractEventBus<ServerEventTypeEnum, ServerEvent> {
 

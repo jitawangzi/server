@@ -1,9 +1,7 @@
 package cn.game.core.performance;
 
-import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -12,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson2.JSONObject;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.performance.evaluation.LoadEvaluator;
 import cn.game.core.performance.evaluation.LoadState;
 import cn.game.core.performance.metric.MetricCollector;
@@ -50,9 +50,6 @@ public class LoadManager {
 	private Thread monitorThread;
 	private volatile boolean running = false;
 
-	// 状态变化监听器
-	private final List<LoadStateChangeListener> stateChangeListeners = new CopyOnWriteArrayList<>();
-
 	// 单例实例
 	private static final LoadManager INSTANCE = new LoadManager();
 
@@ -76,25 +73,6 @@ public class LoadManager {
 		 * @param currentScore 当前得分
 		 */
 		void onStateChange(LoadState oldState, LoadState newState, int currentScore);
-	}
-
-	/**
-	 * 注册负载状态变化监听器
-	 * @param listener 状态变化监听器
-	 */
-	public void addStateChangeListener(LoadStateChangeListener listener) {
-		if (listener != null) {
-			stateChangeListeners.add(listener);
-		}
-	}
-
-	/**
-	 * 取消注册负载状态变化监听器
-	 * @param listener 要移除的监听器
-	 * @return 是否成功移除
-	 */
-	public boolean removeStateChangeListener(LoadStateChangeListener listener) {
-		return stateChangeListeners.remove(listener);
 	}
 
 	/**
@@ -219,20 +197,7 @@ public class LoadManager {
 		// 如果状态发生变化，执行降级策略并通知监听器
 		if (oldState != finalNewState) {
 			executeDegrade(finalNewState);
-			notifyStateChangeListeners(oldState, finalNewState, currentScore.get());
-		}
-	}
-
-	/**
-	 * 通知所有负载状态变化监听器
-	 */
-	private void notifyStateChangeListeners(LoadState oldState, LoadState newState, int score) {
-		for (LoadStateChangeListener listener : stateChangeListeners) {
-			try {
-				listener.onStateChange(oldState, newState, score);
-			} catch (Exception e) {
-				log.error("Error notifying load state change listener", e);
-			}
+			ServerContext.getInstance().fireEvent(ServerEventTypeEnum.ServerLoad, oldState, finalNewState);
 		}
 	}
 

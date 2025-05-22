@@ -2,13 +2,13 @@ package cn.game.games.net.game.module.activity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
-import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityStatePush_11100006;

@@ -3,9 +3,9 @@ package cn.game.games.net.common.module.activity;
 import java.util.Collection;
 
 import cn.game.core.event.EventHandler;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
-import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;

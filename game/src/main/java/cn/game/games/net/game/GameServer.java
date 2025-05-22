@@ -28,6 +28,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
@@ -49,10 +50,7 @@ import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.collector.PlayerConcurrencyCollector;
-import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
-import cn.game.games.core.event.server.ServerEventHandler;
-import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
@@ -208,8 +206,8 @@ public class GameServer implements GameServerMBean {
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
 
-
 	}
+
 	/** 
 	 * 如果redis中清空数据了，则重新把数据库中的数据同步到redis
 	 * 同步SimplePlayer和名字
@@ -261,6 +259,7 @@ public class GameServer implements GameServerMBean {
 		} finally {
 		}
 	}
+
 	/** 
 	 * 当修改时间测试某些和时间相关的功能时，如果时间往后调了超过一个小时，则自动踢出客户端
 	 * 主要方便测试跨天的一些逻辑。 
@@ -305,12 +304,12 @@ public class GameServer implements GameServerMBean {
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		}
 	}
+
 	private void initGameServerConfig() throws Exception {
 		GameServerStatus.getInstance().start().toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 		if (GameServerStatus.getInstance().getServerInfo() == null) {
 			throw new IllegalArgumentException(
-					"GameServerInfo is null，cant find serverId from zookeeper ,serverId "
-							+ ServerContext.getInstance().getServerId());
+					"GameServerInfo is null，cant find serverId from zookeeper ,serverId " + ServerContext.getInstance().getServerId());
 		}
 	}
 
@@ -356,7 +355,6 @@ public class GameServer implements GameServerMBean {
 			quartzInitializer.Initializer();
 		}
 	}
-
 
 	public void shutdown() {
 		long start = System.currentTimeMillis();
@@ -477,8 +475,8 @@ public class GameServer implements GameServerMBean {
 		List<CrossServerInterface> ret = new ArrayList<>();
 
 		for (String serverId : serverSet) {
-			CrossServerInterface impl = RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
-					ServerType.Cross, 0);
+			CrossServerInterface impl = RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(),
+					CallType.PointToPoint, serverId, ServerType.Cross, 0);
 			ret.add(impl);
 		}
 		return ret;
@@ -504,7 +502,7 @@ public class GameServer implements GameServerMBean {
 	 */
 	public boolean isSinglePlayerTable() {
 //		return false ; 
-		return  ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
+		return ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
 	}
 
 	// 初始化负载管理器
@@ -517,44 +515,33 @@ public class GameServer implements GameServerMBean {
 
 		// 注册应用特定的自定义收集器（
 		loadManager.registerCollector(new PlayerConcurrencyCollector());
-		
+
 		// 系统启动时，先尝试恢复到正常状态
 		GameServerStatus.getInstance()
 				.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD, ServerList.STATUS_RUN);
 
-		ServerContext.getInstance()
-				.registerEventHandler(new ServerEventHandler() {
-
-					@Override
-					public void handleEvent(ServerEvent event) {
-						// TODO Auto-generated method stub
-
-					}
-
-					@Override
-					public ServerEventTypeEnum[] getEventTypes() {
-						// TODO Auto-generated method stub
-						return null;
-					}
-				});
-
-		loadManager.addStateChangeListener((oldState, newState, currentScore) -> {
+		// 监听负载状态变化，写入到zk中
+		ServerContext.getInstance().registerEventHandler(ServerEventTypeEnum.ServerLoad, event -> {
+			LoadState oldState = event.getParameter(0);
+			LoadState newState = event.getParameter(1);
 			try {
 				if (newState == LoadState.CRITICAL) {
 					GameServerStatus.getInstance()
-							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_RUN, ServerList.STATUS_OVERLOAD);
+							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_RUN,
+									ServerList.STATUS_OVERLOAD);
 				} else if (newState == LoadState.NORMAL || newState == LoadState.WARNING) {
 					GameServerStatus.getInstance()
-							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD, ServerList.STATUS_RUN);
+							.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD,
+									ServerList.STATUS_RUN);
 				}
 			} catch (Exception e) {
 				LoggerType.Stdout.logger.error("LoadState update to zookeeper failed oldState{} newState{} currentScore{}", oldState,
-						newState,
-						currentScore);
+						newState);
 			}
+
 		});
 
-		// 监听状态变化
+		// 监听状态变化，只是记录日志
 		VxHolder.vertx.setPeriodic(5000, id -> {
 			LoadState currentState = loadManager.getCurrentState();
 			int score = loadManager.getCurrentScore();

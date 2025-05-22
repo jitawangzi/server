@@ -1,6 +1,7 @@
 package cn.game.games.core.event.server;
 
 import cn.game.core.event.AbstractEvent;
+import cn.game.core.event.ServerEventTypeEnum;
 
 /**    
  * 服务器事件

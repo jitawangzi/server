@@ -1,4 +1,4 @@
-package cn.game.games.core.event.server;
+package cn.game.core.event;
 
 /**
  * 服务器级别的事件类型
@@ -7,6 +7,7 @@ public enum ServerEventTypeEnum {
 
 	PlayerEvent(100, "转发玩家事件"),
 
+	/** 参数：老状态、新状态  */
 	ServerLoad(101, "服务器负载状态变化"),
 
 	/**  参数： 活动id */

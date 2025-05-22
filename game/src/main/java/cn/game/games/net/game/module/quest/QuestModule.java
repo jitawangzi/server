@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
-import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
-import cn.game.protocol.protobuf.ZongMenMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.BasePlayerModule;
@@ -857,6 +854,11 @@ public class QuestModule extends BasePlayerModule {
 		return events;
 	}
 
+	/**
+	 * 这里提升任务模块的事件处理优先级：
+	 * 比如对于充值事件，需要先处理，增加累计充值数量。 
+	 * 而之后的具体某个充值任务，可能会读取累计充值数量，所以需要有先后顺序
+	 */
 	@Override
 	public int processOrder() {
 		return 100;

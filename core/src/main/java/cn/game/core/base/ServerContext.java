@@ -19,7 +19,9 @@ import com.sun.tools.attach.VirtualMachine;
 import cn.game.core.cache.CacheType;
 import cn.game.core.event.AbstractEvent;
 import cn.game.core.event.EventBus;
+import cn.game.core.event.EventDispatcher;
 import cn.game.core.event.EventHandler;
+import cn.game.core.event.EventProcessor;
 import cn.game.core.event.EventRegistry;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RpcClient;
@@ -314,5 +316,18 @@ public class ServerContext {
 		// 强制类型转换
 		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
 		registration.register(handler);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T, E extends AbstractEvent<T>> void registerEventHandler(T eventType, EventProcessor<E> processor) {
+		// 强制类型转换
+		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
+		registration.register(eventType, processor);
+	}
+
+	public <T, E extends AbstractEvent<T>> void fireEvent(T eventType, Object... params) {
+		@SuppressWarnings("unchecked")
+		EventDispatcher<T, E> dispatcher = (EventDispatcher<T, E>) eventBus;
+		dispatcher.dispatch(eventType, params);
 	}
 }
