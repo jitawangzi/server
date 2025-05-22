@@ -17,7 +17,10 @@ import org.slf4j.LoggerFactory;
 import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
-import cn.game.core.event.EventRegistration;
+import cn.game.core.event.AbstractEvent;
+import cn.game.core.event.EventBus;
+import cn.game.core.event.EventHandler;
+import cn.game.core.event.EventRegistry;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -49,7 +52,7 @@ public class ServerContext {
 
 	private RpcClient rpcClient = new VertxRpcClient();
 
-	private EventRegistration<?, ?> eventRegistration;
+	private EventBus<?, ? extends AbstractEvent<?>> eventBus;
 
 	private ServerContext() {
 	};
@@ -298,11 +301,18 @@ public class ServerContext {
 		return isLeader;
 	}
 
-	public EventRegistration<?, ?> getEventRegistration() {
-		return eventRegistration;
+	public EventBus<?, ? extends AbstractEvent<?>> getEventBus() {
+		return eventBus;
 	}
 
-	public void setEventRegistration(EventRegistration<?, ?> eventRegistration) {
-		this.eventRegistration = eventRegistration;
+	public void setEventBus(EventBus<?, ? extends AbstractEvent<?>> eventBus) {
+		this.eventBus = eventBus;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T, E extends AbstractEvent<T>> void registerEventHandler(EventHandler<T, E> handler) {
+		// 强制类型转换
+		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
+		registration.register(handler);
 	}
 }

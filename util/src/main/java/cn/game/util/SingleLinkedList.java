@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
  * 
  * 最简单的链表，满足迭代时修改，不用维持顺序
  * 
+ * 也可以使用Comparator来维持顺序
+ * 
  * 2021年6月16日 下午2:35:09
  * @author SYQ
  * @param <T>
@@ -35,15 +37,10 @@ public class SingleLinkedList<T> implements Iterable<T> {
 	 * 
 	 * @param data
 	 */
-	public void addFirstOld(T data) {
-
+	public void addFirst(T data) {
 		Node<T> add = new Node<T>(data);
 		add.next = sentry.next;
 		sentry.next = add;
-	}
-
-	public void addFirst(T data) {
-		addSorted(data);
 	}
 
 	/**

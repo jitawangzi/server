@@ -1,8 +1,8 @@
 package cn.game.games.core.event;
 
-import cn.game.core.event.AbstractEventRegistration;
+import cn.game.core.event.AbstractEventBus;
 
-public class PlayerEventRegistration extends AbstractEventRegistration<EventTypeEnum, PlayerEvent> {
+public class PlayerEventBus extends AbstractEventBus<EventTypeEnum, PlayerEvent> {
 
 	@Override
 	protected PlayerEvent createEvent(EventTypeEnum eventType, Object... params) {

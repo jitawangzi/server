@@ -49,6 +49,10 @@ import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.collector.PlayerConcurrencyCollector;
+import cn.game.games.core.event.server.ServerEvent;
+import cn.game.games.core.event.server.ServerEventBus;
+import cn.game.games.core.event.server.ServerEventHandler;
+import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
@@ -128,6 +132,7 @@ public class GameServer implements GameServerMBean {
 		LoggerManager.init();
 
 		ServerContext.getInstance().initBase(serverId, serverType);
+		ServerContext.getInstance().setEventBus(ServerEventBus.getInstance());
 
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动逻辑服。。");
@@ -516,6 +521,22 @@ public class GameServer implements GameServerMBean {
 		// 系统启动时，先尝试恢复到正常状态
 		GameServerStatus.getInstance()
 				.updateServerStatus(ServerContext.getInstance().getServerId(), ServerList.STATUS_OVERLOAD, ServerList.STATUS_RUN);
+
+		ServerContext.getInstance()
+				.registerEventHandler(new ServerEventHandler() {
+
+					@Override
+					public void handleEvent(ServerEvent event) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public ServerEventTypeEnum[] getEventTypes() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
 
 		loadManager.addStateChangeListener((oldState, newState, currentScore) -> {
 			try {

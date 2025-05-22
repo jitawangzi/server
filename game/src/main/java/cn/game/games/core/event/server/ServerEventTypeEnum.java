@@ -7,6 +7,8 @@ public enum ServerEventTypeEnum {
 
 	PlayerEvent(100, "转发玩家事件"),
 
+	ServerLoad(101, "服务器负载状态变化"),
+
 	/**  参数： 活动id */
 	ActivityOpenTime(300, "某活动到达开启时间"),
 	/**  参数： 活动id */

@@ -858,7 +858,7 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	@Override
-	public int eventHandlerOrder() {
+	public int processOrder() {
 		return 100;
 	}
 	@Override

@@ -18,15 +18,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.Message;
 
-import cn.game.core.event.EventHandler;
+import cn.game.core.event.EventProcessor;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
-import cn.game.games.core.event.PlayerEventRegistration;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.event.PlayerEventBus;
 import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.ItemHelper;
@@ -128,7 +128,7 @@ public class Player {
 	private Map<String, BasePlayerModule> modules = new HashMap<>();
 	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
 	/* ******************** 内存数据 ******************** */
-	private transient PlayerEventRegistration eventModule = new PlayerEventRegistration();
+	private transient PlayerEventBus eventBus = new PlayerEventBus();
 	/** TODO 长时间闲置设置false，先不清数据,暂停定时存库 */
 	private volatile boolean isActive = true;
 	/** 是否正在退出 */
@@ -199,23 +199,11 @@ public class Player {
 	 * 注册事件处理器
 	 */
 	public void registerEventHandler(PlayerEventHandler handler) {
-
-		EventTypeEnum[] eventTypes = handler.getEventTypes();
-		if (eventTypes != null) {
-			eventModule.registerEventHandler(handler);
-		}
+		eventBus.register(handler);
 	}
 
-	public void registerEventHandler(EventTypeEnum[] eventTypes, EventHandler handler) {
-		if (eventTypes != null) {
-			eventModule.registerEventHandler(eventTypes, handler);
-		}
-	}
-
-	public void registerEventHandler(EventTypeEnum eventType, EventHandler handler) {
-		if (eventType != null) {
-			eventModule.registerEventHandler(eventType, handler);
-		}
+	public void registerEventHandler(EventTypeEnum eventType, EventProcessor<PlayerEvent> handler) {
+		eventBus.register(eventType, handler);
 	}
 
 	/** 
@@ -223,19 +211,19 @@ public class Player {
 	 * @param gameEvent
 	 */
 	public void handleEvent(PlayerEvent gameEvent) {
-		eventModule.handleEvent(gameEvent);
+		eventBus.dispatch(gameEvent);
 	}
 
 	public void handleEvent(EventTypeEnum eventType) {
-		eventModule.handleEvent(new PlayerEvent(eventType, this));
+		eventBus.dispatch(new PlayerEvent(eventType, this));
 	}
 
 	public void handleEvent(EventTypeEnum eventType, Object... params) {
-		eventModule.handleEvent(new PlayerEvent(eventType, this, params));
+		eventBus.dispatch(new PlayerEvent(eventType, this, params));
 	}
 
-	public PlayerEventRegistration getEventModule() {
-		return eventModule;
+	public PlayerEventBus getPlayerEventBus() {
+		return eventBus;
 	}
 
 	public PlayerModule getPlayerModule() {

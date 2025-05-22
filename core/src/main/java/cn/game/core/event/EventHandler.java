@@ -1,36 +1,18 @@
 package cn.game.core.event;
 
-import java.util.Comparator;
-
 /**
- * 游戏事件处理器
+ * 事件处理器接口：
  * 
+ * 职责1：通过实现类返回支持的事件类型（注册逻辑）
+ * 职责2：处理传入的事件对象（业务逻辑）
+ * 
+ * 2025年5月22日 13:42:21
  * @author SYQ
- * 
+ * @param <T> 事件类型
+ * @param <E> 事件对象
  */
-public interface EventHandler<T, E extends AbstractEvent<T>> 
+public interface EventHandler<T, E extends AbstractEvent<T>> extends EventTypeProvider<T>, EventProcessor<E> 
 {
-	@SuppressWarnings("rawtypes")
-	public static final Comparator<EventHandler> ORDER_COMPARATOR = Comparator.comparingInt(EventHandler::eventHandlerOrder);
 
-	/**
-	 * 监听的事件类型<EventHandler>
-	 * @return
-	 */
-	T[] getEventTypes();
-	
-	/**
-	 * 处理事件
-	 * 
-	 * @param event
-	 */
-	public void handleEvent(E event);
 
-	/** 
-	 * 有时可能对一个事件的处理，需要有先后顺序，这个方法用来指定处理的顺序，数值越小，越先处理
-	 * @return
-	 */
-	default int eventHandlerOrder() {
-		return 10000;
-	}
 }

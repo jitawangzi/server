@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import cn.game.core.event.EventHandler;
 import cn.game.games.core.event.server.ServerEvent;
-import cn.game.games.core.event.server.ServerEventRegistration;
+import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.event.server.ServerEventTypeEnum;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
 import cn.game.protocol.generated.config.ActivityConfig;
@@ -30,7 +30,7 @@ public class ActivityService implements EventHandler<ServerEventTypeEnum, Server
 			}
 			globalActivityManager.checkAndOpenActivitys(null);
 		}
-		ServerEventRegistration.getInstance().registerEventHandler(this);
+		ServerEventBus.getInstance().register(this);
 	}
 
 	@Override
