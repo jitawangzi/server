@@ -771,28 +771,21 @@ public class HeroHandler extends BaseHandler {
         }
         for (HeroConflateInfo heroConflateInfo : heroConflateInfoList) {
             String uid = heroConflateInfo.getUid();
-            //			List<String> consumedUidList = heroConflateInfo.getConsumedUidList();
-            Map<Integer, Integer> sameProfessionItems = heroConflateInfo.getSameProfessionItemsMap();
+//            Map<Integer, Integer> sameProfessionItems = heroConflateInfo.getSameProfessionItemsMap();
             HeroModule heroModule = player.getHeroModule();
             Hero hero = heroModule.get(Long.parseLong(uid));
             if (hero == null) {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
                 return;
             }
-            if (!PlayerHelper.isEnough(player, sameProfessionItems)) {
-                client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-                return;
-            }
-            int sameProfessionItemsCount = 0;
-            for (Entry<Integer, Integer> entry : sameProfessionItems.entrySet()) {
-                sameProfessionItemsCount += entry.getValue();
-            }
-            //			for (String string : consumedUidList) {
-            //				if (string.equals(uid)) {
-            //					client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-            //					return;
-            //				}
-            //			}
+//            if (!PlayerHelper.isEnough(player, sameProfessionItems)) {
+//                client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+//                return;
+//            }
+//            int sameProfessionItemsCount = 0;
+//            for (Entry<Integer, Integer> entry : sameProfessionItems.entrySet()) {
+//                sameProfessionItemsCount += entry.getValue();
+//            }
             HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
             // 先检查能不能往下突破
             HeroBreakConfig nextQualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar() + 1);
@@ -809,16 +802,16 @@ public class HeroHandler extends BaseHandler {
             }
             // 检查资源
             HeroBreakConfig qualityStarConfig = HeroBreakManager.instance().getUIInitialQualityStar(hero.getQuality(), hero.getStar());
-            if (sameProfessionItemsCount != qualityStarConfig.CareerConsumeNum) {
-                client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-                return;
-            }
-            if (!PlayerHelper.isEnough(player, heroConfig.Fragment, qualityStarConfig.SameConsumeNum)) {
-                client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
-                return;
-            }
+//            if (sameProfessionItemsCount != qualityStarConfig.CareerConsumeNum) {
+//                client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+//                return;
+//            }
+//            if (!PlayerHelper.isEnough(player, heroConfig.Fragment, qualityStarConfig.SameConsumeNum)) {
+//                client.sendProtocol(resp.build(), ErrorMsgEnum.resource_not_enough.getId());
+//                return;
+//            }
             PlayerHelper.delResources(player, heroConfig.Fragment, qualityStarConfig.SameConsumeNum, OpType.HeroConflate);
-            PlayerHelper.delResources(player, sameProfessionItems, OpType.HeroConflate);
+//            PlayerHelper.delResources(player, sameProfessionItems, OpType.HeroConflate);
             // 扣除资源
             //			boolean check = checkStarConsume(player, hero, consumedUidList, qualityStarConfig);
             //			if (!check) {
