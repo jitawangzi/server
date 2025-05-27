@@ -17,7 +17,6 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.generated.config.DayCardConfig;
@@ -161,19 +160,19 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 //		只是返回一个hero对象，并不真正加入到程序中。只是构建rewardInfo对象。  
 //		同时转成货币，直接加上，push给客户端。 
 		HeroConfig heroConfig = HeroManager.instance().get(itemId);
-		if (heroConfig.InitialQuality == 3) {
-			List<Hero> list = new ArrayList<>(1);
-			Hero hero = new Hero();
-			hero.setConfigId(itemId);
-			hero.setQuality(heroConfig.InitialQuality);
-			hero.setStar(1);
-			hero.setLevel(1);
-			hero.setPlayerId(playerId);
-			hero.setSkin(0);
-			list.add(hero);
-			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion, true);
-			return list;
-		}
+//		if (heroConfig.InitialQuality == 3) {
+//			List<Hero> list = new ArrayList<>(1);
+//			Hero hero = new Hero();
+//			hero.setConfigId(itemId);
+//			hero.setQuality(heroConfig.InitialQuality);
+//			hero.setStar(1);
+//			hero.setLevel(1);
+//			hero.setPlayerId(playerId);
+//			hero.setSkin(0);
+//			list.add(hero);
+//			PlayerHelper.addResources(player, GlobalConst.GachaConversion, OpType.GachaConversion, true);
+//			return list;
+//		}
 		Collection<Hero> sameHeros = getByConfigId(itemId);
 		if (!sameHeros.isEmpty()) {
 			// 同英雄的转碎片id。

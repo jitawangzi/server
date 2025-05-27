@@ -7,23 +7,24 @@ package cn.game.util;
  */
 public class IdWorker {
 
-	private final static long twepoch = 1608866809197L;
+//	private final static long twepoch = 1608866809197L;
+	private final static long twepoch = 1747977902003L;
 
-	// 机器标识位数
-	private final static long workerIdBits = 17L;
-	// 数据中心标识位数
-	private final static long datacenterIdBits = 0L;
+	// 机器标识位数，一般10位 1024差不多够了
+	private final static long workerIdBits = 15L;
+	// 数据中心标识位数，和上面的机器标识位数一起，来区分不同的机器，看情况设置
+	private final static long datacenterIdBits = 3L;
 	// 机器ID最大值
 	public final static long maxWorkerId = -1L ^ (-1L << workerIdBits);
 	// 数据中心ID最大值
 	private final static long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
-	// 毫秒内自增位
-	private final static long sequenceBits = 9L;
-	// 机器ID偏左移12位
+	// 毫秒内自增位，每毫秒内，可以产生多少个id
+	private final static long sequenceBits = 8L;
+	// 机器ID偏左移位数
 	private final static long workerIdShift = sequenceBits;
-	// 数据中心ID左移17位
+	// 数据中心ID左移位数
 	private final static long datacenterIdShift = sequenceBits + workerIdBits;
-	// 时间毫秒左移22位
+	// 时间毫秒左移位数
 	private final static long timestampLeftShift = sequenceBits + workerIdBits
 			+ datacenterIdBits;
 
@@ -68,7 +69,10 @@ public class IdWorker {
 				timestamp = tilNextMillis(lastTimestamp);
 			}
 		} else {
-			sequence = 0;
+//			sequence = 0;
+			// 根据时间戳奇偶性设置初始序列号
+			// 奇数时间戳从1开始，偶数时间戳从0开始,使得生成的id末尾数均匀分布。否则低并发下，多为偶数
+			sequence = (timestamp & 1);
 		}
 		lastTimestamp = timestamp;
 		// ID偏移组合生成最终的ID，并返回ID

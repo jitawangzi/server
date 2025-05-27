@@ -1163,7 +1163,7 @@ public class ChapterHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 				return;
 			}
-			int minute = chapter.getBattleTime() / 60;
+			int minute = chapter.getHpPercent();
 			BattleConfig battleConfig = BattleManager.instance().get(id);
 			if (index == 0 && minute < battleConfig.BattleBoxTrigger[0]) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -1173,10 +1173,14 @@ public class ChapterHandler extends BaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 				return;
 			}
-			if (index == 2 && !chapter.getPass()) {
+			if (index == 2 && minute < battleConfig.BattleBoxTrigger[2]) {
 				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 				return;
 			}
+//			if (index == 2 && !chapter.getPass()) {
+//				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
+//				return;
+//			}
 		}
 
 		for (int i = 0; i < indexList.size(); i++) {

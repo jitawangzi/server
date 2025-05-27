@@ -64,10 +64,14 @@ public class GinsengTreeModule extends BasePlayerModule {
 		}
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
-			if (func == InitialUI.HangingUpp) {
+			if (func == InitialUI.RSGTree) {
 				player.getPlayerModule().initLevel(Asset.RSGTreeExp);
 				hangUpStartTime = DateUtil.currentTimeSeconds();
 				hangUpRewardCalcTime = hangUpStartTime;
+
+				startFruitTask();
+				startBugTask();
+
 			}
 			break;
 		}
@@ -76,16 +80,16 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	@Override
 	public void onLogin() {
-		int level = player.getLevel(Asset.RSGTreeExp);
-		if (level > 0) {
-			startFruitTask();
-			startBugTask();
-		}
+		startFruitTask();
+		startBugTask();
 	}
 
 	private void startFruitTask() {
 
 		int level = player.getLevel(Asset.RSGTreeExp);
+		if (level == 0) {
+			return;
+		}
 		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
 		player.setPeriodicTask(rsgTreeLvConfig.RefreshTime * 1000, r -> {
 			if (fruitMap.size() >= rsgTreeLvConfig.Num) {
@@ -105,6 +109,11 @@ public class GinsengTreeModule extends BasePlayerModule {
 	private void startBugTask() {
 //		int level = player.getLevel(Asset.RSGTreeExp);
 //		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
+		int level = player.getLevel(Asset.RSGTreeExp);
+		if (level == 0) {
+			return;
+		}
+
 		player.setPeriodicTask(GlobalConst.RSGTreeRefreshInterval * 1000, r -> {
 			if (bugs >= GlobalConst.RSGTreeBugMax) {
 				return;

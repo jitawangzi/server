@@ -182,7 +182,10 @@ public class GinsengTreeHandler extends BaseHandler {
             return;
         }
         map.remove(pos);
-        // TODO 收获奖励
+		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
+		List<RewardInfo> resources = PlayerHelper.addResources(player, rsgTreeLvConfig.RewardTree, OpType.GinsengTreeHarvest);
+		resp.addAllRewards(resources);
+		// TODO 羁绊奖励
         client.sendProtocol(resp.build());
     }
 
