@@ -134,4 +134,9 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	public int getSizeDeduplication() {
 		return id_items.keys().size();
 	}
+
+	public Map<Long, T> getUid_items() {
+		return uid_items;
+	}
+
 }

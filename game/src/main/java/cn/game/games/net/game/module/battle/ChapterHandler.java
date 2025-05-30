@@ -60,6 +60,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndResponse_13000006;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
+import cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031;
+import cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseResponse_13000032;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203;
@@ -163,6 +165,7 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleChapterRewardRequest_13000222, this::battleChapterReward);
 		putInvoker(PbProtocol.BattleRogueAdvertiseRequest_13000012, this::rogueAdvertise);
 		putInvoker(PbProtocol.BattleRescueSkillIdRequest_13000057, this::rescueSkillId);
+		putInvoker(PbProtocol.BattleLineupChooseRequest_13000031, this::lineupChoose);
 
 		//PVP 大道争锋
 		putInvoker(PbProtocol.BattlePvPTargetListRequest_13000111, OfflineBattleHandler::searchTargetList);
@@ -671,6 +674,20 @@ public class ChapterHandler extends BaseHandler {
 		client.sendProtocol(resp);
 	}
 
+	protected void lineupChoose(NetClient client, Object message) {
+		BattleLineupChooseRequest_13000031 req = (BattleLineupChooseRequest_13000031) message;
+		BattleLineupChooseResponse_13000032.Builder resp = BattleLineupChooseResponse_13000032.newBuilder();
+
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		int battleType = req.getBattleType();
+		int seq = req.getSeq();
+
+		chapterModule.updateLineupChoose(battleType, seq);
+
+		client.sendProtocol(resp);
+	}
 	protected void lineup(NetClient client, Object message) {
 		BattleLineupRequest_13000048 req = (BattleLineupRequest_13000048) message;
 		BattleLineupResponse_13000049.Builder resp = BattleLineupResponse_13000049.newBuilder();

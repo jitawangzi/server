@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.battle;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -129,6 +132,8 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 阵容数据，玩法-> 阵容顺序->阵容里面的角色 */
 	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
+	/** 当前使用的阵容，玩法-> 阵容顺序*/
+	private Map<Integer, Integer> lineupChooseMaps = new HashMap<Integer, Integer>();
 
 	/** 所有的战斗相关玩法数据 */
 	private Map<Integer, IBattleHandler> battlesMap = new HashMap<Integer, IBattleHandler>();
@@ -153,6 +158,10 @@ public class ChapterModule extends BasePlayerModule  {
 			player.getOfflineBattleModule().joinPlay();
 		}
 
+	}
+
+	public void updateLineupChoose(int type, int seq) {
+		lineupChooseMaps.put(type, seq);
 	}
 
 	public Map<Integer, List<String>> getLineups(int type) {
@@ -577,6 +586,18 @@ public class ChapterModule extends BasePlayerModule  {
 			battlesMap.forEach((k, v) -> {
 				v.onLogin();
 			});
+			// 如果没有主阵容的，初始化一个
+			Map<Integer, List<String>> map = lineupMaps.get(DungeonTypeEnum.BattleChapter.getId());
+			if (map == null || map.isEmpty()) {
+				Set<Long> uids = player.getHeroModule().getUid_items().keySet();
+				List<String> uidStrings = uids
+						.stream()
+						.map(String::valueOf)
+						.limit(8)
+						.collect(toList());
+				updateLineup(DungeonTypeEnum.BattleChapter.getId(), 0, uidStrings);
+				updateLineupChoose(DungeonTypeEnum.BattleChapter.getId(), 0);
+            }
 			break;
 		}
 		case PLAYER_CREATE: {
@@ -705,6 +726,7 @@ public class ChapterModule extends BasePlayerModule  {
 			v.forEach((k1, v1) -> {
 				lineupbuilder.addLineups(LineupInfo.newBuilder().setSeq(k1).addAllHeroUid(v1));
 			});
+			lineupbuilder.setUseSeq(lineupChooseMaps.getOrDefault(k, 0));
 			builder.addBattleLineups(lineupbuilder.build());
 		});
 	}
