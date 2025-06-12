@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.db.GenericDataLoader;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
 import cn.game.games.net.cross.zongmen.ZongMenInfo;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
@@ -29,6 +29,15 @@ public class CrossServerImpl implements CrossServerInterface {
 		List<T> list = loader.getBatch(lastId, limit);
 		loader.processData(list);
 		return list.size();
+	}
+
+
+	@Override
+	public <T, ID extends Number> int loadDataDistributed(Class<? extends GenericDataLoader<T, ID>> loaderClass, ID id) {
+		GenericDataLoader<T, ID> loader = SpringContextLoader.getContext().getBean(loaderClass);
+		T data = loader.load(id);
+		loader.processData(List.of(data));
+		return 1;
 	}
 
 	@Override
@@ -59,4 +68,6 @@ public class CrossServerImpl implements CrossServerInterface {
 		member.setBargainBuy(true);
 		return Future.succeededFuture(true);
 	}
+
+
 }

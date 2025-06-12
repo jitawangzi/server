@@ -28,6 +28,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
@@ -46,7 +47,6 @@ import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.collector.PlayerConcurrencyCollector;
@@ -56,6 +56,7 @@ import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.DataFixManager;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -195,7 +196,7 @@ public class GameServer implements GameServerMBean {
 
 		DataFixManager.getInstance().init();
 
-		IdCache.init();
+		GameIdManagerInitializer.initialize();
 
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);

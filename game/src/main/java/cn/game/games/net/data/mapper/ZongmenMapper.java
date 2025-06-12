@@ -68,6 +68,8 @@ public interface ZongmenMapper {
 	 */
 	List<Zongmen> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
+	List<Long> getBatchIdCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
 	/**
 	 * @mbg.generated
 	 */

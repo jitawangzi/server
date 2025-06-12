@@ -8,6 +8,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
 
 public abstract class AbstractMessageHandlerService extends AbstractVerticle implements MessageHandlerService {
+
 	protected final String serverId;
 	protected final ServerType serverType;
 	protected final Processor processor;

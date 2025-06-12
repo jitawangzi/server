@@ -65,4 +65,8 @@ public abstract class BaseProtocol<T> implements IProtocol<T> {
 		this.seq = seq;
 	}
 
+	@Override
+	public String toString() {
+		return "BaseProtocol{" + "messageLength=" + messageLength + ", msgID=" + msgID + ", errorCode=" + errorCode + ", seq=" + seq + '}';
+	}
 }

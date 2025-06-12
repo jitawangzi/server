@@ -8,5 +8,4 @@ package cn.game.core.net.remote;
  */
 public interface RemoteCrossServerInterface extends RemoteServerInterface {
 
-
 }

@@ -1,13 +1,17 @@
 package cn.game.games.net.cross;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.CallType;
-import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRPCService;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
@@ -16,11 +20,11 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
@@ -81,7 +85,7 @@ public class CrossServer {
 		CrossActivityService crossActivityService = new CrossActivityService();
 		crossActivityService.init();
 
-		IdCache.init();
+		GameIdManagerInitializer.initialize();
 		
 		initLeaderTask();
 
@@ -139,6 +143,7 @@ public class CrossServer {
 
 		CrossServerDataLoader bean = SpringContextLoader.getContext().getBean(CrossServerDataLoader.class);
 		bean.load();
+//		bean.reload();
 	}
 
 	/**
@@ -147,19 +152,44 @@ public class CrossServer {
 	 * @return
 	 */
 	public GameServerInterface getGameServerInterface(CallType callType, String serverId) {
-		RpcClient crossRpcClient = (RpcClient) SpringContextLoader.getContext().getBean("crossRpcClient");
-		return RpcFactory.getImpl(GameServerInterface.class, crossRpcClient, callType, serverId, ServerType.Game);
+		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Game);
 	}
 
 	public CrossServerInterface getCrossServerInterface() {
 		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.LoadBalancer, null,
 				ServerType.Cross);
-
 	}
 
-	public CrossServerInterface getCrossServerInterface(CallType callType, String serverId) {
-		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
-				ServerType.Cross);
+	public CrossServerInterface getCrossServerInterface(long targetId) {
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.LoadBalancer, null,
+				ServerType.Cross, targetId);
+	}
+
+	public CrossServerInterface getCrossServerInterface(String serverId) {
+		return getCrossServerInterface(serverId, 0);
+	}
+
+	public CrossServerInterface getCrossServerInterface(String serverId, long targetId) {
+		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
+				ServerType.Cross, targetId);
+	}
+
+	/** 
+	 * 获取所有跨服远程调用接口，一般是请求所有服务器并需要返回值的情况下使用
+	 * @return
+	 */
+	public List<CrossServerInterface> getAllCrossServerInterface() {
+		List<CrossServerInterface> list = new ArrayList<>();
+
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross);
+
+		for (String serverId : serverSet) {
+			CrossServerInterface crossServerInterface = RpcFactory.getImpl(CrossServerInterface.class,
+					ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId, ServerType.Cross);
+			list.add(crossServerInterface);
+		}
+		return list;
 	}
 	/**
 	 * 获取处理某类型对象的跨服远程调用接口

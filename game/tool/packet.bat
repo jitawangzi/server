@@ -1,6 +1,6 @@
 ::打包命令，一般不会单独使用 
 
-cd /D %workspace%\server
+cd /D %workspace%
 :: 指定assembly插件的描述文件xml 和服务器名
 mvn clean install %game.assembly.descriptor% %game.server%
 

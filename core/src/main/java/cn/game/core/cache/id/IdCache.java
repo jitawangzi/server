@@ -1,4 +1,4 @@
-package cn.game.games.cache.id;
+package cn.game.core.cache.id;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,10 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
-import cn.game.core.cache.CacheConfig;
-import cn.game.core.cache.CacheType;
-import cn.game.core.cache.id.DistributedObjectType;
-import cn.game.core.cache.id.GenericDistributedIDManager;
 import cn.game.core.task.SchedulerService;
 import cn.game.util.Config;
 import cn.game.util.RedisUtil;
@@ -22,20 +18,29 @@ public class IdCache {
 	private static final Logger log = LoggerFactory.getLogger(IdCache.class);
 	private static final Map<DistributedObjectType, GenericDistributedIDManager> managers = new ConcurrentHashMap<>();
 
-	static {
-		// 玩家id缓存配置
-		managers.put(DistributedObjectType.PLAYER,
-				new DistributedIDManager(DistributedObjectType.PLAYER,
-						new CacheConfig(8192, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.PLAYER_SERVER_ID)));
-		// 工会id缓存配置
-		managers.put(DistributedObjectType.ZONGMEN,
-				new DistributedIDManager(DistributedObjectType.ZONGMEN,
-						new CacheConfig(1024, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.ZONG_MEN_SERVER_ID)));
-	}
+//	static {
+//		// 玩家id缓存配置
+//		managers.put(DistributedObjectType.PLAYER,
+//				new DistributedIDManager(DistributedObjectType.PLAYER,
+//						new CacheConfig(8192, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.PLAYER_SERVER_ID)));
+//		// 工会id缓存配置
+//		managers.put(DistributedObjectType.ZONGMEN,
+//				new DistributedIDManager(DistributedObjectType.ZONGMEN,
+//						new CacheConfig(1024, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.ZONG_MEN_SERVER_ID)));
+//	}
+	
+	/**
+	 * 注册ID管理器
+	 * @param manager 特定类型的ID管理器实现
+	 */
+	public static void registerManager(GenericDistributedIDManager manager) {
+		managers.put(manager.objectType, manager);
+    }
 
 	public static GenericDistributedIDManager getManager(DistributedObjectType type) {
 		return managers.get(type);
 	}
+
 
 	/** 
 	 * 获取某id对象所在服务器id

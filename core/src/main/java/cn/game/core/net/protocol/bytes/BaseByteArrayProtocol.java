@@ -44,4 +44,10 @@ public abstract class BaseByteArrayProtocol extends BaseProtocol<byte[]> {
 		this.datas = data;
 	}
 
+	@Override
+	public String toString() {
+		return "BaseByteArrayProtocol{" + "msgID=" + msgID + ", errorCode=" + errorCode + ", seq=" + seq + ", datas="
+				+ (datas != null ? datas.length : 0) + '}';
+	}
+
 }

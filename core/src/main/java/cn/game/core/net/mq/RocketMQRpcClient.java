@@ -151,31 +151,32 @@ public class RocketMQRpcClient implements RpcClient {
 
 	@Override
 	public <T> void request(String serverId, T message, Handler<AsyncResult<io.vertx.core.eventbus.Message<T>>> replyHandler) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("not supported by RocketMQ, use send instead.");
 	}
 
 	@Override
 	public <T> Future<io.vertx.core.eventbus.Message<T>> request(String serverId, T message) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("not supported by RocketMQ, use send instead.");
 	}
 
 	@Override
 	public <T> void send(String serverId, T message) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("not supported by RocketMQ, use send instead.");
 
 	}
 
 	@Override
 	public <T> void broadcast(String addr, T message) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("not supported by RocketMQ, use send instead.");
 	}
 
 	@Override
 	public <T> Future<io.vertx.core.eventbus.Message<T>> request(String addr, T message, DeliveryOptions options) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("RocketMQ does not support request with DeliveryOptions.");
+	}
+
+	@Override
+	public <T> void broadcast(String addr, T message, DeliveryOptions options) {
+		throw new UnsupportedOperationException("RocketMQ does not support broadcast with DeliveryOptions.");
 	}
 }

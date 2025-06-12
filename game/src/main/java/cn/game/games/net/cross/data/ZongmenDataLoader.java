@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.db.GenericDataLoader;
 import cn.game.games.cache.entity.Zongmen;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
@@ -29,6 +30,21 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen, Long> {
 	@Override
 	public Long getLastIdOfBatch(Long lastId, int limit) {
 		return zongmenMapper.getLastIdOfBatch(lastId, limit);
+	}
+
+	@Override
+	public DistributedObjectType getDistributedObjectType() {
+		return DistributedObjectType.ZONGMEN;
+	}
+
+	@Override
+	public List<Long> getBatchIdCursor(Long lastId, int limit) {
+		return zongmenMapper.getBatchIdCursor(lastId, limit);
+	}
+
+	@Override
+	public Zongmen load(Long id) {
+		return zongmenMapper.selectByPrimaryKey(id);
 	}
 
 }

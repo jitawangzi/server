@@ -53,4 +53,8 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 		vertx.eventBus().publish(addr, message);
 	}
 
+	@Override
+	public <T> void broadcast(String addr, T message, DeliveryOptions options) {
+		vertx.eventBus().publish(addr, message, options);
+	}
 }

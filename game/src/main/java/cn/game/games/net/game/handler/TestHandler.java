@@ -20,6 +20,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
@@ -31,7 +32,6 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;

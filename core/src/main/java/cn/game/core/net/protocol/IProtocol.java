@@ -30,4 +30,6 @@ public interface IProtocol<T> {
 
 	public int getSeq();
 
+	public String toString();
+
 }

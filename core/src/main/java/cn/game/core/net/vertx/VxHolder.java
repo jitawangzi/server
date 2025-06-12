@@ -67,9 +67,9 @@ public class VxHolder {
 	private static final Logger log = LoggerFactory.getLogger(VxHolder.class);
 
 	public static Vertx vertx;
-	private static final ProtobufMessageCodec protobufMessageCodec = new ProtobufMessageCodec();
-	private static final CustomMessageCodec customMessageCodec = new CustomMessageCodec();
-	private static final ProtocolCodec<?> protocolCodec = new ProtocolCodec<IProtocol<?>>();
+	public static final ProtobufMessageCodec protobufMessageCodec = new ProtobufMessageCodec();
+	public static final CustomMessageCodec customMessageCodec = new CustomMessageCodec();
+	public static final ProtocolCodec<?> protocolCodec = new ProtocolCodec<IProtocol<?>>();
 	/** 如果直接发protobuf类型的消息，需要指定这个 */
 	public static final DeliveryOptions protobufOptions = new DeliveryOptions().setCodecName(protobufMessageCodec.name());
 	public static final DeliveryOptions customOptions = new DeliveryOptions().setCodecName(customMessageCodec.name());
@@ -139,7 +139,7 @@ public class VxHolder {
 			log.error("vertx uncaptured exception： ", e);
 		});
 		if (ServerContext.getInstance().getRunMode().isTest()) {
-			EventBusMessageTimeoutInterceptor.register(vertx);
+			EventBusMessageInterceptor.register(vertx);
 		}
 		httpClient = WebClient.create(vertx, webClientOption);
 

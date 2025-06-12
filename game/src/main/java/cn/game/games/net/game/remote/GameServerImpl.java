@@ -9,11 +9,11 @@ import java.util.concurrent.CompletionStage;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;

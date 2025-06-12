@@ -277,6 +277,14 @@
      ORDER BY id ASC
     LIMIT #{limit}
   </select>
+  <select id="getBatchIdCursor" resultType="java.lang.Long">
+    SELECT id FROM t_zongmen
+    <where>
+      id &gt; #{lastId}
+    </where>
+     ORDER BY id ASC
+    LIMIT #{limit}
+  </select>
   <select id="getTotal" resultType="java.lang.Long">
     <!--
       WARNING - @mbg.generated

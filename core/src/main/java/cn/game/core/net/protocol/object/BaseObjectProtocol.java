@@ -42,4 +42,11 @@ public abstract class BaseObjectProtocol<T> extends BaseProtocol<T> {
 	public void deserializeData(byte[] data) {
 		this.data = (T) KryoUtils.deserializeClassAndObject(data);
 	}
+
+	@Override
+	public String toString() {
+		return "BaseObjectProtocol{" + "msgID=" + msgID + ", errorCode=" + errorCode + ", seq=" + seq + ", data="
+				+ (data != null ? data.getClass().getName() : "null") + '}';
+	}
+
 }

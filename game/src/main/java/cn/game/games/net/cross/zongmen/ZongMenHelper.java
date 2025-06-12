@@ -13,11 +13,11 @@ import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.id.IdCache;
 import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.manual.OpType;

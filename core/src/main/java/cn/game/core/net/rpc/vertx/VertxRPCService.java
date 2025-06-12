@@ -5,9 +5,7 @@ import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RPCService;
 import cn.game.core.net.rpc.RPCServiceImpl;
 import cn.game.core.net.transport.Command;
-import cn.game.core.net.transport.Result;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -30,15 +28,11 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 
 	@Override
 	public void handleMessage(Message<Object> message) {
-		byte[] data = (byte[]) message.body();
-		Command command = null;
-		try {
-			command = KryoUtils.deserialize(data, Command.class);
-		} catch (Exception e) {
-			message.fail(ReplyFailure.ERROR.toInt(), e.getMessage());
-			return;
-		}
+		Command command = (Command) message.body();
 		long objectId = command.getObjectId();
+		if (log.isDebugEnabled()) {
+			log.debug("Received RPC command: {}, objectId: {},replyAddress: {}", command, objectId, message.replyAddress());
+		}
 		Command commandFinal = command;
 		processor.process(objectId, () -> {
 			Object result = null;
@@ -56,9 +50,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
 					message.fail(ReplyFailure.ERROR.toInt(), errString);
 				} else {
-					Result resp = new Result(r.result());
-					byte[] respData = KryoUtils.serialize(resp);
-					message.reply(respData);
+					message.reply(r.result(), VxHolder.customOptions);
 				}
 			});
 		});
