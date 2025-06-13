@@ -11,3 +11,5 @@ set game.server=-Dgame.server=%server.id%
 
 ::打包
 call %workspace%\game\tool\packet.bat
+
+pause

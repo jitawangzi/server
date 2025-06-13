@@ -26,26 +26,28 @@
 			<outputDirectory>./</outputDirectory> <!--目标位置 -->
 			<directory>target/classes</directory><!--源目录 -->
 			<includes>
-				<include>cn/</include>
+				<!--<include>cn/</include>-->
 			</includes>
 		</fileSet>
-
+<!--
 		<fileSet>
-			<!--配置文件 -->
-			<outputDirectory>./resources</outputDirectory> <!--目标位置 -->
-			<directory>../build/${game.server}/game/resources</directory><!--源目录 -->
+
+			<outputDirectory>./resources</outputDirectory> 
+
+			<directory>../build/${game.server}/game/resources</directory>
 		</fileSet>
 
 		<fileSet>
-			<!--  xml  -->
-			<outputDirectory>./resources</outputDirectory> <!--目标位置 -->
-			<directory>src/main/resources</directory><!--源目录 -->
+
+			<outputDirectory>./resources</outputDirectory> 
+
+			<directory>src/main/resources</directory>
 			<excludes>
 				<exclude>apollo/</exclude>
                 <exclude>config/</exclude>
             </excludes>
 		</fileSet>
-
+-->
 
 	</fileSets>
 	<files>
