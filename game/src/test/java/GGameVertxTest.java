@@ -15,6 +15,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.vertx.WebSocketVerticle;
+import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
@@ -68,6 +69,8 @@ public class GGameVertxTest {
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
+
+		GameIdManagerInitializer.initialize();
 
 		initGameServerConfig();
 		initVerticle();
