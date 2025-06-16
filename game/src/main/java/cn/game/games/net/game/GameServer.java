@@ -79,7 +79,7 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
-import cn.game.util.log.LoggerManager;
+import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.micrometer.core.instrument.Meter;
@@ -128,7 +128,8 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, serverType);
-		LoggerManager.init();
+//		LoggerManager.init();
+		Log4j2ApolloLoader.getInstance().init();
 
 		ServerContext.getInstance().initBase(serverId, serverType);
 		ServerContext.getInstance().setEventBus(ServerEventBus.getInstance());

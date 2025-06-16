@@ -37,26 +37,12 @@
         <Property name="file_task">task</Property>
         <Property name="file_pvefight">pvefight</Property>
         <Property name="file_achievement">achievement</Property>
-<!--         <Property name="file_activationcode">activationcode</Property> -->
         <Property name="file_gethero">gethero</Property>
         <Property name="file_heroraise">heroraise</Property>
         <Property name="file_invite">invite</Property>
 
 
         <!-- *********************** 其他 ************************* -->
-<!--         <Property name="file_equipmentwear">equipmentwear</Property> -->
-<!--         <Property name="file_equipmentshape">equipmentshape</Property> -->
-<!--         <Property name="file_onhook">onhook</Property> -->
-<!--         <Property name="file_boxlevelup">boxlevelup</Property> -->
-<!--         <Property name="file_chat">chat</Property> -->
-<!--         <Property name="file_mail">mail</Property> -->
-<!--         <Property name="file_mailbox">mailbox</Property> -->
-<!--         <Property name="file_equipgems">equipgems</Property> -->
-<!--         <Property name="file_mergegems">mergegems</Property> -->
-<!--         <Property name="file_propertysnap">propertysnap</Property> -->
-<!--         <Property name="file_arena">arena</Property> -->
-<!--         <Property name="file_orderCreate">orderCreate</Property> -->
-<!--         <Property name="file_orderFinish">orderFinish</Property> -->
     </Properties>
 
     <Loggers>
@@ -97,10 +83,6 @@
         <AsyncLogger name="Db" level="debug" includeLocation="false" additivity="false">
             <AppenderRef ref="Db"/>
         </AsyncLogger>
-
-<!--         <AsyncLogger name="NetCheck" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="NetCheck"/> -->
-<!--         </AsyncLogger> -->
 
         <!--  已处理的日志  ============================================================== start -->
 
@@ -166,53 +148,9 @@
             <AppenderRef ref="newstages"/>
         </AsyncLogger>
 
-<!--         <AsyncLogger name="equipmentshape" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="equipmentshape"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="equipmentwear" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="equipmentwear"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="onhook" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="onhook"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="boxlevelup" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="boxlevelup"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="chat" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="chat"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="mail" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="mail"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="mailbox" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="mailbox"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="equipgems" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="equipgems"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="mergegems" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="mergegems"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="propertysnap" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="propertysnap"/> -->
-<!--         </AsyncLogger> -->
-
         <AsyncLogger name="achievement" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="achievement"/>
         </AsyncLogger>
-
-<!--         <AsyncLogger name="activationcode" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="activationcode"/> -->
-<!--         </AsyncLogger> -->
         <AsyncLogger name="gethero" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="gethero"/>
         </AsyncLogger>
@@ -222,22 +160,6 @@
         <AsyncLogger name="invite" level="info" includeLocation="false" additivity="false">
             <AppenderRef ref="invite"/>
         </AsyncLogger>
-
-<!--         <AsyncLogger name="arena" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="arena"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="mail" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="mail"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="orderFinish" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="orderFinish"/> -->
-<!--         </AsyncLogger> -->
-
-<!--         <AsyncLogger name="orderCreate" level="info" includeLocation="false" additivity="false"> -->
-<!--             <AppenderRef ref="orderCreate"/> -->
-<!--         </AsyncLogger> -->
 
         <!--  已处理的日志  ============================================================== end -->
     </Loggers>
@@ -322,18 +244,6 @@
             </Policies>
             <DefaultRolloverStrategy max="100"/>
         </RollingRandomAccessFile>
-
-
-<!--         <RollingRandomAccessFile name="NetCheck" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_system}/${file_netcheck}-${date_suffix}${extension}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
 
         <!--  已处理的日志  ============================================================== start -->
         <RollingRandomAccessFile name="heart"
@@ -512,140 +422,6 @@
             </Policies>
         </RollingRandomAccessFile>
 
-<!--         <RollingRandomAccessFile name="equipmentshape" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_equipmentshape}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="equipmentwear" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_equipmentwear}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="onhook" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_onhook}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="boxlevelup" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_boxlevelup}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="chat" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_chat}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="mail" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_mail}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-
-<!--         <RollingRandomAccessFile name="orderCreate" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_orderCreate}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="orderFinish" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_orderFinish}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="mailbox" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_mailbox}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="equipgems" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_equipgems}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-<!--         <RollingRandomAccessFile name="mergegems" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_mergegems}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
-
-<!--         <RollingRandomAccessFile name="propertysnap" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_propertysnap}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
-
 
         <RollingRandomAccessFile name="achievement"
                                  immediateFlush="true"
@@ -658,16 +434,6 @@
             </Policies>
         </RollingRandomAccessFile>
 
-<!--         <RollingRandomAccessFile name="activationcode" -->
-<!--                                  immediateFlush="true" -->
-<!--                                  filePattern="${path_cy_game}/${file_activationcode}.log.${date_suffix}"> -->
-<!--             <PatternLayout charset="UTF-8" pattern="%m%n"/> -->
-<!--             <Policies> -->
-<!--                 <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
-<!--                 <OnStartupTriggeringPolicy/> -->
-<!--                 <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/> -->
-<!--             </Policies> -->
-<!--         </RollingRandomAccessFile> -->
         <RollingRandomAccessFile name="gethero"
                                  immediateFlush="true"
                                  filePattern="${path_cy_game}/${file_gethero}.log.${date_suffix}">
@@ -699,8 +465,6 @@
             </Policies>
         </RollingRandomAccessFile>
 
-
         <!--  已处理的日志 ============================================================== end -->
-
     </Appenders>
 </Configuration>
