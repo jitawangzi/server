@@ -30,7 +30,7 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ZkHelper;
-import cn.game.util.log.LoggerManager;
+import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
@@ -56,7 +56,7 @@ public class LoginServer {
 	public void start(String[] args) throws Exception {
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, ServerType.Login);
-		LoggerManager.init();
+		Log4j2ApolloLoader.getInstance().init();
 
 		LoggerType.Stdout.logger.info("正在启动登录服...");
 

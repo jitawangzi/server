@@ -17,6 +17,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
@@ -509,6 +510,9 @@ public class GameServer implements GameServerMBean {
 
 	// 初始化负载管理器
 	private void initLoadManager() throws Exception {
+		if (!SystemUtils.IS_OS_LINUX) {
+			return;
+		}
 		LoadManager loadManager = LoadManager.getInstance();
 		loadManager.init(VxHolder.vertx);
 

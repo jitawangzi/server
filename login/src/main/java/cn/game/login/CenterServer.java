@@ -13,18 +13,11 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.ZkHelper;
-import cn.game.util.log.LoggerManager;
+import cn.game.util.log.Log4j2ApolloLoader;
 import io.vertx.core.DeploymentOptions;
 
 public class CenterServer {
 
-	static {
-		try {
-			LoggerManager.init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	private static final Logger log = LoggerFactory.getLogger(LoginServer.class);
 
 	private static CenterServer instance = new CenterServer();
@@ -39,9 +32,10 @@ public class CenterServer {
 	private String serverId;
 
 	public void start(String[] args) throws Exception {
-		serverId = parseServerId(args, ServerType.Center);
-
 		long start = System.currentTimeMillis();
+		serverId = parseServerId(args, ServerType.Center);
+		Log4j2ApolloLoader.getInstance().init();
+
 		log.info("正在启动中心服...");
 
 		Config.load();
