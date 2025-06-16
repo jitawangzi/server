@@ -52,7 +52,6 @@
 	</fileSets>
 	<files>
 		<!-- 单个文件 -->
-		<!-- 暂时log4j2的配置先不放进去，防止覆盖正式环境配置，稍后优化 -->
 <!-- 		<file> -->
 <!-- 			<source>/log4j2.xml</source> -->
 <!-- 			<outputDirectory>/</outputDirectory> -->

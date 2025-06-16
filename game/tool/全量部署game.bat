@@ -1,4 +1,4 @@
-set server.id=test
+:: set server.id=test
 
 call %workspace%\game\tool\update_copy.bat
 ::打包

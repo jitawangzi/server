@@ -1,57 +1,25 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+<!--     登录服更新频率较低，只打全量包 -->
     <id>full</id> 
-    <!--这个id会出现在zip包名称的后面，zip的完整名是：pom.xml中的artifactId-version-id.zip -->
     <formats>
-    <!--支持的打包格式有zip、tar、tar.gz (or tgz)、tar.bz2 (or tbz2)、jar、dir、war-->
         <format>zip</format>
     </formats>
     <dependencySets>
-        <!-- 用来定制工程依赖 jar 包的打包方式,依赖包的输出路径 -->
-        <dependencySet>
-            <!--依赖jar包的输出目录-->
-            <outputDirectory>/lib</outputDirectory> 
-             <!--是否把本项目添加到依赖文件夹下-->
-            <useProjectArtifact>false</useProjectArtifact>
-             <!--将scope为runtime的依赖包打包-->
-             <scope>runtime</scope>
-             <includes> 
-                <include>cn.game:util</include>
-                <include>cn.game:protocol</include>
-                <include>cn.game:core</include>
-            </includes>
-
-        </dependencySet>
+		<dependencySet>
+			<outputDirectory>/lib</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+			<scope>runtime</scope>
+		</dependencySet>
     </dependencySets>
- <!--压缩包下是否生成和包名相同的根目录-->
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <!--Login classes-->
         <fileSet>
-            <outputDirectory>./</outputDirectory> <!--放在哪-->
-            <directory>target/classes</directory><!--源目录-->
-<!--             <includes> -->
-<!--                 <include>net/</include> -->
-<!--             </includes> -->
+            <outputDirectory>./</outputDirectory> 
+            <directory>target/classes</directory>
         </fileSet>
-        
-<!--         <fileSet> -->
-<!--         配置文件 -->
-<!--             <outputDirectory>./resources</outputDirectory> -->
-<!--             <directory>src/main/resources</directory> -->
-<!--             <includes> -->
-<!--                 <include>mapping/*</include> -->
-<!--                 <include>spring/*</include> -->
-<!--                 <include>*</include> -->
-<!--             </includes> -->
-<!--         </fileSet> -->
     </fileSets>
-    	<files>
-<!-- 	单个文件 -->
-		<file>
-			<source>./log4j2.xml</source>
-			<outputDirectory>/</outputDirectory>
-		</file>
-	</files>
+
 </assembly>
