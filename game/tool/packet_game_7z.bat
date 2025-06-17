@@ -1,4 +1,3 @@
-
 :: rd %workspace%\game\target\resources
 
 del %workspace%\game\target\game.zip

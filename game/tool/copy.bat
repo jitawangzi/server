@@ -12,6 +12,13 @@ echo copy xml
 xcopy /Y /Q %metafolder%\output\xml\data %workspace%\game\src\main\resources\xml
 xcopy /Y /Q %metafolder%\output\xml\data\GlobalConst.xml %workspace%\login\src\main\resources\xml
 
+if %copytotarget% equ 1 (
+
+xcopy /Y /Q %metafolder%\output\xml\data %workspace%\game\target\classes\xml
+xcopy /Y /Q %metafolder%\output\xml\data\GlobalConst.xml %workspace%\login\target\classes\xml
+
+)
+
 echo copy manager helper 
 :: manager helper 
 xcopy /Y /Q %metafolder%\output\java\init %workspace%\protocol\src\main\java\cn\game\protocol\generated\helper
