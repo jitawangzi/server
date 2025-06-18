@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" shutdownHook="disable" monitorInterval="60">
 <!-- 默认的日志配置，一般在正式初始化时会被覆盖。用在正式初始化之前的默认配置 -->
   <Properties>
     <Property name="LOG_PATH">.</Property>

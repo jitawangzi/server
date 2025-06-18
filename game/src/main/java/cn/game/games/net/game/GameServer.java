@@ -18,6 +18,8 @@ import javax.management.ObjectName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
@@ -46,6 +48,7 @@ import cn.game.core.performance.LoadManager;
 import cn.game.core.performance.evaluation.LoadState;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
+import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
@@ -208,7 +211,6 @@ public class GameServer implements GameServerMBean {
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
-
 	}
 
 	/** 
@@ -360,41 +362,53 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void shutdown() {
-		long start = System.currentTimeMillis();
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
 //		log.info("Game Server starts to shutdown ...");
 		LoggerType.Stdout.logger.info("Game Server starts to shutdown ...");
 		// 通知玩家退出
 		GameClientManager.getInstance().notifyLogoutAllClients();
-		// 关闭websocket服务
-//		WebSocketServer socketServer = SpringContextLoader.getContext().getBean(WebSocketServer.class);
-//		socketServer.shutdown();
-		/*		try {
-					// 关闭websocket
-					VxHolder.vertx.undeploy(wsVerticle).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
-				} catch (Exception e) {
-					LoggerType.Stdout.logger.error("undeploy wsVerticle fail", e);
-				}*/
+		stopWatch.split();
+		LoggerType.Stdout.logger.info("Game Server notifyLogoutAllClients complete, use time {} ms", stopWatch.getSplitTime());
+		try {
+			// 关闭websocket服务
+			AsyncUtils.await(VxHolder.vertx.undeploy(wsVerticle));
+		} catch (Exception e) {
+			LoggerType.Stdout.logger.error("undeploy wsVerticle fail", e);
+		}
+		stopWatch.split();
+		LoggerType.Stdout.logger.info("Game Server undeploy wsVerticle complete, use time {} ms", stopWatch.getSplitTime());
 		TaskManager.getInstance().shutdown();
 		try {
-			LoggerType.Stdout.logger.warn("storeAllPlayers on shutdown");
+			stopWatch.split();
+			LoggerType.Stdout.logger.info("TaskManager shutdown complete, use time {} ms", stopWatch.getSplitTime());
+
+			VxContextRegistry.getInstance().shutdown();
+			stopWatch.split();
+			LoggerType.Stdout.logger.info("VxContextRegistry shutdown complete, use time {} ms", stopWatch.getSplitTime());
+
+			LoggerType.Stdout.logger.info("start storeAllPlayers on shutdown");
 			// 同步存储所有玩家的数据
 			Config.remoteCallTimeOut = Config.shutdownWaitTime;
 //			setDataServerSyncDefault();
 			GameClientManager.getInstance().storeAllPlayers();
+			stopWatch.split();
+			LoggerType.Stdout.logger.info("Game Server storeAllPlayers complete, use time {} ms", stopWatch.getSplitTime());
 			SpringContextLoader.getContext().close();
 			quartzInitializer.destroyed();
 
 			ServerContext.getInstance().shutdown();
-			LoggerType.Stdout.logger.warn("close vertx on shutdown");
-			VxHolder.vertx.close().toCompletionStage().toCompletableFuture().get(300, TimeUnit.SECONDS);
+			LoggerType.Stdout.logger.info("start close vertx on shutdown");
+			AsyncUtils.await(VxHolder.vertx.close(), 300, TimeUnit.SECONDS); // 等待vertx关闭完成
+			stopWatch.split();
+			LoggerType.Stdout.logger.info("close vertx complete, use time {} ms", stopWatch.getSplitTime());
 
-//			log.info("Game Server  safe  shutdown, use  time {} ms ", System.currentTimeMillis() - start);
-			String shutdownSucess = String.format("Game Server  safe  shutdown, use  time %d ms ", System.currentTimeMillis() - start);
-			LoggerType.Stdout.logger.warn(shutdownSucess);
-			System.err.println(shutdownSucess);
-			// 安全关闭log
+			stopWatch.stop();
+			LoggerType.Stdout.logger.info("Game Server  safe  shutdown, use time {} ms ", stopWatch.getTime());
+			// 安全关闭logback
 //			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 //			context.stop();
+			LogManager.shutdown(); // 关闭log4j2日志
 
 		} catch (Throwable e) {
 //			log.error("Game Server Shutdown err ", e);

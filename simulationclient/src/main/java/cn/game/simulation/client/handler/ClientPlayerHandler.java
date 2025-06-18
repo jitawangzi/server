@@ -36,9 +36,14 @@ public class ClientPlayerHandler extends BaseHandler {
 //		putInvoker(PbProtocol.PlayerCreateResponse_01000054, this::pcCreateResp);
 //		putInvoker(PbProtocol.PlayerLoginResponse_01000056, this::chooseResp);
 		putInvoker(PbProtocol.PlayerErrorPush_01000099, this::error);
+		putInvoker(PbProtocol.PlayerLogoutPush_01100030, this::logout);
 	}
 	protected void notImpl(NetClient client, Object message) {
 
+	}
+
+	protected void logout(NetClient client, Object message) {
+		System.exit(0);
 	}
 	protected void error(NetClient client, Object message) {
 

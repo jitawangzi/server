@@ -18,6 +18,7 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -181,15 +182,6 @@ public class GameClientManager {
 		StopWatch watch = new StopWatch();
 		watch.start();
 
-//		ExecutorService executorService = Executors.newFixedThreadPool(30);
-//
-//		for (GameClient client : lists) {
-//			executorService.execute(() -> {
-//				PlayerManager.getInstance().saveClientCache(client.getPlayerId(), true);
-//			});
-//		}
-//		MoreExecutors.shutdownAndAwaitTermination(executorService, Config.shutdownWaitTime, TimeUnit.SECONDS);
-
 //		List<Future> futures = new ArrayList<>();
 		int onLineCount = lists.size();
 		AtomicInteger finishCount = new AtomicInteger(0);
@@ -217,7 +209,7 @@ public class GameClientManager {
 
 //		CompositeFuture all = CompositeFuture.join(futures);
 		try {
-			future.toCompletionStage().toCompletableFuture().get(Config.shutdownWaitTime, TimeUnit.SECONDS);
+			AsyncUtils.await(future, Config.shutdownWaitTime, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("storeAllPlayers error,maybe time out ", e);

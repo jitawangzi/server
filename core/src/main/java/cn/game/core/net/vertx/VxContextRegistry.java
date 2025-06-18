@@ -1,6 +1,8 @@
 package cn.game.core.net.vertx;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -125,5 +127,32 @@ public class VxContextRegistry {
 		submitTask(objectId, () -> action.handle(null));
 	}
 
+	/** 
+	 * 关闭
+	 */
+	public void shutdown() {
+		waitAllTaskFinish();
+	}
+
+	/** 
+	 * 等待eventloop线程中的所有任务完成
+	 */
+	public void waitAllTaskFinish() {
+		long start = System.currentTimeMillis();
+
+		CountDownLatch latch = new CountDownLatch(contextCount);
+
+		for (Context ctx : contexts) {
+			ctx.runOnContext(v -> {
+				latch.countDown();
+			});
+		}
+		try {
+			latch.await(30, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			log.error("Interrupted while waiting for tasks to finish", e);
+		}
+		log.info("All tasks finished, remaining contexts: {} use time: {} ms", latch.getCount(), System.currentTimeMillis() - start);
+	}
 }
 
