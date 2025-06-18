@@ -17,8 +17,6 @@ import io.vertx.core.impl.VertxThread;
 
 /**    
  * 异步相关工具类
- * 注意不要在vert.x的EventLoop线程中阻塞等待结果，会让线程无法处理其他事件， 
- * 也包括本Future可能的事件。出现“卡死”现象
  * 
  * 2025年1月20日 15:40:19
  * @author SYQ
@@ -48,6 +46,8 @@ public class AsyncUtils {
 
 	/** 
 	 * 同步等待Vertx 的Future完成,谨慎使用
+	 * 注意不要在vert.x的EventLoop线程中阻塞等待结果，会让线程无法处理其他事件， 
+	 * 也包括本Future可能的事件。出现“卡死”现象
 	 * @param <T>
 	 * @param future
 	 * @param timeout
@@ -221,7 +221,6 @@ public class AsyncUtils {
 	 * @param supplier
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> Future<T> runOnContextAuto(Context context, boolean callOnCallerThread, Callable<?> supplier) {
 		return runOnContext(context, callOnCallerThread, supplier, result -> toVertxFuture(result));
 	}
@@ -237,6 +236,7 @@ public class AsyncUtils {
 	 * @param otherFuture， 也可以是一个普通的结果类型
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Future<T> toVertxFuture(Object otherFuture) {
 		if (otherFuture instanceof Future) {
 			return (Future<T>) otherFuture;
