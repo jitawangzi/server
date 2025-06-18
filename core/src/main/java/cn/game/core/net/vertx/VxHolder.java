@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
-import cn.game.core.async.BlockingCode;
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
@@ -35,7 +34,6 @@ import io.vertx.core.Context;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -467,17 +465,9 @@ public class VxHolder {
 	 * @param ordered 是否按顺序执行，一般为false
 	 * @return 异步执行结果
 	 */
-	public static <T> Future<T> executeBlockingWithTimeout(BlockingCode<T> blockingCode, long timeoutMs, boolean ordered) {
+	public static <T> Future<T> executeBlockingWithTimeout(Callable<T> blockingCodeHandler, long timeoutMs, boolean ordered) {
 
-		return executeBlockingWithTimeoutInternal(promise -> {
-			try {
-				T result = blockingCode.execute();
-				promise.complete(result);
-			} catch (Throwable e) {
-				log.error("executeBlockingWithTimeout error", e);
-				promise.fail(e);
-			}
-		}, timeoutMs, ordered);
+		return executeBlockingWithTimeoutInternal(blockingCodeHandler, timeoutMs, ordered);
 	}
 
 	/** 
@@ -487,8 +477,8 @@ public class VxHolder {
 	 * @param ordered
 	 * @return
 	 */
-	public static <T> Future<T> executeBlockingWithTimeout(BlockingCode<T> blockingCode) {
-		return executeBlockingWithTimeout(blockingCode, 30000, false);
+	public static <T> Future<T> executeBlockingWithTimeout(Callable<T> blockingCodeHandler) {
+		return executeBlockingWithTimeout(blockingCodeHandler, 30000, false);
 	}
 
 	/** 
@@ -499,30 +489,8 @@ public class VxHolder {
 	 * @param ordered
 	 * @return
 	 */
-	private static <T> Future<T> executeBlockingWithTimeoutInternal(Handler<Promise<T>> blockingHandler, long timeoutMs, boolean ordered) {
-
-		Promise<T> promise = Promise.promise();
-
+	private static <T> Future<T> executeBlockingWithTimeoutInternal(Callable<T> blockingCodeHandler, long timeoutMs, boolean ordered) {
 		// 执行阻塞操作
-		Future<T> executionFuture = vertx.executeBlocking(blockingHandler, ordered);
-
-		// 设置超时定时器
-		long timerId = vertx.setTimer(timeoutMs, id -> {
-			// 使用 tryFail 替代 fail，如果已经完成则返回 false
-			promise.tryFail(new TimeoutException("Operation timed out after " + timeoutMs + " ms"));
-		});
-
-		// 处理执行结果
-		executionFuture.onComplete(ar -> {
-			vertx.cancelTimer(timerId);
-			if (ar.succeeded()) {
-				// 使用 tryComplete 替代 complete，如果已经完成则返回 false
-				promise.tryComplete(ar.result());
-			} else {
-				promise.tryFail(ar.cause());
-			}
-		});
-
-		return promise.future();
+		return vertx.executeBlocking(blockingCodeHandler, ordered).timeout(timeoutMs, TimeUnit.MILLISECONDS);
 	}
 }
