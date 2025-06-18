@@ -30,6 +30,13 @@ public abstract class IBattleHandler {
 	abstract ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request);
 	
 	/** 
+	 * 战斗奖励
+	 * @param request
+	 * @return
+	 */
+	abstract List<RewardInfo> battleEndReward(BattleFieldEndRequest_13000003 request);
+
+	/** 
 	 * 有些战斗可以直接结束
 	 * @param id  看战斗类型，通常是battle表id
 	 * @param subId 

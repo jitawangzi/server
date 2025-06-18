@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.core.ResultObject;
@@ -8,6 +9,7 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
@@ -63,6 +65,14 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
 	public void onLogin() {
+
+	}
+
+	@Override
+	public List<RewardInfo> battleEndReward(BattleFieldEndRequest_13000003 request) {
+		List<RewardInfo> rewards = new ArrayList<>();
+
+		return rewards;
 
 	}
 

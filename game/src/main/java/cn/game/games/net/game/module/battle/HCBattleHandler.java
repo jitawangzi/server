@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.core.ResultObject;
@@ -8,6 +9,7 @@ import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
@@ -35,6 +37,14 @@ public abstract class HCBattleHandler extends IBattleHandler {
 	@Override
 	public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
 		throw new UnsupportedOperationException("not support quickEnd, id: " + id + ", subId: " + subId + ", isWin: " + isWin);
+	}
+
+	@Override
+	public List<RewardInfo> battleEndReward(BattleFieldEndRequest_13000003 request) {
+		List<RewardInfo> rewards = new ArrayList<>();
+
+		return rewards;
+
 	}
 
 	@Override
