@@ -3,6 +3,9 @@ package cn.game.login;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
+
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
@@ -17,6 +20,7 @@ import cn.game.core.net.vertx.BusinessLogicVerticle;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
@@ -173,10 +177,18 @@ public class LoginServer {
 	}
 
 	public void shutdown() {
-		LoggerType.Stdout.logger.info("Login Server Shutdown...");
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+
+		LoggerType.Stdout.logger.info("Login Server Shutdown begin...");
+		AsyncUtils.await(VxHolder.vertx.close());
+
 		ServerContext.getInstance().shutdown();
 		SpringContextLoader.getContext().close();
-		LoggerType.Stdout.logger.info("Login Server Shutdown success...");
+		stopWatch.stop();
+		LoggerType.Stdout.logger.info("Login Server Shutdown success, use time: {}ms", stopWatch.getTime());
+		LogManager.shutdown(); // 关闭log4j2日志
+
 	}
 
 	/**

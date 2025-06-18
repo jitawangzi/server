@@ -1,8 +1,10 @@
 package cn.game.games.net.cross.zongmen;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +18,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.task.SchedulerService;
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Zongmen;
 import cn.game.games.net.data.mapper.ZongmenMapper;
 import cn.game.games.net.game.module.rank.RankService;
@@ -24,6 +27,7 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -50,7 +54,7 @@ public class ZongMenManager {
 //        loadAllData();
         //启动定时器 定期存储 宗门数据
 		SchedulerService.getInstance()
-				.scheduleAtFixedRate(() -> saveAllZongMenData(), ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
+				.scheduleAtFixedRate(() -> saveAllZongMenData(false), ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
         //启动定时器 定期触发宗门 时间相关事件
         SchedulerService.getInstance().scheduleAtFixedRate(timeCrossCheck(),1, TimeUnit.SECONDS);
     }
@@ -71,26 +75,48 @@ public class ZongMenManager {
         };
     }
 
-	public void saveAllZongMenData() {
-
+	public Future<Void> saveAllZongMenData(boolean isForce) {
 		long now = System.currentTimeMillis();
+		List<Future<Void>> saveFutures = new ArrayList<>();
 		int saveNum = 0;
 		for (ZongMenInfo info : zongMenInfoMap.values()) {
-			if (now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER) {
+			if (isForce || now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER) {
 				saveNum++;
+				// 为每个info创建一个Future
+				Promise<Void> promise = Promise.promise();
+				saveFutures.add(promise.future());
+
+				// 投递到eventloop执行
 				ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
 					info.setSaveDataTimer(now);
 					info.updateModuleData();
-					DAO.updateWithBLOBs(info.getData());
-					saveZongMenTotalPowerRank(info);
-					saveSimpleData(info);
-					log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d", info.getId(), info.getName(),
-							info.getModule().menMemberMap.size()));
+					Future<@Nullable Object> updateWithBLOBs = DAO.updateWithBLOBs(info.getData());
+					CompletionStage<Boolean> saveZongMenTotalPowerRank = saveZongMenTotalPowerRank(info);
+					RFuture<Void> saveSimpleData = saveSimpleData(info);
+
+					// 等待三个异步操作全部完成
+					List<Future<Object>> futures = AsyncUtils.toVertxFutures(updateWithBLOBs, saveZongMenTotalPowerRank, saveSimpleData);
+					Future.join(futures).onComplete(ar -> {
+						if (ar.succeeded()) {
+							promise.complete();
+						} else {
+							log.error("Save info id=" + info.getId() + " failed", ar.cause());
+							promise.fail(ar.cause());
+						}
+						log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d", info.getId(), info.getName(),
+								info.getModule().menMemberMap.size()));
+					});
 				});
 			}
 		}
 		log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - now, saveNum,
 				zongMenInfoMap.size()));
+
+		if (saveFutures.isEmpty()) {
+			return Future.succeededFuture();
+		}
+		// 等待所有保存操作全部完成
+		return Future.join(saveFutures).mapEmpty();
     }
 
     public void loadAllData(){
@@ -127,9 +153,9 @@ public class ZongMenManager {
 		});
 	}
 
-    public void saveSimpleData(ZongMenInfo zongMen){
+	public RFuture<Void> saveSimpleData(ZongMenInfo zongMen) {
         String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(zongMen.getId());
-        RedisUtil.setAsync(redisKey,zongMen.toSimpleZongMen());
+		return RedisUtil.setAsync(redisKey, zongMen.toSimpleZongMen());
     }
 
     public ZongMenInfo getZongMenInfo(long zongMenId) {
@@ -182,13 +208,15 @@ public class ZongMenManager {
 		return zongMenInfoMap.keySet();
 	}
 
-	void saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
-        RankService.getInstance().setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen,zongMenInfo.getId(),zongMenInfo.callTotalPower());
+	CompletionStage<Boolean> saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
+		return RankService.getInstance()
+				.setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen, zongMenInfo.getId(),
+						zongMenInfo.callTotalPower());
     }
 
-     void saveRedisNameIdMap(String name, long newZongMenId) {
+	RFuture<Void> saveRedisNameIdMap(String name, long newZongMenId) {
         String key = CacheType.ZONG_MEN_NAME_ID.key(name);
-        RedisUtil.setAsync(key,newZongMenId);
+		return RedisUtil.setAsync(key, newZongMenId);
     }
 
 	private RFuture<Void> saveZongMenServerId(long id) {

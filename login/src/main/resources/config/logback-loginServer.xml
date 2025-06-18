@@ -1,126 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false" scan="true" scanPeriod="5 minutes">
-	<jmxConfigurator />
-	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
-    <substitutionProperty name="log.base" value="logs/" />
-    <substitutionProperty name="defaultLog" value="${log.base}/stdout" />
-    <substitutionProperty name="minaLog" value="${log.base}/mina" />
-	<substitutionProperty name="dbLog" value="${log.base}/db" />      
-    <substitutionProperty name="errLog" value="${log.base}/err" />
-    
-    
-    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
-        </layout>
-    </appender>
+<!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
+<Configuration status="DEBUG" shutdownHook="disable" monitorInterval="60">
+    <Properties>
+        <Property name="path_system">./logs/</Property>
+        <Property name="date_suffix">%d{yyyy-MM-dd}</Property>
+        <Property name="extension">.log</Property>
+    </Properties>
 
-	<!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="defaultLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    	<filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
-	      <evaluator> <!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
-	        <expression>logger.contains("sun.rmi")</expression>
-	      </evaluator>
-	      <OnMismatch>ACCEPT</OnMismatch>  
-          <OnMatch>DENY</OnMatch>  
-	    </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">  
-            <level>ERROR</level>  
-            <OnMismatch>ACCEPT</OnMismatch>  
-          	<OnMatch>DENY</OnMatch>   
-        </filter>  	        
-        <Encoding>UTF-8</Encoding>
-        <File>${defaultLog}.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${defaultLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <maxHistory>30</maxHistory>
-            <minIndex>1</minIndex>  
-            <maxIndex>3</maxIndex>            
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-	        	<!-- or whenever the file size reaches 100MB -->
-	        	<maxFileSize>100MB</maxFileSize>
-      		</timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
+    <Appenders>
+        <!-- 控制台输出 -->
+        <Console name="Console">
+            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%-6c|%m%n"/>
+        </Console>
+        
+        <!-- 按天滚动文件输出 -->
+        <RollingRandomAccessFile name="Stdout" fileName="${path_system}/stdout.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/stdout.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+        
+        <!-- 按天滚动的错误日志文件输出 -->
+        <RollingRandomAccessFile name="Error" fileName="${path_system}/err.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/err.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+        
+        <!-- 按天滚动的警告日志文件输出 -->
+        <RollingRandomAccessFile name="Warn" fileName="${path_system}/warn.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/warn.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+            <Filters>
+                <!-- 使用 LevelRangeFilter 来限制只记录 WARN 级别的日志 -->
+                <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+        
+        <!-- 异步处理 -->
+        <Async name="AsyncStdout">
+            <AppenderRef ref="Stdout"/>
+        </Async>
+        <Async name="AsyncError">
+            <AppenderRef ref="Error"/>
+        </Async>
+        <Async name="AsyncWarn">
+            <AppenderRef ref="Warn"/>
+        </Async>
+    </Appenders>
 
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
-        </layout>
-    </appender>
-    
-	<!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="dbfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>${dbLog}.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${dbLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <maxHistory>30</maxHistory>
-            <minIndex>1</minIndex>  
-            <maxIndex>3</maxIndex>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-	        	<!-- or whenever the file size reaches 100MB -->
-	        	<maxFileSize>100MB</maxFileSize>
-      		</timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
-        </layout>
-    </appender>                              
-    
- 	<!-- 错误输出 过滤出错误日志信息-->  
-	<appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">  
-         <filter class="ch.qos.logback.classic.filter.LevelFilter">  
-            <level>ERROR</level>  
-            <OnMismatch>DENY</OnMismatch>  
-            <OnMatch>ACCEPT</OnMatch>  
-        </filter>  
-        <Encoding>UTF-8</Encoding>
-        <File>${errLog}.log</File>  
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-            <FileNamePattern>${errLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>  
-            <maxHistory>30</maxHistory>
-            <minIndex>1</minIndex>  
-            <maxIndex>3</maxIndex>            
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-	        	<!-- or whenever the file size reaches 100MB -->
-	        	<maxFileSize>100MB</maxFileSize>
-      		</timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-         
-        <layout class="ch.qos.logback.classic.PatternLayout">  
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg thread[%thread]level[%-5level]logger[%logger{20}]%n</Pattern>  
-        </layout>  
-    </appender>
-	<!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份)-->
-    <appender name="minafile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <Encoding>UTF-8</Encoding>
-        <File>${minaLog}.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${minaLog}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <maxHistory>30</maxHistory>
-            <minIndex>1</minIndex>  
-            <maxIndex>3</maxIndex>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-	        	<!-- or whenever the file size reaches 100MB -->
-	        	<maxFileSize>100MB</maxFileSize>
-      		</timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg thread[%thread]level[%-5level]logger[%logger{20}]%n</pattern>
-        </layout>
-    </appender>
-	<logger name="dbLog" additivity="false">
-		<level value="INFO"></level>
-		<appender-ref ref="dbfile" />
-	</logger>
-	<logger name="minaLog" additivity="false">
-		<level value="INFO"></level>
-		<appender-ref ref="minafile" />
-	</logger>		
-    <root level="info">
-<!--         <appender-ref ref="stdout" /> -->
-        <appender-ref ref="defaultLog" />
-    	<appender-ref ref="FILE-ERROR" /> 
-    </root>
-</configuration>
+    <Loggers>
+        <!-- 根日志记录器 -->
+        <AsyncRoot level="INFO" includeLocation="false" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncStdout"/>
+            <AppenderRef ref="AsyncError"/>
+            <AppenderRef ref="AsyncWarn"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

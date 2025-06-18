@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.apache.logging.log4j.LogManager;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
@@ -108,8 +110,17 @@ public class CrossServer {
 	}
 
 	private void shutdown() {
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		LoggerType.Stdout.logger.info("CrossServer shutdown start");
+
 		IdCache.clearAllCurrentServerId();
-		ZongMenManager.getInstance().saveAllZongMenData();
+		ZongMenManager.getInstance().saveAllZongMenData(true);
+
+		stopWatch.stop();
+		LoggerType.Stdout.logger.info("CrossServer shutdown complete, elapsed time: {} ms", stopWatch.getTime());
+		LogManager.shutdown(); // 关闭log4j2日志
+
 	}
 
 	private void initVerticle() throws Exception {

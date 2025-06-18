@@ -223,24 +223,71 @@ public class AsyncUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Future<T> runOnContextAuto(Context context, boolean callOnCallerThread, Callable<?> supplier) {
-		return runOnContext(context, callOnCallerThread, supplier, result -> {
-			if (result == null) {
-				return Future.succeededFuture(null);
-			} else if (result instanceof Future) {
-				return (Future<T>) result;
-			} else if (result instanceof CompletionStage) {
-				return (Future<T>) VertxFutureConverter.completionStageConverter().apply((CompletionStage<Object>) result);
-			} else if (result instanceof java.util.concurrent.Future) {
-				return (Future<T>) VertxFutureConverter.jdkFutureConverter().apply((java.util.concurrent.Future<Object>) result);
-			} else {
-				// 默认当作同步结果处理
-				return Future.succeededFuture((T) result);
-			}
-		});
+		return runOnContext(context, callOnCallerThread, supplier, result -> toVertxFuture(result));
 	}
 
 	// 默认回调在执行线程中执行
 	public static <T> Future<T> runOnContextAuto(Context context, Callable<?> supplier) {
 		return runOnContextAuto(context, false, supplier);
 	}
+
+	/** 
+	 * 把其他类型的Future，转换为Vertx的Future
+	 * @param <T>
+	 * @param otherFuture， 也可以是一个普通的结果类型
+	 * @return
+	 */
+	public static <T> Future<T> toVertxFuture(Object otherFuture) {
+		if (otherFuture instanceof Future) {
+			return (Future<T>) otherFuture;
+		}
+		if (otherFuture instanceof CompletionStage) {
+			return (Future<T>) VertxFutureConverter.completionStageConverter().apply((CompletionStage<Object>) otherFuture);
+		}
+		if (otherFuture instanceof java.util.concurrent.Future) {
+			return (Future<T>) VertxFutureConverter.jdkFutureConverter().apply((java.util.concurrent.Future<Object>) otherFuture);
+		}
+		// 如果是其他类型，默认为是一个普通的结果类型，不是异步类型， 直接返回一个成功的Future
+		return Future.succeededFuture((T) otherFuture);
+	}
+
+	/** 
+	 * 将多个异步的Future转换为Vertx的Future列表
+	 * @param <T>
+	 * @param futures
+	 * @return
+	 */
+	public static <T> List<Future<T>> toVertxFutures(Object... futures) {
+		if (futures == null || futures.length == 0) {
+			return List.of();
+		}
+		List<Future<T>> list = new java.util.ArrayList<>(futures.length);
+		for (Object future : futures) {
+			list.add(toVertxFuture(future));
+		}
+		return list;
+	}
+
+	/** 
+	 * 异步结果适配到{@link io.vertx.core.Future#compose}
+	 * @param <T>
+	 * @param future1
+	 * @param future2
+	 * @return
+	 */
+	public static <T> Future<T> compose(Object future1, Object future2) {
+		return toVertxFuture(future1).compose(t -> toVertxFuture(future2));
+	}
+
+	public static <T> Future<T> compose(List<?> futures) {
+		if (futures == null || futures.isEmpty()) {
+			return Future.succeededFuture();
+		}
+		Future<T> future = toVertxFuture(futures.get(0));
+		for (int i = 1; i < futures.size(); i++) {
+			future = compose(future, futures.get(i));
+		}
+		return future;
+	}
+
 }
