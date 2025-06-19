@@ -1,16 +1,14 @@
 package cn.game.util;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -27,11 +25,13 @@ public final class DateUtil {
 	public static final String pattern_zh = "yyyy年MM月dd日 HH时mm分ss秒";
 	/** yyyy-MM-dd HH:mm:ss  默认的日期格式**/
 	public static final String pattern_en = "yyyy-MM-dd HH:mm:ss";
+	public static final String pattern_time = "HH:mm:ss";
 
 	public static final String pattern_en_yyyy_MM_dd = "yyyy-MM-dd";
 
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
-
+	public static final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern(pattern_time);
+	public static final DateTimeFormatter formatterEnYMD = DateTimeFormatter.ofPattern(pattern_en_yyyy_MM_dd);
 	// 一天的毫秒数 60*60*1000*24
 	public final static long DAY_MILLIS = 86400000;
 	// 一天的秒数 60*60*24
@@ -46,129 +46,27 @@ public final class DateUtil {
 	/** 以凌晨5点为分界点 */
 	private static final int DAY_BOUNDARY_HOUR = 5;
 
-	private static ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<SimpleDateFormat>() {
-		@Override
-		protected synchronized SimpleDateFormat initialValue() {
-			return new SimpleDateFormat(pattern_en);
-		}
-	};
-
-	public static DateFormat getDateFormat() {
-		return threadLocal.get();
-	}
-
-	public static Date parse(String textDate) {
-		try {
-			return getDateFormat().parse(textDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException("时间格式错误： " + textDate);
-		}
-	}
-
-	/***
-	 * 将字符串时间转换成 yyyy年MM月dd日 HH时mm分ss秒 格式
-	 * 
-	 * @return
+	/**
+	 * 将时间字符串解析为 Date 对象
 	 */
-	public static String getTimeByPattern(Date time) {
-		return getTimeByPattern(time, pattern_zh);
+	public static Date parse(String textDate) {
+		LocalDateTime localDateTime = LocalDateTime.parse(textDate, formatter);
+		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+		return Date.from(instant);
 	}
 
 	/***
-	 * 将字符串时间转换成Pattern格式
-	 * 
-	 * @param pattern
-	 * @return
+	 * 将 Date 转换为指定格式字符串
 	 */
 	public static String getTimeByPattern(Date time, String pattern) {
-
-		try {
-			SimpleDateFormat format = new SimpleDateFormat(pattern);
-			return getTimeByPattern(time, format);
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/***
-	 * 将字符串时间转换成Pattern格式
-	 * 
-	 * @return
-	 */
-	public static String getTimeByPattern(Date time, SimpleDateFormat format) {
-		synchronized (format) {
-			try {
-				return format.format(time);
-			} catch (Exception e) {
-
-				e.printStackTrace();
-			}
+		if (time == null || pattern == null)
 			return null;
-		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		LocalDateTime localDateTime = toLocalDateTime(time);
+		return localDateTime.format(formatter);
 	}
 
-	/***
-	 * 将字符串时间转换成 yyyy年MM月dd日 HH:mi 格式
-	 * 
-	 * @param timeStr
-	 *            ,格式 yyyymmdd hh24:mi
-	 * @return
-	 */
-	public static String timeStrToCn(String timeStr) {
-		StringBuffer sb = new StringBuffer();
-		if (timeStr.length() > 4)
-			sb.append(timeStr.substring(0, 4)).append("年");
-		else
-			return null;
-		if (timeStr.length() > 6)
-			sb.append(timeStr.substring(4, 6)).append("月");
-		else
-			return sb.toString();
-		if (timeStr.length() > 8)
-			sb.append(timeStr.substring(6, 8)).append("日");
-		else
-			return sb.toString();
-		if (timeStr.length() > 11)
-			sb.append(timeStr.substring(9));
-
-		return sb.toString();
-	}
-
-	/**
-	 * 获取当前月的总天数
-	 * @return
-	 */
-	public static int getNowMonthHowDays() {
-		return getDaysOfMonth(now());
-	}
-	
-	/**
-	 * 获取某个日期所在月的总天数
-	 * @param date
-	 * @return
-	 */
-	public static int getDaysOfMonth(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-	} 
-
-	/**
-	 * 计算时间差 (时间单位,开始时间,结束时间)
-	 * 调用方法 howLong("h","2007-08-09 10:22:26","2007-08-09 20:21:30") ///9小时56分
-	 * 返回9小时
-	 */
-	public static long howLong(TimeUnit unit, String time1, String time2) throws ParseException {
-		// 时间单位(如：不足1天(24小时) 则返回0)，开始时间，结束时间
-		// System.out.println("time1=" + time1 + " time2=" + time2);
-		Date date1 = getDateFormat().parse(time1);
-		Date date2 = getDateFormat().parse(time2);
-		return howLong(unit, date1, date2);
-	}
 
 	/**
 	 * 计算时间差
@@ -208,40 +106,19 @@ public final class DateUtil {
 	}
 
 	/**
-	 * @param dateStr
-	 * @return
+	 * 获取当前时间字符串
 	 */
-	public static Date getDate(String dateStr, String pattern) {
-		try {
-			return new SimpleDateFormat(pattern).parse(dateStr);
-		} catch (ParseException e) {
-
-			return null;
-		}
+	public static String getStringDate() {
+		return LocalDateTime.now().format(formatter);
 	}
+
 
 	/**
-	 * @param dateStr
-	 * @return
+	 * 将时间字符串转为毫秒时间戳
 	 */
-	public static Date getDate(String dateStr) {
-		try {
-			return new SimpleDateFormat(pattern_en).parse(dateStr);
-		} catch (ParseException e) {
-
-			return null;
-		}
-	}
-
-	public static String getStringDate() {
-		return getDateFormat().format(new Date());
-
-	}
-
-	public static long getLongDate(String dateString) throws ParseException {
-		Date parse = getDateFormat().parse(dateString);
-		return parse.getTime();
-
+	public static long getLongDate(String dateString) {
+		LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+		return toEpochMilli(localDateTime);
 	}
 	
 	/**
@@ -289,98 +166,33 @@ public final class DateUtil {
 		return targetDateTime.atZone(zoneId).toInstant().toEpochMilli();
 	}
 
-
 	/**
-	 * 将毫秒级的timeMillis转化成格式为（HH:mm:ss）的字符串
-	 * 
-	 * @param timeMillis
-	 * @param type
-	 * @return type=0 返回HH:mm:ss格式 <br>
-	 *         type!=0 返回 x小时m分钟s秒格式
-	 */
-	public static String getTimeLongStr(long timeMillis, int type) {
-		// 秒
-		int second = (int) (timeMillis % 60000) / 1000;
-		// 分
-		int minute = (int) (timeMillis % (60000 * 60)) / 60000;
-		// 小时
-		int hour = (int) (timeMillis / (60000 * 60));
-		if (type == 0) {
-			return getDoubleNum(hour) + ":" + getDoubleNum(minute) + ":" + getDoubleNum(second);
-		} else {
-			String time = "";
-			if (hour > 0) {
-				time += hour + " 小时";
-			}
-			if (minute > 0) {
-				time += minute + " 分钟";
-			}
-			if (second > 0) {
-				time += second + " 秒";
-			}
-			return time;
-		}
-
-	}
-
-	public static String getDoubleNum(int num) {
-		if (num < 10) {
-			return "0" + num;
-		} else {
-			return "" + num;
-		}
-	}
-
-	/**
-	 * 距离一天的重置时间还有多少秒
-	 * @param hour  以某个小时为重置点
-	 * @return
-	 */
-	public static int getDayResetTimeSeconds(int hour) {
-
-		Calendar calendar = Calendar.getInstance();
-		int h = calendar.get(Calendar.HOUR_OF_DAY);
-		if (h > hour) {
-			calendar.add(Calendar.DAY_OF_YEAR, 1);
-		}
-		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-
-		return (int) (calendar.getTimeInMillis() - System.currentTimeMillis()) / 1000;
-	}
-
-
-
-	/**
-	 * 获取当天 指定时间的时间戳
+	 * 获取当天指定时间的时间戳
 	 * @param hourOffset 0--23 小时
 	 * @param minuteOffset 0--59 分钟
 	 * @param secondOffset 0--59 秒
-	 * @return
+	 * @return 毫秒时间戳
 	 */
-	public static long getDayTimeBySet(int hourOffset,int minuteOffset, int secondOffset){
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY,hourOffset);
-		calendar.set(Calendar.MINUTE,minuteOffset);
-		calendar.set(Calendar.SECOND,secondOffset);
-		return calendar.getTimeInMillis();
+	public static long getDayTimeBySet(int hourOffset, int minuteOffset, int secondOffset) {
+		LocalDate today = LocalDate.now();
+		LocalDateTime dateTime = today.atTime(hourOffset, minuteOffset, secondOffset);
+		return toEpochMilli(dateTime);
 	}
 
 	/**
 	 * 获取指定时间那天的指定时间的时间戳
+	 * @param timer 毫秒时间戳
 	 * @param hourOffset 0--23 小时
 	 * @param minuteOffset 0--59 分钟
 	 * @param secondOffset 0--59 秒
-	 * @return
+	 * @return 设置后的时间戳（毫秒）
 	 */
-	public static long getTimeBySet(long timer ,int hourOffset,int minuteOffset, int secondOffset){
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(timer);
-		calendar.set(Calendar.HOUR_OF_DAY,hourOffset);
-		calendar.set(Calendar.MINUTE,minuteOffset);
-		calendar.set(Calendar.SECOND,secondOffset);
-		return calendar.getTimeInMillis();
+	public static long getTimeBySet(long timer, int hourOffset, int minuteOffset, int secondOffset) {
+		// 先把毫秒时间戳转为 LocalDateTime
+		LocalDateTime dateTime = Instant.ofEpochMilli(timer).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		// 设置时分秒
+		LocalDateTime newDateTime = dateTime.withHour(hourOffset).withMinute(minuteOffset).withSecond(secondOffset).withNano(0); // 清零纳秒
+		return toEpochMilli(newDateTime);
 	}
 
 	/**
@@ -463,15 +275,10 @@ public final class DateUtil {
 	 * 
 	 * @return 当前日期的字符串格式
 	 */
-	public static String nowDateStr() {
-
-		try {
-			SimpleDateFormat format = new SimpleDateFormat(pattern_en_yyyy_MM_dd);
-			return format.format(now());
-		} catch (Exception e) {
-			return "";
-		}
-	}
+    public static String nowDateStr() {
+		LocalDate now = LocalDate.now();
+		return now.format(formatterEnYMD);
+    }
 
 	/**
 	 * 判断当前时间是否在两个时间之内
@@ -493,37 +300,15 @@ public final class DateUtil {
 		return false;
 	}
 
+
 	/**
 	 * 获取当前时间的字符串格式
-	 * 
-	 * 格式: hh24:mi:ss
-	 * 
-	 * @return 当前日期的字符串格式
+	 * 格式: HH:mm:ss
+	 * @return 当前时间的字符串格式
 	 */
 	public static String nowTimeStr() {
-		// return ConvertUtil.time2str(now());
-		Calendar c = Calendar.getInstance();
-		int h = c.get(Calendar.HOUR_OF_DAY);
-		int m = c.get(Calendar.MINUTE);
-		int s = c.get(Calendar.SECOND);
-
-		String sh = h < 10 ? "0" + h : "" + h;
-		String sm = m < 10 ? "0" + m : "" + m;
-		String ss = s < 10 ? "0" + s : "" + s;
-		return sh + ":" + sm + ":" + ss;
-
+		return LocalTime.now().format(formatterTime);
 	}
-
-	/**
-	 * 获取当前日期
-	 * 
-	 * @return 当前日期
-	 */
-	public static Date now() {
-		Calendar calendar = Calendar.getInstance();
-		return calendar.getTime();
-	}
-	
 
 	/** 
 	 * 计算当前时间与特定时间之间相隔的天数（日期数）
@@ -672,6 +457,14 @@ public final class DateUtil {
 	 */
 	public static LocalDateTime toLocalDateTime(long timestamp) {
 		return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	private static LocalDateTime toLocalDateTime(Date date) {
+		return toLocalDateTime(date.getTime());
+	}
+
+	private static LocalDate toLocalDate(Date date) {
+		return toLocalDate(date.getTime());
 	}
 
 	/**
