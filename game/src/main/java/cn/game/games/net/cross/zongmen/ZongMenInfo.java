@@ -139,7 +139,7 @@ public class ZongMenInfo {
         data.setExp(exp);
     }
     public long getCreateTimer(){
-        return DateUtil.parse(data.getCreateTime()).getTime();
+        return DateUtil.parseDate(data.getCreateTime()).getTime();
     }
 
     public void handleEvent(ZongMenConstants.ZongMenEvenType zongMenEvenType,Object... params) {

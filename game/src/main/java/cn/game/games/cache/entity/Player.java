@@ -439,8 +439,8 @@ public class Player {
 		builder.setUnionId("不存在");
 		builder.setUnionName("不存在");
 		builder.setIsOnline(getGameClient() != null);
-		builder.setCreateTime((int) (DateUtil.parse(getData().getCreateDate()).getTime() / 1000));
-		builder.setLastLoginTime((int) (DateUtil.parse(getData().getLoginDate()).getTime() / 1000));
+		builder.setCreateTime((int) (DateUtil.parseDate(getData().getCreateDate()).getTime() / 1000));
+		builder.setLastLoginTime((int) (DateUtil.parseDate(getData().getLoginDate()).getTime() / 1000));
 		ChapterModule chapterModule = getChapterModule();
 
 		builder.setCurBattleId(chapterModule.getFightMainBattleId());
@@ -752,11 +752,11 @@ public class Player {
 	}
 
 	public long getLastLoginTimer() {
-		return DateUtil.parse(getData().getLoginDate()).getTime();
+		return DateUtil.parseDate(getData().getLoginDate()).getTime();
 	}
 
 	public long getCreateTimer() {
-		return DateUtil.parse(getData().getCreateDate()).getTime();
+		return DateUtil.parseDate(getData().getCreateDate()).getTime();
 	}
 
 	public String getOpenId() {

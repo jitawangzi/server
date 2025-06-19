@@ -49,10 +49,19 @@ public final class DateUtil {
 	/**
 	 * 将时间字符串解析为 Date 对象
 	 */
-	public static Date parse(String textDate) {
+	/** 
+	 * 
+	 * @param textDate
+	 * @return
+	 */
+	public static Date parseDate(String textDate) {
 		LocalDateTime localDateTime = LocalDateTime.parse(textDate, formatter);
 		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
 		return Date.from(instant);
+	}
+
+	public static LocalDateTime parse(String textDate) {
+		return LocalDateTime.parse(textDate, formatter);
 	}
 
 	/***
@@ -465,6 +474,24 @@ public final class DateUtil {
 
 	private static LocalDate toLocalDate(Date date) {
 		return toLocalDate(date.getTime());
+	}
+
+	/**
+	 * 按 period*periodPass 秒修改 date
+	 */
+	public static Date changeDateByPeriod(Date date, int period, int periodPass) {
+		if (periodPass == 0) {
+			return date;
+		}
+		if (date == null) {
+			return null;
+		}
+		// 1. Date转Instant
+		Instant instant = date.toInstant();
+		// 2. 加上 period*periodPass 秒
+		instant = instant.plusSeconds((long) period * periodPass);
+		// 3. 再转回Date
+		return Date.from(instant);
 	}
 
 	/**

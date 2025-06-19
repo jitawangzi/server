@@ -92,7 +92,7 @@ public class VertxServerListReq implements BaseVertxHandler {
 //						continue;
 //					}
 					// 检查开服时间：当前时间在开服时间之后的服务器才显示
-					Date openTime = DateUtil.parse(server.getServerOpenTime());
+					Date openTime = DateUtil.parseDate(server.getServerOpenTime());
 					if (openTime.after(new Date())) {
 						continue;
 					}

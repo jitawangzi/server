@@ -82,7 +82,7 @@ public class GameLogAssistant extends Logger {
 	 * 计算在线时长（秒）
 	 */
 	static long calculatePlayerOnlineDurationSecond(Player player) {
-		return (DateUtil.currentTimeMillis() - DateUtil.parse(player.getData().getLoginDate()).getTime()) / 1000;
+		return (DateUtil.currentTimeMillis() - DateUtil.parseDate(player.getData().getLoginDate()).getTime()) / 1000;
 	}
 
 	/**

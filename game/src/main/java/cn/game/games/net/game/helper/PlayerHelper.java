@@ -1455,7 +1455,7 @@ public class PlayerHelper {
 		player.setOnline(false);
 		PlayerData data = player.getData();
 		data.setOfflineTime(System.currentTimeMillis());
-		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.parse(data.getLoginDate()).getTime()) / 1000));
+		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.parseDate(data.getLoginDate()).getTime()) / 1000));
 
 
 		return saveClientCache(playerId).onSuccess(r -> {
