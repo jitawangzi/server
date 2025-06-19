@@ -107,6 +107,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoRequest_13000301;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardResponse_13000306;
+import cn.game.protocol.protobuf.BattleMsg.BattleXiangYaoChuMoResponse_13000502;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardRequest_13000027;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleRewardResponse_13000028;
 import cn.game.protocol.protobuf.BattleMsg.HCBattleSweepRequest_13000040;
@@ -174,6 +175,8 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattlePvPInfoRequest_13000117, OfflineBattleHandler::getInfo);
 		putInvoker(PbProtocol.BattleBuyPvPTimeRequest_13000121, OfflineBattleHandler::buyTime);
 
+		putInvoker(PbProtocol.BattleXiangYaoChuMoRequest_13000501, this::xiangYaoChuMoInfo);
+
 	}
 
 	protected void empty(NetClient client, Object message) {
@@ -184,6 +187,19 @@ public class ChapterHandler extends BaseHandler {
 
 		ChapterModule chapterModule = player.getModule(ChapterModule.class);
 
+		client.sendProtocol(resp);
+	}
+
+	protected void xiangYaoChuMoInfo(NetClient client, Object message) {
+		BattleXiangYaoChuMoResponse_13000502.Builder resp = BattleXiangYaoChuMoResponse_13000502.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		XiangYaoFuMoBattle battle = chapterModule.getBattle(DungeonTypeEnum.XiangYaoFuMo);
+		resp.setSweepTimes(battle.getSweepTimes());
+		resp.setLastCompleteBattleId(battle.getLastCompleteBattleId());
+		
 		client.sendProtocol(resp);
 	}
 

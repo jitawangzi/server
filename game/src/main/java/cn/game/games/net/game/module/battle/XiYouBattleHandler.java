@@ -47,10 +47,9 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 			return ErrorMsgEnum.level_not_enough.getId();
 		}
 
-//		if (!PlayerHelper.checkCondition(playerId, battleConfig.enterCondtion)) {
-//			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-//			return;
-//		}
+		if (!PlayerHelper.checkCondition(player, battleConfig.PlayerCondition)) {
+			return ErrorMsgEnum.condition_check_error.getId();
+		}
 		if (!PlayerHelper.isEnough(player, battleConfig.cost)) {
 			return ErrorMsgEnum.resource_not_enough.getId();
 		}

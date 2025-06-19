@@ -9,7 +9,6 @@ import com.google.protobuf.Message;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
@@ -19,9 +18,9 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001
 				.newBuilder();
-		builder.setType(1);
+		builder.setType(22);
 
-		builder.setTypeId(10101);
+		builder.setTypeId(220002);
 
 		return builder.build();
 	}

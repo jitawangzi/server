@@ -20,6 +20,12 @@ public abstract class IBattleHandler {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
+
+	/** 
+	 * 战斗开始前，校验条件
+	 * @param id
+	 * @return
+	 */
 	abstract int battleStart(int id);
 	
 	/** 

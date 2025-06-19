@@ -39,7 +39,7 @@ public class ResultObject<T> {
 	 * @param 
 	 * @return 
 	 */
-	public static <T extends Object> ResultObject<T> success() {
+	public static <T> ResultObject<T> success() {
 		return SUCCESS;
 	}
 
@@ -50,7 +50,7 @@ public class ResultObject<T> {
 	 * @param  value	返回所带的对象
 	 * @return 返回值对象
 	 */
-	public static <T extends Object> ResultObject<T> success(T value) {
+	public static <T> ResultObject<T> success(T value) {
 		ResultObject<T> resultObject = new ResultObject<T>();
 		resultObject.value = value;
 		return resultObject;
@@ -61,7 +61,7 @@ public class ResultObject<T> {
 	 * 
 	 * @param  errorCode	错误码
 	 */
-	public static <T extends Object> ResultObject<T> fail(int errorCode) {
+	public static <T> ResultObject<T> fail(int errorCode) {
 		ResultObject<T> resultObject = new ResultObject<T>();
 		resultObject.errorCode = errorCode;
 		return resultObject;

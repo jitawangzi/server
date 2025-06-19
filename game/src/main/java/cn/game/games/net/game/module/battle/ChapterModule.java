@@ -650,11 +650,15 @@ public class ChapterModule extends BasePlayerModule  {
 				ShiLuoZhenJingBattle battle = new ShiLuoZhenJingBattle();
 				battle.setPlayer(player);
 				battle.reset();
-				battlesMap.put(DungeonTypeEnum.ShiLuoZhenJing.getId(), battle);
+				battlesMap.put(battle.getType(), battle);
 			} else if (func == InitialUI.WorldBoss) {
 				WorldBossBattle battle = new WorldBossBattle();
 				battle.setPlayer(player);
-				battlesMap.put(DungeonTypeEnum.WorldBoss.getId(), battle);
+				battlesMap.put(battle.getType(), battle);
+			} else if (func == InitialUI.DemonsBoss) {
+				XiangYaoFuMoBattle battle = new XiangYaoFuMoBattle();
+				battle.setPlayer(player);
+				battlesMap.put(battle.getType(), battle);
 			}
 			break;
 		}

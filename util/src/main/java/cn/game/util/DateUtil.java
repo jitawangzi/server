@@ -25,13 +25,13 @@ public final class DateUtil {
 	public static final String pattern_zh = "yyyy年MM月dd日 HH时mm分ss秒";
 	/** yyyy-MM-dd HH:mm:ss  默认的日期格式**/
 	public static final String pattern_en = "yyyy-MM-dd HH:mm:ss";
-	public static final String pattern_time = "HH:mm:ss";
 
-	public static final String pattern_en_yyyy_MM_dd = "yyyy-MM-dd";
+	public static final String pattern_day = "yyyy-MM-dd";
+	public static final String pattern_time = "HH:mm:ss";
 
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern_en);
 	public static final DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern(pattern_time);
-	public static final DateTimeFormatter formatterEnYMD = DateTimeFormatter.ofPattern(pattern_en_yyyy_MM_dd);
+	public static final DateTimeFormatter formatterEnYMD = DateTimeFormatter.ofPattern(pattern_day);
 	// 一天的毫秒数 60*60*1000*24
 	public final static long DAY_MILLIS = 86400000;
 	// 一天的秒数 60*60*24
