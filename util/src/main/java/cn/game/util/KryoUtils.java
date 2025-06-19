@@ -1,10 +1,13 @@
 package cn.game.util;
 
 import java.lang.reflect.InvocationHandler;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -40,177 +43,259 @@ import de.javakaffee.kryoserializers.guava.UnmodifiableNavigableSetSerializer;
 
 /**
  * 代替protostuff，不要序列化匿名类
- * 2020年11月13日 下午4:48:30
- * @author SYQ
+ * 支持JDK 21虚拟线程的Kryo工具类
  */
 public class KryoUtils {
 
-	private static final ThreadLocal<Kryo> kryos = new ThreadLocal<Kryo>() {
+	// 为普通线程使用ThreadLocal
+	private static final ThreadLocal<Kryo> standardKryoThreadLocal = ThreadLocal.withInitial(() -> {
+		Kryo kryo = new Kryo();
+		kryo.setRegistrationRequired(false);
+		kryo.setReferences(true);
+		registerSerializer(kryo);
+		return kryo;
+	});
 
-		@Override
-		protected Kryo initialValue() {
+	private static final ThreadLocal<Kryo> versionedKryoThreadLocal = ThreadLocal.withInitial(() -> {
+		Kryo kryo = new Kryo();
+		kryo.setRegistrationRequired(false);
+		kryo.setReferences(true);
+		kryo.setDefaultSerializer(VersionFieldSerializer.class);
+		registerSerializer(kryo);
+		return kryo;
+	});
+
+	// 为虚拟线程使用对象池
+	private static final KryoPool standardKryoPool = new KryoPool(false);
+	private static final KryoPool versionedKryoPool = new KryoPool(true);
+
+	/**
+	 * Kryo 对象池实现
+	 */
+	private static class KryoPool {
+		private final BlockingQueue<Kryo> pool;
+		private final boolean withVersion;
+		private final AtomicInteger created = new AtomicInteger(0);
+		private final AtomicInteger borrowed = new AtomicInteger(0);
+		private final AtomicInteger discarded = new AtomicInteger(0);
+		private final int maxSize;
+
+		public KryoPool(boolean withVersion) {
+			// 默认池大小为处理器核心数的2倍
+			int coreSize = Runtime.getRuntime().availableProcessors();
+			int initialSize = coreSize;
+			this.maxSize = coreSize * 4; // 最大大小为核心数的4倍
+			this.withVersion = withVersion;
+			pool = new ArrayBlockingQueue<>(maxSize);
+
+			// 预热池，但只创建初始大小的实例
+			for (int i = 0; i < initialSize; i++) {
+				Kryo kryo = createKryo();
+				pool.offer(kryo);
+				created.incrementAndGet();
+			}
+		}
+
+		private Kryo createKryo() {
 			Kryo kryo = new Kryo();
-			// configure kryo instance, customize settings
-			kryo.setRegistrationRequired(false); // 关闭注册行为
-			kryo.setReferences(true); // 支持循环引用,关闭可以提升性能
+			kryo.setRegistrationRequired(false);
+			kryo.setReferences(true);
+
+			if (withVersion) {
+				kryo.setDefaultSerializer(VersionFieldSerializer.class);
+			}
+
 			registerSerializer(kryo);
-
-//			kryo.register(Object[].class);
-//			kryo.register(Class.class);
-//			kryo.register(SerializedLambda.class);
-//			kryo.register(ClosureSerializer.Closure.class, new ClosureSerializer());
-//			kryo.register(CapturingClass.class);
-
-			//Fix the NPE bug when deserializing Collections. ? 
-//			((Kryo.DefaultInstantiatorStrategy) kryo.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(
-//					new StdInstantiatorStrategy());
 			return kryo;
-		};
-	};
-	private static final ThreadLocal<Kryo> kryosWithVersion = new ThreadLocal<Kryo>() {
+		}
 
-		@Override
-		protected Kryo initialValue() {
-//			com.esotericsoftware.minlog.Log.set(1);
-			Kryo kryo = new Kryo();
-			// configure kryo instance, customize settings
-			kryo.setRegistrationRequired(false); // 关闭注册行为
-			kryo.setReferences(true); // 支持循环引用,关闭可以提升性能
+		public Kryo borrow() {
+			Kryo kryo = pool.poll(); // 非阻塞获取
+			if (kryo == null) {
+				// 如果已创建数量小于最大大小，创建新实例
+				if (created.get() < maxSize) {
+					kryo = createKryo();
+					created.incrementAndGet();
+				} else {
+					// 尝试等待短时间
+					try {
+						kryo = pool.poll(50, TimeUnit.MILLISECONDS);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
 
-			// 序列化增加版本控制
-			kryo.setDefaultSerializer(VersionFieldSerializer.class);
-			registerSerializer(kryo);
-			//Fix the NPE bug when deserializing Collections. ? 
-//			((Kryo.DefaultInstantiatorStrategy) kryo.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(
-//					new StdInstantiatorStrategy());
+					// 如果仍然无法获取，创建一个临时实例
+					if (kryo == null) {
+						kryo = createKryo();
+						// 不计入created数量，因为这是临时实例
+					}
+				}
+			}
+			borrowed.incrementAndGet();
 			return kryo;
-		};
-	};
+		}
+
+		public void release(Kryo kryo) {
+			if (kryo != null) {
+				borrowed.decrementAndGet();
+				// 尝试放回池中，如果池满则丢弃
+				boolean returned = pool.offer(kryo);
+				if (!returned) {
+					discarded.incrementAndGet();
+				}
+			}
+		}
+
+		public String getStats() {
+			return String.format("KryoPool[withVersion=%s, created=%d, borrowed=%d, available=%d, discarded=%d, maxSize=%d]", withVersion,
+					created.get(), borrowed.get(), pool.size(), discarded.get(), maxSize);
+		}
+	}
+	/**
+	 * 判断当前是否在虚拟线程中执行
+	 */
+	private static boolean isVirtualThread() {
+		return Thread.currentThread().isVirtual();
+	}
+
+	/**
+	 * 获取标准Kryo实例
+	 */
+	private static Kryo getStandardKryo() {
+		return isVirtualThread() ? standardKryoPool.borrow() : standardKryoThreadLocal.get();
+	}
+
+	/**
+	 * 释放标准Kryo实例
+	 */
+	private static void releaseStandardKryo(Kryo kryo) {
+		if (isVirtualThread()) {
+			standardKryoPool.release(kryo);
+		}
+	}
+
+	/**
+	 * 获取带版本的Kryo实例
+	 */
+	private static Kryo getVersionedKryo() {
+		return isVirtualThread() ? versionedKryoPool.borrow() : versionedKryoThreadLocal.get();
+	}
+
+	/**
+	 * 释放带版本的Kryo实例
+	 */
+	private static void releaseVersionedKryo(Kryo kryo) {
+		if (isVirtualThread()) {
+			versionedKryoPool.release(kryo);
+		}
+	}
 
 	/**
 	 * 把指定对象序列化成字节数组，反序列化时不能修改对象
-	 * @param obj
-	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> byte[] serialize(T obj) {
-		Output output = new Output(32, -1);
-		kryos.get().writeObject(output, obj);
-//		output.close();
-		return output.getBuffer();
+		Kryo kryo = getStandardKryo();
+		try {
+			Output output = new Output(32, -1);
+			kryo.writeObject(output, obj);
+			return output.getBuffer();
+		} finally {
+			releaseStandardKryo(kryo);
+		}
 	}
+
 	public static byte[] serializeClassAndObject(Object obj) {
-		Output output = new Output(32, -1);
-		kryos.get().writeClassAndObject(output, obj);
-//		output.close();
-		return output.getBuffer();
+		Kryo kryo = getStandardKryo();
+		try {
+			Output output = new Output(32, -1);
+			kryo.writeClassAndObject(output, obj);
+			return output.getBuffer();
+		} finally {
+			releaseStandardKryo(kryo);
+		}
 	}
+
 	public static byte[] serializeClassAndObjectWithVersion(Object obj) {
-		Output output = new Output(32, -1);
-		kryosWithVersion.get().writeClassAndObject(output, obj);
-//		output.close();
-		return output.getBuffer();
+		Kryo kryo = getVersionedKryo();
+		try {
+			Output output = new Output(32, -1);
+			kryo.writeClassAndObject(output, obj);
+			return output.getBuffer();
+		} finally {
+			releaseVersionedKryo(kryo);
+		}
 	}
 
 	/**
 	 * 将字节数组反序列化成指定Class类型，反序列化时不能修改对象
-	 * @param data
-	 * @param clazz
-	 * @return
 	 */
 	public static <T> T deserialize(byte[] data, Class<T> clazz) {
-
-		Input input = new Input(data);
-		return kryos.get().readObject(input, clazz);
+		Kryo kryo = getStandardKryo();
+		try {
+			Input input = new Input(data);
+			return kryo.readObject(input, clazz);
+		} finally {
+			releaseStandardKryo(kryo);
+		}
 	}
+
 	public static Object deserializeClassAndObject(byte[] data) {
-
-		Input input = new Input(data);
-		return kryos.get().readClassAndObject(input);
+		Kryo kryo = getStandardKryo();
+		try {
+			Input input = new Input(data);
+			return kryo.readClassAndObject(input);
+		} finally {
+			releaseStandardKryo(kryo);
+		}
 	}
+
 	public static Object deserializeClassAndObjectWithVersion(byte[] data) {
-
-		Input input = new Input(data);
-		return kryosWithVersion.get().readClassAndObject(input);
+		Kryo kryo = getVersionedKryo();
+		try {
+			Input input = new Input(data);
+			return kryo.readClassAndObject(input);
+		} finally {
+			releaseVersionedKryo(kryo);
+		}
 	}
+
 	/**
 	 * 把指定对象序列化成字节数组,带对象版本，不支持对象属性名更改、删除，可以新增
-	 * @param obj
-	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> byte[] serializeWithVersion(T obj) {
-		Output output = new Output(32, -1);
-		kryosWithVersion.get().writeObject(output, obj);
-		return output.getBuffer();
+		Kryo kryo = getVersionedKryo();
+		try {
+			Output output = new Output(32, -1);
+			kryo.writeObject(output, obj);
+			return output.getBuffer();
+		} finally {
+			releaseVersionedKryo(kryo);
+		}
 	}
 
 	/**
 	 * 将字节数组反序列化成指定Class类型,如果对象新增了字段，需要加@Since注解，value
-	 *              需要是最新的版本
-	 * @param data
-	 * @param clazz
-	 * @return
+	 * 需要是最新的版本
 	 */
 	public static <T> T deserializeWithVersion(byte[] data, Class<T> clazz) {
-
-		Input input = new Input(data);
-		return kryosWithVersion.get().readObject(input, clazz);
+		Kryo kryo = getVersionedKryo();
+		try {
+			Input input = new Input(data);
+			return kryo.readObject(input, clazz);
+		} finally {
+			releaseVersionedKryo(kryo);
+		}
 	}
-	public static void main(String[] args) throws Exception {
 
-		Kryo kryo = new Kryo();
-		// configure kryo instance, customize settings
-		kryo.setRegistrationRequired(false); // 关闭注册行为
-		kryo.setReferences(true); // 支持循环引用,关闭可以提升性能
-
-//		kryo.register(CompositeFutureImpl.class);
-//		kryo.register(CompositeFutureImpl.class);
-//		kryo.register(Class.class);
-//		kryo.register(SerializedLambda.class);
-//		kryo.register(ClosureSerializer.Closure.class, new ClosureSerializer());
-//		Callable<Integer> closure1 = (Callable<Integer> & java.io.Serializable) (() -> 72363);
-
-//		Promise<Long> promise = Promise.promise();
-//	    Future<Long> ff = promise.future();
-
-//		byte[] respDatas = KryoUtils.serialize(resp);
-//		System.out.println(respDatas);
-
-//		Promise<Long> promise2 = Promise.promise();
-//		Future<Long> ff2 = promise.future();
-
-//		Future<Long> map = ff.map(r -> r + 100);
-//		
-//		promise.complete(256L);
-//
-//		Promise<Long> ppp = Promise.promise();
-//		ppp.complete(map.result());
-
-
-		ArrayList<String> arrayList = new ArrayList<>();
-		arrayList.add("1");
-		arrayList.add("2");
-		arrayList.add("3");
-
-		byte[] data = serializeClassAndObject(arrayList);
-
-		ArrayList<String> obj = (ArrayList<String>) deserializeClassAndObject(data);
-
-		System.out.println(obj.get(0));
-
-//		Output output = new Output(1024, -1);
-//		kryo.writeObject(output, result);
-
-//		Input input = new Input(output.getBuffer(), 0, output.position());
-//		Result r2 = kryo.readObject(input, Result.class);
-//		Future<Long> closure2 = (Future<Long>) r2.getResult();
-//		Callable<Integer> closure2 = (Callable<Integer>) kryo.readObject(input, ClosureSerializer.Closure.class);
-//		System.out.println(closure2.result());
+	/**
+	 * 获取池状态信息，用于监控
+	 */
+	public static String getPoolStats() {
+		return "Standard: " + standardKryoPool.getStats() + "\nVersioned: " + versionedKryoPool.getStats();
 	}
-	
+
+	// 注册序列化器
 	private static void registerSerializer(Kryo kryo) {
-
 		kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
 		kryo.register(Collections.EMPTY_LIST.getClass(), new CollectionsEmptyListSerializer());
 		kryo.register(Collections.EMPTY_MAP.getClass(), new CollectionsEmptyMapSerializer());
@@ -224,23 +309,6 @@ public class KryoUtils {
 		SynchronizedCollectionsSerializer.registerSerializers(kryo);
 
 		// custom serializers for non-jdk libs
-
-		// register CGLibProxySerializer, works in combination with the appropriate action in handleUnregisteredClass (see below)
-//		kryo.register( CGLibProxySerializer.CGLibProxyMarker.class, new CGLibProxySerializer( kryo ) );
-		// dexx
-//		ListSerializer.registerSerializers( kryo );
-//		MapSerializer.registerSerializers( kryo );
-//		SetSerializer.registerSerializers( kryo );
-		// joda DateTime, LocalDate, LocalDateTime and LocalTime
-//		kryo.register( DateTime.class, new JodaDateTimeSerializer() );
-//		kryo.register( LocalDate.class, new JodaLocalDateSerializer() );
-//		kryo.register( LocalDateTime.class, new JodaLocalDateTimeSerializer() );
-//		kryo.register( LocalDateTime.class, new JodaLocalTimeSerializer() );
-		// protobuf
-//		kryo.register( SampleProtoA.class, new ProtobufSerializer() ); // or override Kryo.getDefaultSerializer as shown below
-		// wicket
-//		kryo.register( MiniMap.class, new MiniMapSerializer() );
-		// guava ImmutableList, ImmutableSet, ImmutableMap, ImmutableMultimap, ImmutableTable, ReverseList, UnmodifiableNavigableSet
 		ImmutableListSerializer.registerSerializers(kryo);
 		ImmutableSetSerializer.registerSerializers(kryo);
 		ImmutableMapSerializer.registerSerializers(kryo);
@@ -248,7 +316,6 @@ public class KryoUtils {
 		ImmutableTableSerializer.registerSerializers(kryo);
 		ReverseListSerializer.registerSerializers(kryo);
 		UnmodifiableNavigableSetSerializer.registerSerializers(kryo);
-		// guava ArrayListMultimap, HashMultimap, LinkedHashMultimap, LinkedListMultimap, TreeMultimap, ArrayTable, HashBasedTable, TreeBasedTable
 		ArrayListMultimapSerializer.registerSerializers(kryo);
 		HashMultimapSerializer.registerSerializers(kryo);
 		LinkedHashMultimapSerializer.registerSerializers(kryo);

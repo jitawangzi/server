@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 
@@ -18,10 +19,10 @@ import java.util.function.Function;
  * 2010-12-17 下午02:02:48
  */
 public final class Rnd {
-	private static final ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(Random::new);
+//	private static final ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(Random::new);
 
 	private static Random getRandom() {
-		return threadLocalRandom.get();
+		return ThreadLocalRandom.current();
 	}
 //	private static final Random random = new Random();
 	private static final int RANDOM_CONST = 10000;
