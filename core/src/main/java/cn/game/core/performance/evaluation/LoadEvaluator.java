@@ -3,6 +3,9 @@ package cn.game.core.performance.evaluation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.core.performance.metric.MetricCollector;
 import cn.game.core.performance.metric.MetricRegistry;
 
@@ -10,6 +13,7 @@ import cn.game.core.performance.metric.MetricRegistry;
  * 负载评估器，根据指标值评估系统状态
  */
 public class LoadEvaluator {
+	private static final Logger log = LoggerFactory.getLogger(LoadEvaluator.class);
 
 	private final Map<String, Double> metricWeights = new HashMap<>();
 	private final double warningThreshold;
@@ -49,10 +53,12 @@ public class LoadEvaluator {
 			MetricCollector collector = MetricRegistry.getInstance().getCollector(name);
 			if (collector != null && value >= collector.getCriticalThreshold()) {
 				// 如果任何指标超过其临界值，则系统处于临界状态
+				log.warn("Metric [{}] value [{}] exceeds critical threshold [{}]", name, value, collector.getCriticalThreshold());
 				return LoadState.CRITICAL;
 			}
 			if (collector != null && value >= collector.getWarningThreshold()) {
 				// 如果任何指标超过其临界值，则系统处于临界状态
+				log.warn("Metric [{}] value [{}] exceeds warning threshold [{}]", name, value, collector.getWarningThreshold());
 				return LoadState.WARNING;
 			}
 		}
