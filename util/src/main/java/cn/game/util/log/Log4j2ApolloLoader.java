@@ -19,6 +19,7 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 import cn.game.util.ApolloLoader;
+import cn.game.util.ServerType;
 import cn.game.util.config.ConfigUtil;
 
 /**
@@ -92,7 +93,7 @@ public class Log4j2ApolloLoader extends ApolloLoader {
 		} else {
 			cylog = logPath + "/logs/cylog";
 		}
-		String serverid = ConfigUtil.getConfig("game.server.id");
+		String serverid = ConfigUtil.getConfig(ServerType.Game.getServerIdKey());
 		if (serverid != null) {
 			cylog += "/" + serverid;
 		}

@@ -19,12 +19,10 @@ import cn.game.util.JsonUtil;
 import cn.game.util.ObjUtil;
 import cn.game.util.Rnd;
 import cn.game.util.SpringApolloLoader;
-import cn.game.util.ZkHelper;
 
 public class DbExcute {
 
 	public static void main(String[] args) throws Exception {
-		ZkHelper.init();
 		ServerContext.getInstance().init();
 		VxHolder.init();
 

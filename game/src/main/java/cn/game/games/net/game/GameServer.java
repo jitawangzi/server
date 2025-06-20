@@ -81,7 +81,6 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
-import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
@@ -142,7 +141,6 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		Config.load();
-		ZkHelper.init();
 		VxHolder.init();
 		IdUtil.init();
 

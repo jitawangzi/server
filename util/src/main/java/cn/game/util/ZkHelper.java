@@ -18,9 +18,15 @@ public class ZkHelper {
 	private static volatile boolean inited = false;
 	public static CuratorFramework curator;
 	static {
-		init();
+		try {
+			init();
+		} catch (Exception e) {
+			log.error("zookeeper 初始化失败", e);
+			throw new ExceptionInInitializerError("zookeeper 初始化失败: " + e.getMessage());
+		}
 	}
-	public static void init(JsonObject conf) {
+
+	private static void init(JsonObject conf) {
 
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(
 				conf.getJsonObject("retry", new JsonObject()).getInteger("initialSleepTime", 1000),
@@ -55,7 +61,7 @@ public class ZkHelper {
 		}
 	}
 
-	public static void init() {
+	private static void init() {
 		if (inited) {
 			return;
 		}

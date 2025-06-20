@@ -27,7 +27,6 @@ import cn.game.util.Config;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.ZkHelper;
 import io.vertx.core.Context;
 
 /**    
@@ -150,8 +149,6 @@ public class GGameTest {
 //		LoggerManager.init();
 		Config.load();
 
-//		RedisUtil.getInstance().init();
-		ZkHelper.init();
 		ServerContext.getInstance().setServerId(serverId);
 		ServerContext.getInstance().setServerType(ServerType.Game);
 

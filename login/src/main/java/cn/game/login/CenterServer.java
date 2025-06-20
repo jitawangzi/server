@@ -12,7 +12,6 @@ import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
-import cn.game.util.ZkHelper;
 import cn.game.util.log.Log4j2ApolloLoader;
 import io.vertx.core.DeploymentOptions;
 
@@ -39,7 +38,6 @@ public class CenterServer {
 		log.info("正在启动中心服...");
 
 		Config.load();
-		ZkHelper.init();
 //		RedisUtil.getInstance().init();
 		ServerContext.getInstance().setServerId(serverId);
 		ServerContext.getInstance().setServerType(ServerType.Center);

@@ -33,7 +33,6 @@ import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.ZkHelper;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.DeploymentOptions;
@@ -66,7 +65,6 @@ public class LoginServer {
 		LoggerType.Stdout.logger.info("正在启动登录服...");
 
 		Config.load();
-		ZkHelper.init();
 //		RedisUtil.getInstance().init();
 		ServerContext.getInstance().init(serverId, ServerType.Login);
 

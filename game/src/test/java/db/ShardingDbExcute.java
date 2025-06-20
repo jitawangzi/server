@@ -14,7 +14,6 @@ import cn.game.games.util.DAO;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
-import cn.game.util.ZkHelper;
 
 /**    
  * shardingsphere对于;分隔的多sql执行不支持。
@@ -24,7 +23,6 @@ import cn.game.util.ZkHelper;
 public class ShardingDbExcute {
 
 	public static void main(String[] args) throws Exception {
-		ZkHelper.init();
 		ServerContext.getInstance().init("SYQ", ServerType.Data);
 		VxHolder.init();
 

@@ -21,7 +21,6 @@ import cn.game.util.Config;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
-import cn.game.util.ZkHelper;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
@@ -61,8 +60,6 @@ public class GGameVertxTest {
 //		LoggerManager.init();
 		Config.load();
 
-//		RedisUtil.getInstance().init();
-		ZkHelper.init();
 		VxHolder.init();
 
 //		IdUtil.init();
