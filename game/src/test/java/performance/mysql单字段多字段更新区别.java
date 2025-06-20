@@ -5,7 +5,6 @@ import cn.game.games.cache.entity.Base;
 import cn.game.games.net.data.mapper.BaseMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
-import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -28,7 +27,6 @@ import cn.game.util.ZkHelper;
 public class mysql单字段多字段更新区别 {
 
 	public static void main(String[] args) throws Exception {
-		RedisUtil.getInstance().init();
 		ZkHelper.init();
 
 		ServerContext.getInstance().init("SYQ", ServerType.Game);

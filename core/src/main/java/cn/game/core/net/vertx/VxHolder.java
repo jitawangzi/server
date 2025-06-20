@@ -188,6 +188,16 @@ public class VxHolder {
 		return string;
 	}
 
+	public static String deployVerticleSync(Verticle verticle, DeploymentOptions options)
+			throws InterruptedException, ExecutionException, TimeoutException {
+		String string = vertx.deployVerticle(verticle, options)
+				.toCompletionStage()
+				.toCompletableFuture()
+				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);
+		log.info("部署Verticle[{}]成功： ", verticle.getClass().getSimpleName());
+		return string;
+	}
+
 	public static void deployVerticle(Verticle verticle) {
 		Future<String> deployVerticle = vertx.deployVerticle(verticle);
 		deployVerticle.onSuccess(r -> {

@@ -94,7 +94,6 @@ import io.micrometer.jmx.JmxMeterRegistry;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.impl.VertxInternal;
 import io.vertx.micrometer.backends.BackendRegistries;
 
 /**
@@ -145,8 +144,6 @@ public class GameServer implements GameServerMBean {
 		Config.load();
 		ZkHelper.init();
 		VxHolder.init();
-		// 初始化redisson，复用vertx的eventloop
-		RedisUtil.getInstance().init(((VertxInternal) VxHolder.vertx).getEventLoopGroup());
 		IdUtil.init();
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
@@ -335,9 +332,11 @@ public class GameServer implements GameServerMBean {
 		VxContextRegistry.getInstance().init(numVerticles);
 		for (int i = 0; i < numVerticles; i++) {
 			BusinessLogicVerticle verticle = new BusinessLogicVerticle(i);
+//			VxHolder.deployVerticleSync(verticle, new DeploymentOptions().setThreadingModel(ThreadingModel.VIRTUAL_THREAD));
 			VxHolder.deployVerticleSync(verticle);
 		}
 		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
+//		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
 		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
 
 		String serverId = ServerContext.getInstance().getServerId();

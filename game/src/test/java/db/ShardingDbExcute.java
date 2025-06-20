@@ -11,7 +11,6 @@ import cn.game.games.net.data.mapper.BaseMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.util.DAO;
-import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -25,7 +24,6 @@ import cn.game.util.ZkHelper;
 public class ShardingDbExcute {
 
 	public static void main(String[] args) throws Exception {
-		RedisUtil.getInstance().init();
 		ZkHelper.init();
 		ServerContext.getInstance().init("SYQ", ServerType.Data);
 		VxHolder.init();

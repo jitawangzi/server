@@ -10,11 +10,9 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.manager.PlayerNameManager;
-import cn.game.util.RedisUtil;
 
 public class CheckSimplePlayer {
 	public static void main(String[] args) throws Exception {
-		RedisUtil.getInstance().init();
 
 		Set<String> testGetAllName = PlayerNameManager.getInstance().testGetAllName();
 		System.out.println("所有名字数量 " + testGetAllName.size());

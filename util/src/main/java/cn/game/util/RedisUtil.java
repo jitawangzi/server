@@ -1,7 +1,6 @@
 package cn.game.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -21,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
-import io.netty.channel.EventLoopGroup;
-
 /**
  * Redisson操作工具类，封装常用方法
  * 
@@ -36,15 +33,19 @@ public class RedisUtil {
 
 	static final String configFile = System.getProperty("redisson", "redisson.yaml");
 
-	private static RedisUtil instance = new RedisUtil();
 	private static RedissonClient redis;
 
 	private RedisUtil() {
 
 	}
 
-	public static RedisUtil getInstance() {
-		return instance;
+	static {
+		try {
+			init();
+		} catch (IOException e) {
+			logger.error("Redisson 初始化失败", e);
+			throw new ExceptionInInitializerError("Redisson 初始化失败: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -55,35 +56,12 @@ public class RedisUtil {
 		return redis;
 	}
 
-//	static {
-//		try {
-//			org.redisson.config.Config config = org.redisson.config.Config.fromYAML(RedissonUtil.class.getClassLoader().getResource(
-//					configFile));
-//			redis = Redisson.create(config);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	public void init(EventLoopGroup eventLoopGroup) throws IOException {
+	private static void init() throws IOException {
 
 		Config redisConfig = ConfigService.getConfig("redisson");
 		String content = redisConfig.getProperty("redisson", "");
 		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(content);
-		if (eventLoopGroup != null) {
-			config.setEventLoopGroup(eventLoopGroup);
-		}
 		redis = Redisson.create(config);
-	}
-
-	public void init() throws IOException {
-		init(null);
-	}
-
-	public void initFromFile() throws IOException {
-		InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("redisson.yaml");
-		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(inputStream);
-		redis = Redisson.create(config);
-
 	}
 
 	/**

@@ -17,7 +17,6 @@ import cn.game.games.util.DAO;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ObjUtil;
-import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.ZkHelper;
@@ -25,7 +24,6 @@ import cn.game.util.ZkHelper;
 public class DbExcute {
 
 	public static void main(String[] args) throws Exception {
-		RedisUtil.getInstance().init();
 		ZkHelper.init();
 		ServerContext.getInstance().init();
 		VxHolder.init();

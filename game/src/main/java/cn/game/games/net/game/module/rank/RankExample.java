@@ -5,12 +5,10 @@ import java.util.concurrent.CompletionStage;
 
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.util.LuaScriptUtil;
-import cn.game.util.RedisUtil;
 
 public class RankExample {
 	public static void main(String[] args) throws Exception {
 
-		RedisUtil.getInstance().init();
 		RankService rankService = RankService.getInstance();
 		String serverId = "server4";
 

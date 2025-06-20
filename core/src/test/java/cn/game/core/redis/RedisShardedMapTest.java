@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,11 +36,6 @@ class RedisShardedMapTest {
 //		config.useSingleServer().setAddress("redis://localhost:6379").setDatabase(0);
 //		redisClient = Redisson.create(config);
 
-		try {
-			RedisUtil.getInstance().init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		redisClient = RedisUtil.getRedis();
 
 	}

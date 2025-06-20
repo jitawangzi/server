@@ -256,7 +256,6 @@ public class LockUtil {
 	}
 	public static void main(String[] args) throws Exception {
 
-		RedisUtil.getInstance().init();
 		
 		RedisUtil.set("a", "a");
 		RedisUtil.set("b", "b");

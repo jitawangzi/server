@@ -37,6 +37,7 @@ import cn.game.util.ZkHelper;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.ThreadingModel;
 import io.vertx.core.VertxOptions;
 
 /**
@@ -66,21 +67,24 @@ public class LoginServer {
 
 		Config.load();
 		ZkHelper.init();
-		RedisUtil.getInstance().init();
+//		RedisUtil.getInstance().init();
 		ServerContext.getInstance().init(serverId, ServerType.Login);
 
 //		serverId = config.getProperty("login.server.id", "");
-		IdUtil.init();
 //		LogbackConfig.init(config.getBooleanProperty("initLogback", false),
 //				config.getProperty("logbackFile", "config/logback-loginServer.xml"));
 
 		// 加载配置文件
 		// initManager() ;
 //		SpringContextLoader.main(args);
+
+		VxHolder.init();
+		IdUtil.init();
+
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();
 
-		VxHolder.init();
+
 //		RedisUtil.main(new String[] { Config.vertxRedisUrl });
 //		RedisUtil.setRedisUrl(Config.vertxRedisUrl);
 //		VxHolder.deployVerticleSync(new RedisUtil());
@@ -130,6 +134,7 @@ public class LoginServer {
 		// 部署发布rest服务
 		DeploymentOptions options = new DeploymentOptions();
 		options.setInstances(numVerticles);
+		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
 		VxHolder.deployVerticleSync(RestServer.class, options);
 
 		String serverId = ServerContext.getInstance().getServerId();
