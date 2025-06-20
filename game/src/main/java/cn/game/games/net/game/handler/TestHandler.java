@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
@@ -27,12 +29,14 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -97,6 +101,7 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ObjUtil;
+import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -493,14 +498,51 @@ public class TestHandler extends BaseHandler {
 		List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
 		String playerServerId = IdCache.getPlayerServerId(240201789);
 		System.out.println(playerServerId);
-//		for (Hero hero : battleHeroList) {
-//			if (hero.getQuality() >= 7) {
-//				player.handleEvent(EventTypeEnum.HeroBattle, hero);
-//				break;
+//		RFuture<Object> async = RedisUtil.getAsync(CacheType.PLAYER_SIMPLE.key(240202120));
+//		System.out.println("当前线程：" + Thread.currentThread().getName());
+//		async.onComplete((r, e) -> {
+//			System.out.println("redis回调线程：" + Thread.currentThread().getName());
+//			if (e == null) {
+//				System.out.println("异步获取缓存成功：" + r);
+//			} else {
+//				System.out.println("异步获取缓存失败：" + e);
 //			}
-//		}
-//		List<Goods> goods = PlayerHelper.randomReward(101602);
-//		MailHelper.sendMail(client.getPlayerId(), 3, goods, false);
+//		});
+		RFuture<SimplePlayer> asyncc = RedisUtil.getAsync(CacheType.PLAYER_SIMPLE.key(240202120));
+		System.out.println("初始线程：" + Thread.currentThread().getName());
+
+		asyncc.onComplete((r, e) -> {
+			System.out.println("异步获取缓存线程：" + Thread.currentThread().getName());
+			if (e == null) {
+				System.out.println("异步获取缓存成功：" + r);
+			} else {
+				System.out.println("异步获取缓存失败：" + e);
+			}
+		});
+
+		System.out.println("初始vertx线程：" + Thread.currentThread().getName());
+		VxHolder.runAfterRedisAsyncOperation(r -> {
+			System.out.println("执行逻辑线程：" + Thread.currentThread().getName());
+			System.out.println("获取缓存结果：" + r);
+
+			return Future.succeededFuture(r);
+		}, asyncc);
+
+//		System.out.println("当前vertx线程：" + Thread.currentThread().getName());
+//		Future<String> f = VxHolder.runWithLock(() -> {
+//			System.out.println("执行逻辑线程：" + Thread.currentThread().getName());
+//
+//			RFuture<String> asyncc = RedisUtil.getAsync(CacheType.PLAYER_SIMPLE.key(240202120));
+//			return Future.fromCompletionStage(asyncc);
+//		}, CacheType.PLAYER_SIMPLE.key(240202120));
+//		f.onComplete(r -> {
+//			System.out.println("vertx redis onComplete 回调线程：" + Thread.currentThread().getName());
+//			if (r.succeeded()) {
+//				System.out.println("获取锁成功：" + r.result());
+//			} else {
+//				System.out.println("获取锁失败：" + r.cause());
+//			}
+//		});
 
 //        Future<ItemModule> requestRemoteServer = VxHolder.requestRemoteServer("game_test", new ObjectProtocol(PbProtocol.ServerObjectTestRequest_7d000033, itemModule));
 //        requestRemoteServer.onComplete(r -> {

@@ -7,7 +7,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
+import org.redisson.api.RFuture;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -405,9 +407,9 @@ public class VxHolder {
 	 * @param waitTime 获取锁的等待时间
 	 * @param leaseTime	锁最大持有时间
 	 * @param unit
-	 * @param operations  获取锁后的一些操作
+	 * @param operations  获取锁后的业务逻辑，使用Future类型，是为了可以支持多个异步操作的组合。
 	 * @param lockKeys 锁的key，支持多个key。
-	 * @return
+	 * @return 最终的结果Future，不过不要在这个Future上使用onComplete方法处理逻辑，因为onComplete方法会在Redisson的线程中执行。
 	 */
 	public static <T> Future<T> runWithLock(long waitTime, long leaseTime, TimeUnit unit, Callable<Future<T>> operations,
 			String... lockKeys) {
@@ -426,7 +428,9 @@ public class VxHolder {
 				promise.complete(true);
 			}
 		})).compose(locked -> {
-			log.debug("Lock acquired for keys: {}", Arrays.toString(lockKeys));
+			if (log.isDebugEnabled()) {
+				log.debug("Lock acquired for keys: {}", Arrays.toString(lockKeys));
+			}
 			// 检查是否已经在正确的Context上
 			if (Context.isOnVertxThread() && context.equals(Vertx.currentContext())) {
 				// 已经在正确的context上，直接执行
@@ -441,6 +445,38 @@ public class VxHolder {
 			}
 		}).onComplete(result -> {
 			releaseLock(lock, threadId, lockKeys);
+		});
+	}
+
+	/** 
+	 * 
+	 * 在Redisson的异步操作完成后，执行后续的业务逻辑。
+	 * 
+	 * 由于redisson的异步回调，是在redisson的线程中执行的，
+	 * 如果需要redis的结果，进行后续的业务操作，需要后续的业务操作在正确的Vertx eventloop上。
+	 * 所以需要使用这个方法来处理。
+	 * 需要在eventloop线程中调用，redis结束后会切换回eventloop线程执行业务逻辑
+	 * @param <R>
+	 * @param <T>
+	 * @param operations  需要执行的业务逻辑
+	 * @param rFuture  redis操作的结果RFuture
+	 * @return
+	 */
+	public static <R, T> Future<T> runAfterRedisAsyncOperation(Function<R, Future<T>> operations, RFuture<R> rFuture) {
+		Context context = VxHolder.vertx.getOrCreateContext();
+		return Future.fromCompletionStage(rFuture).compose(r -> {
+			// 检查是否已经在正确的Context上
+			if (Context.isOnVertxThread() && context.equals(Vertx.currentContext())) {
+				// 已经在正确的context上，直接执行
+				return operations.apply(r);
+			} else {
+				// 需要切换context
+				return AsyncUtils.runOnContextAuto(context, () -> {
+					return operations.apply(r);
+				});
+			}
+		}).onFailure(e -> {
+			log.error("Error in runAfterRedisAsyncOperation", e);
 		});
 	}
 
