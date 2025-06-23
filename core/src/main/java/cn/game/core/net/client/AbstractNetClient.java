@@ -9,7 +9,7 @@ import org.apache.poi.ss.formula.functions.T;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.vertx.VxContextRegistry;
 import io.vertx.core.Context;
-import io.vertx.core.impl.ContextInternal;
+import io.vertx.core.internal.ContextInternal;
 
 public abstract class AbstractNetClient implements NetClient
 {

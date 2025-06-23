@@ -7,14 +7,10 @@ public class InterruptChainExample extends AbstractVerticle {
 
 	@Override
 	public void start() throws Exception {
-		vertx.executeBlocking(future -> {
+		vertx.executeBlocking(() -> {
 			// 模拟耗时操作1
-			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			future.complete("Step 1 completed");
+			return "Step 1 completed";
 		}).compose(result -> {
 			System.out.println(result);
 			// 模拟条件判断，如果满足条件，则中断后续流程
@@ -22,25 +18,25 @@ public class InterruptChainExample extends AbstractVerticle {
 				return Future.succeededFuture("Process interrupted");
 			} else {
 				// 模拟耗时操作2
-				return vertx.executeBlocking(future -> {
+				return vertx.executeBlocking(() -> {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					future.complete("Step 2 completed");
+					return "Step 2 completed";
 				});
 			}
 		}).compose(result -> {
 			System.out.println(result);
 			// 模拟耗时操作3
-			return vertx.executeBlocking(future -> {
+			return vertx.executeBlocking(() -> {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				future.complete("Step 3 completed");
+				return "Step 3 completed";
 			});
 		}).onComplete(ar -> {
 			if (ar.succeeded()) {

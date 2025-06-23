@@ -14,7 +14,6 @@ import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 /**
  * @ClassName AndroidPayOrderProcessor
@@ -30,7 +29,6 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
 
     @Override
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
-        Promise<PayOrder> promise = Promise.promise();
         long playerId = request.getPlayerId();
         String sessionId = request.getSessionId();
         JSONObject signData = new JSONObject();
@@ -61,7 +59,7 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setThirdUid(user.getThirdUid());
 //		ObjUtil.setDefaultValue(payOrder);
 
-        VxHolder.vertx.executeBlocking(r -> {
+		return VxHolder.vertx.executeBlocking(() -> {
 
 			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
 			mapper.insert(payOrder);
@@ -77,16 +75,9 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
             newBuilder.setSignature(signature);
             resp.setOrderId(outTradeNo);
             resp.setOrder(newBuilder.build());
-            promise.complete(payOrder);
-//
-//            client.sendProtocol();
+			return payOrder;
         }).onFailure(e -> {
-            e.printStackTrace();
-            promise.fail(e);
-//            resp.setOrderId(0);
-//            client.sendProtocol(resp.build());
-
+			log.error("Error creating Wechat pay order", e);
         });
-        return promise.future();
     }
 }

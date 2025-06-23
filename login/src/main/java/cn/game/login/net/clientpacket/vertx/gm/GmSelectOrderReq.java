@@ -46,15 +46,10 @@ public class GmSelectOrderReq implements BaseVertxHandler {
         Integer finalPageSize = pageSize;
         JSONObject result = getResultData();
         String finalPlayerId = playerId;
-        VxHolder.vertx.executeBlocking(future -> {
-            try {
-                List<PayOrder> list = mapper.selectOrderList(finalPlayerId == null ? null : Long.parseLong(finalPlayerId), status, selfOrderId==null?null : selfOrderId, finalPage, finalPageSize);
-                 future.complete(list);
-            } catch (Exception e) {
-                e.printStackTrace();
-                future.fail(e);
-            }
-        }, res -> {
+		VxHolder.vertx.executeBlocking(() -> {
+			return mapper.selectOrderList(finalPlayerId == null ? null : Long.parseLong(finalPlayerId), status,
+					selfOrderId == null ? null : selfOrderId, finalPage, finalPageSize);
+		}, false).onComplete(res -> {
             if (res.succeeded()) {
                 String resJson = "";
                 JSONArray arrJson = new JSONArray();

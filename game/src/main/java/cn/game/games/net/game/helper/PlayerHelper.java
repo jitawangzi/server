@@ -120,7 +120,7 @@ import cn.game.util.reflect.MethodUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.impl.ContextInternal;
+import io.vertx.core.internal.ContextInternal;
 import io.vertx.core.json.JsonObject;
 
 public class PlayerHelper {

@@ -15,9 +15,7 @@ import cn.game.core.net.rpc.RpcClient;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 
 public class RocketMQRpcClient implements RpcClient {
@@ -147,11 +145,6 @@ public class RocketMQRpcClient implements RpcClient {
 	@Override
 	public boolean checkAllowSync() {
 		return true;
-	}
-
-	@Override
-	public <T> void request(String serverId, T message, Handler<AsyncResult<io.vertx.core.eventbus.Message<T>>> replyHandler) {
-		throw new UnsupportedOperationException("not supported by RocketMQ, use send instead.");
 	}
 
 	@Override

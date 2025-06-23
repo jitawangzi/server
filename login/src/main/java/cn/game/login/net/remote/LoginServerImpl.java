@@ -1,15 +1,10 @@
 package cn.game.login.net.remote;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
-import cn.game.core.cache.CacheType;
-import cn.game.login.cache.CacheManager;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.util.DateUtil;
@@ -34,12 +29,12 @@ public class LoginServerImpl implements LoginServerInterface {
 	public long getUid(String passportSessionId) {
 		log.info("get uid");
 
-		String userString = CacheManager.getInstance().loadSync(CacheType.PASSPORT_SESSION, passportSessionId);
-		if (!StringUtils.isEmpty(userString)) {
-			User user = JSON.parseObject(userString, User.class);
-			return user.getId();
-		}
-		return 0;
+//		String userString = CacheManager.getInstance().loadSync(CacheType.PASSPORT_SESSION, passportSessionId);
+//		if (!StringUtils.isEmpty(userString)) {
+//			User user = JSON.parseObject(userString, User.class);
+//			return user.getId();
+//		}
+		return 2;
 	}
 	@Override
 	public Future<Long> getUid2(String passportSessionId) {

@@ -19,7 +19,6 @@ import cn.game.core.exception.BatchProcessException;
 import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.task.BatchProcessResult.BatchError;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -106,7 +105,7 @@ public class BatchQueryUtil {
 		}
 
 		// 处理当前批次
-		List<Future> futures = new ArrayList<>();
+		List<Future<?>> futures = new ArrayList<>();
 		for (T item : batch) {
 			Future<?> itemFuture;
 			try {
@@ -131,11 +130,11 @@ public class BatchQueryUtil {
 			futures.add(itemFuture);
 		}
 
-		List<Future> successfulFutures = new ArrayList<>();
-		CompositeFuture.all(futures).onComplete(ar -> {
+		List<Future<?>> successfulFutures = new ArrayList<>();
+		Future.all(futures).onComplete(ar -> {
 			boolean hasErrors = false;
 			// 检查所有future的结果
-			for (Future future : futures) {
+			for (Future<?> future : futures) {
 				if (future.failed()) {
 					hasErrors = true;
 					if (!continueOnError) {

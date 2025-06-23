@@ -6,7 +6,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.internal.VertxInternal;
 
 /**
  * Vertx事件循环指标收集器
@@ -30,7 +30,7 @@ public class VertxEventLoopMetricCollector extends AbstractMetricCollector {
 		int totalPendingTasks = 0;
 
 		// 获取Vertx内部事件循环组
-		EventLoopGroup eventLoopGroup = ((VertxInternal) vertx).getEventLoopGroup();
+		EventLoopGroup eventLoopGroup = ((VertxInternal) vertx).eventLoopGroup();
 
 		// 遍历所有事件循环线程，累计待处理任务数
 		for (EventExecutor eventExecutor : eventLoopGroup) {

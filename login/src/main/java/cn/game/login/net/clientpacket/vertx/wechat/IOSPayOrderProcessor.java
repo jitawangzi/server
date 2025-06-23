@@ -33,7 +33,6 @@ import cn.game.util.LockUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
@@ -100,7 +99,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		String wechatpayNonce = request.getHeader("Wechatpay-Nonce");
 		String wechatSignature = request.getHeader("Wechatpay-Signature");
 		String wechatTimestamp = request.getHeader("Wechatpay-Timestamp");
-		String requestBody = context.getBodyAsString();
+		String requestBody = context.body().asString();
 		// 构造 RequestParam
 		RequestParam requestParam = new RequestParam.Builder().serialNumber(wechatPaySerial)
 				.nonce(wechatpayNonce)
@@ -323,7 +322,6 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 	@Override
 	public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req,
 			ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
-		Promise<PayOrder> promise = Promise.promise();
 		final int goodPrice = req.getGoodsPrice();
 //        final  int goodPrice = 1;
 		long playerId = req.getPlayerId();
@@ -342,7 +340,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		payOrder.setPlayerId(playerId);
 		payOrder.setUserId(playerId);
 		payOrder.setThirdUid(user.getUsername());
-		VxHolder.vertx.executeBlocking(r -> {
+		return VxHolder.vertx.executeBlocking(() -> {
 			// 构建service
 			JsapiService service = new JsapiService.Builder().config(config).build();
 			// request.setXxx(val)设置所需参数，具体参数可见Request定义
@@ -360,24 +358,19 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 			request.setNotifyUrl(cn.game.util.Config.wechat_pay_callback_url);
 			request.setOutTradeNo(payOrder.getId() + "");
 			// 调用下单方法，得到应答
-			try {
-				PrepayResponse response = service.prepay(request);
-				log.info(String.format("下单成功，prepayId=%s", response.getPrepayId()));
-				payOrder.setThirdOrderId(response.getPrepayId());
-				PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-				mapper.insert(payOrder);
 
-				promise.complete(payOrder);
+			PrepayResponse response = service.prepay(request);
+			log.info(String.format("下单成功，prepayId=%s", response.getPrepayId()));
+			payOrder.setThirdOrderId(response.getPrepayId());
+			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+			mapper.insert(payOrder);
+			return payOrder;
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.error(e.getMessage());
-				promise.fail(e);
-			}
+		}).onFailure(e -> {
+			log.error("", e);
 		});
 		// 使用微信扫描 code_url 对应的二维码，即可体验Native支付
 //        System.out.println(response.getCodeUrl());
-		return promise.future();
 	}
 
 	public static void main(String[] args) {

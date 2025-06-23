@@ -65,7 +65,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 //		String token = bodyAsJson.getString("token");
 		final AccountLogin request;
 		try {
-			request = AccountLogin.parseFrom(context.getBody().getBytes());
+			request = AccountLogin.parseFrom(context.body().buffer().getBytes());
 		} catch (InvalidProtocolBufferException e) {
 			sendErrorResponse(context, "Invalid request format", AccountErrorCode.INVALID_REQUEST);
 			return;
@@ -227,7 +227,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 
 	private void createOrLoadUser(String username, AccountChannelType channel, String unionId, String sessionKey, String ext,
 			BiConsumer<User, AccountError> callback) {
-		VxHolder.vertx.executeBlocking(promise -> {
+		VxHolder.vertx.executeBlocking(() -> {
 			User user = userMapper.selectByNameAndChannel(username, channel.name().toLowerCase());
 			if (user == null) {
 				user = UserHelper.createUser(username, "", channel.name().toLowerCase(), unionId, sessionKey);
@@ -236,7 +236,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 			}
 			user.setExtInfo(ext);
 			updateLoginInfo(user);
-			promise.complete(user);
+			return user;
 		}, false)
 				.onSuccess(user -> callback.accept((User) user, null))
 				.onFailure(

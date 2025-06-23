@@ -66,14 +66,7 @@ public class Runner {
 			}
 		};
 		if (clustered) {
-			Vertx.clusteredVertx(options, res -> {
-				if (res.succeeded()) {
-					Vertx vertx = res.result();
-					runner.accept(vertx);
-				} else {
-					res.cause().printStackTrace();
-				}
-			});
+			Vertx.clusteredVertx(options);
 		} else {
 			Vertx vertx = Vertx.vertx(options);
 			runner.accept(vertx);

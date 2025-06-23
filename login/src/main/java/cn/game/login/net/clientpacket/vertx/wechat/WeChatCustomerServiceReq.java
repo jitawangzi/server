@@ -127,7 +127,7 @@ public class WeChatCustomerServiceReq implements BaseVertxHandler {
         String rst = "1";
         RLock lock = null;
         try{
-            String postBodyStr = ctx.getBodyAsString();
+			String postBodyStr = ctx.body().asString();
             String msgSignature = request.getParam("msg_signature");
             String timestamp = request.getParam("timestamp");
             String nonceStr = request.getParam("nonce");

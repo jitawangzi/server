@@ -43,13 +43,14 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.internal.buffer.BufferInternal;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 import io.vertx.micrometer.VertxJmxMetricsOptions;
 import io.vertx.micrometer.VertxPrometheusOptions;
@@ -112,7 +113,8 @@ public class VxHolder {
 		zookeeperClusterManager.setConfig(conf);
 
 		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
-		VertxOptions options = new VertxOptions().setClusterManager(zookeeperClusterManager).setEventBusOptions(eventBusOptions);
+		
+		VertxOptions options = new VertxOptions().setEventBusOptions(eventBusOptions);
 		//
 //		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
 		options.setMetricsOptions(new MicrometerMetricsOptions()
@@ -133,7 +135,12 @@ public class VxHolder {
 		options.setInternalBlockingPoolSize(32);
 		options.setWorkerPoolSize(options.getEventLoopPoolSize() * 2);
 
-		Future<Vertx> clusteredVertxFuture = Vertx.clusteredVertx(options);
+		Future<Vertx> clusteredVertxFuture = Vertx
+				  .builder()
+				  .with(options)
+				.withClusterManager(zookeeperClusterManager)
+				  .buildClustered();
+		
 		vertx = clusteredVertxFuture.toCompletionStage().toCompletableFuture().get(3000, TimeUnit.SECONDS);
 		vertx.exceptionHandler(e -> {
 			log.error("vertx uncaptured exception： ", e);
@@ -320,8 +327,8 @@ public class VxHolder {
 		ByteBuf bodyBuf = Unpooled.wrappedBuffer(byteArray);
 		compositeBuffer.addComponents(headerBuf, bodyBuf);
 		compositeBuffer.writerIndex(headerBuf.readableBytes() + bodyBuf.readableBytes());
-
-		return Buffer.buffer(compositeBuffer);
+		return BufferInternal.buffer(compositeBuffer);
+//		return Buffer.buffer(compositeBuffer);
 	}
 
 	public static String rpcServiceAddr(String serverId) {
@@ -342,9 +349,9 @@ public class VxHolder {
 	 */
 	public static void request(HttpMethod method, String requestURI, JsonObject param, Handler<JsonObject> successHandler,
 			Handler<Throwable> failedHandler) {
-		HttpRequest<Buffer> request = httpClient.requestAbs(method, requestURI)
+		HttpRequest<Buffer> request = httpClient.requestAbs(method, requestURI);
 //				.expect(ResponsePredicate.JSON),
-				.expect(ResponsePredicate.SC_SUCCESS);
+//				.expect(ResponsePredicate.SC_SUCCESS);
 
 		Future<HttpResponse<Buffer>> responseFutrue = null;
 		if (method == HttpMethod.GET) {
@@ -357,6 +364,7 @@ public class VxHolder {
 		} else {
 			throw new IllegalArgumentException("没有实现的http方法:  " + method);
 		}
+		responseFutrue.expecting(HttpResponseExpectation.SC_SUCCESS);
 		responseFutrue.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
 	}
@@ -369,15 +377,22 @@ public class VxHolder {
 	 */
 	public static void get(String requestURI, Handler<JsonObject> successHandler, Handler<Throwable> failedHandler) {
 
-		httpClient.getAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS)
+		httpClient.getAbs(requestURI)
 //				.expect(ResponsePredicate.JSON)
 				.send()
+				.expecting(HttpResponseExpectation.SC_SUCCESS)
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
 	}
 
 	public static Future<HttpResponse<Buffer>> get(String requestURI) {
-		return httpClient.getAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS).expect(ResponsePredicate.JSON).send();
+		return httpClient.getAbs(requestURI)
+				.send()
+				.expecting(HttpResponseExpectation.SC_SUCCESS)
+				.expecting(HttpResponseExpectation.JSON)
+				.onFailure(err -> {
+			log.error("HTTP GET request failed: " + requestURI, err);
+		});
 	}
 
 	/** 
@@ -388,9 +403,10 @@ public class VxHolder {
 	 */
 	public static void post(String requestURI, Handler<JsonObject> successHandler, Handler<Throwable> failedHandler, Object body) {
 
-		httpClient.postAbs(requestURI).expect(ResponsePredicate.SC_SUCCESS)
+		httpClient.postAbs(requestURI)
 //				.expect(ResponsePredicate.JSON)
 				.sendJson(body)
+				.expecting(HttpResponseExpectation.SC_SUCCESS)
 				.onSuccess(response -> successHandler.handle(response.bodyAsJsonObject()))
 				.onFailure(err -> failedHandler.handle(err));
 	}

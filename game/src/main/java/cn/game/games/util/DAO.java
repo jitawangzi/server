@@ -21,7 +21,6 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.util.SpringContextLoader;
 import io.vertx.codegen.annotations.Nullable;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
 /**    
@@ -183,12 +182,12 @@ public class DAO {
 	@Deprecated
 	private static void saveAndClearCacheTask() {
 		DbTask task;
-		List<Future> futures = new ArrayList<>();
+		List<Future<?>> futures = new ArrayList<>();
 		while ((task = dbTasksQueue.poll()) != null) {
 			Future<@Nullable Object> updateFutrue = execute(task.getMapper(), task.getMethod(), task.getArg());
 			futures.add(updateFutrue);
 		}
-		CompositeFuture.join(futures).onSuccess(r -> {
+		Future.join(futures).onSuccess(r -> {
 			pauseUpdateDb = false;
 		}).onFailure(e -> {
 			log.error("UpdateDb task error", e);

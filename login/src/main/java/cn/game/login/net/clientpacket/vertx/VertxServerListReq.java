@@ -46,7 +46,7 @@ public class VertxServerListReq implements BaseVertxHandler {
 //		log.info("服务器列表，sessionId: " + passportSessionId);
 		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
 		SocketAddress remoteAddress = context.request().remoteAddress();
-		byte[] bytes = context.getBody().getBytes();
+		byte[] bytes = context.body().buffer().getBytes();
 		AccountServerList from = null;
 		try {
 			from = AccountServerList.parseFrom(bytes);

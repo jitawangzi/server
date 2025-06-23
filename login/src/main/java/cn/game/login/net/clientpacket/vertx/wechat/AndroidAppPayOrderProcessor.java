@@ -11,7 +11,6 @@ import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 
 /**    
  * 安卓app，走畅游sdk支付
@@ -25,7 +24,6 @@ public class AndroidAppPayOrderProcessor extends BasePayOrderProcessor{
 
     @Override
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
-        Promise<PayOrder> promise = Promise.promise();
         long playerId = request.getPlayerId();
         String sessionId = request.getSessionId();
 		long outTradeNo = IdUtil.genOrderId(playerId);
@@ -45,14 +43,12 @@ public class AndroidAppPayOrderProcessor extends BasePayOrderProcessor{
 		payOrder.setThirdUid(user.getUsername());
 //		ObjUtil.setDefaultValue(payOrder);
 
-        VxHolder.vertx.executeBlocking(r -> {
+		return VxHolder.vertx.executeBlocking(() -> {
 			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
 			mapper.insert(payOrder);
-			promise.complete(payOrder);
+			return payOrder;
         }).onFailure(e -> {
 			log.error("", e);
-            promise.fail(e);
         });
-        return promise.future();
     }
 }

@@ -14,9 +14,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.Config;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 
@@ -42,15 +40,6 @@ public interface RpcClient {
 		return send(callType, command, method.getReturnType(), targetAddr);
 
 	}
-
-	/** 
-	 * 发送协议给远程服务器，需要有消息返回
-	 * @param <T>
-	 * @param addr 远程地址
-	 * @param message 消息
-	 * @param replyHandler 消息返回时的回调处理器
-	 */
-	public <T> void request(String addr, T message, Handler<AsyncResult<Message<T>>> replyHandler);
 	
 	/** 
 	 * 发送协议给远程服务器，需要有消息返回

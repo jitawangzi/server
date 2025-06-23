@@ -51,7 +51,7 @@ public class WebSocketServer {
 			ws.pause();
 		});
 
-		server.listen(8080, res -> {
+		server.listen(8080).onComplete(res -> {
 			if (res.succeeded()) {
 				System.out.println("WebSocket server is listening on port 8080");
 			} else {

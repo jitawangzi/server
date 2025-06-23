@@ -1,23 +1,10 @@
 package cn.game.util;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
-import io.reactivex.rxjava3.annotations.Nullable;
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
-import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.RedisAPI;
-import io.vertx.redis.client.RedisOptions;
-import io.vertx.redis.client.Response;
 
 /**
  * vert.x redis客户端
@@ -30,7 +17,7 @@ public class VxRedisUtil extends AbstractVerticle {
 	private static Logger logger = LoggerFactory.getLogger(VxRedisUtil.class);
 	private static RedisAPI redis;
 	private static String redisUrl;
-
+/** 
 	public static void main(String args[]) throws Exception {
 		redisUrl = args[0];
 		Runner.runExample(VxRedisUtil.class);
@@ -103,11 +90,6 @@ public class VxRedisUtil extends AbstractVerticle {
 		Future<@Nullable Response> future = redis.get(key);
 		return future;
 	}
-	/**
-	 * 同步查询redis缓存，极少使用
-	 * @param key
-	 * @return
-	 */
 	public static String getSync(String key) {
 
 		CompletableFuture<String> future = new CompletableFuture<String>();
@@ -123,4 +105,5 @@ public class VxRedisUtil extends AbstractVerticle {
 		}
 		return result;
 	}
+	**/
 }

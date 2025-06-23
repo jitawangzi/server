@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import com.sun.net.httpserver.HttpServer;
 
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
 @Deprecated
 public class HikariReporter {

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
-import io.vertx.core.impl.ContextInternal;
+import io.vertx.core.internal.ContextInternal;
 
 /**    
  * 主要使用来初始用来处理逻辑的Context/线程

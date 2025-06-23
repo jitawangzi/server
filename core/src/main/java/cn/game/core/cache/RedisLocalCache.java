@@ -24,7 +24,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import cn.game.util.RedisUtil;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -222,7 +221,7 @@ public class RedisLocalCache {
 			return p.future();
 		}).collect(Collectors.toList());
 
-		CompositeFuture.all(new ArrayList<>(futures)).onComplete(ar -> {
+		Future.all(new ArrayList<>(futures)).onComplete(ar -> {
 			if (ar.succeeded()) {
 				Map<String, T> result = futures
 						.stream()

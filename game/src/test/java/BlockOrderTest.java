@@ -94,22 +94,22 @@ public class BlockOrderTest {
 		list2.add(s5);
 		list2.add(s6);
 
-		Future<List<Integer>> future = vertx.executeBlocking(promise -> {
+		Future<List<Integer>> future = vertx.executeBlocking(() -> {
 			List<Integer> ret = new ArrayList<>();
 
 			for (Supplier<Integer> supplier : list) {
 				ret.add(supplier.get());
 			}
-			promise.complete(ret);
+			return ret;
 		}, true);
 
 		new Thread(() -> {
 			List<Integer> ret = new ArrayList<>();
 			for (Supplier<Integer> supplier : list2) {
-				vertx.executeBlocking(promise -> {
+				vertx.executeBlocking(() -> {
 					ret.add(supplier.get());
 //					}
-					promise.complete(ret);
+					return ret;
 				}, true);
 			}
 			System.out.println("结束" + Thread.currentThread().getName());

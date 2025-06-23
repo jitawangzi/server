@@ -30,7 +30,7 @@ public class VertxRegisterReq implements BaseVertxHandler {
 	@Override
 	public void handle(RoutingContext context) {
 		HttpServerRequest request = context.request();
-		byte[] bytes = context.getBody().getBytes();
+		byte[] bytes = context.body().buffer().getBytes();
 		AccountRegister from = null;
 		try {
 			from = AccountRegister.parseFrom(bytes);
@@ -60,14 +60,8 @@ public class VertxRegisterReq implements BaseVertxHandler {
 				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 				return;
 			}
-			VxHolder.vertx.executeBlocking(promise -> {
-				try {
-					UserHelper.createUser(account, pwd, "official", account, "");
-					promise.complete();
-				} catch (Exception e) {
-					// 捕获异常并传递到主线程
-					promise.fail(e);
-				}
+			VxHolder.vertx.executeBlocking(() -> {
+				return UserHelper.createUser(account, pwd, "official", account, "");
 			}, false).onComplete(ar -> {
 				if (ar.succeeded()) {
 					response.end(Buffer.buffer(resp.build().toByteArray()));

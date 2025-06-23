@@ -4,7 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.impl.HttpServerImpl;
-import io.vertx.core.impl.VertxInternal;
+import io.vertx.core.internal.VertxInternal;
 
 public class LoginVerticle extends AbstractVerticle {
 

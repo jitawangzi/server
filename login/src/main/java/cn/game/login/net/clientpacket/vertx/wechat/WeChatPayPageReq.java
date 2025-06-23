@@ -66,7 +66,7 @@ public class WeChatPayPageReq implements BaseVertxHandler {
         data.put("signature",sign.get("signature"));
         data.put("price", (double)payOrder.getPrice()/100);
         data.put("itemName", payOrder.getItemName());
-        engine.render(data, "/template/wx_pay.ftl", res -> {
+		engine.render(data, "/template/wx_pay.ftl").onComplete(res -> {
             if (res.succeeded()) {
                 ctx.response().end(res.result());
             } else {
@@ -80,7 +80,7 @@ public class WeChatPayPageReq implements BaseVertxHandler {
         FreeMarkerTemplateEngine engine = FreeMarkerTemplateEngine.create(VxHolder.vertx);
         Map<String,Object> data = new HashMap<>();
         data.put("failMsg", failMsg);
-        engine.render(data, "/template/pay_error.ftl", res -> {
+		engine.render(data, "/template/pay_error.ftl").onComplete(res -> {
             if (res.succeeded()) {
                 ctx.response().end(res.result());
             } else {

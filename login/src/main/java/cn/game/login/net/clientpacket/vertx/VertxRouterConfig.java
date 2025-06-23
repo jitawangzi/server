@@ -92,9 +92,9 @@ public class VertxRouterConfig {
 	private Handler<RoutingContext> createBodyValidationHandler() {
 		return ctx -> {
 			// 记录Body信息
-			if (ctx.getBody() != null) {
+			if (ctx.body() != null) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("[{}] Body received: {} bytes", ctx.get("requestId"), ctx.getBody().length());
+					logger.debug("[{}] Body received: {} bytes", ctx.get("requestId"), ctx.body().length());
 				}
 			}
 			ctx.next();
@@ -149,7 +149,7 @@ public class VertxRouterConfig {
 	private void configureStatic(Router router) {
 
 		StaticHandler staticHandler = StaticHandler.create()
-				.setAllowRootFileSystemAccess(false)
+//				.setAllowRootFileSystemAccess(false)
 				.setCachingEnabled(true)
 				.setFilesReadOnly(true)
 				.setMaxAgeSeconds(24 * 60 * 60) // 24小时缓存
@@ -175,7 +175,7 @@ public class VertxRouterConfig {
 		allowedMethods.add(HttpMethod.POST);
 		allowedMethods.add(HttpMethod.OPTIONS);
 
-		router.route().handler(CorsHandler.create("*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
+		router.route().handler(CorsHandler.create().allowedHeaders(allowedHeaders).allowedMethods(allowedMethods));
 
 		logger.info("CORS策略已配置");
 	}

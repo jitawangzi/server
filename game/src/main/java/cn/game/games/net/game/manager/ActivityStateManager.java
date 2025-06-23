@@ -3,6 +3,7 @@ package cn.game.games.net.game.manager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,6 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.util.DateUtil;
 import cn.game.util.Pair;
-import io.vertx.core.impl.ConcurrentHashSet;
 
 public class ActivityStateManager {
 
@@ -32,7 +32,7 @@ public class ActivityStateManager {
 	private static ActivityStateManager instance = new ActivityStateManager();
 
 	// 当前开启的活动id（2状态）,一般是按时间开启的全体活动
-	private Set<Integer> activeActivitys = new ConcurrentHashSet<>();
+	private Set<Integer> activeActivitys = new HashSet<>();
 
 	// 1、2、3 状态的活动id ,只是根据时间开启的活动,
 	private Map<Integer, Integer> states = new ConcurrentHashMap<>();

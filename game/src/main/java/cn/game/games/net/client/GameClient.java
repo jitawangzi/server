@@ -27,8 +27,8 @@ import cn.game.util.log.LoggerType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.ServerWebSocket;
+import io.vertx.core.internal.buffer.BufferInternal;
 
 /**   
  * 逻辑服务器中代表的客户端,直接和客户端通讯
@@ -172,7 +172,7 @@ public class GameClient extends AbstractNetClient {
 			compositeBuffer.addComponents(headerBuf, bodyBuf);
 			compositeBuffer.writerIndex(headerBuf.readableBytes() + bodyBuf.readableBytes());
 			
-			channel.writeBinaryMessage(Buffer.buffer(compositeBuffer));
+			channel.writeBinaryMessage(BufferInternal.buffer(compositeBuffer));
 //			if (msgId == PbProtocol.PlayerLoginResponse_01000002) {
 //				log.error("player[{}] sendProtocol[{}] seq[{}] errorCode[{}]data length[{}] First 20 bytes[{}]", playerId, msgId, seq, errorCode, data.length,
 //						ByteHelp.toString(data, 20));

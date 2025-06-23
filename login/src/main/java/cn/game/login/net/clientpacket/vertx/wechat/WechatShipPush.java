@@ -81,7 +81,7 @@ public class WechatShipPush implements BaseVertxHandler {
 			response.end(Buffer.buffer(responseObject.toJSONString()));
 		};
 
-		String bodyAsString = context.getBodyAsString();
+		String bodyAsString = context.body().asString();
 		log.info("receive wechat ship push, message body[{}]", bodyAsString);
 		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
 

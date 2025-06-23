@@ -1,6 +1,7 @@
 package cn.game.core.base;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,7 +23,6 @@ import cn.game.util.ServerType;
 import cn.game.util.ZkHelper;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.impl.ConcurrentHashSet;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.NodeInfo;
 
@@ -43,14 +43,14 @@ public class ActiveServerListManager {
 	
 	/** key:serverType,value: serverId */
 	private Map<String, Set<String>> serverListMap = new ConcurrentHashMap<String, Set<String>>();
-	private final Set<ServerInstanceListener> serverListeners = new ConcurrentHashSet<>();
+	private final Set<ServerInstanceListener> serverListeners = new HashSet<ServerInstanceListener>();
 	/**  game服务器在线人数,先存这 */
 	private Map<String, Integer> playerCountMap = new ConcurrentHashMap<String, Integer>();
 
 	
 	public void start(ServerType... serverType) throws Exception {
 		for (ServerType serverType2 : serverType) {
-			serverListMap.put(serverType2.name(), new ConcurrentHashSet<String>());
+			serverListMap.put(serverType2.name(), new HashSet<String>());
 		}
 		listenServerNode(serverType);
 	}

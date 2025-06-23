@@ -53,7 +53,7 @@ public class ChangYouShipPush implements BaseVertxHandler {
 				response.end(Buffer.buffer(responseObject.toJSONString()));
 			};
 
-			String bodyAsString = context.getBodyAsString();
+			String bodyAsString = context.body().asString();
 			log.info("receive changyou ship push, message body[{}]", bodyAsString);
 			ChangYouPaymentNotification paymentNotification = ChangYouSdk.getInstance().parsePaymentNotification(bodyAsString);
 

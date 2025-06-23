@@ -21,20 +21,20 @@ public class RedisVertxTest {
 		}
 //		new Config().load();
 
-		VxRedisUtil.main(new String[] { url });
+//		VxRedisUtil.main(new String[] { url });
 
 		// 获取vertx基类
 		VertxOptions options = new VertxOptions();
 		options.setEventLoopPoolSize(64);
 		Vertx vertx = Vertx.vertx(options);
-		VxRedisUtil.setRedisUrl(url);
+//		VxRedisUtil.setRedisUrl(url);
 		Future<String> deployVerticle = vertx.deployVerticle(new VxRedisUtil());
 		deployVerticle.onComplete(r -> {
 
 			String key = "abc";
 			String value = "SDFSADFASDFASDFASDFASDFASDFASDFASDFASDFASDFASDSF";
 			for (int i = 0; i < 1000; i++) {
-				VxRedisUtil.set(key, value);
+//				VxRedisUtil.set(key, value);
 			}
 
 			int count = 3;
@@ -63,9 +63,9 @@ public class RedisVertxTest {
 		CountDownLatch latch = new CountDownLatch(count);
 
 		for (int i = 0; i < count; i++) {
-			VxRedisUtil.setR(i + "", value, r -> {
-				latch.countDown();
-			});
+//			VxRedisUtil.setR(i + "", value, r -> {
+//				latch.countDown();
+//			});
 		}
 		latch.await(10, TimeUnit.SECONDS);
 		System.err.println(latch.getCount());
@@ -73,14 +73,14 @@ public class RedisVertxTest {
 	public static void setSync(int count, String value) {
 
 		for (int i = 0; i < count; i++) {
-			VxRedisUtil.set(i + "", value);
+//			VxRedisUtil.set(i + "", value);
 		}
 	}
 
 	public static void getSync(int count, String key) {
 
 		for (int i = 0; i < count; i++) {
-			VxRedisUtil.getSync(key);
+//			VxRedisUtil.getSync(key);
 		}
 	}
 

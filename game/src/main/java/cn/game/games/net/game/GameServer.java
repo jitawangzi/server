@@ -90,7 +90,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.jmx.JmxMeterRegistry;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.VertxOptions;
 import io.vertx.micrometer.backends.BackendRegistries;

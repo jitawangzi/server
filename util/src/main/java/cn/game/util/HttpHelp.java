@@ -1,16 +1,15 @@
 package cn.game.util;
 
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import io.vertx.core.Future;
-import io.vertx.ext.web.client.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.Future;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
@@ -24,7 +23,7 @@ public class HttpHelp {
 		options.setKeepAlive(false);
 		WebClient client = WebClient.create(vertx, options);
 
-		client.post(port, host, "url").sendBuffer(Buffer.buffer(body), ar -> {
+		client.post(port, host, "url").sendBuffer(Buffer.buffer(body)).onComplete(ar -> {
 			if (ar.succeeded()) {
 				io.vertx.ext.web.client.HttpResponse<Buffer> result = ar.result();
 				if (success != null) {
@@ -77,10 +76,12 @@ public class HttpHelp {
 		MultiMap multiMap = MultiMap.caseInsensitiveMultiMap();
 		multiMap.add("name", "yitian");
 		multiMap.add("age", "25");
-		webClient.post("httpbin.org", "/post").sendForm(multiMap, ar -> {
+		webClient.post("httpbin.org", "/post").sendForm(multiMap).onComplete(ar -> {
 			if (ar.succeeded()) {
 				io.vertx.ext.web.client.HttpResponse<Buffer> response = ar.result();
 				System.out.println(response.body());
+			} else {
+				log.error("Failed to send form", ar.cause());
 			}
 		});
 	}

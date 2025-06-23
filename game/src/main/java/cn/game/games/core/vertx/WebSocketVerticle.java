@@ -1,5 +1,7 @@
 package cn.game.games.core.vertx;
 
+import java.nio.ByteBuffer;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +25,10 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerType;
 import io.netty.buffer.ByteBuf;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.buffer.impl.BufferImpl;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.impl.ContextInternal;
+import io.vertx.core.internal.ContextInternal;
 
 public class WebSocketVerticle extends AbstractVerticle {
 
@@ -46,20 +50,16 @@ public class WebSocketVerticle extends AbstractVerticle {
 		vertx.createHttpServer(serverOptions).webSocketHandler(ws -> {
 //			System.out.println("client connected: " + ws.textHandlerID());
 //			System.out.println("client connected: " + ws.binaryHandlerID());
-			ws.binaryMessageHandler(r -> {
+			ws.binaryMessageHandler(buffer -> {
 				try {
 					ContextInternal context = (ContextInternal) VxHolder.vertx.getOrCreateContext();
 
-					ByteBuf byteBuf = r.getByteBuf();
-					int length = byteBuf.readInt();
-					int seq = byteBuf.readInt();
-					int msgID = byteBuf.readInt();
+					int length = buffer.getInt(0);
+					int seq = buffer.getInt(4);
+					int msgID = buffer.getInt(8);
+					Message message = parseMessage(buffer, msgID);
+
 					String connectionId = ws.binaryHandlerID();
-
-					byte[] data = new byte[byteBuf.readableBytes()];
-					byteBuf.readBytes(data);
-					Message message = PbProtocol.getInstance().parseFrom(msgID, data);
-
 					GameClient client = GameClientManager.getInstance().getGameClientByConnection(connectionId);
 					if (client == null) {
 						client = new GameClient(ws);
@@ -120,6 +120,20 @@ public class WebSocketVerticle extends AbstractVerticle {
 			ServerContext.getInstance().handleStartFail(e);
 //			throw new RuntimeException("websocket start error");
 		});
+	}
+
+	private Message parseMessage(Buffer buffer, int msgID) {
+		Buffer protobufSlice = buffer.slice(12, buffer.length());
+		if (protobufSlice instanceof BufferImpl) {
+			// 获取内部 ByteBuf 实现零拷贝反序列化
+			ByteBuf nettyByteBuf = ((BufferImpl) protobufSlice).getByteBuf();
+			ByteBuffer nioByteBuffer = nettyByteBuf.nioBuffer();
+			return PbProtocol.getInstance().parseFrom(msgID, nioByteBuffer);
+
+		}
+		byte[] data = buffer.getBytes(12, buffer.length());
+		return PbProtocol.getInstance().parseFrom(msgID, data);
+
 	}
 
 }

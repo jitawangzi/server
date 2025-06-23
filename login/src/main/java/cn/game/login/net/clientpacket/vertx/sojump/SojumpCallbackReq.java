@@ -42,7 +42,7 @@ public class SojumpCallbackReq implements BaseVertxHandler {
   @Override
   public void handle(RoutingContext context) {
     HttpServerResponse response = context.response();
-    String rawString = context.getBodyAsString();
+	String rawString = context.body().asString();
     logger.info("sojump rawString: " + rawString);
     try {
       if (StringUtils.isNotEmpty(rawString)) {

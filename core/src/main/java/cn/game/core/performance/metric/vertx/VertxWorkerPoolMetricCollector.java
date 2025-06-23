@@ -4,8 +4,8 @@ import cn.game.core.performance.metric.AbstractMetricCollector;
 import cn.game.core.performance.metric.MetricType;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.vertx.core.Vertx;
-import io.vertx.core.impl.VertxInternal;
-import io.vertx.core.impl.WorkerPool;
+import io.vertx.core.internal.VertxInternal;
+import io.vertx.core.internal.WorkerPool;
 import io.vertx.micrometer.backends.BackendRegistries;
 
 /**
@@ -70,7 +70,7 @@ public class VertxWorkerPoolMetricCollector extends AbstractMetricCollector {
 		try {
 			if (vertx instanceof VertxInternal) {
 				VertxInternal vertxInternal = (VertxInternal) vertx;
-				WorkerPool workerPool = vertxInternal.getWorkerPool();
+				WorkerPool workerPool = vertxInternal.workerPool();
 
 				// 获取队列大小，不同版本的Vertx可能有不同的API
 				// 尝试多种方式获取
@@ -96,7 +96,7 @@ public class VertxWorkerPoolMetricCollector extends AbstractMetricCollector {
 		if (vertx instanceof VertxInternal) {
 			try {
 				VertxInternal vertxInternal = (VertxInternal) vertx;
-				WorkerPool workerPool = vertxInternal.getWorkerPool();
+				WorkerPool workerPool = vertxInternal.workerPool();
 			} catch (Exception e) {
 				log.debug("Error getting worker pool size", e);
 			}

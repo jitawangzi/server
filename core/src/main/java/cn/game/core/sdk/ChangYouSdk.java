@@ -253,7 +253,8 @@ public class ChangYouSdk {
 					.putHeader("channelId", channelId)
 					.putHeader("sign", sign)
 					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.sendBuffer(Buffer.buffer(body), ar -> {
+					.sendBuffer(Buffer.buffer(body))
+					.onComplete(ar -> {
 						if (ar.succeeded()) {
 							promise.complete(ar.result().bodyAsString());
 						} else {

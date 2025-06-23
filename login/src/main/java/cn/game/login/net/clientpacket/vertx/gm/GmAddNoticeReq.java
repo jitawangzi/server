@@ -23,7 +23,7 @@ public class GmAddNoticeReq implements BaseVertxHandler {
     public void handle(RoutingContext context) {
         HttpServerResponse response = context.response().putHeader("content-type", "application/json");
         JSONObject result = GmSelectOrderReq.getResultData();
-        JsonObject reqBody = context.getBodyAsJson();
+		JsonObject reqBody = context.body().asJsonObject();
         if (reqBody == null) {
             result.put("result", "param error");
             response.end(result.toString());

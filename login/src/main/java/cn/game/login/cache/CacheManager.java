@@ -1,13 +1,5 @@
 package cn.game.login.cache;
 
-import java.util.function.Consumer;
-
-import cn.game.core.cache.CacheType;
-import cn.game.util.VxRedisUtil;
-import io.reactivex.rxjava3.annotations.Nullable;
-import io.vertx.core.Future;
-import io.vertx.redis.client.Response;
-
 /**
  * redis缓存管理
  * 2020年8月26日 下午5:48:19
@@ -33,19 +25,15 @@ public class CacheManager {
 	 * @param cacheType
 	 * @param ks
 	 */
+
+	/** 
 	public void load(Consumer<String> consumer, CacheType cacheType, Object... ks) {
 		VxRedisUtil.get(cacheType.key(ks), consumer);
 	}
-
+	
 	public void incr(Consumer<Long> consumer, CacheType cacheType, Object... ks) {
 		VxRedisUtil.incr(cacheType.key(ks), consumer);
 	}
-	/**
-	 * 异步载入缓存
-	 * @param cacheType
-	 * @param ks
-	 * @return
-	 */
 	public Future<@Nullable Response> loadAsync(CacheType cacheType, Object... ks) {
 		return VxRedisUtil.get(cacheType.key(ks));
 	}
@@ -59,4 +47,5 @@ public class CacheManager {
 	public void put(int expire, String value, CacheType cacheType, Object... ks) {
 		VxRedisUtil.setex(cacheType.key(ks), value, expire);
 	}
+	*/
 }

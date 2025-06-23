@@ -520,7 +520,7 @@ public class GmHandler extends BaseHandler {
     }
       List<Long> pids = new ArrayList<>();
     VxHolder.vertx.executeBlocking(
-        (hand) -> {
+			() -> {
           request
               .getPlayerIdList()
               .forEach(
@@ -559,6 +559,7 @@ public class GmHandler extends BaseHandler {
                     .setType(request.getType())
                     .build());
           }
+				return null;
         });
   }
 
