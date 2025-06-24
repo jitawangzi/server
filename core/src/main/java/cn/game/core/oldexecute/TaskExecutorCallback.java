@@ -1,4 +1,4 @@
-package cn.game.core.execute;
+package cn.game.core.oldexecute;
 
 /**
  * 任务执行器回调接口 - 为TaskProcessor提供回调方法

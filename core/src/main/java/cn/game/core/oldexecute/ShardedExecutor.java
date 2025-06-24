@@ -1,4 +1,4 @@
-package cn.game.core.execute;
+package cn.game.core.oldexecute;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -13,9 +13,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
- * 动态分片执行器 - 支持根据负载自动调整分片数量
+ * 分片执行器 - 基于ID将任务分配到固定的虚拟线程，支持动态扩缩容
  */
-public class DynamicShardedExecutor implements TaskExecutorCallback {
+public class ShardedExecutor implements TaskExecutorCallback {
     // 默认配置
     private static final int DEFAULT_INITIAL_SHARDS = Runtime.getRuntime().availableProcessors() * 2;
     private static final int DEFAULT_MIN_SHARDS = 4;
@@ -35,6 +35,7 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     private final int scaleThresholdPercent;
     private final int scaleDownThresholdPercent;
     private final int tasksPerShardThreshold;
+    private final boolean autoScaling;
     
     // 统计信息
     private final ShardedExecutorStats stats = new ShardedExecutorStats();
@@ -43,38 +44,50 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     
     // 自动扩缩容控制
     private final AtomicBoolean running = new AtomicBoolean(true);
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
-            r -> {
-                Thread t = new Thread(r, "DynamicShardMonitor");
-                t.setDaemon(true);
-                return t;
-            });
+    private final ScheduledExecutorService scheduler;
     
     /**
-     * 创建具有默认配置的动态分片执行器
+     * 创建具有指定分片数的执行器（不支持动态扩缩容）
+     * @param shardCount 分片数量
      */
-    public DynamicShardedExecutor() {
+    public ShardedExecutor(int shardCount) {
+        this(new Builder().withInitialShards(shardCount).withAutoScaling(false));
+    }
+    
+    /**
+     * 创建具有默认配置的执行器
+     */
+    public ShardedExecutor() {
         this(new Builder());
     }
     
     /**
-     * 使用构建器创建动态分片执行器
+     * 使用构建器创建执行器
      */
-    private DynamicShardedExecutor(Builder builder) {
+    private ShardedExecutor(Builder builder) {
         this.minShards = builder.minShards;
         this.maxShards = builder.maxShards;
         this.scaleCheckInterval = builder.scaleCheckInterval;
         this.scaleThresholdPercent = builder.scaleThresholdPercent;
         this.scaleDownThresholdPercent = builder.scaleDownThresholdPercent;
         this.tasksPerShardThreshold = builder.tasksPerShardThreshold;
+        this.autoScaling = builder.autoScaling;
         
         // 初始化处理器
         TaskProcessor[] initialProcessors = createProcessors(builder.initialShards);
         this.processorsRef = new AtomicReference<>(initialProcessors);
         
-        // 启动自动扩缩容监控
-        if (builder.autoScaling) {
+        // 创建调度器（如果启用自动扩缩容）
+        if (autoScaling) {
+            this.scheduler = Executors.newSingleThreadScheduledExecutor(
+                r -> {
+                    Thread t = new Thread(r, "ShardScalingMonitor");
+                    t.setDaemon(true);
+                    return t;
+                });
             startScalingMonitor();
+        } else {
+            this.scheduler = null;
         }
     }
     
@@ -191,13 +204,19 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     
     /**
      * 在指定对象的虚拟线程上执行任务
+     * @param objectId 对象ID
+     * @param task 要执行的任务
+     * @return 任务结果的Future
      */
     public <T> CompletableFuture<T> execute(long objectId, Supplier<T> task) {
         return execute(String.valueOf(objectId), task);
     }
     
     /**
-     * 在指定对象的虚拟线程上执行任务
+     * 在指定对象的虚拟线程上执行任务（使用字符串ID）
+     * @param objectId 对象ID
+     * @param task 要执行的任务
+     * @return 任务结果的Future
      */
     public <T> CompletableFuture<T> execute(String objectId, Supplier<T> task) {
         if (objectId == null || task == null) {
@@ -206,7 +225,7 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
         
         // 计算分片索引
         TaskProcessor[] processors = processorsRef.get();
-        int shardIndex = Math.abs(objectId.hashCode() % processors.length);
+        int shardIndex = getShardIndex(objectId, processors.length);
         TaskProcessor processor = processors[shardIndex];
         
         // 创建任务并提交
@@ -225,6 +244,13 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     }
     
     /**
+     * 计算对象ID对应的分片索引
+     */
+    private int getShardIndex(String objectId, int shardCount) {
+        return Math.abs(objectId.hashCode() % shardCount);
+    }
+    
+    /**
      * 获取当前分片数量
      */
     public int getShardCount() {
@@ -236,6 +262,14 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
      */
     public int getActiveTaskCount() {
         return activeTaskCount.get();
+    }
+    
+    /**
+     * 获取特定对象的活跃任务数
+     */
+    public int getObjectTaskCount(String objectId) {
+        AtomicInteger counter = objectTaskCounters.get(objectId);
+        return counter != null ? counter.get() : 0;
     }
     
     /**
@@ -272,11 +306,13 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     }
     
     /**
-     * 关闭执行器
+     * 关闭执行器，停止所有处理器
      */
     public void shutdown() {
         if (running.compareAndSet(true, false)) {
-            scheduler.shutdown();
+            if (scheduler != null) {
+                scheduler.shutdown();
+            }
             
             TaskProcessor[] processors = processorsRef.get();
             for (TaskProcessor processor : processors) {
@@ -286,7 +322,7 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
     }
     
     /**
-     * 动态分片执行器构建器
+     * 分片执行器构建器
      */
     public static class Builder {
         private int initialShards = DEFAULT_INITIAL_SHARDS;
@@ -298,55 +334,83 @@ public class DynamicShardedExecutor implements TaskExecutorCallback {
         private int tasksPerShardThreshold = DEFAULT_TASK_PER_SHARD_THRESHOLD;
         private boolean autoScaling = true;
         
+        /**
+         * 设置初始分片数
+         */
         public Builder withInitialShards(int count) {
             this.initialShards = count;
             return this;
         }
         
+        /**
+         * 设置最小分片数
+         */
         public Builder withMinShards(int count) {
             this.minShards = count;
             return this;
         }
         
+        /**
+         * 设置最大分片数
+         */
         public Builder withMaxShards(int count) {
             this.maxShards = count;
             return this;
         }
         
+        /**
+         * 设置扩缩容检查间隔
+         */
         public Builder withScaleCheckInterval(Duration interval) {
             this.scaleCheckInterval = interval;
             return this;
         }
         
+        /**
+         * 设置扩容阈值百分比
+         */
         public Builder withScaleThresholdPercent(int percent) {
             this.scaleThresholdPercent = percent;
             return this;
         }
         
+        /**
+         * 设置缩容阈值百分比
+         */
         public Builder withScaleDownThresholdPercent(int percent) {
             this.scaleDownThresholdPercent = percent;
             return this;
         }
         
+        /**
+         * 设置每个分片的任务阈值
+         */
         public Builder withTasksPerShardThreshold(int count) {
             this.tasksPerShardThreshold = count;
             return this;
         }
         
+        /**
+         * 设置是否启用自动扩缩容
+         */
         public Builder withAutoScaling(boolean enabled) {
             this.autoScaling = enabled;
             return this;
         }
         
-        public DynamicShardedExecutor build() {
-            return new DynamicShardedExecutor(this);
+        /**
+         * 构建分片执行器
+         */
+        public ShardedExecutor build() {
+            return new ShardedExecutor(this);
         }
     }
     
     /**
-     * 创建默认构建器
+     * 创建新的构建器实例
      */
     public static Builder builder() {
         return new Builder();
     }
 }
+

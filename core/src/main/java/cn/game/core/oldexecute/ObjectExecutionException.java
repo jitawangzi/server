@@ -1,4 +1,4 @@
-package cn.game.core.execute;
+package cn.game.core.oldexecute;
 
 /**
  * 对象执行异常 - 当对象任务执行出错时抛出

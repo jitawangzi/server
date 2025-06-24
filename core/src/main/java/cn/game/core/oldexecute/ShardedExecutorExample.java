@@ -1,4 +1,4 @@
-package cn.game.core.execute;
+package cn.game.core.oldexecute;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -8,13 +8,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 动态分片执行器使用示例
+ * 分片执行器使用示例
  */
-public class DynamicExecutorExample {
+public class ShardedExecutorExample {
     
     public static void main(String[] args) throws Exception {
-        // 创建动态分片执行器
-        DynamicShardedExecutor executor = DynamicShardedExecutor.builder()
+        // 创建支持动态扩缩容的执行器
+        ShardedExecutor executor = ShardedExecutor.builder()
                 .withInitialShards(8)           // 初始8个分片
                 .withMinShards(4)               // 最少4个分片
                 .withMaxShards(32)              // 最多32个分片
