@@ -18,8 +18,14 @@ public interface Processor {
 
 	public void process(long objectId, Runnable task);
 
-	// 执行同步逻辑，返回结果
-	public <T> Future<T> process(long objectId, Callable<T> supplier);
+	/** 
+	 * 执行逻辑，返回结果，对于如果是eventloop线程，不能执行阻塞逻辑。 
+	 * @param <T>
+	 * @param objectId
+	 * @param supplier
+	 * @return
+	 */
+	public <T> T process(long objectId, Callable<T> supplier);
 
 	// 执行异步逻辑，返回结果
 	public <T, R> Future<T> process(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper);

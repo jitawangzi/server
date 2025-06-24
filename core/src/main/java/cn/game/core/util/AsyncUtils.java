@@ -44,6 +44,10 @@ public class AsyncUtils {
 		}
 	}
 
+	public static boolean isVertxThread() {
+		return Thread.currentThread() instanceof VertxThread;
+	}
+
 	/** 
 	 * 同步等待Vertx 的Future完成,谨慎使用
 	 * 注意不要在vert.x的EventLoop线程中阻塞等待结果，会让线程无法处理其他事件， 
@@ -56,6 +60,9 @@ public class AsyncUtils {
 	 */
 	public static <T> T await(Future<T> future, long timeout, TimeUnit unit) {
 		checkEventLoop();
+		if (Thread.currentThread().isVirtual() || !isVertxThread()) {
+			return future.await();
+		}
 		try {
 			return future.toCompletionStage().toCompletableFuture().get(timeout, unit);
 		} catch (Exception e) {
@@ -70,7 +77,6 @@ public class AsyncUtils {
 	 * @return
 	 */
 	public static <T> T await(Future<T> future) {
-		checkEventLoop();
 		return await(future, 30, TimeUnit.SECONDS); // 默认超时 30 秒
 	}
 

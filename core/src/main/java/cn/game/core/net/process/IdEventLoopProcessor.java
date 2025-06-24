@@ -29,11 +29,6 @@ public class IdEventLoopProcessor extends AbstractProcessor {
 	}
 
 	@Override
-	public <T> Future<T> process(long objectId, Callable<T> supplier) {
-		return VxContextRegistry.getInstance().submitTaskWithResult(objectId, supplier);
-	}
-
-	@Override
 	public <T, R> Future<T> process(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper) {
 		return VxContextRegistry.getInstance().submitTaskWithResult(objectId, supplier, mapper);
 

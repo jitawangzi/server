@@ -52,7 +52,7 @@ public abstract class AbstractProcessor implements Processor {
 	}
 
 	@Override
-	public <T> Future<T> process(long objectId, Callable<T> supplier) {
+	public <T> T process(long objectId, Callable<T> supplier) {
 		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:supplier");
 	}
 
