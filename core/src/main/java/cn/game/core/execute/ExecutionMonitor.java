@@ -1,20 +1,23 @@
 package cn.game.core.execute;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 执行监控，收集和报告执行统计信息
  */
 public class ExecutionMonitor {
-    private static final Logger LOGGER = Logger.getLogger(ExecutionMonitor.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionMonitor.class.getName());
     
     private final TaskExecutorService executorService;
     private final TaskExecutionConfig config;
@@ -58,7 +61,7 @@ public class ExecutionMonitor {
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error in monitor thread", e);
+					LOGGER.error("Error during execution monitor cycle", e);
                 }
             }
         }, "ExecutionMonitor-Thread");
@@ -95,14 +98,14 @@ public class ExecutionMonitor {
                 
                 // 检测潜在死锁
                 if (mailbox.isProcessing() && processingTime > deadlockThreshold) {
-                    LOGGER.warning(() -> String.format(
+					LOGGER.warn(String.format(
                         "Potential deadlock detected for entity %d - processing for %d ms with %d tasks in queue",
                         mailbox.getEntityId(), processingTime, mailbox.getQueueSize()
                     ));
                     
                     // 重置处理状态，允许其他线程尝试处理
                     if (mailbox.compareAndSetProcessing(true, false)) {
-                        LOGGER.info(() -> "Reset processing state for potentially deadlocked entity " + mailbox.getEntityId());
+						LOGGER.info("Reset processing state for potentially deadlocked entity " + mailbox.getEntityId());
                         
                         // 尝试重新提交处理器
                         if (!mailbox.isEmpty() && mailbox.compareAndSetProcessing(false, true)) {
@@ -115,7 +118,7 @@ public class ExecutionMonitor {
             // 移除闲置邮箱
             for (ActorMailbox mailbox : toRemove) {
                 if (executorService.removeMailbox(mailbox.getEntityId())) {
-                    LOGGER.info(() -> "Removed idle mailbox for entity " + mailbox.getEntityId());
+					LOGGER.info("Removed idle mailbox for entity " + mailbox.getEntityId());
                 }
             }
         }
@@ -160,7 +163,7 @@ public class ExecutionMonitor {
      * @param snapshot 监控快照
      */
     private void reportStatistics(MonitorSnapshot snapshot) {
-        if (LOGGER.isLoggable(Level.INFO)) {
+		if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format(
                 "Execution stats: mailboxes=%d, completed=%d, failed=%d, timeout=%d",
                 snapshot.totalMailboxes, snapshot.totalCompletedTasks,
@@ -213,7 +216,7 @@ public class ExecutionMonitor {
             try {
                 listener.accept(snapshot);
             } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Error notifying monitor listener", e);
+				LOGGER.error("Error notifying monitor listener", e);
             }
         }
     }

@@ -9,8 +9,9 @@ import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -20,7 +21,7 @@ import io.vertx.core.Vertx;
  * 执行工具类，提供一些实用方法，集成Vertx Future
  */
 public class ExecutionUtils {
-    private static final Logger LOGGER = Logger.getLogger(ExecutionUtils.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionUtils.class.getName());
     
     /**
      * 检查当前线程是否为虚拟线程
@@ -159,7 +160,7 @@ public class ExecutionUtils {
                     break;
                 }
                 
-                LOGGER.log(Level.WARNING, "Retry " + retries + "/" + maxRetries + " after error: " + e.getMessage(), e);
+				LOGGER.warn("Retry " + retries + "/" + maxRetries + " after error: " + e.getMessage(), e);
                 
                 if (retryDelayMs > 0) {
                     try {
@@ -191,7 +192,7 @@ public class ExecutionUtils {
     private static <T> Future<T> retryFuture(Vertx vertx, Supplier<Future<T>> operation, int maxRetries, long retryDelayMs, int attempt) {
         return operation.get().recover(failure -> {
             if (attempt < maxRetries) {
-                LOGGER.log(Level.WARNING, "Retry " + (attempt + 1) + "/" + maxRetries + " after error: " + failure.getMessage());
+				LOGGER.warn("Retry " + (attempt + 1) + "/" + maxRetries + " after error: " + failure.getMessage());
 				Promise<Void> delayPromise = Promise.promise();
 				vertx.setTimer(retryDelayMs, id -> delayPromise.complete());
 

@@ -3,14 +3,15 @@ package cn.game.core.execute;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 邮箱处理器，负责处理单个邮箱中的任务
  */
 public class MailboxProcessor implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(MailboxProcessor.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailboxProcessor.class.getName());
     
     private final ActorMailbox mailbox;
     private final TaskExecutorService executorService;
@@ -25,8 +26,9 @@ public class MailboxProcessor implements Runnable {
     @Override
     public void run() {
         long entityId = mailbox.getEntityId();
-        LOGGER.fine(() -> "Starting processing mailbox for entity " + entityId);
-        
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Processing mailbox for entity " + entityId);
+		}
         try {
             processMailboxTasks();
         } finally {
@@ -45,7 +47,9 @@ public class MailboxProcessor implements Runnable {
                 executorService.submitProcessor(mailbox);
             }
             
-            LOGGER.fine(() -> "Finished processing mailbox for entity " + entityId);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Finished processing mailbox for entity {}", entityId);
+			}
         }
     }
     
@@ -92,7 +96,7 @@ public class MailboxProcessor implements Runnable {
             TaskTimeoutException timeoutException = new TaskTimeoutException(entityId, taskDescription, task.getTimeoutMs());
             mailbox.setLastError(timeoutException);
             taskWrapper.fail(timeoutException);
-            LOGGER.warning(() -> "Task timeout for entity " + entityId + ": " + taskDescription);
+			LOGGER.warn("Task timeout for entity " + entityId + ": " + taskDescription);
             
         } catch (Exception e) {
             // 任务执行失败
@@ -103,17 +107,16 @@ public class MailboxProcessor implements Runnable {
             );
             mailbox.setLastError(executionException);
             taskWrapper.fail(executionException);
-            LOGGER.log(Level.WARNING, "Task execution failed for entity " + entityId + ": " + taskDescription, e);
+			LOGGER.warn("Task execution failed for entity " + entityId + ": " + taskDescription, e);
             
         } finally {
             // 记录执行时间统计
             long duration = System.nanoTime() - startTime;
             mailbox.getStats().recordProcessingTime(duration, taskDescription);
             
-            LOGGER.fine(() -> String.format(
-                "Task %s for entity %d completed in %.2f ms",
-                taskDescription, entityId, duration / 1_000_000.0
-            ));
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Task {} for entity {} processed in {} ns", taskDescription, entityId, duration);
+			}
         }
     }
     

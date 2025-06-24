@@ -8,8 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.AsyncUtils;
@@ -21,7 +22,7 @@ import io.vertx.core.Vertx;
  * 任务执行服务，管理所有邮箱并协调任务执行
  */
 public class TaskExecutorService implements AutoCloseable {
-    private static final Logger LOGGER = Logger.getLogger(TaskExecutorService.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class.getName());
     
     // 邮箱映射
     private final ConcurrentMap<Long, ActorMailbox> mailboxes = new ConcurrentHashMap<>();
@@ -234,7 +235,7 @@ public class TaskExecutorService implements AutoCloseable {
             }, description);
             return true;
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Failed to submit task: " + e.getMessage(), e);
+			LOGGER.error("Failed to submit task: " + e.getMessage(), e);
             return false;
         }
     }
@@ -259,7 +260,7 @@ public class TaskExecutorService implements AutoCloseable {
 				executor.submit(processor);
 			} catch (RejectedExecutionException e) {
 				mailbox.setProcessing(false);
-				LOGGER.log(Level.SEVERE, "Failed to submit mailbox processor", e);
+				LOGGER.error("Failed to submit mailbox processor", e);
 			}
         }
     }
@@ -326,7 +327,7 @@ public class TaskExecutorService implements AutoCloseable {
                 if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
                     executor.shutdownNow();
                     if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                        LOGGER.severe("Executor did not terminate");
+						LOGGER.error("Executor did not terminate");
                     }
                 }
             } catch (InterruptedException e) {
