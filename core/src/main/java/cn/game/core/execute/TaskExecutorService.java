@@ -42,6 +42,7 @@ public class TaskExecutorService implements AutoCloseable {
     private final AtomicBoolean running = new AtomicBoolean(true);
     
     // Vertx实例，用于创建Future
+	// 这里有点耦合，不过方便初始化
 	private final Vertx vertx = VxHolder.vertx;
     
 	// 单例相关
@@ -114,7 +115,7 @@ public class TaskExecutorService implements AutoCloseable {
      * @return 包含任务结果的Future
      */
     public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
-        return execute(entityId, task, description, 0, 0);
+		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs());
     }
     
     /**
@@ -127,7 +128,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 包含任务结果的Future
 	 */
     public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
-        return execute(entityId, task, description, priority, 0);
+		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs());
     }
     
     /**

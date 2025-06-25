@@ -45,7 +45,7 @@ public class ServerContext {
 	private RunMode runMode = RunMode.PRODUCTION;
 	private RLock lock;
 	private String serverId;
-	private ServerType serverType;
+	private ServerType serverType = ServerType.Game; // 默认是游戏服务器类型;
 	/** 是否是主节点 */
 	private volatile boolean isLeader;
 	private LeaderLatch leaderLatch;

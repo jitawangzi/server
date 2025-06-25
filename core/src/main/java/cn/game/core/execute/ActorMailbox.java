@@ -1,6 +1,7 @@
 package cn.game.core.execute;
 
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.Deque;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -10,17 +11,19 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ActorMailbox {
     private final long entityId;
-    private final PriorityBlockingQueue<TaskWrapper<?>> taskQueue;
+	private final Deque<TaskWrapper<?>> taskQueue;
     private final AtomicBoolean processing = new AtomicBoolean(false);
     private final MailboxStats stats = new MailboxStats();
-    private final int maxQueueSize;
+    private final int maxQueueSize ;
     private final AtomicReference<Throwable> lastError = new AtomicReference<>(null);
     private final AtomicLong lastAccessTime = new AtomicLong(System.currentTimeMillis());
     
     public ActorMailbox(long entityId, int maxQueueSize) {
         this.entityId = entityId;
-        this.maxQueueSize = maxQueueSize <= 0 ? Integer.MAX_VALUE : maxQueueSize;
-        this.taskQueue = new PriorityBlockingQueue<>(Math.min(11, maxQueueSize));
+		this.maxQueueSize = maxQueueSize <= 0 ? Integer.MAX_VALUE : maxQueueSize;
+//        this.taskQueue = new PriorityBlockingQueue<>(Math.min(11, maxQueueSize));
+		// 保持任务的FIFO顺序，有界，两级优先级
+		this.taskQueue = new LinkedBlockingDeque<>(this.maxQueueSize);
     }
     
     /**

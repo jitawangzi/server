@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 public class DefaultTask<T> implements Task<T>, Comparable<Task<?>> {
     private final Callable<T> action;
     private final String description;
+	@Deprecated
     private final int priority;
 	@Deprecated
     private final long timeoutMs;

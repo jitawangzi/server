@@ -4,10 +4,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -22,7 +27,7 @@ import io.vertx.core.impl.VertxThread;
  * @author SYQ
  */
 public class AsyncUtils {
-
+	private static final Logger logger = LoggerFactory.getLogger(AsyncUtils.class);
 	/** 
 	 * 检查当前线程是不是eventLoop线程, 如果不是则抛出异常
 	 */
@@ -56,17 +61,46 @@ public class AsyncUtils {
 	 * @param future
 	 * @param timeout
 	 * @param unit
-	 * @return
+	 * @return 结果
+	 * @throws 原始异常
 	 */
-	public static <T> T await(Future<T> future, long timeout, TimeUnit unit) {
+	public static <T> T awaitWithException(Future<T> future, long timeout, TimeUnit unit)
+			throws InterruptedException, TimeoutException, ExecutionException {
 		checkEventLoop();
 		if (Thread.currentThread().isVirtual() || !isVertxThread()) {
-			return future.await();
+			return future.await(timeout, unit);
 		}
+		return future.toCompletionStage().toCompletableFuture().get(timeout, unit);
+	}
+
+	/** 
+	 *  {@link #awaitWithException(Future, long, TimeUnit)} 简化异常处理
+	 * @param <T>
+	 * @param future
+	 * @param timeout
+	 * @param unit
+	 * @return
+	 * @throws RuntimeException 如果发生异常则抛出运行时异常
+	 * 通过getCause()获取具体异常信息
+	 */
+	public static <T> T await(Future<T> future, long timeout, TimeUnit unit) {
 		try {
-			return future.toCompletionStage().toCompletableFuture().get(timeout, unit);
+			return awaitWithException(future, timeout, unit);
+		} catch (InterruptedException e) {
+//			由于需要通过getCause()获取具体异常信息，调用方记录具体异常会有点麻烦
+			// 所以在这里统一记录一下，以免丢失原始异常信息
+			Thread.currentThread().interrupt();
+			logger.error("Interrupted while waiting for async result", e);
+			throw new RuntimeException(e);
+		} catch (TimeoutException e) {
+			logger.error("Timeout waiting for async result after {} {}", timeout, unit, e);
+			throw new RuntimeException(e);
+		} catch (ExecutionException e) {
+			logger.error("Async execution failed", e.getCause());
+			throw new RuntimeException(e.getCause());
 		} catch (Exception e) {
-			throw new RuntimeException("Error waiting for async result", e);
+			logger.error("Async operation failed", e);
+			throw new RuntimeException(e);
 		}
 	}
 
