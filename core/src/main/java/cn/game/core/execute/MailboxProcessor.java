@@ -74,18 +74,18 @@ public class MailboxProcessor implements Runnable {
         long startTime = System.nanoTime();
         
         try {
-            // 确定任务超时时间
-            long timeoutMs = task.getTimeoutMs() > 0 ? task.getTimeoutMs() : config.getDefaultTaskTimeoutMs();
-            
-            // 使用CompletableFuture执行任务并支持超时
-            T result;
-            if (timeoutMs > 0) {
-                result = executeWithTimeout(task, timeoutMs);
-            } else {
-                // 不需要超时，直接执行
-                result = task.execute();
-            }
-            
+			/* // 确定任务超时时间
+			long timeoutMs = task.getTimeoutMs() > 0 ? task.getTimeoutMs() : config.getDefaultTaskTimeoutMs();
+			
+			// 使用CompletableFuture执行任务并支持超时
+			T result;
+			if (timeoutMs > 0) {
+			    result = executeWithTimeout(task, timeoutMs);
+			} else {
+			    // 不需要超时，直接执行
+			    result = task.execute();
+			}*/
+			T result = task.execute();
             // 任务成功完成，设置结果
             taskWrapper.complete(result);
             mailbox.getStats().completedTasks.incrementAndGet();
@@ -126,6 +126,7 @@ public class MailboxProcessor implements Runnable {
      * @param timeoutMs 超时时间（毫秒）
      * @throws Exception 如果任务执行失败或超时
      */
+	@Deprecated
     private <T> T executeWithTimeout(Task<T> task, long timeoutMs) throws Exception {
 		if (timeoutMs > 0) {
 			// 当前应该在虚拟线程，使用Future包装任务，并在当前线程等待

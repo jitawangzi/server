@@ -6,8 +6,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BooleanSupplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,10 @@ public class TaskExecutorService implements AutoCloseable {
 
 	public TaskExecutorService(TaskExecutionConfig config) {
 		this.config = config;
-		this.executor = Executors.newVirtualThreadPerTaskExecutor();
+		// 设置线程名，不然可能是空字符串
+		ThreadFactory factory = Thread.ofVirtual().name("vt-", 0).factory();
+		this.executor = Executors.newThreadPerTaskExecutor(factory);
+
 		this.monitor = new ExecutionMonitor(this, config);
 		this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(30));
 	}
@@ -139,7 +144,28 @@ public class TaskExecutorService implements AutoCloseable {
         if (!running.get()) {
             return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
         }
-        
+		// 例外：entityId==0，直接并发执行
+		if (entityId == 0) {
+			Promise<T> resultPromise = Promise.promise();
+			try {
+				executor.submit(() -> {
+					try {
+						T result = task.call();
+						resultPromise.complete(result);
+					} catch (Throwable e) {
+						resultPromise.fail(e);
+					}
+				});
+			} catch (RejectedExecutionException e) {
+				resultPromise.fail(e);
+			}
+			if (timeoutMs > 0) {
+				return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
+			}
+			return resultPromise.future();
+		}
+
+		// 正常邮箱串行逻辑
         // 创建任务和结果Promise
         Promise<T> resultPromise = Promise.promise();
         Task<T> wrappedTask = DefaultTask.<T>builder()
@@ -165,6 +191,9 @@ public class TaskExecutorService implements AutoCloseable {
             submitProcessor(mailbox);
         }
         
+		if (timeoutMs > 0) {
+			return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
+		}
         return resultPromise.future();
     }
     
@@ -244,7 +273,7 @@ public class TaskExecutorService implements AutoCloseable {
      * 提交邮箱处理器
      * @param mailbox 要处理的邮箱
      */
-    void submitProcessor(ActorMailbox mailbox) {
+	public void submitProcessor(ActorMailbox mailbox) {
         if (!running.get()) {
             mailbox.setProcessing(false);
             return;
@@ -346,5 +375,9 @@ public class TaskExecutorService implements AutoCloseable {
     public Vertx getVertx() {
         return vertx;
     }
+
+	public BooleanSupplier isShutdown() {
+		return () -> !running.get();
+	}
 }
 

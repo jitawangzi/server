@@ -9,6 +9,7 @@ public class DefaultTask<T> implements Task<T>, Comparable<Task<?>> {
     private final Callable<T> action;
     private final String description;
     private final int priority;
+	@Deprecated
     private final long timeoutMs;
     
     public DefaultTask(Callable<T> action, String description, int priority, long timeoutMs) {
