@@ -23,10 +23,10 @@ public class CSVMessagesReader {
 
 	/** 
 	 * @param sendingGroup 正在发送的组
-	 * @param msgIdSend  组中已经发过的消息id
+	 * @param msgNameSend  上一次发送的消息名
 	 * @return
 	 */
-	public static CSVMessage randomMessage(int sendingGroup, String msgNameSend) {
+	public static CSVMessage randomGroupMessage(int sendingGroup, String msgNameSend) {
 
 		if (sendingGroup == 0) {
 			CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
@@ -46,6 +46,15 @@ public class CSVMessagesReader {
 		CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
 		list = groupMessageMap.get(randomMessage.group);
 		return list.get(0);
+	}
+
+	/** 
+	 * 单纯按权重随机消息
+	 * @return
+	 */
+	public static CSVMessage randomMessage() {
+		CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
+		return randomMessage;
 	}
 
 	public static List<CSVMessage> getGroupMessages(int group) {
@@ -73,7 +82,7 @@ public class CSVMessagesReader {
 			CSVMessage message = new CSVMessage();
 			message.msgName = protocol;
 			message.msgId = Integer.parseInt(protocolNumber.substring(2), 16);
-			message.group = Integer.parseInt(csvRecord.get(4));
+			message.group = StringUtils.isEmpty(csvRecord.get(4)) ? 0 : Integer.parseInt(csvRecord.get(4));
 			message.order = StringUtils.isEmpty(csvRecord.get(5)) ? Integer.MAX_VALUE : Integer.parseInt(csvRecord.get(5));
 			message.weight = StringUtils.isEmpty(csvRecord.get(6)) ? 0 : Integer.parseInt(csvRecord.get(6));
 

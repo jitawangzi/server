@@ -71,6 +71,7 @@ public class ServerTestContext {
 	public static int botSendInterval;
 	public static int botRunTimeMax;
 	public static int msgGroup;
+	public static int singleMessage;
 
 	public static boolean init = false;
 
@@ -101,18 +102,19 @@ public class ServerTestContext {
 			System.err.println("args length must be 7");
 			System.exit(0);
 		}
-		botIdStart = Integer.parseInt(args[0]);
+		singleMessage = Integer.parseInt(args[0]);
+		botIdStart = Integer.parseInt(args[1]);
 		System.setProperty("botIdStart", botIdStart + "");
-		botCount = Integer.parseInt(args[1]);
-		loginInterval = Integer.parseInt(args[2]);
-		sendInterval = Integer.parseInt(args[3]);
-		botSendInterval = Integer.parseInt(args[4]);
+		botCount = Integer.parseInt(args[2]);
+		loginInterval = Integer.parseInt(args[3]);
+		sendInterval = Integer.parseInt(args[4]);
+		botSendInterval = Integer.parseInt(args[5]);
 		if (botSendInterval < 200) {
 			System.err.println("botSendInterval must greater than 200");
 			System.exit(0);
 		}
-		messageStatisticsInterval = Integer.parseInt(args[5]);
-		botRunTimeMax = Integer.parseInt(args[6]);
+		messageStatisticsInterval = Integer.parseInt(args[6]);
+		botRunTimeMax = Integer.parseInt(args[7]);
 	}
 
 	private static void startHeartbeat() {
@@ -262,7 +264,12 @@ public class ServerTestContext {
 							&& System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
 						continue;
 					}
-					CSVMessage randomMessage = CSVMessagesReader.randomMessage(client.sendingGroup, client.msgNameSend);
+					CSVMessage randomMessage = null;
+					if (singleMessage > 0) {
+						randomMessage = CSVMessagesReader.randomMessage();
+					} else if (singleMessage <= 0) {
+						randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.msgNameSend);
+					}
 					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
 					if (serverTest == null) {
 						throw new IllegalArgumentException("test message not found : " + randomMessage);
@@ -380,6 +387,7 @@ public class ServerTestContext {
 		System.setProperty("botIdStart", botIdStart + "");
 
 		botCount = Integer.parseInt(initialProp.getProperty("botCount"));
+		singleMessage = Integer.parseInt(initialProp.getProperty("singleMessage"));
 		loginInterval = Integer.parseInt(initialProp.getProperty("loginInterval"));
 		sendInterval = Integer.parseInt(initialProp.getProperty("sendInterval"));
 		botSendInterval = Integer.parseInt(initialProp.getProperty("botSendInterval"));

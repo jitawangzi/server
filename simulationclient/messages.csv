@@ -234,5 +234,4 @@
 233,GinsengTreeHangUpRequest_39000015,0x39000015,,,,,领取人参果树挂机奖励
 234,GinsengTreeHeroRequest_39000017,0x39000017,,,,,人参果树英雄上阵
 235,BattleLineupChooseRequest_13000031,0x13000031,,,,,选择当前使用的阵容
-236,BattleXiangYaoChuMoInfoRequest_13000501,0x13000501,,,,,请求降妖除魔数据
 237,BattleXiangYaoChuMoRequest_13000501,0x13000501,,,,,请求降妖除魔数据

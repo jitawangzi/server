@@ -149,7 +149,9 @@ public class Client extends AbstractNetClient {
 
 	private volatile int resendCount = 0;
 
+	/** 发送中的消息组 */
 	public int sendingGroup;
+	/** 上一次发送的消息名 */
 	public String msgNameSend;
 
 	// 消息序号: 消息名，消息发送时间，纳秒

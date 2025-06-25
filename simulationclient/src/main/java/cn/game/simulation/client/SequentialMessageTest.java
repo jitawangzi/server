@@ -12,6 +12,11 @@ import cn.game.simulation.util.CSVMessagesReader.CSVMessage;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerManager;
 
+/**    
+ * 一般开发中模拟协议使用，发送某个消息组中的所有消息
+ * 2025年3月25日 09:49:09
+ * @author SYQ
+ */
 public class SequentialMessageTest {
 
 	public static void main(String args[]) throws Exception {
