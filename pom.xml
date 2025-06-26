@@ -942,6 +942,14 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.11.0</version>
 		</dependency>
+		
+		<!--异步代码测试库 -->
+		<dependency>
+		  <groupId>org.awaitility</groupId>
+		  <artifactId>awaitility</artifactId>
+		  <version>4.2.0</version>
+		  <scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

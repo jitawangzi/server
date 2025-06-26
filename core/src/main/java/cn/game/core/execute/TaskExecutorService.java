@@ -22,6 +22,9 @@ import io.vertx.core.Vertx;
 
 /**
  * 任务执行服务，管理所有邮箱并协调任务执行
+ * 支持虚拟线程，提供同步接口使用能力
+ * 跨ID的逻辑，可能有死锁风险，需要用异步api，不能用同步等待返回结果。
+ * 除非非常肯定不会产生死锁
  */
 public class TaskExecutorService implements AutoCloseable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class.getName());
@@ -236,6 +239,10 @@ public class TaskExecutorService implements AutoCloseable {
     public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
 		// 不能在eventloop中执行
 		AsyncUtils.checkEventLoop();
+
+		// 检查死锁风险
+		DeadlockGuard.checkCrossIdSyncWait(entityId);
+
 		Future<T> future = execute(entityId, task, description, priority, timeoutMs);
 		return AsyncUtils.await(future, timeoutMs, TimeUnit.MILLISECONDS);
     }

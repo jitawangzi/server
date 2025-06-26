@@ -50,6 +50,7 @@ public class MailboxProcessor implements Runnable {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Finished processing mailbox for entity {}", entityId);
 			}
+			DeadlockGuard.exit(entityId);
         }
     }
     
@@ -73,6 +74,7 @@ public class MailboxProcessor implements Runnable {
         String taskDescription = task.getDescription();
         long startTime = System.nanoTime();
         
+		DeadlockGuard.enter(entityId);
         try {
 			/* // 确定任务超时时间
 			long timeoutMs = task.getTimeoutMs() > 0 ? task.getTimeoutMs() : config.getDefaultTaskTimeoutMs();
