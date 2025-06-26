@@ -14,13 +14,13 @@ import io.vertx.core.Vertx;
 /**
  * 玩家管理器示例，展示如何使用执行框架
  */
-public class PlayerManager {
-    private static final Logger LOGGER = Logger.getLogger(PlayerManager.class.getName());
+public class TestPlayerManager {
+    private static final Logger LOGGER = Logger.getLogger(TestPlayerManager.class.getName());
     
     private final TaskExecutorService executorService;
     private final Map<Long, PlayerData> playerCache = new ConcurrentHashMap<>();
     
-    public PlayerManager(Vertx vertx) {
+    public TestPlayerManager(Vertx vertx) {
         // 创建自定义配置的执行服务
         TaskExecutionConfig config = TaskExecutionConfig.builder()
             .maxQueueSize(2000)           // 每个玩家最多2000个待处理任务
@@ -327,7 +327,7 @@ public class PlayerManager {
      */
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
-        PlayerManager playerManager = new PlayerManager(vertx);
+        TestPlayerManager playerManager = new TestPlayerManager(vertx);
         
         try {
             // 创建一个虚拟线程执行示例
