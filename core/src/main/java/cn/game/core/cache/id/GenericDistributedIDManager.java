@@ -12,6 +12,7 @@ import com.google.common.cache.CacheBuilder;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheConfig;
 import cn.game.util.RedisUtil;
+import io.vertx.core.Future;
 
 /**    
  * 分布式对象服务器映射管理器
@@ -85,6 +86,32 @@ public abstract class GenericDistributedIDManager {
 			logger.error("Failed to get server id for {} with id {}", objectType, objectId, e);
 			return "";
 		}
+	}
+
+	/** 
+	 * 异步获取对象所在服务器ID
+	 * @param objectId  对象id
+	 * @param useCacheIfAbsent  如果对象不存在，是否使用缓存，使用缓存则直接返回空字符串，不会再次查询redis
+	 * @return
+	 */
+	public Future<String> getServerIdAsync(long objectId, boolean useCacheIfAbsent) {
+
+		// 如果对象在本服务器，直接返回本服务器ID
+		if (isObjectInCurrentServer(objectId)) {
+			return Future.succeededFuture(ServerContext.getInstance().getServerId());
+		}
+		String redisKey = generateRedisKey(objectId);
+		Future<String> future = Future.fromCompletionStage(RedisUtil.getAsync(redisKey));
+		future.onComplete(ret -> {
+			if (ret.result() == null) {
+				if (useCacheIfAbsent) {
+					setServerId(objectId, "");
+				}
+			} else {
+				setServerId(objectId, ret.result());
+			}
+		});
+		return future;
 	}
 
 	/**

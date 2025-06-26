@@ -13,6 +13,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.task.SchedulerService;
 import cn.game.util.Config;
 import cn.game.util.RedisUtil;
+import io.vertx.core.Future;
 
 public class IdCache {
 	private static final Logger log = LoggerFactory.getLogger(IdCache.class);
@@ -49,6 +50,16 @@ public class IdCache {
 	 */
 	public static String getServerId(DistributedObjectType type, long id) {
 		return getManager(type).getServerId(id);
+	}
+
+	/** 
+	 * 异步获取某id对象所在服务器id
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	public static Future<String> getServerIdAsync(DistributedObjectType type, long id) {
+		return getManager(type).getServerIdAsync(id, true);
 	}
 
 	/** 
