@@ -29,7 +29,7 @@ import io.vertx.core.Vertx;
 public class TaskExecutorService implements AutoCloseable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class.getName());
     
-    // 邮箱映射
+	// 邮箱映射，这里需要每个id一个邮箱，以避免依赖多个id的任务导致的死锁风险
     private final ConcurrentMap<Long, ActorMailbox> mailboxes = new ConcurrentHashMap<>();
     
     // 虚拟线程执行器
@@ -288,18 +288,13 @@ public class TaskExecutorService implements AutoCloseable {
         }
         
 		Runnable processor = new MailboxProcessor(mailbox, this, config);
-		if (Thread.currentThread().isVirtual()) {
-			// 已经在虚拟线程里，直接运行
-			processor.run();
-		} else {
-			// 提交到虚拟线程执行器,启用新的虚拟线程执行
-			try {
-				executor.submit(processor);
-			} catch (RejectedExecutionException e) {
-				mailbox.setProcessing(false);
-				LOGGER.error("Failed to submit mailbox processor", e);
-			}
-        }
+		// 始终提交到虚拟线程执行器,启用新的虚拟线程执行
+		try {
+			executor.submit(processor);
+		} catch (RejectedExecutionException e) {
+			mailbox.setProcessing(false);
+			LOGGER.error("Failed to submit mailbox processor", e);
+		}
     }
     
     /**

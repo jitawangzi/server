@@ -265,6 +265,9 @@ public class GameServer implements GameServerMBean {
 	 * 主要方便测试跨天的一些逻辑。 
 	 */
 	private void kickClientsAfterChangeTime() {
+		if (!ServerContext.getInstance().getRunMode().isTest()) {
+			return; // 非测试模式不需要
+		}
 		AtomicLong lastCheckTime = new AtomicLong(System.currentTimeMillis());
 		SchedulerService.getInstance().scheduleAtFixedRate(() -> {
 			long now = System.currentTimeMillis();
@@ -416,12 +419,6 @@ public class GameServer implements GameServerMBean {
 
 	}
 
-//	public long nextPlayerId() {
-//		if (this.dbMaxPlayerId.get() >= this.maxPlayerId) {
-//			return 0;
-//		}
-//		return this.dbMaxPlayerId.incrementAndGet();
-//	}
 	/**
 	 * 是否是本地服务器
 	 * @param serverId

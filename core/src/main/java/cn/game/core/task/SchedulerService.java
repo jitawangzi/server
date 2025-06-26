@@ -153,25 +153,4 @@ public class SchedulerService {
 			}
 		}
 	}
-
-	public static void main(String[] args) {
-//		SchedulerService.getInstance().scheduleTask(() -> System.out.println("scheduleTask Hello World!"), 5, TimeUnit.SECONDS);
-//		SchedulerService.getInstance().scheduleCronTask(() -> System.out.println("scheduleCronTask Hello World!"), "0/5 * * * * ?");
-//		SchedulerService
-//				.getInstance()
-//				.scheduleAtFixedRate(() -> System.out.println("scheduleAtFixedRate Hello World!"), 5, TimeUnit.SECONDS);
-//		SchedulerService
-//				.getInstance()
-//				.scheduleWithFixedDelay(() -> System.out.println("scheduleWithFixedDelay Hello World!"), 5, TimeUnit.SECONDS);
-//		SchedulerService.getInstance().scheduleWithFixedDelayNew(() -> {
-//			System.out.println("scheduleWithFixedDelay Hello World start");
-//			try {
-//				Thread.sleep(5000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			System.out.println("scheduleWithFixedDelay Hello World end");
-//		}, 2, 5, TimeUnit.SECONDS);
-	}
 }
