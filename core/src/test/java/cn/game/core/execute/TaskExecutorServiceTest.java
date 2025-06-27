@@ -58,6 +58,9 @@ class TaskExecutorServiceTest {
 	@BeforeEach
 	void setUp() {
 		// 每个测试前都创建一个新的 TaskExecutorService 实例
+//		taskExecutorService = new TaskExecutorService(TaskExecutionConfig.getDefault(),
+//				new SharedMailboxManager(100, 512));
+
 		taskExecutorService = new TaskExecutorService();
 	}
 
@@ -229,6 +232,36 @@ class TaskExecutorServiceTest {
 				System.out.println("Task B completed with result: " + res.result());
 			}
 		});
+	}
+
+	@Test
+	@DisplayName("检查某个id的任务，阻塞等待另外一个id的结果")
+	void testDeadlockCheck_whenEntitiesWaitForEachOther() {
+		final long entityId1 = 101L;
+		final long entityId2 = 102L;
+		DeadlockGuard.enable();
+
+		final long taskTimeout = 5000; // 设置一个较短的超时时间来检测死锁
+		// Task A 在 entityId1 上运行, 它会调用并等待 entityId2 上的一个任务
+		Callable<String> taskA = () -> {
+			String result = "Task A result";
+			// 先执行自己的一个任务
+			// 这里会阻塞当前虚拟线程，直到entityId2上的任务完成
+			// 非法用法，直接抛出异常
+			String resultFromB = taskExecutorService.executeAndAwait(entityId2, () -> {
+				System.out.println("Executing subtask on " + entityId2);
+				Thread.sleep(100); // 模拟耗时
+				return "Result from subtask on 2";
+			}, "Subtask from A", 0, taskTimeout);
+			return result + " and " + resultFromB;
+		};
+
+		Future<String> futureA = taskExecutorService.execute(entityId1, taskA);
+		TaskExecutionException exception = assertThrows(TaskExecutionException.class, () -> AsyncUtils
+				.awaitWithException(futureA, taskTimeout + 5000, TimeUnit.MILLISECONDS),
+				"应该抛出 TaskExecutionException");
+		assertTrue(exception.getCause() instanceof CrossIdSyncWaitException, "Cause 应为 CrossIdSyncWaitException");
+
 	}
 
 	@Test

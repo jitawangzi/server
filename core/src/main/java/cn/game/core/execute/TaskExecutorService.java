@@ -1,9 +1,6 @@
 package cn.game.core.execute;
 
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,15 +22,20 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 
 /**
- * 任务执行服务，管理所有邮箱并协调任务执行
- * 支持虚拟线程，提供同步接口使用能力
- * 跨ID的逻辑，可能有死锁风险，需要用异步api，不能用同步等待返回结果。
- * 除非非常肯定不会产生死锁
- */
+
+任务执行服务，管理所有邮箱并协调任务执行
+
+支持虚拟线程，提供同步接口使用能力
+
+跨ID的逻辑，可能有死锁风险，需要用异步api，不能用同步等待返回结果。
+
+除非非常肯定不会产生死锁
+*/
 public class TaskExecutorService implements AutoCloseable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class);
-	// 邮箱映射，这里需要每个id一个邮箱，以避免依赖多个id的任务导致的死锁风险
-	private final ConcurrentMap<Long, ActorMailbox> mailboxes = new ConcurrentHashMap<>();
+
+	// 邮箱管理器，可以是OneToOneMailboxManager或SharedMailboxManager
+	private final MailboxManager mailboxManager;
 
 	// 虚拟线程执行器
 	private final ExecutorService executor;
@@ -62,8 +64,18 @@ public class TaskExecutorService implements AutoCloseable {
 	private static volatile TaskExecutorService instance;
 	private static final Object lock = new Object();
 
-	public TaskExecutorService(TaskExecutionConfig config) {
+	/**
+	
+	使用指定配置和邮箱管理器创建任务执行服务
+	
+	@param config 任务执行配置
+	
+	@param mailboxManager 邮箱管理器
+	*/
+	public TaskExecutorService(TaskExecutionConfig config, MailboxManager mailboxManager) {
 		this.config = config;
+		this.mailboxManager = mailboxManager;
+
 		// 设置线程名，不然可能是空字符串
 		ThreadFactory factory = Thread.ofVirtual().name("vt-", 0).factory();
 		this.executor = Executors.newThreadPerTaskExecutor(factory);
@@ -76,8 +88,26 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 启动定期邮箱清理任务
-	 */
+	
+	使用指定配置创建任务执行服务，默认使用一对一邮箱管理器
+	@param config 任务执行配置
+	*/
+	public TaskExecutorService(TaskExecutionConfig config) {
+		this(config, new OneToOneMailboxManager(config.getMaxQueueSize()));
+	}
+
+	/**
+	
+	创建任务执行服务（使用默认配置）
+	*/
+	public TaskExecutorService() {
+		this(TaskExecutionConfig.getDefault());
+	}
+
+	/**
+	
+	启动定期邮箱清理任务
+	*/
 	private void startMailboxCleaner() {
 		this.mailboxCleanFuture = SchedulerService.getInstance()
 				.scheduleAtFixedRate(this::cleanIdleMailboxes, MAILBOX_CLEAN_INTERVAL_MS, TimeUnit.MILLISECONDS);
@@ -85,29 +115,18 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 定期清理长时间未活跃且队列为空的邮箱
-	 */
+	
+	定期清理长时间未活跃且队列为空的邮箱
+	*/
 	private void cleanIdleMailboxes() {
-		long now = System.currentTimeMillis();
-		int removed = 0;
-		Iterator<Map.Entry<Long, ActorMailbox>> it = mailboxes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Long, ActorMailbox> entry = it.next();
-			ActorMailbox mailbox = entry.getValue();
-			if (mailbox.isEmpty() && !mailbox.isProcessing() && now - mailbox.getLastAccessTime() > MAILBOX_IDLE_TIMEOUT_MS) {
-				it.remove();
-				removed++;
-			}
-		}
-		if (removed > 0) {
-			LOGGER.info("Mailbox cleaner: removed {} idle mailboxes", removed);
-		}
+		mailboxManager.cleanIdleMailboxes(MAILBOX_IDLE_TIMEOUT_MS);
 	}
 
 	/**
-	 * 获取全局单例（自定义参数）
-	 * @return 单例
-	 */
+	
+	获取全局单例（自定义参数）
+	@return 单例
+	*/
 	public static TaskExecutorService getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
@@ -120,71 +139,86 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 允许重置单例（重设参数），线程安全
-	 * @param config 配置
-	 */
-	public static void resetInstance(TaskExecutionConfig config) {
+	
+	允许重置单例（重设参数），线程安全
+	@param config 配置
+	@param mailboxManager 邮箱管理器
+	*/
+	public static void resetInstance(TaskExecutionConfig config, MailboxManager mailboxManager) {
 		synchronized (lock) {
 			if (instance != null) {
 				instance.close(); // 关闭旧的
 			}
-			instance = new TaskExecutorService(config);
+			instance = new TaskExecutorService(config, mailboxManager);
 		}
 	}
 
 	/**
-	 * 创建任务执行服务（使用默认配置）
-	 */
-	public TaskExecutorService() {
-		this(TaskExecutionConfig.getDefault());
+	
+	允许重置单例（重设参数），线程安全，使用默认的一对一邮箱管理器
+	@param config 配置
+	*/
+	public static void resetInstance(TaskExecutionConfig config) {
+		resetInstance(config, new OneToOneMailboxManager(config.getMaxQueueSize()));
 	}
 
 	/**
-	 * 执行任务并返回结果Future
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param <T> 结果类型
-	 * @return 包含任务结果的Future
-	 */
+	
+	执行任务并返回结果Future
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param <T> 结果类型
+	@return 包含任务结果的Future
+	*/
 	public <T> Future<T> execute(long entityId, Callable<T> task) {
 		return execute(entityId, task, "Anonymous Task");
 	}
 
 	/**
-	 * 执行任务并返回结果Future
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param description 任务描述
-	 * @param <T> 结果类型
-	 * @return 包含任务结果的Future
-	 */
+	
+	执行任务并返回结果Future
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param description 任务描述
+	@param <T> 结果类型
+	@return 包含任务结果的Future
+	*/
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
 		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs());
 	}
 
 	/**
-	 * 执行任务并返回结果Future
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
-	 * @param <T> 结果类型
-	 * @return 包含任务结果的Future
-	 */
+	
+	执行任务并返回结果Future
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param description 任务描述
+	@param priority 任务优先级,默认0，高优先级先执行
+	@param <T> 结果类型
+	@return 包含任务结果的Future
+	*/
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
 		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs());
 	}
 
 	/**
-	 * 执行任务并返回结果Future
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
-	 * @param timeoutMs 超时时间（毫秒）
-	 * @param <T> 结果类型
-	 * @return 包含任务结果的Future
-	 */
+	
+	执行任务并返回结果Future
+	
+	@param entityId 实体ID
+	
+	@param task 要执行的任务
+	
+	@param description 任务描述
+	
+	@param priority 任务优先级,默认0，高优先级先执行
+	
+	@param timeoutMs 超时时间（毫秒）
+	
+	@param <T> 结果类型
+	
+	@return 包含任务结果的Future
+	*/
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs) {
 		if (!running.get()) {
 			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
@@ -223,7 +257,7 @@ public class TaskExecutorService implements AutoCloseable {
 		TaskWrapper<T> taskWrapper = new TaskWrapper<>(wrappedTask, resultPromise);
 
 		// 获取或创建邮箱
-		ActorMailbox mailbox = getOrCreateMailbox(entityId);
+		ActorMailbox mailbox = mailboxManager.getOrCreateMailbox(entityId);
 
 		// 将任务添加到邮箱
 		boolean offered = mailbox.offerTask(taskWrapper);
@@ -243,69 +277,74 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 在虚拟线程中执行任务并等待结果（同步方法）
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param <T> 结果类型
-	 * @return 任务结果
-	 * @throws Exception 如果任务执行失败
-	 */
+	
+	在虚拟线程中执行任务并等待结果（同步方法）
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param <T> 结果类型
+	@return 任务结果
+	@throws Exception 如果任务执行失败
+	*/
 	public <T> T executeAndAwait(long entityId, Callable<T> task) throws Exception {
 		return executeAndAwait(entityId, task, 0);
 	}
 
 	/**
-	 * 在虚拟线程中执行任务并等待结果（同步方法）
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param priority 任务优先级,默认0，高优先级先执行
-	 * @param <T> 结果类型
-	 * @return 任务结果
-	 * @throws Exception 如果任务执行失败
-	 */
+	
+	在虚拟线程中执行任务并等待结果（同步方法）
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param priority 任务优先级,默认0，高优先级先执行
+	@param <T> 结果类型
+	@return 任务结果
+	@throws Exception 如果任务执行失败
+	*/
 	public <T> T executeAndAwait(long entityId, Callable<T> task, int priority) throws Exception {
 		return executeAndAwait(entityId, task, "Anonymous Task", priority, 0);
 	}
 
 	/**
-	 * 在虚拟线程中执行任务并等待结果（同步方法）
-	 * @param entityId 实体ID
-	 * @param task 要执行的任务
-	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
-	 * @param timeoutMs 超时时间（毫秒）
-	 * @param <T> 结果类型
-	 * @return 任务结果
-	 * @throws Exception 如果任务执行失败
-	 */
+	
+	在虚拟线程中执行任务并等待结果（同步方法）
+	@param entityId 实体ID
+	@param task 要执行的任务
+	@param description 任务描述
+	@param priority 任务优先级,默认0，高优先级先执行
+	@param timeoutMs 超时时间（毫秒）
+	@param <T> 结果类型
+	@return 任务结果
+	@throws Exception 如果任务执行失败
+	*/
 	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
 		// 不能在eventloop中执行
 		AsyncUtils.checkEventLoop();
 
 		// 检查死锁风险
-		DeadlockGuard.checkCrossIdSyncWait(entityId);
+		DeadlockGuard.checkCrossIdSyncWait(entityId, description);
 
 		Future<T> future = execute(entityId, task, description, priority, timeoutMs);
 		return AsyncUtils.await(future, timeoutMs, TimeUnit.MILLISECONDS);
 	}
 
 	/**
-	 * 提交任务但不返回结果
-	 * @param entityId 实体ID
-	 * @param task 任务
-	 * @return 如果成功提交返回true
-	 */
+	
+	提交任务但不返回结果
+	@param entityId 实体ID
+	@param task 任务
+	@return 如果成功提交返回true
+	*/
 	public boolean submitTask(long entityId, Runnable task) {
 		return submitTask(entityId, task, "Anonymous Task");
 	}
 
 	/**
-	 * 提交任务但不返回结果
-	 * @param entityId 实体ID
-	 * @param task 任务
-	 * @param description 任务描述
-	 * @return 如果成功提交返回true
-	 */
+	
+	提交任务但不返回结果
+	@param entityId 实体ID
+	@param task 任务
+	@param description 任务描述
+	@return 如果成功提交返回true
+	*/
 	public boolean submitTask(long entityId, Runnable task, String description) {
 		try {
 			execute(entityId, () -> {
@@ -320,9 +359,11 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 提交邮箱处理器
-	 * @param mailbox 要处理的邮箱
-	 */
+	
+	提交邮箱处理器
+	
+	@param mailbox 要处理的邮箱
+	*/
 	public void submitProcessor(ActorMailbox mailbox) {
 		if (!running.get()) {
 			mailbox.setProcessing(false);
@@ -340,55 +381,47 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 获取或创建邮箱
-	 * @param entityId 实体ID
-	 * @return 邮箱
-	 */
-	private ActorMailbox getOrCreateMailbox(long entityId) {
-		return mailboxes.computeIfAbsent(entityId, id -> new ActorMailbox(id, config.getMaxQueueSize()));
+	
+	获取邮箱管理器
+	@return 邮箱管理器
+	*/
+	public MailboxManager getMailboxManager() {
+		return mailboxManager;
 	}
 
 	/**
-	 * 获取邮箱
-	 * @param entityId 实体ID
-	 * @return 邮箱，如果不存在返回null
-	 */
+	
+	获取邮箱
+	@param entityId 实体ID
+	@return 邮箱，如果不存在返回null
+	*/
 	public ActorMailbox getMailbox(long entityId) {
-		return mailboxes.get(entityId);
+		return mailboxManager.getMailbox(entityId);
 	}
 
 	/**
-	 * 移除邮箱
-	 * @param entityId 实体ID
-	 * @return 如果邮箱存在并被移除返回true
-	 */
+	
+	移除邮箱
+	@param entityId 实体ID
+	@return 如果邮箱存在并被移除返回true
+	*/
 	public boolean removeMailbox(long entityId) {
-		ActorMailbox mailbox = mailboxes.get(entityId);
-		if (mailbox != null && mailbox.isEmpty() && !mailbox.isProcessing()) {
-			return mailboxes.remove(entityId) != null;
-		}
-		return false;
+		return mailboxManager.removeMailbox(entityId);
 	}
 
 	/**
-	 * 获取所有邮箱
-	 * @return 邮箱映射
-	 */
-	ConcurrentMap<Long, ActorMailbox> getMailboxes() {
-		return mailboxes;
-	}
-
-	/**
-	 * 获取监控器
-	 * @return 执行监控器
-	 */
+	
+	获取监控器
+	@return 执行监控器
+	*/
 	public ExecutionMonitor getMonitor() {
 		return monitor;
 	}
 
 	/**
-	 * 关闭执行服务
-	 */
+	
+	关闭执行服务
+	*/
 	@Override
 	public void close() {
 		if (running.compareAndSet(true, false)) {
@@ -398,6 +431,9 @@ public class TaskExecutorService implements AutoCloseable {
 			if (mailboxCleanFuture != null) {
 				mailboxCleanFuture.cancel(false);
 			}
+
+			// 关闭邮箱管理器
+			mailboxManager.close();
 
 			// 等待所有任务完成或超时
 			executor.shutdown();
@@ -418,14 +454,19 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	 * 获取Vertx实例
-	 * @return Vertx实例
-	 */
+	
+	获取Vertx实例
+	@return Vertx实例
+	*/
 	public Vertx getVertx() {
 		return vertx;
 	}
 
 	public BooleanSupplier isShutdown() {
 		return () -> !running.get();
+	}
+
+	public ConcurrentMap<Long, ActorMailbox> getMailboxes() {
+		return mailboxManager.getMailboxes();
 	}
 }

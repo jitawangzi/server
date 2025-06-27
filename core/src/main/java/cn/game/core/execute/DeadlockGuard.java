@@ -73,7 +73,7 @@ public class DeadlockGuard {
 	 * 在同步调用executeAndAwait等API前调用
 	 * @param targetId 你即将同步等待的目标ID
 	 */
-	public static void checkCrossIdSyncWait(long targetId) {
+	public static void checkCrossIdSyncWait(long targetId, String description) {
 		if (!enabled)
 			return;
 		Deque<Long> stack = idStack.get();
@@ -81,14 +81,17 @@ public class DeadlockGuard {
 		if (currentId != null && !currentId.equals(targetId)) {
 			String stackTrace = getStackTraceString(new Exception());
 			if (stack.contains(targetId)) {
-				String msg = "Potential deadlock: entity " + currentId + " synchronously waiting for " + targetId
+				String msg = "Potential deadlock: entity " + currentId + " description " + description + " synchronously waiting for "
+						+ targetId
 						+ ", targetId is already in call stack: " + stack + "\nJava Call Stack:\n" + stackTrace;
 				LOGGER.error(msg);
 				throw new IllegalStateException(msg);
 			} else {
 				LOGGER.warn(
-						"Possibly unsafe cross-id sync wait: entity {} synchronously waiting for {}, call stack: {}\nJava Call Stack:\n{}",
-						currentId, targetId, stack, stackTrace);
+						"Possibly unsafe cross-id sync wait: entity {} description {} synchronously waiting for {}, call stack: {}\nJava Call Stack:\n{}",
+						currentId, description, targetId, stack, stackTrace);
+				// 先抛异常，严格避免跨id同步调用,后期看看有没有必要允许
+				throw new CrossIdSyncWaitException(targetId, description);
 			}
 		}
 	}
