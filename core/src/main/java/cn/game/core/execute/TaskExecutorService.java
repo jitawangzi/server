@@ -1,11 +1,14 @@
 package cn.game.core.execute;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.task.SchedulerService;
 import cn.game.core.util.AsyncUtils;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -27,27 +31,33 @@ import io.vertx.core.Vertx;
  * 除非非常肯定不会产生死锁
  */
 public class TaskExecutorService implements AutoCloseable {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class.getName());
-    
+	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class);
 	// 邮箱映射，这里需要每个id一个邮箱，以避免依赖多个id的任务导致的死锁风险
-    private final ConcurrentMap<Long, ActorMailbox> mailboxes = new ConcurrentHashMap<>();
-    
-    // 虚拟线程执行器
-    private final ExecutorService executor;
-    
-    // 配置
-    private final TaskExecutionConfig config;
-    
-    // 执行监控
-    private final ExecutionMonitor monitor;
-    
-    // 服务状态
-    private final AtomicBoolean running = new AtomicBoolean(true);
-    
-    // Vertx实例，用于创建Future
+	private final ConcurrentMap<Long, ActorMailbox> mailboxes = new ConcurrentHashMap<>();
+
+	// 虚拟线程执行器
+	private final ExecutorService executor;
+
+	// 配置
+	private final TaskExecutionConfig config;
+
+	// 执行监控
+	private final ExecutionMonitor monitor;
+
+	// 服务状态
+	private final AtomicBoolean running = new AtomicBoolean(true);
+
+	// Vertx实例，用于创建Future
 	// 这里有点耦合，不过方便初始化
 	private final Vertx vertx = VxHolder.vertx;
-    
+
+	// 邮箱定期清理参数
+	private static final long MAILBOX_IDLE_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(30); // 邮箱最大空闲时间
+	private static final long MAILBOX_CLEAN_INTERVAL_MS = TimeUnit.MINUTES.toMillis(10); // 清理周期
+
+	// 邮箱清理任务Future
+	private ScheduledFuture<?> mailboxCleanFuture;
+
 	// 单例相关
 	private static volatile TaskExecutorService instance;
 	private static final Object lock = new Object();
@@ -60,8 +70,39 @@ public class TaskExecutorService implements AutoCloseable {
 
 		this.monitor = new ExecutionMonitor(this, config);
 		this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(30));
+
+		// 启动定期清理邮箱任务
+		startMailboxCleaner();
 	}
 
+	/**
+	 * 启动定期邮箱清理任务
+	 */
+	private void startMailboxCleaner() {
+		this.mailboxCleanFuture = SchedulerService.getInstance()
+				.scheduleAtFixedRate(this::cleanIdleMailboxes, MAILBOX_CLEAN_INTERVAL_MS, TimeUnit.MILLISECONDS);
+		LOGGER.info("Scheduled mailbox idle cleaner: every {} ms, idle timeout {} ms", MAILBOX_CLEAN_INTERVAL_MS, MAILBOX_IDLE_TIMEOUT_MS);
+	}
+
+	/**
+	 * 定期清理长时间未活跃且队列为空的邮箱
+	 */
+	private void cleanIdleMailboxes() {
+		long now = System.currentTimeMillis();
+		int removed = 0;
+		Iterator<Map.Entry<Long, ActorMailbox>> it = mailboxes.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Long, ActorMailbox> entry = it.next();
+			ActorMailbox mailbox = entry.getValue();
+			if (mailbox.isEmpty() && !mailbox.isProcessing() && now - mailbox.getLastAccessTime() > MAILBOX_IDLE_TIMEOUT_MS) {
+				it.remove();
+				removed++;
+			}
+		}
+		if (removed > 0) {
+			LOGGER.info("Mailbox cleaner: removed {} idle mailboxes", removed);
+		}
+	}
 
 	/**
 	 * 获取全局单例（自定义参数）
@@ -91,37 +132,37 @@ public class TaskExecutorService implements AutoCloseable {
 		}
 	}
 
-    /**
-     * 创建任务执行服务（使用默认配置）
-     */
+	/**
+	 * 创建任务执行服务（使用默认配置）
+	 */
 	public TaskExecutorService() {
 		this(TaskExecutionConfig.getDefault());
-    }
-    
-    /**
-     * 执行任务并返回结果Future
-     * @param entityId 实体ID
-     * @param task 要执行的任务
-     * @param <T> 结果类型
-     * @return 包含任务结果的Future
-     */
-    public <T> Future<T> execute(long entityId, Callable<T> task) {
-        return execute(entityId, task, "Anonymous Task");
-    }
-    
-    /**
-     * 执行任务并返回结果Future
-     * @param entityId 实体ID
-     * @param task 要执行的任务
-     * @param description 任务描述
-     * @param <T> 结果类型
-     * @return 包含任务结果的Future
-     */
-    public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
+	}
+
+	/**
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
+	public <T> Future<T> execute(long entityId, Callable<T> task) {
+		return execute(entityId, task, "Anonymous Task");
+	}
+
+	/**
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
+	public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
 		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs());
-    }
-    
-    /**
+	}
+
+	/**
 	 * 执行任务并返回结果Future
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
@@ -130,11 +171,11 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
-    public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
+	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
 		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs());
-    }
-    
-    /**
+	}
+
+	/**
 	 * 执行任务并返回结果Future
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
@@ -144,10 +185,10 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
-    public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs) {
-        if (!running.get()) {
-            return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
-        }
+	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs) {
+		if (!running.get()) {
+			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
+		}
 		// 例外：entityId==0，直接并发执行
 		if (entityId == 0) {
 			Promise<T> resultPromise = Promise.promise();
@@ -170,50 +211,50 @@ public class TaskExecutorService implements AutoCloseable {
 		}
 
 		// 正常邮箱串行逻辑
-        // 创建任务和结果Promise
-        Promise<T> resultPromise = Promise.promise();
-        Task<T> wrappedTask = DefaultTask.<T>builder()
-            .action(task)
-            .description(description)
-            .priority(priority)
-            .timeoutMs(timeoutMs)
-            .build();
-        
-        TaskWrapper<T> taskWrapper = new TaskWrapper<>(wrappedTask, resultPromise);
-        
-        // 获取或创建邮箱
-        ActorMailbox mailbox = getOrCreateMailbox(entityId);
-        
-        // 将任务添加到邮箱
-        boolean offered = mailbox.offerTask(taskWrapper);
-        if (!offered) {
-            return Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId));
-        }
-        
-        // 尝试启动处理器
-        if (mailbox.compareAndSetProcessing(false, true)) {
-            submitProcessor(mailbox);
-        }
-        
+		// 创建任务和结果Promise
+		Promise<T> resultPromise = Promise.promise();
+		Task<T> wrappedTask = DefaultTask.<T>builder()
+				.action(task)
+				.description(description)
+				.priority(priority)
+				.timeoutMs(timeoutMs)
+				.build();
+
+		TaskWrapper<T> taskWrapper = new TaskWrapper<>(wrappedTask, resultPromise);
+
+		// 获取或创建邮箱
+		ActorMailbox mailbox = getOrCreateMailbox(entityId);
+
+		// 将任务添加到邮箱
+		boolean offered = mailbox.offerTask(taskWrapper);
+		if (!offered) {
+			return Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId));
+		}
+
+		// 尝试启动处理器
+		if (mailbox.compareAndSetProcessing(false, true)) {
+			submitProcessor(mailbox);
+		}
+
 		if (timeoutMs > 0) {
 			return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
 		}
-        return resultPromise.future();
-    }
-    
-    /**
-     * 在虚拟线程中执行任务并等待结果（同步方法）
-     * @param entityId 实体ID
-     * @param task 要执行的任务
-     * @param <T> 结果类型
-     * @return 任务结果
-     * @throws Exception 如果任务执行失败
-     */
-    public <T> T executeAndAwait(long entityId, Callable<T> task) throws Exception {
+		return resultPromise.future();
+	}
+
+	/**
+	 * 在虚拟线程中执行任务并等待结果（同步方法）
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param <T> 结果类型
+	 * @return 任务结果
+	 * @throws Exception 如果任务执行失败
+	 */
+	public <T> T executeAndAwait(long entityId, Callable<T> task) throws Exception {
 		return executeAndAwait(entityId, task, 0);
-    }
-    
-    /**
+	}
+
+	/**
 	 * 在虚拟线程中执行任务并等待结果（同步方法）
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
@@ -224,8 +265,9 @@ public class TaskExecutorService implements AutoCloseable {
 	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task, int priority) throws Exception {
 		return executeAndAwait(entityId, task, "Anonymous Task", priority, 0);
-    }
-    /**
+	}
+
+	/**
 	 * 在虚拟线程中执行任务并等待结果（同步方法）
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
@@ -236,7 +278,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 任务结果
 	 * @throws Exception 如果任务执行失败
 	 */
-    public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
+	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
 		// 不能在eventloop中执行
 		AsyncUtils.checkEventLoop();
 
@@ -245,48 +287,48 @@ public class TaskExecutorService implements AutoCloseable {
 
 		Future<T> future = execute(entityId, task, description, priority, timeoutMs);
 		return AsyncUtils.await(future, timeoutMs, TimeUnit.MILLISECONDS);
-    }
-    
-    /**
-     * 提交任务但不返回结果
-     * @param entityId 实体ID
-     * @param task 任务
-     * @return 如果成功提交返回true
-     */
-    public boolean submitTask(long entityId, Runnable task) {
-        return submitTask(entityId, task, "Anonymous Task");
-    }
-    
-    /**
-     * 提交任务但不返回结果
-     * @param entityId 实体ID
-     * @param task 任务
-     * @param description 任务描述
-     * @return 如果成功提交返回true
-     */
-    public boolean submitTask(long entityId, Runnable task, String description) {
-        try {
-            execute(entityId, () -> {
-                task.run();
-                return null;
-            }, description);
-            return true;
-        } catch (Exception e) {
+	}
+
+	/**
+	 * 提交任务但不返回结果
+	 * @param entityId 实体ID
+	 * @param task 任务
+	 * @return 如果成功提交返回true
+	 */
+	public boolean submitTask(long entityId, Runnable task) {
+		return submitTask(entityId, task, "Anonymous Task");
+	}
+
+	/**
+	 * 提交任务但不返回结果
+	 * @param entityId 实体ID
+	 * @param task 任务
+	 * @param description 任务描述
+	 * @return 如果成功提交返回true
+	 */
+	public boolean submitTask(long entityId, Runnable task, String description) {
+		try {
+			execute(entityId, () -> {
+				task.run();
+				return null;
+			}, description);
+			return true;
+		} catch (Exception e) {
 			LOGGER.error("Failed to submit task: " + e.getMessage(), e);
-            return false;
-        }
-    }
-    
-    /**
-     * 提交邮箱处理器
-     * @param mailbox 要处理的邮箱
-     */
+			return false;
+		}
+	}
+
+	/**
+	 * 提交邮箱处理器
+	 * @param mailbox 要处理的邮箱
+	 */
 	public void submitProcessor(ActorMailbox mailbox) {
-        if (!running.get()) {
-            mailbox.setProcessing(false);
-            return;
-        }
-        
+		if (!running.get()) {
+			mailbox.setProcessing(false);
+			return;
+		}
+
 		Runnable processor = new MailboxProcessor(mailbox, this, config);
 		// 始终提交到虚拟线程执行器,启用新的虚拟线程执行
 		try {
@@ -295,92 +337,95 @@ public class TaskExecutorService implements AutoCloseable {
 			mailbox.setProcessing(false);
 			LOGGER.error("Failed to submit mailbox processor", e);
 		}
-    }
-    
-    /**
-     * 获取或创建邮箱
-     * @param entityId 实体ID
-     * @return 邮箱
-     */
-    private ActorMailbox getOrCreateMailbox(long entityId) {
-        return mailboxes.computeIfAbsent(entityId, 
-            id -> new ActorMailbox(id, config.getMaxQueueSize()));
-    }
-    
-    /**
-     * 获取邮箱
-     * @param entityId 实体ID
-     * @return 邮箱，如果不存在返回null
-     */
-    public ActorMailbox getMailbox(long entityId) {
-        return mailboxes.get(entityId);
-    }
-    
-    /**
-     * 移除邮箱
-     * @param entityId 实体ID
-     * @return 如果邮箱存在并被移除返回true
-     */
-    public boolean removeMailbox(long entityId) {
-        ActorMailbox mailbox = mailboxes.get(entityId);
-        if (mailbox != null && mailbox.isEmpty() && !mailbox.isProcessing()) {
-            return mailboxes.remove(entityId) != null;
-        }
-        return false;
-    }
-    
-    /**
-     * 获取所有邮箱
-     * @return 邮箱映射
-     */
-    ConcurrentMap<Long, ActorMailbox> getMailboxes() {
-        return mailboxes;
-    }
-    
-    /**
-     * 获取监控器
-     * @return 执行监控器
-     */
-    public ExecutionMonitor getMonitor() {
-        return monitor;
-    }
-    
-    /**
-     * 关闭执行服务
-     */
-    @Override
-    public void close() {
-        if (running.compareAndSet(true, false)) {
-            LOGGER.info("Shutting down TaskExecutorService...");
-            
-            // 等待所有任务完成或超时
-            executor.shutdown();
-            try {
-                if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                    executor.shutdownNow();
-                    if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+	}
+
+	/**
+	 * 获取或创建邮箱
+	 * @param entityId 实体ID
+	 * @return 邮箱
+	 */
+	private ActorMailbox getOrCreateMailbox(long entityId) {
+		return mailboxes.computeIfAbsent(entityId, id -> new ActorMailbox(id, config.getMaxQueueSize()));
+	}
+
+	/**
+	 * 获取邮箱
+	 * @param entityId 实体ID
+	 * @return 邮箱，如果不存在返回null
+	 */
+	public ActorMailbox getMailbox(long entityId) {
+		return mailboxes.get(entityId);
+	}
+
+	/**
+	 * 移除邮箱
+	 * @param entityId 实体ID
+	 * @return 如果邮箱存在并被移除返回true
+	 */
+	public boolean removeMailbox(long entityId) {
+		ActorMailbox mailbox = mailboxes.get(entityId);
+		if (mailbox != null && mailbox.isEmpty() && !mailbox.isProcessing()) {
+			return mailboxes.remove(entityId) != null;
+		}
+		return false;
+	}
+
+	/**
+	 * 获取所有邮箱
+	 * @return 邮箱映射
+	 */
+	ConcurrentMap<Long, ActorMailbox> getMailboxes() {
+		return mailboxes;
+	}
+
+	/**
+	 * 获取监控器
+	 * @return 执行监控器
+	 */
+	public ExecutionMonitor getMonitor() {
+		return monitor;
+	}
+
+	/**
+	 * 关闭执行服务
+	 */
+	@Override
+	public void close() {
+		if (running.compareAndSet(true, false)) {
+			LOGGER.info("Shutting down TaskExecutorService...");
+
+			// 停止邮箱清理任务
+			if (mailboxCleanFuture != null) {
+				mailboxCleanFuture.cancel(false);
+			}
+
+			// 等待所有任务完成或超时
+			executor.shutdown();
+			try {
+				if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+					executor.shutdownNow();
+					if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
 						LOGGER.error("Executor did not terminate");
-                    }
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-            
-            LOGGER.info("TaskExecutorService shutdown complete");
-        }
-    }
-    
-    /**
-     * 获取Vertx实例
-     * @return Vertx实例
-     */
-    public Vertx getVertx() {
-        return vertx;
-    }
+					}
+				}
+			} catch (InterruptedException e) {
+				executor.shutdownNow();
+				Thread.currentThread().interrupt();
+			}
+
+			LOGGER.info("TaskExecutorService shutdown complete");
+		}
+	}
+
+	/**
+	 * 获取Vertx实例
+	 * @return Vertx实例
+	 */
+	public Vertx getVertx() {
+		return vertx;
+	}
 
 	public BooleanSupplier isShutdown() {
 		return () -> !running.get();
 	}
 }
-

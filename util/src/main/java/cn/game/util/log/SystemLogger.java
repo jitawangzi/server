@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author pangjiawei - [Created on 2018/1/30 22:02]
  */
-public class SystemLogger extends Logger {
+public class SystemLogger extends DeprecatedLogger {
 
     public static void trace(final Object... objects) {
         String log = LoggerType.splice(objects);

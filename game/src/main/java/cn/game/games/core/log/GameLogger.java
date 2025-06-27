@@ -25,7 +25,7 @@ import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.util.Config;
-import cn.game.util.log.Logger;
+import cn.game.util.log.DeprecatedLogger;
 import cn.game.util.log.LoggerType;
 import cn.game.util.log.SystemLogger;
 
@@ -47,7 +47,7 @@ import cn.game.util.log.SystemLogger;
 ///**
 // * @author pangjiawei - [Created on 2018/1/30 22:14]
 // */
-public class GameLogger extends Logger {
+public class GameLogger extends DeprecatedLogger {
 
 	/**限时礼包的默认活动id*/
 	public final static int ActivityXianShiLiBaoLogId = 10000000;

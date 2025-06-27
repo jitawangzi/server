@@ -10,7 +10,8 @@ import org.apache.logging.log4j.Level;
 /**
  * @author pangjiawei - [Created on 2018/1/31 10:35]
  */
-public class Logger {
+@Deprecated
+public class DeprecatedLogger {
 
     private static final DateTimeFormatter formatterSecond = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS Z");

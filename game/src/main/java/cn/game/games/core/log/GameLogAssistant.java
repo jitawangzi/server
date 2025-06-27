@@ -14,14 +14,14 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.protocol.manual.OpType;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
-import cn.game.util.log.Logger;
+import cn.game.util.log.DeprecatedLogger;
 
 /**
  * 游戏日志助手
  *
  * @author pangjiawei - [Created on 2018/8/31 16:51]
  */
-public class GameLogAssistant extends Logger {
+public class GameLogAssistant extends DeprecatedLogger {
 
 //	/**
 //	 * 全游戏唯一标识
