@@ -3,7 +3,6 @@ package performance;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cn.game.core.async.BaseAsyncTask;
 import cn.game.protocol.protobuf.Account.AccountLoginResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 
@@ -44,38 +43,4 @@ public class Test {
 		System.out.println(from.getResult().getErrorMsg());
 
 	}
-
-	static class As extends BaseAsyncTask {
-
-		private int x;
-
-		@Override
-		public int doStart() {
-			System.out.println("当前线程开始执行任务 ： " + Thread.currentThread().getName());
-			return STAGE_START_DONE;
-		}
-
-		@Override
-		public int doIo() {
-
-			System.out.println("跨线程任务执行 : " + Thread.currentThread().getName());
-			x = 100;
-
-			return STAGE_IO_DONE;
-		}
-
-		@Override
-		public int doStop() {
-			if (x == 100) {
-				System.out.println("数据获取成功");
-			} else {
-				System.err.println(x);
-			}
-
-			System.out.println("任务执行结束 " + Thread.currentThread().getName());
-			return STAGE_STOP_DONE;
-		}
-
-	}
-
 }
