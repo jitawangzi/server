@@ -1,14 +1,10 @@
 package cn.game.games.cache.entity;
 
-import java.io.Serializable;
-
-import cn.game.games.cache.base.DbEntity;
-
 /**
  * t_equip
  * @author
  */
-public class Equip extends ItemNoStack implements Serializable, DbEntity {
+public class Equip extends ItemNoStack {
 
 	/**
 	 * 不同类型的东西，关联的其他功能的id

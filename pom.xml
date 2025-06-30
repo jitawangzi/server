@@ -344,7 +344,6 @@
 		    <version>2.16.1</version>
 		</dependency>
 
-
 		<!--
 		https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
 		<dependency>
@@ -401,8 +400,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.30</version>
-		</dependency>
+			</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
 		<!-- 将java.util.logging桥接到slf4j -->

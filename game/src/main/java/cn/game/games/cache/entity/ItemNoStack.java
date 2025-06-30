@@ -1,10 +1,6 @@
 package cn.game.games.cache.entity;
 
-import java.io.Serializable;
-
-import cn.game.games.cache.base.DbEntity;
-
-public class ItemNoStack extends Item implements Serializable, DbEntity {
+public class ItemNoStack extends Item {
 
 	/**
 	 * @mbg.generated
