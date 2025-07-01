@@ -191,7 +191,6 @@ public class BattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleLingShanRequest_13000511, this::lingShanInfo);
         putInvoker(PbProtocol.BattleLingShanBuyTimesRequest_13000513, this::lingShanBuyTimes);
         putInvoker(PbProtocol.BattleLingShanRewardRequest_13000515, this::lingShanReward);
-        putInvoker(PbProtocol.BattleRewardRequest_13000022, this::reward);
         putInvoker(PbProtocol.HCBattleDataSaveRequest_13000100, this::hCDataSave);
         putInvoker(PbProtocol.HCBattleDataRequest_13000102, this::hCData);
         putInvoker(PbProtocol.BattleLingShanReward2Request_13000517, this::lingShanReward2);

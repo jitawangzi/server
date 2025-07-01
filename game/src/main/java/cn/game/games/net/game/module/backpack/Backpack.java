@@ -35,6 +35,9 @@ public class Backpack {
 		}
 	}
 
+	public Backpack() {
+	}
+
 	/**
 	
 	获取背包类型

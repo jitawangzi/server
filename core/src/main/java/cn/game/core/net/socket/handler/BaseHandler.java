@@ -82,7 +82,7 @@ public abstract class BaseHandler implements Handler {
 
 	public void putInvoker(int cmd, Invoker invoker) {
 		if (this.CMD_INVOKERS.containsKey(cmd)) {
-			throw new IllegalArgumentException(String.format("Error: cmd[%d] duplicated key[%d] ",
+			throw new IllegalArgumentException(String.format("Error: cmd[%s] duplicated key[%s] ",
 					new Object[] { Integer.toHexString(getModule()), HexUtil.toHexString(cmd) }));
 		}
 

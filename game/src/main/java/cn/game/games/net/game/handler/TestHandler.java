@@ -138,7 +138,6 @@ public class TestHandler extends BaseHandler {
         putInvoker(PbProtocol.TestPlayerDeleteRequest_6f000044, this::playerDelete);
         putInvoker(PbProtocol.TestMessageRequest_6f000080, this::message);
         putInvoker(PbProtocol.TestConfigCheckRequest_6f000090, this::configCheck);
-        putInvoker(PbProtocol.TestPlayerAssetDataRequest_6f000028, this::playerAssetData);
     }
 
     //角色晋升
