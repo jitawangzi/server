@@ -17,7 +17,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayType;
@@ -199,7 +199,7 @@ public class ShopHandler extends BaseHandler {
 		int[][] boxRandomId = GlobalConst.BoxRandomId;
 		int idIndex = 0;
 
-		ChapterModule chapterModule = player.getChapterModule();
+		BattleModule chapterModule = player.getChapterModule();
 		int mainBattleHighest = chapterModule.getMainBattleHighest();
 
 		int chapter = 0;

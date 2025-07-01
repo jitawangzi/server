@@ -21,7 +21,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
 	public int check(int id, int subId) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 //		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
 		/*		if (battleConfig.BattleFieldID != id) {

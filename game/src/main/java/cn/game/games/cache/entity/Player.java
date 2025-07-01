@@ -34,7 +34,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
-import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -286,8 +286,8 @@ public class Player {
 		return getModule(AttrModule.class);
 	}
 
-	public ChapterModule getChapterModule() {
-		return getModule(ChapterModule.class);
+	public BattleModule getChapterModule() {
+		return getModule(BattleModule.class);
 	}
 
 	public PointRewardModule getPointRewardModule() {
@@ -442,7 +442,7 @@ public class Player {
 		builder.setIsOnline(getGameClient() != null);
 		builder.setCreateTime((int) (DateUtil.parseDate(getData().getCreateDate()).getTime() / 1000));
 		builder.setLastLoginTime((int) (DateUtil.parseDate(getData().getLoginDate()).getTime() / 1000));
-		ChapterModule chapterModule = getChapterModule();
+		BattleModule chapterModule = getChapterModule();
 
 		builder.setCurBattleId(chapterModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());

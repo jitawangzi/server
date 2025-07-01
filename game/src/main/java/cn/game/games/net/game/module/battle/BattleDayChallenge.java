@@ -78,7 +78,7 @@ public class BattleDayChallenge extends HCBattleHandler {
 
 	@Override
 	public int battleStart(int id) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		BattleDayChallenge dayChallenge = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
 		if (dayChallenge.getBattleTimes() >= GlobalConst.DailyNum) {
 			return ErrorMsgEnum.times_limit.getId();
@@ -88,7 +88,7 @@ public class BattleDayChallenge extends HCBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		int battleId = chapterModule.getAttackingDungeonId();
 
 		int battleTime = request.getBattleTime();

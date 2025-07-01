@@ -45,7 +45,7 @@ import cn.game.util.IntMapWrapper;
  * 2024年4月12日 下午4:29:43
  * @author SYQ
  */
-public class ChapterModule extends BasePlayerModule  {
+public class BattleModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
 

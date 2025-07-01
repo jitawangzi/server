@@ -72,7 +72,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
 		if (request.getWin()) {

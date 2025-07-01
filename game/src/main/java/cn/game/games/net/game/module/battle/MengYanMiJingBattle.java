@@ -283,7 +283,7 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 			this.battleCompleted(false);
 			return ResultObject.success();
 		}
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
 		List<RewardInfo> allRewards = new ArrayList<>();

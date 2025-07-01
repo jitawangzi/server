@@ -61,7 +61,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -1158,7 +1158,7 @@ public class PlayerHelper {
                 // 直接根据当前数据获取的：
                 case PlayerLevel -> player.getLevel();
                 case ChapterFinish -> {
-                    ChapterModule chapterModule = player.getModule(ChapterModule.class);
+                    BattleModule chapterModule = player.getModule(BattleModule.class);
                     yield chapterModule.isBattlePass(id) ? 1 : 0;
                 }
                 case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();

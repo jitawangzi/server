@@ -48,7 +48,7 @@ import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleHandler;
-import cn.game.games.net.game.module.battle.ChapterModule;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -210,7 +210,7 @@ public class TestHandler extends BaseHandler {
 			if (p1 == 0) {
 				throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
 			}
-			ChapterModule chapterModule = player.getChapterModule();
+			BattleModule chapterModule = player.getChapterModule();
 			chapterModule.setMainBattleHighest(p1);
 			BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
 			while (battleConfig != null) {
@@ -224,7 +224,7 @@ public class TestHandler extends BaseHandler {
 		}
 		case "slzj": {
 			// 设置失落真经关卡id
-			ChapterModule chapterModule = player.getChapterModule();
+			BattleModule chapterModule = player.getChapterModule();
 			ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 			if (battle != null) {
 				BattleConfig battleConfig = BattleManager.instance().get(p1);
@@ -240,7 +240,7 @@ public class TestHandler extends BaseHandler {
 		}
 		case "mymj": {
 			// 设置梦魇秘境关卡id
-			ChapterModule chapterModule = player.getChapterModule();
+			BattleModule chapterModule = player.getChapterModule();
 			MengYanMiJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 			if (battle != null) {
 				BattleConfig battleConfig = BattleManager.instance().get(p1);
@@ -254,7 +254,7 @@ public class TestHandler extends BaseHandler {
 		}
 		case "slzjsd": {
 			// 设置失落真经手动关卡。
-			ChapterModule chapterModule = player.getChapterModule();
+			BattleModule chapterModule = player.getChapterModule();
 			ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 			if (battle != null) {
 				if (p1 > 0) {
@@ -733,7 +733,7 @@ public class TestHandler extends BaseHandler {
             client.sendProtocol(resp.build(), 0);
             return;
         } else if (id == 10000002) {
-            ChapterModule chapterModule = player.getChapterModule();
+            BattleModule chapterModule = player.getChapterModule();
             chapterModule.setMainBattleHighest(count);
             BattleConfig battleConfig = BattleManager.instance().getNullable(count);
             while (battleConfig != null) {

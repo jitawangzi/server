@@ -191,7 +191,7 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 		if (!request.getWin()) {
 			return ResultObject.success();
 		}
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		int attackingType = chapterModule.getAttackingType();
 		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
 

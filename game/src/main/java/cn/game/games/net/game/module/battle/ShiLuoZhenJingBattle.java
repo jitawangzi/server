@@ -132,7 +132,7 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 		if (!request.getWin()) {
 			return ResultObject.success();
 		}
-		ChapterModule chapterModule = player.getChapterModule();
+		BattleModule chapterModule = player.getChapterModule();
 		int attackingDungeonId = chapterModule.getAttackingDungeonId();
 		BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
 		int oldBattleStage  = battleStage;

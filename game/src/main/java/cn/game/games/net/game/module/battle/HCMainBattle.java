@@ -25,7 +25,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 
 	@Override
 	public int battleStart(int id) {
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 
 		// 检查章节事件开启条件，是否可以进行当前操作
 //		boolean checkCondition = PlayerHelper.checkCondition(playerId, chapterConfig.getCondition());
@@ -50,7 +50,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 		int hpPercent = request.getHpPercent();
 		int battleTime = request.getBattleTime();
 
-		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+		BattleModule chapterModule = player.getModule(BattleModule.class);
 		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
 		Integer battleId = chapter.getBattleId();
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
