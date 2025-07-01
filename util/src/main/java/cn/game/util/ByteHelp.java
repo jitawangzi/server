@@ -11,15 +11,14 @@ import java.util.List;
  */
 public class ByteHelp {
 
-	public static String hexChar = "0123456789ABCDEF";
+	private final static String hexChar = "0123456789ABCDEF";
 
 	private static byte[] array(byte bit,long number,boolean bigEndian){
 		
 		byte[] targets = new byte[bit];
 		for (int i = 0; i < bit; i++) {
 			int offset = bigEndian?i * 8:(targets.length - 1 - i) * 8;
-//			targets[i] = (byte) ((number >>> offset) & 0xff);
-			targets[i] = (byte) ((number >>> offset));
+			targets[i] = (byte) ((number >>> offset) & 0xff);
 		}
 		return targets;
 
@@ -104,7 +103,7 @@ public class ByteHelp {
 
 		boolean isText = true;
 		for (int i = 0; i < data.length; i++) {
-			if (data[i] < 32 || data[i] > 127) {
+			if (data[i] < 32 || data[i] > 126) {
 				isText = false;
 				break;
 			}
@@ -181,6 +180,17 @@ public class ByteHelp {
 
 		return value | 1 << bit;
 	}
+
+	/**
+	 * 将value的bit位更新为1
+	 * @param value
+	 * @param bit
+	 * @return new  value
+	 */
+	public static long modifyBit(long value, int bit) {
+
+		return value | 1 << bit;
+	}
 	public static int modifyBit(Collection<? extends Number> list) {
 		return modifyBit(0, list);
 	}
@@ -207,6 +217,21 @@ public class ByteHelp {
 	public static List<Integer> binary1List(int value) {
 		List<Integer> ret = new ArrayList<>();
 		for (int i = 0; i < 32; i++) {
+			if (((value >> i) & 1) == 1) {
+				ret.add(i);
+			}
+		}
+		return ret;
+	}
+
+	/** 
+	 * 获取一个int型数字所有位数为1的集合
+	 * @param value
+	 * @return
+	 */
+	public static List<Integer> binary1List(long value) {
+		List<Integer> ret = new ArrayList<>();
+		for (int i = 0; i < 64; i++) {
 			if (((value >> i) & 1) == 1) {
 				ret.add(i);
 			}
@@ -241,6 +266,16 @@ public class ByteHelp {
 		return ((value >> index) & 1) == 1;
 	}
 
+	/**
+	 * 判断某个数的 某位是否为1
+	 * @param value	
+	 * @param index
+	 * @return
+	 */
+	public static boolean isOne(long value, int index) {
+		return ((value >> index) & 1) == 1;
+	}
+
 	public static String toBinaryStringWithZero(long data) {
 		return String.format("%64s", Long.toBinaryString(data)).replace(' ', '0');
 	}
@@ -248,15 +283,6 @@ public class ByteHelp {
 		return String.format("%32s", Integer.toBinaryString(data)).replace(' ', '0');
 	}
 	public static String toBinaryStringWithZero(byte data) {
-		return String.format("%8s", Integer.toBinaryString(data)).replace(' ', '0');
-	}
-	public static void main(String[] args) {
-		long x = 33323223232L;
-		System.out.println(toBinaryStringWithZero(x));
-		System.out.println(toBinaryStringWithZero(22L));
-		System.out.println(toBinaryStringWithZero(x << 22));
-
-		System.out.println(toBinaryStringWithZero(2 | x << 22));
-
+		return String.format("%8s", Integer.toBinaryString(data & 0xFF)).replace(' ', '0');
 	}
 }

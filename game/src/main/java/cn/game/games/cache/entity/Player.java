@@ -352,6 +352,7 @@ public class Player {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 	}

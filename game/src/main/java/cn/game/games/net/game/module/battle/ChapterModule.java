@@ -49,8 +49,6 @@ public class ChapterModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
 
-
-
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
 	/** 主线战役 */
@@ -113,22 +111,6 @@ public class ChapterModule extends BasePlayerModule  {
 
 	/** 战斗选择的强援技能id */
 	private int rescueSkillId;
-
-	/** 每日挑战数据 */
-	@JsonIgnore
-	@Deprecated
-	private BattleDayChallenge dayChallenge = new BattleDayChallenge();
-	@Deprecated
-	@JsonIgnore
-	private Map<Integer, DaoHeartBattle> daoBattleMap = new HashMap<Integer, DaoHeartBattle>();
-	@Deprecated
-	@JsonIgnore
-	/** 梦魇秘境 */
-	private MengYanMiJingBattle mengYanMiJingBattle;
-	@JsonIgnore
-	@Deprecated
-	/** 灵魄之战 */
-	private LingPoBattle lingPoBattle;
 
 	/** 阵容数据，玩法-> 阵容顺序->阵容里面的角色 */
 	private Map<Integer, Map<Integer, List<String>>> lineupMaps = new HashMap<Integer, Map<Integer, List<String>>>();
@@ -657,6 +639,10 @@ public class ChapterModule extends BasePlayerModule  {
 				battlesMap.put(battle.getType(), battle);
 			} else if (func == InitialUI.DemonsBoss) {
 				XiangYaoFuMoBattle battle = new XiangYaoFuMoBattle();
+				battle.setPlayer(player);
+				battlesMap.put(battle.getType(), battle);
+			} else if (func == InitialUI.Lingshan) {
+				LingShanWenChanBattle battle = new LingShanWenChanBattle();
 				battle.setPlayer(player);
 				battlesMap.put(battle.getType(), battle);
 			}

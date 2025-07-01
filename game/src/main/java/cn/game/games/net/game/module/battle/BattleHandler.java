@@ -64,6 +64,12 @@ import cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseResponse_13000032;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_13000513;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesResponse_13000514;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRequest_13000511;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanResponse_13000512;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardResponse_13000516;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardResponse_13000204;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostInfoRequest_13000201;
@@ -119,7 +125,7 @@ import cn.game.util.BinarySearchUtil;
 import cn.game.util.DateUtil;
 
 @Component
-public class ChapterHandler extends BaseHandler {
+public class BattleHandler extends BaseHandler {
 
 	@Override
 	protected int getModule() {
@@ -176,12 +182,48 @@ public class ChapterHandler extends BaseHandler {
 		putInvoker(PbProtocol.BattleBuyPvPTimeRequest_13000121, OfflineBattleHandler::buyTime);
 
 		putInvoker(PbProtocol.BattleXiangYaoChuMoRequest_13000501, this::xiangYaoChuMoInfo);
+		putInvoker(PbProtocol.BattleLingShanRequest_13000511, this::lingShanInfo);
+		putInvoker(PbProtocol.BattleLingShanBuyTimesRequest_13000513, this::lingShanBuyTimes);
+		putInvoker(PbProtocol.BattleLingShanRewardRequest_13000515, this::lingShanReward);
 
 	}
 
 	protected void empty(NetClient client, Object message) {
 		BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
 		BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void lingShanReward(NetClient client, Object message) {
+		BattleLingShanRewardRequest_13000515 req = (BattleLingShanRewardRequest_13000515) message;
+		BattleLingShanRewardResponse_13000516.Builder resp = BattleLingShanRewardResponse_13000516.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void lingShanBuyTimes(NetClient client, Object message) {
+		BattleLingShanBuyTimesRequest_13000513 req = (BattleLingShanBuyTimesRequest_13000513) message;
+		BattleLingShanBuyTimesResponse_13000514.Builder resp = BattleLingShanBuyTimesResponse_13000514.newBuilder();
+		long playerId = client.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+
+		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+
+		client.sendProtocol(resp);
+	}
+
+	protected void lingShanInfo(NetClient client, Object message) {
+		BattleLingShanRequest_13000511 req = (BattleLingShanRequest_13000511) message;
+		BattleLingShanResponse_13000512.Builder resp = BattleLingShanResponse_13000512.newBuilder();
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 

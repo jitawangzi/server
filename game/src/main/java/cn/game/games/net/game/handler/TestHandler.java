@@ -47,7 +47,7 @@ import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.ChapterHandler;
+import cn.game.games.net.game.module.battle.BattleHandler;
 import cn.game.games.net.game.module.battle.ChapterModule;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
@@ -885,7 +885,7 @@ public class TestHandler extends BaseHandler {
 			}
 		}
 		
-		ChapterHandler chapterHandler = new ChapterHandler(); 
+		BattleHandler chapterHandler = new BattleHandler(); 
 		// 所有关卡打一遍
 
 		Map<Integer, List<BattleConfig>> battleTypes = BattleManager.instance().getBattleTypes(); 
