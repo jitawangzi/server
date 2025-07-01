@@ -2,8 +2,6 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.rank.RankService;
@@ -31,9 +29,6 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	private int buyTimes; // 今日付费购买次数
 
 	private int maxDamage; // 历史最高伤害,扫荡使用
-	@JsonIgnore
-	@Deprecated
-	private int rewardIndex;
 	private int rewardId;
 
 	@Override

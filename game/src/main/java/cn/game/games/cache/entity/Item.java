@@ -1,9 +1,6 @@
 package cn.game.games.cache.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.base.DbEntity;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -11,7 +8,6 @@ import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 public class Item implements Serializable, DbEntity {
 
 	// 这里不用mybatis生成了，手动改成基本类型的
-
 	protected long id;
 	protected long playerId;
 	protected int configId;
@@ -23,8 +19,6 @@ public class Item implements Serializable, DbEntity {
 	/**
 	 * 创建时间
 	 */
-	@JsonIgnore
-	protected Date createTime;
 	protected long createTimeMillis;
 
 	/** 过期时间（秒时间戳）  */
