@@ -239,3 +239,4 @@
 239,BattleLingShanBuyTimesRequest_13000513,0x13000513,,,,,请求购买灵山问禅次数
 240,BattleLingShanRequest_13000511,0x13000511,,,,,请求灵山问禅数据
 241,BattleLingShanRewardRequest_13000515,0x13000515,,,,,领取灵山问禅层数宝箱奖励
+242,BattleLingShanReward2Request_13000517,0x13000517,,,,,领取灵山问禅层数宝箱奖励

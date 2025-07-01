@@ -24,6 +24,10 @@ public class BackpackSystem {
 		initBackpacks();
 	}
 
+	public BackpackSystem() {
+
+	}
+
 	/**
 	
 	初始化背包
