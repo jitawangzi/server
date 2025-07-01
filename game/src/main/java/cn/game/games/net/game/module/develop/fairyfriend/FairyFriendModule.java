@@ -76,15 +76,6 @@ public class FairyFriendModule extends AbstractItemModule<FairyFriend> {
 	}
 
 	@Override
-	public long genUid() {
-		return 0;
-	}
-//	@Override
-//	public void setInstanceAfter(FairyFriend item) {
-//		item.setLevel(1);
-//	}
-
-	@Override
 	public RewardInfo toRewardInfo(FairyFriend item) {
 		// 仙友不会作为奖励
 		return null;

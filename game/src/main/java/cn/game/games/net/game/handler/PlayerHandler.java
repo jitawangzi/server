@@ -48,6 +48,7 @@ import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
+import cn.game.games.net.game.module.player.figure.FigureModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.shop.ShopModule;
@@ -77,6 +78,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxResponse_01000043;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerFigureResponse_01000022;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardRequest_01000305;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerFuncOpenRewardResponse_01000306;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017;
@@ -169,18 +172,33 @@ public class PlayerHandler extends BaseHandler {
 		putInvoker(PbProtocol.PlayerFuncOpenRewardRequest_01000305, this::funcOpenReward);
 		putInvoker(PbProtocol.PlayerLevelUpRequest_01000055, this::levelUp);
 //		putInvoker(PbProtocol.PlayerDeleteRequest_01000070, this::delete);
+		putInvoker(PbProtocol.PlayerFigureRequest_01000021, this::figure);
 
 		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
 		
 	}
 
+	private void figure(NetClient client, Object message) {
+		PlayerFigureRequest_01000021 request = (PlayerFigureRequest_01000021) message;
+		int id = request.getId();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		FigureModule module = player.getModule(FigureModule.class);
+		if (module.getCount(id) <= 0) {
+			client.sendProtocol(PlayerFigureResponse_01000022.getDefaultInstance(), ErrorMsgEnum.player_check_error.getId());
+			return;
+		}
+		module.setFigure(id);
+		client.sendProtocol(PlayerFigureResponse_01000022.getDefaultInstance());
+	}
+
 	private void wechatSetting(NetClient client, Object message) {
 		PlayerMsg.WechatSettingRequest_01100601 request = (PlayerMsg.WechatSettingRequest_01100601) message;
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_ENERGY,request.getSetting().getIsOpenNotifyEnergy());
-		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD,request.getSetting().getIsOpenNotifyFirstRechargeReward());
-		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD,request.getSetting().getIsOpenNotifyAoYouReward());
-		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD,request.getSetting().getIsOpenNotifyMonthSignReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_ENERGY, request.getSetting().getIsOpenNotifyEnergy());
+		player.getVarModule()
+				.setVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD, request.getSetting().getIsOpenNotifyFirstRechargeReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_AOYOU_REWARD, request.getSetting().getIsOpenNotifyAoYouReward());
+		player.getVarModule().setVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD, request.getSetting().getIsOpenNotifyMonthSignReward());
 		client.sendProtocol(PlayerMsg.WechatSettingResponse_01100602.newBuilder().build());
 	}
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Hero;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.currency.Currency;
@@ -87,7 +88,7 @@ public class HeroSkinModule extends AbstractItemIdModule<HeroSkin> {
 	}
 
 	@Override
-	public Object addRepeated(int itemId) {
+	public Item addRepeated(int itemId) {
 		HeroSkinConfig heroSkinConfig = HeroSkinManager.instance().get(itemId);
 		int count = GlobalConst.SkinBreakdown.get(heroSkinConfig.Quality);
 		CurrencyModule currencyModule = player.getCurrencyModule(); 

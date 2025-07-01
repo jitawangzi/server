@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * 2024年2月5日 下午7:18:21
  * @author SYQ
  */
-public abstract class GoodsModule<E extends Item, T extends Item> extends BasePlayerModule {
+public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 
 	public abstract long getCount(int configId);
 
@@ -47,16 +47,39 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 	 */
 	public abstract void checkConfig(int id);
 
-	public abstract T newInstance();
+	public abstract E newInstance();
+
+	/** 
+	 * 初始化指定的物品流程
+	 * @param configId
+	 * @param count
+	 * @return
+	 */
+	public E initAdd(int configId, int count) {
+
+		E item = newInstance();
+		setInstance(item, configId, count);
+		setInstanceAfter(item);
+		initAddCache(item);
+		item.insert();
+		return item;
+	}
 
 	public long genUid() {
 		return IdUtil.getId();
 	}
 
+	/** 
+	 * 类型转换问题，暂时废弃了
+	 * @param reward
+	 * @return
+	 */
 	@Deprecated
-	public abstract RewardInfo toRewardInfo(E reward);
+	public RewardInfo toRewardInfo(E reward) {
+		return null;
+	};
 
-	protected Item setInstance(T item, int configId, int count) {
+	protected Item setInstance(E item, int configId, int count) {
 		
 		item.setPlayerId(playerId);
 		item.setId(genUid());
@@ -119,9 +142,9 @@ public abstract class GoodsModule<E extends Item, T extends Item> extends BasePl
 		return getCount(configId) >= 1;
 	}
 
-	public abstract T get(int configId);
+	public abstract E get(int configId);
 
-	public abstract T get(long uid);
+	public abstract E get(long uid);
 
 	/** 
 	 * 这个模块处理的物品类型

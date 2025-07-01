@@ -303,7 +303,7 @@ public class TestHandler extends BaseHandler {
 		}
 		case "citem": {
 			if (p1 > 0) {
-				GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(p1);
+				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(p1);
 				long count = goodsModule.getCount(p1);
 				PlayerHelper.delResources(player, p1, count, OpType.Test);
 			} else {

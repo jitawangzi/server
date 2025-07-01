@@ -11,15 +11,15 @@ import cn.game.protocol.manual.OpType;
 
 /**    
  * 这里通常处理能重叠的那些东西
- * 或者说一个配置表id只有一个实例的
+ * 或者说一个配置表id只有一个实例的，没有uid的
  * 2024年2月19日 上午10:55:53
  * @author SYQ
  */
-public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, Item> {
+public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 
 	// itemId => Item
-	protected Map<Integer, T> id_items = new HashMap<>();
+	protected Map<Integer, E> id_items = new HashMap<>();
 
 	/*	@Override
 		protected void initFromDb(ListIterator<?> iterator) {
@@ -29,21 +29,21 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 			}
 		}*/
 	@Override
-	public void initAddCache(T item) {
+	public void initAddCache(E item) {
 		addCacheStackable(item);
 	}
 	@Override
-	public  void addCacheStackable(T item) {
+	public void addCacheStackable(E item) {
 		id_items.put(item.getConfigId(), item);
 	}
 	
 	@Override
-	public  void addCacheNoStackable(T item) {
+	public void addCacheNoStackable(E item) {
 		
 	}
 
 	@Override
-	public void removeCache(T item) {
+	public void removeCache(E item) {
 		id_items.remove(item.getConfigId());
 	}
 
@@ -53,17 +53,13 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	@Override
 	public Object add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
-			return null;
+			throw new IllegalArgumentException("count must be greater than 0");
 		}
 		checkConfig(itemId);
 //		ItemConfig itemConfig = ItemManager.instance().get(itemId);
-		T item = id_items.get(itemId);
+		E item = id_items.get(itemId);
 		if (item == null) {
-			item = (T) newInstance();
-			setInstance(item, itemId, count);
-			setInstanceAfter(item);
-			item.insert();
-			initAddCache(item);
+			item = initAdd(itemId, count);
 		} else {
 			item.setCount(item.getCount() + count);
 			item.update();
@@ -83,7 +79,7 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 */
 	@Override
 	public boolean del(int itemId, long count, OpType... args) {
-		T item = id_items.get(itemId);
+		E item = id_items.get(itemId);
 		if (item == null)
 			return false;
 		if (item.getCount() < count) {
@@ -111,14 +107,14 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 */
 	@Override
 	public long getCount(int itemId) {
-		T item = id_items.get(itemId);
+		E item = id_items.get(itemId);
 		if (item == null)
 			return 0;
 		return item.getCount();
 	}
 
 	@Override
-	public T get(int itemId) {
+	public E get(int itemId) {
 		return id_items.get(itemId);
 	}
 
@@ -127,17 +123,22 @@ public abstract class AbstractItemModule<T extends Item> extends GoodsModule<T, 
 	 * 少用
 	 * @return
 	 */
-	public Map<Integer, T> getId_items() {
+	public Map<Integer, E> getId_items() {
 		return id_items;
 	}
 	@Override
-	public T get(long uid) {
+	public E get(long uid) {
 		throw new UnsupportedOperationException("不支持通过uid获取Item");
 	}
 
 	@Override
-	public Collection<T> list() {
+	public Collection<E> list() {
 		return id_items.values();
+	}
+
+	@Override
+	public long genUid() {
+		return 0;
 	}
 
 }

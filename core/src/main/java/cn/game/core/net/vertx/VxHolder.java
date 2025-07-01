@@ -127,7 +127,7 @@ public class VxHolder {
 								.setEmbeddedServerOptions(
 										new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
 								.setEmbeddedServerEndpoint("/metrics"))
-				.setEnabled(true));
+				.setEnabled(false));
 
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			options.setBlockedThreadCheckInterval(Integer.MAX_VALUE);

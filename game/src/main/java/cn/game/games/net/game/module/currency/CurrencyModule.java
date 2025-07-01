@@ -23,7 +23,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.MapWrapper;
 
-public class CurrencyModule extends GoodsModule<Currency, Currency> {
+public class CurrencyModule extends GoodsModule<Currency> {
 //	private static final Logger levellog = LoggerFactory.getLogger("levelLog");
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 	/** 货币,key:  {@link Money}*/

@@ -16,7 +16,7 @@ import cn.game.protocol.manual.OpType;
  * @author SYQ
  * @param <T>
  */
-public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T, Item> {
+public abstract class AbstractItemIdModule<E extends Item> extends GoodsModule<E> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 
 	/**
@@ -25,7 +25,7 @@ public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T
 	@Override
 	public Object add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
-			return null;
+			throw new IllegalArgumentException("count must be greater than 0");
 		}
 		if (count != 1) {
 			throw new UnsupportedOperationException("不支持count != 1");
@@ -52,7 +52,7 @@ public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T
 	 * 重复获取时，转化为某种资源
 	 * @return
 	 */
-	public abstract Object addRepeated(int itemId);
+	public abstract Item addRepeated(int itemId);
 
 	/**
 	 * 减少指定道具数量
@@ -80,29 +80,29 @@ public abstract class AbstractItemIdModule<T extends Item> extends GoodsModule<T
 	}
 
 	@Override
-	public T get(int itemId) {
+	public E get(int itemId) {
 		throw new UnsupportedOperationException("不支持通过id获取Item");
 	}
 	@Override
-	public T get(long uid) {
+	public E get(long uid) {
 		throw new UnsupportedOperationException("不支持通过uid获取Item");
 	}
 
 	@Override
-	public void initAddCache(T item) {
+	public void initAddCache(E item) {
 	}
 
 	@Override
-	public void addCacheStackable(T item) {
+	public void addCacheStackable(E item) {
 	}
 
 	@Override
-	public void addCacheNoStackable(T item) {
+	public void addCacheNoStackable(E item) {
 
 	}
 
 	@Override
-	public void removeCache(T item) {
+	public void removeCache(E item) {
 	}
 
 	@Override

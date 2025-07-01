@@ -68,7 +68,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 			List<Object> ret = new ArrayList<>();
 			for (int i = 0; i < count; i++) {
 				int item = Rnd.randomOne(itemConfig.Para);
-				GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(item);
+				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(item);
 				Object object = goodsModule.add(item, 1, opType);
 				player.handleEvent(EventTypeEnum.GetItem, item, 1);
 				ret.add(object);
@@ -80,7 +80,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 				for (int randomId : itemConfig.Para) {
 					List<Goods> randomReward = PlayerHelper.randomReward(randomId);
 					for (Goods goods : randomReward) {
-						GoodsModule<? extends Item, ? extends Item> goodsModule = player.getGoodsModule(goods.getId());
+						GoodsModule<? extends Item> goodsModule = player.getGoodsModule(goods.getId());
 						Object object = goodsModule.add(goods.getId(), goods.getCount(), opType);
 						ret.add(object);
 						player.handleEvent(EventTypeEnum.GetItem, goods.getId(), goods.getCount());

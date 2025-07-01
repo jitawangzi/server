@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
@@ -39,7 +38,7 @@ public class SecretscriptModule extends AbstractItemModule<Secretscript> {
 	}
 
 	@Override
-	public Item newInstance() {
+	public Secretscript newInstance() {
 		return new Secretscript();
 	}
 

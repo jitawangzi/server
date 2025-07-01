@@ -235,3 +235,4 @@
 234,GinsengTreeHeroRequest_39000017,0x39000017,,,,,人参果树英雄上阵
 235,BattleLineupChooseRequest_13000031,0x13000031,,,,,选择当前使用的阵容
 237,BattleXiangYaoChuMoRequest_13000501,0x13000501,,,,,请求降妖除魔数据
+238,PlayerFigureRequest_01000021,0x01000021,,,,,修改形象

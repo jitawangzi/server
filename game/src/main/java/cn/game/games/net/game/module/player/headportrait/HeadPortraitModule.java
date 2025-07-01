@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.player.headportrait;
 
+import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.module.currency.Currency;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.item.AbstractItemIdModule;
@@ -47,7 +48,7 @@ public class HeadPortraitModule extends AbstractItemIdModule<HeadPortrait>
 	}
 
 	@Override
-	public Object addRepeated(int itemId) {
+	public Item addRepeated(int itemId) {
 		HeadPortraitConfig config = HeadPortraitManager.instance().get(itemId);
 		int count = GlobalConst.AvatarDecomposition.get(config.Quality);
 		CurrencyModule currencyModule = player.getCurrencyModule();

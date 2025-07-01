@@ -5,6 +5,8 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.ItemNoStack;
+import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 
 /**
@@ -517,4 +519,48 @@ public class Backpack {
 			}
 		}
 	}
+
+	/**
+		
+		检查背包是否有足够空间容纳指定物品
+		*/
+	public boolean hasEnoughSpace(int configId, int count) {
+
+		// 获取物品类型
+		int goodsType = ItemHelper.getGoodsType(configId);
+
+		// 判断物品是否可堆叠
+		boolean isStackable = goodsType != GoodsTypeEnum.Equipment.getId();
+
+		if (isStackable) {
+			// 可堆叠物品，计算需要的格子数
+			int maxStackSize = getConfig().getMaxStackSize();
+			int existingCount = 0;
+			int emptySlots = 0;
+
+			for (int i = 0; i < getCapacity(); i++) {
+				Item item = getItemBySlot(i);
+				if (item == null) {
+					emptySlots++;
+				} else if (item.getConfigId() == configId) {
+					// 计算现有堆叠的剩余空间
+					existingCount += (maxStackSize - item.getCount());
+				}
+			}
+
+			// 计算总的需要空间
+			int totalNeededSpace = count - existingCount;
+			if (totalNeededSpace <= 0) {
+				return true; // 现有堆叠足以容纳
+			}
+
+			// 计算需要的额外格子数
+			int neededSlots = (totalNeededSpace + maxStackSize - 1) / maxStackSize;
+			return neededSlots <= emptySlots;
+		} else {
+			// 不可堆叠物品，每个需要一个格子
+			return getEmptySlotCount() >= count;
+		}
+	}
+
 }

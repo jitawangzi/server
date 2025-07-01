@@ -36,11 +36,7 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 		itemId = equipConfig.EquipGroup;
 		MergeEquip item = id_items.get(itemId);
 		if (item == null) {
-			item = (MergeEquip) newInstance();
-			setInstance(item, itemId, count);
-			setInstanceAfter(item);
-			item.insert();
-			initAddCache(item);
+			item = initAdd(itemId, count);
 		}
 		return item;
 	}

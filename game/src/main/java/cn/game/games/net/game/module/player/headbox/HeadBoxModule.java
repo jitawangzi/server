@@ -7,14 +7,13 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 /**    
  * 这里只是为了可以给头像框奖励
  * 2024年8月22日 下午4:16:56
  * @author SYQ
  */
-public class HeadBoxModule extends GoodsModule<HeadBox, HeadBox> {
+public class HeadBoxModule extends GoodsModule<HeadBox> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -53,11 +52,6 @@ public class HeadBoxModule extends GoodsModule<HeadBox, HeadBox> {
 	@Override
 	public HeadBox newInstance() {
 		return new HeadBox();
-	}
-
-	@Override
-	public RewardInfo toRewardInfo(HeadBox reward) {
-		return RewardInfo.newBuilder().setHead(reward.getConfigId()).build();
 	}
 
 	@Override

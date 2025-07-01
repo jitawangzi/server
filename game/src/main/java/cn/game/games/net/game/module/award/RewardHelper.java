@@ -8,6 +8,7 @@ import cn.game.games.net.game.module.develop.hero.skin.HeroSkin;
 import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
 import cn.game.games.net.game.module.develop.pet.Pet;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
+import cn.game.games.net.game.module.player.figure.Figure;
 import cn.game.games.net.game.module.player.headbox.HeadBox;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
@@ -19,34 +20,35 @@ public class RewardHelper {
 		RewardInfo.Builder builder = RewardInfo.newBuilder();
 
 		if (item.getClass() == Item.class) {
-			builder.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+			builder.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
 			return builder.build();
 		}
 
 		if (item instanceof Currency) {
-			builder.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+			builder.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
 		} else if (item instanceof MergeEquip) {
-			builder.setMergeEquip(((MergeEquip) item).toMergeEquipProto()).build();
+			builder.setMergeEquip(((MergeEquip) item).toMergeEquipProto());
 		} else if (item instanceof Pet) {
-			builder.setPet(((Pet) item).toPetInfo()).build();
+			builder.setPet(((Pet) item).toPetInfo());
 		} else if (item instanceof Secretscript) {
-			builder.setSecretscript(((Secretscript) item).toProtoInfo()).build();
+			builder.setSecretscript(((Secretscript) item).toProtoInfo());
 		} else if (item instanceof Secretscript) {
-			builder.setSecretscript(((Secretscript) item).toProtoInfo()).build();
+			builder.setSecretscript(((Secretscript) item).toProtoInfo());
 		} else if (item instanceof Equip) {
 			Equip equip = (Equip) item;
-			builder.setEquip(EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + "")).build();
+			builder.setEquip(EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + ""));
 		} else if (item instanceof Hero) {
 			Hero obj = (Hero) item;
-			builder.setRole(obj.toHeroInfo()).build();
-
+			builder.setRole(obj.toHeroInfo());
 		} else if (item instanceof HeadBox) {
-
 			HeadBox obj = (HeadBox) item;
-			builder.setHead(obj.getConfigId()).build();
+			builder.setHead(obj.getConfigId());
 		} else if (item instanceof HeroSkin) {
 			HeroSkin obj = (HeroSkin) item;
-			builder.setHeroSkin(obj.getConfigId()).build();
+			builder.setHeroSkin(obj.getConfigId());
+		} else if (item instanceof Figure) {
+			Figure obj = (Figure) item;
+			builder.setFigure(obj.getConfigId());
 		} else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}

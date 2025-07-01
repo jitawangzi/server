@@ -126,7 +126,7 @@ public class Player {
 		}
 	}
 	private Map<String, BasePlayerModule> modules = new HashMap<>();
-	private transient Map<Integer, GoodsModule<? extends Item, ? extends Item>> goodsModules = new HashMap<>();
+	private transient Map<Integer, GoodsModule<? extends Item>> goodsModules = new HashMap<>();
 	/* ******************** 内存数据 ******************** */
 	private transient PlayerEventBus eventBus = new PlayerEventBus();
 	/** TODO 长时间闲置设置false，先不清数据,暂停定时存库 */
@@ -141,8 +141,8 @@ public class Player {
 	private List<Long> timerTask = new ArrayList<>();
 	private boolean isOnline = true;
 
-	public <T extends BasePlayerModule> T getModule(Class<? extends BasePlayerModule> clazz) {
-		return (T) this.modules.get(clazz.getName());
+	public <T extends BasePlayerModule> T getModule(Class<T> clazz) {
+		return clazz.cast(this.modules.get(clazz.getName()));
 	}
 
 	/** 
@@ -400,7 +400,7 @@ public class Player {
 	 * @param id 配置表id
 	 * @return
 	 */
-	public GoodsModule<? extends Item, ? extends Item> getGoodsModule(int id) {
+	public GoodsModule<? extends Item> getGoodsModule(int id) {
 		int goodsType = ItemHelper.getGoodsType(id);
 		return this.goodsModules.get(goodsType);
 	}

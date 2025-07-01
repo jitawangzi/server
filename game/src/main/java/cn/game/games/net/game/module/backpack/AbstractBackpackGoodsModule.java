@@ -18,19 +18,19 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 基于格子背包的物品模块
 
-此模块使用格子背包系统管理所有背包类型的物品
+此模块使用格子背包系统管理背包类型的物品
 */
-public class BackpackGoodsModule extends GoodsModule<Item, Item> {
-	private BackpackSystem backpackSystem;
+public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsModule<E> {
+	private Backpack backpack;
 
 	@Override
 	public void init() {
 		super.init();
 		// 确保BackpackSystem已经初始化
-		backpackSystem = ((BackpackModule) (player.getModule(BackpackModule.class))).getBackpackSystem();
-		if (backpackSystem == null) {
-			throw new IllegalStateException("BackpackSystem not initialized");
-		}
+//		backpackSystem = ((BackpackModule) (player.getModule(BackpackModule.class))).getBackpackSystem();
+//		if (backpackSystem == null) {
+//			throw new IllegalStateException("BackpackSystem not initialized");
+//		}
 	}
 
 	@Override
@@ -42,10 +42,10 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE:
-// 初始化逻辑
+			// 初始化逻辑
 			break;
 		case NewDay:
-// 每日重置逻辑
+			// 每日重置逻辑
 			break;
 		default:
 			break;
@@ -54,28 +54,24 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 
 	@Override
 	public long getCount(int configId) {
-// 根据物品ID确定背包类型
-		BackpackType backpackType = getBackpackTypeForItem(configId);
-		Backpack backpack = backpackSystem.getBackpack(backpackType);
+		// 根据物品ID确定背包类型
+//		BackpackType backpackType = getBackpackTypeForItem(configId);
+//		Backpack backpack = backpackSystem.getBackpack(backpackType);
 		long count = 0;
-
-
 
 		for (Item item : backpack.getAllItems()) {
 			if (item.getConfigId() == configId) {
 				count += item.getCount();
 			}
 		}
-
 		return count;
 	}
 
 	@Override
 	public Object add(int configId, int count, OpType opType) {
 		if (count <= 0) {
-			return null;
+			throw new IllegalArgumentException("count must be greater than 0");
 		}
-
 
 		checkConfig(configId);
 
@@ -89,7 +85,7 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 		tempItem.setCreateTimeMillis(System.currentTimeMillis());
 
 		// 尝试添加到背包
-		boolean success = backpackSystem.addItem(tempItem, opType);
+		boolean success = backpack.addItem(tempItem, opType);
 
 		if (!success) {
 			// 背包已满，无法添加
@@ -101,13 +97,10 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 
 	@Override
 	public boolean del(int configId, long count, OpType... args) {
-// 根据物品ID确定背包类型
-		BackpackType backpackType = getBackpackTypeForItem(configId);
-		Backpack backpack = backpackSystem.getBackpack(backpackType);
+		// 根据物品ID确定背包类型
+//		BackpackType backpackType = getBackpackTypeForItem(configId);
+//		Backpack backpack = backpackSystem.getBackpack(backpackType);
 		long remainingCount = count;
-
-
-
 
 		// 找到所有匹配的物品
 		List<Integer> slotsToRemove = new ArrayList<>();
@@ -151,10 +144,9 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 
 	@Override
 	public boolean del(long uid, OpType... args) {
-// 遍历所有背包类型查找物品
+		// 遍历所有背包类型查找物品
 		for (BackpackType backpackType : BackpackType.values()) {
-			Backpack backpack = backpackSystem.getBackpack(backpackType);
-
+//			Backpack backpack = backpackSystem.getBackpack(backpackType);
 
 			for (int i = 0; i < backpack.getCapacity(); i++) {
 				Item item = backpack.getItemBySlot(i);
@@ -168,17 +160,15 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 	}
 
 	@Override
-	public Item get(int configId) {
-// 根据物品ID确定背包类型
-		BackpackType backpackType = getBackpackTypeForItem(configId);
-		Backpack backpack = backpackSystem.getBackpack(backpackType);
-
-
+	public E get(int configId) {
+		// 根据物品ID确定背包类型
+//		BackpackType backpackType = getBackpackTypeForItem(configId);
+//		Backpack backpack = backpackSystem.getBackpack(backpackType);
 
 		for (int i = 0; i < backpack.getCapacity(); i++) {
 			Item item = backpack.getItemBySlot(i);
 			if (item != null && item.getConfigId() == configId) {
-				return item;
+				return (E) item;
 			}
 		}
 
@@ -186,75 +176,60 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 	}
 
 	@Override
-	public Item get(long uid) {
-// 遍历所有背包类型查找物品
-		for (BackpackType backpackType : BackpackType.values()) {
-			Backpack backpack = backpackSystem.getBackpack(backpackType);
-
-
+	public E get(long uid) {
+		// 遍历所有背包类型查找物品
+//		for (BackpackType backpackType : BackpackType.values()) {
+//			Backpack backpack = backpackSystem.getBackpack(backpackType);
 			for (int i = 0; i < backpack.getCapacity(); i++) {
 				Item item = backpack.getItemBySlot(i);
 				if (item != null && item.getId() == uid) {
-					return item;
+					return (E) item;
 				}
 			}
-		}
+//		}
 
 		return null;
 	}
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
-// 由于这个模块处理所有背包类型的物品，我们需要一个通用类型
-// 或者根据具体情况返回
+		// 由于这个模块处理所有背包类型的物品，我们需要一个通用类型
+		// 或者根据具体情况返回
 		return GoodsTypeEnum.Item; // 默认返回Item类型
 	}
 
 	@Override
 	public void initAddCache(Item item) {
-// 对于格子背包，我们不使用缓存，因为物品存储在格子中
+		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
 	}
 
 	@Override
 	public void addCacheStackable(Item item) {
-// 对于格子背包，我们不使用缓存，因为物品存储在格子中
+		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
 	}
 
 	@Override
 	public void addCacheNoStackable(Item item) {
-// 对于格子背包，我们不使用缓存，因为物品存储在格子中
+		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
 	}
 
 	@Override
 	public void removeCache(Item item) {
-// 对于格子背包，我们不使用缓存，因为物品存储在格子中
+		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
 	}
 
 	@Override
-	public Collection<Item> list() {
-		List<Item> allItems = new ArrayList<>();
+	public Collection<E> list() {
+//		List<Item> allItems = new ArrayList<>();
 
 		// 收集所有背包中的物品
-		for (BackpackType backpackType : BackpackType.values()) {
-			Backpack backpack = backpackSystem.getBackpack(backpackType);
-			allItems.addAll(backpack.getAllItems());
-		}
+//		for (BackpackType backpackType : BackpackType.values()) {
+//			Backpack backpack = backpackSystem.getBackpack(backpackType);
+//			allItems.addAll(backpack.getAllItems());
+//		}
 
-		return allItems;
-	}
-
-	/**
-	
-	获取指定背包类型中的所有物品
-	*/
-	public Collection<Item> listByBackpackType(BackpackType backpackType) {
-		Backpack backpack = backpackSystem.getBackpack(backpackType);
-		return backpack.getAllItems();
-	}
-
-	@Override
-	public Item newInstance() {
-		return new Item();
+//		return allItems;
+		return (Collection<E>) backpack.getAllItems();
 	}
 
 	@Override
@@ -264,13 +239,7 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-// 将所有背包中的物品添加到玩家信息中
-		for (BackpackType backpackType : BackpackType.values()) {
-			Backpack backpack = backpackSystem.getBackpack(backpackType);
-			for (Item item : backpack.getAllItems()) {
-				builder.addItems(item.toItemInfo());
-			}
-		}
+		// 将所有背包中的物品添加到玩家信息中
 	}
 
 	@Override
@@ -294,7 +263,7 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 	
 	根据物品ID确定背包类型
 	*/
-	private BackpackType getBackpackTypeForItem(int configId) {
+	protected BackpackType getBackpackTypeForItem(int configId) {
 		int goodsType = ItemHelper.getGoodsType(configId);
 
 		if (goodsType == GoodsTypeEnum.Equipment.getId()) {
@@ -302,49 +271,16 @@ public class BackpackGoodsModule extends GoodsModule<Item, Item> {
 		} else if (goodsType == GoodsTypeEnum.Item.getId()) {
 			return BackpackType.MATERIAL;
 		} else {
-// 默认放入材料背包
+			// 默认放入材料背包
 			return BackpackType.MATERIAL;
 		}
 	}
 
 	/**
 	
-	获取特定背包类型的容量
-	*/
-	public int getCapacity(BackpackType backpackType) {
-		return backpackSystem.getBackpack(backpackType).getCapacity();
-	}
-
-	/**
-	
-	扩展特定背包类型的容量
-	*/
-	public boolean expandCapacity(BackpackType backpackType, int additionalSlots) {
-		return backpackSystem.expandBackpack(backpackType, additionalSlots);
-	}
-
-	/**
-	
-	整理特定背包类型
-	*/
-	public void sortBackpack(BackpackType backpackType) {
-		backpackSystem.sortBackpack(backpackType);
-	}
-
-	/**
-	
-	整理所有背包
-	*/
-	public void sortAllBackpacks() {
-		backpackSystem.sortAllBackpacks();
-}
-
-	/**
-	
 	检查背包是否有足够空间容纳指定物品
 	*/
 	public boolean hasEnoughSpace(int configId, int count) {
-		BackpackType backpackType = getBackpackTypeForItem(configId);
-		return backpackSystem.hasEnoughSpace(backpackType, configId, count);
+		return backpack.hasEnoughSpace(configId, count);
 	}
 }

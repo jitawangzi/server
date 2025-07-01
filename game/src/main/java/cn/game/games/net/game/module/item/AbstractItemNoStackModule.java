@@ -20,13 +20,13 @@ import cn.game.protocol.manual.OpType;
  * 2024年2月19日 上午10:55:53
  * @author SYQ
  */
-public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends GoodsModule<T, ItemNoStack>
+public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends GoodsModule<E>
 {
 	// uid => T
-	protected Map<Long, T> uid_items = new HashMap<>();
+	protected Map<Long, E> uid_items = new HashMap<>();
 	// configId => List<T> ,通常用来判断有没有某种东西
 	@JsonIgnore
-	protected Multimap<Integer, T> id_items = ArrayListMultimap.create();
+	protected Multimap<Integer, E> id_items = ArrayListMultimap.create();
 
 	/*	@Override
 		protected void initFromDb(ListIterator<?> iterator) {
@@ -37,27 +37,27 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 		}*/
 	@Override
 	public void initFromDbAfter() {
-		for (T item : uid_items.values()) {
+		for (E item : uid_items.values()) {
 			addCacheStackable(item);
 		}
 	};
 	
 	@Override
-	public void initAddCache(T item) {
+	public void initAddCache(E item) {
 		addCacheNoStackable(item);
 		addCacheStackable(item);
 	}
 	@Override
-	public  void addCacheNoStackable(T item) {
+	public void addCacheNoStackable(E item) {
 		uid_items.put(item.getId(), item);
 	}
 	@Override
-	public  void addCacheStackable(T item) {
+	public void addCacheStackable(E item) {
 		id_items.put(item.getConfigId(), item);
 	}
 
 	@Override
-	public void removeCache(T item) {
+	public void removeCache(E item) {
 		id_items.remove(item.getConfigId(), item);
 		uid_items.remove(item.getId());
 	}
@@ -65,17 +65,13 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	@Override
 	public Object add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
-			return null;
+			throw new IllegalArgumentException("count must be greater than 0");
 		}
 		checkConfig(itemId);
 		// TODO 检查id，是不是存在，涉及到多个表。
-		List<T> ret = new ArrayList<T>();
+		List<E> ret = new ArrayList<E>();
 		for (int i = 0; i < count; i++) {
-			T item = (T) newInstance();
-			setInstance(item, itemId, 1);
-			setInstanceAfter(item);
-			initAddCache(item);
-			item.insert();
+			E item = initAdd(itemId, 1);
 			ret.add(item);
 		}
 		return ret;
@@ -89,7 +85,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	@Override
 	public boolean del(long uid, OpType... args) {
 
-		T item = uid_items.get(uid);
+		E item = uid_items.get(uid);
 		if (item == null)
 			return false;
 		removeCache(item);
@@ -100,26 +96,26 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 
 	@Override
 	public long getCount(int itemId) {
-		Collection<T> item = id_items.get(itemId);
+		Collection<E> item = id_items.get(itemId);
 		return item == null ? 0 : item.size();
 	}
 
 	@Override
-	public T get(long uid) {
+	public E get(long uid) {
 		return uid_items.get(uid);
 	}
 
 	@Override
-	public Collection<T> list() {
+	public Collection<E> list() {
 		return id_items.values();
 	}
 
 	@Override
-	public T get(int itemId) {
+	public E get(int itemId) {
 		throw new UnsupportedOperationException("不支持通过配置表id获取不能重叠的物体");
 	}
 
-	public Collection<T> getByConfigId(int configId) {
+	public Collection<E> getByConfigId(int configId) {
 		return id_items.get(configId);
 	}
 
@@ -127,7 +123,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 	 * 获取 配置表id--对象集合 的映射
 	 * @return
 	 */
-	public Multimap<Integer, T> getId_items() {
+	public Multimap<Integer, E> getId_items() {
 		return id_items;
 	}
 
@@ -135,7 +131,7 @@ public abstract class AbstractItemNoStackModule<T extends ItemNoStack> extends G
 		return id_items.keys().size();
 	}
 
-	public Map<Long, T> getUid_items() {
+	public Map<Long, E> getUid_items() {
 		return uid_items;
 	}
 
