@@ -68,8 +68,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_1300051
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesResponse_13000514;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRequest_13000511;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanResponse_13000512;
-import cn.game.protocol.protobuf.BattleMsg.BattleLingShanReward2Request_13000517;
-import cn.game.protocol.protobuf.BattleMsg.BattleLingShanReward2Response_13000518;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardResponse_13000516;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203;
@@ -84,8 +82,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080;
 import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmResponse_13000081;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardRequest_13000044;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
-import cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111;
-import cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListResponse_13000112;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010;
 import cn.game.protocol.protobuf.BattleMsg.BattleReliveResponse_13000011;
 import cn.game.protocol.protobuf.BattleMsg.BattleRescueSkillIdRequest_13000057;
@@ -146,9 +142,6 @@ public class BattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleFieldEndRequest_13000003, (client, message) -> end(client, message));
         putInvoker(PbProtocol.BattleFieldQuickEndRequest_13000005, (client, message) -> quickeEnd(client, message));
         putInvoker(PbProtocol.BattleShareRequest_13000007, (client, message) -> rewardMultiple(client, message));
-        //		putInvoker(PbProtocol.BattleFieldSweepRequest_13000005, (client, message) -> sweep(client, message));
-        //		putInvoker(PbProtocol.BattleChapterRewardRequest_13000022, (client, message) -> reward(client, message));
-        //		putInvoker(PbProtocol.ExploreActRewardRequest_13000020, (client, message) -> exploreActReward(client, message));
         putInvoker(PbProtocol.BattleRewardRequest_13000022, (client, message) -> chapterReward(client, message));
         putInvoker(PbProtocol.HCBattleRewardRequest_13000027, (client, message) -> hcChapterReward(client, message));
         putInvoker(PbProtocol.BattleRougeRefreshRequest_13000052, (client, message) -> rougeRefresh(client, message));
@@ -193,7 +186,6 @@ public class BattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleLingShanRewardRequest_13000515, this::lingShanReward);
         putInvoker(PbProtocol.HCBattleDataSaveRequest_13000100, this::hCDataSave);
         putInvoker(PbProtocol.HCBattleDataRequest_13000102, this::hCData);
-        putInvoker(PbProtocol.BattleLingShanReward2Request_13000517, this::lingShanReward2);
     }
 
     protected void empty(NetClient client, Object message) {
@@ -1100,40 +1092,6 @@ public class BattleHandler extends BaseHandler {
         }
         client.sendProtocol(resp);
     }
-
-    /*protected void exploreActReward(NetClient client, Object message) {
-	
-		ExploreActRewardRequest_13000020 req = (ExploreActRewardRequest_13000020) message;
-		ExploreActRewardResponse_13000021.Builder resp = ExploreActRewardResponse_13000021.newBuilder();
-	
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		long playerId = player.getPlayerId();
-		chapterModule chapterModule = PlayerCacheFactory.getCache(playerId, chapterModule.class);
-		boolean pass = chapterModule.isExploreActPass(id);
-		if (!pass) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		ExploreAct exploreAct = chapterModule.getExploreAct(id);
-		if (exploreAct != null && exploreAct.getReward()) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-	
-		boolean reward = chapterModule.exploreActReward(id);
-		if (!reward) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-		ExploreActConfig exploreActConfig = ExploreActManager.getInstance().getExploreActConfig(id);
-	
-		List<RewardItem> addRewards = PlayerHelper.addRewards(playerId, exploreActConfig.getProgressRewardId());
-		resp.addAllReward(PbBuilder.buildRewardInfo(addRewards));
-		client.sendProtocol(resp);
-	
-	}
-	*/
     protected void chapterReward(NetClient client, Object message) {
         BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
         BattleRewardResponse_13000023.Builder resp = BattleRewardResponse_13000023.newBuilder();
@@ -1253,50 +1211,6 @@ public class BattleHandler extends BaseHandler {
         client.sendProtocol(resp);
     }
 
-    /*protected void reward(NetClient client, Object message) {
-	
-		BattleChapterRewardRequest_13000009 req = (BattleChapterRewardRequest_13000009) message;
-		BattleChapterRewardResponse_1300000a.Builder resp = BattleChapterRewardResponse_1300000a.newBuilder();
-	
-		int chapterId = req.getId();
-		int index = req.getIndex();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		long playerId = player.getPlayerId();
-		chapterModule chapterModule = PlayerCacheFactory.getCache(playerId, chapterModule.class);
-		Chapter chapter = chapterModule.getChapter(chapterId);
-		BattleChapterConfig chapterConfig = BattleChapterManager.getInstance().getBattleChapterConfig(chapterId);
-	
-		int allStar = chapterModule.getStars(chapterId);
-	
-		List<Integer> stars = chapterConfig.getStar();
-		int ret = -1;
-		for (int i = 0; i < stars.size(); i++) {
-			if (allStar >= stars.get(i)) {
-				ret = i;
-			}
-		}
-		if (ret < 0 || index > ret) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-	
-		Integer rewards = chapter.getRewards();
-	
-		boolean one = ByteHelp.isOne(rewards, index);
-		if (one) {
-			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
-			return;
-		}
-	
-		int rewardId = chapterConfig.getStarRewardId().get(ret);
-		List<RewardItem> addRewards = PlayerHelper.addRewards(playerId, rewardId);
-		resp.addAllReward(PbBuilder.buildRewardInfo(addRewards));
-		chapter.setRewards(ByteHelp.modifyBit(rewards, index));
-		chapterModule.updateChapter(chapter);
-	
-		client.sendProtocol(resp);
-	
-	}*/
     public void start(NetClient client, Object message) {
         BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
         BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
@@ -1430,61 +1344,6 @@ public class BattleHandler extends BaseHandler {
         //		Chapter chapter = chapterModule.getChapter(attackingDungeonId);
         //		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
     }
-
-    /*private void addExp(BattleFieldEndResponse_13000004.Builder resp, Player player, int lineupId, int apCost) {
-		if (apCost == 0) {
-			return ; 
-		}
-		// 消耗体力就加经验
-		long playerId = player.getPlayerId();
-		int level = player.getLevel();
-		int playerExp = BattleHelper.calcPlayerExp(level, apCost);
-		PlayerHelper.addExp(player, playerExp);
-		int coin = BattleHelper.calcCoin(level, apCost);
-		PlayerHelper.addResources(player, ResourceEnum.Coin.getId(), coin);
-	
-		resp.setCoin(coin);
-		resp.setPlayerExp(playerExp);
-	}
-	
-	protected void sweep(NetClient client, Object message) {
-		BattleFieldSweepRequest_13000005 req = (BattleFieldSweepRequest_13000005) message;
-		BattleFieldSweepResponse_13000006.Builder resp = BattleFieldSweepResponse_13000006.newBuilder();
-		int level = req.getId();
-		int times = req.getTimes();
-		int type = req.getType();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		chapterModule chapterModule = PlayerCacheFactory.getCache(player.getPlayerId(), chapterModule.class);
-		BattleField level2 = chapterModule.getBattleField(level);
-		BattleFieldConfig levelConfig = BattleFieldManager.getInstance().getBattleFieldConfig(level);
-		if (levelConfig == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
-			return;
-		}
-		if (level2 == null || ByteHelp.binary1Count(level2.getStar()) < levelConfig.getStarLevelCondition().size()) {
-	
-			client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-			return;
-		}
-	
-		List<Entry<Integer, Integer>> levelDrop = levelConfig.getBaseReward();
-	
-		RoleOp heroOp = PlayerCacheFactory.getCache(player.getPlayerId(), RoleOp.class);
-	
-		LineupOp lineupOp = PlayerCacheFactory.getCache(player.getPlayerId(), LineupOp.class); //List<Integer> heroIds = lineupOp.getCurRoleIds();
-		List<Role> heros = new ArrayList<>();
-		//添加奖励
-		if (type == DungeonTypeEnum.RoutineTraining.getId()) {
-			if (player.getTrainingRewardTimes() > 0) {
-				player.setTrainingRewardTimes(player.getTrainingRewardTimes() - 1);
-				List<RewardItem> rewardItems = PlayerHelper.addResources(client.getPlayerId(), levelConfig.getSpecialReward());
-				resp.addAllSpecialRewards(PbBuilder.buildRewardInfo(rewardItems));
-			}
-		}
-		resp.addAllCommonRewards(PbBuilder.buildRewardInfo(PlayerHelper.addResources(client.getPlayerId(), levelConfig.getBaseReward())));
-	
-		client.sendProtocol(resp);
-	}*/
     private void reward(NetClient client, Object message) {
         BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
         List<Integer> idList = req.getIdList();
@@ -1511,22 +1370,4 @@ public class BattleHandler extends BaseHandler {
         client.sendProtocol(resp.build());
     }
 
-    private void pvPTargetList(NetClient client, Object message) {
-        BattlePvPTargetListRequest_13000111 req = (BattlePvPTargetListRequest_13000111) message;
-        boolean refreshFlag = req.getRefreshFlag();
-        boolean useCost = req.getUseCost();
-        BattlePvPTargetListResponse_13000112 defaultInstance = BattlePvPTargetListResponse_13000112.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattlePvPTargetListResponse_13000112.Builder resp = BattlePvPTargetListResponse_13000112.newBuilder();
-        client.sendProtocol(resp.build());
-    }
-
-    private void lingShanReward2(NetClient client, Object message) {
-        BattleLingShanReward2Request_13000517 req = (BattleLingShanReward2Request_13000517) message;
-        int index = req.getIndex();
-        BattleLingShanReward2Response_13000518 defaultInstance = BattleLingShanReward2Response_13000518.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleLingShanReward2Response_13000518.Builder resp = BattleLingShanReward2Response_13000518.newBuilder();
-        client.sendProtocol(resp.build());
-    }
 }

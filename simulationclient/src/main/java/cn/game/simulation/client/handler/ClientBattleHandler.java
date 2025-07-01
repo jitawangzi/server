@@ -24,7 +24,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesResponse_13000514;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanResponse_13000512;
-import cn.game.protocol.protobuf.BattleMsg.BattleLingShanReward2Response_13000518;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardResponse_13000516;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardResponse_13000204;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202;
@@ -122,7 +121,6 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleLingShanResponse_13000512, this::lingShan);
         putInvoker(PbProtocol.BattleLingShanBuyTimesResponse_13000514, this::lingShanBuyTimes);
         putInvoker(PbProtocol.BattleLingShanRewardResponse_13000516, this::lingShanReward);
-        putInvoker(PbProtocol.BattleLingShanReward2Response_13000518, this::lingShanReward2);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -426,11 +424,6 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void lingShanReward2(NetClient netClient, Object message) {
-        BattleLingShanReward2Response_13000518 resp = (BattleLingShanReward2Response_13000518) message;
-        List<RewardInfo> rewardsList = resp.getRewardsList();
-        Client client = (Client) netClient;
-    }
 
 	private void targetPvPListResponse(NetClient netClient, Object o) {
 		BattleMsg.BattlePvPTargetListResponse_13000112 res = (BattleMsg.BattlePvPTargetListResponse_13000112) o;
