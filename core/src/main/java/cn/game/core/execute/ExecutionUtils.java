@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -82,59 +81,60 @@ public class ExecutionUtils {
         return future;
     }
     
-    /**
-	 * 使用结构化并发执行多个任务，等待所有任务完成
-	 * @param tasks 任务列表，每个任务返回T
-	 * @param <T>  结果类型
-	 * @return 包含所有任务结果的List
-	 * @throws ExecutionException 如果任务执行失败
-	 * @throws InterruptedException 如果线程被中断
-	 */
-    public static <T> List<T> executeAll(List<Callable<? extends T>> tasks) throws ExecutionException, InterruptedException {
-        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-			List<StructuredTaskScope.Subtask<? extends T>> futures = new ArrayList<>(tasks.size());
-
-            // 提交所有任务
-            for (Callable<? extends T> task : tasks) {
-                futures.add(scope.fork(task));
-            }
-
-            // 等待所有任务完成
-            scope.join();
-            scope.throwIfFailed();
-
-            // 收集结果
-            List<T> results = new ArrayList<>(tasks.size());
-			for (var future : futures) {
-				results.add(future.get());
-            }
-
-            return results;
-        }
-    }
-    
-    /**
-     * 使用结构化并发执行多个任务，只要有一个任务完成就返回
-     * @param tasks 任务列表
-     * @param <T> 结果类型
-     * @return 第一个完成的任务的结果
-     * @throws ExecutionException 如果所有任务执行失败
-     * @throws InterruptedException 如果线程被中断
-     */
-    public static <T> T executeAny(List<Callable<? extends T>> tasks) throws ExecutionException, InterruptedException {
-        try (var scope = new StructuredTaskScope.ShutdownOnSuccess<T>()) {
-            // 提交所有任务
-            for (Callable<? extends T> task : tasks) {
-                scope.fork(task);
-            }
-            
-            // 等待第一个任务成功完成
-            scope.join();
-            
-            // 返回第一个完成的任务的结果
-            return scope.result();
-        }
-    }
+//    /**
+//	 * 使用结构化并发执行多个任务，等待所有任务完成
+//	 * @param tasks 任务列表，每个任务返回T
+//	 * @param <T>  结果类型
+//	 * @return 包含所有任务结果的List
+//	 * @throws ExecutionException 如果任务执行失败
+//	 * @throws InterruptedException 如果线程被中断
+//	 */
+//    
+//    public static <T> List<T> executeAll(List<Callable<? extends T>> tasks) throws ExecutionException, InterruptedException {
+//        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+//			List<StructuredTaskScope.Subtask<? extends T>> futures = new ArrayList<>(tasks.size());
+//
+//            // 提交所有任务
+//            for (Callable<? extends T> task : tasks) {
+//                futures.add(scope.fork(task));
+//            }
+//
+//            // 等待所有任务完成
+//            scope.join();
+//            scope.throwIfFailed();
+//
+//            // 收集结果
+//            List<T> results = new ArrayList<>(tasks.size());
+//			for (var future : futures) {
+//				results.add(future.get());
+//            }
+//
+//            return results;
+//        }
+//    }
+//    
+//    /**
+//     * 使用结构化并发执行多个任务，只要有一个任务完成就返回
+//     * @param tasks 任务列表
+//     * @param <T> 结果类型
+//     * @return 第一个完成的任务的结果
+//     * @throws ExecutionException 如果所有任务执行失败
+//     * @throws InterruptedException 如果线程被中断
+//     */
+//    public static <T> T executeAny(List<Callable<? extends T>> tasks) throws ExecutionException, InterruptedException {
+//        try (var scope = new StructuredTaskScope.ShutdownOnSuccess<T>()) {
+//            // 提交所有任务
+//            for (Callable<? extends T> task : tasks) {
+//                scope.fork(task);
+//            }
+//            
+//            // 等待第一个任务成功完成
+//            scope.join();
+//            
+//            // 返回第一个完成的任务的结果
+//            return scope.result();
+//        }
+//    }
     
     /**
      * 重试执行任务直到成功或达到最大重试次数

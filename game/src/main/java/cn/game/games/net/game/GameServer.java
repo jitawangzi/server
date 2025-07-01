@@ -173,7 +173,7 @@ public class GameServer implements GameServerMBean {
 			}
 		});
 		initScheduleTask();
-		initLoadManager();
+//		initLoadManager();
 		// ******************** 业务逻辑启动 **************************
 
 		ManagerHelper.init();
