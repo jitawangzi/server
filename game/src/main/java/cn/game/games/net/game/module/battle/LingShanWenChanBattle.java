@@ -7,9 +7,11 @@ import cn.game.core.exception.LogicException;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -89,6 +91,10 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			}
 
 			lastCompleteBattleId = battleConfig.ID;
+
+			RankService.getInstance()
+					.updateScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), lastCompleteBattleId);
+
 			return ResultObject.success();
 		} else { // 失败了，最终结算
 			// 如果没有成功通过一关，则获得上一关的扫荡奖励
@@ -129,6 +135,42 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 
 	public int getLastCompleteBattleId() {
 		return lastCompleteBattleId;
+	}
+
+	public int getBattleTimes() {
+		return battleTimes;
+	}
+
+	public int getPayTimes() {
+		return payTimes;
+	}
+
+	public long getRewardBattleIds() {
+		return rewardBattleIds;
+	}
+
+	public int getStartBattleId() {
+		return startBattleId;
+	}
+
+	public List<RewardInfo> getRewards() {
+		return rewards;
+	}
+
+	public void setPayTimes(int payTimes) {
+		this.payTimes = payTimes;
+	}
+
+	public void setLastCompleteBattleId(int lastCompleteBattleId) {
+		this.lastCompleteBattleId = lastCompleteBattleId;
+	}
+
+	public void setBattleTimes(int battleTimes) {
+		this.battleTimes = battleTimes;
+	}
+
+	public void setRewardBattleIds(long rewardBattleIds) {
+		this.rewardBattleIds = rewardBattleIds;
 	}
 
 }

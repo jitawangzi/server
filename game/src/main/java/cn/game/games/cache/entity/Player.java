@@ -666,14 +666,14 @@ public class Player {
 		log.error("", t);
 	}
 
-	/** 
+	/**
 	 * 处理function类型的异步调用异常
-	 * @param t
-	 * @return
+	 * @param t 异常
+	 * @return null
 	 */
-	public String handleFailFunction(Throwable t) {
+	public <T> T handleFailFunction(Throwable t) {
 		handleFail(t);
-		return "";
+		return null;
 	}
 
 	/** 

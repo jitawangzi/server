@@ -264,4 +264,23 @@ public class GameUtil {
 		System.setProperty(serverIdKey, serverId);
 		return serverId;
 	}
+
+	/** 
+	 * 获取一个数组中，大于0的元素个数
+	 * @param array
+	 * @return
+	 */
+	public static int length(int[] array) {
+		if (array == null) {
+			return 0;
+		}
+		int ret = 0;
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] > 0) {
+				ret++;
+			}
+		}
+		return ret;
+	}
+
 }
