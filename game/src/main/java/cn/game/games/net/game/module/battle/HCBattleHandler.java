@@ -22,11 +22,11 @@ public abstract class HCBattleHandler extends IBattleHandler {
 	public int check(int id, int subId) {
 
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
-		BattleModule chapterModule = player.getChapterModule();
-		if (battleConfig.preBattle > 0 && !chapterModule.isHCBattlePass(battleConfig.preBattle)) {
+		BattleModule battleModule = player.getChapterModule();
+		if (battleConfig.preBattle > 0 && !battleModule.isHCBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
-//		if (!chapterModule.checkChapterTimes(dungeonId)) {
+//		if (!battleModule.checkChapterTimes(dungeonId)) {
 //			return ErrorMsgEnum.times_limit.getId();
 //		}
 

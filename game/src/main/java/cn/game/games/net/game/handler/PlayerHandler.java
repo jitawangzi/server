@@ -318,8 +318,8 @@ public class PlayerHandler extends BaseHandler {
 			if (player.isFuncOpen(func)) {
 				switch (func) {
 				case DaoXinLLiLian: {
-					BattleModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.DaoHeart);
+					BattleModule battleModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.DaoHeart);
 					if (daoHeartBattle == null) {
 						continue;
 					}
@@ -340,8 +340,8 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case XinMoShiLian: {
-					BattleModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.XinMo);
+					BattleModule battleModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.XinMo);
 					if (daoHeartBattle == null) {
 						continue;
 					}
@@ -362,8 +362,8 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case YaoWangBiePao: {
-					BattleModule chapterModule = player.getChapterModule();
-					DaoHeartBattle daoHeartBattle = chapterModule.getBattle(DungeonTypeEnum.YaoWang);
+					BattleModule battleModule = player.getChapterModule();
+					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.YaoWang);
 					if (daoHeartBattle == null) {
 						continue;
 					}
@@ -384,8 +384,8 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case ShiLuoZhenJing: {
-					BattleModule chapterModule = player.getModule(BattleModule.class);
-					ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+					BattleModule battleModule = player.getModule(BattleModule.class);
+					ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 
 					if (!battle.isCanReward()) {
 						continue;
@@ -405,8 +405,8 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case WorldBoss: {
-					BattleModule chapterModule = player.getModule(BattleModule.class);
-					WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+					BattleModule battleModule = player.getModule(BattleModule.class);
+					WorldBossBattle battle = battleModule.getBattle(DungeonTypeEnum.WorldBoss);
 					long maxDamageToday = battle.getMaxDamageToday();
 					List<WorldBossRewardConfig> list = WorldBossRewardManager.instance().list();
 					int canRewardIndex = BinarySearchUtil.findIndexLastLessThanOrEqual(list, maxDamageToday, r -> r.BoxCondition);
@@ -430,7 +430,7 @@ public class PlayerHandler extends BaseHandler {
 					break;
 				}
 				case NightmareRealm: {
-					BattleModule chapterModule = player.getChapterModule();
+					BattleModule battleModule = player.getChapterModule();
 
 					ret = false;
 					break;
@@ -530,8 +530,8 @@ public class PlayerHandler extends BaseHandler {
 		PlayerPatrolInfoRequest_01000070 request = (PlayerPatrolInfoRequest_01000070) message;
 		PlayerPatrolInfoResponse_01000071.Builder resp = PlayerPatrolInfoResponse_01000071.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		BattleModule chapterModule = player.getChapterModule();
-		resp.setPatrol(chapterModule.buildPatrolInfo());
+		BattleModule battleModule = player.getChapterModule();
+		resp.setPatrol(battleModule.buildPatrolInfo());
 		client.sendProtocol(resp);
 	}
 

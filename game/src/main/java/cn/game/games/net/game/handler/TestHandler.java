@@ -214,12 +214,12 @@ public class TestHandler extends BaseHandler {
                     if (p1 == 0) {
                         throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
                     }
-                    BattleModule chapterModule = player.getChapterModule();
-                    chapterModule.setMainBattleHighest(p1);
+                    BattleModule battleModule = player.getChapterModule();
+                    battleModule.setMainBattleHighest(p1);
                     BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
                     while (battleConfig != null) {
-                        chapterModule.addChapter(battleConfig.ID);
-                        Chapter chapter = chapterModule.getChapter(battleConfig.ID);
+                        battleModule.addChapter(battleConfig.ID);
+                        Chapter chapter = battleModule.getChapter(battleConfig.ID);
                         chapter.setBattleTime(30);
                         chapter.setPass(true);
                         battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
@@ -229,8 +229,8 @@ public class TestHandler extends BaseHandler {
             case "slzj":
                 {
                     // 设置失落真经关卡id
-                    BattleModule chapterModule = player.getChapterModule();
-                    ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+                    BattleModule battleModule = player.getChapterModule();
+                    ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                     if (battle != null) {
                         BattleConfig battleConfig = BattleManager.instance().get(p1);
                         if (battleConfig.preBattle > 0) {
@@ -246,8 +246,8 @@ public class TestHandler extends BaseHandler {
             case "mymj":
                 {
                     // 设置梦魇秘境关卡id
-                    BattleModule chapterModule = player.getChapterModule();
-                    MengYanMiJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+                    BattleModule battleModule = player.getChapterModule();
+                    MengYanMiJingBattle battle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
                     if (battle != null) {
                         BattleConfig battleConfig = BattleManager.instance().get(p1);
                         if (battleConfig.preBattle > 0) {
@@ -261,8 +261,8 @@ public class TestHandler extends BaseHandler {
             case "slzjsd":
                 {
                     // 设置失落真经手动关卡。
-                    BattleModule chapterModule = player.getChapterModule();
-                    ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+                    BattleModule battleModule = player.getChapterModule();
+                    ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                     if (battle != null) {
                         if (p1 > 0) {
                             BattleConfig battleConfig = BattleManager.instance().get(p1);
@@ -739,12 +739,12 @@ public class TestHandler extends BaseHandler {
             client.sendProtocol(resp.build(), 0);
             return;
         } else if (id == 10000002) {
-            BattleModule chapterModule = player.getChapterModule();
-            chapterModule.setMainBattleHighest(count);
+            BattleModule battleModule = player.getChapterModule();
+            battleModule.setMainBattleHighest(count);
             BattleConfig battleConfig = BattleManager.instance().getNullable(count);
             while (battleConfig != null) {
-                chapterModule.addChapter(battleConfig.ID);
-                Chapter chapter = chapterModule.getChapter(battleConfig.ID);
+                battleModule.addChapter(battleConfig.ID);
+                Chapter chapter = battleModule.getChapter(battleConfig.ID);
                 chapter.setBattleTime(30);
                 chapter.setPass(true);
                 battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);

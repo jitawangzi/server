@@ -26,7 +26,7 @@ public class MainBattle extends XiYouBattleHandler {
 
 	@Override
 	public int battleStart(int id) {
-		BattleModule chapterModule = player.getModule(BattleModule.class);
+		BattleModule battleModule = player.getModule(BattleModule.class);
 
 		// 检查章节事件开启条件，是否可以进行当前操作
 //		boolean checkCondition = PlayerHelper.checkCondition(playerId, chapterConfig.getCondition());
@@ -40,7 +40,7 @@ public class MainBattle extends XiYouBattleHandler {
 //		}
 
 		// 可以打这个关了
-		chapterModule.addChapter(id);
+		battleModule.addChapter(id);
 		return 0;
 	}
 
@@ -50,8 +50,8 @@ public class MainBattle extends XiYouBattleHandler {
 		int killMonsterCount = request.getKillMonsterCount();
 		int hpPercent = request.getHpPercent();
 
-		BattleModule chapterModule = player.getModule(BattleModule.class);
-		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
+		BattleModule battleModule = player.getModule(BattleModule.class);
+		Chapter chapter = battleModule.getChapter(battleModule.getAttackingDungeonId());
 		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
 
 		if (hpPercent > chapter.getHpPercent()) {
@@ -65,7 +65,7 @@ public class MainBattle extends XiYouBattleHandler {
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
-				chapterModule.setMainBattleHighest(chapter.getBattleId());
+				battleModule.setMainBattleHighest(chapter.getBattleId());
 				player.handleEvent(EventTypeEnum.ChapterFirstWin, chapter.getBattleId());
 				allRewards.addAll(PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleEnd));
 			}
@@ -120,7 +120,7 @@ public class MainBattle extends XiYouBattleHandler {
 		}
 
 		// 增加次数。
-		chapterModule.addChapterTimes(battleConfig.ID);
+		battleModule.addChapterTimes(battleConfig.ID);
 
 		return ResultObject.success(allRewards);
 	}

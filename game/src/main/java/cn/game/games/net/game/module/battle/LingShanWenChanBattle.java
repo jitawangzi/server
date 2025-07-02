@@ -72,9 +72,9 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
-		BattleModule chapterModule = player.getModule(BattleModule.class);
-		int attackingType = chapterModule.getAttackingType();
-		BattleConfig battleConfig = BattleManager.instance().get(chapterModule.getAttackingDungeonId());
+		BattleModule battleModule = player.getModule(BattleModule.class);
+		int attackingType = battleModule.getAttackingType();
+		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingDungeonId());
 		if (request.getWin()) {
 			// 应该都是第一次通关，可能跳关了
 			BattleConfig preConfig = battleConfig;

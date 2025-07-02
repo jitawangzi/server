@@ -1158,8 +1158,8 @@ public class PlayerHelper {
                 // 直接根据当前数据获取的：
                 case PlayerLevel -> player.getLevel();
                 case ChapterFinish -> {
-                    BattleModule chapterModule = player.getModule(BattleModule.class);
-                    yield chapterModule.isBattlePass(id) ? 1 : 0;
+                    BattleModule battleModule = player.getModule(BattleModule.class);
+                    yield battleModule.isBattlePass(id) ? 1 : 0;
                 }
                 case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
                 default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);

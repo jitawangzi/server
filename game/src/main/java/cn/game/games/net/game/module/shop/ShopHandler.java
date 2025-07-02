@@ -199,8 +199,8 @@ public class ShopHandler extends BaseHandler {
 		int[][] boxRandomId = GlobalConst.BoxRandomId;
 		int idIndex = 0;
 
-		BattleModule chapterModule = player.getChapterModule();
-		int mainBattleHighest = chapterModule.getMainBattleHighest();
+		BattleModule battleModule = player.getChapterModule();
+		int mainBattleHighest = battleModule.getMainBattleHighest();
 
 		int chapter = 0;
 		List<HCBattleConfig> battleTypeList = HCBattleManager.instance().getBattleTypeList(11);

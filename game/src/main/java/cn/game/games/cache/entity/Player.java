@@ -442,9 +442,9 @@ public class Player {
 		builder.setIsOnline(getGameClient() != null);
 		builder.setCreateTime((int) (DateUtil.parseDate(getData().getCreateDate()).getTime() / 1000));
 		builder.setLastLoginTime((int) (DateUtil.parseDate(getData().getLoginDate()).getTime() / 1000));
-		BattleModule chapterModule = getChapterModule();
+		BattleModule battleModule = getChapterModule();
 
-		builder.setCurBattleId(chapterModule.getFightMainBattleId());
+		builder.setCurBattleId(battleModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());
 		builder.setChargeCumulation(getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge));
 

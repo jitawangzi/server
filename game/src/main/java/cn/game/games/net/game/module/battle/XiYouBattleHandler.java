@@ -21,7 +21,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
 	public int check(int id, int subId) {
-		BattleModule chapterModule = player.getModule(BattleModule.class);
+		BattleModule battleModule = player.getModule(BattleModule.class);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 //		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);
 		/*		if (battleConfig.BattleFieldID != id) {
@@ -37,10 +37,10 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 						return;
 					}
 				}*/
-		if (battleConfig.preBattle > 0 && !chapterModule.isBattlePass(battleConfig.preBattle)) {
+		if (battleConfig.preBattle > 0 && !battleModule.isBattlePass(battleConfig.preBattle)) {
 			return ErrorMsgEnum.BattleLevel_pre.getId();
 		}
-//		if (!chapterModule.checkChapterTimes(dungeonId)) {
+//		if (!battleModule.checkChapterTimes(dungeonId)) {
 //			return ErrorMsgEnum.times_limit.getId();
 //		}
 		if (battleConfig.BattleCondition > 0 && player.getDevelopModule().getHeavenlyDaoLevel() < battleConfig.BattleCondition) {

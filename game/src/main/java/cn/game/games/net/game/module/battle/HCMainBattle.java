@@ -25,7 +25,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 
 	@Override
 	public int battleStart(int id) {
-		BattleModule chapterModule = player.getModule(BattleModule.class);
+		BattleModule battleModule = player.getModule(BattleModule.class);
 
 		// 检查章节事件开启条件，是否可以进行当前操作
 //		boolean checkCondition = PlayerHelper.checkCondition(playerId, chapterConfig.getCondition());
@@ -39,7 +39,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 //		}
 
 		// 可以打这个关了
-		chapterModule.addChapter(id);
+		battleModule.addChapter(id);
 		return 0;
 	}
 
@@ -50,8 +50,8 @@ public class HCMainBattle extends XiYouBattleHandler {
 		int hpPercent = request.getHpPercent();
 		int battleTime = request.getBattleTime();
 
-		BattleModule chapterModule = player.getModule(BattleModule.class);
-		Chapter chapter = chapterModule.getChapter(chapterModule.getAttackingDungeonId());
+		BattleModule battleModule = player.getModule(BattleModule.class);
+		Chapter chapter = battleModule.getChapter(battleModule.getAttackingDungeonId());
 		Integer battleId = chapter.getBattleId();
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
 
@@ -64,7 +64,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 		if (!chapter.getPass() && win) {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 11) {
-				chapterModule.setMainBattleHighest(battleId);
+				battleModule.setMainBattleHighest(battleId);
 				player.handleEvent(EventTypeEnum.HCChapterFirstWin, battleConfig.ID);
 			}
 		}
@@ -87,7 +87,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 		}
 
 		// 增加次数。
-//		chapterModule.addChapterTimes(battleConfig.ID);
+//		battleModule.addChapterTimes(battleConfig.ID);
 
 		return ResultObject.success(allRewards);
 	}

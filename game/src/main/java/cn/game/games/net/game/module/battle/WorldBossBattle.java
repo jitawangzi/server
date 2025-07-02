@@ -46,7 +46,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 
 	@Override
 	public int check(int id, int subId) {
-//		ChapterModule chapterModule = player.getModule(ChapterModule.class);
+//		ChapterModule battleModule = player.getModule(ChapterModule.class);
 //		BattleConfig battleConfig = BattleManager.instance().get(id);
 		if (BattleHelper.isNowAfter2330()) {
 			return ErrorMsgEnum.not_open.getId();
@@ -71,7 +71,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
-		BattleModule chapterModule = player.getModule(BattleModule.class);
+		BattleModule battleModule = player.getModule(BattleModule.class);
 		end(request.getDamage());
 
 		return ResultObject.success();

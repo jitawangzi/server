@@ -193,7 +193,7 @@ public class BattleHandler extends BaseHandler {
         BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         client.sendProtocol(resp);
     }
 
@@ -202,7 +202,7 @@ public class BattleHandler extends BaseHandler {
         BattleLingShanRewardResponse_13000516.Builder resp = BattleLingShanRewardResponse_13000516.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         client.sendProtocol(resp);
     }
 
@@ -211,7 +211,7 @@ public class BattleHandler extends BaseHandler {
         BattleLingShanBuyTimesResponse_13000514.Builder resp = BattleLingShanBuyTimesResponse_13000514.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         client.sendProtocol(resp);
     }
 
@@ -220,7 +220,7 @@ public class BattleHandler extends BaseHandler {
         BattleLingShanResponse_13000512.Builder resp = BattleLingShanResponse_13000512.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         client.sendProtocol(resp);
     }
 
@@ -228,8 +228,8 @@ public class BattleHandler extends BaseHandler {
         BattleXiangYaoChuMoResponse_13000502.Builder resp = BattleXiangYaoChuMoResponse_13000502.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        XiangYaoFuMoBattle battle = chapterModule.getBattle(DungeonTypeEnum.XiangYaoFuMo);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        XiangYaoFuMoBattle battle = battleModule.getBattle(DungeonTypeEnum.XiangYaoFuMo);
         resp.setSweepTimes(battle.getSweepTimes());
         resp.setLastCompleteBattleId(battle.getLastCompleteBattleId());
         client.sendProtocol(resp);
@@ -241,8 +241,8 @@ public class BattleHandler extends BaseHandler {
         int id = req.getId();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        chapterModule.setRescueSkillId(id);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        battleModule.setRescueSkillId(id);
         client.sendProtocol(resp);
     }
 
@@ -251,13 +251,13 @@ public class BattleHandler extends BaseHandler {
         BattleRogueAdvertiseResponse_13000013.Builder resp = BattleRogueAdvertiseResponse_13000013.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        //		int adRogueCount = chapterModule.getAdRogueCount();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        //		int adRogueCount = battleModule.getAdRogueCount();
         //		if (adRogueCount >= GlobalConst.RogueAdvertiseCount) {
         //			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
         //			return;
         //		}
-        //		chapterModule.setAdReliveCount(chapterModule.getAdReliveCount() + 1);
+        //		battleModule.setAdReliveCount(battleModule.getAdReliveCount() + 1);
         player.handleEvent(EventTypeEnum.WatchAds);
         client.sendProtocol(resp);
     }
@@ -268,13 +268,13 @@ public class BattleHandler extends BaseHandler {
         long playerId = client.getPlayerId();
         int id = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        List<Integer> battleChapterRewards = chapterModule.getBattleChapterRewards();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        List<Integer> battleChapterRewards = battleModule.getBattleChapterRewards();
         if (battleChapterRewards.contains(id)) {
             client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
             return;
         }
-        if (!chapterModule.isBattlePass(id)) {
+        if (!battleModule.isBattlePass(id)) {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
         }
@@ -293,8 +293,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        WorldBossBattle battle = battleModule.getBattle(DungeonTypeEnum.WorldBoss);
         long maxDamageToday = battle.getMaxDamageToday();
         List<WorldBossRewardConfig> list = WorldBossRewardManager.instance().list();
         int canRewardIndex = BinarySearchUtil.findIndexLastLessThanOrEqual(list, maxDamageToday, r -> r.BoxCondition);
@@ -326,8 +326,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        WorldBossBattle battle = battleModule.getBattle(DungeonTypeEnum.WorldBoss);
         if (battle.getBuyTimes() >= GlobalConst.JDTMPayCnt) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
@@ -346,8 +346,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        WorldBossBattle battle = chapterModule.getBattle(DungeonTypeEnum.WorldBoss);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        WorldBossBattle battle = battleModule.getBattle(DungeonTypeEnum.WorldBoss);
         resp.setBattleTimes(battle.getBattleTimes());
         resp.setBuyTimes(battle.getBuyTimes());
         resp.setCumulativeDamage(battle.getCumulativeDamage() + "");
@@ -373,8 +373,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
         if (battle.isHistoryMaxReward()) {
             client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
             return;
@@ -401,8 +401,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        ShiLuoZhenJingBattle battle = chapterModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
         resp.setBattleId(battle.getStartBattleId());
         resp.setBattleStage(battle.getBattleStage());
         resp.setHistoryMaxBattleReward(battle.isHistoryMaxReward());
@@ -422,8 +422,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingPoBattle lingPoBattle = battleModule.getBattle(DungeonTypeEnum.LingPo);
         if (lingPoBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
             return;
@@ -457,8 +457,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingPoBattle lingPoBattle = battleModule.getBattle(DungeonTypeEnum.LingPo);
         if (lingPoBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
             return;
@@ -491,8 +491,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingPoBattle lingPoBattle = battleModule.getBattle(DungeonTypeEnum.LingPo);
         if (lingPoBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
             return;
@@ -531,8 +531,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        LingPoBattle lingPoBattle = chapterModule.getBattle(DungeonTypeEnum.LingPo);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingPoBattle lingPoBattle = battleModule.getBattle(DungeonTypeEnum.LingPo);
         if (lingPoBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
             return;
@@ -551,28 +551,28 @@ public class BattleHandler extends BaseHandler {
         }
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        if (chapterModule.getReliveCountPerBattle() >= 2) {
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        if (battleModule.getReliveCountPerBattle() >= 2) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
         }
         if (type == 1) {
-            if (chapterModule.getShareReliveCount() >= GlobalConst.ShareResurrection) {
+            if (battleModule.getShareReliveCount() >= GlobalConst.ShareResurrection) {
                 client.sendProtocol(resp, ErrorMsgEnum.free_times_limit.getId());
                 return;
             }
-            chapterModule.setShareReliveCount(chapterModule.getShareReliveCount() + 1);
+            battleModule.setShareReliveCount(battleModule.getShareReliveCount() + 1);
         } else if (type == 2) {
-            if (chapterModule.getAdReliveCount() >= GlobalConst.AdResurrection) {
+            if (battleModule.getAdReliveCount() >= GlobalConst.AdResurrection) {
                 client.sendProtocol(resp, ErrorMsgEnum.free_times_limit.getId());
                 return;
             }
-            chapterModule.setAdReliveCount(chapterModule.getAdReliveCount() + 1);
+            battleModule.setAdReliveCount(battleModule.getAdReliveCount() + 1);
             player.handleEvent(EventTypeEnum.WatchAds);
         } else if (type == 3) {
             PlayerHelper.delResources(player, GlobalConst.ResurrectionConsume, OpType.Relive);
         }
-        chapterModule.setReliveCountPerBattle(chapterModule.getReliveCountPerBattle() + 1);
+        battleModule.setReliveCountPerBattle(battleModule.getReliveCountPerBattle() + 1);
         client.sendProtocol(resp);
     }
 
@@ -585,8 +585,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        MengYanMiJingBattle mengYanMiJingBattle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
         List<Integer> rewardBattleIds = mengYanMiJingBattle.getRewardBattleIds();
         int maxSweepBattle = mengYanMiJingBattle.maxSweepBattle();
         List<RewardInfo> rewardsList = new ArrayList<>();
@@ -621,8 +621,8 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        MengYanMiJingBattle mengYanMiJingBattle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
         int buffRefreshTimes = mengYanMiJingBattle.getBuffRefreshTimes();
         if (buffRefreshTimes <= 0) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
@@ -647,8 +647,8 @@ public class BattleHandler extends BaseHandler {
             return;
         }
         HeroModule heroModule = player.getHeroModule();
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        Map<Integer, List<String>> lineups = chapterModule.getLineups(9);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        Map<Integer, List<String>> lineups = battleModule.getLineups(9);
         if (lineups != null) {
             lineups.forEach((k, v) -> {
                 LineupInfo.Builder lineup = LineupInfo.newBuilder();
@@ -664,7 +664,7 @@ public class BattleHandler extends BaseHandler {
                 resp.addLineups(lineup);
             });
         }
-        MengYanMiJingBattle mengYanMiJingBattle = chapterModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+        MengYanMiJingBattle mengYanMiJingBattle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
         resp.setBuffRefreshTimes(mengYanMiJingBattle.getBuffRefreshTimes());
         resp.setStartBattle(mengYanMiJingBattle.getStartBattleId());
         resp.putAllBuffIds(mengYanMiJingBattle.getBuffIdsMap());
@@ -683,10 +683,10 @@ public class BattleHandler extends BaseHandler {
         BattleLineupChooseResponse_13000032.Builder resp = BattleLineupChooseResponse_13000032.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         int battleType = req.getBattleType();
         int seq = req.getSeq();
-        chapterModule.updateLineupChoose(battleType, seq);
+        battleModule.updateLineupChoose(battleType, seq);
         client.sendProtocol(resp);
     }
 
@@ -695,10 +695,10 @@ public class BattleHandler extends BaseHandler {
         BattleLineupResponse_13000049.Builder resp = BattleLineupResponse_13000049.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         int battleType = req.getBattleType();
         LineupInfo lineup = req.getLineup();
-        chapterModule.updateLineup(battleType, lineup.getSeq(), lineup.getHeroUidList());
+        battleModule.updateLineup(battleType, lineup.getSeq(), lineup.getHeroUidList());
         client.sendProtocol(resp);
     }
 
@@ -708,8 +708,8 @@ public class BattleHandler extends BaseHandler {
         int type = req.getType();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaoHeartBattle daoHeartBattle = battleModule.getBattle(type);
         if (daoHeartBattle != null) {
             resp.addAllId(daoHeartBattle.getRewardBattleIds());
         }
@@ -723,8 +723,8 @@ public class BattleHandler extends BaseHandler {
         int type = req.getType();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaoHeartBattle daoHeartBattle = battleModule.getBattle(type);
         if (daoHeartBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_data_not_found.getId());
             return;
@@ -764,8 +764,8 @@ public class BattleHandler extends BaseHandler {
         ;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaoHeartBattle daoHeartBattle = battleModule.getBattle(type);
         if (daoHeartBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
@@ -825,8 +825,8 @@ public class BattleHandler extends BaseHandler {
         int type = req.getType();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaoHeartBattle daoHeartBattle = battleModule.getBattle(type);
         if (daoHeartBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
@@ -835,7 +835,7 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
         }
-        IBattleHandler battleHandler = chapterModule.getBattle(type);
+        IBattleHandler battleHandler = battleModule.getBattle(type);
         int errorCode = battleHandler.check(id, 0);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
@@ -893,8 +893,8 @@ public class BattleHandler extends BaseHandler {
                 return;
             }
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        DaoHeartBattle daoHeartBattle = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaoHeartBattle daoHeartBattle = battleModule.getBattle(type);
         if (daoHeartBattle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
@@ -913,9 +913,9 @@ public class BattleHandler extends BaseHandler {
         int index = req.getIndex();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         PointRewardModule pointRewardModule = player.getPointRewardModule();
-        BattleDayChallenge battle = chapterModule.getBattle(DungeonTypeEnum.DayChallenge);
+        BattleDayChallenge battle = battleModule.getBattle(DungeonTypeEnum.DayChallenge);
         if (battle == null) {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
@@ -940,17 +940,17 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        if (!chapterModule.isBattlePass(id)) {
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        if (!battleModule.isBattlePass(id)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
             return;
         }
-        if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
+        if (battleModule.getDaySweepCount() >= GlobalConst.SweepNum) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
             return;
         }
         PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
-        chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
+        battleModule.setDaySweepCount(battleModule.getDaySweepCount() + 1);
         List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
         resp.addAllReward(reward);
         client.sendProtocol(resp);
@@ -967,16 +967,16 @@ public class BattleHandler extends BaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        if (!chapterModule.isHCBattlePass(id)) {
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        if (!battleModule.isHCBattlePass(id)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.illegal_request.getId());
             return;
         }
-        if (chapterModule.getDaySweepCount() >= GlobalConst.SweepNum) {
+        if (battleModule.getDaySweepCount() >= GlobalConst.SweepNum) {
             player.handleEvent(EventTypeEnum.WatchAds);
         }
         PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
-        chapterModule.setDaySweepCount(chapterModule.getDaySweepCount() + 1);
+        battleModule.setDaySweepCount(battleModule.getDaySweepCount() + 1);
         List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
         resp.addAllReward(reward);
         client.sendProtocol(resp);
@@ -988,14 +988,14 @@ public class BattleHandler extends BaseHandler {
         int time = req.getTime();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        List<Integer> storeStaminas = chapterModule.getStoreStaminas();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        List<Integer> storeStaminas = battleModule.getStoreStaminas();
         if (!storeStaminas.contains(time)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
             return;
         }
         storeStaminas.remove(Integer.valueOf(time));
-        if (chapterModule.isStaminaExpire(DateUtil.currentTimeSeconds(), time)) {
+        if (battleModule.isStaminaExpire(DateUtil.currentTimeSeconds(), time)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.stamina_expire.getId());
             return;
         }
@@ -1009,7 +1009,7 @@ public class BattleHandler extends BaseHandler {
         boolean advertising = request.getAdvertising();
         BattlePatrolRewardResponse_13000045.Builder resp = BattlePatrolRewardResponse_13000045.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         if (!player.isFuncOpen(InitialUI.HangingUpp)) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
             return;
@@ -1022,22 +1022,22 @@ public class BattleHandler extends BaseHandler {
         if (isFast) {
             // 快速巡逻次数处理
             if (advertising) {
-                int quickPatrolCount = chapterModule.getAdPatrolCount();
+                int quickPatrolCount = battleModule.getAdPatrolCount();
                 if (quickPatrolCount >= GlobalConst.AdPatrolCnt) {
                     client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
                     return;
                 }
-                chapterModule.setAdPatrolCount(quickPatrolCount + 1);
+                battleModule.setAdPatrolCount(quickPatrolCount + 1);
                 player.handleEvent(EventTypeEnum.WatchAds);
             } else {
-                int quickPatrolCount = chapterModule.getQuickPatrolCount();
+                int quickPatrolCount = battleModule.getQuickPatrolCount();
                 if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
                     client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
                     return;
                 }
                 // 消耗
                 PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol);
-                chapterModule.setQuickPatrolCount(quickPatrolCount + 1);
+                battleModule.setQuickPatrolCount(quickPatrolCount + 1);
             }
         }
         // 巡逻时间
@@ -1053,7 +1053,7 @@ public class BattleHandler extends BaseHandler {
             if (welfareValue > 0) {
                 maxSeconds += welfareValue * 60 * 60;
             }
-            int seconds = DateUtil.currentTimeSeconds() - chapterModule.getLastPatrolRewardTime();
+            int seconds = DateUtil.currentTimeSeconds() - battleModule.getLastPatrolRewardTime();
             if (seconds >= maxSeconds) {
                 seconds = maxSeconds;
             }
@@ -1072,7 +1072,7 @@ public class BattleHandler extends BaseHandler {
         resp.setExp(exp);
         resp.setGold(gold);
         if (!isFast) {
-            chapterModule.setPatrolRewardTime();
+            battleModule.setPatrolRewardTime();
         }
         player.handleEvent(EventTypeEnum.Patrol, isFast);
         client.sendProtocol(resp);
@@ -1083,10 +1083,10 @@ public class BattleHandler extends BaseHandler {
         BattleRougeRefreshResponse_13000053.Builder resp = BattleRougeRefreshResponse_13000053.newBuilder();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        int freeRougeTimes = chapterModule.getFreeRougeTimes();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        int freeRougeTimes = battleModule.getFreeRougeTimes();
         if (freeRougeTimes < 3) {
-            chapterModule.setFreeRougeTimes(freeRougeTimes + 1);
+            battleModule.setFreeRougeTimes(freeRougeTimes + 1);
         } else {
             // TODO 看广告， 和最大次数
         }
@@ -1103,16 +1103,16 @@ public class BattleHandler extends BaseHandler {
             return;
         }
         long playerId = player.getPlayerId();
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         for (int i = 0; i < indexList.size(); i++) {
             int index = indexList.get(i);
             int id = idList.get(i);
-            //			boolean pass = chapterModule.isExploreChapterPass(id);
+            //			boolean pass = battleModule.isExploreChapterPass(id);
             //			if (!pass) {
             //				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
             //				return;
             //			}
-            Chapter chapter = chapterModule.getChapter(id);
+            Chapter chapter = battleModule.getChapter(id);
             if (chapter == null) {
                 continue;
             }
@@ -1144,7 +1144,7 @@ public class BattleHandler extends BaseHandler {
             int index = indexList.get(i);
             int id = idList.get(i);
             BattleConfig battleConfig = BattleManager.instance().get(id);
-            Chapter chapter = chapterModule.getChapter(id);
+            Chapter chapter = battleModule.getChapter(id);
             if (chapter == null) {
                 continue;
             }
@@ -1166,16 +1166,16 @@ public class BattleHandler extends BaseHandler {
             return;
         }
         long playerId = player.getPlayerId();
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         for (int i = 0; i < indexList.size(); i++) {
             int index = indexList.get(i);
             int id = idList.get(i);
-            //			boolean pass = chapterModule.isExploreChapterPass(id);
+            //			boolean pass = battleModule.isExploreChapterPass(id);
             //			if (!pass) {
             //				client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
             //				return;
             //			}
-            Chapter chapter = chapterModule.getChapter(id);
+            Chapter chapter = battleModule.getChapter(id);
             List<Integer> rewards = chapter.getRewards();
             if (rewards.contains(index)) {
                 client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
@@ -1205,7 +1205,7 @@ public class BattleHandler extends BaseHandler {
             HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
             List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.BattleBoxRandomId[index], OpType.BattleEnd);
             resp.addAllReward(reward);
-            Chapter chapter = chapterModule.getChapter(id);
+            Chapter chapter = battleModule.getChapter(id);
             chapter.getRewards().add(index);
         }
         client.sendProtocol(resp);
@@ -1221,9 +1221,9 @@ public class BattleHandler extends BaseHandler {
         //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-        BattleModule chapterModule = player.getModule(BattleModule.class);
+        BattleModule battleModule = player.getModule(BattleModule.class);
         //		long randomSeed = System.currentTimeMillis() ;
-        IBattleHandler battleHandler = chapterModule.getBattle(type);
+        IBattleHandler battleHandler = battleModule.getBattle(type);
         int errorCode = battleHandler.check(dungeonId, id);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
@@ -1232,7 +1232,7 @@ public class BattleHandler extends BaseHandler {
         errorCode = battleHandler.battleStart(dungeonId);
         if (errorCode == 0) {
             // 设置当前在打的关卡数据
-            chapterModule.setAttackingData(0, type, dungeonId, id, 0, 0);
+            battleModule.setAttackingData(0, type, dungeonId, id, 0, 0);
             if (battleHandler instanceof HCBattleHandler) {
                 // 触发事件
                 player.handleEvent(EventTypeEnum.HCBattleStart, dungeonId, 0);
@@ -1252,18 +1252,18 @@ public class BattleHandler extends BaseHandler {
         BattleShareRequest_13000007 req = (BattleShareRequest_13000007) message;
         BattleShareResponse_13000008.Builder resp = BattleShareResponse_13000008.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        int battleRewardMultipleTimes = chapterModule.getBattleRewardMultipleTimes();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        int battleRewardMultipleTimes = battleModule.getBattleRewardMultipleTimes();
         if (battleRewardMultipleTimes >= GlobalConst.Share) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
         }
-        List<RewardInfo> lastBattleRewards = chapterModule.getLastBattleRewards();
+        List<RewardInfo> lastBattleRewards = battleModule.getLastBattleRewards();
         if (lastBattleRewards == null) {
             client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
             return;
         }
-        chapterModule.setBattleRewardMultipleTimes(battleRewardMultipleTimes + 1);
+        battleModule.setBattleRewardMultipleTimes(battleRewardMultipleTimes + 1);
         List<RewardInfo> multipleRewards = PlayerHelper.multipleRewards(player, lastBattleRewards, GlobalConst.ShareCnt - 1);
         resp.addAllRewards(multipleRewards);
         client.sendProtocol(resp);
@@ -1277,8 +1277,8 @@ public class BattleHandler extends BaseHandler {
         int subId = req.getSubId();
         boolean win = req.getWin();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        IBattleHandler battleHandler = chapterModule.getBattle(type);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        IBattleHandler battleHandler = battleModule.getBattle(type);
         int errorCode = battleHandler.check(typeId, subId);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
@@ -1307,19 +1307,19 @@ public class BattleHandler extends BaseHandler {
         int killMonsterCount = req.getKillMonsterCount();
         int killMonsterBossCount = req.getKillMonsterBossCount();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleModule chapterModule = player.getModule(BattleModule.class);
-        int attackingId = chapterModule.getAttackingId();
-        int attackingType = chapterModule.getAttackingType();
-        long attackingUid = chapterModule.getAttackingUid();
-        int attackingDungeonId = chapterModule.getAttackingDungeonId();
-        int lineupId = chapterModule.getLineupId();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        int attackingId = battleModule.getAttackingId();
+        int attackingType = battleModule.getAttackingType();
+        long attackingUid = battleModule.getAttackingUid();
+        int attackingDungeonId = battleModule.getAttackingDungeonId();
+        int lineupId = battleModule.getLineupId();
         if (attackingType == 0) {
             client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
             return;
         }
         BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
         player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
-        IBattleHandler battleHandler = chapterModule.getBattle(attackingType);
+        IBattleHandler battleHandler = battleModule.getBattle(attackingType);
         ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req);
         if (result.getErrorCode() > 0) {
             client.sendProtocol(resp, result.getErrorCode());
@@ -1337,11 +1337,11 @@ public class BattleHandler extends BaseHandler {
         if (req.getWin()) {
             player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId, attackingId);
         }
-        chapterModule.setAttackingData(0, 0, 0, 0, 0, 0);
+        battleModule.setAttackingData(0, 0, 0, 0, 0, 0);
         resp.addAllRewards(allRewards);
-        chapterModule.setLastBattleRewards(allRewards);
+        battleModule.setLastBattleRewards(allRewards);
         client.sendProtocol(resp);
-        //		Chapter chapter = chapterModule.getChapter(attackingDungeonId);
+        //		Chapter chapter = battleModule.getChapter(attackingDungeonId);
         //		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
     }
     private void reward(NetClient client, Object message) {
