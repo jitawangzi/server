@@ -1,36 +1,25 @@
 package cn.game.core.execute;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BooleanSupplier;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import cn.game.core.execute.error.ErrorHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.AsyncUtils;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BooleanSupplier;
 
 /**
-
-任务执行服务，管理所有邮箱并协调任务执行
-
-支持虚拟线程，提供同步接口使用能力
-
-跨ID的逻辑，可能有死锁风险，需要用异步api，不能用同步等待返回结果。
-
-除非非常肯定不会产生死锁
-*/
+ * 任务执行服务，管理所有邮箱并协调任务执行
+ * 支持虚拟线程，提供同步接口使用能力
+ * 跨ID的逻辑，可能有死锁风险，需要用异步api，不能用同步等待返回结果。
+ * 除非非常肯定不会产生死锁
+ */
 public class TaskExecutorService implements AutoCloseable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaskExecutorService.class);
 
@@ -65,13 +54,10 @@ public class TaskExecutorService implements AutoCloseable {
 	private static final Object lock = new Object();
 
 	/**
-	
-	使用指定配置和邮箱管理器创建任务执行服务
-	
-	@param config 任务执行配置
-	
-	@param mailboxManager 邮箱管理器
-	*/
+	 * 使用指定配置和邮箱管理器创建任务执行服务
+	 * @param config 任务执行配置
+	 * @param mailboxManager 邮箱管理器
+	 */
 	public TaskExecutorService(TaskExecutionConfig config, MailboxManager mailboxManager) {
 		this.config = config;
 		this.mailboxManager = mailboxManager;
@@ -88,26 +74,23 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	使用指定配置创建任务执行服务，默认使用一对一邮箱管理器
-	@param config 任务执行配置
-	*/
+	 * 使用指定配置创建任务执行服务，默认使用一对一邮箱管理器
+	 * @param config 任务执行配置
+	 */
 	public TaskExecutorService(TaskExecutionConfig config) {
 		this(config, new OneToOneMailboxManager(config.getMaxQueueSize()));
 	}
 
 	/**
-	
-	创建任务执行服务（使用默认配置）
-	*/
+	 * 创建任务执行服务（使用默认配置）
+	 */
 	public TaskExecutorService() {
 		this(TaskExecutionConfig.getDefault());
 	}
 
 	/**
-	
-	启动定期邮箱清理任务
-	*/
+	 * 启动定期邮箱清理任务
+	 */
 	private void startMailboxCleaner() {
 		this.mailboxCleanFuture = SchedulerService.getInstance()
 				.scheduleAtFixedRate(this::cleanIdleMailboxes, MAILBOX_CLEAN_INTERVAL_MS, TimeUnit.MILLISECONDS);
@@ -115,18 +98,16 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	定期清理长时间未活跃且队列为空的邮箱
-	*/
+	 * 定期清理长时间未活跃且队列为空的邮箱
+	 */
 	private void cleanIdleMailboxes() {
 		mailboxManager.cleanIdleMailboxes(MAILBOX_IDLE_TIMEOUT_MS);
 	}
 
 	/**
-	
-	获取全局单例（自定义参数）
-	@return 单例
-	*/
+	 * 获取全局单例（自定义参数）
+	 * @return 单例
+	 */
 	public static TaskExecutorService getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
@@ -139,11 +120,10 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	允许重置单例（重设参数），线程安全
-	@param config 配置
-	@param mailboxManager 邮箱管理器
-	*/
+	 * 允许重置单例（重设参数），线程安全
+	 * @param config 配置
+	 * @param mailboxManager 邮箱管理器
+	 */
 	public static void resetInstance(TaskExecutionConfig config, MailboxManager mailboxManager) {
 		synchronized (lock) {
 			if (instance != null) {
@@ -154,72 +134,75 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	允许重置单例（重设参数），线程安全，使用默认的一对一邮箱管理器
-	@param config 配置
-	*/
+	 * 允许重置单例（重设参数），线程安全，使用默认的一对一邮箱管理器
+	 * @param config 配置
+	 */
 	public static void resetInstance(TaskExecutionConfig config) {
 		resetInstance(config, new OneToOneMailboxManager(config.getMaxQueueSize()));
 	}
 
 	/**
-	
-	执行任务并返回结果Future
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param <T> 结果类型
-	@return 包含任务结果的Future
-	*/
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task) {
-		return execute(entityId, task, "Anonymous Task");
+		return execute(entityId, task, "Anonymous Task", 0, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	执行任务并返回结果Future
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param description 任务描述
-	@param <T> 结果类型
-	@return 包含任务结果的Future
-	*/
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
-		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs());
+		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	执行任务并返回结果Future
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param description 任务描述
-	@param priority 任务优先级,默认0，高优先级先执行
-	@param <T> 结果类型
-	@return 包含任务结果的Future
-	*/
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
-		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs());
+		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	执行任务并返回结果Future
-	
-	@param entityId 实体ID
-	
-	@param task 要执行的任务
-	
-	@param description 任务描述
-	
-	@param priority 任务优先级,默认0，高优先级先执行
-	
-	@param timeoutMs 超时时间（毫秒）
-	
-	@param <T> 结果类型
-	
-	@return 包含任务结果的Future
-	*/
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param timeoutMs 超时时间（毫秒）
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs) {
+		return execute(entityId, task, description, priority, timeoutMs, ErrorHandler.DISCARD_HANDLER);
+	}
+
+	/**
+	 * 执行任务并返回结果Future
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param timeoutMs 超时时间（毫秒）
+	 * @param errorHandler 错误处理策略
+	 * @param <T> 结果类型
+	 * @return 包含任务结果的Future
+	 */
+	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs, ErrorHandler errorHandler) {
 		if (!running.get()) {
 			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
 		}
@@ -232,6 +215,7 @@ public class TaskExecutorService implements AutoCloseable {
 						T result = task.call();
 						resultPromise.complete(result);
 					} catch (Throwable e) {
+						// 对于并发任务，不应用重试逻辑，直接失败
 						resultPromise.fail(e);
 					}
 				});
@@ -252,6 +236,7 @@ public class TaskExecutorService implements AutoCloseable {
 				.description(description)
 				.priority(priority)
 				.timeoutMs(timeoutMs)
+				.errorHandler(errorHandler)
 				.build();
 
 		TaskWrapper<T> taskWrapper = new TaskWrapper<>(wrappedTask, resultPromise);
@@ -270,87 +255,112 @@ public class TaskExecutorService implements AutoCloseable {
 			submitProcessor(mailbox);
 		}
 
+		// 使用 Vert.x 的超时机制
 		if (timeoutMs > 0) {
 			return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
 		}
 		return resultPromise.future();
 	}
 
+
 	/**
-	
-	在虚拟线程中执行任务并等待结果（同步方法）
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param <T> 结果类型
-	@return 任务结果
-	@throws Exception 如果任务执行失败
-	*/
+	 * 在虚拟线程中执行任务并等待结果（同步方法）
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param <T> 结果类型
+	 * @return 任务结果
+	 * @throws Exception 如果任务执行失败
+	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task) throws Exception {
-		return executeAndAwait(entityId, task, 0);
+		return executeAndAwait(entityId, task, "Anonymous Task", 0, 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	在虚拟线程中执行任务并等待结果（同步方法）
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param priority 任务优先级,默认0，高优先级先执行
-	@param <T> 结果类型
-	@return 任务结果
-	@throws Exception 如果任务执行失败
-	*/
+	 * 在虚拟线程中执行任务并等待结果（同步方法）
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param <T> 结果类型
+	 * @return 任务结果
+	 * @throws Exception 如果任务执行失败
+	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task, int priority) throws Exception {
-		return executeAndAwait(entityId, task, "Anonymous Task", priority, 0);
+		return executeAndAwait(entityId, task, "Anonymous Task", priority, 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	在虚拟线程中执行任务并等待结果（同步方法）
-	@param entityId 实体ID
-	@param task 要执行的任务
-	@param description 任务描述
-	@param priority 任务优先级,默认0，高优先级先执行
-	@param timeoutMs 超时时间（毫秒）
-	@param <T> 结果类型
-	@return 任务结果
-	@throws Exception 如果任务执行失败
-	*/
+	 * 在虚拟线程中执行任务并等待结果（同步方法）
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param timeoutMs 超时时间（毫秒）
+	 * @param <T> 结果类型
+	 * @return 任务结果
+	 * @throws Exception 如果任务执行失败
+	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
+		return executeAndAwait(entityId, task, description, priority, timeoutMs, ErrorHandler.DISCARD_HANDLER);
+	}
+
+	/**
+	 * 在虚拟线程中执行任务并等待结果（同步方法）
+	 * @param entityId 实体ID
+	 * @param task 要执行的任务
+	 * @param description 任务描述
+	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param timeoutMs 超时时间（毫秒）
+	 * @param errorHandler 错误处理策略
+	 * @param <T> 结果类型
+	 * @return 任务结果
+	 * @throws Exception 如果任务执行失败
+	 */
+	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs, ErrorHandler errorHandler) throws Exception {
 		// 不能在eventloop中执行
 		AsyncUtils.checkEventLoop();
 
 		// 检查死锁风险
 		DeadlockGuard.checkCrossIdSyncWait(entityId, description);
 
-		Future<T> future = execute(entityId, task, description, priority, timeoutMs);
+		Future<T> future = execute(entityId, task, description, priority, timeoutMs, errorHandler);
 		return AsyncUtils.await(future, timeoutMs, TimeUnit.MILLISECONDS);
 	}
 
 	/**
-	
-	提交任务但不返回结果
-	@param entityId 实体ID
-	@param task 任务
-	@return 如果成功提交返回true
-	*/
+	 * 提交任务但不返回结果
+	 * @param entityId 实体ID
+	 * @param task 任务
+	 * @return 如果成功提交返回true
+	 */
 	public boolean submitTask(long entityId, Runnable task) {
-		return submitTask(entityId, task, "Anonymous Task");
+		return submitTask(entityId, task, "Anonymous Task", ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
-	
-	提交任务但不返回结果
-	@param entityId 实体ID
-	@param task 任务
-	@param description 任务描述
-	@return 如果成功提交返回true
-	*/
+	 * 提交任务但不返回结果
+	 * @param entityId 实体ID
+	 * @param task 任务
+	 * @param description 任务描述
+	 * @return 如果成功提交返回true
+	 */
 	public boolean submitTask(long entityId, Runnable task, String description) {
+		return submitTask(entityId, task, description, ErrorHandler.DISCARD_HANDLER);
+	}
+
+	/**
+	 * 提交任务但不返回结果
+	 * @param entityId 实体ID
+	 * @param task 任务
+	 * @param description 任务描述
+	 * @param errorHandler 错误处理策略
+	 * @return 如果成功提交返回true
+	 */
+	public boolean submitTask(long entityId, Runnable task, String description, ErrorHandler errorHandler) {
 		try {
 			execute(entityId, () -> {
 				task.run();
 				return null;
-			}, description);
+			}, description, 0, config.getDefaultTaskTimeoutMs(), errorHandler);
 			return true;
 		} catch (Exception e) {
 			LOGGER.error("Failed to submit task: " + e.getMessage(), e);
@@ -358,12 +368,11 @@ public class TaskExecutorService implements AutoCloseable {
 		}
 	}
 
+
 	/**
-	
-	提交邮箱处理器
-	
-	@param mailbox 要处理的邮箱
-	*/
+	 * 提交邮箱处理器
+	 * @param mailbox 要处理的邮箱
+	 */
 	public void submitProcessor(ActorMailbox mailbox) {
 		if (!running.get()) {
 			mailbox.setProcessing(false);
@@ -381,47 +390,42 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	获取邮箱管理器
-	@return 邮箱管理器
-	*/
+	 * 获取邮箱管理器
+	 * @return 邮箱管理器
+	 */
 	public MailboxManager getMailboxManager() {
 		return mailboxManager;
 	}
 
 	/**
-	
-	获取邮箱
-	@param entityId 实体ID
-	@return 邮箱，如果不存在返回null
-	*/
+	 * 获取邮箱
+	 * @param entityId 实体ID
+	 * @return 邮箱，如果不存在返回null
+	 */
 	public ActorMailbox getMailbox(long entityId) {
 		return mailboxManager.getMailbox(entityId);
 	}
 
 	/**
-	
-	移除邮箱
-	@param entityId 实体ID
-	@return 如果邮箱存在并被移除返回true
-	*/
+	 * 移除邮箱
+	 * @param entityId 实体ID
+	 * @return 如果邮箱存在并被移除返回true
+	 */
 	public boolean removeMailbox(long entityId) {
 		return mailboxManager.removeMailbox(entityId);
 	}
 
 	/**
-	
-	获取监控器
-	@return 执行监控器
-	*/
+	 * 获取监控器
+	 * @return 执行监控器
+	 */
 	public ExecutionMonitor getMonitor() {
 		return monitor;
 	}
 
 	/**
-	
-	关闭执行服务
-	*/
+	 * 关闭执行服务
+	 */
 	@Override
 	public void close() {
 		if (running.compareAndSet(true, false)) {
@@ -454,10 +458,9 @@ public class TaskExecutorService implements AutoCloseable {
 	}
 
 	/**
-	
-	获取Vertx实例
-	@return Vertx实例
-	*/
+	 * 获取Vertx实例
+	 * @return Vertx实例
+	 */
 	public Vertx getVertx() {
 		return vertx;
 	}

@@ -1,5 +1,7 @@
 package cn.game.core.execute;
 
+import cn.game.core.execute.error.ErrorHandler;
+
 /**
  * 表示可以在ActorMailbox中执行的任务
  */
@@ -10,23 +12,29 @@ public interface Task<T> extends Comparable<Task<?>> {
      * @throws Exception 如果任务执行过程中发生错误
      */
     T execute() throws Exception;
-    
+
     /**
      * 获取任务优先级
      * @return 优先级值，值越大优先级越高
      */
     int getPriority();
-    
+
     /**
      * 获取任务超时时间（毫秒）
      * @return 超时时间，0表示不设置超时
      */
     long getTimeoutMs();
-    
+
     /**
      * 获取任务描述信息，用于日志和调试
      * @return 描述信息
      */
     String getDescription();
+
+    /**
+     * 获取此任务的错误处理器
+     * @return 错误处理器
+     */
+    ErrorHandler getErrorHandler();
 }
 

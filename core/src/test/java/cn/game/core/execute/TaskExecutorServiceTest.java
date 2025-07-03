@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import cn.game.core.execute.error.ErrorHandler;
+import cn.game.core.execute.error.ErrorPolicy;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.AsyncUtils;
 import io.vertx.core.Future;
@@ -260,7 +264,8 @@ class TaskExecutorServiceTest {
 		TaskExecutionException exception = assertThrows(TaskExecutionException.class, () -> AsyncUtils
 				.awaitWithException(futureA, taskTimeout + 5000, TimeUnit.MILLISECONDS),
 				"应该抛出 TaskExecutionException");
-		assertTrue(exception.getCause() instanceof CrossIdSyncWaitException, "Cause 应为 CrossIdSyncWaitException");
+
+		assertTrue(ExceptionUtils.indexOfThrowable(exception, CrossIdSyncWaitException.class) > -1, "Cause 应为 CrossIdSyncWaitException");
 
 	}
 
@@ -324,9 +329,8 @@ class TaskExecutorServiceTest {
 
 		// 验证 future 失败并且异常信息匹配
 		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.awaitWithException(future, 1, TimeUnit.SECONDS));
-		// 执行任务的异常，都被封装成了 TaskExecutionException
-		assertEquals(TaskExecutionException.class, ex.getClass());
-		assertEquals(errorMessage, ex.getCause().getMessage());
+		assertEquals(RuntimeException.class, ex.getClass());
+		assertEquals(errorMessage, ex.getMessage());
 	}
 
 	@Test
@@ -341,5 +345,55 @@ class TaskExecutorServiceTest {
 		// 验证 future 因超时而失败
 		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.await(future, timeoutMs + 50, TimeUnit.MILLISECONDS));
 		assertTrue(ex instanceof TimeoutException || (ex.getCause() != null && ex.getCause() instanceof TimeoutException));
+	}
+
+	@Test
+	@DisplayName("发生异常时，应该进行重试")
+	void testRetry_whenException() {
+
+		long startTime = System.currentTimeMillis();
+		AtomicInteger retryCount = new AtomicInteger(0);
+		int maxRetries = 3;
+		int retryDelaySeconds = 3;
+		ErrorHandler errorHandler = context -> {
+			Throwable cause = context.getCause();
+			if (cause instanceof SQLException) {
+				return ErrorPolicy.discard();
+			} else {
+				retryCount.incrementAndGet();
+				// 重试三次
+				// 超过重试次数后，丢弃任务
+				System.err.println("重试次数: " + context.getAttemptCount() + ", 错误: " + cause.getMessage());
+				if (context.getAttemptCount() >= maxRetries) {
+					return ErrorPolicy.discard();
+				}
+				return ErrorPolicy.retryHeadWithDelay(retryDelaySeconds, TimeUnit.SECONDS);
+			}
+		};
+
+		Future<String> future = taskExecutorService.execute(20, () -> {
+			throw new RuntimeException("Test exception for retry");
+		}, "Test exception for retry", 0, 30000, errorHandler); // 超时时间应该比重试的时间长
+
+		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.await(future, 50, TimeUnit.SECONDS));
+		assertTrue(ex instanceof RuntimeException || (ex.getCause() != null && ex.getCause() instanceof RuntimeException));
+
+		System.out.println("重试" + maxRetries + "次，耗时: " + (System.currentTimeMillis() - startTime) / 1000 + "秒");
+		assertTrue(retryCount.get() == maxRetries, "重试次数应为" + maxRetries + "次");
+		// 第三次直接失败了，所以是2个时间间隔
+		assertTrue((System.currentTimeMillis() - startTime) / 1000 == (maxRetries - 1) * retryDelaySeconds,
+				"总耗时应为 " + (maxRetries - 1) * retryDelaySeconds + " 秒");
+
+		startTime = System.currentTimeMillis();
+
+		Future<String> future2 = taskExecutorService.execute(21, () -> {
+			throw new SQLException("sql exception");
+		}, "sql exception for discard", 0, 3000, errorHandler);
+
+		ex = assertThrows(Exception.class, () -> AsyncUtils.await(future2, 50, TimeUnit.SECONDS));
+		assertTrue(ex instanceof SQLException || (ex.getCause() != null && ex.getCause() instanceof SQLException));
+		// 直接失败，不重试，执行时间应该很短
+		assertTrue(System.currentTimeMillis() - startTime <= 100);
+
 	}
 }

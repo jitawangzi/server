@@ -21,13 +21,12 @@ public class ActorMailbox {
     public ActorMailbox(long entityId, int maxQueueSize) {
         this.entityId = entityId;
 		this.maxQueueSize = maxQueueSize <= 0 ? Integer.MAX_VALUE : maxQueueSize;
-//        this.taskQueue = new PriorityBlockingQueue<>(Math.min(11, maxQueueSize));
-		// 保持任务的FIFO顺序，有界，两级优先级
+		// 保持任务的FIFO顺序，有界,两级优先级
 		this.taskQueue = new LinkedBlockingDeque<>(this.maxQueueSize);
     }
     
     /**
-     * 尝试添加任务到队列
+     * 尝试添加任务到队列尾部
      * @param taskWrapper 要添加的任务包装器
      * @return 如果成功添加返回true，队列已满返回false
      */
@@ -39,7 +38,7 @@ public class ActorMailbox {
             return false;
         }
         
-        boolean result = taskQueue.offer(taskWrapper);
+		boolean result = taskQueue.offerLast(taskWrapper);
         if (result) {
             stats.submittedTasks.incrementAndGet();
         }
@@ -47,11 +46,29 @@ public class ActorMailbox {
     }
     
     /**
+     * 尝试添加任务到队列头部 (用于重试)
+     * @param taskWrapper 要添加的任务包装器
+     * @return 如果成功添加返回true，队列已满返回false
+     */
+    public boolean offerTaskFirst(TaskWrapper<?> taskWrapper) {
+        lastAccessTime.set(System.currentTimeMillis());
+
+        if (taskQueue.size() >= maxQueueSize) {
+            stats.rejectedTasks.incrementAndGet();
+            // 即使是重试，如果队列满了也只能拒绝
+            return false;
+        }
+
+        // 重试的任务不计入 submittedTasks
+        return taskQueue.offerFirst(taskWrapper);
+    }
+
+    /**
      * 获取并移除队列头部的任务
      * @return 队列头部的任务，如果队列为空则返回null
      */
     public TaskWrapper<?> pollTask() {
-        TaskWrapper<?> task = taskQueue.poll();
+		TaskWrapper<?> task = taskQueue.pollFirst(); // 从头部获取
         if (task != null) {
             lastAccessTime.set(System.currentTimeMillis());
         }
