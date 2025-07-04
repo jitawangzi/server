@@ -1,5 +1,19 @@
 package cn.game.core.execute;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BooleanSupplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.core.execute.error.ErrorHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
@@ -7,12 +21,6 @@ import cn.game.core.util.AsyncUtils;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BooleanSupplier;
 
 /**
  * 任务执行服务，管理所有邮箱并协调任务执行
@@ -207,26 +215,26 @@ public class TaskExecutorService implements AutoCloseable {
 			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
 		}
 		// 例外：entityId==0，直接并发执行
-		if (entityId == 0) {
-			Promise<T> resultPromise = Promise.promise();
-			try {
-				executor.submit(() -> {
-					try {
-						T result = task.call();
-						resultPromise.complete(result);
-					} catch (Throwable e) {
-						// 对于并发任务，不应用重试逻辑，直接失败
-						resultPromise.fail(e);
-					}
-				});
-			} catch (RejectedExecutionException e) {
-				resultPromise.fail(e);
-			}
-			if (timeoutMs > 0) {
-				return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
-			}
-			return resultPromise.future();
-		}
+		/*	if (entityId == 0) {
+				Promise<T> resultPromise = Promise.promise();
+				try {
+					executor.submit(() -> {
+						try {
+							T result = task.call();
+							resultPromise.complete(result);
+						} catch (Throwable e) {
+							// 对于并发任务，不应用重试逻辑，直接失败
+							resultPromise.fail(e);
+						}
+					});
+				} catch (RejectedExecutionException e) {
+					resultPromise.fail(e);
+				}
+				if (timeoutMs > 0) {
+					return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
+				}
+				return resultPromise.future();
+			}*/
 
 		// 正常邮箱串行逻辑
 		// 创建任务和结果Promise

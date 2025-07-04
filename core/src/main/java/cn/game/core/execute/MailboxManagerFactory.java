@@ -70,7 +70,7 @@ public class MailboxManagerFactory {
 
 		@Override
 		protected long mapToMailboxId(long entityId) {
-// 特殊情况：entityId==0 保持独立邮箱
+			// 特殊情况：entityId==0 保持独立邮箱
 			if (entityId == 0) {
 				return 0L;
 			}

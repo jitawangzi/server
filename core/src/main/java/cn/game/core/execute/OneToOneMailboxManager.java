@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,12 @@ public class OneToOneMailboxManager implements MailboxManager {
 	@return 邮箱ID
 	*/
 	protected long mapToMailboxId(long entityId) {
+//		if (entityId == 0) {
+//			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
+//		}
 		if (entityId == 0) {
-			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
+			// 0的时候，不对应任何实体，随机返回一个邮箱ID，避免0的任务堆积到一起。
+			return ThreadLocalRandom.current().nextInt(128);
 		}
 		return entityId;
 	}

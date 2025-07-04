@@ -1,5 +1,7 @@
 package cn.game.core.execute;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +42,11 @@ public class SharedMailboxManager extends OneToOneMailboxManager {
 	*/
 	@Override
 	protected long mapToMailboxId(long entityId) {
+//		if (entityId == 0) {
+//			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
+//		}
 		if (entityId == 0) {
-			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
+			return ThreadLocalRandom.current().nextInt(bucketCount);
 		}
 		// 其他ID映射到共享邮箱
 		return Math.abs(entityId % bucketCount);
