@@ -6,7 +6,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +13,10 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.ServerType;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.matcher.ElementMatchers;
 
 public class RpcFactory {
 	private static Logger log = LoggerFactory.getLogger(RpcFactory.class);
@@ -35,7 +38,7 @@ public class RpcFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId, ServerType serverType,
+	public static <T> T getImpl(Class<T> clazz, RpcClient rpcClient, CallType callType, String serverId, ServerType serverType,
 			long objectId) {
 		if (callType == CallType.PointToPoint && StringUtils.isBlank(serverId)) {
 			throw new IllegalArgumentException("serverId can't be null when callType is PointToPoint");
@@ -43,31 +46,47 @@ public class RpcFactory {
 		String targetAddr = callType == CallType.PointToPoint ? VxHolder.rpcServiceAddr(serverId) : VxHolder.rpcServiceAddr(serverType);
 		// 当objectId=0时使用缓存
 		if (objectId == 0) {
-			Key key = new Key(rpcInterfaceClass, targetAddr, callType);
-			return (T) instanceCache.computeIfAbsent(key, k -> createProxy(rpcInterfaceClass, rpcClient, targetAddr, callType, 0));
+			Key key = new Key(clazz, targetAddr, callType);
+			return (T) instanceCache.computeIfAbsent(key, k -> createProxy(clazz, rpcClient, targetAddr, callType, 0));
 		} else {
 			// 直接创建新实例，不缓存,带有objectId后实例变多，缓存命中率低，不合算。
-			return createProxy(rpcInterfaceClass, rpcClient, targetAddr, callType, objectId);
+			return createProxy(clazz, rpcClient, targetAddr, callType, objectId);
 		}
 	}
 
-	private static <T> T createProxy(Class<T> rpcInterfaceClass, RpcClient rpcClient, String targetAddr, CallType callType, long objectId) {
-		Invocation invocation = new Invocation();
-		invocation.setRpcClient(rpcClient);
-		invocation.setBlock(false);
-		invocation.setTargetAddr(targetAddr);
-		invocation.setCallType(callType);
-		invocation.setObjectId(objectId);
-		return (T) Proxy.newProxyInstance(rpcInterfaceClass.getClassLoader(), new Class[] { rpcInterfaceClass }, invocation);
+	@SuppressWarnings("unchecked")
+	private static <T> T createProxy(Class<T> clazz, RpcClient rpcClient, String targetAddr, CallType callType, long objectId) {
+		Invocation invocation = new Invocation(rpcClient, targetAddr, callType, objectId);
+
+		if (clazz.isInterface()) {
+			// 用JDK Proxy代理接口
+			return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, invocation);
+		} else {
+			// 用Byte Buddy代理类
+			try {
+				// 只拦截非Object类方法
+				return new ByteBuddy().subclass(clazz)
+						.method(ElementMatchers.not(ElementMatchers.isDeclaredBy(Object.class)))
+						.intercept(InvocationHandlerAdapter.of(invocation))
+						.make()
+						.load(clazz.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
+						.getLoaded()
+						.getDeclaredConstructor()
+						.newInstance();
+			} catch (Exception e) {
+				log.error("byte buddy proxy create failed", e);
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T getImpl(Class<T> rpcInterfaceClass, RpcClient rpcClient, CallType callType, String serverId,
 			ServerType serverType) {
 		return getImpl(rpcInterfaceClass, rpcClient, callType, serverId, serverType, 0);
 	}
 
-	private static Map<String, String> objectMethods;
+	// 用于判断Object类方法
+	private static final Map<String, String> objectMethods;
 	static {
 		objectMethods = new HashMap<>();
 		Method[] ms = Object.class.getMethods();
@@ -76,12 +95,9 @@ public class RpcFactory {
 		}
 	}
 
+	// InvocationHandler 适用于JDK Proxy和Byte Buddy
 	private static class Invocation implements InvocationHandler {
-
 		private RpcClient rpcClient;
-		/** 回调任务，只有在异步调用时才有用 */
-		@Deprecated
-		private Consumer<?> callBackTask;
 		/** 是否同步阻塞调用 ,暂时不用了，使用 返回值类型和 callBackTask 来区分异步*/
 		@Deprecated
 		private boolean block;
@@ -91,61 +107,38 @@ public class RpcFactory {
 		private CallType callType;
 		private long objectId;
 
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) {
+		public Invocation(RpcClient rpcClient, String targetAddr, CallType callType, long objectId) {
+			this.rpcClient = rpcClient;
+			this.targetAddr = targetAddr;
+			this.callType = callType;
+			this.objectId = objectId;
+		}
 
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			try {
-				// Object的方法，直接调用原始方法
+				// Object类方法直接执行原始逻辑
 				String mname = method.getName();
 				if (objectMethods.get(mname) != null) {
+					// 在Byte Buddy场景下，proxy参数实际是目标对象
 					return method.invoke(proxy, args);
 				}
 				return rpcClient.invoke(callType, method, args, targetAddr, objectId);
-
 			} catch (Exception e) {
 				log.error("rpc invoke 调用出现异常", e);
 				throw new RuntimeException(e);
 			}
 		}
-
-		public void setRpcClient(RpcClient rpcClient) {
-			this.rpcClient = rpcClient;
-		}
-
-		public void setCallBackTask(Consumer<?> callBackTask) {
-			this.callBackTask = callBackTask;
-		}
-
-		public void setBlock(boolean block) {
-			this.block = block;
-		}
-
-
-		public void setTargetAddr(String targetAddr) {
-			this.targetAddr = targetAddr;
-		}
-
-		public void setCallType(CallType callType) {
-			this.callType = callType;
-		}
-
-		public void setObjectId(long objectId) {
-			this.objectId = objectId;
-		}
-
-		public long getObjectId() {
-			return objectId;
-		}
-
 	}
 
+	// 缓存Key
 	private static class Key {
-		private final Class<?> rpcInterfaceClass;
+		private final Class<?> clazz;
 		private final String serverId;
 		private final CallType callType;
 
-		public Key(Class<?> rpcInterfaceClass, String serverId, CallType callType) {
-			this.rpcInterfaceClass = rpcInterfaceClass;
+		public Key(Class<?> clazz, String serverId, CallType callType) {
+			this.clazz = clazz;
 			this.callType = callType;
 			this.serverId = serverId == null ? "" : serverId;
 		}
@@ -157,16 +150,15 @@ public class RpcFactory {
 			if (!(obj instanceof Key))
 				return false;
 			Key other = (Key) obj;
-			return rpcInterfaceClass.equals(other.rpcInterfaceClass) && serverId.equals(other.serverId) && callType == other.callType;
+			return clazz.equals(other.clazz) && serverId.equals(other.serverId) && callType == other.callType;
 		}
 
 		@Override
 		public int hashCode() {
-			int result = rpcInterfaceClass.hashCode();
+			int result = clazz.hashCode();
 			result = 31 * result + serverId.hashCode();
 			result = 31 * result + callType.hashCode();
 			return result;
 		}
 	}
-
 }

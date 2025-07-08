@@ -17,6 +17,8 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -26,17 +28,21 @@ import cn.game.games.net.game.module.pvp.OfflineBattleHandler;
 import cn.game.games.net.game.module.rank.RankHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
 import cn.game.protocol.generated.config.PatrolConfig;
+import cn.game.protocol.generated.config.RichManItemConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.ConsumeManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
 import cn.game.protocol.generated.manager.PatrolManager;
+import cn.game.protocol.generated.manager.RichManItemManager;
 import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -1274,6 +1280,7 @@ public class BattleHandler extends BaseHandler {
         int hpPercent = req.getHpPercent();
         int killMonsterCount = req.getKillMonsterCount();
         int killMonsterBossCount = req.getKillMonsterBossCount();
+		List<Integer> richManItemsList = req.getRichManItemsList();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         int attackingId = battleModule.getAttackingId();
@@ -1302,6 +1309,33 @@ public class BattleHandler extends BaseHandler {
         if (rewards != null) {
             allRewards.addAll(rewards);
         }
+        // 
+        if (richManItemsList != null && !richManItemsList.isEmpty()) {
+        	for (Integer rid : richManItemsList) {
+				RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
+				if (richManItemConfig.ServerOpt == 1) {
+					if (richManItemConfig.OptType == 8) {
+						List<Goods> rewardAddition = RewardHelper.rewardAddition(allRewards, richManItemConfig.ItemParams[0]);
+						if (!rewardAddition.isEmpty()) {
+							List<RewardInfo> resources = PlayerHelper.addResources(player, rewardAddition, OpType.BattleEnd);
+							allRewards.addAll(resources);
+						}
+					} 
+				}
+			}
+        	for (Integer rid : richManItemsList) {
+        		RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
+        		if (richManItemConfig.ServerOpt == 1) {
+        			if (richManItemConfig.OptType == 9) { // 返还体力
+        				ConsumeConfig consumeConfig = ConsumeManager.instance().get(battleConfig.cost); 
+        				List<RewardInfo> resources = PlayerHelper.addResources(player, consumeConfig.cost, OpType.BattleEnd);
+						allRewards.addAll(resources);
+        			}
+        		}
+        	}
+        }
+			
+
         if (req.getWin()) {
             player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId, attackingId);
         }

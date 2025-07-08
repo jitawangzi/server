@@ -31,7 +31,7 @@ import io.vertx.core.Future;
 public class DAO {
 //	private static final Logger log = LoggerFactory.getLogger("dbLog");
 	private static final Logger log = LoggerFactory.getLogger("Db");
-
+	// TODO 使用虚拟线程代替vertx worker线程。
 	private static LinkedBlockingQueue<DbTask> dbTasksQueue = new LinkedBlockingQueue<DbTask>();
 	private static volatile boolean pauseUpdateDb = false;
 

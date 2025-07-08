@@ -19,6 +19,7 @@ import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -172,7 +173,7 @@ public class MailModule extends BasePlayerModule  {
 				list.addAll(receive);
 			}
 		}
-		PlayerHelper.mergeRewards(list);
+		RewardHelper.mergeRewards(list);
 		return list;
 	}
 

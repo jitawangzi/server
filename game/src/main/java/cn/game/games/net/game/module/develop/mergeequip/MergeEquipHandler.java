@@ -9,8 +9,8 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.protocol.generated.config.EquipConfig;
-import cn.game.protocol.generated.manager.EquipManager;
+import cn.game.protocol.generated.config.HCEquipConfig;
+import cn.game.protocol.generated.manager.HCEquipManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentPartStrengthRequest_23000007;
@@ -103,8 +103,9 @@ public class MergeEquipHandler extends BaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		EquipConfig equipConfig = EquipManager.instance().getUIEquipGroupEquipLv(mergeEquip.getConfigId(), mergeEquip.getLevel());
-		EquipConfig nextEquipConfig = EquipManager.instance().getUIEquipGroupEquipLv(mergeEquip.getConfigId(), mergeEquip.getLevel() + 1);
+		HCEquipConfig equipConfig = HCEquipManager.instance().getUIEquipGroupEquipLv(mergeEquip.getConfigId(), mergeEquip.getLevel());
+		HCEquipConfig nextEquipConfig = HCEquipManager.instance()
+				.getUIEquipGroupEquipLv(mergeEquip.getConfigId(), mergeEquip.getLevel() + 1);
 		if (nextEquipConfig == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
 			return;

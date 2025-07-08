@@ -251,43 +251,6 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 合并同id 的资源和道具的数量。
-	 * @param rewards
-	 */
-	public static void mergeRewards(List<RewardInfo> rewards) {
-		ItemInfo.Builder itemBuilder = ItemInfo.newBuilder();
-		AssetInfo.Builder assetBuilder = AssetInfo.newBuilder();
-
-		Iterator<RewardInfo> iterator = rewards.iterator();
-		while (iterator.hasNext()) {
-			RewardInfo rewardInfo = (RewardInfo) iterator.next();
-			if (rewardInfo.hasItem()) {
-				ItemInfo item = rewardInfo.getItem();
-				if (itemBuilder.getId() == 0 || itemBuilder.getId() == item.getId()) {
-					itemBuilder.setId(item.getId());
-					itemBuilder.setCount(itemBuilder.getCount() + item.getCount());
-					iterator.remove();
-				}
-			}
-			if (rewardInfo.hasAsset()) {
-				AssetInfo asset = rewardInfo.getAsset();
-				if (assetBuilder.getId() == 0 || assetBuilder.getId() == asset.getId()) {
-					assetBuilder.setId(asset.getId());
-					assetBuilder.setCount(assetBuilder.getCount() + asset.getCount());
-					iterator.remove();
-				}
-			}
-
-		}
-		if (itemBuilder.getId() > 0) {
-			rewards.add(RewardInfo.newBuilder().setItem(itemBuilder.build()).build());
-		}
-		if (assetBuilder.getId() > 0) {
-			rewards.add(RewardInfo.newBuilder().setAsset(assetBuilder.build()).build());
-		}
-	}
-
-	/**
 	 * 根据现有的奖励，在给n倍的奖励
 	 * @param player
 	 * @param rewards

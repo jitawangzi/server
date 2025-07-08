@@ -7,10 +7,11 @@ import java.util.List;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemModule;
-import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.config.HCEquipConfig;
 import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
+import cn.game.protocol.generated.manager.HCEquipManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -32,7 +33,7 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 		if (count <= 0) {
 			return null;
 		}
-		EquipConfig equipConfig = EquipManager.instance().get(itemId);
+		HCEquipConfig equipConfig = HCEquipManager.instance().get(itemId);
 		itemId = equipConfig.EquipGroup;
 		MergeEquip item = id_items.get(itemId);
 		if (item == null) {
@@ -46,10 +47,10 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 		switch (event.getType()) {
 		case HCChapterFirstWin: {
 			int battleId = event.getIntParameter(0);
-			Collection<EquipConfig> list = EquipManager.instance().list();
+			Collection<HCEquipConfig> list = HCEquipManager.instance().list();
 			HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
 
-			for (EquipConfig equipConfig : list) {
+			for (HCEquipConfig equipConfig : list) {
 				if (equipConfig.ChapterUnlock == battleConfig.Chapter) {
 					if (equipConfig.ItemType == 1 || equipConfig.ItemType == 2) {
 						MergeEquip mergeEquip = get(equipConfig.EquipGroup);
