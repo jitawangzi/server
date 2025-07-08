@@ -1,71 +1,28 @@
 package cn.game.games.cache.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * t_equip
  * @author
  */
 public class Equip extends ItemNoStack {
 
-	/**
-	 * 不同类型的东西，关联的其他功能的id
-	 * @mbg.generated
-	 */
-	private Integer relatedId;
-	/**
-	 * 一个int型扩展字段
-	 * @mbg.generated
-	 */
-	private Integer extId;
-	/**
-	 * 扩展参数
-	 * @mbg.generated
-	 */
-	private String extParam;
+	private Map<Integer, Integer> equipAttrs = new HashMap<Integer, Integer>();
+
 	/**
 	 * @mbg.generated
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getRelatedId() {
-		return relatedId;
+
+	public Map<Integer, Integer> getEquipAttrs() {
+		return equipAttrs;
 	}
 
-	/**
-	 * @mbg.generated
-	 */
-	public void setRelatedId(Integer relatedId) {
-		this.relatedId = relatedId;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public Integer getExtId() {
-		return extId;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setExtId(Integer extId) {
-		this.extId = extId;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public String getExtParam() {
-		return extParam;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setExtParam(String extParam) {
-		this.extParam = extParam;
+	public void setEquipAttrs(Map<Integer, Integer> equipAttrs) {
+		this.equipAttrs = equipAttrs;
 	}
 
 	/**

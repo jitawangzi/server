@@ -2,7 +2,6 @@ package cn.game.games.net.game.module.award;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,7 @@ import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.module.currency.Currency;
+import cn.game.games.net.game.module.develop.gem.Gem;
 import cn.game.games.net.game.module.develop.hero.skin.HeroSkin;
 import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
 import cn.game.games.net.game.module.develop.pet.Pet;
@@ -27,12 +27,10 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public class RewardHelper {
 	public static RewardInfo toRewardInfo(Item item) {
 		RewardInfo.Builder builder = RewardInfo.newBuilder();
-
 		if (item.getClass() == Item.class) {
 			builder.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
 			return builder.build();
 		}
-
 		if (item instanceof Currency) {
 			builder.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
 		} else if (item instanceof MergeEquip) {
@@ -45,7 +43,8 @@ public class RewardHelper {
 			builder.setSecretscript(((Secretscript) item).toProtoInfo());
 		} else if (item instanceof Equip) {
 			Equip equip = (Equip) item;
-			builder.setEquip(EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + ""));
+			builder.setEquip(
+					EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + "").putAllAttrs(equip.getEquipAttrs()));
 		} else if (item instanceof Hero) {
 			Hero obj = (Hero) item;
 			builder.setRole(obj.toHeroInfo());
@@ -58,6 +57,9 @@ public class RewardHelper {
 		} else if (item instanceof Figure) {
 			Figure obj = (Figure) item;
 			builder.setFigure(obj.getConfigId());
+		} else if (item instanceof Gem) {
+			Gem obj = (Gem) item;
+			builder.setGem(GemInfo.newBuilder().setConfigId(obj.getConfigId()).setUid(obj.getId() + "").putAllAttrs(obj.getGemAttrs()));
 		} else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}
@@ -68,39 +70,6 @@ public class RewardHelper {
 	 * 合并同id 的资源和道具的数量。
 	 * @param rewards
 	 */
-	public static void mergeRewards2(List<RewardInfo> rewards) {
-		ItemInfo.Builder itemBuilder = ItemInfo.newBuilder();
-		AssetInfo.Builder assetBuilder = AssetInfo.newBuilder();
-
-		Iterator<RewardInfo> iterator = rewards.iterator();
-		while (iterator.hasNext()) {
-			RewardInfo rewardInfo = (RewardInfo) iterator.next();
-			if (rewardInfo.hasItem()) {
-				ItemInfo item = rewardInfo.getItem();
-				if (itemBuilder.getId() == 0 || itemBuilder.getId() == item.getId()) {
-					itemBuilder.setId(item.getId());
-					itemBuilder.setCount(itemBuilder.getCount() + item.getCount());
-					iterator.remove();
-				}
-			}
-			if (rewardInfo.hasAsset()) {
-				AssetInfo asset = rewardInfo.getAsset();
-				if (assetBuilder.getId() == 0 || assetBuilder.getId() == asset.getId()) {
-					assetBuilder.setId(asset.getId());
-					assetBuilder.setCount(assetBuilder.getCount() + asset.getCount());
-					iterator.remove();
-				}
-			}
-
-		}
-		if (itemBuilder.getId() > 0) {
-			rewards.add(RewardInfo.newBuilder().setItem(itemBuilder.build()).build());
-		}
-		if (assetBuilder.getId() > 0) {
-			rewards.add(RewardInfo.newBuilder().setAsset(assetBuilder.build()).build());
-		}
-	}
-
 	public static void mergeRewards(List<RewardInfo> rewards) {
 		// 用Map归并id到数量
 		Map<Integer, Integer> itemMap = new HashMap<>();

@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.develop.gem;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -19,45 +21,51 @@ import cn.game.protocol.protobuf.PbProtocol;
 @Component
 public class GemHandler extends BaseHandler {
 
-	@Override
-	protected int getModule() {
-		return 0x10;
-	}
+    @Override
+    protected int getModule() {
+        return 0x10;
+    }
 
-	@Override
-	protected void inititialize() {
+    @Override
+    protected void inititialize() {
+        putInvoker(PbProtocol.GemWearRequest_10000001, this::wear);
+        putInvoker(PbProtocol.GemTeardownRequest_10000003, this::teardown);
+        putInvoker(PbProtocol.GemLockRequest_10000005, this::lock);
+        putInvoker(PbProtocol.GemComposeRequest_10000007, this::compose);
+    }
 
-		putInvoker(PbProtocol.GemComposeRequest_10000007, this::compose);
-		putInvoker(PbProtocol.GemLockRequest_10000005, this::lock);
-		putInvoker(PbProtocol.GemTeardownRequest_10000003, this::tearDown);
-		putInvoker(PbProtocol.GemWearRequest_10000001, this::wear);
-	}
+    private void wear(NetClient client, Object message) {
+        GemWearRequest_10000001 req = (GemWearRequest_10000001) message;
+        String uid = req.getUid();
+        int pos = req.getPos();
+        GemWearResponse_10000002 defaultInstance = GemWearResponse_10000002.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(defaultInstance);
+    }
 
-	private void compose(NetClient client, Object message) {
-		GemComposeRequest_10000007 req = (GemComposeRequest_10000007) message;
-		GemComposeResponse_10000008.Builder resp = GemComposeResponse_10000008.newBuilder();
+    private void teardown(NetClient client, Object message) {
+        GemTeardownRequest_10000003 req = (GemTeardownRequest_10000003) message;
+        String uid = req.getUid();
+        GemTeardownResponse_10000004 defaultInstance = GemTeardownResponse_10000004.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(defaultInstance);
+    }
 
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+    private void lock(NetClient client, Object message) {
+        GemLockRequest_10000005 req = (GemLockRequest_10000005) message;
+		List<String> uids = req.getUidList();
+        boolean lock = req.getLock();
+        GemLockResponse_10000006 defaultInstance = GemLockResponse_10000006.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(defaultInstance);
+    }
 
-		client.sendProtocol(resp.build());
-	}
-
-	private void lock(NetClient client, Object message) {
-		GemLockRequest_10000005 req = (GemLockRequest_10000005) message;
-		GemLockResponse_10000006.Builder resp = GemLockResponse_10000006.newBuilder();
-		client.sendProtocol(resp.build());
-	}
-
-	private void wear(NetClient client, Object message) {
-		GemWearRequest_10000001 req = (GemWearRequest_10000001) message;
-		GemWearResponse_10000002.Builder resp = GemWearResponse_10000002.newBuilder();
-		client.sendProtocol(resp.build());
-	}
-
-	private void tearDown(NetClient client, Object message) {
-		GemTeardownRequest_10000003 req = (GemTeardownRequest_10000003) message;
-		GemTeardownResponse_10000004.Builder resp = GemTeardownResponse_10000004.newBuilder();
-		client.sendProtocol(resp.build());
-	}
+    private void compose(NetClient client, Object message) {
+        GemComposeRequest_10000007 req = (GemComposeRequest_10000007) message;
+        List<String> uidsList = req.getUidsList();
+        GemComposeResponse_10000008 defaultInstance = GemComposeResponse_10000008.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        GemComposeResponse_10000008.Builder resp = GemComposeResponse_10000008.newBuilder();
+        client.sendProtocol(resp.build());
+    }
 }
-
