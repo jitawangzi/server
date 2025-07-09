@@ -26,7 +26,7 @@ public class SwordModule extends AbstractItemNoStackModule<Sword> {
 	}
 
 	@Override
-	public void setInstanceAfter(Sword hero) {
+	public void setInstanceExt(Sword hero) {
 		if (this.SwordUid == 0) {
 			this.SwordUid = hero.getId();
 		}

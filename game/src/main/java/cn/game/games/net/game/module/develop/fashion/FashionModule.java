@@ -24,7 +24,7 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 	}
 
 	@Override
-	public void setInstanceAfter(Fashion hero) {
+	public void setInstanceExt(Fashion hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.fashionUid == 0) {
 			this.fashionUid = hero.getId();

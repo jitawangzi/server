@@ -29,7 +29,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 	}
 
 	@Override
-	public void setInstanceAfter(Gem instance) {
+	public void setInstanceExt(Gem instance) {
 		// 随机宝石属性
 		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
 		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);

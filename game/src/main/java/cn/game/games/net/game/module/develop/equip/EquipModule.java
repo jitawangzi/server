@@ -67,7 +67,7 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 	}
 	
 	@Override
-	public void setInstanceAfter(Equip equip) {
+	public void setInstanceExt(Equip equip) {
 		equip.setLevel(1);
 		EquipConfig equipConfig = EquipManager.instance().get(equip.getConfigId());
 		int count = Rnd.get(equipConfig.attrCountMin, equipConfig.attrCountMax);

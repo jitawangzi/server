@@ -70,7 +70,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 	}
 
 	@Override
-	public void setInstanceAfter(HCHero hero) {
+	public void setInstanceExt(HCHero hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.heroUid == 0) {
 			this.heroUid = hero.getId();

@@ -193,7 +193,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	}
 
 	@Override
-	public void setInstanceAfter(Hero hero) {
+	public void setInstanceExt(Hero hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.heroUid == 0) {
 			this.heroUid = hero.getId();

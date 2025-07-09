@@ -48,7 +48,7 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 	}
 
 	@Override
-	public void setInstanceAfter(Figure item) {
+	public void setInstanceExt(Figure item) {
 		PlayerFigureConfig playerFigureConfig = PlayerFigureManager.instance().get(item.getConfigId());
 		if (playerFigureConfig.Times > 0) {
 			item.setExpiredTime(DateUtil.currentTimeSeconds() + playerFigureConfig.Times);

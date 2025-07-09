@@ -59,7 +59,7 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 
 		E item = newInstance();
 		setInstance(item, configId, count);
-		setInstanceAfter(item);
+		setInstanceExt(item);
 		initAddCache(item);
 		if (alwaysStoreDataInStandaloneTable()) {
 			item.insert();
@@ -92,7 +92,7 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 		return item;
 	}
 
-	public void setInstanceAfter(E item) {
+	public void setInstanceExt(E item) {
 
 	}
 

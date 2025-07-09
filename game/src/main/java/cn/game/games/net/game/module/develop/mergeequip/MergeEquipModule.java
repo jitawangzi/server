@@ -84,7 +84,7 @@ public class MergeEquipModule extends AbstractItemModule<MergeEquip> {
 	}
 
 	@Override
-	public void setInstanceAfter(MergeEquip item) {
+	public void setInstanceExt(MergeEquip item) {
 		item.setLevel(1);
 	}
 

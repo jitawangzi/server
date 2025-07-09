@@ -25,7 +25,7 @@ public class DragonSkillModule extends AbstractItemNoStackModule<DragonSkill> {
 	}
 
 	@Override
-	public void setInstanceAfter(DragonSkill hero) {
+	public void setInstanceExt(DragonSkill hero) {
 		ObjUtil.setDefaultValue(hero);
 		hero.setLevel(1);
 		if (this.DragonSkillUid == 0) {

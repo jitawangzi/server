@@ -31,7 +31,7 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 	}
 
 	@Override
-	public void setInstanceAfter(Dragon hero) {
+	public void setInstanceExt(Dragon hero) {
 		ObjUtil.setDefaultValue(hero);
 		if (this.dragonUid == 0) {
 			this.dragonUid = hero.getId();
