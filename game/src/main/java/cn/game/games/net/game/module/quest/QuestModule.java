@@ -416,8 +416,9 @@ public class QuestModule extends BasePlayerModule {
 		quest.checkFinish();
 
 		Quest now = get(quest.getId());
-		if (now != null) { // 有可能在设置状态时就已经完成删除了
-			now.insert();
+		if (now != null) {
+			// 有可能在设置状态时就已经完成删除了
+//			now.insert();
 		}
 		return quest;
 	}
@@ -477,7 +478,7 @@ public class QuestModule extends BasePlayerModule {
 		Quest quest = group.remove(id);
 		if (quest != null) {
 			quest.close();
-			quest.delete();
+//			quest.delete();
 			QuestHelper.notifyQuestChange(quest, UpdateType.DELETE);
 		}
 	}

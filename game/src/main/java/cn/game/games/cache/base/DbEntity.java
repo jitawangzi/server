@@ -1,6 +1,5 @@
 package cn.game.games.cache.base;
 
-import cn.game.games.net.game.GameServer;
 import cn.game.games.util.DAO;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
@@ -15,16 +14,16 @@ import io.vertx.core.Future;
 public interface DbEntity {
 
 	public default Future<@Nullable Object> insert() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return Future.succeededFuture();
-		}
+//		if (GameServer.getInstance().isSinglePlayerTable()) {
+//			return Future.succeededFuture();
+//		}
 		return DAO.insert(this);
 	}
 
 	public default Future<@Nullable Object> insertOrUpdate() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return Future.succeededFuture();
-		}
+//		if (GameServer.getInstance().isSinglePlayerTable()) {
+//			return Future.succeededFuture();
+//		}
 		return DAO.insertOrUpdate(this);
 	}
 
@@ -33,9 +32,9 @@ public interface DbEntity {
 	 * @return
 	 */
 	public default Future<@Nullable Object> update() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return Future.succeededFuture();
-		}
+//		if (GameServer.getInstance().isSinglePlayerTable()) {
+//			return Future.succeededFuture();
+//		}
 		return DAO.update(this);
 	}
 
@@ -44,16 +43,16 @@ public interface DbEntity {
 	 * @return
 	 */
 	public default Future<@Nullable Object> updateWithBlobs() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return Future.succeededFuture();
-		}
+//		if (GameServer.getInstance().isSinglePlayerTable()) {
+//			return Future.succeededFuture();
+//		}
 		return DAO.updateWithBLOBs(this);
 	}
 
 	public default Future<@Nullable Object> delete() {
-		if (GameServer.getInstance().isSinglePlayerTable()) {
-			return Future.succeededFuture();
-		}
+//		if (GameServer.getInstance().isSinglePlayerTable()) {
+//			return Future.succeededFuture();
+//		}
 		return DAO.delete(this);
 	}
 
@@ -62,7 +61,7 @@ public interface DbEntity {
 	}
 
 	/** 
-	 * 这里为什么要单独抽取出来方法，是因为希望这个方法在客户端loop线程执行， 
+	 * 这里为什么要单独抽取出来方法，是因为希望这个方法在客户端eventloop线程执行， 
 	 * 而不是在vertx的worker线程池里执行，否则会多个线程同时读写map之类，容易有线程安全问题。 
 	 * 这里这类对象都是在同一个进程里读写的。  
 	 */

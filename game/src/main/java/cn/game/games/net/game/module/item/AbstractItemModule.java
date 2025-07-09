@@ -62,7 +62,9 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 			item = initAdd(itemId, count);
 		} else {
 			item.setCount(item.getCount() + count);
-			item.update();
+			if (alwaysStoreDataInStandaloneTable()) {
+				item.update();
+			}
 		}
 		// 自动使用
 //		if (itemConfig.getIsAutoUse()) {
@@ -88,9 +90,13 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 		item.setCount(item.getCount() - count);
 		if (item.getCount() == 0) {
 			removeCache(item);
-			item.delete();
+			if (alwaysStoreDataInStandaloneTable()) {
+				item.delete();
+			}
 		} else {
-			item.update();
+			if (alwaysStoreDataInStandaloneTable()) {
+				item.update();
+			}
 		}
 		return true;
 	}

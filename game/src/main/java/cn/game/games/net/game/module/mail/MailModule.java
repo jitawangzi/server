@@ -81,7 +81,7 @@ public class MailModule extends BasePlayerModule  {
 			if (remove == notice) {
 				remove.setIsDeleted(true);
 			} else {
-				remove.delete();
+//				remove.delete();
 				DAO.delete(remove);
 			}
 		}

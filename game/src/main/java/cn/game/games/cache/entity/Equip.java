@@ -3,6 +3,8 @@ package cn.game.games.cache.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
+
 /**
  * t_equip
  * @author
@@ -41,5 +43,9 @@ public class Equip extends ItemNoStack {
 		return id;
 	}
 
+	public EquipInfo toEquipInfo() {
+		return EquipInfo.newBuilder().setConfigId(this.configId).
+				setUid(id + "").putAllAttrs(equipAttrs).build();
+	}
 	
 }

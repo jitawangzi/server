@@ -13,11 +13,9 @@ import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
-import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.DateUtil;
@@ -51,7 +49,6 @@ public class MonthCardModule extends BasePlayerModule {
 		}
 		MonthCard newCard = MonthCard.valueOf(this.playerId, cardId, buyTime, expireTime);
 		monthCards.put(cardId, newCard);
-		newCard.insert();
 		if (cardId == 1){//购买月卡， 检查是否有月卡签到
 			checkMothCardSignReward();
 		}
@@ -91,23 +88,6 @@ public class MonthCardModule extends BasePlayerModule {
 
 	}
 
-	private void resetDayReward() {
-		for (MonthCard monthCard : monthCards.values()) {
-			if (monthCard.getIsDayRewards()) {
-				monthCard.setIsDayRewards(false);
-				monthCard.update();
-			}
-		}
-	}
-
-//	@Override
-//	protected void initFromDb(ListIterator<?> iterator) {
-//		List<MonthCard> cardList = (List<MonthCard>) iterator.next();
-//		for (MonthCard card : cardList) {
-//			monthCards.put(card.getMonthCardId(), card);
-//		}
-//	}
-	
 	@Override
 	public void initFromDbAfter() {
 		checkExpire();
@@ -122,7 +102,6 @@ public class MonthCardModule extends BasePlayerModule {
 		List<Integer> removeList = new ArrayList<>();
 		for (MonthCard card : values) {
 			if (card.getExpireTime() > 0 && card.getExpireTime() <= nowTime) {
-				card.delete();
 				removeList.add(card.getMonthCardId()); 
 			}
 		}

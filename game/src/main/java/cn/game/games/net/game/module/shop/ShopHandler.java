@@ -531,7 +531,6 @@ public class ShopHandler extends BaseHandler {
 		PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
 
 		monthCard.setIsBuyRewards(true);
-		monthCard.update();
 
 		client.sendProtocol(resp.build());
 
@@ -559,7 +558,6 @@ public class ShopHandler extends BaseHandler {
 		PlayerHelper.addResources(player, monthCardConfig.DailyRewards, OpType.MonthCardDay);
 
 		monthCard.setIsDayRewards(true);
-		monthCard.update();
 
 		client.sendProtocol(resp.build());
 

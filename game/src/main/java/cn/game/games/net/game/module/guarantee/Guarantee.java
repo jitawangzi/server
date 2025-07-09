@@ -37,47 +37,49 @@ public class Guarantee {
 		for (int i = 0; i < count; i++) {
 			this.count++;
 			GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
-			if (this.count >= guaranteeConfig.count) { // 触发保底
-				if (guaranteeConfig.isMaxReset) {
-					this.count = 0;
-				}
-				Set<Integer> allRounds = GuaranteeManager.instance().getTypeRounds().keySet();
-				int max = Collections.max(allRounds);
-				int roundToQuary = this.round > max ? max : this.round;
-
-				List<GuaranteeConfig> typeRoundList = GuaranteeManager.instance().getTypeRoundList(guaranteeConfig.type, roundToQuary);
-				if (typeRoundList == null) {
-					return ret;
-				}
-				// 还有没有下一个阶段
-				boolean hasNextStage = false;
-				GuaranteeConfig nexGuaranteeConfig = null;
-				for (GuaranteeConfig guaranteeConfig2 : typeRoundList) {
-					if (guaranteeConfig2.stage == stage + 1) {
-						hasNextStage = true;
-						nexGuaranteeConfig = guaranteeConfig2;
-						break;
-					}
-				}
-				if (!hasNextStage) {
-					nexGuaranteeConfig = typeRoundList.get(0);
-					this.stage = 1;
-					this.round++;
-				} else {
-					this.stage++;
-				}
+			if (this.count >= guaranteeConfig.count) {// 触发保底
 				ret = this.id;
-				this.id = nexGuaranteeConfig.ID;
-
-			} else {
-
-			}
-			if (ret > 0) {
-				return ret;
+				if (guaranteeConfig.isMaxReset) {
+					reset();
+				}
 			}
 		}
-
 		return ret;
+	}
+
+	/** 
+	 * 重置保底，可能进入到下一阶段。 
+	 * @param guaranteeConfig
+	 */
+	public void reset() {
+		this.count = 0;
+		GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
+		Set<Integer> allRounds = GuaranteeManager.instance().getTypeRounds().keySet();
+		int max = Collections.max(allRounds);
+		int roundToQuary = this.round > max ? max : this.round;
+
+		List<GuaranteeConfig> typeRoundList = GuaranteeManager.instance().getTypeRoundList(guaranteeConfig.type, roundToQuary);
+		if (typeRoundList == null) {
+			return;
+		}
+		// 还有没有下一个阶段
+		boolean hasNextStage = false;
+		GuaranteeConfig nexGuaranteeConfig = null;
+		for (GuaranteeConfig guaranteeConfig2 : typeRoundList) {
+			if (guaranteeConfig2.stage == stage + 1) {
+				hasNextStage = true;
+				nexGuaranteeConfig = guaranteeConfig2;
+				break;
+			}
+		}
+		if (!hasNextStage) {
+			nexGuaranteeConfig = typeRoundList.get(0);
+			this.stage = 1;
+			this.round++;
+		} else {
+			this.stage++;
+		}
+		this.id = nexGuaranteeConfig.ID;
 	}
 
 	public int getId() {
@@ -106,10 +108,6 @@ public class Guarantee {
 
 	public int getCount() {
 		return count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
 	}
 
 }

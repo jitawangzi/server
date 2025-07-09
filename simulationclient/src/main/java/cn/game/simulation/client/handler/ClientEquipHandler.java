@@ -1,12 +1,9 @@
 package cn.game.simulation.client.handler;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.protocol.protobuf.BaseMsg.EquipPartInfo;
 import cn.game.protocol.protobuf.EquipMsg.EquipDecomposeResponse_09000006;
 import cn.game.protocol.protobuf.EquipMsg.EquipPartStrengthResponse_09000008;
 import cn.game.protocol.protobuf.EquipMsg.EquipTeardownResponse_09000004;
@@ -47,7 +44,6 @@ public class ClientEquipHandler extends BaseHandler {
 
     private void partStrength(NetClient netClient, Object message) {
         EquipPartStrengthResponse_09000008 resp = (EquipPartStrengthResponse_09000008) message;
-        List<EquipPartInfo> partsList = resp.getPartsList();
         Client client = (Client) netClient;
     }
 }

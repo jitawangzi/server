@@ -61,7 +61,9 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 		setInstance(item, configId, count);
 		setInstanceAfter(item);
 		initAddCache(item);
-		item.insert();
+		if (alwaysStoreDataInStandaloneTable()) {
+			item.insert();
+		}
 		return item;
 	}
 

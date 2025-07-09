@@ -19,7 +19,6 @@ import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.games.net.game.module.player.figure.Figure;
 import cn.game.games.net.game.module.player.headbox.HeadBox;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
-import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GemInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
@@ -43,8 +42,7 @@ public class RewardHelper {
 			builder.setSecretscript(((Secretscript) item).toProtoInfo());
 		} else if (item instanceof Equip) {
 			Equip equip = (Equip) item;
-			builder.setEquip(
-					EquipInfo.newBuilder().setConfigId(equip.getConfigId()).setUid(equip.getId() + "").putAllAttrs(equip.getEquipAttrs()));
+			builder.setEquip(equip.toEquipInfo());
 		} else if (item instanceof Hero) {
 			Hero obj = (Hero) item;
 			builder.setRole(obj.toHeroInfo());
@@ -59,7 +57,7 @@ public class RewardHelper {
 			builder.setFigure(obj.getConfigId());
 		} else if (item instanceof Gem) {
 			Gem obj = (Gem) item;
-			builder.setGem(GemInfo.newBuilder().setConfigId(obj.getConfigId()).setUid(obj.getId() + "").putAllAttrs(obj.getGemAttrs()));
+			builder.setGem(obj.toGemInfo());
 		} else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}

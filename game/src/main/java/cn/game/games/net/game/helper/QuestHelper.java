@@ -136,6 +136,7 @@ public class QuestHelper {
 	 * 更新任务基本数据到数据库，不包括条件参数
 	 * @param quest
 	 */
+	@Deprecated
 	public static void updateBase(Quest quest) {
 		quest.update();
 	}
@@ -144,6 +145,7 @@ public class QuestHelper {
 	 * 更新任务条件数据到数据库，不包括任务基本数据
 	 * @param quest
 	 */
+	@Deprecated
 	public static void updateParams(Quest quest) {
 
 		quest.toParams();
