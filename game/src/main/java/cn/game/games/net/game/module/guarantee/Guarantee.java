@@ -24,7 +24,7 @@ public class Guarantee {
 	 */
 	public boolean isInGuarantee() {
 		GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
-		return guaranteeConfig.isMaxReset == false && guaranteeConfig.count == count;
+		return guaranteeConfig.isMaxReset == false && guaranteeConfig.count <= count;
 
 	}
 	/** 
@@ -37,10 +37,10 @@ public class Guarantee {
 		for (int i = 0; i < count; i++) {
 			this.count++;
 			GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
-			if (guaranteeConfig.isMaxReset && this.count >= guaranteeConfig.count
-					|| !guaranteeConfig.isMaxReset && this.count > guaranteeConfig.count) { // 触发保底
-
-				this.count = 0;
+			if (this.count >= guaranteeConfig.count) { // 触发保底
+				if (guaranteeConfig.isMaxReset) {
+					this.count = 0;
+				}
 				Set<Integer> allRounds = GuaranteeManager.instance().getTypeRounds().keySet();
 				int max = Collections.max(allRounds);
 				int roundToQuary = this.round > max ? max : this.round;

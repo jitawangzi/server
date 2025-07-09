@@ -252,7 +252,7 @@ public class DrawHandler extends BaseHandler {
         DrawHeroRecruitResponse_37000016.Builder resp = DrawHeroRecruitResponse_37000016.newBuilder();
 
         
-		if (multiple > 1) {
+		if (multiple >= 1) {
 			heroRecruit.setMultiple(multiple);
 		}
 		multiple = heroRecruit.getMultiple();
