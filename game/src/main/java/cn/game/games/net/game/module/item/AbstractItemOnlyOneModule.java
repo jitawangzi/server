@@ -28,16 +28,6 @@ public abstract class AbstractItemOnlyOneModule<E extends ItemOnlyOne> extends G
 	}
 
 	@Override
-	public void addCacheStackable(E item) {
-
-	}
-
-	@Override
-	public void addCacheNoStackable(E item) {
-
-	}
-
-	@Override
 	public Object add(int itemId, int count, OpType opType) {
 		if (count <= 0) {
 			throw new IllegalArgumentException("count must be greater than 0");

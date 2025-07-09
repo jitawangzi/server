@@ -90,18 +90,6 @@ public class HeadBoxModule extends GoodsModule<HeadBox> {
 	}
 
 	@Override
-	public void addCacheStackable(HeadBox item) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void addCacheNoStackable(HeadBox item) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 
 	}

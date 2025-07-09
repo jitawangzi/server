@@ -177,16 +177,6 @@ public class CurrencyModule extends GoodsModule<Currency> {
 	}
 
 	@Override
-	public void addCacheStackable(Currency item) {
-		
-	}
-
-	@Override
-	public void addCacheNoStackable(Currency item) {
-		
-	}
-
-	@Override
 	public void checkConfig(int id) {
 		Asset.get(id);
 	}

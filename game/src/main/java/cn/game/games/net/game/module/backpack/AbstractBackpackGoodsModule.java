@@ -204,16 +204,6 @@ public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsM
 	}
 
 	@Override
-	public void addCacheStackable(Item item) {
-		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
-	}
-
-	@Override
-	public void addCacheNoStackable(Item item) {
-		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
-	}
-
-	@Override
 	public E removeFromCache(int id) {
 		return null;
 	}

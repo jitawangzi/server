@@ -39,21 +39,13 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 	@Override
 	public void initFromDbAfter() {
 		for (E item : uid_items.values()) {
-			addCacheStackable(item);
+			id_items.put(item.getConfigId(), item);
 		}
 	};
 	
 	@Override
 	public void initAddCache(E item) {
-		addCacheNoStackable(item);
-		addCacheStackable(item);
-	}
-	@Override
-	public void addCacheNoStackable(E item) {
 		uid_items.put(item.getId(), item);
-	}
-	@Override
-	public void addCacheStackable(E item) {
 		id_items.put(item.getConfigId(), item);
 	}
 

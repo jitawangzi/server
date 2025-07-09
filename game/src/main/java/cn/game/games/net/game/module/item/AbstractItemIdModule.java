@@ -93,15 +93,6 @@ public abstract class AbstractItemIdModule<E extends Item> extends GoodsModule<E
 	}
 
 	@Override
-	public void addCacheStackable(E item) {
-	}
-
-	@Override
-	public void addCacheNoStackable(E item) {
-
-	}
-
-	@Override
 	public E removeFromCache(int id) {
 		// 由于是id类型的物品，不支持通过id删除
 		throw new UnsupportedOperationException("不支持通过id删除: " + id);

@@ -30,16 +30,7 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 		}*/
 	@Override
 	public void initAddCache(E item) {
-		addCacheStackable(item);
-	}
-	@Override
-	public void addCacheStackable(E item) {
 		id_items.put(item.getConfigId(), item);
-	}
-	
-	@Override
-	public void addCacheNoStackable(E item) {
-		
 	}
 
 	@Override
