@@ -508,12 +508,12 @@ public class GameServer implements GameServerMBean {
 //		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
 //	}
 	/** 
-	 * 是否用一张表存储玩家所有数据
+	 * 是否用一张表存储玩家所有数据-----暂时用不到了
 	 * @return
 	 */
 	public boolean isSinglePlayerTable() {
 //		return false ; 
-		return ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", false);
+		return ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", true);
 	}
 
 	// 初始化负载管理器

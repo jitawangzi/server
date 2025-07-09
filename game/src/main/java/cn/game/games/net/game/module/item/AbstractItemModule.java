@@ -43,8 +43,13 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 	}
 
 	@Override
-	public void removeCache(E item) {
-		id_items.remove(item.getConfigId());
+	public E removeFromCache(int id) {
+		return id_items.remove(id);
+	}
+
+	@Override
+	public E removeFromCache(long id) {
+		throw new UnsupportedOperationException("不支持通过uid删除Item");
 	}
 
 	/**
@@ -89,7 +94,7 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 		}
 		item.setCount(item.getCount() - count);
 		if (item.getCount() == 0) {
-			removeCache(item);
+			removeFromCache(itemId);
 			if (alwaysStoreDataInStandaloneTable()) {
 				item.delete();
 			}

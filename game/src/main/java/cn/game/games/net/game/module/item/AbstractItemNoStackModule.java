@@ -13,6 +13,7 @@ import com.google.common.collect.Multimap;
 import cn.game.games.cache.entity.ItemNoStack;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.util.DAO;
 import cn.game.protocol.manual.OpType;
 
 /**    
@@ -57,9 +58,14 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 	}
 
 	@Override
-	public void removeCache(E item) {
-		id_items.remove(item.getConfigId(), item);
-		uid_items.remove(item.getId());
+	public E removeFromCache(int id) {
+		id_items.removeAll(id);
+		return null;
+	}
+
+	@Override
+	public E removeFromCache(long id) {
+		return uid_items.remove(id);
 	}
 
 	@Override
@@ -85,14 +91,39 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 	@Override
 	public boolean del(long uid, OpType... args) {
 
+		return del(uid, true, args) != null;
+	}
+
+	private E del(long uid, boolean updateDb, OpType... args) {
+
 		E item = uid_items.get(uid);
 		if (item == null)
-			return false;
-		removeCache(item);
-		if (alwaysStoreDataInStandaloneTable()) {
+			return null;
+		removeFromCache(item.getConfigId());
+		removeFromCache(item.getId());
+
+		if (updateDb && alwaysStoreDataInStandaloneTable()) {
 			item.delete();
 		}
 		player.handleEvent(EventTypeEnum.CostUidItem, uid, item.getConfigId());
+		return item;
+	}
+
+	public boolean delBatch(List<Long> uidList, OpType... opType) {
+		if (uidList == null || uidList.isEmpty()) {
+			return true;
+		}
+		List<E> items = new ArrayList<>();
+		for (long id : uidList) {
+			E item = del(id, false, opType);
+			if (item != null) {
+				items.add(item);
+			}
+		}
+		if (items.isEmpty()) {
+			return false;
+		}
+		DAO.deleteBatch(items.get(0).getMapperClass(), items);
 		return true;
 	}
 

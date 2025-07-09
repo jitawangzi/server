@@ -102,13 +102,19 @@ public class HeadBoxModule extends GoodsModule<HeadBox> {
 	}
 
 	@Override
-	public void removeCache(HeadBox item) {
-		// TODO Auto-generated method stub
+	public void buildPlayerAllInfo(Builder builder) {
 
 	}
 
 	@Override
-	public void buildPlayerAllInfo(Builder builder) {
+	public HeadBox removeFromCache(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public HeadBox removeFromCache(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -28,11 +28,6 @@ public abstract class AbstractItemOnlyOneModule<E extends ItemOnlyOne> extends G
 	}
 
 	@Override
-	public void removeCache(E item) {
-		idItems.remove(item.getConfigId(), item);
-	}
-
-	@Override
 	public void addCacheStackable(E item) {
 
 	}
@@ -69,7 +64,17 @@ public abstract class AbstractItemOnlyOneModule<E extends ItemOnlyOne> extends G
 
 	@Override
 	public boolean del(int itemId, long count, OpType... args) {
-		return idItems.remove(itemId) != null;
+		return removeFromCache(itemId) != null;
+	}
+
+	@Override
+	public E removeFromCache(int id) {
+		return idItems.remove(id);
+	}
+
+	@Override
+	public E removeFromCache(long id) {
+		throw new UnsupportedOperationException("不支持通过uid删除: " + id);
 	}
 
 	@Override

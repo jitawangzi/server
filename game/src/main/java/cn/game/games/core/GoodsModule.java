@@ -159,7 +159,9 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 	public abstract void addCacheStackable(E item);
 	public abstract void addCacheNoStackable(E item);
 
-	public abstract void removeCache(E item);
+	public abstract E removeFromCache(int id);
+
+	public abstract E removeFromCache(long id);
 
 	public Collection<E> list() {
 		return Collections.EMPTY_LIST;

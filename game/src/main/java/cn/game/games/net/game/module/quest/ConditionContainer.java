@@ -42,6 +42,7 @@ public class ConditionContainer {
 		set(createQuestCondition, or, achieveAction);
 		return this;
 	}
+
 	public ConditionContainer create(long playerId, List<Integer> conditions, boolean or, Consumer<Condition> condChangeActions,
 			Consumer<Condition> condAchieveActions, Consumer<Condition> achieveAction, String dbString) {
 
@@ -63,7 +64,8 @@ public class ConditionContainer {
 			List<Condition> conditionsCreate = null;
 			if (!StringUtils.isEmpty(dbString)) {
 				String[] condString = dbString.split("\\|");
-				conditionsCreate = ConditionFactory.createConditionfromSaveString(playerId, condString, conditions, condChangeActions, achieveWrapAction);
+				conditionsCreate = ConditionFactory.createConditionfromSaveString(playerId, condString, conditions, condChangeActions,
+						achieveWrapAction);
 			} else {
 				conditionsCreate = ConditionFactory.createAndInitConditions(playerId, conditions, condChangeActions, achieveWrapAction);
 			}
@@ -72,8 +74,8 @@ public class ConditionContainer {
 		return this;
 	}
 
-	public ConditionContainer create(long playerId, int condition, boolean or, Consumer<Condition> condChangeActions, Consumer<Condition> condAchieveActions,
-			Consumer<Condition> achieveAction, String dbString) {
+	public ConditionContainer create(long playerId, int condition, boolean or, Consumer<Condition> condChangeActions,
+			Consumer<Condition> condAchieveActions, Consumer<Condition> achieveAction, String dbString) {
 		List<Integer> conditions = new ArrayList<>(1);
 		conditions.add(condition);
 		return create(playerId, conditions, or, condChangeActions, condAchieveActions, achieveAction, dbString);
@@ -124,6 +126,7 @@ public class ConditionContainer {
 			}
 		}
 	}
+
 	public List<Condition> getRequires() {
 		return requires;
 	}
@@ -131,6 +134,7 @@ public class ConditionContainer {
 	public void setRequires(List<Condition> requires) {
 		this.requires = requires;
 	}
+
 	public Condition getRequire(int id) {
 
 		for (Condition questCondition : requires) {

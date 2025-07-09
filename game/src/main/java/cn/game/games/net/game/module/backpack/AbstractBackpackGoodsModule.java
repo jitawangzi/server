@@ -214,8 +214,13 @@ public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsM
 	}
 
 	@Override
-	public void removeCache(Item item) {
-		// 对于格子背包，我们不使用缓存，因为物品存储在格子中
+	public E removeFromCache(int id) {
+		return null;
+	}
+
+	@Override
+	public E removeFromCache(long id) {
+		return null;
 	}
 
 	@Override

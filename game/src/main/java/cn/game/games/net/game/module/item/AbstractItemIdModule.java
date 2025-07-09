@@ -102,7 +102,14 @@ public abstract class AbstractItemIdModule<E extends Item> extends GoodsModule<E
 	}
 
 	@Override
-	public void removeCache(E item) {
+	public E removeFromCache(int id) {
+		// 由于是id类型的物品，不支持通过id删除
+		throw new UnsupportedOperationException("不支持通过id删除: " + id);
+	}
+
+	@Override
+	public E removeFromCache(long id) {
+		throw new UnsupportedOperationException("不支持通过uid删除: " + id);
 	}
 
 	@Override

@@ -120,12 +120,6 @@ public class CurrencyModule extends GoodsModule<Currency> {
 	}
 
 	@Override
-	public void removeCache(Currency item) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean del(long uid, OpType... args) {
 		throw new UnsupportedOperationException();
 	}
@@ -228,5 +222,15 @@ public class CurrencyModule extends GoodsModule<Currency> {
 				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, OpType.PressureTest);
 			}
 		}
+	}
+
+	@Override
+	public Currency removeFromCache(int id) {
+		throw new UnsupportedOperationException("不支持通过id删除货币"); // 货币不支持通过id删除
+	}
+
+	@Override
+	public Currency removeFromCache(long id) {
+		throw new UnsupportedOperationException("不支持通过uid删除货币"); // 货币不支持通过uid删除
 	}
 }
