@@ -24,22 +24,12 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(PlayerData row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(PlayerData row);
 
 	/**
 	 * @mbg.generated
 	 */
 	PlayerData selectByPrimaryKey(long playerId);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeyWithBLOBs(PlayerData row);
 
 	/**
 	 * @mbg.generated

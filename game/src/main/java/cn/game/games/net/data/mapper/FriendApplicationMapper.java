@@ -21,11 +21,6 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(FriendApplication row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(FriendApplication row);
 
 	/**

@@ -28,11 +28,11 @@ public class RewardHelper {
 	public static RewardInfo toRewardInfo(Item item) {
 		RewardInfo.Builder builder = RewardInfo.newBuilder();
 		if (item.getClass() == Item.class) {
-			builder.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
+			builder.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount((int) item.getCount()));
 			return builder.build();
 		}
 		if (item instanceof Currency) {
-			builder.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue()));
+			builder.setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount()));
 		} else if (item instanceof MergeEquip) {
 			builder.setMergeEquip(((MergeEquip) item).toMergeEquipProto());
 		} else if (item instanceof Pet) {

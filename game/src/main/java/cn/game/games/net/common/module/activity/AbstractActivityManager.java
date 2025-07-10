@@ -300,7 +300,7 @@ public abstract class AbstractActivityManager {
 			activity.setStat((byte) activityBase.getState());
 			activity.setParams(saveString);
 
-			DAO.updateWithBLOBs(activity);
+			DAO.update(activity);
 		}
 	}
 

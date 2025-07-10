@@ -21,11 +21,6 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(ForbidAccount row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(ForbidAccount row);
 
 	/**

@@ -21,11 +21,6 @@ public interface InviteMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(Invite row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(Invite row);
 
 	/**

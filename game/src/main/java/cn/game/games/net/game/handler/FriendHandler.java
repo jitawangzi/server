@@ -340,8 +340,8 @@ public class FriendHandler extends BaseHandler {
 				friendTarget.setFriendId(playerId);
 				friendTarget.setPlayerId(friendId);
 				friendTarget.setGifted(true);
-
-				DAO.updateSelective(friendTarget);
+				// TODO
+//				DAO.updateSelective(friendTarget);
 			}
 
 			friend.setGift(true);

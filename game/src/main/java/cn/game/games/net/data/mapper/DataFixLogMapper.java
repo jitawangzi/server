@@ -19,11 +19,6 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(DataFixLog row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(DataFixLog row);
 
 	/**

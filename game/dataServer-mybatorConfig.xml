@@ -34,7 +34,9 @@
         <plugin type="org.mybatis.generator.plugins.GetLastIdPlugin" />
         <plugin type="org.mybatis.generator.plugins.PrimitiveTypeModelPlugin" />
     	<plugin type="org.mybatis.generator.plugins.PrimitiveTypeClientPlugin" />
-    	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />    <plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
+    	
         
 
 		<!-- 自定义生成的注释 -->

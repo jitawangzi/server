@@ -112,10 +112,11 @@ public class ItemModule extends AbstractItemModule<Item> {
 	@Override
 	public RewardInfo toRewardInfo(Item item) {
 		if (item instanceof Currency) {
-			return RewardInfo.newBuilder().setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+			return RewardInfo.newBuilder().setAsset(AssetInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount())).build();
 		}
 		return RewardInfo.newBuilder()
-				.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount(item.getCount().intValue())).build();
+				.setItem(ItemInfo.newBuilder().setId(item.getConfigId()).setCount((int) item.getCount()))
+				.build();
 	}
 
 	@Override

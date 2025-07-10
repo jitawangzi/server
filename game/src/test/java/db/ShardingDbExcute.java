@@ -112,7 +112,7 @@ public class ShardingDbExcute {
 			Base row = new Base();
 			row.setIntField1(id);
 			row.setIntField10(Rnd.get(1, 10000000));
-			DAO.invoke(BaseMapper.class, MapperConstant.updateByPrimaryKeySelective, row);
+			DAO.invoke(BaseMapper.class, MapperConstant.updateByPrimaryKey, row);
 		}
 		System.out.println(max + " 次可选更新数据库操作耗时: " + (System.currentTimeMillis() - start));
 	}

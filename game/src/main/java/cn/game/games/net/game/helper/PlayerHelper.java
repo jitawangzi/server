@@ -1464,9 +1464,10 @@ public class PlayerHelper {
 				data.beforeSave();
 				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 				List<DbTask> dbTasks = new ArrayList<>(1);
-				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKeyWithBLOBs, data));
+				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
 				return DAO.execute(dbTasks);
 			}
+			// 下面暂时用不到
 			List<DbEntity> entities = new ArrayList<>();
 
 			for (BasePlayerModule module : player.getAllModule()) {
@@ -1475,7 +1476,9 @@ public class PlayerHelper {
 			List<DbTask> dbTasks = new ArrayList<>(entities.size());
 			for (DbEntity dbEntity : entities) {
 				dbEntity.beforeSave();
-				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, dbEntity));
+//				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, dbEntity));
+				// 暂时去掉可选方法
+				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKey, dbEntity));
 			}
 			if (!dbTasks.isEmpty()) {
 				Future<List<Object>> updateFuture = DAO.execute(dbTasks);

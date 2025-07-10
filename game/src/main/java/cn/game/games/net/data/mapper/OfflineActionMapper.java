@@ -19,11 +19,6 @@ public interface OfflineActionMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(OfflineAction row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(OfflineAction row);
 
 	/**

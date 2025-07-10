@@ -20,11 +20,6 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(Friend row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(Friend row);
 
 	/**

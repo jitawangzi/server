@@ -21,22 +21,12 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(Zongmen row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(Zongmen row);
 
 	/**
 	 * @mbg.generated
 	 */
 	Zongmen selectByPrimaryKey(long id);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeyWithBLOBs(Zongmen row);
 
 	/**
 	 * @mbg.generated

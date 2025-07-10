@@ -126,7 +126,7 @@ public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsM
 			Item item = backpack.getItemBySlot(slot);
 			if (item.getCount() <= remainingCount) {
 				// 移除整个格子的物品
-				backpack.removeItem(slot, item.getCount().intValue(), args.length > 0 ? args[0] : OpType.None);
+				backpack.removeItem(slot, (int) item.getCount(), args.length > 0 ? args[0] : OpType.None);
 				remainingCount -= item.getCount();
 			} else {
 				// 部分移除
@@ -151,7 +151,7 @@ public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsM
 			for (int i = 0; i < backpack.getCapacity(); i++) {
 				Item item = backpack.getItemBySlot(i);
 				if (item != null && item.getId() == uid) {
-					return backpack.removeItem(i, item.getCount().intValue(), args.length > 0 ? args[0] : OpType.None);
+					return backpack.removeItem(i, (int) item.getCount(), args.length > 0 ? args[0] : OpType.None);
 				}
 			}
 		}

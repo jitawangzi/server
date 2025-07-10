@@ -2,10 +2,7 @@ package cn.game.games.cache.entity;
 
 public class ItemNoStack extends Item {
 
-	/**
-	 * @mbg.generated
-	 */
-	protected Boolean isStack = false;
+	protected boolean isStack = false;
 
 	/** 等级 */
 	protected int level;

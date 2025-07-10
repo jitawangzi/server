@@ -21,11 +21,6 @@ public interface EquipMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(Equip row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(Equip row);
 
 	/**

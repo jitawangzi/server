@@ -90,7 +90,7 @@ public class ZongMenManager {
 				ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
 					info.setSaveDataTimer(now);
 					info.updateModuleData();
-					Future<@Nullable Object> updateWithBLOBs = DAO.updateWithBLOBs(info.getData());
+					Future<@Nullable Object> updateWithBLOBs = DAO.update(info.getData());
 					CompletionStage<Boolean> saveZongMenTotalPowerRank = saveZongMenTotalPowerRank(info);
 					RFuture<Void> saveSimpleData = saveSimpleData(info);
 

@@ -21,11 +21,6 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(Mail row);
-
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(Mail row);
 
 	/**

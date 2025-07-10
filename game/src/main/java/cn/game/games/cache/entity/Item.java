@@ -13,8 +13,8 @@ public class Item implements Serializable, DbEntity {
 	/**
 	 * 道具类型,
 	 */
-	protected Integer type;
-	protected Long count;
+	protected int type;
+	protected long count;
 	/**
 	 * 创建时间
 	 */
@@ -51,19 +51,19 @@ public class Item implements Serializable, DbEntity {
 		this.configId = configId;
 	}
 
-	public Integer getType() {
+	public int getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
-	public Long getCount() {
+	public long getCount() {
 		return count;
 	}
 
-	public void setCount(Long count) {
+	public void setCount(long count) {
 		this.count = count;
 	}
 
@@ -100,6 +100,6 @@ public class Item implements Serializable, DbEntity {
 	}
 
 	public ItemInfo toItemInfo() {
-		return ItemInfo.newBuilder().setId(this.configId).setCount(this.count.intValue()).build();
+		return ItemInfo.newBuilder().setId(this.configId).setCount((int) this.count).build();
 	}
 }

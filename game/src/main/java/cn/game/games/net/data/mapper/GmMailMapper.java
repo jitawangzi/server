@@ -19,19 +19,11 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertSelective(GmMail row);
-	/**
-	 * @mbg.generated
-	 */
 	int insertOrUpdate(GmMail row);
 	/**
 	 * @mbg.generated
 	 */
 	GmMail selectByPrimaryKey(int id);
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeyWithBLOBs(GmMail row);
 	/**
 	 * @mbg.generated
 	 */

@@ -46,7 +46,7 @@ public interface DbEntity {
 //		if (GameServer.getInstance().isSinglePlayerTable()) {
 //			return Future.succeededFuture();
 //		}
-		return DAO.updateWithBLOBs(this);
+		return DAO.update(this);
 	}
 
 	public default Future<@Nullable Object> delete() {

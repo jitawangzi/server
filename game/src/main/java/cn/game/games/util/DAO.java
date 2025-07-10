@@ -33,11 +33,6 @@ public class DAO {
 		return execute(arg.getMapperClass(), MapperConstant.insert, arg);
 	}
 
-	public static Future<@Nullable Object> insertSelective(DbEntity arg) {
-		arg.beforeSave();
-		return execute(arg.getMapperClass(), MapperConstant.insertSelective, arg);
-	}
-
 	public static Future<@Nullable Object> insertOrUpdate(DbEntity arg) {
 		arg.beforeSave();
 		return execute(arg.getMapperClass(), MapperConstant.insertOrUpdate, arg);
@@ -57,20 +52,21 @@ public class DAO {
 	 * @param arg
 	 * @return 
 	 */
-	public static Future<@Nullable Object> updateWithBLOBs(DbEntity arg) {
-		arg.beforeSave();
-		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, arg);
-	}
+//	public static Future<@Nullable Object> updateWithBLOBs(DbEntity arg) {
+//		arg.beforeSave();
+//		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
+//	}
 
 	/**
 	 * 更新部分字段，可以包含blob
 	 * @param arg
 	 * @return 
 	 */
-	public static Future<@Nullable Object> updateSelective(DbEntity arg) {
-		arg.beforeSave();
-		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKeySelective, arg);
-	}
+//	@Deprecated
+//	public static Future<@Nullable Object> updateSelective(DbEntity arg) {
+//		arg.beforeSave();
+//		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
+//	}
 
 	public static Future<@Nullable Object> delete(DbEntity arg) {
 

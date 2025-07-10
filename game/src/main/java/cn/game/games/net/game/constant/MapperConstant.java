@@ -26,14 +26,14 @@ public class MapperConstant {
 	public static final String deleteByPrimaryKey = "deleteByPrimaryKey";
 	public static final String deleteBatch = "deleteBatch";
 	public static final String insert = "insert";
-	public static final String insertSelective = "insertSelective";
+//	public static final String insertSelective = "insertSelective";
 	public static final String insertOrUpdate = "insertOrUpdate";
 	public static final String insertBatch = "insertBatch";
 	public static final String selectByPrimaryKey = "selectByPrimaryKey";
 	/** 有选择的更新字段，可以更新blob字段 */
-	public static final String updateByPrimaryKeySelective = "updateByPrimaryKeySelective";
+//	public static final String updateByPrimaryKeySelective = "updateByPrimaryKeySelective";
 	/** 更新整行全部数据，带blob字段 */
-	public static final String updateByPrimaryKeyWithBLOBs = "updateByPrimaryKeyWithBLOBs";
+//	public static final String updateByPrimaryKeyWithBLOBs = "updateByPrimaryKeyWithBLOBs";
 	/** 更新整行数据，不包含blob字段 */
 	public static final String updateByPrimaryKey = "updateByPrimaryKey";
 	public static final String updateBatch = "updateBatch";
