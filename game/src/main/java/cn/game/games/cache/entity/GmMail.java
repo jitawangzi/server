@@ -9,7 +9,7 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private Integer id;
+	private int id;
 	/**
 	 * 创建时间
 	 * @mbg.generated
@@ -19,7 +19,7 @@ public class GmMail implements Serializable, DbEntity {
 	 * 邮件类型 0 个人邮件 1 全服邮件
 	 * @mbg.generated
 	 */
-	private Byte mailopttype;
+	private byte mailopttype;
 	/**
 	 * 邮件标题
 	 * @mbg.generated
@@ -29,7 +29,7 @@ public class GmMail implements Serializable, DbEntity {
 	 * 审核标识 0 未审核; 1 已审核
 	 * @mbg.generated
 	 */
-	private Byte optFlag;
+	private byte optFlag;
 	/**
 	 * 该类型邮件操作的开始时间
 	 * @mbg.generated
@@ -44,12 +44,12 @@ public class GmMail implements Serializable, DbEntity {
 	 * 全服邮件 玩家最低等级
 	 * @mbg.generated
 	 */
-	private Integer minLevel;
+	private int minLevel;
 	/**
 	 * 全服邮件 玩家最大等级
 	 * @mbg.generated
 	 */
-	private Integer maxLevel;
+	private int maxLevel;
 	/**
 	 * 附件
 	 * @mbg.generated
@@ -59,7 +59,7 @@ public class GmMail implements Serializable, DbEntity {
 	 * 全服邮件 时间校验方式 0 登录时间 1 注册时间
 	 * @mbg.generated
 	 */
-	private Byte timeCheckType;
+	private byte timeCheckType;
 	/**
 	 * 包含的服务器id
 	 * @mbg.generated
@@ -93,14 +93,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -121,14 +121,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getMailopttype() {
+	public byte getMailopttype() {
 		return mailopttype;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setMailopttype(Byte mailopttype) {
+	public void setMailopttype(byte mailopttype) {
 		this.mailopttype = mailopttype;
 	}
 
@@ -149,14 +149,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getOptFlag() {
+	public byte getOptFlag() {
 		return optFlag;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setOptFlag(Byte optFlag) {
+	public void setOptFlag(byte optFlag) {
 		this.optFlag = optFlag;
 	}
 
@@ -191,28 +191,28 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getMinLevel() {
+	public int getMinLevel() {
 		return minLevel;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setMinLevel(Integer minLevel) {
+	public void setMinLevel(int minLevel) {
 		this.minLevel = minLevel;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getMaxLevel() {
+	public int getMaxLevel() {
 		return maxLevel;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setMaxLevel(Integer maxLevel) {
+	public void setMaxLevel(int maxLevel) {
 		this.maxLevel = maxLevel;
 	}
 
@@ -233,14 +233,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getTimeCheckType() {
+	public byte getTimeCheckType() {
 		return timeCheckType;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setTimeCheckType(Byte timeCheckType) {
+	public void setTimeCheckType(byte timeCheckType) {
 		this.timeCheckType = timeCheckType;
 	}
 

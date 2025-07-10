@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.award;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,26 @@ public class RewardHelper {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}
 		return builder.build();
+	}
+	public static List<RewardInfo> toRewardList(Object object) {
+		List<RewardInfo> list = new ArrayList<>(2);
+	    addRewardToList(object, list);
+	    return list;
+	}
+
+	private static void addRewardToList(Object object, List<RewardInfo> list) {
+	    if (object == null) {
+	        return;
+	    }
+	    if (object instanceof Item) {
+			list.add(toRewardInfo((Item) object));
+	    } else if (object instanceof Collection<?>) {
+	        for (Object elem : (Collection<?>) object) {
+	            addRewardToList(elem, list);
+	        }
+	    } else {
+	        throw new RuntimeException("不支持的RewardInfo类型 : " + object.getClass().getName());
+	    }
 	}
 
 	/**

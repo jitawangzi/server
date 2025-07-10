@@ -1,21 +1,18 @@
 package cn.game.games.net.game.gm;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.game.games.cache.entity.GmMail;
-import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.util.DAO;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.GmMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName GmHelper
@@ -67,9 +64,9 @@ public class GmHelper {
         builder.addServerId(str);
       }
     }
-    builder.setTimeCheckType(gmMail.getTimeCheckType() == null ? 0 : gmMail.getTimeCheckType());
-    builder.setLevelStart(gmMail.getMinLevel() ==null ? 0 :gmMail.getMinLevel());
-    builder.setLevelEnd(gmMail.getMaxLevel() == null ? 0 : gmMail.getMaxLevel());
+	builder.setTimeCheckType(gmMail.getTimeCheckType());
+	builder.setLevelStart(gmMail.getMinLevel());
+    builder.setLevelEnd(gmMail.getMaxLevel());
     long sendStartTimer = 0;
     long sendEndTimer = 0;
     if (gmMail.getSendStartTimer() != null){

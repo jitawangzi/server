@@ -720,7 +720,7 @@ public class PlayerHelper {
 	public static void refreshMonth(Player player) {
 		int nowMonth = DateUtil.getMonth();
 		// 设置参数
-		if (player.getData().getRefreshMonth() == null) {
+		if (player.getData().getRefreshMonth() == 0) {
 			player.getData().setRefreshMonth(nowMonth);
 			return;
 		}
@@ -740,10 +740,6 @@ public class PlayerHelper {
 		// 每天早晨5点刷新
 		long playerId = player.getData().getPlayerId();
 		int fiveTime = (int) (DateUtil.getDayHourTimestamp(5) / 1000);
-
-		if (player.getData().getRefreshFiveDay() == null) {
-			player.getData().setRefreshFiveDay(0);
-		}
 
 		if (player.getData().getRefreshFiveDay() >= fiveTime) {
 			return;
@@ -1354,7 +1350,7 @@ public class PlayerHelper {
 	public static List<DbTask> initDbTasks(Player player) {
 		List<DbTask> dbTasks = new ArrayList<>();
 		for (BasePlayerModule module : player.getModuleSorted()) {
-			if (!GameServer.getInstance().isSinglePlayerTable() || module.alwaysStoreDataInStandaloneTable()) {
+			if (!ServerContext.getInstance().isSinglePlayerTable() || module.alwaysStoreDataInStandaloneTable()) {
 				module.initDbTasks(dbTasks);
 			}
 		}
@@ -1364,7 +1360,7 @@ public class PlayerHelper {
 	public static Future<Player> initPlayerModuleFromDb(Player player, List<Object> list) {
 
 		ListIterator<?> listIterator = list.listIterator();
-		if (GameServer.getInstance().isSinglePlayerTable()) {
+		if (ServerContext.getInstance().isSinglePlayerTable()) {
 			for (BasePlayerModule module : player.getModuleSorted()) {
 				if (module.alwaysStoreDataInStandaloneTable()) {
 					module.loadFromDb(listIterator);
@@ -1464,7 +1460,7 @@ public class PlayerHelper {
 		}
 		if (player.isActive()) {
 			PlayerData data = player.getData();
-			if (GameServer.getInstance().isSinglePlayerTable()) {
+			if (ServerContext.getInstance().isSinglePlayerTable()) {
 				data.beforeSave();
 				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 				List<DbTask> dbTasks = new ArrayList<>(1);

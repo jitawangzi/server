@@ -10,17 +10,17 @@ public class FriendApplication implements Serializable, DbEntity {
 	 * 被申请人id
 	 * @mbg.generated
 	 */
-	private Long playerId;
+	private long playerId;
 	/**
 	 * 申请人id
 	 * @mbg.generated
 	 */
-	private Long applyPlayerId;
+	private long applyPlayerId;
 	/**
 	 * 申请时间
 	 * @mbg.generated
 	 */
-	private Long applyTime;
+	private long applyTime;
 	/**
 	 * 申请人所在服务器id
 	 * @mbg.generated
@@ -34,42 +34,42 @@ public class FriendApplication implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Long getApplyPlayerId() {
+	public long getApplyPlayerId() {
 		return applyPlayerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setApplyPlayerId(Long applyPlayerId) {
+	public void setApplyPlayerId(long applyPlayerId) {
 		this.applyPlayerId = applyPlayerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Long getApplyTime() {
+	public long getApplyTime() {
 		return applyTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setApplyTime(Long applyTime) {
+	public void setApplyTime(long applyTime) {
 		this.applyTime = applyTime;
 	}
 

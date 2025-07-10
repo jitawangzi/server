@@ -10,7 +10,7 @@ public interface FriendMapper {
     /**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("friendId") Long friendId);
+	int deleteByPrimaryKey(@Param("playerId") long playerId, @Param("friendId") long friendId);
 
 	/**
 	 * @mbg.generated
@@ -30,12 +30,7 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Friend selectByPrimaryKey(@Param("playerId") Long playerId, @Param("friendId") Long friendId);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(Friend row);
+	Friend selectByPrimaryKey(@Param("playerId") long playerId, @Param("friendId") long friendId);
 
 	/**
 	 * @mbg.generated
@@ -45,7 +40,7 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Friend> selectByPlayerId(@Param("playerId") Long playerId);
+	List<Friend> selectByPlayerId(@Param("playerId") long playerId);
 
 	/**
 	 * @mbg.generated
@@ -60,7 +55,7 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Friend> getBatchCursor(@Param("lastPlayerId") Long lastPlayerId, @Param("lastFriendId") Long lastFriendId,
+	List<Friend> getBatchCursor(@Param("lastPlayerId") long lastPlayerId, @Param("lastFriendId") long lastFriendId,
 			@Param("limit") int limit);
 
 	/**

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import cn.game.games.net.game.GameServer;
+import cn.game.core.base.ServerContext;
 
 /**    
  * 条件容器，一般管理那种需要持续观察变化的那种条件
@@ -50,7 +50,7 @@ public class ConditionContainer {
 			condAchieveActions.accept(r);
 			checkFinish(r);
 		};
-		if (GameServer.getInstance().isSinglePlayerTable()) {
+		if (ServerContext.getInstance().isSinglePlayerTable()) {
 			set(or, achieveAction);
 			if (requires.isEmpty()) {
 				this.requires = ConditionFactory.createAndInitConditions(playerId, conditions, condChangeActions, achieveWrapAction);

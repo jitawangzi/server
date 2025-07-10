@@ -11,7 +11,7 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Long id);
+	int deleteByPrimaryKey(long id);
 
 	/**
 	 * @mbg.generated
@@ -31,12 +31,7 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Mail selectByPrimaryKey(Long id);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(Mail row);
+	Mail selectByPrimaryKey(long id);
 
 	/**
 	 * @mbg.generated
@@ -46,7 +41,7 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Mail> selectByPlayerId(@Param("playerId") Long playerId);
+	List<Mail> selectByPlayerId(@Param("playerId") long playerId);
 
 	/**
 	 * @mbg.generated
@@ -61,7 +56,7 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Mail> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+	List<Mail> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -86,7 +81,7 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+	Long getLastIdOfBatch(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	int deletePlayerData(@Param("playerId") Long playerId);
 

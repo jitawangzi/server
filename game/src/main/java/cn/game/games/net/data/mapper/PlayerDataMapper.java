@@ -14,7 +14,7 @@ public interface PlayerDataMapper {
     /**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Long playerId);
+	int deleteByPrimaryKey(long playerId);
 
 	/**
 	 * @mbg.generated
@@ -34,12 +34,7 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	PlayerData selectByPrimaryKey(Long playerId);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(PlayerData row);
+	PlayerData selectByPrimaryKey(long playerId);
 
 	/**
 	 * @mbg.generated
@@ -54,7 +49,7 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PlayerData> selectByUid(@Param("uid") Long uid);
+	List<PlayerData> selectByUid(@Param("uid") long uid);
 
 	/**
 	 * @mbg.generated
@@ -69,7 +64,7 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PlayerData> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+	List<PlayerData> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -94,7 +89,7 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+	Long getLastIdOfBatch(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	List<Player> selectPlayersByUid(Long uid);
 

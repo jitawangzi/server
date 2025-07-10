@@ -3,22 +3,29 @@ package cn.game.games.cache.entity;
 import cn.game.games.cache.base.DbEntity;
 import java.io.Serializable;
 
-public class Invite implements Serializable, DbEntity {
+/**
+ * 玩家的离线行为保存，上线时处理
+ * @mbg.generated
+ */
+public class OfflineAction implements Serializable, DbEntity {
 
 	/**
 	 * @mbg.generated
 	 */
 	private long id;
 	/**
-	 * 邀请者的角色id
 	 * @mbg.generated
 	 */
 	private long playerId;
 	/**
-	 * 被邀请者玩家id
+	 * 类型
 	 * @mbg.generated
 	 */
-	private long dstPid;
+	private int type;
+	/**
+	 * @mbg.generated
+	 */
+	private String params;
 	/**
 	 * @mbg.generated
 	 */
@@ -55,15 +62,29 @@ public class Invite implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public long getDstPid() {
-		return dstPid;
+	public int getType() {
+		return type;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setDstPid(long dstPid) {
-		this.dstPid = dstPid;
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getParams() {
+		return params;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setParams(String params) {
+		this.params = params;
 	}
 
 	/**
@@ -71,7 +92,7 @@ public class Invite implements Serializable, DbEntity {
 	 */
 	@Override
 	public Class<?> getMapperClass() {
-		return cn.game.games.net.data.mapper.InviteMapper.class;
+		return cn.game.games.net.data.mapper.OfflineActionMapper.class;
 	}
 
 	/**

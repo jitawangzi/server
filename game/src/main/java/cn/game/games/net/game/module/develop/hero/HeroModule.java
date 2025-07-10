@@ -28,7 +28,6 @@ import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ObjUtil;
 import cn.game.util.Rnd;
 
 public class HeroModule extends AbstractItemNoStackModule<Hero> {
@@ -194,7 +193,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 
 	@Override
 	public void setInstanceExt(Hero hero) {
-		ObjUtil.setDefaultValue(hero);
+//		ObjUtil.setDefaultValue(hero);
 		if (this.heroUid == 0) {
 			this.heroUid = hero.getId();
 		}

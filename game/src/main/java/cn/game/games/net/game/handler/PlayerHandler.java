@@ -121,7 +121,6 @@ import cn.game.protocol.protobuf.ServerMsg.LoginPlayerUidResponse_7d000019;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
-import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
@@ -1185,7 +1184,7 @@ public class PlayerHandler extends BaseHandler {
 		playerData.setNew(true);
 		playerData.setModules("[]");
 
-		ObjUtil.setDefaultValue(playerData);
+//		ObjUtil.setDefaultValue(playerData);
 		/*	
 		// 这里先不插入数据库，等完全初始化之后后再插入,防止初始化失败，造成数据不一致
 		Promise<PlayerData> promise = Promise.promise();

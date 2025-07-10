@@ -6,11 +6,9 @@ import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 //import cn.game.protocol.generated.config.DragonConfig;
 //import cn.game.protocol.generated.manager.DragonManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
-import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.DragonInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ObjUtil;
 
 public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
@@ -32,7 +30,7 @@ public class DragonModule extends AbstractItemNoStackModule<Dragon> {
 
 	@Override
 	public void setInstanceExt(Dragon hero) {
-		ObjUtil.setDefaultValue(hero);
+//		ObjUtil.setDefaultValue(hero);
 		if (this.dragonUid == 0) {
 			this.dragonUid = hero.getId();
 		}

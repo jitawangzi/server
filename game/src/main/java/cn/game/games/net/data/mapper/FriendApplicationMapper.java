@@ -11,7 +11,7 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(@Param("playerId") Long playerId, @Param("applyPlayerId") Long applyPlayerId);
+	int deleteByPrimaryKey(@Param("playerId") long playerId, @Param("applyPlayerId") long applyPlayerId);
 
 	/**
 	 * @mbg.generated
@@ -31,12 +31,7 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	FriendApplication selectByPrimaryKey(@Param("playerId") Long playerId, @Param("applyPlayerId") Long applyPlayerId);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(FriendApplication row);
+	FriendApplication selectByPrimaryKey(@Param("playerId") long playerId, @Param("applyPlayerId") long applyPlayerId);
 
 	/**
 	 * @mbg.generated
@@ -46,12 +41,12 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<FriendApplication> selectByApplyid(@Param("applyPlayerId") Long applyPlayerId);
+	List<FriendApplication> selectByApplyid(@Param("applyPlayerId") long applyPlayerId);
 
 	/**
 	 * @mbg.generated
 	 */
-	List<FriendApplication> selectByPlayerId(@Param("playerId") Long playerId);
+	List<FriendApplication> selectByPlayerId(@Param("playerId") long playerId);
 
 	/**
 	 * @mbg.generated
@@ -66,7 +61,7 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<FriendApplication> getBatchCursor(@Param("lastPlayerId") Long lastPlayerId, @Param("lastApplyPlayerId") Long lastApplyPlayerId,
+	List<FriendApplication> getBatchCursor(@Param("lastPlayerId") long lastPlayerId, @Param("lastApplyPlayerId") long lastApplyPlayerId,
 			@Param("limit") int limit);
 
 	/**

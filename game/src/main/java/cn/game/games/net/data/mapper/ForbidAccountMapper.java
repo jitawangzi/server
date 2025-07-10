@@ -11,7 +11,7 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Long playerId);
+	int deleteByPrimaryKey(long playerId);
 
 	/**
 	 * @mbg.generated
@@ -31,12 +31,7 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	ForbidAccount selectByPrimaryKey(Long playerId);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(ForbidAccount row);
+	ForbidAccount selectByPrimaryKey(long playerId);
 
 	/**
 	 * @mbg.generated
@@ -56,7 +51,7 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<ForbidAccount> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+	List<ForbidAccount> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -81,6 +76,6 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+	Long getLastIdOfBatch(@Param("lastId") long lastId, @Param("limit") int limit);
 
 }

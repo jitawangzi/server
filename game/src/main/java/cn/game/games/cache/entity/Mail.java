@@ -19,36 +19,36 @@ public class Mail implements Serializable, DbEntity {
     /**
 	 * @mbg.generated
 	 */
-	private Long id;
+	private long id;
 	/**
 	 * 邮件配置表id
 	 * @mbg.generated
 	 */
-	private Integer mailId;
+	private int mailId;
 	/**
 	 * 角色id
 	 * @mbg.generated
 	 */
-	private Long playerId;
+	private long playerId;
 	/**
 	 * 是否查看过
 	 * @mbg.generated
 	 */
-	private Boolean see;
+	private boolean see;
 	/**
 	 * 有i教案查看时间
 	 * @mbg.generated
 	 */
-	private Integer seeTime;
+	private int seeTime;
 	/**
 	 * @mbg.generated
 	 */
-	private Boolean receive;
+	private boolean receive;
 	/**
 	 * 附件奖励领取时间
 	 * @mbg.generated
 	 */
-	private Integer receiveTime;
+	private int receiveTime;
 	/**
 	 * 发送者名字
 	 * @mbg.generated
@@ -58,7 +58,7 @@ public class Mail implements Serializable, DbEntity {
 	 * 邮件类型
 	 * @mbg.generated
 	 */
-	private Byte type;
+	private byte type;
 	/**
 	 * 邮件标题
 	 * @mbg.generated
@@ -77,12 +77,12 @@ public class Mail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private Integer createTime;
+	private int createTime;
 	/**
 	 * 邮件是否被删除。
 	 * @mbg.generated
 	 */
-	private Boolean isDeleted;
+	private boolean isDeleted;
 	/**
 	 * @mbg.generated
 	 */
@@ -91,98 +91,98 @@ public class Mail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getMailId() {
+	public int getMailId() {
 		return mailId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setMailId(Integer mailId) {
+	public void setMailId(int mailId) {
 		this.mailId = mailId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getSee() {
+	public boolean getSee() {
 		return see;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setSee(Boolean see) {
+	public void setSee(boolean see) {
 		this.see = see;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getSeeTime() {
+	public int getSeeTime() {
 		return seeTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setSeeTime(Integer seeTime) {
+	public void setSeeTime(int seeTime) {
 		this.seeTime = seeTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getReceive() {
+	public boolean getReceive() {
 		return receive;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setReceive(Boolean receive) {
+	public void setReceive(boolean receive) {
 		this.receive = receive;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getReceiveTime() {
+	public int getReceiveTime() {
 		return receiveTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setReceiveTime(Integer receiveTime) {
+	public void setReceiveTime(int receiveTime) {
 		this.receiveTime = receiveTime;
 	}
 
@@ -203,14 +203,14 @@ public class Mail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getType() {
+	public byte getType() {
 		return type;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setType(Byte type) {
+	public void setType(byte type) {
 		this.type = type;
 	}
 
@@ -259,28 +259,28 @@ public class Mail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getCreateTime() {
+	public int getCreateTime() {
 		return createTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setCreateTime(Integer createTime) {
+	public void setCreateTime(int createTime) {
 		this.createTime = createTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getIsDeleted() {
+	public boolean getIsDeleted() {
 		return isDeleted;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setIsDeleted(Boolean isDeleted) {
+	public void setIsDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

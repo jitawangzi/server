@@ -7,7 +7,6 @@ import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.DragonSkillInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ObjUtil;
 
 public class DragonSkillModule extends AbstractItemNoStackModule<DragonSkill> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
@@ -26,7 +25,7 @@ public class DragonSkillModule extends AbstractItemNoStackModule<DragonSkill> {
 
 	@Override
 	public void setInstanceExt(DragonSkill hero) {
-		ObjUtil.setDefaultValue(hero);
+//		ObjUtil.setDefaultValue(hero);
 		hero.setLevel(1);
 		if (this.DragonSkillUid == 0) {
 			this.DragonSkillUid = hero.getId();

@@ -3,8 +3,8 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import cn.game.games.core.SimplePlayer;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.core.SimplePlayer;
 
 public class ForbidAccount implements Serializable, DbEntity {
 
@@ -12,7 +12,7 @@ public class ForbidAccount implements Serializable, DbEntity {
 	 * 封禁的玩家id
 	 * @mbg.generated
 	 */
-	private Long playerId;
+	private long playerId;
 	/**
 	 * 封禁的玩家
 	 * @mbg.generated
@@ -22,7 +22,7 @@ public class ForbidAccount implements Serializable, DbEntity {
 	 * 等级
 	 * @mbg.generated
 	 */
-	private Integer level;
+	private int level;
 	/**
 	 * 解封时间
 	 * @mbg.generated
@@ -37,7 +37,7 @@ public class ForbidAccount implements Serializable, DbEntity {
 	 * 封禁类型 0 所有， 1 封禁账号，2 禁言
 	 * @mbg.generated
 	 */
-	private Integer type;
+	private int type;
 	/**
 	 * @mbg.generated
 	 */
@@ -46,14 +46,14 @@ public class ForbidAccount implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 
@@ -74,14 +74,14 @@ public class ForbidAccount implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setLevel(Integer level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 
@@ -116,14 +116,14 @@ public class ForbidAccount implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getType() {
+	public int getType() {
 		return type;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setType(Integer type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
@@ -179,14 +179,14 @@ public class ForbidAccount implements Serializable, DbEntity {
 	}
 
 	public void updateType(int type){
-		if (this.type !=null &&  this.type == type){
+		if (this.type != 0 && this.type == type) {
 			return;
 		}
-		if (this.type !=null &&  this.type == 1 && type == 2){
+		if (this.type != 0 && this.type == 1 && type == 2) {
 			this.type = 0;
 			return;
 		}
-		if ( this.type !=null && this.type == 2 && type == 1){
+		if (this.type != 0 && this.type == 2 && type == 1) {
 			this.type = 0;
 			return;
 		}

@@ -256,7 +256,7 @@ public class MailModule extends BasePlayerModule  {
 				addMail(mail);
 			} else {
 				// 更新公告邮件
-				if (notice.getMailId() != null && notice.getMailId() != noticeMailId) {
+				if (notice.getMailId() != 0 && notice.getMailId() != noticeMailId) {
 					Mail mail = Mail.valueOfMailId(playerId, noticeMailId);
 					this.mails.remove(notice.getId());
 					notice = null;

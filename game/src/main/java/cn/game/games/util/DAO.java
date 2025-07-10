@@ -3,17 +3,12 @@ package cn.game.games.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.ctrip.framework.apollo.ConfigChangeListener;
-import com.ctrip.framework.apollo.ConfigService;
-import com.ctrip.framework.apollo.model.ConfigChange;
-import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.base.DbEntity;
@@ -32,8 +27,6 @@ public class DAO {
 //	private static final Logger log = LoggerFactory.getLogger("dbLog");
 	private static final Logger log = LoggerFactory.getLogger("Db");
 	// TODO 使用虚拟线程代替vertx worker线程。
-	private static LinkedBlockingQueue<DbTask> dbTasksQueue = new LinkedBlockingQueue<DbTask>();
-	private static volatile boolean pauseUpdateDb = false;
 
 	public static Future<@Nullable Object> insert(DbEntity arg) {
 		arg.beforeSave();
@@ -130,14 +123,6 @@ public class DAO {
 	}
 
 	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
-//		if (pauseUpdateDb) {
-//			dbTasksQueue.add(new DbTask(mapperClass, method, args));
-//			return Future.succeededFuture();
-//		} else {
-//			if (!dbTasksQueue.isEmpty()) {
-//
-//			}
-//		}
 		return VxHolder.executeBlockingWithTimeout(() -> (T) invoke(mapperClass, method, args));
 	}
 
@@ -151,47 +136,4 @@ public class DAO {
 		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
 		return result;
 	}
-	@Deprecated
-	public static void listenPauseUpdateDb() {
-
-		com.ctrip.framework.apollo.Config config = ConfigService.getAppConfig();
-		pauseUpdateDb = config.getBooleanProperty("pauseUpdateDb", false);
-		config.addChangeListener(new ConfigChangeListener() {
-			@Override
-			public void onChange(ConfigChangeEvent changeEvent) {
-				for (String key : changeEvent.changedKeys()) {
-					ConfigChange change = changeEvent.getChange(key);
-					if (key.equalsIgnoreCase("pauseUpdateDb")) {
-						boolean pause = Boolean.parseBoolean(change.getNewValue());
-						if (pause) {
-							pauseUpdateDb = true;
-						} else {
-							// 清空队列任务
-							saveAndClearCacheTask();
-						}
-						break;
-					}
-					System.out.println(String.format("Found change - key: %s, oldValue: %s, newValue: %s, changeType: %s",
-									change.getPropertyName(), change.getOldValue(), change.getNewValue(),
-									change.getChangeType()));
-				}
-			}
-		});
-	}
-
-	@Deprecated
-	private static void saveAndClearCacheTask() {
-		DbTask task;
-		List<Future<?>> futures = new ArrayList<>();
-		while ((task = dbTasksQueue.poll()) != null) {
-			Future<@Nullable Object> updateFutrue = execute(task.getMapper(), task.getMethod(), task.getArg());
-			futures.add(updateFutrue);
-		}
-		Future.join(futures).onSuccess(r -> {
-			pauseUpdateDb = false;
-		}).onFailure(e -> {
-			log.error("UpdateDb task error", e);
-		});
-	}
-
 }

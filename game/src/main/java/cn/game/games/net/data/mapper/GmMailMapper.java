@@ -11,7 +11,7 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Integer id);
+	int deleteByPrimaryKey(int id);
 	/**
 	 * @mbg.generated
 	 */
@@ -27,11 +27,7 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	GmMail selectByPrimaryKey(Integer id);
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(GmMail row);
+	GmMail selectByPrimaryKey(int id);
 	/**
 	 * @mbg.generated
 	 */
@@ -51,7 +47,7 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<GmMail> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
+	List<GmMail> getBatchCursor(@Param("lastId") int lastId, @Param("limit") int limit);
 	/**
 	 * @mbg.generated
 	 */
@@ -71,7 +67,7 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Integer getLastIdOfBatch(@Param("lastId") Integer lastId, @Param("limit") int limit);
+	Integer getLastIdOfBatch(@Param("lastId") int lastId, @Param("limit") int limit);
 	List<GmMail> selectGlobalMailList();
 	List<GmMail> selectGmMailList(
 			@Param("startTimer")Date startTimer,

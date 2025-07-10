@@ -408,7 +408,7 @@ public class Player {
 
 	public PlayerInfo toProto() {
 		PlayerInfo.Builder builder = PlayerInfo.newBuilder();
-		builder.setId((int) getData().getPlayerId().longValue());
+		builder.setId((int) getData().getPlayerId());
 		builder.setName(getData().getName());
 //		builder.setLevel(getData().getLevel());
 //		builder.setExp(getData().getExp());
@@ -422,7 +422,7 @@ public class Player {
 //		builder.setSpiritReceiveInfo(getData().getSpiritReceiveInfo());
 //		builder.setActionPower(getData().getActionPower());
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
-		builder.setOfflineTime(getData().getOfflineTime().toString());
+		builder.setOfflineTime(getData().getOfflineTime() + "");
 		builder.setServerId(getData().getServerId());
 		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
 		return builder.build();

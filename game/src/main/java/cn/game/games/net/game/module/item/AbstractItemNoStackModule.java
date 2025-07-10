@@ -115,7 +115,9 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 		if (items.isEmpty()) {
 			return false;
 		}
-		DAO.deleteBatch(items.get(0).getMapperClass(), items);
+		if (alwaysStoreDataInStandaloneTable()) {
+			DAO.deleteBatch(items.get(0).getMapperClass(), items);
+		}
 		return true;
 	}
 

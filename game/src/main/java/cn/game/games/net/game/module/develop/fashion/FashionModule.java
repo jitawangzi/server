@@ -6,7 +6,6 @@ import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ObjUtil;
 
 public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
@@ -25,7 +24,7 @@ public class FashionModule extends AbstractItemNoStackModule<Fashion> {
 
 	@Override
 	public void setInstanceExt(Fashion hero) {
-		ObjUtil.setDefaultValue(hero);
+//		ObjUtil.setDefaultValue(hero);
 		if (this.fashionUid == 0) {
 			this.fashionUid = hero.getId();
 		}

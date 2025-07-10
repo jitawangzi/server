@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
@@ -15,6 +14,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.NPCConfig;
+import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BaseMsg.PlayerShowInfo;
@@ -101,7 +101,7 @@ public class SimplePlayer implements Serializable {
 		this.combatEffectiveness = player.getAttrModule().getPower();
 		this.head = player.getData().getHead();
 		this.headFrame = player.getData().getHeadFrame();
-		this.gender = (byte) (player.getData().getGender().booleanValue() == true ? 1 : 0);
+		this.gender = (byte) (player.getData().getGender() == true ? 1 : 0);
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
 		this.level = player.getLevel();

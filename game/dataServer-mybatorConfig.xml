@@ -32,6 +32,9 @@
         <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
         <plugin type="org.mybatis.generator.plugins.MysqlBatchUpdatePlugin" />
         <plugin type="org.mybatis.generator.plugins.GetLastIdPlugin" />
+        <plugin type="org.mybatis.generator.plugins.PrimitiveTypeModelPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.PrimitiveTypeClientPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />
         
 
 		<!-- 自定义生成的注释 -->
@@ -60,6 +63,10 @@
 		<!-- 生成全部表 ，使用一样的规则 -->
 		<table tableName="%">
 			<domainObjectRenamingRule searchString="^T" replaceString="" />
+		</table>
+		<table tableName="t_equip" domainObjectName="Equip">
+			<property name="rootClass" value="cn.game.games.cache.entity.ItemNoStack" />
+			<blobTransformColumn blobColumn="ext" domainObjectFieldType="java.util.HashMap&lt;Integer, Integer&gt;" domainObjectFieldName="equipAttrs" />
 		</table>
 		<!-- 如果有特殊的生成规则，写在这里。 现在有java版本问题，暂时不能用。  -->
 		<!--  

@@ -9,7 +9,7 @@ public class Zongmen implements Serializable, DbEntity {
 	 * 宗门id
 	 * @mbg.generated
 	 */
-	private Long id;
+	private long id;
 	/**
 	 * 宗门名称
 	 * @mbg.generated
@@ -24,12 +24,12 @@ public class Zongmen implements Serializable, DbEntity {
 	 * 等级
 	 * @mbg.generated
 	 */
-	private Byte lv;
+	private byte lv;
 	/**
 	 * 宗门图标
 	 * @mbg.generated
 	 */
-	private Integer icon;
+	private int icon;
 	/**
 	 * 公告
 	 * @mbg.generated
@@ -44,7 +44,7 @@ public class Zongmen implements Serializable, DbEntity {
 	 * 当前经验
 	 * @mbg.generated
 	 */
-	private Integer exp;
+	private int exp;
 	/**
 	 * 宗门所在的服务器节点id，暂时用不到
 	 * @mbg.generated
@@ -68,14 +68,14 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -110,28 +110,28 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getLv() {
+	public byte getLv() {
 		return lv;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setLv(Byte lv) {
+	public void setLv(byte lv) {
 		this.lv = lv;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getIcon() {
+	public int getIcon() {
 		return icon;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setIcon(Integer icon) {
+	public void setIcon(int icon) {
 		this.icon = icon;
 	}
 
@@ -166,14 +166,14 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getExp() {
+	public int getExp() {
 		return exp;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setExp(Integer exp) {
+	public void setExp(int exp) {
 		this.exp = exp;
 	}
 

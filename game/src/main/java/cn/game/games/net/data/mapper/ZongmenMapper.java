@@ -11,7 +11,7 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Long id);
+	int deleteByPrimaryKey(long id);
 
 	/**
 	 * @mbg.generated
@@ -31,12 +31,7 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Zongmen selectByPrimaryKey(Long id);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(Zongmen row);
+	Zongmen selectByPrimaryKey(long id);
 
 	/**
 	 * @mbg.generated
@@ -66,9 +61,7 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
-
-	List<Long> getBatchIdCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+	List<Zongmen> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -93,6 +86,8 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Long getLastIdOfBatch(@Param("lastId") Long lastId, @Param("limit") int limit);
+	Long getLastIdOfBatch(@Param("lastId") long lastId, @Param("limit") int limit);
+
+	List<Long> getBatchIdCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
 }

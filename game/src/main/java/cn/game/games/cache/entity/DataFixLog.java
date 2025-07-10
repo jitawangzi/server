@@ -9,7 +9,7 @@ public class DataFixLog implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private Integer id;
+	private int id;
 	/**
 	 * @mbg.generated
 	 */
@@ -26,14 +26,14 @@ public class DataFixLog implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

@@ -12,32 +12,32 @@ public class Friend implements Serializable, DbEntity {
 	 * 玩家id
 	 * @mbg.generated
 	 */
-	private Long playerId;
+	private long playerId;
 	/**
 	 * 好友id
 	 * @mbg.generated
 	 */
-	private Long friendId;
+	private long friendId;
 	/**
 	 * 是否给这个好友送礼了
 	 * @mbg.generated
 	 */
-	private Boolean gift;
+	private boolean gift;
 	/**
 	 * 好友是否给我送礼了
 	 * @mbg.generated
 	 */
-	private Boolean gifted;
+	private boolean gifted;
 	/**
 	 * 是否领取了该好友的奖励
 	 * @mbg.generated
 	 */
-	private Boolean receive;
+	private boolean receive;
 	/**
 	 * 0好友，1黑名单
 	 * @mbg.generated
 	 */
-	private Byte relation;
+	private byte relation;
 	/**
 	 * 好友所在服务器id
 	 * @mbg.generated
@@ -47,12 +47,12 @@ public class Friend implements Serializable, DbEntity {
 	 * 好友的亲密度
 	 * @mbg.generated
 	 */
-	private Integer intimate;
+	private int intimate;
 	/**
 	 * 亲密度等级
 	 * @mbg.generated
 	 */
-	private Integer intimateLevel;
+	private int intimateLevel;
 	/**
 	 * @mbg.generated
 	 */
@@ -61,73 +61,73 @@ public class Friend implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Long getFriendId() {
+	public long getFriendId() {
 		return friendId;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setFriendId(Long friendId) {
+	public void setFriendId(long friendId) {
 		this.friendId = friendId;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getGift() {
+	public boolean getGift() {
 		return gift;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setGift(Boolean gift) {
+	public void setGift(boolean gift) {
 		this.gift = gift;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getGifted() {
+	public boolean getGifted() {
 		return gifted;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setGifted(Boolean gifted) {
+	public void setGifted(boolean gifted) {
 		this.gifted = gifted;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getReceive() {
+	public boolean getReceive() {
 		return receive;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setReceive(Boolean receive) {
+	public void setReceive(boolean receive) {
 		this.receive = receive;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Byte getRelation() {
+	public byte getRelation() {
 		return relation;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setRelation(Byte relation) {
+	public void setRelation(byte relation) {
 		this.relation = relation;
 	}
 	/**
@@ -145,25 +145,25 @@ public class Friend implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getIntimate() {
+	public int getIntimate() {
 		return intimate;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setIntimate(Integer intimate) {
+	public void setIntimate(int intimate) {
 		this.intimate = intimate;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getIntimateLevel() {
+	public int getIntimateLevel() {
 		return intimateLevel;
 	}
 	/**
 	 * @mbg.generated
 	 */
-	public void setIntimateLevel(Integer intimateLevel) {
+	public void setIntimateLevel(int intimateLevel) {
 		this.intimateLevel = intimateLevel;
 	}
 	/**

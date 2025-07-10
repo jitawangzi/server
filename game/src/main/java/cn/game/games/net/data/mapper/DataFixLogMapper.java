@@ -9,7 +9,7 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByPrimaryKey(Integer id);
+	int deleteByPrimaryKey(int id);
 
 	/**
 	 * @mbg.generated
@@ -29,12 +29,7 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	DataFixLog selectByPrimaryKey(Integer id);
-
-	/**
-	 * @mbg.generated
-	 */
-	int updateByPrimaryKeySelective(DataFixLog row);
+	DataFixLog selectByPrimaryKey(int id);
 
 	/**
 	 * @mbg.generated
@@ -59,7 +54,7 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<DataFixLog> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
+	List<DataFixLog> getBatchCursor(@Param("lastId") int lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -84,5 +79,5 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	Integer getLastIdOfBatch(@Param("lastId") Integer lastId, @Param("limit") int limit);
+	Integer getLastIdOfBatch(@Param("lastId") int lastId, @Param("limit") int limit);
 }

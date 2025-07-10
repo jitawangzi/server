@@ -11,11 +11,11 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private Long playerId;
+	private long playerId;
 	/**
 	 * @mbg.generated
 	 */
-	private Long uid;
+	private long uid;
 	/**
 	 * 渠道id
 	 * @mbg.generated
@@ -35,7 +35,7 @@ public class PlayerData implements Serializable, DbEntity {
 	 * 是否是gm账号
 	 * @mbg.generated
 	 */
-	private Boolean isGm;
+	private boolean isGm;
 	/**
 	 * 玩家所在服务器id，这个服务器是虚构出来的，和实际运行的服务器id没有关系
 	 * @mbg.generated
@@ -45,7 +45,7 @@ public class PlayerData implements Serializable, DbEntity {
 	 * 性别 1男2女
 	 * @mbg.generated
 	 */
-	private Boolean gender;
+	private boolean gender;
 	/**
 	 * @mbg.generated
 	 */
@@ -59,42 +59,42 @@ public class PlayerData implements Serializable, DbEntity {
 	 * 经验
 	 * @mbg.generated
 	 */
-	private Integer exp;
+	private int exp;
 	/**
 	 * 等级
 	 * @mbg.generated
 	 */
-	private Integer level;
+	private int level;
 	/**
 	 * 累积vip经验,只增不减
 	 * @mbg.generated
 	 */
-	private Integer vipExpTotal;
+	private int vipExpTotal;
 	/**
 	 * vip等级
 	 * @mbg.generated
 	 */
-	private Integer vipLevel;
+	private int vipLevel;
 	/**
 	 * 战力
 	 * @mbg.generated
 	 */
-	private Integer fightPower;
+	private int fightPower;
 	/**
 	 * 头像id
 	 * @mbg.generated
 	 */
-	private Integer head;
+	private int head;
 	/**
 	 * 头像框id
 	 * @mbg.generated
 	 */
-	private Integer headFrame;
+	private int headFrame;
 	/**
 	 * 形象
 	 * @mbg.generated
 	 */
-	private Integer image;
+	private int image;
 	/**
 	 * 创建日期
 	 * @mbg.generated
@@ -108,36 +108,36 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private Long offlineTime;
+	private long offlineTime;
 	/**
 	 * 跨月数据刷新日期
 	 * @mbg.generated
 	 */
-	private Integer refreshMonth;
+	private int refreshMonth;
 	/**
 	 * 跨周数据刷新日期
 	 * @mbg.generated
 	 */
-	private Integer refreshWeek;
+	private int refreshWeek;
 	/**
 	 * 跨天数据刷新日期 0点
 	 * @mbg.generated
 	 */
-	private Integer refreshDay;
+	private int refreshDay;
 	/**
 	 * 刷新每日5点的
 	 * @mbg.generated
 	 */
-	private Integer refreshFiveDay;
+	private int refreshFiveDay;
 	/**
 	 * @mbg.generated
 	 */
-	private Integer title;
+	private int title;
 	/**
 	 * 所在工会id
 	 * @mbg.generated
 	 */
-	private Long unionId;
+	private long unionId;
 	/**
 	 * 所在工会名
 	 * @mbg.generated
@@ -147,17 +147,17 @@ public class PlayerData implements Serializable, DbEntity {
 	 * 战斗力
 	 * @mbg.generated
 	 */
-	private Integer combat;
+	private int combat;
 	/**
 	 * 游戏天数
 	 * @mbg.generated
 	 */
-	private Integer day;
+	private int day;
 	/**
 	 * 累计游戏时长（秒）
 	 * @mbg.generated
 	 */
-	private Integer gameTime;
+	private int gameTime;
 	/**
 	 * 所有模块的数据
 	 * @mbg.generated
@@ -170,28 +170,28 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getPlayerId() {
+	public long getPlayerId() {
 		return playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setPlayerId(Long playerId) {
+	public void setPlayerId(long playerId) {
 		this.playerId = playerId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Long getUid() {
+	public long getUid() {
 		return uid;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setUid(Long uid) {
+	public void setUid(long uid) {
 		this.uid = uid;
 	}
 
@@ -240,14 +240,14 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getIsGm() {
+	public boolean getIsGm() {
 		return isGm;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setIsGm(Boolean isGm) {
+	public void setIsGm(boolean isGm) {
 		this.isGm = isGm;
 	}
 
@@ -268,14 +268,14 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Boolean getGender() {
+	public boolean getGender() {
 		return gender;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setGender(Boolean gender) {
+	public void setGender(boolean gender) {
 		this.gender = gender;
 	}
 
@@ -310,112 +310,112 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getExp() {
+	public int getExp() {
 		return exp;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setExp(Integer exp) {
+	public void setExp(int exp) {
 		this.exp = exp;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setLevel(Integer level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getVipExpTotal() {
+	public int getVipExpTotal() {
 		return vipExpTotal;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setVipExpTotal(Integer vipExpTotal) {
+	public void setVipExpTotal(int vipExpTotal) {
 		this.vipExpTotal = vipExpTotal;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getVipLevel() {
+	public int getVipLevel() {
 		return vipLevel;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setVipLevel(Integer vipLevel) {
+	public void setVipLevel(int vipLevel) {
 		this.vipLevel = vipLevel;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getFightPower() {
+	public int getFightPower() {
 		return fightPower;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setFightPower(Integer fightPower) {
+	public void setFightPower(int fightPower) {
 		this.fightPower = fightPower;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getHead() {
+	public int getHead() {
 		return head;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setHead(Integer head) {
+	public void setHead(int head) {
 		this.head = head;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getHeadFrame() {
+	public int getHeadFrame() {
 		return headFrame;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setHeadFrame(Integer headFrame) {
+	public void setHeadFrame(int headFrame) {
 		this.headFrame = headFrame;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getImage() {
+	public int getImage() {
 		return image;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setImage(Integer image) {
+	public void setImage(int image) {
 		this.image = image;
 	}
 
@@ -450,98 +450,98 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Long getOfflineTime() {
+	public long getOfflineTime() {
 		return offlineTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setOfflineTime(Long offlineTime) {
+	public void setOfflineTime(long offlineTime) {
 		this.offlineTime = offlineTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getRefreshMonth() {
+	public int getRefreshMonth() {
 		return refreshMonth;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setRefreshMonth(Integer refreshMonth) {
+	public void setRefreshMonth(int refreshMonth) {
 		this.refreshMonth = refreshMonth;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getRefreshWeek() {
+	public int getRefreshWeek() {
 		return refreshWeek;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setRefreshWeek(Integer refreshWeek) {
+	public void setRefreshWeek(int refreshWeek) {
 		this.refreshWeek = refreshWeek;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getRefreshDay() {
+	public int getRefreshDay() {
 		return refreshDay;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setRefreshDay(Integer refreshDay) {
+	public void setRefreshDay(int refreshDay) {
 		this.refreshDay = refreshDay;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getRefreshFiveDay() {
+	public int getRefreshFiveDay() {
 		return refreshFiveDay;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setRefreshFiveDay(Integer refreshFiveDay) {
+	public void setRefreshFiveDay(int refreshFiveDay) {
 		this.refreshFiveDay = refreshFiveDay;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getTitle() {
+	public int getTitle() {
 		return title;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setTitle(Integer title) {
+	public void setTitle(int title) {
 		this.title = title;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Long getUnionId() {
+	public long getUnionId() {
 		return unionId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setUnionId(Long unionId) {
+	public void setUnionId(long unionId) {
 		this.unionId = unionId;
 	}
 
@@ -562,42 +562,42 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getCombat() {
+	public int getCombat() {
 		return combat;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setCombat(Integer combat) {
+	public void setCombat(int combat) {
 		this.combat = combat;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getDay() {
+	public int getDay() {
 		return day;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setDay(Integer day) {
+	public void setDay(int day) {
 		this.day = day;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public Integer getGameTime() {
+	public int getGameTime() {
 		return gameTime;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setGameTime(Integer gameTime) {
+	public void setGameTime(int gameTime) {
 		this.gameTime = gameTime;
 	}
 

@@ -242,7 +242,7 @@ public class MailHelper {
     }
 
     public static boolean removeGlobalMail(Integer gmMailId) {
-       return globalMailList.removeIf(gmMail -> gmMail.getId().equals(gmMailId));
+		return globalMailList.removeIf(gmMail -> gmMail.getId() == gmMailId);
     }
 
     public static List<GmMail> getGlobalMailList() {

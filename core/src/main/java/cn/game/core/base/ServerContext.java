@@ -14,6 +14,7 @@ import org.redisson.api.RLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ctrip.framework.apollo.ConfigService;
 import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.cache.CacheType;
@@ -216,6 +217,15 @@ public class ServerContext {
 		attachThread.setDaemon(true);
 		attachThread.start();
 
+	}
+
+	/** 
+	 * 是否用一张表存储玩家所有数据-----暂时用不到了
+	 * @return
+	 */
+	public boolean isSinglePlayerTable() {
+//		return false ; 
+		return ConfigService.getAppConfig().getBooleanProperty("player_db_single_table", true);
 	}
 
 	private void startLeaderTask() throws Exception {

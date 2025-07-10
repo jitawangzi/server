@@ -1,6 +1,5 @@
 package cn.game.games.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -96,33 +95,16 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 
 	}
 
+	/** 
+	 * 增加物品
+	 * @param configId
+	 * @param count
+	 * @param opType
+	 * @return  物品的proto类型
+	 */
 	public List<RewardInfo> addReward(int configId, int count, OpType opType) {
-		List<RewardInfo> list = new ArrayList<RewardInfo>(1);
-//		long oldCount = getCount(configId);
 		Object object = add(configId, count, opType);
-		if (object == null) {
-			return list;
-		}
-		if (object instanceof Item) {
-			list.add(RewardHelper.toRewardInfo((Item) object));
-		} else if (object instanceof Collection) {
-			for (Object object2 : (Collection) object) {
-				if (object2 instanceof Item) {
-					list.add(RewardHelper.toRewardInfo((Item) object2));
-				} else if (object2 instanceof Collection) {
-					for (Object object3 : (Collection) object2) {
-						if (object3 instanceof Item) {
-							list.add(RewardHelper.toRewardInfo((Item) object3));
-						} else {
-							throw new RuntimeException("不支持的RewardInfo类型 : " + object3.getClass().getName());
-						}
-					}
-				} else {
-					throw new RuntimeException("不支持的RewardInfo类型 : " + object.getClass().getName());
-				}
-			}
-		}
-		return list;
+		return RewardHelper.toRewardList(object);
 	}
 
 	public Object add(int configId, OpType opType) {

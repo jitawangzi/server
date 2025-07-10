@@ -13,7 +13,6 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
-import cn.game.util.ObjUtil;
 
 public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
@@ -71,7 +70,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 
 	@Override
 	public void setInstanceExt(HCHero hero) {
-		ObjUtil.setDefaultValue(hero);
+//		ObjUtil.setDefaultValue(hero);
 		if (this.heroUid == 0) {
 			this.heroUid = hero.getId();
 		}
