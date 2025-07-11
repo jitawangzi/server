@@ -3,6 +3,8 @@ package cn.game.games.net.game.module.ginseng;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
@@ -48,6 +50,12 @@ public class GinsengTreeModule extends BasePlayerModule {
 	private IntMapWrapper hangUpRandomRewardMap = new IntMapWrapper();
 	private List<Integer> heroIdList = new ArrayList<>();
 
+	/** 下一次产生果实的时间 */
+	private int nextFruitTime;
+
+	@JsonIgnore
+	private long fruitTimer;
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -84,26 +92,52 @@ public class GinsengTreeModule extends BasePlayerModule {
 		startBugTask();
 	}
 
-	private void startFruitTask() {
+	public void startFruitTask() {
 
 		int level = player.getLevel(Asset.RSGTreeExp);
 		if (level == 0) {
 			return;
 		}
+		int[][] refreshTime = new int[][] { { 10, 10 }, { 20, 30 }, { 20, 30 }, { 20, 30 }, { 20, 30 }, { 20, 30 } };
+		// 根据当前果实数，计算刷新果实的时间
+		int fruitCount = fruitMap.size();
+		int[] is = refreshTime[fruitCount];
+		// 剩余刷新秒数
 		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
-		player.setPeriodicTask(rsgTreeLvConfig.RefreshTime * 1000, r -> {
-			if (fruitMap.size() >= rsgTreeLvConfig.Num) {
-				return;
-			}
-			for (int i = 0; i < rsgTreeLvConfig.Num; i++) {
-				if (!fruitMap.hasValue(i)) {
-					// 如果没有果实，则添加一个果实
-					if (Rnd.hit(rsgTreeLvConfig.RefreshWeight)) {
-						fruitMap.add(i, DateUtil.currentTimeSeconds() + rsgTreeLvConfig.MellowTime);
-					}
+		int remaningSeconds = Rnd.random21(is);
+		int nextFruitTime = DateUtil.currentTimeSeconds() + remaningSeconds;
+		boolean changeTimer = false;
+		if (this.nextFruitTime > 0) {
+			if (nextFruitTime < this.nextFruitTime) {
+				if (fruitTimer > 0) {
+					player.cancelTimer(fruitTimer);
 				}
+				this.nextFruitTime = nextFruitTime;
+				changeTimer = true;
 			}
-		});
+		} else {
+			this.nextFruitTime = nextFruitTime;
+			changeTimer = true;
+		}
+		if (changeTimer) {
+			fruitTimer = player.setTimerTask(remaningSeconds * 1000, r -> {
+				newFruit(rsgTreeLvConfig);
+			});
+		}
+	}
+
+	private void newFruit(RSGTreeLvConfig rsgTreeLvConfig) {
+		if (fruitMap.size() >= rsgTreeLvConfig.Num) {
+			return;
+		}
+		for (int i = 0; i < rsgTreeLvConfig.Num; i++) {
+			if (!fruitMap.hasValue(i)) {
+				// 如果没有果实，则添加一个果实
+//				if (Rnd.hit(rsgTreeLvConfig.RefreshWeight)) {
+				fruitMap.add(i, DateUtil.currentTimeSeconds() + rsgTreeLvConfig.MellowTime);
+//				}
+			}
+		}
 	}
 
 	private void startBugTask() {
