@@ -240,3 +240,11 @@
 240,BattleLingShanRequest_13000511,0x13000511,,,,,请求灵山问禅数据
 241,BattleLingShanRewardRequest_13000515,0x13000515,,,,,领取灵山问禅层数宝箱奖励
 242,BattleLingShanReward2Request_13000517,0x13000517,,,,,领取灵山问禅层数宝箱奖励
+243,EquipDecomposeRequest_09000005,0x09000005,,,,,装备分解
+244,EquipPartStrengthRequest_09000007,0x09000007,,,,,装备部位强化
+245,EquipTeardownRequest_09000003,0x09000003,,,,,装备卸下
+246,EquipWearRequest_09000001,0x09000001,,,,,装备 穿戴 替换
+247,GemComposeRequest_10000007,0x10000007,,,,,宝石合成 一键合成
+248,GemLockRequest_10000005,0x10000005,,,,,宝石锁定
+249,GemTeardownRequest_10000003,0x10000003,,,,,宝石卸下
+250,GemWearRequest_10000001,0x10000001,,,,,宝石镶嵌 替换
