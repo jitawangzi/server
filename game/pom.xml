@@ -13,7 +13,6 @@
 		<groupId>cn.game</groupId>
 		<artifactId>server</artifactId>
 		<version>1.0</version>
-		<relativePath>../server/pom.xml</relativePath>  <!--本例中此处是可选的 -->
 	</parent>
 
 	<artifactId>game</artifactId>
