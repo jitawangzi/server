@@ -37,6 +37,12 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
+			case PLAYER_CREATE: {
+				for (int pos = 1; pos < 7; pos++) {
+					equipPartMap.put(pos, new EquipPart(pos));
+				}
+				break;
+			}
 		}
 	}
 
@@ -95,7 +101,7 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		if (pos <= 0 || pos > 6) {
 			throw new IllegalArgumentException("装备部位类型错误: " + pos);
 		}
-		return equipPartMap.getOrDefault(pos, new EquipPart(pos));
+		return equipPartMap.get(pos);
 	}
 
 }

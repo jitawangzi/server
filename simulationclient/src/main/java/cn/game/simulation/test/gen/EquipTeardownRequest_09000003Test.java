@@ -11,10 +11,9 @@ public class EquipTeardownRequest_09000003Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.newBuilder() ; 
-		
-		
-		
+		cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.newBuilder() ;
+		builder.setUid("284963592619446545");
+
 		return builder.build() ; 
 	}
 	
