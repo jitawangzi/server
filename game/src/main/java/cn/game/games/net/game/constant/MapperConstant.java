@@ -30,13 +30,15 @@ public class MapperConstant {
 	public static final String insertOrUpdate = "insertOrUpdate";
 	public static final String insertBatch = "insertBatch";
 	public static final String selectByPrimaryKey = "selectByPrimaryKey";
-	/** 有选择的更新字段，可以更新blob字段 */
+//	/** 有选择的更新字段，可以更新blob字段 */
 //	public static final String updateByPrimaryKeySelective = "updateByPrimaryKeySelective";
-	/** 更新整行全部数据，带blob字段 */
+//	/** 更新整行全部数据，带blob字段 */
 //	public static final String updateByPrimaryKeyWithBLOBs = "updateByPrimaryKeyWithBLOBs";
-	/** 更新整行数据，不包含blob字段 */
+	/** 更新整行数据，也包含blob字段 */
 	public static final String updateByPrimaryKey = "updateByPrimaryKey";
 	public static final String updateBatch = "updateBatch";
+	/** 动态更新某字段 */
+	public static final String updateColumnsByPrimaryKey = "updateColumnsByPrimaryKey";
 
 	// 下面两个是自定义的
 	/** 按playerId查询数据的 */

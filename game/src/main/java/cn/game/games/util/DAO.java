@@ -3,7 +3,9 @@ package cn.game.games.util;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
@@ -47,27 +49,6 @@ public class DAO {
 		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
 	}
 
-	/**
-	 * 更新整行数据，包含blob字段。
-	 * @param arg
-	 * @return 
-	 */
-//	public static Future<@Nullable Object> updateWithBLOBs(DbEntity arg) {
-//		arg.beforeSave();
-//		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
-//	}
-
-	/**
-	 * 更新部分字段，可以包含blob
-	 * @param arg
-	 * @return 
-	 */
-//	@Deprecated
-//	public static Future<@Nullable Object> updateSelective(DbEntity arg) {
-//		arg.beforeSave();
-//		return execute(arg.getMapperClass(), MapperConstant.updateByPrimaryKey, arg);
-//	}
-
 	public static Future<@Nullable Object> delete(DbEntity arg) {
 
 		Class<?> mapperClass = arg.getMapperClass();
@@ -97,8 +78,21 @@ public class DAO {
 	 * @param arg
 	 */
 	public static Object executeSync(Class<?> mapper, String method, Object... args) {
-//		DAO.execute(mapper, method, arg);
 		return invoke(mapper, method, args);
+	}
+
+	/**
+	 * 同步执行数据库操作,少用
+	 * @param blockingCode 
+	 * @throws Exception 
+	 */
+	public static T executeSync(Callable<T> blockingCode) {
+		try {
+			return blockingCode.call();
+		} catch (Exception e) {
+			log.error("Error executing blocking code", e);
+			throw new RuntimeException("Error executing blocking code", e);
+		}
 	}
 
 	/** 
@@ -106,7 +100,7 @@ public class DAO {
 	 * @param tasks
 	 * @return
 	 */
-	public static Future<List<Object>> execute(List<DbTask> tasks) {
+	public static Future<List<Object>> executeDbTaskList(List<DbTask> tasks) {
 		return VxHolder.executeBlockingWithTimeout(() -> {
 			List<Object> ret = new ArrayList<>();
 			for (DbTask dbTask : tasks) {
@@ -120,6 +114,10 @@ public class DAO {
 
 	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
 		return VxHolder.executeBlockingWithTimeout(() -> (T) invoke(mapperClass, method, args));
+	}
+
+	public static <T> Future<@Nullable T> execute(Callable<T> blockingCode) {
+		return VxHolder.executeBlockingWithTimeout(blockingCode);
 	}
 
 	public static Object invoke(Class<?> mapperClass, String method, Object... args) {

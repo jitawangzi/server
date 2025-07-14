@@ -22,7 +22,6 @@ import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
-import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
@@ -40,15 +39,24 @@ public class GGameTest {
 	public static void main(String[] args) throws Exception {
 		initEnv();
 		PlayerDataMapper playerDataMapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
-		FriendMapper friendMapper = SpringContextLoader.getContext().getBean(FriendMapper.class);
 //		List<PlayerData> batch = mapper.selectAll();
 //		System.err.println(batch.size());
 
-		ManagerHelper.init();
+		long playerId = 240200679;
+		long friendId = 240200678;
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("gifted", false);
+//		DAO.execute(FriendMapper.class, MapperConstant.updateColumnsByPrimaryKey, playerId, friendId, map);
+
+//
+//		FriendMapper friendMapper = SpringContextLoader.getContext().getBean(FriendMapper.class);
+//		friendMapper.updateFriendGifted(playerId, friendId, true);
+
+//		ManagerHelper.init();
 		
 //		batchProcess(playerDataMapper, friendMapper);
 
-		extracted();
+//		extracted();
 
 	}
 

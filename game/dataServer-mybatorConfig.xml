@@ -32,12 +32,17 @@
         <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
         <plugin type="org.mybatis.generator.plugins.MysqlBatchUpdatePlugin" />
         <plugin type="org.mybatis.generator.plugins.GetLastIdPlugin" />
-        <plugin type="org.mybatis.generator.plugins.PrimitiveTypeModelPlugin" />
-    	<plugin type="org.mybatis.generator.plugins.PrimitiveTypeClientPlugin" />
     	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />    <plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
     	<plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
-    	
-        
+    	<plugin type="org.mybatis.generator.plugins.DynamicUpdatePlugin" />
+    	<!-- 自定义更新插件 -->
+	    <plugin type="org.mybatis.generator.plugins.CustomUpdatePlugin">
+	        <!-- 为 t_friend 表配置自定义更新方法 -->
+	        <property name="updateFields.t_friend.updateFriendGifted" value="gifted" />
+	    </plugin>
+  		<!-- 通用功能插件 - 放在最后 -->
+        <plugin type="org.mybatis.generator.plugins.PrimitiveTypeModelPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.PrimitiveTypeClientPlugin" />
 
 		<!-- 自定义生成的注释 -->
 		<commentGenerator type="org.mybatis.generator.internal.CustomCommentGenerator">
@@ -86,6 +91,7 @@
 <!-- 		<table tableName="t_player_data"  domainObjectName="PlayerData" > -->
 <!-- 			<blobTransformColumn blobColumn="player_hot_data" domainObjectFieldType="cn.game.games.net.game.module.player.PlayerHotData" domainObjectFieldName="hotData" /> -->
 <!-- 		</table> -->
-
+<!-- 	<table tableName="t_friend"  domainObjectName="Friend"> -->
+<!-- 	</table> -->
 	</context>
 </generatorConfiguration>

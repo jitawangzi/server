@@ -14,7 +14,7 @@ public class EquipWearRequest_09000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
-		builder.setUid("284963592619446545");
+		builder.setUid("285303423853680141");
 		
 		return builder.build() ; 
 	}

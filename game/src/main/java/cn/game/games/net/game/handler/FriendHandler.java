@@ -17,6 +17,7 @@ import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -52,6 +53,7 @@ import cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003;
 import cn.game.protocol.protobuf.FriendMsg.FriendRecommendResponse_30000004;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
 @Component
@@ -336,12 +338,17 @@ public class FriendHandler extends BaseHandler {
 				FriendGiftPush_30000028 build = FriendGiftPush_30000028.newBuilder().setRecvPlayerId(friend.getFriendId()).setSendPlayerId(playerId).build();
 				VxHolder.requestRemoteServer(serverId, build);
 			} else {
-				Friend friendTarget = new Friend();
-				friendTarget.setFriendId(playerId);
-				friendTarget.setPlayerId(friendId);
-				friendTarget.setGifted(true);
-				// TODO
-//				DAO.updateSelective(friendTarget);
+//				Friend friendTarget = new Friend();
+//				friendTarget.setFriendId(playerId);
+//				friendTarget.setPlayerId(friendId);
+//				friendTarget.setGifted(true);
+//				Map<String, Object> map = new HashMap<String, Object>();
+//				map.put("gifted", true);
+//				DAO.execute(FriendMapper.class, MapperConstant.updateColumnsByPrimaryKey, playerId, friendId, map);
+				DAO.execute(() -> {
+					FriendMapper friendMapper = SpringContextLoader.getContext().getBean(FriendMapper.class);
+					return  friendMapper.updateFriendGifted(playerId, friendId, true);
+				});
 			}
 
 			friend.setGift(true);

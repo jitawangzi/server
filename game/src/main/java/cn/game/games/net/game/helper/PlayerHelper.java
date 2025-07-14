@@ -1339,7 +1339,7 @@ public class PlayerHelper {
 	 */
 	public static Future<Player> selectPlayerModuleData(Player player) {
 		List<DbTask> dbTasks = initDbTasks(player);
-		return DAO.execute(dbTasks).compose(r -> initPlayerModuleFromDb(player, r));
+		return DAO.executeDbTaskList(dbTasks).compose(r -> initPlayerModuleFromDb(player, r));
 	}
 
 	/** 
@@ -1465,7 +1465,7 @@ public class PlayerHelper {
 				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
-				return DAO.execute(dbTasks);
+				return DAO.executeDbTaskList(dbTasks);
 			}
 			// 下面暂时用不到
 			List<DbEntity> entities = new ArrayList<>();
@@ -1481,7 +1481,7 @@ public class PlayerHelper {
 				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKey, dbEntity));
 			}
 			if (!dbTasks.isEmpty()) {
-				Future<List<Object>> updateFuture = DAO.execute(dbTasks);
+				Future<List<Object>> updateFuture = DAO.executeDbTaskList(dbTasks);
 				return updateFuture;
 			}
 		}
@@ -1798,7 +1798,7 @@ public class PlayerHelper {
 			// 简要数据
 			String key = CacheType.PLAYER_SIMPLE.key(playerId);
 			return RedisLocalCache.getInstance().deleteAsync(key).thenApply(result -> playerData);
-		}).thenCompose(playerData -> DAO.execute(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
+		}).thenCompose(playerData -> DAO.executeDbTaskList(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
 			// 删除login账号,这里可以使用传递下来的playerData
 			return VxHolder
 					.requestRemoteServer(ServerType.Login,
