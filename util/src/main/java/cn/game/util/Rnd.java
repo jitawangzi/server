@@ -1,7 +1,14 @@
 package cn.game.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
@@ -654,12 +661,21 @@ public final class Rnd {
 	}
 
 	public static <T> T randomOne(List<T> list) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
 		return list.get(Rnd.nextInt(list.size())) ; 
 	}
 	public static <T> T randomOne(T[] array) {
+		if (array == null || array.length == 0) {
+			return null;
+		}
 		return array[Rnd.nextInt(array.length)];
 	}
 	public static int randomOne(int[] array) {
+		if (array == null || array.length == 0) {
+			throw new IllegalArgumentException("Array cannot be null or empty for random selection.");
+		}
 		return array[Rnd.nextInt(array.length)];
 	}
 

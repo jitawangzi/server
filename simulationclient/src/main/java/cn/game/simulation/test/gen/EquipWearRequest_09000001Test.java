@@ -1,11 +1,15 @@
 package cn.game.simulation.test.gen;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
 
+import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class EquipWearRequest_09000001Test extends ServerTest{
@@ -14,7 +18,7 @@ public class EquipWearRequest_09000001Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
-		builder.setUid("285303423853680141");
+		builder.setUid("301619302048487206");
 		
 		return builder.build() ; 
 	}
@@ -23,7 +27,12 @@ public class EquipWearRequest_09000001Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
-		
+		List<EquipInfo> equipsList = client.getPlayerAllInfo().getEquipsList();
+		EquipInfo randomOne = Rnd.randomOne(equipsList);
+		if (randomOne == null) {
+			return null ; 
+		}
+		builder.setUid(randomOne.getUid());
 		
 		return builder.build() ; 
 	}

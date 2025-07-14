@@ -27,7 +27,7 @@ public abstract class ServerTest {
 	/** 
 	 * 压测模式下的协议数据生成
 	 * @param client
-	 * @return
+	 * @return 
 	 */
 	public abstract Message getMessagePressure(Client client);
 

@@ -561,7 +561,9 @@ public class Client extends AbstractNetClient {
 
 	@SuppressWarnings("unchecked")
 	private ChannelFuture sendWsPack(Message msg) {
-
+		if (msg == null) {
+			throw new IllegalArgumentException("发送的消息不能为空！");
+		}
 		byte[] byteArray = msg.toByteArray();
 		CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
 		ByteBuf headerBuf = Unpooled.buffer(12);
