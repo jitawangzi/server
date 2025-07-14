@@ -338,17 +338,13 @@ public class FriendHandler extends BaseHandler {
 				FriendGiftPush_30000028 build = FriendGiftPush_30000028.newBuilder().setRecvPlayerId(friend.getFriendId()).setSendPlayerId(playerId).build();
 				VxHolder.requestRemoteServer(serverId, build);
 			} else {
-//				Friend friendTarget = new Friend();
-//				friendTarget.setFriendId(playerId);
-//				friendTarget.setPlayerId(friendId);
-//				friendTarget.setGifted(true);
 //				Map<String, Object> map = new HashMap<String, Object>();
 //				map.put("gifted", true);
 //				DAO.execute(FriendMapper.class, MapperConstant.updateColumnsByPrimaryKey, playerId, friendId, map);
 				DAO.execute(() -> {
 					FriendMapper friendMapper = SpringContextLoader.getContext().getBean(FriendMapper.class);
-					return  friendMapper.updateFriendGifted(playerId, friendId, true);
-				});
+					return friendMapper.updateFriendGifted(playerId, friendId, true);
+				}).onFailure(player::handleFail);
 			}
 
 			friend.setGift(true);

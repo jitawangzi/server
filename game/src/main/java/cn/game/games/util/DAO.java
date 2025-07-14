@@ -41,7 +41,7 @@ public class DAO {
 	}
 
 	/** 
-	 * 更新整行数据,注意不包含blob字段
+	 * 更新整行数据，包含blob字段
 	 * @param arg
 	 * @return
 	 */

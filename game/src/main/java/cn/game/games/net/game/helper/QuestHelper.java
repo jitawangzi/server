@@ -153,6 +153,6 @@ public class QuestHelper {
 		update.setPlayerId(quest.getPlayerId());
 		update.setId(quest.getId());
 		update.setParams(quest.getParams());
-		update.updateWithBlobs();
+//		update.updateWithBlobs();
 	}
 }
