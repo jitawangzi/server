@@ -86,7 +86,7 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 			}
 		}
 		for (int i = 0; i < count; i++) {
-			EquipAttrConfig equipAttrConfig = Rnd.randomOne(filterList);
+			EquipAttrConfig equipAttrConfig = Rnd.randomElement(filterList);
 			equip.getEquipAttrs().put(equipAttrConfig.ID, Rnd.get(equipAttrConfig.attrMin, equipAttrConfig.attrMax));
 		}
 

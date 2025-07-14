@@ -22,7 +22,7 @@ public class HeroLevelResetRequest_16000007Test extends ServerTest{
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
-		builder.addUid(Rnd.randomOne(herosList).getUid());
+		builder.addUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}
@@ -33,7 +33,7 @@ public Message getMessagePressure(Client client) {
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
-		builder.addUid(Rnd.randomOne(herosList).getUid());
+		builder.addUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}

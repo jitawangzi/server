@@ -67,7 +67,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 		} else if (itemConfig.ItemType == 7) {
 			List<Object> ret = new ArrayList<>();
 			for (int i = 0; i < count; i++) {
-				int item = Rnd.randomOne(itemConfig.Para);
+				int item = Rnd.randomInt(itemConfig.Para);
 				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(item);
 				Object object = goodsModule.add(item, 1, opType);
 				player.handleEvent(EventTypeEnum.GetItem, item, 1);

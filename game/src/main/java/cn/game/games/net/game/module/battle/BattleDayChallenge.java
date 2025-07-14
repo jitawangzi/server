@@ -39,7 +39,7 @@ public class BattleDayChallenge extends HCBattleHandler {
 
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(12);
 		if (battleTypeList != null) {
-			BattleConfig battleConfig = Rnd.randomOne(battleTypeList);
+			BattleConfig battleConfig = Rnd.randomElement(battleTypeList);
 			this.battleId = battleConfig.ID;
 			randomBuff.addAll(BattleHelper.randomBuffs(battleConfig.ID, 1));
 		}

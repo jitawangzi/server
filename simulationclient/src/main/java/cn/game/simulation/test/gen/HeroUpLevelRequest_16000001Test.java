@@ -20,7 +20,7 @@ public class HeroUpLevelRequest_16000001Test extends ServerTest{
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.newBuilder() ; 
 		List<HeroInfo> herosList = client.getPlayerAllInfo().getHerosList();
 		
-		builder.setUid(Rnd.randomOne(herosList).getUid());
+		builder.setUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}
@@ -30,7 +30,7 @@ public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.newBuilder() ; 
 		List<HeroInfo> herosList = client.getPlayerAllInfo().getHerosList();
 		
-		builder.setUid(Rnd.randomOne(herosList).getUid());
+		builder.setUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}

@@ -20,7 +20,7 @@ public class PlayerSearchRequest_0100000bTest extends ServerTest{
 		
 		List<SimplePlayerInfo> recommendList = client.recommendList;
 		if (recommendList != null && recommendList.size() > 0) {
-			SimplePlayerInfo playerInfo = Rnd.randomOne(recommendList);
+			SimplePlayerInfo playerInfo = Rnd.randomElement(recommendList);
 			if (Rnd.nextBoolean()) {
 				builder.setPlayerId(playerInfo.getId());
 			} else {
@@ -39,7 +39,7 @@ public Message getMessagePressure(Client client) {
 		
 		List<SimplePlayerInfo> recommendList = client.recommendList;
 		if (recommendList != null && recommendList.size() > 0) {
-			SimplePlayerInfo playerInfo = Rnd.randomOne(recommendList);
+			SimplePlayerInfo playerInfo = Rnd.randomElement(recommendList);
 			if (Rnd.nextBoolean()) {
 				builder.setPlayerId(playerInfo.getId());
 			} else {

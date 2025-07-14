@@ -22,7 +22,7 @@ public class HeroBattleDismissRequest_16000009Test extends ServerTest{
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
-		builder.setUid(Rnd.randomOne(herosList).getUid());
+		builder.setUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}
@@ -33,7 +33,7 @@ public Message getMessagePressure(Client client) {
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
-		builder.setUid(Rnd.randomOne(herosList).getUid());
+		builder.setUid(Rnd.randomElement(herosList).getUid());
 		
 		return builder.build() ; 
 	}

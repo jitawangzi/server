@@ -138,7 +138,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 	private int calcRemaningSeconds(){
 		int fruitCount = fruitMap.size();
 		int[] apearTime	= GlobalConst.RSGTreeFruitApearTime[fruitCount];
-		return Rnd.random21(apearTime);
+		return Rnd.randomInRange(apearTime);
 	}
 	private void newFruit(RSGTreeLvConfig rsgTreeLvConfig,int createTime) {
 		if (fruitMap.size() >= rsgTreeLvConfig.Num) {

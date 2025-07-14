@@ -243,7 +243,7 @@ public class DrawHandler extends BaseHandler {
 		List<Integer> allPos = Lists.newArrayList(0, 1, 2);
 		allPos.removeAll(recruitedPosList);
 
-		int pos = Rnd.randomOne(allPos);
+		int pos = Rnd.randomElement(allPos);
 
 //		if (recruitedPosList.contains(pos)) {
 //			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());

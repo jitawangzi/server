@@ -229,7 +229,7 @@ public class GinsengTreeHandler extends BaseHandler {
         RSGRewardConfig rsgRewardConfig = null;
         List<RSGRewardConfig> list = RSGRewardManager.instance().list();
         if (fetterMap.isEmpty()){
-            rsgRewardConfig = Rnd.randomOne(list);
+            rsgRewardConfig = Rnd.randomElement(list);
         }else {
             int index =  Rnd.randomIndex(list,e -> {
                 int weigetAdd = 0 ;

@@ -254,16 +254,16 @@ public class PlayerNameManager {
 
 	private String randomName() {
 		List<RandomNameConfig> list = RandomNameManager.instance().list();
-		RandomNameConfig randomOne = Rnd.randomOne(list);
+		RandomNameConfig randomOne = Rnd.randomElement(list);
 		String xing = randomOne.Familyname;
 		String name1;
 		String name2;
 		boolean isMan = Rnd.nextBoolean();
 		if (isMan) {
-			name1 = Rnd.randomOne(list).Name;
+			name1 = Rnd.randomElement(list).Name;
 //			name2 = Rnd.randomOne(list).MenName2;
 		} else {
-			name1 = Rnd.randomOne(list).Name;
+			name1 = Rnd.randomElement(list).Name;
 //			name2 = Rnd.randomOne(list).WomenName2;
 		}
 		return xing + name1;

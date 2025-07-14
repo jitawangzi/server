@@ -29,7 +29,7 @@ public enum ItemUse implements IndexedEnum {
 			ItemConfig itemConfig = ItemManager.instance().get(id);
 			List<RewardInfo> retInfos = new ArrayList<>();
 			for (int i = 0; i < num; i++) {
-				int itemId = Rnd.randomOne(itemConfig.Para);
+				int itemId = Rnd.randomInt(itemConfig.Para);
 				List<RewardInfo> resources = PlayerHelper.addResources(player, itemId, 1, OpType.ItemOpen);
 				retInfos.addAll(resources);
 			}

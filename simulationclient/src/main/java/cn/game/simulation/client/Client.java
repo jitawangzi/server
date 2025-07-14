@@ -329,7 +329,7 @@ public class Client extends AbstractNetClient {
 		}
 		ServerInfo serverInfo = null;
 		if (serverId == null && !ret.isEmpty()) {
-			serverInfo = Rnd.randomOne(ret);
+			serverInfo = Rnd.randomElement(ret);
 		} else {
 			for (ServerInfo info : ret) {
 				if (serverId.equalsIgnoreCase(info.getServerId())) {

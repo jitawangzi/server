@@ -650,7 +650,7 @@ public final class Rnd {
 	 * @param value
 	 * @return
 	 */
-	public static int random21(int[] value) {
+	public static int randomInRange(int[] value) {
 		if (value.length == 0 || value.length > 2) {
 			throw new IllegalArgumentException("范围随机数据配置错误： " + Arrays.toString(value));
 		}
@@ -660,19 +660,19 @@ public final class Rnd {
 		return get(value[0], value[1]) ; 
 	}
 
-	public static <T> T randomOne(List<T> list) {
+	public static <T> T randomElement(List<T> list) {
 		if (list == null || list.isEmpty()) {
 			return null;
 		}
 		return list.get(Rnd.nextInt(list.size())) ; 
 	}
-	public static <T> T randomOne(T[] array) {
+	public static <T> T randomElement(T[] array) {
 		if (array == null || array.length == 0) {
 			return null;
 		}
 		return array[Rnd.nextInt(array.length)];
 	}
-	public static int randomOne(int[] array) {
+	public static int randomInt(int[] array) {
 		if (array == null || array.length == 0) {
 			throw new IllegalArgumentException("Array cannot be null or empty for random selection.");
 		}

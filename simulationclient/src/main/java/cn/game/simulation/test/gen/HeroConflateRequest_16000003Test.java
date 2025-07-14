@@ -39,7 +39,7 @@ public Message getMessagePressure(Client client) {
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
 		HeroConflateInfo.Builder heroConflateInfo = HeroConflateInfo.newBuilder();
-		heroConflateInfo.setUid(Rnd.randomOne(herosList).getUid());
+		heroConflateInfo.setUid(Rnd.randomElement(herosList).getUid());
 		
 		builder.addHeroConflateInfo(heroConflateInfo);
 

@@ -585,7 +585,7 @@ public class PlayerHelper {
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
 
-				Goods goods = new Goods(groupConfig.AssetID, Rnd.random21(groupConfig.Several));
+				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
 				ret.add(goods);
 			}
 		}
@@ -595,7 +595,7 @@ public class PlayerHelper {
 			List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 			for (int j = 0; j < randomDropCount; j++) {
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
-				Goods goods = new Goods(groupConfig.AssetID, Rnd.random21(groupConfig.Several));
+				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
 				ret.add(goods);
 			}
 		}

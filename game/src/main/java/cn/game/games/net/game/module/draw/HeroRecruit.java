@@ -60,8 +60,8 @@ public class HeroRecruit {
 		int guaranteeIndex = -1;
 		int guaranteeRandomId = -1;
 		if (guarantee.isInGuarantee()) {
-			guarantee.reset();
 			GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(guarantee.getId());
+			guarantee.reset();
 			guaranteeIndex = Rnd.nextInt(3);
 			guaranteeRandomId = guaranteeConfig.effectiveParam;
 		}

@@ -28,7 +28,7 @@ public class EquipWearRequest_09000001Test extends ServerTest{
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
 		List<EquipInfo> equipsList = client.getPlayerAllInfo().getEquipsList();
-		EquipInfo randomOne = Rnd.randomOne(equipsList);
+		EquipInfo randomOne = Rnd.randomElement(equipsList);
 		if (randomOne == null) {
 			return null ; 
 		}
