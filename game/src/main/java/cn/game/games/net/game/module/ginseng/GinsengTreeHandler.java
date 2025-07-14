@@ -1,28 +1,26 @@
 package cn.game.games.net.game.module.ginseng;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.game.protocol.generated.config.RSGFetterConfig;
-import cn.game.protocol.generated.config.RSGRewardConfig;
-import cn.game.protocol.generated.manager.RSGFetterManager;
-import cn.game.protocol.generated.manager.RSGRewardManager;
-import cn.game.util.Rnd;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.RSGFetterConfig;
+import cn.game.protocol.generated.config.RSGRewardConfig;
 import cn.game.protocol.generated.config.RSGTreeLvConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.RSGFetterManager;
+import cn.game.protocol.generated.manager.RSGRewardManager;
 import cn.game.protocol.generated.manager.RSGTreeLvManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -47,14 +45,20 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.IntMapWrapper;
+import cn.game.util.Rnd;
 
 @Component
-public class GinsengTreeHandler extends BaseHandler {
+public class GinsengTreeHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {
         return 0x39;
     }
+
+	@Override
+	protected InitialUI getInitialUI() {
+		return InitialUI.RSGTree;
+	}
 
     @Override
     protected void inititialize() {

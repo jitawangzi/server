@@ -16,7 +16,6 @@ import com.google.protobuf.Message;
 
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
@@ -24,6 +23,7 @@ import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.game.GameServer;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
@@ -33,6 +33,7 @@ import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.config.ZongmenStoreConfig;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
@@ -58,7 +59,7 @@ import io.vertx.core.Promise;
  * @create: 2025-02-06 17:27 @Version 1.0
  */
 @Component
-public class ZongMenGameHandler extends BaseHandler {
+public class ZongMenGameHandler extends GameBaseHandler {
 	static Logger log = LoggerFactory.getLogger(ZongMenGameHandler.class);
 
 	public static Future<ZongMenCallbackMsg> sendMsgToZongMenServer(long zongMenId, Player player, Message req, String... params) {
@@ -148,6 +149,11 @@ public class ZongMenGameHandler extends BaseHandler {
 	@Override
 	protected int getModule() {
 		return 0x40;
+	}
+
+	@Override
+	protected InitialUI getInitialUI() {
+		return InitialUI.Guild;
 	}
 
 	// 一键快速加入宗门

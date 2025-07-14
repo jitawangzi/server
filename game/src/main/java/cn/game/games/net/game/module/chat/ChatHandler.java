@@ -1,18 +1,18 @@
 package cn.game.games.net.game.module.chat;
 
-import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.push.PushService;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo;
@@ -31,7 +31,7 @@ import io.vertx.core.Future;
  */
 
 @Component
-public class ChatHandler extends BaseHandler {
+public class ChatHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

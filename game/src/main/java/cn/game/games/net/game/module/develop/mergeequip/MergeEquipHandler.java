@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.HCEquipConfig;
@@ -22,7 +22,7 @@ import cn.game.protocol.protobuf.MergeEquipMsg.MergeEquipmentWearResponse_230000
 import cn.game.protocol.protobuf.PbProtocol;
 
 @Component
-public class MergeEquipHandler extends BaseHandler {
+public class MergeEquipHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

@@ -12,8 +12,8 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -38,7 +38,7 @@ import io.vertx.core.Future;
  * @create: 2025-02-06 15:11 @Version 1.0
  */
 @Component
-public class ZongMenHandler extends BaseHandler {
+public class ZongMenHandler extends GameBaseHandler {
 
 	@Override
 	protected void inititialize() {

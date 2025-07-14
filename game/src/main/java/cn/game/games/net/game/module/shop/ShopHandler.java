@@ -9,12 +9,12 @@ import java.util.function.Supplier;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleModule;
@@ -79,7 +79,7 @@ import cn.game.util.IntMapWrapper;
 import io.vertx.core.Future;
 
 @Component
-public class ShopHandler extends BaseHandler {
+public class ShopHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

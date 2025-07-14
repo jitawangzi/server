@@ -10,8 +10,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
@@ -32,7 +32,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
-public class GemHandler extends BaseHandler {
+public class GemHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

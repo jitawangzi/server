@@ -16,7 +16,6 @@ import com.google.protobuf.TextFormat;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.GmMail;
@@ -24,6 +23,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -67,7 +67,7 @@ import io.vertx.core.Future;
 
 /** gm处理器 */
 @Component
-public class GmHandler extends BaseHandler {
+public class GmHandler extends GameBaseHandler {
 
   @Override
   protected int getModule() {

@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.FairyFriendFightConfig;
@@ -34,11 +34,16 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.Rnd;
 
 @Component
-public class FairyFriendHandler extends BaseHandler {
+public class FairyFriendHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {
 		return 0x27;
+	}
+
+	@Override
+	protected InitialUI getInitialUI() {
+		return InitialUI.FairyFriends;
 	}
 
 	@Override

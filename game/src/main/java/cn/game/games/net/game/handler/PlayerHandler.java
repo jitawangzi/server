@@ -129,7 +129,7 @@ import io.vertx.core.Future;
  * 用户处理器
  */
 @Component
-public class PlayerHandler extends BaseHandler {
+public class PlayerHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

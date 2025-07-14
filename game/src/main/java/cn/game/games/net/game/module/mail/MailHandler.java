@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -25,7 +25,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @Component
-public class MailHandler extends BaseHandler {
+public class MailHandler extends GameBaseHandler {
 	@Override
 	protected int getModule() {
 		return 0x12;

@@ -57,7 +57,7 @@ import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
 @Component
-public class FriendHandler extends BaseHandler {
+public class FriendHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

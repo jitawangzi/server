@@ -106,7 +106,7 @@ import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
 @Component
-public class TestHandler extends BaseHandler {
+public class TestHandler extends GameBaseHandler {
 
     // protected Logger gamerecvLog = LoggerFactory.getLogger("gamerecvLog");
     protected Logger gamesendLog = LoggerFactory.getLogger("gamesendLog");

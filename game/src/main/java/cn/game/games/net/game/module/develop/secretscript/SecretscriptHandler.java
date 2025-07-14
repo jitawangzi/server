@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.SecretscriptBreakConfig;
@@ -33,7 +33,7 @@ import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptUpLevelRequest_3800
 import cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptUpLevelResponse_38000004;
 
 @Component
-public class SecretscriptHandler extends BaseHandler {
+public class SecretscriptHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

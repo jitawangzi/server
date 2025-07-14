@@ -3,20 +3,19 @@ package cn.game.games.net.game.module.quest;
 import java.util.List;
 import java.util.Map;
 
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
-import cn.game.games.net.game.module.invite.InviteHandler;
-import cn.game.protocol.protobuf.ZongMenMsg;
 import org.springframework.stereotype.Component;
 
 import com.google.common.primitives.Ints;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.invite.InviteHandler;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.util.PbBuilder;
@@ -45,9 +44,10 @@ import cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005;
 import cn.game.protocol.protobuf.QuestMsg.QuestUpdateRequest_20000030;
 import cn.game.protocol.protobuf.QuestMsg.QuestUpdateResponse_20000031;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.protocol.protobuf.ZongMenMsg;
 
 @Component
-public class QuestHandler extends BaseHandler {
+public class QuestHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

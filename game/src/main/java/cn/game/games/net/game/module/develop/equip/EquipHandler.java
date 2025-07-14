@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.EquipConfig;
@@ -32,7 +32,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * 装备
  */
 @Component
-public class EquipHandler extends BaseHandler {
+public class EquipHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

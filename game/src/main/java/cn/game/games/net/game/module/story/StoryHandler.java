@@ -3,8 +3,8 @@ package cn.game.games.net.game.module.story;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -14,7 +14,7 @@ import cn.game.protocol.protobuf.StoryMsg.StoryStartRequest_14000001;
 import cn.game.protocol.protobuf.StoryMsg.StoryStartResponse_14000002;
 
 @Component
-public class StoryHandler extends BaseHandler {
+public class StoryHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

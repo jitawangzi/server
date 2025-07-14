@@ -5,8 +5,8 @@ import java.util.concurrent.CompletionStage;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -16,7 +16,7 @@ import cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001;
 import cn.game.protocol.protobuf.RankMsg.RankListResponse_35000002;
 
 @Component
-public class RankHandler extends BaseHandler {
+public class RankHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

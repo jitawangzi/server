@@ -10,9 +10,9 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.log.GameLogger;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -75,7 +75,7 @@ import io.vertx.core.Future;
  * 活动处理器
  */
 @Component
-public class ActivityHandler extends BaseHandler {
+public class ActivityHandler extends GameBaseHandler {
 
     @Override
     protected int getModule() {

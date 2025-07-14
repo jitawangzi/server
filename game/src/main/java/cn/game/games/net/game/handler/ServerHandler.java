@@ -85,7 +85,7 @@ import io.vertx.core.Future;
  * 服务器之间的消息处理器
  */
 @Component
-public class ServerHandler extends BaseHandler {
+public class ServerHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

@@ -3,9 +3,9 @@ package cn.game.games.net.game.module.develop.hccommon;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.VarModule;
@@ -15,7 +15,7 @@ import cn.game.protocol.protobuf.HCCommonMsg.HCBattleSpeedAdsResponse_28000021;
 import cn.game.protocol.protobuf.PbProtocol;
 
 @Component
-public class HCCommonHandler extends BaseHandler {
+public class HCCommonHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

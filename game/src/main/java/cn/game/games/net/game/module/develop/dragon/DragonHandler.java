@@ -3,7 +3,7 @@ package cn.game.games.net.game.module.develop.dragon;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.protobuf.DragonMsg.DragonSkillUpRequest_17000005;
 import cn.game.protocol.protobuf.DragonMsg.DragonSkillUpResponse_17000006;
 import cn.game.protocol.protobuf.DragonMsg.DragonStarUpRequest_17000003;
@@ -13,7 +13,7 @@ import cn.game.protocol.protobuf.DragonMsg.DragonUnlockResponse_17000002;
 import cn.game.protocol.protobuf.PbProtocol;
 
 @Component
-public class DragonHandler extends BaseHandler {
+public class DragonHandler extends GameBaseHandler {
 
 	@Override
 	protected int getModule() {

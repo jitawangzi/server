@@ -3,8 +3,8 @@ package cn.game.games.net.game.module.vip;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.recharge.PayType;
@@ -24,7 +24,7 @@ import cn.game.util.DateUtil;
  * @create: 2024-09-04 18:00 @Version 1.0
  */
 @Component
-public class VipHandler extends BaseHandler {
+public class VipHandler extends GameBaseHandler {
     @Override
     protected void inititialize() {
         putInvoker(PbProtocol.getVipInfoRequest_34000001, this::getVipInfo);

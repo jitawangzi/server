@@ -17,6 +17,7 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -37,6 +38,14 @@ public abstract class BaseHandler implements Handler {
 
 	protected abstract int getModule();
 
+	protected InitialUI getInitialUI() {
+		return null;
+	}
+
+	public boolean checkFunctionOpen(NetClient client, IProtocol<?> protocol) {
+		return true;
+	}
+
 	@PostConstruct
 	public final void init() {
 		this.dispatcher.put(getModule(), this);
@@ -50,10 +59,13 @@ public abstract class BaseHandler implements Handler {
 
 			Invoker invoker = this.CMD_INVOKERS.get(cmd);
 			if (invoker != null) {
-
 				try {
 					Object message = protocol.getData();
 					if (client.needProcess(protocol)) {
+						if (!checkFunctionOpen(client, protocol)) {
+							client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.func_not_open.getId());
+							return;
+						}
 						invoker.invoke(client, message);
 						client.afterProcess(protocol);
 					}
