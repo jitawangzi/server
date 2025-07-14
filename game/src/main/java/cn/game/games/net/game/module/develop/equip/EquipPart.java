@@ -34,10 +34,6 @@ public class EquipPart {
 		return gemPosMap;
 	}
 
-	public void setGemPosMap(Map<Long, Integer> gemPosMap) {
-		this.gemPosMap = gemPosMap;
-	}
-
 	public long getEquipUid() {
 		return equipUid;
 	}

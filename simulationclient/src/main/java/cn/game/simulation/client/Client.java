@@ -167,11 +167,6 @@ public class Client extends AbstractNetClient {
 	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse ;
 	private long inPvPBattlePid;
 
-	// 位置，要么在房间中，要么在层地图中
-//	ExploreRoomInfo room; // 所在房间
-//	ExploreMapInfo floor; // 层地图数据
-//	ExploreInfo explore; // 副本数据
-
 	private Map<Integer, Message> sendingMessageMap = new HashMap<>();
 	/** 当前处理的消息序号 */
 	private volatile int curMessageSeq;

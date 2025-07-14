@@ -210,10 +210,8 @@ public class DrawHandler extends BaseHandler {
 		heroRecruit.refresh();
 
         DrawHeroRefreshResponse_37000014.Builder resp = DrawHeroRefreshResponse_37000014.newBuilder();
-		resp.addAllItemId(heroRecruit.getItemIdList());
-		resp.addAllItemCount(heroRecruit.getItemCountList());
-		// 刚刷完其实就是最大时间
-		resp.setFreeRefreshRemaningSeconds(GlobalConst.GachaRefreshTime);
+
+		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
         
         client.sendProtocol(resp.build());
     }
