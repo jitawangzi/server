@@ -178,15 +178,15 @@ public class GemHandler extends BaseHandler {
 				}
 
 				List<Long> gemIds = qualityEntry.getValue();
-				if (gemIds.size() < curGemConfig.composeCount) {
+				int addGemCount = gemIds.size() / curGemConfig.composeCount;
+				if (addGemCount <= 0) {
 					// 宝石不足，不能合成
 					continue;
 				}
-
 				// 删除原有宝石
-				gemModule.delBatch(gemIds);
+				gemModule.delBatch(gemIds,OpType.GemCompose);
 				// 添加新宝石
-				List<RewardInfo> reward = PlayerHelper.addReward(player, nextGemConfig.ID, OpType.GemCompose);
+				List<RewardInfo> reward = PlayerHelper.addResources(player, nextGemConfig.ID,addGemCount, OpType.GemCompose);
 				resp.addAllRewards(reward);
 			}
 		}

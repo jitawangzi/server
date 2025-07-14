@@ -12,12 +12,12 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.newBuilder() ; 
 //		builder.setId(Asset.playerExp.ID);
-		builder.setId(15);
+		builder.setId(1500000);
 //		builder.setCount(Integer.MAX_VALUE / 2);
 //		builder.setCount(0);
 //		
 //		builder.setId(212001);
-//		builder.setCount(10000);
+		builder.setCount(10);
 
 		return builder.build() ; 
 	}
