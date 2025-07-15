@@ -30,8 +30,6 @@ public class ZongMenModuleData {
     Map<Long, ZongMenMember> menMemberMap = new HashMap<>();
     /**  宗门 设置 */
     ZongMenSetting setting;
-    /**  宗门 商店 */
-    ZongMenShop shop;
     /**  宗门 活跃度 */
     int liveness;
 	/** 宗门砍价 */
@@ -86,11 +84,9 @@ public class ZongMenModuleData {
         setting = new ZongMenSetting();
         setting.setAutoJoin(2);
 
-        shop = new ZongMenShop();
 		bargain = new ZongMenBargain();
     }
     public void afterInit(ZongMenInfo info){
-        shop.init(info);
 		bargain.init();
     }
 

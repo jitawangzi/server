@@ -283,7 +283,7 @@ public class ZongMenHandler extends GameBaseHandler {
 					PbProtocol.getZongMenShopResponse_40000028);
 			return;
 		}
-		res.setShopList(zongMenInfo.getModule().shop.toProto(member));
+//		res.setShopList(zongMenInfo.getModule().shop.toProto(member));
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.getZongMenShopResponse_40000028);
 	}
 
