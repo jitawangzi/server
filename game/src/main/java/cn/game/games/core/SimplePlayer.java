@@ -107,14 +107,14 @@ public class SimplePlayer implements Serializable {
 		this.level = player.getLevel();
 		this.lastLoginTimer = player.getLastLoginTimer();
 		this.createTimer =  player.getCreateTimer();
-		this.battleId = player.getChapterModule().getMainBattleHighest();
+		this.battleId = player.getBattleModule().getMainBattleHighest();
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
 		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
 		this.tdLevel = player.getDevelopModule().getHeavenlyDaoLevel();
 		//存储 大道争锋阵容
-		Map<Integer, List<String>> lineups = player.getChapterModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
+		Map<Integer, List<String>> lineups = player.getBattleModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
 		if (lineups == null){
       		Map<Integer, Long> heroPosMap = new TreeMap<>();

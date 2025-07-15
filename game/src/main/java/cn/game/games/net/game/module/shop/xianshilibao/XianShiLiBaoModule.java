@@ -99,7 +99,7 @@ public class XianShiLiBaoModule extends BasePlayerModule {
                 if (exp != Asset.playerExp.ID) {
                     return;
                 }
-               ShiLuoZhenJingBattle shiLuoZhenJingBattle = player.getChapterModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+               ShiLuoZhenJingBattle shiLuoZhenJingBattle = player.getBattleModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                List<ActivityXianShiLiBaoConfig> allLevelConfigList = getlevelConfigList(level);
                 Map<Integer, ActivityXianShiLiBaoConfig> groupSet = new HashMap<>();
                 if (allLevelConfigList != null){

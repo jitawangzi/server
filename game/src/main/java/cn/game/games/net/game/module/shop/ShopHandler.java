@@ -199,7 +199,7 @@ public class ShopHandler extends GameBaseHandler {
 		int[][] boxRandomId = GlobalConst.BoxRandomId;
 		int idIndex = 0;
 
-		BattleModule battleModule = player.getChapterModule();
+		BattleModule battleModule = player.getBattleModule();
 		int mainBattleHighest = battleModule.getMainBattleHighest();
 
 		int chapter = 0;

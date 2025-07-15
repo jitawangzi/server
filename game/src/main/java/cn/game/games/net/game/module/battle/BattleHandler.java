@@ -407,7 +407,7 @@ public class BattleHandler extends GameBaseHandler {
         //			client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
         //			return;
         //		}
-        int mainBattleId = player.getChapterModule().getMainBattleHighest();
+        int mainBattleId = player.getBattleModule().getMainBattleHighest();
         BattleConfig battleConfig = BattleManager.instance().get(battleId);
         if (!BattleHelper.isComplete(mainBattleId, battleConfig.preBattle)) {
             client.sendProtocol(resp, ErrorMsgEnum.BattleLevel_pre.getId());
@@ -1034,7 +1034,7 @@ public class BattleHandler extends GameBaseHandler {
             minute = seconds / 60;
             hours = minute / 60;
         }
-        PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
+        PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
         int exp = BattleHelper.calcPatrolExpAdd(player, minute, true);
         int gold = BattleHelper.calcPatrolGoldAdd(player, minute, true);
         PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);

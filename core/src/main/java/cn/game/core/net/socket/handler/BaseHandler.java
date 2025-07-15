@@ -17,7 +17,6 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
-import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -38,11 +37,13 @@ public abstract class BaseHandler implements Handler {
 
 	protected abstract int getModule();
 
-	protected InitialUI getInitialUI() {
-		return null;
-	}
-
-	public boolean checkFunctionOpen(NetClient client, IProtocol<?> protocol) {
+	/** 
+	 * 是否应该处理当前协议的 额外的一些检查
+	 * @param client
+	 * @param protocol
+	 * @return
+	 */
+	public boolean checkExt(NetClient client, IProtocol<?> protocol) {
 		return true;
 	}
 
@@ -56,25 +57,18 @@ public abstract class BaseHandler implements Handler {
 		int cmd = protocol.getMsgID();
 		int seq = protocol.getSeq();
 		if (protocol != null) {
-
 			Invoker invoker = this.CMD_INVOKERS.get(cmd);
 			if (invoker != null) {
 				try {
 					Object message = protocol.getData();
-					if (client.needProcess(protocol)) {
-						if (!checkFunctionOpen(client, protocol)) {
-							client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.func_not_open.getId());
-							return;
-						}
+					if (client.needProcess(protocol) && this.checkExt(client, protocol)) {
 						invoker.invoke(client, message);
 						client.afterProcess(protocol);
 					}
-
 				} catch (LogicException e) {
 					client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), e.getErrorCode());
 				} catch (Throwable e) {
-					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(),
-							e);
+					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
 							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
 							.build(), ErrorMsgEnum.unknown.getId());

@@ -286,7 +286,7 @@ public class Player {
 		return getModule(AttrModule.class);
 	}
 
-	public BattleModule getChapterModule() {
+	public BattleModule getBattleModule() {
 		return getModule(BattleModule.class);
 	}
 
@@ -442,7 +442,7 @@ public class Player {
 		builder.setIsOnline(getGameClient() != null);
 		builder.setCreateTime((int) (DateUtil.parseDate(getData().getCreateDate()).getTime() / 1000));
 		builder.setLastLoginTime((int) (DateUtil.parseDate(getData().getLoginDate()).getTime() / 1000));
-		BattleModule battleModule = getChapterModule();
+		BattleModule battleModule = getBattleModule();
 
 		builder.setCurBattleId(battleModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());

@@ -73,7 +73,7 @@ public class DataFixManager {
 			}
 			boolean fix = false;
 			if (!fixList.isEmpty()) {
-				ShiLuoZhenJingBattle battle = player.getChapterModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+				ShiLuoZhenJingBattle battle = player.getBattleModule().getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 				if (battle != null) {
 					for (Quest quest : fixList) {
 						List<Condition> requires = quest.getConditionContainer().getRequires();
@@ -121,7 +121,7 @@ public class DataFixManager {
 
 		Function<Player, Boolean> function = player -> {
 
-			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
+			LingPoBattle lingPoBattle = player.getBattleModule().getBattle(DungeonTypeEnum.LingPo);
 			if (lingPoBattle == null) {
 				return false;
 			}

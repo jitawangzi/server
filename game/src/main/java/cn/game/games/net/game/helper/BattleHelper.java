@@ -244,7 +244,7 @@ public class BattleHelper {
 	 * @return
 	 */
 	public static int calcPatrolExpAdd(Player player, int minute, boolean useWelfareValue) {
-		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
+		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
 		float rate = !useWelfareValue ? 1 : calcPatrolExpRate(player);
 		int exp = (int) (patrolConfig.IncomeEXP * minute * rate);
 		return exp;
@@ -258,7 +258,7 @@ public class BattleHelper {
 	 * @return
 	 */
 	public static int calcPatrolGoldAdd(Player player, int minute, boolean useWelfareValue) {
-		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getChapterModule().getFightMainBattleId());
+		PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
 		float rate = !useWelfareValue ? 1 : calcPatrolGoldRate(player);
 		int gold = (int) (patrolConfig.IncomeGold * minute * rate);
 		return gold;

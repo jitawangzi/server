@@ -76,10 +76,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeInfoRequest_39000001 req = (GinsengTreeInfoRequest_39000001) message;
         GinsengTreeInfoResponse_39000002 defaultInstance = GinsengTreeInfoResponse_39000002.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+//		if (!player.isFuncOpen(InitialUI.RSGTree)) {
+//			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+//			return;
+//		}
         GinsengTreeInfoResponse_39000002.Builder resp = GinsengTreeInfoResponse_39000002.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         resp.setTreeInfo(module.buildGinsengTreeInfo());

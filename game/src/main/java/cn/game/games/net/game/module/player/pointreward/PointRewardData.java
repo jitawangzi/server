@@ -36,7 +36,7 @@ public class PointRewardData {
 			data.randomRewardStage = battleConfig.DailyInBoxRandomId;
 			data.opType = OpType.DayChallengeReward;
 		} else if (type == PointRewardType.LingPo) {
-			LingPoBattle lingPoBattle = player.getChapterModule().getBattle(DungeonTypeEnum.LingPo);
+			LingPoBattle lingPoBattle = player.getBattleModule().getBattle(DungeonTypeEnum.LingPo);
 			BattleConfig battleConfig = BattleManager.instance().getNullable(lingPoBattle.getBattleId());
 			if (battleConfig != null) {
 				data.pointType = Asset.SpiritBattlePoint.ID;

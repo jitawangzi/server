@@ -5,17 +5,34 @@ import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 
 public abstract class GameBaseHandler extends BaseHandler {
 
+	/** 
+	 * 对应的业务功能,主要用来判断功能是否开启
+	 * @return
+	 */
+	protected InitialUI getInitialUI() {
+		return null;
+	}
 	@Override
-	public boolean checkFunctionOpen(NetClient client, IProtocol<?> protocol) {
+	public boolean checkExt(NetClient client, IProtocol<?> protocol) {
 		long playerId = client.getPlayerId();
 		if (playerId <= 0) {
 			return true;
 		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		return player != null && player.isFuncOpen(getInitialUI());
+		if (player != null) {
+			if (player.isFuncOpen(getInitialUI())) {
+				return true;
+			}
+			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.func_not_open.getId());
+			return false;
+		}
+		return true;
 	}
 
 }

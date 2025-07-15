@@ -214,7 +214,7 @@ public class TestHandler extends GameBaseHandler {
                     if (p1 == 0) {
                         throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
                     }
-                    BattleModule battleModule = player.getChapterModule();
+                    BattleModule battleModule = player.getBattleModule();
                     battleModule.setMainBattleHighest(p1);
                     BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
                     while (battleConfig != null) {
@@ -229,7 +229,7 @@ public class TestHandler extends GameBaseHandler {
             case "slzj":
                 {
                     // 设置失落真经关卡id
-                    BattleModule battleModule = player.getChapterModule();
+                    BattleModule battleModule = player.getBattleModule();
                     ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                     if (battle != null) {
                         BattleConfig battleConfig = BattleManager.instance().get(p1);
@@ -246,7 +246,7 @@ public class TestHandler extends GameBaseHandler {
             case "mymj":
                 {
                     // 设置梦魇秘境关卡id
-                    BattleModule battleModule = player.getChapterModule();
+                    BattleModule battleModule = player.getBattleModule();
                     MengYanMiJingBattle battle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
                     if (battle != null) {
                         BattleConfig battleConfig = BattleManager.instance().get(p1);
@@ -261,7 +261,7 @@ public class TestHandler extends GameBaseHandler {
             case "slzjsd":
                 {
                     // 设置失落真经手动关卡。
-                    BattleModule battleModule = player.getChapterModule();
+                    BattleModule battleModule = player.getBattleModule();
                     ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
                     if (battle != null) {
                         if (p1 > 0) {
@@ -739,7 +739,7 @@ public class TestHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), 0);
             return;
         } else if (id == 10000002) {
-            BattleModule battleModule = player.getChapterModule();
+            BattleModule battleModule = player.getBattleModule();
             battleModule.setMainBattleHighest(count);
             BattleConfig battleConfig = BattleManager.instance().getNullable(count);
             while (battleConfig != null) {

@@ -78,7 +78,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 	 */
 	private void initBattleId() {
 
-		int mainBattleId = player.getChapterModule().getMainBattleHighest();
+		int mainBattleId = player.getBattleModule().getMainBattleHighest();
 		if (mainBattleId == 0) {
 			return;
 		}

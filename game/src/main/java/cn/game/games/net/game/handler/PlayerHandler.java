@@ -317,7 +317,7 @@ public class PlayerHandler extends GameBaseHandler {
 			if (player.isFuncOpen(func)) {
 				switch (func) {
 				case DaoXinLLiLian: {
-					BattleModule battleModule = player.getChapterModule();
+					BattleModule battleModule = player.getBattleModule();
 					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.DaoHeart);
 					if (daoHeartBattle == null) {
 						continue;
@@ -339,7 +339,7 @@ public class PlayerHandler extends GameBaseHandler {
 					break;
 				}
 				case XinMoShiLian: {
-					BattleModule battleModule = player.getChapterModule();
+					BattleModule battleModule = player.getBattleModule();
 					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.XinMo);
 					if (daoHeartBattle == null) {
 						continue;
@@ -361,7 +361,7 @@ public class PlayerHandler extends GameBaseHandler {
 					break;
 				}
 				case YaoWangBiePao: {
-					BattleModule battleModule = player.getChapterModule();
+					BattleModule battleModule = player.getBattleModule();
 					DaoHeartBattle daoHeartBattle = battleModule.getBattle(DungeonTypeEnum.YaoWang);
 					if (daoHeartBattle == null) {
 						continue;
@@ -429,7 +429,7 @@ public class PlayerHandler extends GameBaseHandler {
 					break;
 				}
 				case NightmareRealm: {
-					BattleModule battleModule = player.getChapterModule();
+					BattleModule battleModule = player.getBattleModule();
 
 					ret = false;
 					break;
@@ -529,7 +529,7 @@ public class PlayerHandler extends GameBaseHandler {
 		PlayerPatrolInfoRequest_01000070 request = (PlayerPatrolInfoRequest_01000070) message;
 		PlayerPatrolInfoResponse_01000071.Builder resp = PlayerPatrolInfoResponse_01000071.newBuilder();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		BattleModule battleModule = player.getChapterModule();
+		BattleModule battleModule = player.getBattleModule();
 		resp.setPatrol(battleModule.buildPatrolInfo());
 		client.sendProtocol(resp);
 	}

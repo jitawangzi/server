@@ -28,25 +28,6 @@ import cn.game.util.Config;
 import cn.game.util.log.DeprecatedLogger;
 import cn.game.util.log.LoggerType;
 import cn.game.util.log.SystemLogger;
-
-//
-//import java.util.List;
-//import java.util.Objects;
-//
-//import org.apache.commons.lang3.tuple.Pair;
-//
-//import cn.game.games.cache.entity.Mail;
-//import cn.game.games.cache.entity.Player;
-//import cn.game.games.net.game.module.activity.ActivityType;
-//import cn.game.games.net.game.module.currency.Currency;
-//import cn.game.protocol.protobuf.PbProtocol;
-//import cn.game.util.log.Logger;
-//import cn.game.util.log.LoggerType;
-//import cn.game.util.log.SystemLogger;
-//
-///**
-// * @author pangjiawei - [Created on 2018/1/30 22:14]
-// */
 public class GameLogger extends DeprecatedLogger {
 
 	/**限时礼包的默认活动id*/
@@ -255,7 +236,7 @@ public class GameLogger extends DeprecatedLogger {
 					player.getCurrencyModule().getCount(Asset.diamond.ID), GameLogAssistant.calculatePlayerOnlineDurationSecond(player),
 					player.getVipLevel(),
 					player.getCurrencyModule().getCount(Asset.playerEnergy.ID), player.getAttrModule().getPower(),
-					player.getChapterModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()),
+					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()),
 					player.getAccount().getPlatform() };
 			LoggerType.logout.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -274,7 +255,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
 					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), -1,
-					player.getChapterModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()), player.getAccount().getPlatform() };
+					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()), player.getAccount().getPlatform() };
 			LoggerType.levelup.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
