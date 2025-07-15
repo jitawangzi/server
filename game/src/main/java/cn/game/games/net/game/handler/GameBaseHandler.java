@@ -24,6 +24,9 @@ public abstract class GameBaseHandler extends BaseHandler {
 		if (playerId <= 0) {
 			return true;
 		}
+		if (getInitialUI() == null) {
+			return true;
+		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
 			if (player.isFuncOpen(getInitialUI())) {
