@@ -1,19 +1,14 @@
 package cn.game.simulation.test.gen;
 
-import cn.game.games.net.game.module.develop.gem.Gem;
-import cn.game.protocol.generated.config.GemConfig;
-import cn.game.protocol.generated.manager.GemManager;
-import cn.game.protocol.protobuf.BaseMsg;
-import com.google.protobuf.Message;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.Message;
+
+import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class GemComposeRequest_10000007Test extends ServerTest{

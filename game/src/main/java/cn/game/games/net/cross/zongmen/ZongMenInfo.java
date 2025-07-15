@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
+
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
@@ -27,7 +29,6 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.LockUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @ClassName ZongMenInfo
@@ -51,7 +52,7 @@ public class ZongMenInfo {
         module.registerAllModuleEventHandler();
     }
 
-	public void init(ZongMenMsg.createZongMenRequest_40000005 req,String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
+    public void init(ZongMenMsg.createZongMenRequest_40000005 req,String createServerId, long newZongMenId, String name, long createPlayerId, String createPlayerName, int power) {
         module = new ZongMenModuleData();
         saveDataTimer = System.currentTimeMillis()+ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER;
         //初始化 Zongmen 对象
@@ -77,7 +78,7 @@ public class ZongMenInfo {
         joinZongMen(createPlayerId,createPlayerName,power,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
     }
 
-    void joinZongMen(long joinPlayerId, String playerName,int power,int position) {
+	public void joinZongMen(long joinPlayerId, String playerName, int power, int position) {
         ZongMenMember member = new ZongMenMember(joinPlayerId,power,position);
         module.addMember(member,this);
         module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this,member,playerName);
@@ -182,7 +183,7 @@ public class ZongMenInfo {
             if (permissionsConfig.Approval){
                 pidList.addAll(module.applyList);
             }
-			builder.setBargain(module.bargain.toProto(member));
+            builder.setBargain(module.bargain.toProto(member));
         }
 
         //redis 同步加载 SimplePlayer
@@ -206,21 +207,21 @@ public class ZongMenInfo {
             builder.addMemberList(memberProto.build());
         });
 
-    // 封装 ZongMenSetting
-    ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
-    settingProto.setNotice(data.getNotice());
-    settingProto.setDeclaration(data.getDeclaration());
-    builder.setSetting(settingProto.build());
-    builder.setLiveness(module.liveness);
+        // 封装 ZongMenSetting
+        ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
+        settingProto.setNotice(data.getNotice());
+        settingProto.setDeclaration(data.getDeclaration());
+        builder.setSetting(settingProto.build());
+        builder.setLiveness(module.liveness);
 
 
 
-    return builder.build();
+        return builder.build();
     }
 
 
     public long callTotalPower() {
-     return module.getTotalPower();
+        return module.getTotalPower();
     }
 
     public boolean isHasMember(long playerId) {
@@ -265,7 +266,7 @@ public class ZongMenInfo {
         ZongMenManager.log.info("解散宗门成功 id:" + getId() + " name:" + getName() + "");
     }
 
-     void delZongMenNameIdRedisData() {
+    void delZongMenNameIdRedisData() {
         RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_NAME_ID.key(getName()));
     }
 
@@ -306,136 +307,136 @@ public class ZongMenInfo {
         }
     }
 
-  /**
-   * 审批 同意 加入
-   *
-   * @param targetPidListList 被加入的列表
-   * @param playerName 审批人
-   */
-  public void addMemberAuth(List<Long> targetPidListList, String playerName) {
-    boolean addMemberLock =
-        LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_JOIN_PLAYER_LOCK.key(getId()));
-    if (addMemberLock) {
-      PlayerManager.getInstance()
-          .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
-          .onSuccess(
-              res -> {
-                List<Long> joinPidList = new ArrayList<>();
-                res.forEach(
-                    simplePlayer -> {
-                      if (isFull()) {
-                        return;
-                      }
-                      // 删除申请记录
-                      module.removeApply(simplePlayer.getId());
-                      // 加入宗门
-                      joinZongMen(
-                          simplePlayer.getId(),
-                          simplePlayer.getName(),
-                          simplePlayer.combatEffectiveness,
-                          ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-                      joinPidList.add(simplePlayer.getId());
-                    });
-                // 通知被加入的玩家 加入宗门
-                ZongMenHelper.broadcastNotifyMsgToPlayer(
-                    ZongMenMsg.notifyJoinZongMen_40000044
-                        .newBuilder()
-                        .setZongMen(toProto())
-                        .build(),
-                    PbProtocol.notifyJoinZongMen_40000044,
-                    joinPidList);
-                // 更新宗门战斗力排行榜
-                ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
-              })
-          .onFailure(
-              err -> {
-                err.printStackTrace();
-              });
+    /**
+     * 审批 同意 加入
+     *
+     * @param targetPidListList 被加入的列表
+     * @param playerName 审批人
+     */
+    public void addMemberAuth(List<Long> targetPidListList, String playerName) {
+        boolean addMemberLock =
+                LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_JOIN_PLAYER_LOCK.key(getId()));
+        if (addMemberLock) {
+            PlayerManager.getInstance()
+                    .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
+                    .onSuccess(
+                            res -> {
+                                List<Long> joinPidList = new ArrayList<>();
+                                res.forEach(
+                                        simplePlayer -> {
+                                            if (isFull()) {
+                                                return;
+                                            }
+                                            // 删除申请记录
+                                            module.removeApply(simplePlayer.getId());
+                                            // 加入宗门
+                                            joinZongMen(
+                                                    simplePlayer.getId(),
+                                                    simplePlayer.getName(),
+                                                    simplePlayer.combatEffectiveness,
+                                                    ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+                                            joinPidList.add(simplePlayer.getId());
+                                        });
+                                // 通知被加入的玩家 加入宗门
+                                ZongMenHelper.broadcastNotifyMsgToPlayer(
+                                        ZongMenMsg.notifyJoinZongMen_40000044
+                                                .newBuilder()
+                                                .setZongMen(toProto())
+                                                .build(),
+                                        PbProtocol.notifyJoinZongMen_40000044,
+                                        joinPidList);
+                                // 更新宗门战斗力排行榜
+                                ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
+                            })
+                    .onFailure(
+                            err -> {
+                                err.printStackTrace();
+                            });
+        }
     }
-  }
 
     // 删除申请记录
     public void removeApplyAuth(List<Long> targetPidListList, String playerName) {
-      targetPidListList.forEach(targetPid -> {
-        module.removeApply(targetPid);
-      });
+        targetPidListList.forEach(targetPid -> {
+            module.removeApply(targetPid);
+        });
     }
 
-  // 踢人
-  public void kickMember(List<Long> targetPidListList, String playerName) {
-    PlayerManager.getInstance()
-        .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
-        .onSuccess(
-            res -> {
-              res.forEach(
-                  simplePlayer -> {
-                    module.removeMember(simplePlayer.getId());
-                    handleEvent(
-                        ZongMenConstants.ZongMenEvenType.ZONG_MEN_KICK_MEMBER,
-                        playerName,
-                        simplePlayer.getName());
-                  });
-              // 更新宗门战斗力排行榜
-              ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
-            })
-        .onFailure(
-            err -> {
-              err.printStackTrace();
-            });
-  }
+    // 踢人
+    public void kickMember(List<Long> targetPidListList, String playerName) {
+        PlayerManager.getInstance()
+                .batchGetSimplePlayerListFromRedisAsync(targetPidListList)
+                .onSuccess(
+                        res -> {
+                            res.forEach(
+                                    simplePlayer -> {
+                                        module.removeMember(simplePlayer.getId());
+                                        handleEvent(
+                                                ZongMenConstants.ZongMenEvenType.ZONG_MEN_KICK_MEMBER,
+                                                playerName,
+                                                simplePlayer.getName());
+                                    });
+                            // 更新宗门战斗力排行榜
+                            ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
+                        })
+                .onFailure(
+                        err -> {
+                            err.printStackTrace();
+                        });
+    }
 
-  /**
-   * 检查宗主转让
-   * - 自动转让宗主规则：
-   *   - 宗主3天未上线则进行自动转让宗主（ZongmenSuzerainTransfer）；
-   *   - 自动转让：职位最高且在3天内上线的玩家，同一职位转让至贡献度最高的玩家，贡献度相同则转让给战力最高的玩家；
-   */
-  public void checkZongZhuTransfer(long now) {
-      List<ZongMenMember> memberList = new ArrayList<>(module.menMemberMap.values());
+    /**
+     * 检查宗主转让
+     * - 自动转让宗主规则：
+     *   - 宗主3天未上线则进行自动转让宗主（ZongmenSuzerainTransfer）；
+     *   - 自动转让：职位最高且在3天内上线的玩家，同一职位转让至贡献度最高的玩家，贡献度相同则转让给战力最高的玩家；
+     */
+    public void checkZongZhuTransfer(long now) {
+        List<ZongMenMember> memberList = new ArrayList<>(module.menMemberMap.values());
 
-      memberList.sort((m1, m2)->{
-        if (m1.position == m2.position){
-            if (m1.getTotalContribution() == m2.getTotalContribution()){
-                return m1.getPower() - m2.getPower();
-            }
-          return m1.getTotalContribution() - m2.getTotalContribution();
-        }
-        return m1.position < m2.position ? 1 : -1;
-      });
-      ZongMenMember zongZhu = memberList.get(0);
-      PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
-        if (DateUtil.diffDays(now,player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer){
-            if (memberList.size() <= 1){//宗门没人
-                return;
-            }
-            List<Long> targetPidListList = new ArrayList<>();
-            PlayerManager.getInstance().batchGetSimplePlayerFromRedisAsync(targetPidListList).thenAccept(simplePlayerMap->{
-                //被转让的人
-                ZongMenMember targetZongZhu = null;
-                for(int i = 1; i < memberList.size(); i++) {
-                    long lastLoginTimer = simplePlayerMap.get(memberList.get(i).getPlayerId()).getLastLoginTimer();
-                    if (DateUtil.diffDays(now,lastLoginTimer) < GlobalConst.ZongmenSuzerainTransfer){
-                        targetZongZhu = memberList.get(i);
-                        break;
-                    }
+        memberList.sort((m1, m2)->{
+            if (m1.position == m2.position){
+                if (m1.getTotalContribution() == m2.getTotalContribution()){
+                    return m1.getPower() - m2.getPower();
                 }
-                if (targetZongZhu == null){
+                return m1.getTotalContribution() - m2.getTotalContribution();
+            }
+            return m1.position < m2.position ? 1 : -1;
+        });
+        ZongMenMember zongZhu = memberList.get(0);
+        PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
+            if (DateUtil.diffDays(now,player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer){
+                if (memberList.size() <= 1){//宗门没人
                     return;
                 }
-                //转让宗主
-                zongZhuTransfer(zongZhu, targetZongZhu);
+                List<Long> targetPidListList = new ArrayList<>();
+                PlayerManager.getInstance().batchGetSimplePlayerFromRedisAsync(targetPidListList).thenAccept(simplePlayerMap->{
+                    //被转让的人
+                    ZongMenMember targetZongZhu = null;
+                    for(int i = 1; i < memberList.size(); i++) {
+                        long lastLoginTimer = simplePlayerMap.get(memberList.get(i).getPlayerId()).getLastLoginTimer();
+                        if (DateUtil.diffDays(now,lastLoginTimer) < GlobalConst.ZongmenSuzerainTransfer){
+                            targetZongZhu = memberList.get(i);
+                            break;
+                        }
+                    }
+                    if (targetZongZhu == null){
+                        return;
+                    }
+                    //转让宗主
+                    zongZhuTransfer(zongZhu, targetZongZhu);
 
-            }).exceptionally(err ->{err.printStackTrace();
-                return null;
-            });
-        }
-      }).onFailure(err ->{
-          err.printStackTrace();
-      });
+                }).exceptionally(err ->{err.printStackTrace();
+                    return null;
+                });
+            }
+        }).onFailure(err ->{
+            err.printStackTrace();
+        });
 
-  }
+    }
 
-     void zongZhuTransfer(ZongMenMember zongZhu, ZongMenMember targetZongZhu) {
+	public void zongZhuTransfer(ZongMenMember zongZhu, ZongMenMember targetZongZhu) {
         zongZhu.setPosition(ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
         handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE, zongZhu.playerId,ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU, zongZhu.position);
         int targetOldPosition = targetZongZhu.position;
@@ -444,7 +445,7 @@ public class ZongMenInfo {
     }
 
     public void refreshShopByWeek() {
-      module.refreshShopByWeek();
+        module.refreshShopByWeek();
     }
 
     public boolean isEnoughAsset(int[] costItemArr, int count,ZongMenMember member)  {
@@ -455,7 +456,7 @@ public class ZongMenInfo {
         }
         if (idType == Asset.ZongMenContribute.ID){
             return member.getTotalContribution() >= useCount * count;
-         }else {
+        }else {
             return false;
         }
     }
@@ -472,3 +473,4 @@ public class ZongMenInfo {
 
 
 }
+

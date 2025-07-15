@@ -16,27 +16,27 @@ import cn.game.util.RedisUtil;
 /**
  * @ClassName ZongMenModuleData
  *
- * @description: 宗门各个模块管理
+ * @description: 宗门各个模块管理，代表一个宗门的所有数据
  * @author: ly
  * @create: 2025-02-05 14:53 @Version 1.0
  */
 public class ZongMenModuleData {
     @JsonIgnore
-   Map<ZongMenConstants.ZongMenEvenType, List<ZongMenConstants.ZongMenEventHandler>> eventTypeHandleMaps = new HashMap<>();
+    Map<ZongMenConstants.ZongMenEvenType, List<ZongMenConstants.ZongMenEventHandler>> eventTypeHandleMaps = new HashMap<>();
 
     /***      宗门操作日志 */
-     ZongMenOptLog optLog;
+    ZongMenOptLog optLog;
     /***      宗门 成员列表 */
-    Map<Long, ZongMenMember> menMemberMap = new HashMap<>();
+	public Map<Long, ZongMenMember> menMemberMap = new HashMap<>();
     /**  宗门 设置 */
-    ZongMenSetting setting;
+	public ZongMenSetting setting;
     /**  宗门 活跃度 */
     int liveness;
-	/** 宗门砍价 */
-	ZongMenBargain bargain;
+    /** 宗门砍价 */
+    ZongMenBargain bargain;
 
-  /*** 宗门 申请列表 */
-  List<Long> applyList = new ArrayList<>();
+    /*** 宗门 申请列表 */
+    List<Long> applyList = new ArrayList<>();
 
     void registerAllModuleEventHandler(){
         registerEventHandler(optLog);
@@ -44,8 +44,8 @@ public class ZongMenModuleData {
         registerEventHandler(setting);
         registerEventHandler(bargain);
         menMemberMap.values().forEach(member -> {
-             registerEventHandler(member);
-         });
+            registerEventHandler(member);
+        });
     }
 
     void registerEventHandler(ZongMenConstants.ZongMenEventHandler eventHandler) {
@@ -84,10 +84,10 @@ public class ZongMenModuleData {
         setting = new ZongMenSetting();
         setting.setAutoJoin(2);
 
-		bargain = new ZongMenBargain();
+        bargain = new ZongMenBargain();
     }
     public void afterInit(ZongMenInfo info){
-		bargain.init();
+        bargain.init();
     }
 
     public void addMember(ZongMenMember member,ZongMenInfo  info)  {
@@ -137,17 +137,18 @@ public class ZongMenModuleData {
         this.liveness = liveness;
     }
 
-	public ZongMenBargain getBargain() {
-		return bargain;
-	}
+    public ZongMenBargain getBargain() {
+        return bargain;
+    }
 
-	public void setBargain(ZongMenBargain bargain) {
-		this.bargain = bargain;
-	}
+    public void setBargain(ZongMenBargain bargain) {
+        this.bargain = bargain;
+    }
 
-	public void refreshShopByWeek() {
+    public void refreshShopByWeek() {
         menMemberMap.values().forEach(member ->{
             member.refreshWeekShop();
         });
     }
 }
+

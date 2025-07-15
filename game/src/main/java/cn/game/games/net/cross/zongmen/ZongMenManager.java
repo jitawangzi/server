@@ -39,7 +39,7 @@ import io.vertx.core.Promise;
  */
 public class ZongMenManager {
     private static final ZongMenManager  Instance = new ZongMenManager();
-     static Logger log	= LoggerFactory.getLogger(ZongMenManager.class);
+    static Logger log	= LoggerFactory.getLogger(ZongMenManager.class);
     long lastCrossDayTimer;
     /**当前服务器的所有宗门*/
     private Map<Long,ZongMenInfo> zongMenInfoMap = new ConcurrentHashMap<>();
@@ -53,8 +53,8 @@ public class ZongMenManager {
         //加载宗门数据
 //        loadAllData();
         //启动定时器 定期存储 宗门数据
-		SchedulerService.getInstance()
-				.scheduleAtFixedRate(() -> saveAllZongMenData(false), ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
+        SchedulerService.getInstance()
+                .scheduleAtFixedRate(() -> saveAllZongMenData(false), ZongMenConstants.SAVE_ZONG_MEN_DATA_PERIOD_TIMER, TimeUnit.SECONDS);
         //启动定时器 定期触发宗门 时间相关事件
         SchedulerService.getInstance().scheduleAtFixedRate(timeCrossCheck(),1, TimeUnit.SECONDS);
     }
@@ -75,87 +75,87 @@ public class ZongMenManager {
         };
     }
 
-	public Future<Void> saveAllZongMenData(boolean isForce) {
-		long now = System.currentTimeMillis();
-		List<Future<Void>> saveFutures = new ArrayList<>();
-		int saveNum = 0;
-		for (ZongMenInfo info : zongMenInfoMap.values()) {
-			if (isForce || now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER) {
-				saveNum++;
-				// 为每个info创建一个Future
-				Promise<Void> promise = Promise.promise();
-				saveFutures.add(promise.future());
+    public Future<Void> saveAllZongMenData(boolean isForce) {
+        long now = System.currentTimeMillis();
+        List<Future<Void>> saveFutures = new ArrayList<>();
+        int saveNum = 0;
+        for (ZongMenInfo info : zongMenInfoMap.values()) {
+            if (isForce || now - info.getSaveDataTimer() >= ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER) {
+                saveNum++;
+                // 为每个info创建一个Future
+                Promise<Void> promise = Promise.promise();
+                saveFutures.add(promise.future());
 
-				// 投递到eventloop执行
-				ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
-					info.setSaveDataTimer(now);
-					info.updateModuleData();
-					Future<@Nullable Object> updateWithBLOBs = DAO.update(info.getData());
-					CompletionStage<Boolean> saveZongMenTotalPowerRank = saveZongMenTotalPowerRank(info);
-					RFuture<Void> saveSimpleData = saveSimpleData(info);
+                // 投递到eventloop执行
+                ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
+                    info.setSaveDataTimer(now);
+                    info.updateModuleData();
+                    Future<@Nullable Object> updateWithBLOBs = DAO.update(info.getData());
+                    CompletionStage<Boolean> saveZongMenTotalPowerRank = saveZongMenTotalPowerRank(info);
+                    RFuture<Void> saveSimpleData = saveSimpleData(info);
 
-					// 等待三个异步操作全部完成
-					List<Future<Object>> futures = AsyncUtils.toVertxFutures(updateWithBLOBs, saveZongMenTotalPowerRank, saveSimpleData);
-					Future.join(futures).onComplete(ar -> {
-						if (ar.succeeded()) {
-							promise.complete();
-						} else {
-							log.error("Save info id=" + info.getId() + " failed", ar.cause());
-							promise.fail(ar.cause());
-						}
-						log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d", info.getId(), info.getName(),
-								info.getModule().menMemberMap.size()));
-					});
-				});
-			}
-		}
-		log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - now, saveNum,
-				zongMenInfoMap.size()));
+                    // 等待三个异步操作全部完成
+                    List<Future<Object>> futures = AsyncUtils.toVertxFutures(updateWithBLOBs, saveZongMenTotalPowerRank, saveSimpleData);
+                    Future.join(futures).onComplete(ar -> {
+                        if (ar.succeeded()) {
+                            promise.complete();
+                        } else {
+                            log.error("Save info id=" + info.getId() + " failed", ar.cause());
+                            promise.fail(ar.cause());
+                        }
+                        log.info(String.format("update zong men data id:%d, name:%s, memberNum:%d", info.getId(), info.getName(),
+                                info.getModule().menMemberMap.size()));
+                    });
+                });
+            }
+        }
+        log.info(String.format("saveAllZongMenData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - now, saveNum,
+                zongMenInfoMap.size()));
 
-		if (saveFutures.isEmpty()) {
-			return Future.succeededFuture();
-		}
-		// 等待所有保存操作全部完成
-		return Future.join(saveFutures).mapEmpty();
+        if (saveFutures.isEmpty()) {
+            return Future.succeededFuture();
+        }
+        // 等待所有保存操作全部完成
+        return Future.join(saveFutures).mapEmpty();
     }
 
     public void loadAllData(){
         log.info(String.format("开始加载所有的宗门"));
         long beginTimer = System.currentTimeMillis();
         DAO.execute(ZongmenMapper.class,"selectByServerNodeIdIndex", ServerContext.getInstance().getServerId())
-                        .onSuccess(res ->{
-                            int num = 0;
-                            if (res != null){
-                                List<Zongmen> list = (List<Zongmen>) res;
-                                list.forEach(zongmen ->{
-                                    ZongMenInfo info = new ZongMenInfo(zongmen);
-                                    zongMenInfoMap.put(info.getId(),info);
-                                    info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
+                .onSuccess(res ->{
+                    int num = 0;
+                    if (res != null){
+                        List<Zongmen> list = (List<Zongmen>) res;
+                        list.forEach(zongmen ->{
+                            ZongMenInfo info = new ZongMenInfo(zongmen);
+                            zongMenInfoMap.put(info.getId(),info);
+                            info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
 
-                                });
-                                num = list.size();
-                            }
-                            log.info(String.format("开始加载所有的宗门结束, use:%d, 数量:%d", System.currentTimeMillis() - beginTimer,num));
-                        })
-                        .onFailure(err ->{
-                            log.error(String.format("加载所有的宗门 出错 "));
-                            err.printStackTrace();
                         });
+                        num = list.size();
+                    }
+                    log.info(String.format("开始加载所有的宗门结束, use:%d, 数量:%d", System.currentTimeMillis() - beginTimer,num));
+                })
+                .onFailure(err ->{
+                    log.error(String.format("加载所有的宗门 出错 "));
+                    err.printStackTrace();
+                });
     }
 
-	public void loadZongmenList(List<Zongmen> list) {
-		list.forEach(zongmen -> {
-			if (IdCache.initServerId(DistributedObjectType.ZONGMEN, zongmen.getId())) {
-				ZongMenInfo info = new ZongMenInfo(zongmen);
-				zongMenInfoMap.put(info.getId(), info);
-				info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
-			}
-		});
-	}
+    public void loadZongmenList(List<Zongmen> list) {
+        list.forEach(zongmen -> {
+            if (IdCache.initServerId(DistributedObjectType.ZONGMEN, zongmen.getId())) {
+                ZongMenInfo info = new ZongMenInfo(zongmen);
+                zongMenInfoMap.put(info.getId(), info);
+                info.setSaveDataTimer(System.currentTimeMillis() + RandomUtils.nextInt((int) ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER));
+            }
+        });
+    }
 
-	public RFuture<Void> saveSimpleData(ZongMenInfo zongMen) {
+    public RFuture<Void> saveSimpleData(ZongMenInfo zongMen) {
         String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(zongMen.getId());
-		return RedisUtil.setAsync(redisKey, zongMen.toSimpleZongMen());
+        return RedisUtil.setAsync(redisKey, zongMen.toSimpleZongMen());
     }
 
     public ZongMenInfo getZongMenInfo(long zongMenId) {
@@ -170,12 +170,12 @@ public class ZongMenManager {
      * @param power 门主战力
      * @return 新的宗门
      */
-	public Future<ZongMenInfo> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
-		long newZongMenId = ZongMenHelper.createZongMenId();
+    public Future<ZongMenInfo> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+        long newZongMenId = ZongMenHelper.createZongMenId();
         //创建宗门
         ZongMenInfo zongMenInfo = new ZongMenInfo();
         //宗门初始化
-		zongMenInfo.init(req,serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
+        zongMenInfo.init(req,serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
         zongMenInfo.updateModuleData();
         Promise<ZongMenInfo> promise = Promise.promise();
         DAO.insert(zongMenInfo.getData()).onSuccess( res ->{
@@ -187,8 +187,8 @@ public class ZongMenManager {
                 //保存宗门战斗力排行榜
                 saveZongMenTotalPowerRank(zongMenInfo);
                 zongMenInfoMap.put(newZongMenId,zongMenInfo);
-				// 宗门所在服务器
-				saveZongMenServerId(newZongMenId);
+                // 宗门所在服务器
+                saveZongMenServerId(newZongMenId);
                 promise.complete(zongMenInfo);
             } else {
                 promise.complete(null);
@@ -200,35 +200,36 @@ public class ZongMenManager {
         return promise.future();
     }
 
-	/** 
-	 * 获取所有宗门id
-	 * @return
-	 */
-	public Collection<Long> getAllZongMenIds() {
-		return zongMenInfoMap.keySet();
-	}
-
-	CompletionStage<Boolean> saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
-		return RankService.getInstance()
-				.setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen, zongMenInfo.getId(),
-						zongMenInfo.callTotalPower());
+    /** 
+     * 获取所有宗门id
+     * @return
+     */
+    public Collection<Long> getAllZongMenIds() {
+        return zongMenInfoMap.keySet();
     }
 
-	RFuture<Void> saveRedisNameIdMap(String name, long newZongMenId) {
+    CompletionStage<Boolean> saveZongMenTotalPowerRank(ZongMenInfo zongMenInfo) {
+        return RankService.getInstance()
+                .setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen, zongMenInfo.getId(),
+                        zongMenInfo.callTotalPower());
+    }
+
+    RFuture<Void> saveRedisNameIdMap(String name, long newZongMenId) {
         String key = CacheType.ZONG_MEN_NAME_ID.key(name);
-		return RedisUtil.setAsync(key, newZongMenId);
+        return RedisUtil.setAsync(key, newZongMenId);
     }
 
-	private RFuture<Void> saveZongMenServerId(long id) {
-		return IdCache.setServerId(DistributedObjectType.ZONGMEN, id);
-	}
+    private RFuture<Void> saveZongMenServerId(long id) {
+        return IdCache.setServerId(DistributedObjectType.ZONGMEN, id);
+    }
 
-	public void clearZongMenServerId(long id) {
-		RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
-	}
+    public void clearZongMenServerId(long id) {
+        RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
+    }
 
     public void delZongMen(ZongMenInfo zongMenInfo) {
         zongMenInfoMap.remove(zongMenInfo.getId());
         log.info(String.format("删除宗门 id:%d, name:%s",zongMenInfo.getId(),zongMenInfo.getName()));
     }
 }
+

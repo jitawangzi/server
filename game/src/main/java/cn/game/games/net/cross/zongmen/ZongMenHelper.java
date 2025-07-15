@@ -37,18 +37,18 @@ import io.vertx.core.Promise;
  * @create: 2025-02-06 15:00 @Version 1.0
  */
 public class ZongMenHelper {
-	private static final long DEFAULT_PREFIX = 88L;
+    private static final long DEFAULT_PREFIX = 88L;
 
-	public static long createZongMenId() {
+    public static long createZongMenId() {
 //        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
 //        return id;
-		// - 宗门编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个宗门编号是88802890123；
-		long id = (DEFAULT_PREFIX * 10000000) + IdUtil.getIdAutoIncrease(IdType.ZONGMEN);
-		return id;
+        // - 宗门编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个宗门编号是88802890123；
+        long id = (DEFAULT_PREFIX * 10000000) + IdUtil.getIdAutoIncrease(IdType.ZONGMEN);
+        return id;
 
     }
     public static String getServerIdByZongMenId(long zongMenId){
-		return IdCache.getZongMenServerId(zongMenId);
+        return IdCache.getZongMenServerId(zongMenId);
 //		return "LY_ZONG_MEN";
     }
 
@@ -77,7 +77,7 @@ public class ZongMenHelper {
                 promise.complete(null);
                 return;
             }
-          SimpleZongMen simpleZongMen = (SimpleZongMen) list.get(0);
+            SimpleZongMen simpleZongMen = (SimpleZongMen) list.get(0);
             promise.complete(simpleZongMen);
 
         }).exceptionally(e ->{
@@ -100,7 +100,7 @@ public class ZongMenHelper {
         builder.setData(msg.toByteString());
         builder.addPlayerId(playerId);
         VxHolder.executeBlockingWithTimeout(()->{
-			String serverId = IdCache.getPlayerServerId(playerId);
+            String serverId = IdCache.getPlayerServerId(playerId);
             ZongMenManager.log.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId +" msgId : " + msgId + " msg : " + msg);
             return VxHolder.requestRemoteServer(serverId, builder.build());
         });
@@ -157,18 +157,18 @@ public class ZongMenHelper {
     }
 
     public static RewardMsg.RewardInfo addZongMenResources(Player player, int id, int value, OpType opType) {
-    if (id == Asset.ZongMenContribute.ID){
-        player.getZongmenModule().addContribute(value);
-    }
+        if (id == Asset.ZongMenContribute.ID){
+            player.getZongmenModule().addContribute(value);
+        }
         RewardMsg.RewardInfo rewardInfo =  RewardMsg.RewardInfo.newBuilder()
-          .setAsset(BaseMsg.AssetInfo.newBuilder().setId(id).setCount(value).build())
-          .build();
+                .setAsset(BaseMsg.AssetInfo.newBuilder().setId(id).setCount(value).build())
+                .build();
         //领取的是宗门任务奖励 则存储宗门奖励 并同步到宗门服务器
         //同步宗门任务掉落 到宗门服务器
         ZongMenMsg.updateZongMenAssetRequest_40000037.Builder builder = ZongMenMsg.updateZongMenAssetRequest_40000037.newBuilder();
         builder.addZongMenAssetMaps(rewardInfo);
         sendMsgToZongMenServer(player, builder.build());
-    return rewardInfo;
+        return rewardInfo;
     }
 
     public static Future<ZongMenGameHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params){
@@ -200,13 +200,13 @@ public class ZongMenHelper {
             if (o1.getSimplePlayer().getOnline() && o2.getSimplePlayer().getOnline()){//在线
                 if (o1.getSimplePlayer().getOfflineTime() == o2.getSimplePlayer().getOfflineTime()){//离线（从近到远）
                     if (o1.getPosition() == o2.getPosition()){//职位
-                            if (o1.getSimplePlayer().getCombatEffectiveness() == o2.getSimplePlayer().getCombatEffectiveness()){//战力
-                                return 0;
-                            } else {
-                                return o1.getSimplePlayer().getCombatEffectiveness() - o2.getSimplePlayer().getCombatEffectiveness();
-                            }
+                        if (o1.getSimplePlayer().getCombatEffectiveness() == o2.getSimplePlayer().getCombatEffectiveness()){//战力
+                            return 0;
+                        } else {
+                            return o1.getSimplePlayer().getCombatEffectiveness() - o2.getSimplePlayer().getCombatEffectiveness();
+                        }
                     } else {
-                      return o2.getPosition() - o1.getPosition();
+                        return o2.getPosition() - o1.getPosition();
                     }
                 } else {
                     return o1.getSimplePlayer().getOfflineTime() - o2.getSimplePlayer().getOfflineTime();
@@ -224,3 +224,4 @@ public class ZongMenHelper {
         return RedisUtil.get(CacheType.PLAYER_ID_ZONG_MEN_ID.key(targetPid,zongMenId)) == null ? false : true;
     }
 }
+

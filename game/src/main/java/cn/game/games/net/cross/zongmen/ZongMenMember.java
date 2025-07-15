@@ -16,7 +16,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
  */
 public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
-    long playerId;
+	public long playerId;
     /**玩家战斗力 */
     int power;
     /** 加入时间戳*/
@@ -26,21 +26,21 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
     /**累计贡献值 */
     int totalContribution;
     /**职位 */
-    int position;
+	public int position;
     /** 领取过的宗门活跃度奖励  */
     List<Integer> rewardLivenessIndexList  = new ArrayList<>();
 
-	/** 是否已砍价 */
-	boolean isBargain;
-	/** 砍价时间 */
-	long bargainTime;
-	/** 砍价后是否购买 */
-	boolean isBargainBuy;
-	/** 是否切换了宗门 */
-	boolean isNewZongmen;
+    /** 是否已砍价 */
+	public boolean isBargain;
+    /** 砍价时间 */
+    long bargainTime;
+    /** 砍价后是否购买 */
+    boolean isBargainBuy;
+    /** 是否切换了宗门 */
+    boolean isNewZongmen;
 
     /** 宗门商店购买的物品数量 */
-    Map<Integer,Integer> buyShopItemNumMap = new HashMap<>();
+	public Map<Integer, Integer> buyShopItemNumMap = new HashMap<>();
 
 
     public ZongMenMember() {
@@ -116,38 +116,38 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
     }
 
 
-	public boolean isBargain() {
-		return isBargain;
-	}
+    public boolean isBargain() {
+        return isBargain;
+    }
 
-	public void setBargain(boolean isBargain) {
-		this.isBargain = isBargain;
-	}
+    public void setBargain(boolean isBargain) {
+        this.isBargain = isBargain;
+    }
 
-	public boolean isBargainBuy() {
-		return isBargainBuy;
-	}
+    public boolean isBargainBuy() {
+        return isBargainBuy;
+    }
 
-	public void setBargainBuy(boolean isBargainBuy) {
-		this.isBargainBuy = isBargainBuy;
-	}
+    public void setBargainBuy(boolean isBargainBuy) {
+        this.isBargainBuy = isBargainBuy;
+    }
 
-	public long getBargainTime() {
-		return bargainTime;
-	}
+    public long getBargainTime() {
+        return bargainTime;
+    }
 
-	public void setBargainTime(long bargainTime) {
-		this.bargainTime = bargainTime;
-	}
+    public void setBargainTime(long bargainTime) {
+        this.bargainTime = bargainTime;
+    }
 
-	public boolean isNewZongmen() {
-		return isNewZongmen;
-	}
+    public boolean isNewZongmen() {
+        return isNewZongmen;
+    }
 
-	public void setNewZongmen(boolean isNewZongmen) {
-		this.isNewZongmen = isNewZongmen;
-	}
-	public ZongMenMsg.ZongMenMemberProto.Builder toProto() {
+    public void setNewZongmen(boolean isNewZongmen) {
+        this.isNewZongmen = isNewZongmen;
+    }
+    public ZongMenMsg.ZongMenMemberProto.Builder toProto() {
         ZongMenMsg.ZongMenMemberProto.Builder builder = ZongMenMsg.ZongMenMemberProto.newBuilder();
         builder.setJoinTime((int) (joinTime/1000L));
         builder.setPid((int) playerId);
@@ -168,11 +168,11 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
             case CROSS_DAY ->{
                 //每日重置 贡献度
                 this.totalContribution = 0;
-				// 每日重置砍价状态
-                this.isBargain = false ; 
-				this.bargainTime = 0;
+                // 每日重置砍价状态
+                this.isBargain = false ;
+                this.bargainTime = 0;
                 this.isBargainBuy = false;
-				this.isNewZongmen = false;
+                this.isNewZongmen = false;
             }
         }
     }
@@ -185,3 +185,4 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
         buyShopItemNumMap.put(itemId,newCount);
     }
 }
+
