@@ -40,6 +40,8 @@ public class DevelopModule extends BasePlayerModule {
 	private IntMapWrapper potentiaBreakLevelMap = new IntMapWrapper();
 
 	private QianKunMirrorInfo.Builder qiankunMirrorBuilder = QianKunMirrorInfo.newBuilder();
+	/** 防线等级 */
+	private int defenceLevel;
 
 	public int getHeavenlyDaoLevel() {
 		return heavenlyDaoLevel;
