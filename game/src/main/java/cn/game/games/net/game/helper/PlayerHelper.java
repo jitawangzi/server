@@ -1641,7 +1641,8 @@ public class PlayerHelper {
 			return (Future<?>) gameServerInterface.invokeStatic(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
 		} else {
 			// 如果当前方法是实例方法
-			return (Future<?>) gameServerInterface.invoke(thisClass.getName(), method.getName(), method.getParameterTypes(), methodArgs);
+			return (Future<?>) gameServerInterface.invoke2(thisClass.getName(), method.getName(), method.getParameterTypes(),
+					methodArgs);
 		}
 	}
 

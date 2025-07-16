@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.exception.LogicException;
+import cn.game.core.net.remote.RemoteProxy;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
 import cn.game.games.net.cross.zongmen.ZongMenConstants;
 import cn.game.games.net.cross.zongmen.ZongMenInfo;
@@ -16,7 +17,6 @@ import cn.game.games.net.cross.zongmen.ZongMenMember;
 import cn.game.games.net.cross.zongmen.ZongMenSetting;
 import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
-import cn.game.games.net.cross.zongmen.dto.ZongmenOperationResult;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
@@ -34,36 +34,41 @@ import io.vertx.core.Future;
  * @author: ly
  * @create: 2025-02-08 14:45 @Version 1.0
  */
-public class ZongmenService {
+public class ZongmenService implements RemoteProxy {
 	private static final ZongmenService INSTANCE = new ZongmenService();
 	private static final Logger log = LoggerFactory.getLogger(ZongmenService.class);
 
-	private ZongmenService() {
+	protected ZongmenService() {
 	}
 
 	public static ZongmenService getInstance() {
 		return INSTANCE;
 	}
 
+	/** 失败处理：抛出业务异常 */
+	private void fail(ErrorMsgEnum errorMsgEnum) {
+		throw new LogicException(errorMsgEnum.ID);
+	}
+
 	/**
 	 * 创建宗门
 	 * @param request 创建宗门请求
-	 * @return 操作结果
+	 * @return 新宗门信息
 	 */
-	public Future<ZongmenOperationResult<ZongMenInfo>> createZongmen(CreateZongmenRequest request) {
+	public Future<ZongMenInfo> createZongmen(CreateZongmenRequest request) {
 		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(request.getName()));
 		if (!createLock) {
-			return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_name_repeat, "宗门名称重复"));
+			fail(ErrorMsgEnum.zong_men_name_repeat);
 		}
-
 		return ZongMenManager.getInstance()
 				.createZongMen(null, request.getName(), request.getCreatePlayerId(), request.getCreatePlayerName(), request.getPower(),
 						request.getServerId())
 				.map(zongMenInfo -> {
 					if (zongMenInfo != null) {
-						return ZongmenOperationResult.success(zongMenInfo);
+						return zongMenInfo;
 					} else {
-						return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_create_failed, "创建宗门失败");
+						fail(ErrorMsgEnum.zong_men_create_failed);
+						return null; // 不会到达
 					}
 				});
 	}
@@ -72,14 +77,14 @@ public class ZongmenService {
 	 * 获取宗门信息
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
-	 * @return 操作结果
+	 * @return 宗门信息
 	 */
-	public ZongmenOperationResult<ZongMenInfo> getZongmenInfo(long zongMenId, long playerId) {
+	public ZongMenInfo getZongmenInfo(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null || zongMenInfo.getMember(playerId) == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-		return ZongmenOperationResult.success(zongMenInfo);
+		return zongMenInfo;
 	}
 
 	/**
@@ -88,21 +93,21 @@ public class ZongmenService {
 	 * @param playerId 玩家ID
 	 * @param playerName 玩家名称
 	 * @param power 战斗力
-	 * @return 操作结果
+	 * @return 宗门信息
 	 */
-	public ZongmenOperationResult<ZongMenInfo> applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
+	public ZongMenInfo applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		if (zongMenInfo.isHasMember(playerId)) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_apply_has, "已经是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_apply_has);
 		}
 		if (zongMenInfo.isFull()) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_full, "宗门已满");
+			fail(ErrorMsgEnum.zong_men_full);
 		}
 		if (zongMenInfo.hasApply(playerId)) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_apply_exist, "已提交申请");
+			fail(ErrorMsgEnum.zong_men_apply_exist);
 		}
 
 		// 开启自动加入 则直接加入宗门
@@ -111,43 +116,39 @@ public class ZongmenService {
 		} else if (zongMenInfo.getModule().setting.getAutoJoin() == 2) {
 			zongMenInfo.applyJoin(playerId);
 		} else {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_allow_join, "宗门不允许加入");
+			fail(ErrorMsgEnum.zong_men_not_allow_join);
 		}
-
-		return ZongmenOperationResult.success(zongMenInfo);
+		return zongMenInfo;
 	}
 
 	/**
 	 * 解散宗门
 	 * @param zongMenId 宗门ID
 	 * @param playerId 操作玩家ID
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> dissolveZongmen(long zongMenId, long playerId) {
+	public void dissolveZongmen(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member.getPosition() != ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足");
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
-
 		zongMenInfo.dissolveZongMen();
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
 	 * 设置宗门配置
 	 * @param zongMenId 宗门ID
 	 * @param request 设置请求
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public Future<ZongmenOperationResult<Boolean>> setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
+	public Future<Boolean> setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在"));
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 
 		ZongMenSetting setting = zongMenInfo.getModule().setting;
@@ -157,11 +158,16 @@ public class ZongmenService {
 		// 修改宗门名称
 		if (!StringUtils.isEmpty(request.getName())) {
 			if (!permissionsConfig.Rename) {
-				return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足"));
+				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
-			return setting.changeZongmenName(zongMenInfo, request.getName(), request.getOperatorName())
-					.map(success -> success ? ZongmenOperationResult.success(true)
-							: ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_name_repeat, "宗门名称重复"));
+			return setting.changeZongmenName(zongMenInfo, request.getName(), request.getOperatorName()).map(success -> {
+				if (success) {
+					return true;
+				} else {
+					fail(ErrorMsgEnum.zong_men_name_repeat);
+					return false;
+				}
+			});
 		}
 
 		// 其他设置修改
@@ -170,19 +176,19 @@ public class ZongmenService {
 		}
 		if (!StringUtils.isEmpty(request.getNotice())) {
 			if (!permissionsConfig.Notice) {
-				return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足"));
+				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
 			setting.changeNotice(zongMenInfo, request.getNotice(), request.getOperatorName());
 		}
 		if (!StringUtils.isEmpty(request.getDeclaration())) {
 			if (!permissionsConfig.Manifesto) {
-				return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足"));
+				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
 			setting.changeDeclaration(zongMenInfo, request.getDeclaration(), request.getOperatorName());
 		}
 		if (request.getIcon() != 0 && setting.unlockIconMap.containsKey(request.getIcon())) {
 			if (!permissionsConfig.Icon) {
-				return Future.succeededFuture(ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足"));
+				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
 			setting.changeIcon(zongMenInfo, request.getIcon());
 		}
@@ -192,8 +198,7 @@ public class ZongmenService {
 		if (request.getTianDaoLevel() != 0) {
 			setting.setTianDaoLevel(request.getTianDaoLevel());
 		}
-
-		return Future.succeededFuture(ZongmenOperationResult.success(true));
+		return Future.succeededFuture(true);
 	}
 
 	/**
@@ -202,34 +207,32 @@ public class ZongmenService {
 	 * @param operatorId 操作者ID
 	 * @param targetPlayerId 目标玩家ID
 	 * @param position 新职位
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> setMemberPosition(long zongMenId, long operatorId, long targetPlayerId, int position) {
+	public void setMemberPosition(long zongMenId, long operatorId, long targetPlayerId, int position) {
+		System.out.println("收到宗门设置成员职位请求: zongMenId=" + zongMenId + ", operatorId=" + operatorId + ", targetPlayerId=" + targetPlayerId
+				+ ", position=" + position);
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember operator = zongMenInfo.getMember(operatorId);
 		ZongMenMember targetMember = zongMenInfo.getMember(targetPlayerId);
 		if (operator == null || targetMember == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "成员不存在");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(operator.position);
 		if (!permissionsConfig.Posts) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足");
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
-
 		// 目标职位人数检查
 		int targetPositionNum = zongMenInfo.getPositionMemberNum(position);
 		GuildPermissionsConfig targetPermissionsConfig = GuildPermissionsManager.instance().get(position);
 		if (targetPositionNum >= targetPermissionsConfig.Number && position != ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_position_member_num_not_enough, "该职位人数已满");
+			fail(ErrorMsgEnum.zong_men_position_member_num_not_enough);
 		}
-
 		if (operator == targetMember || position == targetMember.getPosition()) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.request_parameter_error, "参数错误");
+			fail(ErrorMsgEnum.request_parameter_error);
 		}
 
 		if (position == ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
@@ -241,8 +244,6 @@ public class ZongmenService {
 			zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_POSITION_CHANGE, targetMember.playerId, oldPosition,
 					position);
 		}
-
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
@@ -250,19 +251,17 @@ public class ZongmenService {
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
 	 * @param playerName 玩家名称
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> quitZongmen(long zongMenId, long playerId, String playerName) {
+	public void quitZongmen(long zongMenId, long playerId, String playerName) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-
 		// 对宗主的处理
 		if (member.getPosition() == ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			// 宗门没人了 直接解散
@@ -270,50 +269,47 @@ public class ZongmenService {
 				zongMenInfo.dissolveZongMen();
 			} else {
 				// 宗门有人存在 则不可退出 需要先把宗主转让出去
-				return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "宗主需要先转让职位才能退出");
+				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
 		} else {
 			zongMenInfo.quitZongMen(member, playerName);
 		}
-
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
 	 * 成员权限管理
 	 * @param zongMenId 宗门ID
 	 * @param request 权限请求
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> updateMemberAuth(long zongMenId, MemberAuthRequest request) {
+	public void updateMemberAuth(long zongMenId, MemberAuthRequest request) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember operator = zongMenInfo.getMember(request.getOperatorId());
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(operator.position);
 
 		// 权限检查
 		if ((request.getOptType() == 1 || request.getOptType() == 2) && !permissionsConfig.Approval) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足");
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
 		if (request.getOptType() == 3 && !permissionsConfig.Rename) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_permission_not_enough, "权限不足");
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
 
 		// 数据校验
 		for (long targetPid : request.getTargetPlayerIds()) {
 			if ((request.getOptType() == 1 || request.getOptType() == 2) && !zongMenInfo.hasApply(targetPid)) {
-				return ZongmenOperationResult.failure(ErrorMsgEnum.request_parameter_error, "申请不存在");
+				fail(ErrorMsgEnum.request_parameter_error);
 			}
 			if (request.getOptType() == 3 && !zongMenInfo.isHasMember(targetPid)) {
-				return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "成员不存在");
+				fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 			}
 		}
 
 		if (request.getOptType() == 1 && zongMenInfo.isFull()) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_full, "宗门已满");
+			fail(ErrorMsgEnum.zong_men_full);
 		}
 
 		// 执行操作
@@ -328,8 +324,6 @@ public class ZongmenService {
 			zongMenInfo.kickMember(request.getTargetPlayerIds(), request.getOperatorName());
 			break;
 		}
-
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
@@ -338,16 +332,14 @@ public class ZongmenService {
 	 * @param playerId 玩家ID
 	 * @param assetId 资产ID
 	 * @param value 资产值
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> updateZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
+	public void updateZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		zongMenInfo.addZongMenAsset(playerId, assetId, value);
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
@@ -355,27 +347,23 @@ public class ZongmenService {
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
 	 * @param indexList 奖励索引列表
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList) {
+	public void receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-
 		for (int index : indexList) {
 			if (member.getRewardLivenessIndexList().contains(index)) {
-				return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_active_reward_already_get, "奖励已领取");
+				fail(ErrorMsgEnum.zong_men_active_reward_already_get);
 			}
 		}
-
 		member.getRewardLivenessIndexList().addAll(indexList);
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
@@ -385,93 +373,83 @@ public class ZongmenService {
 	 * @param playerLv 玩家等级
 	 * @param itemId 物品ID
 	 * @param count 购买数量
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count) {
+	public boolean buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-
 		ZongmenStoreConfig config = ZongmenStoreManager.instance().getNullable(itemId);
 		if (config == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.config_data_not_found, "配置数据未找到");
+			fail(ErrorMsgEnum.config_data_not_found);
 		}
 		if (playerLv < config.LevelUnlock) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.level_not_enough, "等级不足");
+			fail(ErrorMsgEnum.level_not_enough);
 		}
-
 		ShopItemConfig itemConfig = ShopItemManager.instance().getNullable(config.Item);
 		if (itemConfig == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.config_data_not_found, "配置数据未找到");
+			fail(ErrorMsgEnum.config_data_not_found);
 		}
-
-		if (itemConfig.ShopItemQuota != 0 && member.buyShopItemNumMap.getOrDefault(itemConfig, 0) + count > itemConfig.ShopItemQuota) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.shop_item_buy_count_max, "购买数量超过限制");
+		if (itemConfig.ShopItemQuota != 0 && member.buyShopItemNumMap.getOrDefault(itemConfig.ID, 0) + count > itemConfig.ShopItemQuota) {
+			fail(ErrorMsgEnum.shop_item_buy_count_max);
 		}
-
 		if (!zongMenInfo.isEnoughAsset(itemConfig.PurchaseParameter, count, member)) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.resource_not_enough, "资源不足");
+			fail(ErrorMsgEnum.resource_not_enough);
 		}
 
 		zongMenInfo.costAsset(itemConfig.PurchaseParameter, count, member);
 		member.addShopItemNum(itemId, count);
-		return ZongmenOperationResult.success(true);
+		return true;
 	}
 
 	/**
 	 * 宗门砍价
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
-	 * @return 操作结果
+	 * @return 砍价次数
 	 */
-	public ZongmenOperationResult<Integer> bargain(long zongMenId, long playerId) {
+	public int bargain(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
 		if (member.isBargain) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.repeat_request, "已经砍价过了");
+			fail(ErrorMsgEnum.repeat_request);
 		}
 
 		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
 		int bargainCount = bargain.performBargain(member);
-
-		return ZongmenOperationResult.success(bargainCount);
+		return bargainCount;
 	}
 
 	/**
 	 * 砍价购买
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> buyBargain(long zongMenId, long playerId) {
+	public void buyBargain(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
 		if (!member.isBargain) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_not_bargain, "尚未砍价");
+			fail(ErrorMsgEnum.zong_men_player_not_bargain);
 		}
-
 		member.setBargainBuy(true);
-		return ZongmenOperationResult.success(true);
 	}
 
 	/**
@@ -479,21 +457,19 @@ public class ZongmenService {
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
 	 * @param fightPower 战斗力
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> updateMemberFightPower(long zongMenId, long playerId, int fightPower) {
+	public boolean updateMemberFightPower(long zongMenId, long playerId, int fightPower) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.success(false); // 静默失败
+			return false; // 静默失败
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.success(false); // 静默失败
+			return false; // 静默失败
 		}
-
 		member.setPower(fightPower);
-		return ZongmenOperationResult.success(true);
+		return true;
 	}
 
 	/**
@@ -501,24 +477,17 @@ public class ZongmenService {
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
 	 * @param value 贡献度值
-	 * @return 操作结果
+	 * @return 是否成功
 	 */
-	public ZongmenOperationResult<Boolean> updateContributeValue(long zongMenId, long playerId, int value) {
+	public void updateContributeValue(long zongMenId, long playerId, int value) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_not_exist, "宗门不存在");
+			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (member == null) {
-			return ZongmenOperationResult.failure(ErrorMsgEnum.zong_men_player_member_not_exist, "不是宗门成员");
+			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-
 		member.setTotalContribution(value);
-		return ZongmenOperationResult.success(true);
-	}
-
-	private void fail(ErrorMsgEnum errorMsgEnum) {
-		throw new LogicException(errorMsgEnum.ID);
 	}
 }

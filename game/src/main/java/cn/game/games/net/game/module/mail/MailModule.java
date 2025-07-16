@@ -20,7 +20,6 @@ import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.award.RewardHelper;
-import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.MailConfig;
@@ -66,8 +65,7 @@ public class MailModule extends BasePlayerModule  {
 			}
 		}
 		mails.put(mail.getId(), mail);
-		DAO.insert(mail);
-//		mail.insert() ; 
+		mail.insert();
 	}
 
 	public Mail get(long id) {
@@ -81,8 +79,7 @@ public class MailModule extends BasePlayerModule  {
 			if (remove == notice) {
 				remove.setIsDeleted(true);
 			} else {
-//				remove.delete();
-				DAO.delete(remove);
+				remove.delete();
 			}
 		}
 		return false;
@@ -114,8 +111,7 @@ public class MailModule extends BasePlayerModule  {
 		if (!mail.getSee()) {
 			mail.setSee(true);
 			mail.setSeeTime((int) (System.currentTimeMillis() / 1000));
-//			mail.update(); 
-			DAO.update(mail);
+			mail.update();
 		}
 		return mail ; 
 	}
@@ -155,8 +151,7 @@ public class MailModule extends BasePlayerModule  {
 					MailConfig mailConfig = MailManager.instance().get(mail.getMailId());
 					list = PlayerHelper.addResources(player, mailConfig.Reward, OpType.Mail);
 				}
-//				mail.update() ; 
-				DAO.update(mail);
+				mail.update();
 			}
 		}
 		return list;

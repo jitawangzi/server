@@ -42,7 +42,7 @@ public interface RemoteProxy {
 	 * @return
 	 */
 	@Deprecated
-	default Object invoke(String methodName, Object... args) {
+	default Object invoke2(String methodName, Object... args) {
 		try {
 			Method method = ClassHelper.findMethodByArgs(this.getClass(), methodName, args);
 			// 可以调用非public方法
@@ -80,7 +80,7 @@ public interface RemoteProxy {
 	 * @param args
 	 * @return
 	 */
-	default Object invoke(Class<?> clazz, String methodName, Class<?>[] paramTypes, Object... args) {
+	default Object invokeClass(Class<?> clazz, String methodName, Class<?>[] paramTypes, Object... args) {
 		try {
 			Object bean = null;
 			// 1. 先尝试从Spring容器获取

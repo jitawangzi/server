@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,11 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.ServerType;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.matcher.ElementMatchers;
 
 public class RpcFactory {
@@ -66,8 +71,15 @@ public class RpcFactory {
 			try {
 				// 只拦截非Object类方法
 				return new ByteBuddy().subclass(clazz)
-						.method(ElementMatchers.not(ElementMatchers.isDeclaredBy(Object.class)))
-						.intercept(InvocationHandlerAdapter.of(invocation))
+						.method(ElementMatchers.isPublic() // 只拦截public方法
+								.and(ElementMatchers.not(ElementMatchers.isStatic()))
+								.and(ElementMatchers.not(ElementMatchers.isFinal()))
+								.and(ElementMatchers.not(ElementMatchers.isDeclaredBy(Object.class)))
+								.and(ElementMatchers.not(ElementMatchers.isSynthetic()))
+								.and(ElementMatchers.not(ElementMatchers.isBridge()))
+						// 你可以根据实际情况加更多排除条件
+						)
+						.intercept(MethodDelegation.to(new ByteBuddyInterceptor()))
 						.make()
 						.load(clazz.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
 						.getLoaded()
@@ -161,4 +173,19 @@ public class RpcFactory {
 			return result;
 		}
 	}
+
+	// 定义拦截逻辑
+	public static class ByteBuddyInterceptor {
+		@RuntimeType
+		public Object intercept(@Origin Method method, @AllArguments Object[] args, @SuperCall Callable<?> superCall) throws Exception {
+			// 前置逻辑
+			System.out.println("Before " + method.getName());
+			// 调用原方法
+			Object result = superCall.call();
+			// 后置逻辑
+			System.out.println("After " + method.getName());
+			return result;
+		}
+	}
+
 }

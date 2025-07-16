@@ -3,8 +3,10 @@ package cn.game.games.net.game;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -58,6 +60,7 @@ import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
+import cn.game.games.net.cross.zongmen.service.ZongmenService;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
@@ -206,6 +209,20 @@ public class GameServer implements GameServerMBean {
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
+
+		// 在创建代理前添加
+		Method[] methods = ZongmenService.class.getDeclaredMethods();
+		System.out.println("类方法数量: " + methods.length);
+		for (Method method : methods) {
+			System.out.println("方法: " + method.getName() + ", 参数: " + Arrays.toString(method.getParameterTypes()));
+		}
+		for (Method m : ZongmenService.class.getDeclaredMethods()) {
+			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
+		}
+
+		ZongmenService zongmenProxy = getZongmenProxy(1);
+		zongmenProxy.setMemberPosition(start, start, start, 0);
+		System.out.println("Game Server startup complete, zongmenProxy setMemberPosition complete");
 	}
 
 	/** 
@@ -473,6 +490,18 @@ public class GameServer implements GameServerMBean {
 		}
 		// 其他服务器在线，通过远程调用
 		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+				ServerType.Cross, targetId);
+	}
+
+	public ZongmenService getZongmenProxy(long targetId) {
+
+		CallType callType = CallType.PointToPoint;
+		String serverId = IdCache.getManager(DistributedObjectType.ZONGMEN).getServerId(targetId);
+		if (StringUtils.isEmpty(serverId)) {
+			callType = CallType.LoadBalancer;
+		}
+		// 其他服务器在线，通过远程调用
+		return RpcFactory.getImpl(ZongmenService.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
 				ServerType.Cross, targetId);
 	}
 

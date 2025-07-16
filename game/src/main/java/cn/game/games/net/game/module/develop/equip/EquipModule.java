@@ -38,9 +38,14 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 			case PLAYER_CREATE: {
-//				for (int pos = 1; pos < 7; pos++) {
-//					equipPartMap.put(pos, new EquipPart(pos));
-//				}
+				for (int pos = 1; pos < 7; pos++) {
+					equipPartMap.put(pos, new EquipPart(pos));
+				}
+				for (Equip equip : list()) {
+					EquipConfig equipConfig = EquipManager.instance().get(equip.getConfigId());
+					EquipPart equipPart = getEquipPart(equipConfig.pos);
+					equipPart.setEquipUid(equip.getId());
+				}
 				break;
 			}
 		}
