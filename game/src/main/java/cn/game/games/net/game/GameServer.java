@@ -220,9 +220,9 @@ public class GameServer implements GameServerMBean {
 			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
 		}
 
-		ZongmenService zongmenProxy = getZongmenProxy(1);
-		zongmenProxy.setMemberPosition(start, start, start, 0);
-		System.out.println("Game Server startup complete, zongmenProxy setMemberPosition complete");
+//		ZongmenService zongmenProxy = getZongmenProxy(1);
+//		zongmenProxy.setMemberPosition(start, start, start, 0);
+//		System.out.println("Game Server startup complete, zongmenProxy setMemberPosition complete");
 	}
 
 	/** 
