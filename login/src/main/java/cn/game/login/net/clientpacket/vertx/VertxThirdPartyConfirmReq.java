@@ -53,7 +53,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 		handlers.put(AccountChannelType.OFFICIAL, new OfficialAuthHandler());
 		handlers.put(AccountChannelType.WECHAT, new WechatAuthHandler());
 		handlers.put(AccountChannelType.CHANGYOU, new ChangyouAuthHandler());
-		handlers.put(AccountChannelType.NONE, new NoneAuthHandler());
+		handlers.put(AccountChannelType.CHANNEL_TYPE_NONE, new NoneAuthHandler());
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 		private void processSteamResponse(JsonObject result, BiConsumer<User, AccountError> callback) {
 			JsonObject params = result.getJsonObject("response").getJsonObject("params");
 			String steamId = params.getString("steamid");
-			processThirdPartyAuth(null, steamId, AccountChannelType.NONE, "", steamId, "", callback);
+			processThirdPartyAuth(null, steamId, AccountChannelType.CHANNEL_TYPE_NONE, "", steamId, "", callback);
 		}
 	}
 

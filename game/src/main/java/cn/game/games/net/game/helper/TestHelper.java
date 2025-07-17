@@ -19,6 +19,7 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
+import cn.game.protocol.generated.config.DefenceSkinConfig;
 import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.GemConfig;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -26,6 +27,7 @@ import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.SoulPetConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.DefenceSkinManager;
 import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.GemManager;
 import cn.game.protocol.generated.manager.HeroManager;
@@ -96,12 +98,18 @@ public class TestHelper {
 			} else if (goodsType == GoodsTypeEnum.Equipment.getId()) {
 				Collection<EquipConfig> list = EquipManager.instance().list();
 				for (EquipConfig e : list) {
-					rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
+					rewardItems = PlayerHelper.addResources(player, e.ID, 1, OpType.Test);
 					allRewards.addAll(rewardItems);
 				}
 			} else if (goodsType == GoodsTypeEnum.Gem.getId()) {
 				Collection<GemConfig> list = GemManager.instance().list();
 				for (GemConfig e : list) {
+					rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
+					allRewards.addAll(rewardItems);
+				}
+			} else if (goodsType == GoodsTypeEnum.DefenceSkin.getId()) {
+				Collection<DefenceSkinConfig> list = DefenceSkinManager.instance().list();
+				for (DefenceSkinConfig e : list) {
 					rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
 					allRewards.addAll(rewardItems);
 				}

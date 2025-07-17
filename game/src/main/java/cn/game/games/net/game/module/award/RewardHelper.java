@@ -12,6 +12,7 @@ import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.module.currency.Currency;
+import cn.game.games.net.game.module.develop.defenceline.DefenceSkin;
 import cn.game.games.net.game.module.develop.gem.Gem;
 import cn.game.games.net.game.module.develop.hero.skin.HeroSkin;
 import cn.game.games.net.game.module.develop.mergeequip.MergeEquip;
@@ -59,7 +60,10 @@ public class RewardHelper {
 		} else if (item instanceof Gem) {
 			Gem obj = (Gem) item;
 			builder.setGem(obj.toGemInfo());
-		} else {
+		} else if (item instanceof DefenceSkin) {
+			DefenceSkin obj = (DefenceSkin) item;
+			builder.setDefenceSkin(obj.toProto());
+		}else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}
 		return builder.build();

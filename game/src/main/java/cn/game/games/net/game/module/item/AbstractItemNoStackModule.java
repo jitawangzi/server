@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import cn.game.games.cache.entity.ItemNoStack;
@@ -27,7 +28,7 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 	protected Map<Long, E> uid_items = new HashMap<>();
 	// configId => List<T> ,通常用来判断有没有某种东西
 	@JsonIgnore
-	protected Multimap<Integer, E> id_items = ArrayListMultimap.create();
+	protected Multimap<Integer, E> id_items = HashMultimap.create();
 
 	/*	@Override
 		protected void initFromDb(ListIterator<?> iterator) {
@@ -51,13 +52,14 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 
 	@Override
 	public E removeFromCache(int id) {
-		id_items.removeAll(id);
-		return null;
+		throw new UnsupportedOperationException("不支持通过配置表id删除不能重叠的物品");
 	}
 
 	@Override
 	public E removeFromCache(long id) {
-		return uid_items.remove(id);
+		E remove = uid_items.remove(id);
+		id_items.remove(remove.getConfigId(), remove) ; 
+		return remove; 
 	}
 
 	@Override
@@ -91,7 +93,6 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 		E item = uid_items.get(uid);
 		if (item == null)
 			return null;
-		removeFromCache(item.getConfigId());
 		removeFromCache(item.getId());
 
 		if (updateDb && alwaysStoreDataInStandaloneTable()) {
@@ -134,7 +135,7 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 
 	@Override
 	public Collection<E> list() {
-		return id_items.values();
+		return uid_items.values();
 	}
 
 	@Override

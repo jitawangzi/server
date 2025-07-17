@@ -41,7 +41,7 @@ public class DevelopModule extends BasePlayerModule {
 
 	private QianKunMirrorInfo.Builder qiankunMirrorBuilder = QianKunMirrorInfo.newBuilder();
 	/** 防线等级 */
-	private int defenceLevel;
+	private int defenceLevel = 1;
 
 	public int getHeavenlyDaoLevel() {
 		return heavenlyDaoLevel;
@@ -70,6 +70,15 @@ public class DevelopModule extends BasePlayerModule {
 
 	public IntMapWrapper getPotentiaBreakLevelMap() {
 		return potentiaBreakLevelMap;
+	}
+	
+
+	public int getDefenceLevel() {
+		return defenceLevel;
+	}
+
+	public void setDefenceLevel(int defenceLevel) {
+		this.defenceLevel = defenceLevel;
 	}
 
 	/** 

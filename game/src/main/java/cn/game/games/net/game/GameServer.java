@@ -211,14 +211,14 @@ public class GameServer implements GameServerMBean {
 		System.err.println("Game Server startup complete");
 
 		// 在创建代理前添加
-		Method[] methods = ZongmenService.class.getDeclaredMethods();
-		System.out.println("类方法数量: " + methods.length);
-		for (Method method : methods) {
-			System.out.println("方法: " + method.getName() + ", 参数: " + Arrays.toString(method.getParameterTypes()));
-		}
-		for (Method m : ZongmenService.class.getDeclaredMethods()) {
-			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
-		}
+//		Method[] methods = ZongmenService.class.getDeclaredMethods();
+//		System.out.println("类方法数量: " + methods.length);
+//		for (Method method : methods) {
+//			System.out.println("方法: " + method.getName() + ", 参数: " + Arrays.toString(method.getParameterTypes()));
+//		}
+//		for (Method m : ZongmenService.class.getDeclaredMethods()) {
+//			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
+//		}
 
 //		ZongmenService zongmenProxy = getZongmenProxy(1);
 //		zongmenProxy.setMemberPosition(start, start, start, 0);

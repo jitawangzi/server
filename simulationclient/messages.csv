@@ -248,3 +248,6 @@
 248,GemLockRequest_10000005,0x10000005,,,,,宝石锁定
 249,GemTeardownRequest_10000003,0x10000003,,,,,宝石卸下
 250,GemWearRequest_10000001,0x10000001,,,,,宝石镶嵌 替换
+251,DefenceLevelUpRequest_25000031,0x25000031,,,,,防线升级
+252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,防线皮肤升星
+253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,防线皮肤更换
