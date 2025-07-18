@@ -53,7 +53,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					message.reply(r.result(), VxHolder.customOptions);
 				}
 			});
-		});
+		},true);
 	}
 
 	@Override

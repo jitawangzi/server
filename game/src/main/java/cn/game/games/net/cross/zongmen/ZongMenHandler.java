@@ -14,6 +14,7 @@ import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.games.net.cross.zongmen.service.ZongmenService;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -30,7 +31,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 @Component
 public class ZongMenHandler extends GameBaseHandler {
 
-    private final ZongmenService zongmenService = ZongmenService.getInstance();
+    private final ZongmenServiceInterface zongmenService = ZongmenService.getInstance();
 
     @Override
     protected void inititialize() {

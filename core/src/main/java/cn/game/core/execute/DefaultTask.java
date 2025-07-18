@@ -10,16 +10,15 @@ import java.util.concurrent.Callable;
 public class DefaultTask<T> implements Task<T> {
     private final Callable<T> action;
     private final String description;
-	@Deprecated
-    private final int priority;
+	boolean fast;
 	@Deprecated
     private final long timeoutMs;
     private final ErrorHandler errorHandler;
 
-    public DefaultTask(Callable<T> action, String description, int priority, long timeoutMs, ErrorHandler errorHandler) {
+    public DefaultTask(Callable<T> action, String description, boolean fast, long timeoutMs, ErrorHandler errorHandler) {
         this.action = action;
         this.description = description;
-        this.priority = priority;
+        this.fast = fast;
         this.timeoutMs = timeoutMs;
         this.errorHandler = errorHandler != null ? errorHandler : ErrorHandler.DISCARD_HANDLER;
     }
@@ -27,11 +26,6 @@ public class DefaultTask<T> implements Task<T> {
     @Override
     public T execute() throws Exception {
         return action.call();
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
     }
 
     @Override
@@ -49,12 +43,6 @@ public class DefaultTask<T> implements Task<T> {
         return errorHandler;
     }
 
-    @Override
-    public int compareTo(Task<?> other) {
-        // 高优先级先执行
-        return Integer.compare(other.getPriority(), this.priority);
-    }
-
     /**
      * 创建任务构建器
      */
@@ -68,7 +56,7 @@ public class DefaultTask<T> implements Task<T> {
     public static class Builder<T> {
         private Callable<T> action;
         private String description = "Unknown Task";
-        private int priority = 0;
+        private boolean fast ; 
         private long timeoutMs = 0;
         private ErrorHandler errorHandler = ErrorHandler.DISCARD_HANDLER;
 
@@ -82,8 +70,8 @@ public class DefaultTask<T> implements Task<T> {
             return this;
         }
 
-        public Builder<T> priority(int priority) {
-            this.priority = priority;
+        public Builder<T> fast(boolean fast) {
+            this.fast = fast;
             return this;
         }
 
@@ -101,8 +89,13 @@ public class DefaultTask<T> implements Task<T> {
             if (action == null) {
                 throw new IllegalStateException("Task action cannot be null");
             }
-            return new DefaultTask<>(action, description, priority, timeoutMs, errorHandler);
+            return new DefaultTask<>(action, description, fast, timeoutMs, errorHandler);
         }
     }
+
+	@Override
+	public boolean isFast() {
+		return fast;
+	}
 }
 

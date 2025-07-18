@@ -181,7 +181,7 @@ class TaskExecutorServiceTest {
 					System.out.println("Executing subtask on " + entityId2);
 					Thread.sleep(100); // 模拟耗时
 					return "Result from subtask on 2";
-				}, "Subtask from A", 0, taskTimeout);
+				},false, "Subtask from A", taskTimeout);
 //			} catch (Exception e) {
 //				e.printStackTrace();
 //			}
@@ -202,7 +202,7 @@ class TaskExecutorServiceTest {
 				System.out.println("Executing subtask on " + entityId1);
 				Thread.sleep(100); // 模拟耗时
 				return "Result from subtask on 1";
-			}, "Subtask from B", 0, taskTimeout);
+			}, false,"Subtask from B", taskTimeout);
 
 			return result + " and " + resultFromA;
 		};
@@ -256,7 +256,7 @@ class TaskExecutorServiceTest {
 				System.out.println("Executing subtask on " + entityId2);
 				Thread.sleep(100); // 模拟耗时
 				return "Result from subtask on 2";
-			}, "Subtask from A", 0, taskTimeout);
+			},false, "Subtask from A", taskTimeout);
 			return result + " and " + resultFromB;
 		};
 
@@ -340,7 +340,7 @@ class TaskExecutorServiceTest {
 		Future<Object> future = taskExecutorService.execute(5L, () -> {
 			Thread.sleep(timeoutMs + 200); // 确保执行时间超过超时设置
 			return "done";
-		}, "Timeout Test", 0, timeoutMs);
+		},false, "Timeout Test", timeoutMs);
 
 		// 验证 future 因超时而失败
 		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.await(future, timeoutMs + 50, TimeUnit.MILLISECONDS));
@@ -373,7 +373,7 @@ class TaskExecutorServiceTest {
 
 		Future<String> future = taskExecutorService.execute(20, () -> {
 			throw new RuntimeException("Test exception for retry");
-		}, "Test exception for retry", 0, 30000, errorHandler); // 超时时间应该比重试的时间长
+		},false, "Test exception for retry", 30000, errorHandler); // 超时时间应该比重试的时间长
 
 		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.await(future, 50, TimeUnit.SECONDS));
 		assertTrue(ex instanceof RuntimeException || (ex.getCause() != null && ex.getCause() instanceof RuntimeException));
@@ -388,7 +388,7 @@ class TaskExecutorServiceTest {
 
 		Future<String> future2 = taskExecutorService.execute(21, () -> {
 			throw new SQLException("sql exception");
-		}, "sql exception for discard", 0, 3000, errorHandler);
+		}, false,"sql exception for discard", 3000, errorHandler);
 
 		ex = assertThrows(Exception.class, () -> AsyncUtils.await(future2, 50, TimeUnit.SECONDS));
 		assertTrue(ex instanceof SQLException || (ex.getCause() != null && ex.getCause() instanceof SQLException));

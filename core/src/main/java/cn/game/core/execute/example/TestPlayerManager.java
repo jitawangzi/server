@@ -53,8 +53,7 @@ public class TestPlayerManager {
                 
                 return data;
             },
-            "LoadPlayerData-" + playerId,
-            10 // 高优先级
+            false,"LoadPlayerData-" + playerId
         );
     }
     
@@ -81,8 +80,8 @@ public class TestPlayerManager {
                 
                 return data;
             },
-            "LoadPlayerData-" + playerId,
-				10, 5000 // 高优先级
+            false, "LoadPlayerData-" + playerId,
+				 5000 
         );
     }
     
@@ -137,7 +136,7 @@ public class TestPlayerManager {
                 
                 return data.getGold();
             },
-				"AddGold-" + playerId + "-" + amount, 0, 0
+            false,	"AddGold-" + playerId + "-" + amount,  0
         );
     }
     
@@ -204,7 +203,7 @@ public class TestPlayerManager {
                 
                 return data.getLevel();
             },
-				"LevelUp-" + playerId, 0, 0
+            false,"LevelUp-" + playerId, 0
         );
     }
     
@@ -229,8 +228,7 @@ public class TestPlayerManager {
                 
                 return true;
             },
-            "SavePlayerData-" + playerId,
-            0,  // 普通优先级
+            false,"SavePlayerData-" + playerId,
             3000 // 3秒超时
         );
     }
@@ -257,8 +255,7 @@ public class TestPlayerManager {
                 
                 return true;
             },
-            "SavePlayerData-" + playerId,
-            0,  // 普通优先级
+            false,"SavePlayerData-" + playerId,
             3000 // 3秒超时
         );
     }

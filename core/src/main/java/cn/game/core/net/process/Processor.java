@@ -17,6 +17,14 @@ public interface Processor {
 	public void process(long objectId, NetClient gameClient, IProtocol<?> protocol);
 
 	public void process(long objectId, Runnable task);
+	
+	/** 
+	 * 某些任务可能希望尽快的完成
+	 * @param objectId
+	 * @param task
+	 * @param fast   是否更快的执行这个任务
+	 */
+	public void process(long objectId, Runnable task,boolean fast);
 
 	/** 
 	 * 执行逻辑，返回结果，对于如果是eventloop线程，不能执行阻塞逻辑。 

@@ -21,6 +21,7 @@ import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.performance.DegradeStrategy;
 import cn.game.core.performance.LoadLimitTypeEnum;
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -148,7 +149,6 @@ public class PlayerHandler extends GameBaseHandler {
 		putInvoker(PbProtocol.PlayerBriefInfoOtherRequest_01000009, this::getPlayerOtherBriefInfo);
 		putInvoker(PbProtocol.PlayerShowRequest_01000039, this::show);
 //		putInvoker(PbProtocol.PlayerSpiritReceiveRequest_01000024, this::spiritReceive);
-//		putInvoker(PbProtocol.BuffAddRequest_01000110, this::addBuff);
 
 //		putInvoker(PbProtocol.ServerPlayerLoginRequest_01000001_01000051, this::pcLogin);
 //		putInvoker(PbProtocol.PlayerCreateRequest_01000053, this::pcCreate);
@@ -736,50 +736,6 @@ public class PlayerHandler extends GameBaseHandler {
 		}
 		client.sendProtocol(resp.build(), errorCode);
 	}
-
-	/**
-	 * 添加事件buff
-	 * 
-	 * @param netClient
-	 * @param message
-	 */
-	/*private void addBuff(NetClient netClient, Object message) {
-		BuffMsg.BuffAddRequest_01000110 req = (BuffMsg.BuffAddRequest_01000110) message;
-		BuffMsg.BuffAddResponse_01000111.Builder resp = BuffMsg.BuffAddResponse_01000111.newBuilder();
-		long playerId = netClient.getPlayerId();
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		EventOptionConfig config = EventOptionManager.getInstance().getEventOptionConfig(id);
-		int eventId = config.getEventId();
-				PlayerExt playerExt = player.getExt();
-				List<Integer> eventIdList = playerExt.getEventIdList();
-				if (!eventIdList.contains(eventId)) {
-					netClient.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
-					return;
-				}
-		//添加buff
-		List<Buff> buffs = PlayerHelper.chooseEventOption(player, eventId, id, true);
-		if (buffs == null) {
-			netClient.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-			return;
-		}
-				playerExt.removeEventId(eventId);
-				PlayerExt update = PlayerExt.valueOf(playerId);
-				update.setEventIds(playerExt.getEventIds());
-				DAO.updateSelective(update);
-		// 添加事件
-		Map<Integer, Integer> addResources = new HashMap<>();
-		for (Buff buff : buffs) {
-			OldBuffConfig buffConfig = OldBuffManager.getInstance().getBuffConfig(buff.getBuffId());
-			EffectEnum effectType = buffConfig.getEffectType();
-			if (effectType == EffectEnum.AddOrDelGoods) {
-				addResources.put(buffConfig.getIdParam(), buffConfig.getNumParam());
-			}
-		}
-		EventHelper.handleEvent(playerId, new GameEvent(EventTypeEnum.ExploreGetResources, addResources));
-	
-		netClient.sendProtocol(resp);
-	}*/
 	/**
 		private void spiritReceive(NetClient client, Object message) {
 			PlayerSpiritReceiveResponse_01000025.Builder resp = PlayerSpiritReceiveResponse_01000025.newBuilder();
@@ -970,6 +926,8 @@ public class PlayerHandler extends GameBaseHandler {
 
 		Account account = new Account(req);
 		Future<LoginPlayerUidResponse_7d000019> playerUid = getPlayerUid(passportSessionId);
+//		LoginPlayerUidResponse_7d000019 await = AsyncUtils.await(playerUid); 
+		
 		Future<Long> uidFuture =  playerUid.compose(r -> checkPlayerUnlock(r)).map(r -> {
 			account.accountId = r.getAccountId();
 			account.deviceId = r.getDeviceId();

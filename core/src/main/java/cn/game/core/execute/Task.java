@@ -5,7 +5,7 @@ import cn.game.core.execute.error.ErrorHandler;
 /**
  * 表示可以在ActorMailbox中执行的任务
  */
-public interface Task<T> extends Comparable<Task<?>> {
+public interface Task<T> {
     /**
      * 任务执行方法
      * @return 任务执行结果
@@ -14,10 +14,10 @@ public interface Task<T> extends Comparable<Task<?>> {
     T execute() throws Exception;
 
     /**
-     * 获取任务优先级
-     * @return 优先级值，值越大优先级越高
+     * 任务是否需要快速执行，也就是优先级较高的任务
+     * @return 
      */
-    int getPriority();
+    boolean isFast();
 
     /**
      * 获取任务超时时间（毫秒）

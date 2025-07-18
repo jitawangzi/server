@@ -61,6 +61,7 @@ import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.service.ZongmenService;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
@@ -95,6 +96,7 @@ import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.jmx.JmxMeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import io.vertx.core.DeploymentOptions;
+import io.vertx.core.ThreadingModel;
 import io.vertx.core.VertxOptions;
 import io.vertx.micrometer.backends.BackendRegistries;
 
@@ -354,7 +356,7 @@ public class GameServer implements GameServerMBean {
 			VxHolder.deployVerticleSync(verticle);
 		}
 		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
-//		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
+		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
 		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
 
 		String serverId = ServerContext.getInstance().getServerId();
@@ -493,7 +495,7 @@ public class GameServer implements GameServerMBean {
 				ServerType.Cross, targetId);
 	}
 
-	public ZongmenService getZongmenProxy(long targetId) {
+	public ZongmenServiceInterface getZongmenProxy(long targetId) {
 
 		CallType callType = CallType.PointToPoint;
 		String serverId = IdCache.getManager(DistributedObjectType.ZONGMEN).getServerId(targetId);

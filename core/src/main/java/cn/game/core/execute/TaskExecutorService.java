@@ -157,7 +157,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 包含任务结果的Future
 	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task) {
-		return execute(entityId, task, "Anonymous Task", 0, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
+		return execute(entityId, task, false, "Anonymous Task", config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 包含任务结果的Future
 	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, String description) {
-		return execute(entityId, task, description, 0, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
+		return execute(entityId, task, false, description, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -181,8 +181,8 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
-	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority) {
-		return execute(entityId, task, description, priority, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
+	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description) {
+		return execute(entityId, task, false, description, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -190,13 +190,13 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
 	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param fast 任务优先级,是否需要快速执行
 	 * @param timeoutMs 超时时间（毫秒）
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
-	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs) {
-		return execute(entityId, task, description, priority, timeoutMs, ErrorHandler.DISCARD_HANDLER);
+	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs) {
+		return execute(entityId, task, fast, description, timeoutMs, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -204,13 +204,13 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
 	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param fast 是否需要快速执行
 	 * @param timeoutMs 超时时间（毫秒）
 	 * @param errorHandler 错误处理策略
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
-	public <T> Future<T> execute(long entityId, Callable<T> task, String description, int priority, long timeoutMs, ErrorHandler errorHandler) {
+	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs, ErrorHandler errorHandler) {
 		if (!running.get()) {
 			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
 		}
@@ -242,7 +242,7 @@ public class TaskExecutorService implements AutoCloseable {
 		Task<T> wrappedTask = DefaultTask.<T>builder()
 				.action(task)
 				.description(description)
-				.priority(priority)
+				.fast(fast)
 				.timeoutMs(timeoutMs)
 				.errorHandler(errorHandler)
 				.build();
@@ -253,7 +253,7 @@ public class TaskExecutorService implements AutoCloseable {
 		ActorMailbox mailbox = mailboxManager.getOrCreateMailbox(entityId);
 
 		// 将任务添加到邮箱
-		boolean offered = mailbox.offerTask(taskWrapper);
+		boolean offered = mailbox.offerTask(taskWrapper,fast);
 		if (!offered) {
 			return Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId));
 		}
@@ -280,20 +280,20 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @throws Exception 如果任务执行失败
 	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task) throws Exception {
-		return executeAndAwait(entityId, task, "Anonymous Task", 0, 0, ErrorHandler.DISCARD_HANDLER);
+		return executeAndAwait(entityId, task,false, "Anonymous Task", 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
 	 * 在虚拟线程中执行任务并等待结果（同步方法）
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
-	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param fast 任务优先级,是否需要快速执行
 	 * @param <T> 结果类型
 	 * @return 任务结果
 	 * @throws Exception 如果任务执行失败
 	 */
-	public <T> T executeAndAwait(long entityId, Callable<T> task, int priority) throws Exception {
-		return executeAndAwait(entityId, task, "Anonymous Task", priority, 0, ErrorHandler.DISCARD_HANDLER);
+	public <T> T executeAndAwait(long entityId, Callable<T> task,boolean fast) throws Exception {
+		return executeAndAwait(entityId, task,false, "Anonymous Task", 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -307,8 +307,8 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 任务结果
 	 * @throws Exception 如果任务执行失败
 	 */
-	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs) throws Exception {
-		return executeAndAwait(entityId, task, description, priority, timeoutMs, ErrorHandler.DISCARD_HANDLER);
+	public <T> T executeAndAwait(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs) throws Exception {
+		return executeAndAwait(entityId, task, fast, description, timeoutMs, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -323,14 +323,14 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 任务结果
 	 * @throws Exception 如果任务执行失败
 	 */
-	public <T> T executeAndAwait(long entityId, Callable<T> task, String description, int priority, long timeoutMs, ErrorHandler errorHandler) throws Exception {
+	public <T> T executeAndAwait(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs, ErrorHandler errorHandler) throws Exception {
 		// 不能在eventloop中执行
 		AsyncUtils.checkEventLoop();
 
 		// 检查死锁风险
 		DeadlockGuard.checkCrossIdSyncWait(entityId, description);
 
-		Future<T> future = execute(entityId, task, description, priority, timeoutMs, errorHandler);
+		Future<T> future = execute(entityId, task, fast, description, timeoutMs, errorHandler);
 		return AsyncUtils.await(future, timeoutMs, TimeUnit.MILLISECONDS);
 	}
 
@@ -341,7 +341,10 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 如果成功提交返回true
 	 */
 	public boolean submitTask(long entityId, Runnable task) {
-		return submitTask(entityId, task, "Anonymous Task", ErrorHandler.DISCARD_HANDLER);
+		return submitTask(entityId, task,false, "Anonymous Task", ErrorHandler.DISCARD_HANDLER);
+	}
+	public boolean submitTask(long entityId, Runnable task,boolean fast) {
+		return submitTask(entityId, task,fast, "Anonymous Task", ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -352,23 +355,24 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 如果成功提交返回true
 	 */
 	public boolean submitTask(long entityId, Runnable task, String description) {
-		return submitTask(entityId, task, description, ErrorHandler.DISCARD_HANDLER);
+		return submitTask(entityId, task,false, description, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
 	 * 提交任务但不返回结果
 	 * @param entityId 实体ID
 	 * @param task 任务
+	 * @param fast 是否需要快速执行这个任务
 	 * @param description 任务描述
 	 * @param errorHandler 错误处理策略
 	 * @return 如果成功提交返回true
 	 */
-	public boolean submitTask(long entityId, Runnable task, String description, ErrorHandler errorHandler) {
+	public boolean submitTask(long entityId, Runnable task,boolean fast, String description, ErrorHandler errorHandler) {
 		try {
 			execute(entityId, () -> {
 				task.run();
 				return null;
-			}, description, 0, config.getDefaultTaskTimeoutMs(), errorHandler);
+			},fast, description, config.getDefaultTaskTimeoutMs(), errorHandler);
 			return true;
 		} catch (Exception e) {
 			LOGGER.error("Failed to submit task: " + e.getMessage(), e);

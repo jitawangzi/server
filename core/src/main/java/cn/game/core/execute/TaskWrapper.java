@@ -5,7 +5,7 @@ import io.vertx.core.Promise;
 /**
  * 任务包装器，封装任务和结果Promise
  */
-public class TaskWrapper<T> implements Comparable<TaskWrapper<?>> {
+public class TaskWrapper<T>{
     private final Task<T> task;
     private final Promise<T> resultPromise;
 	/** 记录重试次数 */
@@ -61,11 +61,6 @@ public class TaskWrapper<T> implements Comparable<TaskWrapper<?>> {
      */
     public void incrementAttempts() {
         this.attempts++;
-    }
-
-    @Override
-    public int compareTo(TaskWrapper<?> other) {
-        return task.compareTo(other.getTask());
     }
 }
 

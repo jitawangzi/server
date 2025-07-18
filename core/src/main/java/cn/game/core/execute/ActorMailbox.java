@@ -31,18 +31,27 @@ public class ActorMailbox {
      * @return 如果成功添加返回true，队列已满返回false
      */
     public boolean offerTask(TaskWrapper<?> taskWrapper) {
-        lastAccessTime.set(System.currentTimeMillis());
-        
-        if (taskQueue.size() >= maxQueueSize) {
-            stats.rejectedTasks.incrementAndGet();
-            return false;
-        }
-        
-		boolean result = taskQueue.offerLast(taskWrapper);
-        if (result) {
-            stats.submittedTasks.incrementAndGet();
-        }
-        return result;
+        return offerTask(taskWrapper, false);
+    }
+    /**
+     * 尝试添加任务到队列
+     * @param taskWrapper 要添加的任务包装器
+     * @param fast 是否快速添加到队列头部
+     * @return 如果成功添加返回true，队列已满返回false
+     */
+    public boolean offerTask(TaskWrapper<?> taskWrapper,boolean fast) {
+    	lastAccessTime.set(System.currentTimeMillis());
+    	
+    	if (taskQueue.size() >= maxQueueSize) {
+    		stats.rejectedTasks.incrementAndGet();
+    		return false;
+    	}
+    	
+    	boolean result = fast?taskQueue.offerFirst(taskWrapper): taskQueue.offerLast(taskWrapper);
+    	if (result) {
+    		stats.submittedTasks.incrementAndGet();
+    	}
+    	return result;
     }
     
     /**
@@ -50,7 +59,7 @@ public class ActorMailbox {
      * @param taskWrapper 要添加的任务包装器
      * @return 如果成功添加返回true，队列已满返回false
      */
-    public boolean offerTaskFirst(TaskWrapper<?> taskWrapper) {
+    public boolean offerTaskFirstRetry(TaskWrapper<?> taskWrapper) {
         lastAccessTime.set(System.currentTimeMillis());
 
         if (taskQueue.size() >= maxQueueSize) {

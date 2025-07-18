@@ -34,14 +34,14 @@ import io.vertx.core.Future;
  * @author: ly
  * @create: 2025-02-08 14:45 @Version 1.0
  */
-public class ZongmenService implements RemoteProxy {
-	private static final ZongmenService INSTANCE = new ZongmenService();
+public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
+	private static final ZongmenServiceInterface INSTANCE = new ZongmenService();
 	private static final Logger log = LoggerFactory.getLogger(ZongmenService.class);
 
 	protected ZongmenService() {
 	}
 
-	public static ZongmenService getInstance() {
+	public static ZongmenServiceInterface getInstance() {
 		return INSTANCE;
 	}
 
@@ -55,6 +55,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param request 创建宗门请求
 	 * @return 新宗门信息
 	 */
+	@Override
 	public Future<ZongMenInfo> createZongmen(CreateZongmenRequest request) {
 		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(request.getName()));
 		if (!createLock) {
@@ -79,6 +80,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param playerId 玩家ID
 	 * @return 宗门信息
 	 */
+	@Override
 	public ZongMenInfo getZongmenInfo(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null || zongMenInfo.getMember(playerId) == null) {
@@ -95,6 +97,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param power 战斗力
 	 * @return 宗门信息
 	 */
+	@Override
 	public ZongMenInfo applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -127,6 +130,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param playerId 操作玩家ID
 	 * @return 是否成功
 	 */
+	@Override
 	public void dissolveZongmen(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -145,6 +149,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param request 设置请求
 	 * @return 是否成功
 	 */
+	@Override
 	public Future<Boolean> setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -209,6 +214,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param position 新职位
 	 * @return 是否成功
 	 */
+	@Override
 	public void setMemberPosition(long zongMenId, long operatorId, long targetPlayerId, int position) {
 		System.out.println("收到宗门设置成员职位请求: zongMenId=" + zongMenId + ", operatorId=" + operatorId + ", targetPlayerId=" + targetPlayerId
 				+ ", position=" + position);
@@ -253,6 +259,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param playerName 玩家名称
 	 * @return 是否成功
 	 */
+	@Override
 	public void quitZongmen(long zongMenId, long playerId, String playerName) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -282,6 +289,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param request 权限请求
 	 * @return 是否成功
 	 */
+	@Override
 	public void updateMemberAuth(long zongMenId, MemberAuthRequest request) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -334,6 +342,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param value 资产值
 	 * @return 是否成功
 	 */
+	@Override
 	public void updateZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -349,6 +358,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param indexList 奖励索引列表
 	 * @return 是否成功
 	 */
+	@Override
 	public void receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -375,6 +385,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param count 购买数量
 	 * @return 是否成功
 	 */
+	@Override
 	public boolean buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -413,6 +424,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param playerId 玩家ID
 	 * @return 砍价次数
 	 */
+	@Override
 	public int bargain(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -437,6 +449,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param playerId 玩家ID
 	 * @return 是否成功
 	 */
+	@Override
 	public void buyBargain(long zongMenId, long playerId) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -459,6 +472,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param fightPower 战斗力
 	 * @return 是否成功
 	 */
+	@Override
 	public boolean updateMemberFightPower(long zongMenId, long playerId, int fightPower) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {
@@ -479,6 +493,7 @@ public class ZongmenService implements RemoteProxy {
 	 * @param value 贡献度值
 	 * @return 是否成功
 	 */
+	@Override
 	public void updateContributeValue(long zongMenId, long playerId, int value) {
 		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
 		if (zongMenInfo == null) {

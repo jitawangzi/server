@@ -40,6 +40,11 @@ public abstract class AbstractProcessor implements Processor {
 	public void process(long objectId, Runnable task) {
 		throw new UnsupportedOperationException("not support processor" + this.getClass().getName() + " objectId:task");
 	}
+	
+	@Override
+	public void process(long objectId, Runnable task,boolean fast) {
+		process(objectId, task);
+	}
 
 	@Override
 	public void process(Runnable task) {

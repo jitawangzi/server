@@ -20,6 +20,11 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 	public void process(long objectId, Runnable task) {
 		TaskExecutorService.getInstance().submitTask(objectId, task);
 	}
+	
+	@Override
+	public void process(long objectId, Runnable task,boolean fast) {
+		process(objectId, task,fast);
+	}
 
 	@Override
 	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
@@ -30,7 +35,7 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 	@Override
 	public <T> T process(long objectId, Callable<T> supplier) {
 		try {
-			return TaskExecutorService.getInstance().executeAndAwait(objectId, supplier, "", 0, 10000);
+			return TaskExecutorService.getInstance().executeAndAwait(objectId, supplier,false,"", 10000);
 		} catch (Exception e) {
 			throw new RuntimeException("Error processing callable for objectId: " + objectId, e);
 		}

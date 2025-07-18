@@ -144,13 +144,13 @@ public class MailboxProcessor implements Runnable {
 		case RETRY_HEAD_IMMEDIATELY:
 			LOGGER.warn("Task [{}] (entity [{}]) failed, will retry immediately (attempt {}). Error: {}", task.getDescription(), entityId,
 					context.getAttemptCount(), e.getMessage());
-			mailbox.offerTaskFirst(taskWrapper);
+			mailbox.offerTaskFirstRetry(taskWrapper);
 			break;
 
 		case RETRY_HEAD_WITH_DELAY:
 			LOGGER.warn("Task [{}] (entity [{}]) failed, will retry in {} {} (attempt {}). Error: {}", task.getDescription(), entityId,
 					policy.getDelay(), policy.getTimeUnit().toString().toLowerCase(), context.getAttemptCount(), e.getMessage());
-			mailbox.offerTaskFirst(taskWrapper);
+			mailbox.offerTaskFirstRetry(taskWrapper);
 			return policy; // 返回策略以表示需要延迟。
 
 		case DISCARD:
