@@ -1,8 +1,11 @@
 @echo off
 setlocal
 
-set "src=D:\src\First_party\program\tools\ClientSetting"
-set "dst=D:\src\First_party\program\client\Projectx"
+set "src=%metafolder:\=\\%\ClientSetting"
+set "dst=%metafolder:\=\\%\..\client\Projectx"
+
+:: 解析 .. 为实际路径
+for %%A in ("%dst%") do set "dst=%%~fA"
 
 :: 确保目标目录存在
 if not exist "%dst%" (
