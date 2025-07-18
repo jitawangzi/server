@@ -167,7 +167,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 			if (bugs >= GlobalConst.RSGTreeBugMax) {
 				return;
 			}
-			if (insecticidesEndTime > DateUtil.currentTimeSeconds()) {
+			if ( getInsecticidesEndTime()  > DateUtil.currentTimeSeconds()) {
 				return;
 			}
 			if (Rnd.hit(GlobalConst.RSGTreeRefreshWeight)) {
@@ -187,7 +187,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 		}
 		builder.setHangUpSeconds(hangUpSeconds);
 		builder.setInsecticidesEndRemainingSeconds(
-				insecticidesEndTime - DateUtil.currentTimeSeconds() > 0 ? insecticidesEndTime - DateUtil.currentTimeSeconds() : 0);
+				 getInsecticidesEndTime()  - DateUtil.currentTimeSeconds() > 0 ?  getInsecticidesEndTime()  - DateUtil.currentTimeSeconds() : 0);
 		builder.setInsecticidesTimes(insecticidesTimes);
 		builder.setWaterTimes(waterTimes);
 		fruitMap.getMap().forEach((k, v) -> {
@@ -260,6 +260,9 @@ public class GinsengTreeModule extends BasePlayerModule {
 	}
 
 	public int getInsecticidesEndTime() {
+		if (insecticidesEndTime < DateUtil.currentTimeSeconds()) {
+			insecticidesEndTime = 0;
+		}
 		return insecticidesEndTime;
 	}
 

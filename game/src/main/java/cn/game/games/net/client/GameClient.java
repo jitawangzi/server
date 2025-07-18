@@ -268,7 +268,7 @@ public class GameClient extends AbstractNetClient {
 			if (now - firstPacketTime < 1000) {
 //				// 超过消息数量，关闭连接
 //				GameClientManager.getInstance().logout(this);
-//				log.warn("GameClient[{}] Requested too frequently, force disconnect,seq[{}]", toDetailString(), protocol.getSeq());
+				log.warn("GameClient[{}] Requested too frequently,seq[{}]", toDetailString(), protocol.getSeq());
 				sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), protocol.getSeq(), ErrorMsgEnum.requests_too_frequent.getId(), false);
 				return false;
 			} else {
