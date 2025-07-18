@@ -63,15 +63,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		}
 		return ZongMenManager.getInstance()
 				.createZongMen(null, request.getName(), request.getCreatePlayerId(), request.getCreatePlayerName(), request.getPower(),
-						request.getServerId())
-				.map(zongMenInfo -> {
-					if (zongMenInfo != null) {
-						return zongMenInfo;
-					} else {
-						fail(ErrorMsgEnum.zong_men_create_failed);
-						return null; // 不会到达
-					}
-				});
+						request.getServerId());
 	}
 
 	/**

@@ -106,6 +106,7 @@ public interface ZongmenServiceInterface {
 	 * @param count 购买数量
 	 * @return 是否成功
 	 */
+	@Deprecated
 	boolean buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count);
 
 	/**

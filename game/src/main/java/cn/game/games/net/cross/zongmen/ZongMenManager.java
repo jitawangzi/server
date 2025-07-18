@@ -227,9 +227,8 @@ public class ZongMenManager {
         RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
     }
 
-    public void delZongMen(ZongMenInfo zongMenInfo) {
-        zongMenInfoMap.remove(zongMenInfo.getId());
-        log.info(String.format("删除宗门 id:%d, name:%s",zongMenInfo.getId(),zongMenInfo.getName()));
+    public void delZongMen(long id) {
+        zongMenInfoMap.remove(id);
     }
 }
 
