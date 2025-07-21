@@ -962,8 +962,7 @@ public class PlayerHandler extends GameBaseHandler {
 	}
 
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
-		return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build())
-				.map(message -> (LoginPlayerUidResponse_7d000019) message);
+		return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build());
 	}
 
 	private Future<PlayerData> loadOrCreatePlayerData(long playerId, Account account, GameClient client) {

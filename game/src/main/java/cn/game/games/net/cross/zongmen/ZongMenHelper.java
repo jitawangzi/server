@@ -136,8 +136,6 @@ public class ZongMenHelper {
 
 
     public static boolean isZongMenAsset(int idType){
-        List<Integer> list = new ArrayList<>();
-        list.contains(1);
         return idType == Asset.ZongMenPoint.ID || idType == Asset.ZongMenExp.ID || idType == Asset.ZongMenContribute.ID;
     }
 
