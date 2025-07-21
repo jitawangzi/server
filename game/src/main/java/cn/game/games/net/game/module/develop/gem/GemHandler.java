@@ -77,7 +77,7 @@ public class GemHandler extends GameBaseHandler {
 			Gem gemWeared = gemModule.get(k);
 			for (Integer attrId : keySet) {
 				if (gemWeared.getGemAttrs().containsKey(attrId)) {
-					client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+					player.fail(ErrorMsgEnum.request_parameter_error) ; 
 					return;
 				}
 			}
