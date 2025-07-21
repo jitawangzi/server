@@ -40,31 +40,31 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
 			</plugin>
-		<plugin>
-    <artifactId>maven-resources-plugin</artifactId>
-    <executions>
-        <execution>
-            <id>copy-resource</id>
-            <phase>package</phase>
-            <goals>
-                <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-                <outputDirectory>D:/apache-jmeter-5.4.1/lib/ext</outputDirectory>
-                <resources>
-                    <resource>
-									<!-- 文件地址 -->
-                        <directory>${basedir}/target</directory>
-                        <includes>
-                            <include>*.jar</include>
-                        </includes>
-                    </resource>
-                </resources>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-
+<!--		<plugin>-->
+		
+<!--    <artifactId>maven-resources-plugin</artifactId>-->
+<!--    <executions>-->
+<!--        <execution>-->
+<!--            <id>copy-resource</id>-->
+<!--            <phase>package</phase>-->
+<!--            <goals>-->
+<!--                <goal>copy-resources</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--                <outputDirectory>D:/apache-jmeter-5.4.1/lib/ext</outputDirectory>-->
+<!--                <resources>-->
+<!--                    <resource>-->
+<!--									 文件地址 -->
+<!--                        <directory>${basedir}/target</directory>-->
+<!--                        <includes>-->
+<!--                            <include>*.jar</include>-->
+<!--                        </includes>-->
+<!--                    </resource>-->
+<!--                </resources>-->
+<!--            </configuration>-->
+<!--        </execution>-->
+<!--    </executions>-->
+<!--</plugin>-->
 		</plugins>
 		
 		
