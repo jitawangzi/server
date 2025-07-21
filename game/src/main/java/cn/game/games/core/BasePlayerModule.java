@@ -156,7 +156,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	/** 
 	 * 总是使用独立的数据表来存储数据，只有在单表存储玩家数据时，这个配置才有用，配置单独的数据表来存储玩家数据
 	 * 配置为true后，需要手动处理数据的更新,并且不序列化这个模块的数据，注意添加JsonIgnone
-	 * 一般方便离线操作的，数据结构和条目比较稳定修改不频繁的，可以设置为true
+	 * 一般方便离线操作的，数据量大的，数据结构和条目比较稳定修改不频繁的，可以设置为true
 	 * @return
 	 */
 	public boolean alwaysStoreDataInStandaloneTable() {

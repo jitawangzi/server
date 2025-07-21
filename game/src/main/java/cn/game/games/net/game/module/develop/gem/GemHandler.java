@@ -76,7 +76,7 @@ public class GemHandler extends GameBaseHandler {
 		gemPosMap.forEach((k, v) -> {
 			Gem gemWeared = gemModule.get(k);
 			for (Integer attrId : keySet) {
-				if (gemWeared.getGemAttrs().containsKey(attrId)) {
+				if (gemWeared.getGemAttrs().containsKey(attrId) && v != pos) {
 					player.fail(ErrorMsgEnum.request_parameter_error) ; 
 					return;
 				}
