@@ -52,8 +52,11 @@ public class Guarantee {
 	 * @param guaranteeConfig
 	 */
 	public void reset() {
-		this.count = 0;
 		GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
+		this.count = this.count - guaranteeConfig.count; 
+		if (this.count < 0) {
+			this.count = 0 ; 
+		}
 		Set<Integer> allRounds = GuaranteeManager.instance().getTypeRounds().keySet();
 		int max = Collections.max(allRounds);
 		int roundToQuary = this.round > max ? max : this.round;
