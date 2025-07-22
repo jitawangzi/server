@@ -44,7 +44,6 @@ public class EquipPartShow {
 				}
 			}
 			list.add(partShow); 
-			
 		});
 		return list; 
 	}
