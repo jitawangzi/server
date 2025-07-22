@@ -86,4 +86,9 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 		this.figure = figure;
 	}
 
+	public int getFigure() {
+		return figure;
+	}
+	
+
 }

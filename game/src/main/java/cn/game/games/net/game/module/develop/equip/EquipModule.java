@@ -109,4 +109,9 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		return equipPartMap.computeIfAbsent(pos, v -> new EquipPart(pos));
 	}
 
+	public Map<Integer, EquipPart> getEquipPartMap() {
+		return equipPartMap;
+	}
+	
+
 }

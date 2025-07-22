@@ -85,26 +85,22 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 					break;
 				}
 				List<RewardInfo> reward1 = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.LingShanWenChan);
-				List<RewardInfo> reward2 = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.LingShanWenChan);
 				rewards.addAll(reward1);
-				rewards.addAll(reward2);
 			}
 
 			lastCompleteBattleId = battleConfig.ID;
 
 			RankService.getInstance()
-					.updateScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), lastCompleteBattleId);
+					.setScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), lastCompleteBattleId);
 
 			return ResultObject.success();
 		} else { // 失败了，最终结算
-			// 如果没有成功通过一关，则获得上一关的扫荡奖励
-			if (lastCompleteBattleId > 0 && BattleHelper.nextBattleConfig(lastCompleteBattleId).ID == startBattleId) {
+			// 获得上一关的扫荡奖励
+			if (lastCompleteBattleId > 0) {
 				List<RewardInfo> reward = PlayerHelper.addReward(player, BattleManager.instance().get(lastCompleteBattleId).SweepReward,
 						OpType.LingShanWenChan);
 				rewards.addAll(reward);
-				return ResultObject.success(rewards);
 			}
-			// 否则 什么也不获得(通关时已经获得那一关的扫荡奖励了)
 			return ResultObject.success(rewards);
 		}
 	}
