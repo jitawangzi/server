@@ -23,7 +23,7 @@ public class PlayerShowRequest_01000039Test extends ServerTest{
 			SimplePlayerInfo playerInfo = Rnd.randomElement(recommendList);
 			builder.setPlayerId(playerInfo.getId());
 		} else {
-			builder.setPlayerId(240200669 + "");
+			builder.setPlayerId(240200105 + "");
 		}
 		return builder.build() ; 
 	}

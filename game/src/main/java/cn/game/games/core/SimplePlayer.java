@@ -11,7 +11,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.module.develop.equip.EquipPartShow;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
+import cn.game.games.net.game.module.player.figure.FigureModule;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.NPCConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
@@ -38,6 +40,7 @@ public class SimplePlayer implements Serializable {
 	public int head; // 头像
 	public int headFrame; // 头像
 	public byte gender; // 性别： 1男2女
+	public int figure ; 
 
 	public String unionName;
 	public long unionId;
@@ -77,6 +80,8 @@ public class SimplePlayer implements Serializable {
 	 * 玩家资产
 	 */
 	public Map<Integer, Long> assetsMap = new HashMap<>();
+	
+	private List<EquipPartShow> equipPartShows = new ArrayList<EquipPartShow>();
 
 	@Deprecated
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
@@ -113,6 +118,7 @@ public class SimplePlayer implements Serializable {
 		this.serverId = player.getServerId();
 		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
 		this.tdLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+		this.figure = player.getModule(FigureModule.class).getFigure();
 		//存储 大道争锋阵容
 		Map<Integer, List<String>> lineups = player.getBattleModule().getLineups(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId());
 		Map<Integer, List<Hero>> lineupsMap = new HashMap<Integer, List<Hero>>();
@@ -144,7 +150,7 @@ public class SimplePlayer implements Serializable {
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
 		this.assetsMap.putAll(player.getCurrencyModule().getCurrencyMap().getMap());
 		this.recharge = player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
-
+		this.equipPartShows = EquipPartShow.toEquipPartShowList(player);
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -187,6 +193,7 @@ public class SimplePlayer implements Serializable {
 		builder.setServerName(serverName);
 		builder.setTiandaoLevel(tdLevel);
 		builder.setCombatEffectiveness(combatEffectiveness);
+		builder.setFigure(figure) ; 
 
 		return builder.build();
 	}
@@ -216,6 +223,9 @@ public class SimplePlayer implements Serializable {
 		}
 		for (Hero hero : heros) {
 			showInfo.addHeros(hero.toHeroInfo());
+		}
+		for (EquipPartShow equipPartShow : equipPartShows) {
+			showInfo.addParts(equipPartShow.toEquipPartShowInfo());
 		}
 		return showInfo.build();
 	}
@@ -462,6 +472,11 @@ public class SimplePlayer implements Serializable {
 	public void setBattleAttrs(byte[] battleAttrs) {
 		this.battleAttrs = battleAttrs;
 	}
-
+	public List<EquipPartShow> getEquipPartShows() {
+		return equipPartShows;
+	}
+	public void setEquipPartShows(List<EquipPartShow> equipPartShows) {
+		this.equipPartShows = equipPartShows;
+	}
 
 }
