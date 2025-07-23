@@ -70,16 +70,6 @@ public class ShopModule extends BasePlayerModule {
 		return new Class<?>[] { ShopItemMapper.class };
 	}
 
-	private void initAddCache(int shop, ShopItem item) {
-//		itemsMap.put(item.getId(), item);
-		shopItemsMap.put(shop, item);
-	}
-
-	private void removeCache(int shop, ShopItem item) {
-		shopItemsMap.remove(shop, item);
-	}
-
-
 	public List<ShopItem> getShopItems(int shop) {
 		return (List<ShopItem>) shopItemsMap.get(shop);
 	}

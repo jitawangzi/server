@@ -23,7 +23,7 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 	
 	@Override
 	public void process(long objectId, Runnable task,boolean fast) {
-		process(objectId, task,fast);
+		TaskExecutorService.getInstance().submitTask(objectId, task,fast);
 	}
 
 	@Override

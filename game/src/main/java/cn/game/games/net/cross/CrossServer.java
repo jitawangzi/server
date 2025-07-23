@@ -37,6 +37,8 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.ThreadingModel;
 import io.vertx.core.VertxOptions;
 
 public class CrossServer {
@@ -132,10 +134,14 @@ public class CrossServer {
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
-		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor));
+		
+		DeploymentOptions options = new DeploymentOptions().setInstances(1);
+		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
+		
+		VxHolder.deployVerticleSync(new MsgConsumerVerticle(serverId, serverType, processor),options);
 
 		VertxRPCService verticle = new VertxRPCService(null, serverId, serverType, processor);
-		VxHolder.deployVerticleSync(verticle);
+		VxHolder.deployVerticleSync(verticle,options);
 
 	}
 
