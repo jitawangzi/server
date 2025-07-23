@@ -25,7 +25,6 @@ import cn.game.util.GameUtil;
  * @author SYQ
  */
 public class LingShanWenChanBattle extends XiYouBattleHandler {
-
 	/** 最后通关的层数 */
 	private int lastCompleteFloor;
 	/** 每日挑战+扫荡次数 */
@@ -52,7 +51,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		battleTimes = 0;
 		payTimes = 0;
 	}
-
+	
 	@Override
 	public int checkCustom(int id, int subId) {
 		LingShanConfig floorConfig = getFloorConfig(subId, id);
@@ -67,11 +66,11 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		if (subId <= lastCompleteFloor) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
-		return 0;
+		return 0 ; 
 	}
-
+	
 	@Override
-	public int battleStart(int id, int subId) {
+	public int battleStart(int id,int subId) {
 		if (this.startFloor == 0) {
 			this.startFloor = subId;
 		}
@@ -109,12 +108,11 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			return ResultObject.success(rewards);
 		}
 	}
-
-	private int[][] getReward(int floor, boolean sweep) {
+	
+	private int[][] getReward(int floor,boolean sweep) {
 		LingShanConfig floorConfig = getFloorConfig(floor);
 		int floorInConfig = getFloorInConfig(floor, floorConfig);
-		return GameUtil.arrayAddition(sweep ? floorConfig.SDReward : floorConfig.Reward,
-				sweep ? floorConfig.SDRewardAdd : floorConfig.RewardAdd, floorInConfig);
+		return GameUtil.arrayAddition(sweep?floorConfig.SDReward: floorConfig.Reward,sweep?floorConfig.SDRewardAdd: floorConfig.RewardAdd, floorInConfig);
 	}
 
 	@Override
@@ -140,15 +138,14 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public int getType() {
 		return DungeonTypeEnum.LingShanWenChan.getId();
 	}
-
+	
 	/** 
 	 * 获取当前层所在的配置
 	 * @return
 	 */
 	public LingShanConfig getCurFloorConfig() {
-		return getFloorConfig(lastCompleteFloor);
+		return getFloorConfig(lastCompleteFloor); 
 	}
-
 	/** 
 	 * 根据层数获取到对应的配置。 
 	 * @param floor
@@ -156,25 +153,24 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	 */
 	private LingShanConfig getFloorConfig(int floor) {
 		if (floor == 0) {
-			return null;
+			return null ; 
 		}
-		List<LingShanConfig> list = LingShanManager.instance().list();
+		List<LingShanConfig> list = LingShanManager.instance().list(); 
 		for (LingShanConfig config : list) {
 			if (floor >= config.StartFloor && floor <= config.EndFloor) {
 				return config;
 			}
 		}
-		return list.getLast();
+		return list.getLast(); 
 	}
-
 	/** 
 	 * 根据层数获取到对应的配置。 
 	 * @param floor
 	 * @param battleId  这里其实用不到，只是校验数据
 	 * @return
 	 */
-	private LingShanConfig getFloorConfig(int floor, int battleId) {
-		List<LingShanConfig> list = LingShanManager.instance().list();
+	private LingShanConfig getFloorConfig(int floor,int battleId) {
+		List<LingShanConfig> list = LingShanManager.instance().list(); 
 		for (LingShanConfig config : list) {
 			if (floor >= config.StartFloor && floor <= config.EndFloor) {
 				return config;
@@ -182,13 +178,12 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		}
 		throw new LogicException(ErrorMsgEnum.request_parameter_error.getId(), "floor: " + floor + ", battleId: " + battleId);
 	}
-
 	/** 
 	 * 根据当前层数所在的配置，获取到该层数在层数区间中的层数，用来计算奖励等
 	 * @param floor
 	 * @return
 	 */
-	private int getFloorInConfig(int floor, LingShanConfig config) {
+	private int getFloorInConfig(int floor,LingShanConfig config) {
 		if (config == null) {
 			return 0;
 		}
@@ -196,26 +191,6 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			return 0;
 		}
 		return floor - config.StartFloor;
-	}
-
-	public int getBattleTimes() {
-		return battleTimes;
-	}
-
-	public int getPayTimes() {
-		return payTimes;
-	}
-
-	public long getRewardBattleIds() {
-		return rewardBattleIds;
-	}
-
-	public void setPayTimes(int payTimes) {
-		this.payTimes = payTimes;
-	}
-
-	public void setRewardBattleIds(long rewardBattleIds) {
-		this.rewardBattleIds = rewardBattleIds;
 	}
 
 	public int getLastCompleteFloor() {
@@ -226,6 +201,29 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		this.lastCompleteFloor = lastCompleteFloor;
 	}
 
+	public int getBattleTimes() {
+		return battleTimes;
+	}
+	public void setBattleTimes(int battleTimes) {
+		this.battleTimes = battleTimes;
+	}
+
+	public int getPayTimes() {
+		return payTimes;
+	}
+
+	public void setPayTimes(int payTimes) {
+		this.payTimes = payTimes;
+	}
+
+	public long getRewardBattleIds() {
+		return rewardBattleIds;
+	}
+
+	public void setRewardBattleIds(long rewardBattleIds) {
+		this.rewardBattleIds = rewardBattleIds;
+	}
+
 	public int getStartFloor() {
 		return startFloor;
 	}
@@ -233,5 +231,8 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public void setStartFloor(int startFloor) {
 		this.startFloor = startFloor;
 	}
+
+	
+	
 
 }
