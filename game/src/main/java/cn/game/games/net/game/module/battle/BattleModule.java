@@ -36,7 +36,6 @@ import cn.game.protocol.protobuf.BattleMsg.LineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.PatrolInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 
@@ -81,13 +80,13 @@ public class BattleModule extends BasePlayerModule  {
 	private List<RewardInfo> lastBattleRewards;
 
 	// 战斗相关数据
-	private int type;
-	private int dungeonId;
-	private int id;
-	private int lineupId;
+	private int attackingType;
+	private int attackingId;
+	private int attackingSubId;
 	/** 子玩法的唯一id */
 	@JsonIgnore
-	private long uid;
+	private long attackingUid;
+	private int lineupId;
 	@JsonIgnore
 	private long randomSeed;
 
@@ -251,89 +250,23 @@ public class BattleModule extends BasePlayerModule  {
 		return getFightBattleId(DungeonTypeEnum.BattleChapter.getId());
 	}
 
-	public void setAttackingData(int lineupId, int type, int dungeonId, int id, long uid, long randomSeed) {
-		this.type = type;
-		this.id = id;
-		this.dungeonId = dungeonId;
-		this.uid = uid;
+	public void setAttackingData(int lineupId, int type, int id, int subId, long uid, long randomSeed) {
+		this.attackingType = type;
+		this.attackingId = id;
+		this.attackingSubId = subId;
+		this.attackingUid = uid;
 		this.lineupId = lineupId;
 		this.randomSeed = randomSeed;
 	}
 
 	public boolean isBattleStarted() {
-		return this.id > 0;
-	}
-
-	public boolean addBattleLevelPass(int levelId, List<Integer> starList) {
-		BattleLevel level = this.levels.get(levelId);
-		if (level == null) {
-			level = new BattleLevel();
-			level.setPlayerId(playerId);
-			level.setLevelId(levelId);
-			if (starList != null) {
-				level.setStar(ByteHelp.modifyBit(0, starList));
-			}else {
-				level.setStar(0);
-			}
-			DAO.execute(BattleLevelMapper.class, MapperConstant.insert, level);
-
-			this.levels.put(levelId, level);
-			return true;
-
-		} else {
-			if (starList != null) {
-				int newStar = ByteHelp.modifyBit(level.getStar(), starList);
-				if (newStar != level.getStar()) {
-					level.setStar(newStar);
-				}
-				DAO.execute(BattleLevelMapper.class, MapperConstant.updateByPrimaryKey,
-						level);
-			}
-			return false;
-
-		}
-	}
-	public boolean addBattleLevelPass(int levelId) {
-		return addBattleLevelPass(levelId, null);
+		return this.attackingSubId > 0;
 	}
 
 	public int getLineupId() {
 		return this.lineupId;
 	}
 
-	public BattleLevel getBattleLevel(int levelId) {
-		return this.levels.get(levelId);
-	}
-
-	public BattleLevel getBattleLevelAndInit(int levelId) {
-		BattleLevel level = this.levels.get(levelId);
-		if (level == null) {
-			level = new BattleLevel();
-			level.setLevelId(levelId);
-			level.setPlayerId(playerId);
-			level.setStar(0);
-			DAO.execute(BattleLevelMapper.class, MapperConstant.insert, level);
-
-			this.levels.put(levelId, level);
-		}
-		return level;
-	}
-
-	public int getAllStars() {
-
-		int ret = 0;
-		if (this.levels == null) {
-			return ret;
-		}
-		for (BattleLevel level : this.levels.values()) {
-			ret += ByteHelp.binary1Count(level.getStar());
-		}
-		return ret;
-	}
-
-	public int getAttackingId() {
-		return this.id;
-	}
 
 	public List<RewardInfo> getLastBattleRewards() {
 		return lastBattleRewards;
@@ -355,14 +288,17 @@ public class BattleModule extends BasePlayerModule  {
 	}
 
 	public int getAttackingType() {
-		return this.type;
+		return this.attackingType;
 	}
-	public int getAttackingDungeonId() {
-		return this.dungeonId;
+	public int getAttackingId() {
+		return this.attackingId;
+	}
+	public int getAttackingSubId() {
+		return this.attackingSubId;
 	}
 
 	public long getAttackingUid() {
-		return this.uid;
+		return this.attackingUid;
 	}
 
 	public int getFreeRougeTimes() {
@@ -422,16 +358,6 @@ public class BattleModule extends BasePlayerModule  {
 	public boolean isExploreChapterPass(int id) {
 		Chapter chapter = chapters.get(id);
 		return chapter != null && chapter.getPass();
-	}
-
-	public boolean exploreActReward(int id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean exploreChapterReward(int id) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public int getMainBattleHighest() {
@@ -706,8 +632,8 @@ public class BattleModule extends BasePlayerModule  {
 			dayBuilder.addAllRewardIndex(dayChallenge.getRewardIndex());
 			builder.setMergeDayChallenge(dayBuilder.build());
 		}
-		builder.setBattleType(type);
-		builder.setBattleId(dungeonId);
+		builder.setBattleType(attackingType);
+		builder.setBattleId(attackingId);
 		builder.setRescueSkillId(rescueSkillId);
 
 		lineupMaps.forEach((k, v) -> {

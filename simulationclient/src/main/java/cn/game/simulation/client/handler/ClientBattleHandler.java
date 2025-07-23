@@ -406,7 +406,7 @@ public class ClientBattleHandler extends BaseHandler {
     private void lingShan(NetClient netClient, Object message) {
         BattleLingShanResponse_13000512 resp = (BattleLingShanResponse_13000512) message;
         int battleTimes = resp.getBattleTimes();
-        int lastCompleteBattleId = resp.getLastCompleteBattleId();
+        int lastCompleteBattleId = resp.getLastCompleteFloor();
         int payTimes = resp.getPayTimes();
         List<Integer> rewardBattleIdsList = resp.getRewardBattleIdsList();
         List<PlayerRankInfo> rankPlayersList = resp.getRankPlayersList();

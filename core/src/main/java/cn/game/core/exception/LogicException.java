@@ -9,6 +9,7 @@ public class LogicException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	private int errorCode;
+	private String errorMessage;
 
 	public LogicException() {
 		super(null, null, false, false);
@@ -18,8 +19,18 @@ public class LogicException extends RuntimeException {
 		super(errorCode + "", null, false, false);
 		this.errorCode = errorCode;
 	}
+	public LogicException(int errorCode, String errorMessage) {
+		super(errorCode + "", null, false, false);
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
+	}
 
 	public int getErrorCode() {
 		return errorCode;
 	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	
 }

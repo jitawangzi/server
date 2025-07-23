@@ -58,7 +58,7 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingType = battleModule.getAttackingType();
-		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingDungeonId());
+		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
 		if (request.getWin()) {
 			if (battleConfig.preBattle == lastCompleteBattleId) { // 第一次通关
 				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.XiangYaoChuMo);

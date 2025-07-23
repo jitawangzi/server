@@ -129,6 +129,29 @@ public class GameUtil {
 		}
 		return ret;
 	}
+	/** 
+	 * 给数量做增加
+	 * @param array 0：id 1：数量
+	 * @param addition
+	 * @param multiple
+	 * @return
+	 */
+	public static int[][] arrayAddition(int[][] array, int[] addition,int multiple) {
+		if (addition == null || addition.length == 0) {
+			return array;
+		}
+		int[][] ret = new int[array.length][array[0].length];
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				if (j % 2 == 0) {
+					ret[i][j] = array[i][j];
+				} else {
+					ret[i][j] = array[i][j] + addition[i] * multiple;
+				}
+			}
+		}
+		return ret;
+	}
 
 	/** 
 	 * 给数量做倍数

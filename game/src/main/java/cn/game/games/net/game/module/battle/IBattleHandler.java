@@ -15,19 +15,42 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  * @author SYQ
  */
 public abstract class IBattleHandler {
-	@JsonIgnore
-	protected Player player;
+	
+	protected transient Player player;
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
 	/** 
-	 * 战斗开始前，校验条件
+	 * 通用的BattleConfig战斗前关卡检查
+	 * @param id  BattleConfig的ID
+	 * @param subId TODO
+	 * @return
+	 */
+	abstract int check(int id, int subId);
+	
+	/** 
+	 * 玩法的特殊规则校验
+	 * @param id
+	 * @param subId
+	 * @return
+	 */
+	abstract int checkCustom(int id, int subId);
+	
+	/** 
+	 * 战斗开始前的一些处理。 
 	 * @param id
 	 * @return
 	 */
 	abstract int battleStart(int id);
-	
+	/** 
+	 * 战斗开始前的一些处理。 
+	 * @param id
+	 * @param subId
+	 * @return
+	 */
+	abstract int battleStart(int id,int subId);
+
 	/** 
 	 * 处理一些战斗结束的逻辑
 	 * @param request
@@ -52,14 +75,6 @@ public abstract class IBattleHandler {
 	abstract ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin);
 
 	abstract int getType();
-
-	/** 
-	 * 战斗前关卡检查
-	 * @param id
-	 * @param subId TODO
-	 * @return
-	 */
-	abstract int check(int id, int subId);
 
 	/** 
 	 * 跨天重置数据
