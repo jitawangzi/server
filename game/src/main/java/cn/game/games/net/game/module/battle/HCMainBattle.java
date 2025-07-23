@@ -51,7 +51,7 @@ public class HCMainBattle extends XiYouBattleHandler {
 		int battleTime = request.getBattleTime();
 
 		BattleModule battleModule = player.getModule(BattleModule.class);
-		Chapter chapter = battleModule.getChapter(battleModule.getAttackingDungeonId());
+		Chapter chapter = battleModule.getChapter(battleModule.getAttackingId());
 		Integer battleId = chapter.getBattleId();
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(battleId);
 

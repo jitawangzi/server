@@ -89,7 +89,7 @@ public class BattleDayChallenge extends HCBattleHandler {
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		BattleModule battleModule = player.getModule(BattleModule.class);
-		int battleId = battleModule.getAttackingDungeonId();
+		int battleId = battleModule.getAttackingId();
 
 		int battleTime = request.getBattleTime();
 		int hcFailRewardId = BattleHelper.hcFailRewardId(battleId, battleTime);

@@ -54,7 +54,19 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 			return ErrorMsgEnum.resource_not_enough.getId();
 		}
 		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart);
-		return 0;
+		
+		return checkCustom(id, subId);
+	}
+	
+	/** 
+	 * 玩法的特殊规则校验
+	 * @param id
+	 * @param subId
+	 * @return
+	 */
+	@Override
+	public int checkCustom(int id, int subId) {
+		return 0 ; 
 	}
 
 	@Override
@@ -65,6 +77,16 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 	@Override
 	public void onLogin() {
 
+	}
+	
+	@Override
+	int battleStart(int id) {
+		throw new UnsupportedOperationException("not implement battle, id: " + id);
+	}
+	
+	@Override
+	public int battleStart(int id,int subId) {
+		return battleStart(id); 
 	}
 
 	@Override

@@ -133,8 +133,8 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 			return ResultObject.success();
 		}
 		BattleModule battleModule = player.getBattleModule();
-		int attackingDungeonId = battleModule.getAttackingDungeonId();
-		BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
+		int attackingId = battleModule.getAttackingId();
+		BattleConfig battleConfig = BattleManager.instance().get(attackingId);
 		int oldBattleStage  = battleStage;
 		battleCompleted();
 		// 通关奖励，用公式计算

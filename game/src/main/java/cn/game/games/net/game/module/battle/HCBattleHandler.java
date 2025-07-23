@@ -46,6 +46,22 @@ public abstract class HCBattleHandler extends IBattleHandler {
 		return rewards;
 
 	}
+	
+	/** 
+	 * 玩法的特殊规则校验
+	 * @param id
+	 * @param subId
+	 * @return
+	 */
+	@Override
+	public int checkCustom(int id, int subId) {
+		return 0 ; 
+	}
+	
+	@Override
+	public int battleStart(int id,int subId) {
+		return battleStart(id); 
+	}
 
 	@Override
 	public void onLogin() {

@@ -51,7 +51,7 @@ public class MainBattle extends XiYouBattleHandler {
 		int hpPercent = request.getHpPercent();
 
 		BattleModule battleModule = player.getModule(BattleModule.class);
-		Chapter chapter = battleModule.getChapter(battleModule.getAttackingDungeonId());
+		Chapter chapter = battleModule.getChapter(battleModule.getAttackingId());
 		BattleConfig battleConfig = BattleManager.instance().get(chapter.getBattleId());
 
 		if (hpPercent > chapter.getHpPercent()) {

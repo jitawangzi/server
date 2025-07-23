@@ -177,7 +177,7 @@ public class LingPoBattle extends XiYouBattleHandler {
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingType = battleModule.getAttackingType();
-		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingDungeonId());
+		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
 		int pointAdd = 0;
 		if (request.getWin()) {
 			pointAdd = GlobalConst.SpiritBattleVicpoint;

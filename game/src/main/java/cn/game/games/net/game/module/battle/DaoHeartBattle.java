@@ -193,7 +193,7 @@ public class DaoHeartBattle extends XiYouBattleHandler {
 		}
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingType = battleModule.getAttackingType();
-		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingDungeonId());
+		BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
 
 		DaoHeartBattle daoHeartBattle = battleModule.getBattle(attackingType);
 		daoHeartBattle.battleCompleted();

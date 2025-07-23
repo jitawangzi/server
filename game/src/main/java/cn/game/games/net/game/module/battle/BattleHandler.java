@@ -31,6 +31,7 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.config.LingShanConfig;
 import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.config.RichManItemConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
@@ -1188,9 +1189,9 @@ public class BattleHandler extends GameBaseHandler {
     public void start(NetClient client, Object message) {
         BattleFieldStartRequest_13000001 req = (BattleFieldStartRequest_13000001) message;
         BattleFieldStartResponse_13000002.Builder resp = BattleFieldStartResponse_13000002.newBuilder();
-        int dungeonId = req.getTypeId();
-        int id = req.getFieldId();
         int type = req.getType();
+        int id = req.getTypeId();
+        int subId = req.getFieldId();
         //		String uidString = req.getUid();
         //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
         long playerId = client.getPlayerId();
@@ -1198,21 +1199,21 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         //		long randomSeed = System.currentTimeMillis() ;
         IBattleHandler battleHandler = battleModule.getBattle(type);
-        int errorCode = battleHandler.check(dungeonId, id);
+        int errorCode = battleHandler.check(id, subId);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
             return;
         }
-        errorCode = battleHandler.battleStart(dungeonId);
+        errorCode = battleHandler.battleStart(id,subId);
         if (errorCode == 0) {
             // 设置当前在打的关卡数据
-            battleModule.setAttackingData(0, type, dungeonId, id, 0, 0);
+            battleModule.setAttackingData(0, type, id, subId, 0, 0);
             if (battleHandler instanceof HCBattleHandler) {
                 // 触发事件
-                player.handleEvent(EventTypeEnum.HCBattleStart, dungeonId, 0);
+                player.handleEvent(EventTypeEnum.HCBattleStart, id, 0);
             } else if (battleHandler instanceof XiYouBattleHandler) {
                 // 触发事件
-                player.handleEvent(EventTypeEnum.BattleStart, dungeonId, 0);
+                player.handleEvent(EventTypeEnum.BattleStart, id, 0);
             }
             AttrModule module = player.getModule(AttrModule.class);
             module.calcAllAttr();
@@ -1284,16 +1285,16 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         int attackingId = battleModule.getAttackingId();
+        int attackingSubId = battleModule.getAttackingSubId();
         int attackingType = battleModule.getAttackingType();
         long attackingUid = battleModule.getAttackingUid();
-        int attackingDungeonId = battleModule.getAttackingDungeonId();
         int lineupId = battleModule.getLineupId();
         if (attackingType == 0) {
             client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
             return;
         }
-        BattleConfig battleConfig = BattleManager.instance().get(attackingDungeonId);
-        player.handleEvent(EventTypeEnum.BattleEnd, attackingDungeonId, attackingId, win, killMonsterCount, killMonsterBossCount);
+        BattleConfig battleConfig = BattleManager.instance().get(attackingId);
+        player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         IBattleHandler battleHandler = battleModule.getBattle(attackingType);
         ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req);
         if (result.getErrorCode() > 0) {
@@ -1337,7 +1338,7 @@ public class BattleHandler extends GameBaseHandler {
 			
 
         if (req.getWin()) {
-            player.handleEvent(EventTypeEnum.ChapterWin, attackingDungeonId, attackingId);
+            player.handleEvent(EventTypeEnum.ChapterWin, attackingId, attackingSubId);
         }
         battleModule.setAttackingData(0, 0, 0, 0, 0, 0);
         resp.addAllRewards(allRewards);
@@ -1385,9 +1386,14 @@ public class BattleHandler extends GameBaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		BattleConfig battleConfig = BattleManager.instance().get(battle.getLastCompleteBattleId());
+		LingShanConfig curFloorConfig = battle.getCurFloorConfig(); 
+		if (curFloorConfig == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+			return;
+			
+		}
 
-		if (GlobalConst.LingshanBonueLevel[index] > battleConfig.Level) {
+		if (GlobalConst.LingshanBonueLevel[index] > curFloorConfig.StartFloor) {
 			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
 			return;
 		}
@@ -1426,7 +1432,7 @@ public class BattleHandler extends GameBaseHandler {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
 
-		resp.setLastCompleteBattleId(battle.getLastCompleteBattleId());
+		resp.setLastCompleteFloor(battle.getLastCompleteFloor());
 		resp.setBattleTimes(battle.getBattleTimes());
 		resp.setPayTimes(battle.getPayTimes());
 		resp.addAllRewardBattleIds(ByteHelp.binary1List(battle.getRewardBattleIds()));

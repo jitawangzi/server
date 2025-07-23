@@ -18,9 +18,10 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001
 				.newBuilder();
-		builder.setType(1);
+		builder.setType(23);
 
 		builder.setTypeId(110011);
+		builder.setFieldId(3); 
 
 		return builder.build();
 	}
