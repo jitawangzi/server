@@ -7,23 +7,23 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.db.GenericDataLoader;
-import cn.game.games.cache.entity.Zongmen;
+import cn.game.games.cache.entity.ZongmenData;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
-import cn.game.games.net.data.mapper.ZongmenMapper;
+import cn.game.games.net.data.mapper.ZongmenDataMapper;
 
 @Component
-public class ZongmenDataLoader implements GenericDataLoader<Zongmen, Long> {
+public class ZongmenDataLoader implements GenericDataLoader<ZongmenData, Long> {
 
 	@Autowired
-	private ZongmenMapper zongmenMapper;
+	private ZongmenDataMapper zongmenMapper;
 
 	@Override
-	public List<Zongmen> getBatch(Long lastId, int limit) {
+	public List<ZongmenData> getBatch(Long lastId, int limit) {
 		return zongmenMapper.getBatchCursor(lastId, limit);
 	}
 
 	@Override
-	public void processData(List<Zongmen> data) {
+	public void processData(List<ZongmenData> data) {
 		ZongMenManager.getInstance().loadZongmenList(data);
 	}
 
@@ -43,7 +43,7 @@ public class ZongmenDataLoader implements GenericDataLoader<Zongmen, Long> {
 	}
 
 	@Override
-	public Zongmen load(Long id) {
+	public ZongmenData load(Long id) {
 		return zongmenMapper.selectByPrimaryKey(id);
 	}
 

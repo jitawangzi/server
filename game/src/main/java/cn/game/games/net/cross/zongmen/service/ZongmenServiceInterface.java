@@ -2,7 +2,7 @@ package cn.game.games.net.cross.zongmen.service;
 
 import java.util.List;
 
-import cn.game.games.net.cross.zongmen.ZongMenInfo;
+import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
@@ -16,7 +16,7 @@ public interface ZongmenServiceInterface {
 	 * @param request 创建宗门请求
 	 * @return 新宗门信息
 	 */
-	Future<ZongMenInfo> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId);
+	Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId);
 
 	/**
 	 * 获取宗门信息
@@ -24,7 +24,7 @@ public interface ZongmenServiceInterface {
 	 * @param playerId 玩家ID
 	 * @return 宗门信息
 	 */
-	ZongMenInfo getZongmenInfo(long zongMenId, long playerId);
+	ZongMen getZongmen(long zongMenId, long playerId);
 
 	/**
 	 * 申请加入宗门
@@ -34,7 +34,7 @@ public interface ZongmenServiceInterface {
 	 * @param power 战斗力
 	 * @return 宗门信息
 	 */
-	ZongMenInfo applyJoinZongmen(long zongMenId, long playerId, String playerName, int power);
+	ZongMen applyJoinZongmen(long zongMenId, long playerId, String playerName, int power);
 
 	/**
 	 * 解散宗门
@@ -98,17 +98,6 @@ public interface ZongmenServiceInterface {
 	 */
 	void receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList);
 
-	/**
-	 * 购买宗门商店物品
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param playerLv 玩家等级
-	 * @param itemId 物品ID
-	 * @param count 购买数量
-	 * @return 是否成功
-	 */
-	@Deprecated
-	boolean buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count);
 
 	/**
 	 * 宗门砍价

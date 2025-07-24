@@ -42,7 +42,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
     }
 
     @Override
-    public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMenInfo info, Object... params) {
+    public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMen info, Object... params) {
         switch (type) {
             case ZONG_MEN_LEVEL_UP:
                 //宗门等级提升
@@ -68,7 +68,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param operatorName 操作者名称
      * @return 是否成功
      */
-    public Future<Boolean> changeZongmenName(ZongMenInfo zongMenInfo, String newName, String operatorName) {
+    public Future<Boolean> changeZongmenName(ZongMen zongMenInfo, String newName, String operatorName) {
         Promise<Boolean> promise = Promise.promise();
         
         RedisLocalCache.getInstance().getAsync(CacheType.ZONG_MEN_NAME_ID.key(newName)).onSuccess((result) -> {
@@ -114,7 +114,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param notice 公告内容
      * @param operatorName 操作者名称
      */
-    public void changeNotice(ZongMenInfo zongMenInfo, String notice, String operatorName) {
+    public void changeNotice(ZongMen zongMenInfo, String notice, String operatorName) {
         zongMenInfo.getData().setNotice(notice);
         // 公告修改：玩家昵称修改了公告
         zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NOTICE, operatorName);
@@ -126,7 +126,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param declaration 宣言内容
      * @param operatorName 操作者名称
      */
-    public void changeDeclaration(ZongMenInfo zongMenInfo, String declaration, String operatorName) {
+    public void changeDeclaration(ZongMen zongMenInfo, String declaration, String operatorName) {
         zongMenInfo.getData().setDeclaration(declaration);
         // 宣言修改：玩家昵称修改了宣言
         zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION, operatorName);
@@ -137,7 +137,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param zongMenInfo 宗门信息
      * @param icon 图标ID
      */
-    public void changeIcon(ZongMenInfo zongMenInfo, int icon) {
+    public void changeIcon(ZongMen zongMenInfo, int icon) {
         zongMenInfo.getData().setIcon(icon);
     }
 

@@ -3,7 +3,7 @@ package cn.game.games.cache.entity;
 import cn.game.games.cache.base.DbEntity;
 import java.io.Serializable;
 
-public class Zongmen implements Serializable, DbEntity {
+public class ZongmenData implements Serializable, DbEntity {
 
 	/**
 	 * 宗门id
@@ -224,7 +224,7 @@ public class Zongmen implements Serializable, DbEntity {
 	 */
 	@Override
 	public Class<?> getMapperClass() {
-		return cn.game.games.net.data.mapper.ZongmenMapper.class;
+		return cn.game.games.net.data.mapper.ZongmenDataMapper.class;
 	}
 
 	/**

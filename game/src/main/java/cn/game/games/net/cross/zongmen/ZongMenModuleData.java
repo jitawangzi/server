@@ -40,7 +40,6 @@ public class ZongMenModuleData {
 	void registerAllModuleEventHandler() {
 		registerEventHandler(optLog);
 		registerEventHandler(setting);
-		registerEventHandler(setting);
 		registerEventHandler(bargain);
 		menMemberMap.values().forEach(member -> {
 			registerEventHandler(member);
@@ -63,7 +62,7 @@ public class ZongMenModuleData {
 		}
 	}
 
-	public void handleEvent(ZongMenConstants.ZongMenEvenType evenType, ZongMenInfo info, Object... params) {
+	public void handleEvent(ZongMenConstants.ZongMenEvenType evenType, ZongMen info, Object... params) {
 		long beginTimer = System.currentTimeMillis();
 		List<ZongMenConstants.ZongMenEventHandler> handlers = eventTypeHandleMaps.get(evenType);
 		if (handlers == null || handlers.size() == 0) {
@@ -86,11 +85,11 @@ public class ZongMenModuleData {
 		bargain = new ZongMenBargain();
 	}
 
-	public void afterInit(ZongMenInfo info) {
+	public void afterInit(ZongMen info) {
 		bargain.init();
 	}
 
-	public void addMember(ZongMenMember member, ZongMenInfo info) {
+	public void addMember(ZongMenMember member, ZongMen info) {
 		menMemberMap.put(member.playerId, member);
 		registerEventHandler(member);
 		RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId), info.getId());
@@ -144,9 +143,4 @@ public class ZongMenModuleData {
 		this.bargain = bargain;
 	}
 
-	public void refreshShopByWeek() {
-		menMemberMap.values().forEach(member -> {
-			member.refreshWeekShop();
-		});
-	}
 }

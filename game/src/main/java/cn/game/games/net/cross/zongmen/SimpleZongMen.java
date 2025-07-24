@@ -27,8 +27,6 @@ public class SimpleZongMen {
     int num;
     /**1 快速加入、2 需要验证加入、3 不可加入； */
     int isAutoJoin;
-    /** 天道的等级 */
-    int tianDaoLevel;
     /**申请的玩家id集合*/
     List<Long> applyPidList = new ArrayList<>();
 
@@ -100,14 +98,6 @@ public class SimpleZongMen {
 
     public void setIsAutoJoin(int isAutoJoin) {
         this.isAutoJoin = isAutoJoin;
-    }
-
-    public int getTianDaoLevel() {
-        return tianDaoLevel;
-    }
-
-    public void setTianDaoLevel(int tianDaoLevel) {
-        this.tianDaoLevel = tianDaoLevel;
     }
 
     public List<Long> getApplyPidList() {

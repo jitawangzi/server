@@ -11,7 +11,7 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.RemoteProxy;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
 import cn.game.games.net.cross.zongmen.ZongMenConstants;
-import cn.game.games.net.cross.zongmen.ZongMenInfo;
+import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.cross.zongmen.ZongMenMember;
 import cn.game.games.net.cross.zongmen.ZongMenSetting;
@@ -57,7 +57,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 新宗门信息
 	 */
 	@Override
-	public Future<ZongMenInfo> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+	public Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
 		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(req.getName()));
 		if (!createLock) {
 			fail(ErrorMsgEnum.zong_men_name_repeat);
@@ -73,8 +73,8 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 宗门信息
 	 */
 	@Override
-	public ZongMenInfo getZongmenInfo(long zongMenId, long playerId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+	public ZongMen getZongmen(long zongMenId, long playerId) {
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null || zongMenInfo.getMember(playerId) == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -90,8 +90,8 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 宗门信息
 	 */
 	@Override
-	public ZongMenInfo applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+	public ZongMen applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -124,7 +124,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void dissolveZongmen(long zongMenId, long playerId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -143,7 +143,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public Future<Boolean> setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -210,7 +210,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	public void setMemberPosition(long zongMenId, long operatorId, long targetPlayerId, int position) {
 		System.out.println("收到宗门设置成员职位请求: zongMenId=" + zongMenId + ", operatorId=" + operatorId + ", targetPlayerId=" + targetPlayerId
 				+ ", position=" + position);
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -253,7 +253,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void quitZongmen(long zongMenId, long playerId, String playerName) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -283,7 +283,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void updateMemberAuth(long zongMenId, MemberAuthRequest request) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -336,7 +336,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void updateZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -352,7 +352,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -368,47 +368,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		member.getRewardLivenessIndexList().addAll(indexList);
 	}
 
-	/**
-	 * 购买宗门商店物品
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param playerLv 玩家等级
-	 * @param itemId 物品ID
-	 * @param count 购买数量
-	 * @return 是否成功
-	 */
-	@Override
-	public boolean buyShopItem(long zongMenId, long playerId, int playerLv, int itemId, int count) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
-		if (zongMenInfo == null) {
-			fail(ErrorMsgEnum.zong_men_not_exist);
-		}
-		ZongMenMember member = zongMenInfo.getMember(playerId);
-		if (member == null) {
-			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
-		}
-		ZongmenStoreConfig config = ZongmenStoreManager.instance().getNullable(itemId);
-		if (config == null) {
-			fail(ErrorMsgEnum.config_data_not_found);
-		}
-		if (playerLv < config.LevelUnlock) {
-			fail(ErrorMsgEnum.level_not_enough);
-		}
-		ShopItemConfig itemConfig = ShopItemManager.instance().getNullable(config.Item);
-		if (itemConfig == null) {
-			fail(ErrorMsgEnum.config_data_not_found);
-		}
-		if (itemConfig.ShopItemQuota != 0 && member.buyShopItemNumMap.getOrDefault(itemConfig.ID, 0) + count > itemConfig.ShopItemQuota) {
-			fail(ErrorMsgEnum.shop_item_buy_count_max);
-		}
-		if (!zongMenInfo.isEnoughAsset(itemConfig.PurchaseParameter, count, member)) {
-			fail(ErrorMsgEnum.resource_not_enough);
-		}
-
-		zongMenInfo.costAsset(itemConfig.PurchaseParameter, count, member);
-		member.addShopItemNum(itemId, count);
-		return true;
-	}
 
 	/**
 	 * 宗门砍价
@@ -418,7 +377,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public int bargain(long zongMenId, long playerId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -443,7 +402,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void buyBargain(long zongMenId, long playerId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
@@ -466,7 +425,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public boolean updateMemberFightPower(long zongMenId, long playerId, int fightPower) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			return false; // 静默失败
 		}
@@ -487,7 +446,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public void updateContributeValue(long zongMenId, long playerId, int value) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongMenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
