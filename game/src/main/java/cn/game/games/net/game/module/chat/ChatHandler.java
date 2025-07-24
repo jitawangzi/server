@@ -12,7 +12,7 @@ import cn.game.games.core.push.PushService;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
+import cn.game.games.net.game.module.zongmen.ZongMenHandler;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo;
@@ -173,7 +173,7 @@ public class ChatHandler extends GameBaseHandler {
 					messageBuilder.setChatType(chatType);
 					messageBuilder.setContent(content);
 					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-					ZongMenGameHandler.sendMsgToZongMenServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
+					ZongMenHandler.sendMsgToZongMenServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
 					break;
 				}
 				default:

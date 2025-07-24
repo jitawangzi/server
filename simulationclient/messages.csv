@@ -182,28 +182,28 @@
 181,GmPlayerDeleteRequest_77000052,0x77000052,,,,,gm删除某个玩家数据
 182,GmPlayerTDLevelRequest_77000054,0x77000054,,,,,gm设置天道修为等级
 183,WechatSettingRequest_01100601,0x01100601,,,,,微信设置相关
-184,applyJoinZongMenRequest_40000007,0x40000007,,,,,申请加入宗门
-185,createZongMenRequest_40000005,0x40000005,,,,,创建宗门
-186,dissolveZongMenRequest_40000011,0x40000011,,,,,解散宗门
-187,findZongMenRequest_40000003,0x40000003,,,,,查找宗门
-188,getZongMenListRequest_40000001,0x40000001,,,,,宗门列表
-189,quitZongMenRequest_40000017,0x40000017,,,,,退出宗门
-190,setZongMenMemberPositionRequest_40000015,0x40000015,,,,,宗门权限管理
-191,setZongMenSettingRequest_40000013,0x40000013,,,,,宗门设置相关 有值 则替换，没有值 则不修改
-192,getZongMenInfoRequest_40000021,0x40000021,,,,,获取宗门信息
-193,getZongMenActivityRequest_40000033,0x40000033,,,,,宗门活动请求
-194,getZongMenLogRequest_40000025,0x40000025,,,,,宗门日志请求
-195,getZongMenShopRequest_40000027,0x40000027,,,,,宗门商店请求
-196,getZongMenTaskRequest_40000031,0x40000031,,,,,宗门任务请求
-197,getZongMenXuanShangRequest_40000035,0x40000035,,,,,宗门悬赏请求
-198,updateZongMenAssetRequest_40000037,0x40000037,,,,,更新宗门资产 宗门活跃度 宗门经验 个人贡献 ...
-199,updateMemberAuthRequest_40000041,0x40000041,,,,,宗门成员权限管理
-200,ZongMenActiveRewardRequest_40000045,0x40000045,,,,,领取宗门活跃度奖励
-201,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
-202,ZongMenBuyShopRequest_40000047,0x40000047,,,,,购买宗门商店物品
-203,ZongMenBargainBuyRequest_40000062,0x40000062,,,,,购买宗门砍价物品
-204,ZongMenBargainRequest_40000060,0x40000060,,,,,宗门砍价
-205,ZongMenBargainPriceRequest_40000064,0x40000064,,,,,查看宗门砍价物品价格
+184,applyJoinZongMenRequest_40000007,0x40000007,,,6000,,申请加入宗门
+185,createZongMenRequest_40000005,0x40000005,,,6000,,创建宗门
+186,dissolveZongMenRequest_40000011,0x40000011,,,6000,,解散宗门
+187,findZongMenRequest_40000003,0x40000003,,,6000,,查找宗门
+188,getZongMenListRequest_40000001,0x40000001,,,6000,1,宗门列表
+189,quitZongMenRequest_40000017,0x40000017,,,6000,,退出宗门
+190,setZongMenMemberPositionRequest_40000015,0x40000015,,,6000,,宗门权限管理
+191,setZongMenSettingRequest_40000013,0x40000013,,,6000,,宗门设置相关 有值 则替换，没有值 则不修改
+192,getZongMenInfoRequest_40000021,0x40000021,,,6000,,获取宗门信息
+193,getZongMenActivityRequest_40000033,0x40000033,,,6000,,宗门活动请求
+194,getZongMenLogRequest_40000025,0x40000025,,,6000,,宗门日志请求
+195,getZongMenShopRequest_40000027,0x40000027,,,6000,,宗门商店请求
+196,getZongMenTaskRequest_40000031,0x40000031,,,6000,,宗门任务请求
+197,getZongMenXuanShangRequest_40000035,0x40000035,,,6000,,宗门悬赏请求
+198,updateZongMenAssetRequest_40000037,0x40000037,,,6000,,更新宗门资产 宗门活跃度 宗门经验 个人贡献 ...
+199,updateMemberAuthRequest_40000041,0x40000041,,,6000,,宗门成员权限管理
+200,ZongMenActiveRewardRequest_40000045,0x40000045,,,6000,,领取宗门活跃度奖励
+201,BattleRescueSkillIdRequest_13000057,0x13000057,,,6000,,战斗选择强援技能id
+202,ZongMenBuyShopRequest_40000047,0x40000047,,,6000,,购买宗门商店物品
+203,ZongMenBargainBuyRequest_40000062,0x40000062,,,6000,,购买宗门砍价物品
+204,ZongMenBargainRequest_40000060,0x40000060,,,6000,,宗门砍价
+205,ZongMenBargainPriceRequest_40000064,0x40000064,,,6000,,查看宗门砍价物品价格
 206,ZongMenGmTestRequest_40000053,0x40000053,,,,,
 207,ZongMenGetMyApplyZongMenIdListRequest_40000055,0x40000055,,,,,获取我已经申请的宗门id列表
 208,ZongMenMsgRequest_41000045,0x41000045,,,,,宗门 gameServer => 发送到zongMenServer 的消息
@@ -251,3 +251,4 @@
 251,DefenceLevelUpRequest_25000031,0x25000031,,,,,防线升级
 252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,防线皮肤升星
 253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,防线皮肤更换
+254,ZongMenBountyRewardRequest_40000072,0x40000072,,,,,领取当前悬赏任务奖励

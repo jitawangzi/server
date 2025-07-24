@@ -25,6 +25,7 @@ import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
 import io.vertx.core.Future;
 
@@ -56,14 +57,13 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 新宗门信息
 	 */
 	@Override
-	public Future<ZongMenInfo> createZongmen(CreateZongmenRequest request) {
-		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(request.getName()));
+	public Future<ZongMenInfo> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(req.getName()));
 		if (!createLock) {
 			fail(ErrorMsgEnum.zong_men_name_repeat);
 		}
 		return ZongMenManager.getInstance()
-				.createZongMen(null, request.getName(), request.getCreatePlayerId(), request.getCreatePlayerName(), request.getPower(),
-						request.getServerId());
+				.createZongMen(req, name,createPlayerId,createPlayerName,power,serverId);
 	}
 
 	/**

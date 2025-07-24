@@ -18,7 +18,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.module.zongmen.ZongMenGameHandler;
+import cn.game.games.net.game.module.zongmen.ZongMenHandler;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg;
@@ -169,8 +169,8 @@ public class ZongMenHelper {
         return rewardInfo;
     }
 
-    public static Future<ZongMenGameHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params){
-        return ZongMenGameHandler.sendMsgToZongMenServer(player, req);
+    public static Future<ZongMenHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params){
+        return ZongMenHandler.sendMsgToZongMenServer(player, req);
     }
 
     public static CompletableFuture<Boolean> checkZongMenNameRepeat(Player player, String name) {

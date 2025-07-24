@@ -29,7 +29,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
  * @create: 2025-02-06 15:11 @Version 1.0
  */
 @Component
-public class ZongMenHandler extends GameBaseHandler {
+public class ZongMenCrossHandler extends GameBaseHandler {
 
     private final ZongmenServiceInterface zongmenService = ZongmenService.getInstance();
 
@@ -103,15 +103,12 @@ public class ZongMenHandler extends GameBaseHandler {
     private void createZongMen(long playerId, Message message, List<String> paramList, NetClient client) {
         ZongMenMsg.createZongMenRequest_40000005 req = (ZongMenMsg.createZongMenRequest_40000005) message;
 
-        CreateZongmenRequest createRequest = new CreateZongmenRequest(
-				req.getName(), playerId, paramList.get(0), Integer.parseInt(paramList.get(1)),
-                paramList.get(2)
-        );
-        createRequest.setIcon(req.getIcon());
-        createRequest.setNotice(req.getNotice());
-        createRequest.setDeclaration(req.getDeclaration());
+        String name = req.getName();
+        String createPlayerName = paramList.get(0);
+        int power = Integer.parseInt(paramList.get(1));
+    	String serverId = paramList.get(2);
 
-		zongmenService.createZongmen(createRequest).onSuccess(zongMenInfo -> {
+		zongmenService.createZongmen(req,req.getName(),playerId,createPlayerName,power,serverId).onSuccess(zongMenInfo -> {
             ZongMenMsg.createZongMenResponse_40000006.Builder res = ZongMenMsg.createZongMenResponse_40000006.newBuilder();
 			res.setZongMen(zongMenInfo.toProto(playerId));
 			sendMsgToGameServer(playerId, client, res.build(), PbProtocol.createZongMenResponse_40000006);

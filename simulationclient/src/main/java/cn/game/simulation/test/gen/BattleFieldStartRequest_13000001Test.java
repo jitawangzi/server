@@ -21,7 +21,7 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 		builder.setType(23);
 
 		builder.setTypeId(110011);
-		builder.setFieldId(3); 
+		builder.setFieldId(6); 
 
 		return builder.build();
 	}

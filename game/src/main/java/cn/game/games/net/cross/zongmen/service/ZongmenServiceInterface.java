@@ -6,6 +6,7 @@ import cn.game.games.net.cross.zongmen.ZongMenInfo;
 import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
+import cn.game.protocol.protobuf.ZongMenMsg;
 import io.vertx.core.Future;
 
 public interface ZongmenServiceInterface {
@@ -15,7 +16,7 @@ public interface ZongmenServiceInterface {
 	 * @param request 创建宗门请求
 	 * @return 新宗门信息
 	 */
-	Future<ZongMenInfo> createZongmen(CreateZongmenRequest request);
+	Future<ZongMenInfo> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId);
 
 	/**
 	 * 获取宗门信息

@@ -144,7 +144,7 @@ public class ZongMenModule extends BasePlayerModule {
 
 	private void getZongMenInfo() {
 		ZongMenMsg.getZongMenInfoRequest_40000021 request = ZongMenMsg.getZongMenInfoRequest_40000021.newBuilder().build();
-		ZongMenGameHandler.sendMsgToZongMenServer(player, request).onSuccess(msg -> {
+		ZongMenHandler.sendMsgToZongMenServer(player, request).onSuccess(msg -> {
 			// 玩家宗门 可能被解散了
 			if (msg.errorCode == ErrorMsgEnum.zong_men_not_exist.ID) {
 				clearZongMen();
