@@ -41,7 +41,6 @@ public class SimpleZongMen {
         builder.setIcon(icon);
         builder.setLevel(lv);
         builder.setIsAutoJoin(isAutoJoin);
-        builder.setTianDaoLevel(tianDaoLevel);
         builder.setMemberNum(num);
         return builder.build();
     }

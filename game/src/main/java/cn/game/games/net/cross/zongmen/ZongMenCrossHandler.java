@@ -69,8 +69,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
                     case PbProtocol.updateZongMenAssetRequest_40000037 -> updateZongMenAsset(zongMenId, playerId, message, paramList, client);
                     case PbProtocol.updateMemberAuthRequest_40000041 -> updateMemberAuth(zongMenId, playerId, message, paramList, client);
                     case PbProtocol.ZongMenActiveRewardRequest_40000045 -> ZongMenActiveReward(zongMenId, playerId, message, paramList, client);
-                    case PbProtocol.getZongMenShopRequest_40000027 -> getZongMenShop(zongMenId, playerId, message, paramList, client);
-                    case PbProtocol.ZongMenBuyShopRequest_40000047 -> ZongMenBuyShop(zongMenId, playerId, message, paramList, client);
                     case PbProtocol.ZongMenBargainRequest_40000060 -> bargain(zongMenId, playerId, message, paramList, client);
                     case PbProtocol.ZongMenBargainBuyRequest_40000062 -> buyBargain(zongMenId, playerId, message, paramList, client);
                     case PbProtocol.findZongMenRequest_40000003 -> findZongMen(zongMenId, playerId, message, paramList, client);
@@ -243,21 +241,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 				PbProtocol.ZongMenActiveRewardResponse_40000046);
     }
 
-    // 获取宗门商店
-    private void getZongMenShop(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		zongmenService.getZongmenInfo(zongMenId, playerId); // 权限校验
-        ZongMenMsg.getZongMenShopResponse_40000028.Builder res = ZongMenMsg.getZongMenShopResponse_40000028.newBuilder();
-        sendMsgToGameServer(playerId, client, res.build(), PbProtocol.getZongMenShopResponse_40000028);
-    }
-
-    // 购买宗门商店物品
-    private void ZongMenBuyShop(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-        ZongMenMsg.ZongMenBuyShopRequest_40000047 req = (ZongMenMsg.ZongMenBuyShopRequest_40000047) message;
-        int playerLv = Integer.parseInt(paramList.get(0));
-		zongmenService.buyShopItem(zongMenId, playerId, playerLv, req.getItemId(), req.getCount());
-		sendMsgToGameServer(playerId, client, ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder().build(),
-				PbProtocol.ZongMenBuyShopResponse_40000048);
-    }
 
     // 宗门砍价
     private void bargain(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {

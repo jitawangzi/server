@@ -47,10 +47,6 @@ import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import cn.game.protocol.protobuf.ZongMenMsg.getZongMenTaskRequest_40000031;
-import cn.game.protocol.protobuf.ZongMenMsg.getZongMenTaskResponse_40000032;
-import cn.game.protocol.protobuf.ZongMenMsg.getZongMenActivityRequest_40000033;
-import cn.game.protocol.protobuf.ZongMenMsg.getZongMenActivityResponse_40000034;
 import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetRequest_40000037;
 import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetResponse_40000038;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptRequest_40000070;
@@ -65,14 +61,8 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleReportRequest_400
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleReportResponse_4000007b;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyPlayerRequest_4000007c;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyPlayerResponse_4000007d;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenRankListRequest_40000080;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenRankListResponse_40000081;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenRankWorshipRequest_40000082;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenRankWorshipResponse_40000083;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerResponse_40000052;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenGmTestRequest_40000053;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenGmTestResponse_40000054;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardRequest_40000072;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardResponse_40000073;
 
@@ -162,14 +152,10 @@ public class ZongMenHandler extends GameBaseHandler {
         putInvoker(PbProtocol.getZongMenLogRequest_40000025, this::getZongMenLogs);
         putInvoker(PbProtocol.updateMemberAuthRequest_40000041, this::updateMemberAuth);
         putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
-        putInvoker(PbProtocol.getZongMenShopRequest_40000027, this::getZongMenShop);
-        putInvoker(PbProtocol.ZongMenBuyShopRequest_40000047, this::buyZongMenShop);
         putInvoker(PbProtocol.ZongMenBargainRequest_40000060, this::bargain);
         putInvoker(PbProtocol.ZongMenBargainBuyRequest_40000062, this::buyBargain);
         putInvoker(PbProtocol.ZongMenGetMyApplyZongMenIdListRequest_40000055, this::getMyApplyZongMenIdList);
         putInvoker(PbProtocol.ZongMenQuickJoinRequest_40000065, this::quickJoinZongMen);
-        putInvoker(PbProtocol.getZongMenTaskRequest_40000031, this::getTask);
-        putInvoker(PbProtocol.getZongMenActivityRequest_40000033, this::getActivity);
         putInvoker(PbProtocol.updateZongMenAssetRequest_40000037, this::updateAsset);
         putInvoker(PbProtocol.ZongMenBountyAcceptRequest_40000070, this::bountyAccept);
         putInvoker(PbProtocol.ZongMenBountyTargetRefreshRequest_40000074, this::bountyTargetRefresh);
@@ -177,10 +163,7 @@ public class ZongMenHandler extends GameBaseHandler {
         putInvoker(PbProtocol.ZongMenBountyBattleEndRequest_40000078, this::bountyBattleEnd);
         putInvoker(PbProtocol.ZongMenBountyBattleReportRequest_4000007a, this::bountyBattleReport);
         putInvoker(PbProtocol.ZongMenBountyPlayerRequest_4000007c, this::bountyPlayer);
-        putInvoker(PbProtocol.ZongMenRankListRequest_40000080, this::rankList);
-        putInvoker(PbProtocol.ZongMenRankWorshipRequest_40000082, this::rankWorship);
         putInvoker(PbProtocol.ZongMenUpdateMemberFightPowerRequest_40000051, this::updateMemberFightPower);
-        putInvoker(PbProtocol.ZongMenGmTestRequest_40000053, this::gmTest);
         putInvoker(PbProtocol.ZongMenBountyRewardRequest_40000072, this::bountyReward);
     }
 
@@ -288,33 +271,6 @@ public class ZongMenHandler extends GameBaseHandler {
             return null;
         }).onFailure(player::handleFail);
     }
-
-    private void buyZongMenShop(NetClient client, Object o) {
-        ZongMenMsg.ZongMenBuyShopRequest_40000047 req = (ZongMenMsg.ZongMenBuyShopRequest_40000047) o;
-        ZongMenMsg.ZongMenBuyShopResponse_40000048.Builder res = ZongMenMsg.ZongMenBuyShopResponse_40000048.newBuilder();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        autoForwardZongMenServer(client, res, req, (result) -> {
-            int itemId = req.getItemId();
-            int count = req.getCount();
-            ZongmenStoreConfig config = ZongmenStoreManager.instance().get(itemId);
-            ShopItemConfig itemConfig = ShopItemManager.instance().get(config.Item);
-            int[][] drops = itemConfig.Item;
-            for (int i = 0; i < drops.length; i++) {
-                drops[i][1] = drops[i][1] * count;
-            }
-            res.addAllDrops(PlayerHelper.addResources(player, drops, OpType.ZongMenShopReward));
-            client.sendProtocol(res.build());
-            return null;
-        });
-    }
-
-    // 获取宗门商店
-    private void getZongMenShop(NetClient client, Object o) {
-        ZongMenMsg.getZongMenShopRequest_40000027 req = (ZongMenMsg.getZongMenShopRequest_40000027) o;
-        ZongMenMsg.getZongMenShopResponse_40000028.Builder res = ZongMenMsg.getZongMenShopResponse_40000028.newBuilder();
-        autoForwardZongMenServer(client, res, req, null);
-    }
-
     // 领取任务活跃度奖励
     private void rewardLiveness(NetClient client, Object o) {
         ZongMenMsg.ZongMenActiveRewardRequest_40000045 req = (ZongMenMsg.ZongMenActiveRewardRequest_40000045) o;
@@ -745,21 +701,6 @@ public class ZongMenHandler extends GameBaseHandler {
         }
     }
 
-    private void getTask(NetClient client, Object message) {
-        getZongMenTaskRequest_40000031 req = (getZongMenTaskRequest_40000031) message;
-        getZongMenTaskResponse_40000032 defaultInstance = getZongMenTaskResponse_40000032.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        getZongMenTaskResponse_40000032.Builder resp = getZongMenTaskResponse_40000032.newBuilder();
-        client.sendProtocol(resp.build());
-    }
-
-    private void getActivity(NetClient client, Object message) {
-        getZongMenActivityRequest_40000033 req = (getZongMenActivityRequest_40000033) message;
-        getZongMenActivityResponse_40000034 defaultInstance = getZongMenActivityResponse_40000034.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        client.sendProtocol(defaultInstance);
-    }
-
     private void updateAsset(NetClient client, Object message) {
         updateZongMenAssetRequest_40000037 req = (updateZongMenAssetRequest_40000037) message;
         List<RewardInfo> zongMenAssetMapsList = req.getZongMenAssetMapsList();
@@ -818,27 +759,6 @@ public class ZongMenHandler extends GameBaseHandler {
         client.sendProtocol(resp.build());
     }
 
-    private void rankList(NetClient client, Object message) {
-        ZongMenRankListRequest_40000080 req = (ZongMenRankListRequest_40000080) message;
-        int type = req.getType();
-        int page = req.getPage();
-        int pageSize = req.getPageSize();
-        List<Integer> extList = req.getExtList();
-        ZongMenRankListResponse_40000081 defaultInstance = ZongMenRankListResponse_40000081.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ZongMenRankListResponse_40000081.Builder resp = ZongMenRankListResponse_40000081.newBuilder();
-        client.sendProtocol(resp.build());
-    }
-
-    private void rankWorship(NetClient client, Object message) {
-        ZongMenRankWorshipRequest_40000082 req = (ZongMenRankWorshipRequest_40000082) message;
-        int type = req.getType();
-        int ext = req.getExt();
-        ZongMenRankWorshipResponse_40000083 defaultInstance = ZongMenRankWorshipResponse_40000083.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ZongMenRankWorshipResponse_40000083.Builder resp = ZongMenRankWorshipResponse_40000083.newBuilder();
-        client.sendProtocol(resp.build());
-    }
 
     private void updateMemberFightPower(NetClient client, Object message) {
         ZongMenUpdateMemberFightPowerRequest_40000051 req = (ZongMenUpdateMemberFightPowerRequest_40000051) message;
@@ -847,16 +767,6 @@ public class ZongMenHandler extends GameBaseHandler {
         ZongMenUpdateMemberFightPowerResponse_40000052 defaultInstance = ZongMenUpdateMemberFightPowerResponse_40000052.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         ZongMenUpdateMemberFightPowerResponse_40000052.Builder resp = ZongMenUpdateMemberFightPowerResponse_40000052.newBuilder();
-        client.sendProtocol(resp.build());
-    }
-
-    private void gmTest(NetClient client, Object message) {
-        ZongMenGmTestRequest_40000053 req = (ZongMenGmTestRequest_40000053) message;
-        String cmd = req.getCmd();
-        List<String> paramList = req.getParamList();
-        ZongMenGmTestResponse_40000054 defaultInstance = ZongMenGmTestResponse_40000054.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ZongMenGmTestResponse_40000054.Builder resp = ZongMenGmTestResponse_40000054.newBuilder();
         client.sendProtocol(resp.build());
     }
 

@@ -166,7 +166,7 @@ public class ZongMenInfo {
         ZongMenMsg.ZongMenInfoProto.Builder builder = ZongMenMsg.ZongMenInfoProto.newBuilder();
         builder.setSimpleInfo(toSimpleZongMen().toProto());
         builder.setExp(getExp());
-        builder.addAllLogList(module.optLog.toProto());
+//        builder.addAllLogList(module.optLog.toProto());
 
         //封装 ZongMenMemberProto
         Map<Long, ZongMenMsg.ZongMenMemberProto.Builder> memberProtoMap = new HashMap<>();
