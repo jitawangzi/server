@@ -219,4 +219,13 @@ public class ZongMenHelper {
 	public static boolean isHasZongMen(long zongMenId, long targetPid) {
 		return RedisUtil.get(CacheType.PLAYER_ID_ZONG_MEN_ID.key(targetPid, zongMenId)) == null ? false : true;
 	}
+
+	public static String getNameKey(String name) {
+		return CacheType.ZONG_MEN_NAME_ID.key(name);
+	}
+
+	public static  boolean trySetName(String name, long newZongMenId) {
+		String nameKey = getNameKey(name);
+		return RedisUtil.trySet(nameKey, newZongMenId);
+	}
 }

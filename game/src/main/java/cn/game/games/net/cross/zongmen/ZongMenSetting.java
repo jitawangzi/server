@@ -8,6 +8,7 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.protocol.generated.manager.GuildIconManager;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -68,34 +69,20 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param operatorName 操作者名称
      * @return 是否成功
      */
-    public Future<Boolean> changeZongmenName(ZongMen zongMenInfo, String newName, String operatorName) {
-        Promise<Boolean> promise = Promise.promise();
-        
-        RedisLocalCache.getInstance().getAsync(CacheType.ZONG_MEN_NAME_ID.key(newName)).onSuccess((result) -> {
-            if (result == null) { // 该名称未被占用
-                boolean redisLock = LockUtil.tryLockNoWaitSync(6, CacheType.ZONG_MEN_NAME_CHANGE_LOCK.key(newName));
-                if (redisLock) {
-                    // 删除旧的宗门名称id映射
-                    zongMenInfo.delZongMenNameIdRedisData();
-                    zongMenInfo.getData().setName(newName);
-                    // 名称修改：玩家昵称修改宗门名称为宗门昵称
-                    zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME, operatorName, newName);
-                    // 保存新的宗门名称id映射
-                    ZongMenManager.getInstance().saveRedisNameIdMap(newName, zongMenInfo.getId());
-                    this.lastChangeNameTimer = System.currentTimeMillis();
-                    promise.complete(true);
-                } else {
-                    promise.complete(false);
-                }
-            } else { // 该名称被占用
-                promise.complete(false);
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            promise.complete(false);
-        });
-        
-        return promise.future();
+    public boolean changeZongmenName(ZongMen zongMenInfo, String newName, String operatorName) {
+        boolean trySet = RedisUtil.trySet(ZongMenHelper.getNameKey(newName), newName); 
+		if (!trySet) {
+			// 名称修改失败,已经存在了
+			return false;
+		}
+
+        // 删除旧的宗门名称id映射
+        zongMenInfo.delZongMenNameIdRedisData();
+        zongMenInfo.getData().setName(newName);
+        // 名称修改：玩家昵称修改宗门名称为宗门昵称
+        zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME, operatorName, newName);
+        this.lastChangeNameTimer = System.currentTimeMillis();
+        return true; 
     }
 
     /**

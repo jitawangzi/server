@@ -30,6 +30,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.LockUtil;
+import cn.game.util.RedisUtil;
 
 /**
  * @ClassName ZongMen
@@ -55,8 +56,7 @@ public class ZongMen {
 		module.registerAllModuleEventHandler();
 	}
 
-	public void init(ZongMenMsg.createZongMenRequest_40000005 req,long createPlayerId) {
-		long newZongMenId = ZongMenHelper.createZongMenId();
+	public void init(ZongMenMsg.createZongMenRequest_40000005 req,long newZongMenId,long createPlayerId) {
 		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId); 
 
 		module = new ZongMenModuleData();
@@ -280,7 +280,7 @@ public class ZongMen {
 	}
 
 	void delZongMenNameIdRedisData() {
-		RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_NAME_ID.key(getName()));
+		RedisUtil.delete(ZongMenHelper.getNameKey(getName()));
 	}
 
 	public ZongMenModuleData getModule() {

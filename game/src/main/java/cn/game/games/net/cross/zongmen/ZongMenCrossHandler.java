@@ -2,6 +2,7 @@ package cn.game.games.net.cross.zongmen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.spi.LocaleServiceProvider;
 
 import org.springframework.stereotype.Component;
 
@@ -152,16 +153,14 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		settingRequest.setAutoJoin(req.getAutoJoin());
 		settingRequest.setTianDaoLevel(req.getTianDaoLevel());
 
-		zongmenService.setZongmenSetting(zongMenId, settingRequest).onSuccess(result -> {
+		boolean setZongmenSetting = zongmenService.setZongmenSetting(zongMenId, settingRequest); 
+		if (setZongmenSetting) {
+
 			sendMsgToGameServer(playerId, client, ZongMenMsg.setZongMenSettingResponse_40000014.newBuilder().setResult(true).build(),
 					PbProtocol.setZongMenSettingResponse_40000014);
-		}).onFailure(err -> {
-			if (err instanceof LogicException le) {
-				sendErrorCodeMsgToGameServer(playerId, client, le.getErrorCode(), PbProtocol.setZongMenSettingResponse_40000014);
-			} else {
-				sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.setZongMenSettingResponse_40000014);
-			}
-		});
+		}else {
+			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.setZongMenSettingResponse_40000014);
+		}
 	}
 
 	// 获取宗门日志

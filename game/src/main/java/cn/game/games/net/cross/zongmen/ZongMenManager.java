@@ -177,10 +177,16 @@ public class ZongMenManager {
 	 * @return 新的宗门
 	 */
 	public Future<ZongMen> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req, long createPlayerId) {
+		long newZongMenId = ZongMenHelper.createZongMenId();
+
+		boolean trySetName = ZongMenHelper.trySetName(req.getName(), createPlayerId); 
+		if (!trySetName) {
+			return Future.failedFuture("宗门名称已存在，请重新输入名称");
+		}
 		// 创建宗门
 		ZongMen zongMenInfo = new ZongMen();
 		// 宗门初始化
-		zongMenInfo.init(req, createPlayerId);
+		zongMenInfo.init(req,newZongMenId, createPlayerId);
 		zongMenInfo.updateModuleData();
 		Promise<ZongMen> promise = Promise.promise();
 		DAO.insert(zongMenInfo.getData()).onSuccess(res -> {
@@ -188,7 +194,7 @@ public class ZongMenManager {
 				// 保存 simple data
 				saveSimpleData(zongMenInfo);
 				// 存储 redis name--id map
-				saveRedisNameIdMap(zongMenInfo.getName(), zongMenInfo.getId());
+//				saveRedisNameIdMap(zongMenInfo.getName(), zongMenInfo.getId());
 				// 保存宗门战斗力排行榜
 				saveZongMenTotalPowerRank(zongMenInfo);
 				zongMenMap.put(zongMenInfo.getId(), zongMenInfo);
@@ -216,11 +222,6 @@ public class ZongMenManager {
 	CompletionStage<Boolean> saveZongMenTotalPowerRank(ZongMen zongMenInfo) {
 		return RankService.getInstance()
 				.setScoreAsync(zongMenInfo.getData().getServerId(), RankType.ZongMen, zongMenInfo.getId(), zongMenInfo.callTotalPower());
-	}
-
-	RFuture<Void> saveRedisNameIdMap(String name, long newZongMenId) {
-		String key = CacheType.ZONG_MEN_NAME_ID.key(name);
-		return RedisUtil.setAsync(key, newZongMenId);
 	}
 
 	private RFuture<Void> saveZongMenServerId(long id) {

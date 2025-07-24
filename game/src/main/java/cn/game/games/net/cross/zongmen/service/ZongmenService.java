@@ -58,10 +58,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 */
 	@Override
 	public Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req, long createPlayerId) {
-		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(req.getName()));
-		if (!createLock) {
-			fail(ErrorMsgEnum.zong_men_name_repeat);
-		}
 		return ZongMenManager.getInstance().createZongMen(req, createPlayerId);
 	}
 
@@ -141,7 +137,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 是否成功
 	 */
 	@Override
-	public Future<Boolean> setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
+	public boolean setZongmenSetting(long zongMenId, ZongmenSettingRequest request) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -156,14 +152,9 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 			if (!permissionsConfig.Rename) {
 				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
-			return setting.changeZongmenName(zongMenInfo, request.getName(), request.getOperatorName()).map(success -> {
-				if (success) {
-					return true;
-				} else {
-					fail(ErrorMsgEnum.zong_men_name_repeat);
-					return false;
-				}
-			});
+			 if (!setting.changeZongmenName(zongMenInfo, request.getName(), request.getOperatorName())) {
+				return false ; 
+			};
 		}
 
 		// 其他设置修改
@@ -194,7 +185,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		if (request.getTianDaoLevel() != 0) {
 			setting.setTianDaoLevel(request.getTianDaoLevel());
 		}
-		return Future.succeededFuture(true);
+		return true;
 	}
 
 	/**

@@ -3,7 +3,6 @@ package cn.game.games.net.cross.zongmen.service;
 import java.util.List;
 
 import cn.game.games.net.cross.zongmen.ZongMen;
-import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.protocol.protobuf.ZongMenMsg;
@@ -51,7 +50,7 @@ public interface ZongmenServiceInterface {
 	 * @param request 设置请求
 	 * @return 是否成功
 	 */
-	Future<Boolean> setZongmenSetting(long zongMenId, ZongmenSettingRequest request);
+	boolean setZongmenSetting(long zongMenId, ZongmenSettingRequest request);
 
 	/**
 	 * 设置成员职位
