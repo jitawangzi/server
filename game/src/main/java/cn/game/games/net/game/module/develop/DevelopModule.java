@@ -115,6 +115,7 @@ public class DevelopModule extends BasePlayerModule {
 		builder.putAllPotentialBreak(isPotentiaBreakMap);
 		builder.putAllPotentiaBreakLevelMap(potentiaBreakLevelMap.getMap());
 		builder.setQianKunMirrorInfo(qiankunMirrorBuilder);
+		builder.setDefenceLevel(defenceLevel); 
 
 	}
 	@Override
