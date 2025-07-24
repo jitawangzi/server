@@ -14,6 +14,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.cache.entity.ZongmenData;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
@@ -54,13 +55,15 @@ public class ZongMen {
 		module.registerAllModuleEventHandler();
 	}
 
-	public void init(ZongMenMsg.createZongMenRequest_40000005 req, String createServerId, long newZongMenId, String name,
-			long createPlayerId, String createPlayerName, int power) {
+	public void init(ZongMenMsg.createZongMenRequest_40000005 req,long createPlayerId) {
+		long newZongMenId = ZongMenHelper.createZongMenId();
+		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId); 
+
 		module = new ZongMenModuleData();
 		saveDataTimer = System.currentTimeMillis() + ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER;
 		// 初始化 Zongmen 对象
 		data = new ZongmenData();
-		data.setName(name);
+		data.setName(req.getName());
 		data.setId(newZongMenId);
 		data.setLv((byte) 1);
 		data.setIcon(req.getIcon() == 0 ? GlobalConst.ZongmenIconRes : req.getIcon());
@@ -68,23 +71,23 @@ public class ZongMen {
 		data.setDeclaration(StringUtils.isEmpty(req.getDeclaration()) ? GlobalConst.ZongmenXuanyan : req.getDeclaration());
 		data.setCreateTime(DateUtil.getTimeByPattern(new Date(), DateUtil.pattern_en));
 		data.setExp(0);
-		data.setCreateServerId(createServerId);
-		data.setServerNodeId(ServerContext.getInstance().getServerId());
+		data.setServerId(creator.getServerId());
 
 		// 初始化各个模块
 		module = new ZongMenModuleData();
 		module.init();
 		module.afterInit(this);
 		module.registerAllModuleEventHandler();
-		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this, createPlayerId, createPlayerName);
+		
+		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this, createPlayerId,creator.getName());
 		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this, getLv());
-		joinZongMen(createPlayerId, createPlayerName, power, ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
+		joinZongMen(createPlayerId, ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
 	}
 
-	public void joinZongMen(long joinPlayerId, String playerName, int power, int position) {
-		ZongMenMember member = new ZongMenMember(joinPlayerId, power, position);
+	public void joinZongMen(long joinPlayerId, int position) {
+		ZongMenMember member = new ZongMenMember(joinPlayerId, position);
 		module.addMember(member, this);
-		module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this, member, playerName);
+		module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this, member, member.getName());
 	}
 
 	public ZongmenData getData() {
@@ -335,8 +338,7 @@ public class ZongMen {
 					// 删除申请记录
 					module.removeApply(simplePlayer.getId());
 					// 加入宗门
-					joinZongMen(simplePlayer.getId(), simplePlayer.getName(), simplePlayer.combatEffectiveness,
-							ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+					joinZongMen(simplePlayer.getId(), ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 					joinPidList.add(simplePlayer.getId());
 				});
 				// 通知被加入的玩家 加入宗门
@@ -434,4 +436,3 @@ public class ZongMen {
 	}
 
 }
-

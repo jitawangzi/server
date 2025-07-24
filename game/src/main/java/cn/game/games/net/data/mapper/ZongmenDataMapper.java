@@ -36,11 +36,6 @@ public interface ZongmenDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<ZongmenData> selectByServerNodeIdIndex(@Param("serverNodeId") String serverNodeId);
-
-	/**
-	 * @mbg.generated
-	 */
 	List<ZongmenData> selectAll();
 
 	/**

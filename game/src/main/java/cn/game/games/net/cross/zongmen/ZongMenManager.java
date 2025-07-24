@@ -123,6 +123,7 @@ public class ZongMenManager {
 		return Future.join(saveFutures).mapEmpty();
 	}
 
+	@Deprecated
 	public void loadAllData() {
 		log.info(String.format("开始加载所有的宗门"));
 		long beginTimer = System.currentTimeMillis();
@@ -146,6 +147,10 @@ public class ZongMenManager {
 		});
 	}
 
+	/** 
+	 * 加载宗门数据
+	 * @param list
+	 */
 	public void loadZongmenList(List<ZongmenData> list) {
 		list.forEach(zongmen -> {
 			if (IdCache.initServerId(DistributedObjectType.ZONGMEN, zongmen.getId())) {
@@ -167,19 +172,15 @@ public class ZongMenManager {
 
 	/**
 	 * 创建宗门
-	 * @param name 宗门名称
+	 * @param req 创建宗门的一些参数
 	 * @param createPlayerId 门主pid
-	 * @param createPlayerName 门主名称
-	 * @param power 门主战力
 	 * @return 新的宗门
 	 */
-	public Future<ZongMen> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req, String name, long createPlayerId,
-			String createPlayerName, int power, String serverId) {
-		long newZongMenId = ZongMenHelper.createZongMenId();
+	public Future<ZongMen> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req, long createPlayerId) {
 		// 创建宗门
 		ZongMen zongMenInfo = new ZongMen();
 		// 宗门初始化
-		zongMenInfo.init(req, serverId, newZongMenId, name, createPlayerId, createPlayerName, power);
+		zongMenInfo.init(req, createPlayerId);
 		zongMenInfo.updateModuleData();
 		Promise<ZongMen> promise = Promise.promise();
 		DAO.insert(zongMenInfo.getData()).onSuccess(res -> {
@@ -187,12 +188,12 @@ public class ZongMenManager {
 				// 保存 simple data
 				saveSimpleData(zongMenInfo);
 				// 存储 redis name--id map
-				saveRedisNameIdMap(name, newZongMenId);
+				saveRedisNameIdMap(zongMenInfo.getName(), zongMenInfo.getId());
 				// 保存宗门战斗力排行榜
 				saveZongMenTotalPowerRank(zongMenInfo);
-				zongMenMap.put(newZongMenId, zongMenInfo);
+				zongMenMap.put(zongMenInfo.getId(), zongMenInfo);
 				// 宗门所在服务器
-				saveZongMenServerId(newZongMenId);
+				saveZongMenServerId(zongMenInfo.getId());
 				promise.complete(zongMenInfo);
 			} else {
 				promise.complete(null);
@@ -214,8 +215,7 @@ public class ZongMenManager {
 
 	CompletionStage<Boolean> saveZongMenTotalPowerRank(ZongMen zongMenInfo) {
 		return RankService.getInstance()
-				.setScoreAsync(zongMenInfo.getData().getCreateServerId(), RankType.ZongMen, zongMenInfo.getId(),
-						zongMenInfo.callTotalPower());
+				.setScoreAsync(zongMenInfo.getData().getServerId(), RankType.ZongMen, zongMenInfo.getId(), zongMenInfo.callTotalPower());
 	}
 
 	RFuture<Void> saveRedisNameIdMap(String name, long newZongMenId) {

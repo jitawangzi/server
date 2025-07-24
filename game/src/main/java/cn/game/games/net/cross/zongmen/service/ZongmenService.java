@@ -57,13 +57,12 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 新宗门信息
 	 */
 	@Override
-	public Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId) {
+	public Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req, long createPlayerId) {
 		boolean createLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_CREATE_LOCK.key(req.getName()));
 		if (!createLock) {
 			fail(ErrorMsgEnum.zong_men_name_repeat);
 		}
-		return ZongMenManager.getInstance()
-				.createZongMen(req, name,createPlayerId,createPlayerName,power,serverId);
+		return ZongMenManager.getInstance().createZongMen(req, createPlayerId);
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 
 		// 开启自动加入 则直接加入宗门
 		if (zongMenInfo.isAutoJoin()) {
-			zongMenInfo.joinZongMen(playerId, playerName, power, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+			zongMenInfo.joinZongMen(playerId, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 		} else if (zongMenInfo.getModule().setting.getAutoJoin() == 2) {
 			zongMenInfo.applyJoin(playerId);
 		} else {
@@ -368,7 +367,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		member.getRewardLivenessIndexList().addAll(indexList);
 	}
 
-
 	/**
 	 * 宗门砍价
 	 * @param zongMenId 宗门ID
@@ -433,7 +431,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		if (member == null) {
 			return false; // 静默失败
 		}
-		member.setPower(fightPower);
 		return true;
 	}
 

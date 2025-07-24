@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.core.cache.RedisLocalCache;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
 /**
@@ -17,8 +19,6 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
 	public long playerId;
-	/**玩家战斗力 */
-	int power;
 	/** 加入时间戳*/
 	long joinTime;
 	/**贡献值 */
@@ -42,9 +42,8 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 	public ZongMenMember() {
 	}
 
-	public ZongMenMember(long playerId, int power, int position) {
+	public ZongMenMember(long playerId, int position) {
 		this.playerId = playerId;
-		this.power = power;
 		setJoinTime(System.currentTimeMillis());
 		setContribution(0);
 		setTotalContribution(0);
@@ -59,12 +58,20 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		this.playerId = playerId;
 	}
 
+	/** 
+	 * 获取成员战斗力
+	 * @return
+	 */
 	public int getPower() {
-		return power;
+		return PlayerHelper.getSimplePlayer(playerId).getCombatEffectiveness();
 	}
 
-	public void setPower(int power) {
-		this.power = power;
+	/** 
+	 * 获取成员名字
+	 * @return
+	 */
+	public String getName() {
+		return PlayerHelper.getSimplePlayer(playerId).getName();
 	}
 
 	public long getJoinTime() {

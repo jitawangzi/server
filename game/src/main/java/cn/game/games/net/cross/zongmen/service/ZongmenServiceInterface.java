@@ -14,9 +14,10 @@ public interface ZongmenServiceInterface {
 	/**
 	 * 创建宗门
 	 * @param request 创建宗门请求
+	 * @param createPlayerId 创建玩家ID
 	 * @return 新宗门信息
 	 */
-	Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,String name, long createPlayerId, String createPlayerName, int power, String serverId);
+	Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,long createPlayerId);
 
 	/**
 	 * 获取宗门信息
@@ -122,6 +123,7 @@ public interface ZongmenServiceInterface {
 	 * @param fightPower 战斗力
 	 * @return 是否成功
 	 */
+	@Deprecated
 	boolean updateMemberFightPower(long zongMenId, long playerId, int fightPower);
 
 	/**

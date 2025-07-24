@@ -101,12 +101,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	private void createZongMen(long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMenMsg.createZongMenRequest_40000005 req = (ZongMenMsg.createZongMenRequest_40000005) message;
 
-		String name = req.getName();
-		String createPlayerName = paramList.get(0);
-		int power = Integer.parseInt(paramList.get(1));
-		String serverId = paramList.get(2);
-
-		zongmenService.createZongmen(req, req.getName(), playerId, createPlayerName, power, serverId).onSuccess(zongMenInfo -> {
+		zongmenService.createZongmen(req, playerId).onSuccess(zongMenInfo -> {
 			ZongMenMsg.createZongMenResponse_40000006.Builder res = ZongMenMsg.createZongMenResponse_40000006.newBuilder();
 			res.setZongMen(zongMenInfo.toProto(playerId));
 			sendMsgToGameServer(playerId, client, res.build(), PbProtocol.createZongMenResponse_40000006);
