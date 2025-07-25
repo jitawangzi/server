@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.druid.util.StringUtils;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
@@ -416,19 +419,21 @@ public class DevelopHandler extends GameBaseHandler {
         client.sendProtocol(defaultInstance);
     }
 
-    private void defenceSkinChange(NetClient client, Object message) {
-        DefenceSkinChangeRequest_25000035 req = (DefenceSkinChangeRequest_25000035) message;
-        String uid = req.getUid();
-        DefenceSkinChangeResponse_25000036 defaultInstance = DefenceSkinChangeResponse_25000036.getDefaultInstance();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        DefenceSkinModule module = player.getModule(DefenceSkinModule.class); 
-        long longId = Long.parseLong(uid);
-        DefenceSkin defenceSkin = module.get(longId);
-        if (defenceSkin == null) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
-            return;
+	private void defenceSkinChange(NetClient client, Object message) {
+		DefenceSkinChangeRequest_25000035 req = (DefenceSkinChangeRequest_25000035) message;
+		String uid = req.getUid();
+		DefenceSkinChangeResponse_25000036 defaultInstance = DefenceSkinChangeResponse_25000036.getDefaultInstance();
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		DefenceSkinModule module = player.getModule(DefenceSkinModule.class);
+		long longId = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
+		if (longId > 0) {
+			DefenceSkin defenceSkin = module.get(longId);
+			if (defenceSkin == null) {
+				client.sendProtocol(defaultInstance, ErrorMsgEnum.player_data_not_found.getId());
+				return;
+			}
 		}
-        module.setCurUseId(longId);
-        client.sendProtocol(defaultInstance);
-    }
+		module.setCurUseId(longId);
+		client.sendProtocol(defaultInstance);
+	}
 }
