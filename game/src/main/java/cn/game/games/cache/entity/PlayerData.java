@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.base.DbEntity;
+import lombok.Getter;
 
 public class PlayerData implements Serializable, DbEntity {
 

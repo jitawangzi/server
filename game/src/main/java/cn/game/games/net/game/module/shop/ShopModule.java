@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -28,15 +29,6 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.protocol.generated.manager.FundPassManager;
-import cn.game.protocol.generated.manager.HeishiManager;
-import cn.game.protocol.generated.manager.HunhuoManager;
-import cn.game.protocol.generated.manager.RSGTreeShopManager;
-import cn.game.protocol.generated.manager.RechargeStoreManager;
-import cn.game.protocol.generated.manager.ResidentPackManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ShopManager;
-import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -221,7 +213,8 @@ public class ShopModule extends BasePlayerModule {
 		refreshEveryDayShop();
 
 		refreshGinsengTreeItems();
-		
+
+		refreshGemTowerItems();
 	}
 
 	public void refreshZongMenShop() {
@@ -309,18 +302,28 @@ public class ShopModule extends BasePlayerModule {
 		// 刷新体力商店
 		int shop = 18;
 		shopItemsMap.removeAll(shop);
-		int level = player.getLevel(Asset.RSGTreeExp);
-		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
-		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
-			if (level >= rsgTreeShopConfig.Condition) {
-				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
-				if (shopItemConfig != null) {
-					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
-				}
-			}
-		}
+//		int level = player.getLevel(Asset.RSGTreeExp);
+//		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
+//		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
+//			if (level >= rsgTreeShopConfig.Condition) {
+//				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+//				if (shopItemConfig != null) {
+//					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+//				}
+//			}
+//		}
 	}
-
+	public void refreshGemTowerItems() {
+		// 刷新爬塔商店
+		int shop = 19;
+		shopItemsMap.removeAll(shop);
+		int level = player.getLevel(Asset.RSGTreeExp);
+		DragonStoreManager.instance().list().forEach(shopConfig ->{
+			if (level >= shopConfig.LevelUnlock) {
+				shopItemsMap.put(shop, new ShopItem(shopConfig.ID));
+			}
+		});
+	}
 	public void refreshHunhuoItems(int shop) {
 		// 刷新魂火商店
 		shopItemsMap.removeAll(shop);

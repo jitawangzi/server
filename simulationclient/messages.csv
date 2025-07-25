@@ -252,3 +252,5 @@
 252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,防线皮肤升星
 253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,防线皮肤更换
 254,ZongMenBountyRewardRequest_40000072,0x40000072,,,,,领取当前悬赏任务奖励
+255,BattleTowerDataRequest_13000521,0x13000521,,,,,塔数据请求
+256,BattleTowerQuickEndRequest_13100524,0x13100524,,,,,扫荡

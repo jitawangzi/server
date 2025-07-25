@@ -571,6 +571,11 @@ public class BattleModule extends BasePlayerModule  {
 				LingShanWenChanBattle battle = new LingShanWenChanBattle();
 				battle.setPlayer(player);
 				battlesMap.put(battle.getType(), battle);
+			}else if (func == InitialUI.DragonTreasure) {
+				TowerBattle battle = new TowerBattle();
+				battle.setPlayer(player);
+				battle.InitTowerBattle();
+				battlesMap.put(battle.getType(), battle);
 			}
 			break;
 		}
