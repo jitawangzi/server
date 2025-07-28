@@ -134,7 +134,6 @@ public class BattleHelper {
 	 * 根据已经完成的关卡id，判断某一关是否完成了
 	 * 
 	 * @param completeBattleId
-	 * @param checkId
 	 * @return
 	 */
 	public static boolean isComplete(int completeBattleId, int id) {

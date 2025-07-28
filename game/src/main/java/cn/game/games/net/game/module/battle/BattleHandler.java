@@ -1473,7 +1473,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, result.getErrorCode());
             return;
         }
-        player.handleEvent(EventTypeEnum.BattleEnd, DungeonTypeEnum.GemTower, quickCount, true, 0, 0);
+       // player.handleEvent(EventTypeEnum.BattleEnd, DungeonTypeEnum.GemTower, quickCount, true, 0, 0);
         if (result.getValue() != null) {
             resp.addAllRewards(result.getValue());
         }

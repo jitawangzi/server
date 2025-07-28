@@ -60,6 +60,8 @@ public class TowerBattle extends XiYouBattleHandler {
             curFloor.put(DungeonTypeEnum.GemTowerThunder.getId(), DungeonTypeEnum.GemTowerThunder.getId() * 10000 + 1);
             rewardCount = GlobalConst.MainTowerRewardMax;
             floorCount = GlobalConst.MainTowerFloorMax;
+            LocalDate currentDate = LocalDate.now();
+            this.radomBuff = currentDate.getDayOfMonth();
         }
     }
 
@@ -152,6 +154,10 @@ public class TowerBattle extends XiYouBattleHandler {
             } else {
                 curFloor.put(battleConfig.BattleType, -1);
             }
+            if(battleConfig.BattleType==DungeonTypeEnum.GemTower.getId()) {
+                rewardCount--;
+            }
+            floorCount--;
             return ResultObject.success();
         } else { // 失败了，最终结算
 
@@ -185,7 +191,10 @@ public class TowerBattle extends XiYouBattleHandler {
             if (count > rewardCount) {
                 count = rewardCount;
             }
-            rewardCount -= count;
+            if(battleConfig.BattleType==DungeonTypeEnum.GemTower.getId())
+            {
+                rewardCount-=count;
+            }
             OpType opType = OpType.GemTowerSweep;
             for (int i = 0; i < count; i++) {
                 List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
