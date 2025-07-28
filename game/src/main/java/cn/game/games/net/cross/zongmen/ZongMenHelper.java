@@ -187,8 +187,8 @@ public class ZongMenHelper {
 		return promise.future().toCompletionStage().toCompletableFuture();
 	}
 
-	public static List<ZongMenMsg.ZongMenMemberProto.Builder> sortMemberList(Collection<ZongMenMsg.ZongMenMemberProto.Builder> values) {
-		List<ZongMenMsg.ZongMenMemberProto.Builder> list = new ArrayList<>(values);
+	public static List<ZongMenMsg.ZongMenMemberInfo.Builder> sortMemberList(Collection<ZongMenMsg.ZongMenMemberInfo.Builder> values) {
+		List<ZongMenMsg.ZongMenMemberInfo.Builder> list = new ArrayList<>(values);
 //        - 成员排序规则：
 //        - 在线状态：在线、离线（从近到远）；
 //        - 职位、战力：从高到低；

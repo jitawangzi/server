@@ -18,10 +18,12 @@ public class ZongMenConstants {
 
 	/** 宗门职位 宗主 */
 	public static final int ZONG_MEN_POSITION_ZONG_ZHU = 1;
-	/** 宗门职位 长老 */
+	/** 宗门职位 长老、副帮主 */
 	public static final int ZONG_MEN_POSITION_ZHANG_LAO = 2;
+	/** 宗门职位 精英 */
+	public static final int ZONG_MEN_POSITION_JING_YING = 3;
 	/** 宗门职位 帮众 */
-	public static final int ZONG_MEN_POSITION_BANG_ZHONG = 3;
+	public static final int ZONG_MEN_POSITION_BANG_ZHONG = 4;
 
 	public enum ZongMenEvenType {
 		CROSS_DAY(0, "跨天"), JOIN_ZONG_MEN(1, "加入宗门"), ZONG_MEN_CREATE(2, "创建宗门"), ZONG_MEN_LEVEL_UP(3, "宗门升级"),

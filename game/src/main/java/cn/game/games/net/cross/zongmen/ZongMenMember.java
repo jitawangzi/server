@@ -151,8 +151,8 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		this.isNewZongmen = isNewZongmen;
 	}
 
-	public ZongMenMsg.ZongMenMemberProto.Builder toProto() {
-		ZongMenMsg.ZongMenMemberProto.Builder builder = ZongMenMsg.ZongMenMemberProto.newBuilder();
+	public ZongMenMsg.ZongMenMemberInfo.Builder toProto() {
+		ZongMenMsg.ZongMenMemberInfo.Builder builder = ZongMenMsg.ZongMenMemberInfo.newBuilder();
 		builder.setJoinTime((int) (joinTime / 1000L));
 		builder.setPid((int) playerId);
 		builder.setPosition(position);

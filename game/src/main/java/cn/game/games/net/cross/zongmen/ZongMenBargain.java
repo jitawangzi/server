@@ -110,10 +110,8 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		bargainLogMap.put(playerName, num);
 	}
 
-	public ZongMenMsg.ZongMenBargainProto toProto(ZongMenMember member) {
-		return ZongMenMsg.ZongMenBargainProto.newBuilder()
-				.setIsBargain(member.isBargain)
-				.setIsBargainBuy(member.isBargainBuy())
+	public ZongMenMsg.ZongMenBargainSharedInfo toProto() {
+		return ZongMenMsg.ZongMenBargainSharedInfo.newBuilder()
 				.setTotalBargainCount(bargainTotalNum)
 				.setTotalMemberCount(memberBargainNum)
 				.setBargainItemId(bargainItemId)

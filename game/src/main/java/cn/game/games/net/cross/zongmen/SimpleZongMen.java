@@ -31,8 +31,8 @@ public class SimpleZongMen {
     List<Long> applyPidList = new ArrayList<>();
 
 
-    public ZongMenMsg.ZongMenSimpleInfoProto toProto() {
-        ZongMenMsg.ZongMenSimpleInfoProto.Builder builder = ZongMenMsg.ZongMenSimpleInfoProto.newBuilder();
+    public ZongMenMsg.ZongMenSimpleInfo toProto() {
+        ZongMenMsg.ZongMenSimpleInfo.Builder builder = ZongMenMsg.ZongMenSimpleInfo.newBuilder();
         builder.setId((int) id);
         builder.setName(name);
         builder.setTotalPower(totalPower);

@@ -2,9 +2,7 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.PlayerRankInfo;
@@ -63,6 +61,9 @@ import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataPush_13100523;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndResponse_13100525;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -112,7 +113,7 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleRougeRefreshResponse_13000053, this::rougeRefresh);
         putInvoker(PbProtocol.BattleStaminaResponse_13000051, this::stamina);
         putInvoker(PbProtocol.BattleRescueSkillIdResponse_13000058, this::rescueSkillId);
-		putInvoker(PbProtocol.BattlePvPTargetListResponse_13000112, this::targetPvPListResponse);
+        putInvoker(PbProtocol.BattlePvPTargetListResponse_13000112, this::targetPvPListResponse);
         putInvoker(PbProtocol.BattlePvPStartResponse_13000114, this::pvPStart);
         putInvoker(PbProtocol.BattlePvPEndResponse_13000116, this::pvPEnd);
         putInvoker(PbProtocol.BattlePvPInfoResponse_13000118, this::pvPInfo);
@@ -121,6 +122,9 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleLingShanResponse_13000512, this::lingShan);
         putInvoker(PbProtocol.BattleLingShanBuyTimesResponse_13000514, this::lingShanBuyTimes);
         putInvoker(PbProtocol.BattleLingShanRewardResponse_13000516, this::lingShanReward);
+        putInvoker(PbProtocol.BattleTowerDataResponse_13000522, this::towerData);
+        putInvoker(PbProtocol.BattleTowerDataPush_13100523, this::towerDataPush);
+        putInvoker(PbProtocol.BattleTowerQuickEndResponse_13100525, this::towerQuickEnd);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -424,12 +428,36 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
+    private void targetPvPListResponse(NetClient netClient, Object o) {
+        BattleMsg.BattlePvPTargetListResponse_13000112 res = (BattleMsg.BattlePvPTargetListResponse_13000112) o;
+        Client client = (Client) netClient;
+        if (res.getScoreListCount() > 0) {
+            client.setTargetListResponse(res);
+        }
+    }
 
-	private void targetPvPListResponse(NetClient netClient, Object o) {
-		BattleMsg.BattlePvPTargetListResponse_13000112 res = (BattleMsg.BattlePvPTargetListResponse_13000112) o;
-		Client client = (Client) netClient;
-		if (res.getScoreListCount() > 0) {
-			client.setTargetListResponse(res);
-		}
-	}
+    private void towerData(NetClient netClient, Object message) {
+        BattleTowerDataResponse_13000522 resp = (BattleTowerDataResponse_13000522) message;
+        int rewardCount = resp.getRewardCount();
+        int floorCount = resp.getFloorCount();
+        int radomBuff = resp.getRadomBuff();
+        Map<Integer, Integer> curFloorMap = resp.getCurFloorMap();
+        Client client = (Client) netClient;
+    }
+
+    private void towerDataPush(NetClient netClient, Object message) {
+        BattleTowerDataPush_13100523 resp = (BattleTowerDataPush_13100523) message;
+        int rewardCount = resp.getRewardCount();
+        int floorCount = resp.getFloorCount();
+        int radomBuff = resp.getRadomBuff();
+        Map<Integer, Integer> curFloorMap = resp.getCurFloorMap();
+        Client client = (Client) netClient;
+    }
+
+    private void towerQuickEnd(NetClient netClient, Object message) {
+        BattleTowerQuickEndResponse_13100525 resp = (BattleTowerQuickEndResponse_13100525) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
+        int rewardCount = resp.getRewardCount();
+        Client client = (Client) netClient;
+    }
 }

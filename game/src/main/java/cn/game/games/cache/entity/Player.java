@@ -858,11 +858,11 @@ public class Player {
 	}
 
 	public long getZongMenId() {
-		return getZongmenModule().getZongMenId();
+		return data.getUnionId(); 
 	}
 
 	public String getZongMenName() {
-		return getZongmenModule().getZongMenName();
+		return data.getUnionName();
 	}
 
 	public String getPlayerName() {

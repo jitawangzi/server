@@ -27,6 +27,9 @@ import cn.game.protocol.generated.manager.GuildBasicManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenPersonalInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSharedInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.LockUtil;
@@ -56,8 +59,8 @@ public class ZongMen {
 		module.registerAllModuleEventHandler();
 	}
 
-	public void init(ZongMenMsg.createZongMenRequest_40000005 req,long newZongMenId,long createPlayerId) {
-		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId); 
+	public void init(ZongMenMsg.createZongMenRequest_40000005 req, long newZongMenId, long createPlayerId) {
+		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId);
 
 		module = new ZongMenModuleData();
 		saveDataTimer = System.currentTimeMillis() + ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER;
@@ -78,8 +81,8 @@ public class ZongMen {
 		module.init();
 		module.afterInit(this);
 		module.registerAllModuleEventHandler();
-		
-		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this, createPlayerId,creator.getName());
+
+		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_CREATE, this, createPlayerId, creator.getName());
 		module.handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this, getLv());
 		joinZongMen(createPlayerId, ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
 	}
@@ -175,14 +178,19 @@ public class ZongMen {
 		return simpleZongMen;
 	}
 
-	public ZongMenMsg.ZongMenInfoProto toProto(long... notifyPids) {
-		ZongMenMsg.ZongMenInfoProto.Builder builder = ZongMenMsg.ZongMenInfoProto.newBuilder();
-		builder.setSimpleInfo(toSimpleZongMen().toProto());
-		builder.setExp(getExp());
-//        builder.addAllLogList(module.optLog.toProto());
+	public ZongMenMsg.ZongMenAllInfo toProto(long... notifyPids) {
+		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
+		ZongMenShowInfo.Builder showInfoBuilder = ZongMenShowInfo.newBuilder();
+		ZongMenSharedInfo.Builder sharedInfoBuilder = ZongMenSharedInfo.newBuilder();
+		ZongMenPersonalInfo.Builder personalInfoBuilder = ZongMenPersonalInfo.newBuilder();
+
+		showInfoBuilder.setSimpleInfo(toSimpleZongMen().toProto());
+
+		sharedInfoBuilder.setExp(getExp());
+		sharedInfoBuilder.setBargain(module.bargain.toProto());
 
 		// 封装 ZongMenMemberProto
-		Map<Long, ZongMenMsg.ZongMenMemberProto.Builder> memberProtoMap = new HashMap<>();
+		Map<Long, ZongMenMsg.ZongMenMemberInfo.Builder> memberProtoMap = new HashMap<>();
 		module.menMemberMap.forEach((pid, member) -> {
 			memberProtoMap.put(pid, member.toProto());
 		});
@@ -196,7 +204,8 @@ public class ZongMen {
 			if (permissionsConfig.Approval) {
 				pidList.addAll(module.applyList);
 			}
-			builder.setBargain(module.bargain.toProto(member));
+			personalInfoBuilder.setIsBargain(member.isBargain);
+			personalInfoBuilder.setIsBargainBuy(member.isBargainBuy);
 		}
 
 		// redis 同步加载 SimplePlayer
@@ -215,21 +224,22 @@ public class ZongMen {
 				if (memberProtoMap.containsKey(simplePlayer.getId())) {
 					memberProtoMap.get(simplePlayer.getId()).setSimplePlayer(simplePlayer.toSimplePlayerInfo());
 				} else if (module.applyList.contains(simplePlayer.getId())) {// 同步申请列表
-					builder.addApplyList(simplePlayer.toSimplePlayerInfo());
+					sharedInfoBuilder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
 				}
 			});
 		}
 
 		ZongMenHelper.sortMemberList(memberProtoMap.values()).forEach(memberProto -> {
-			builder.addMemberList(memberProto.build());
+			showInfoBuilder.addMembers(memberProto.build()) ;
 		});
 
 		// 封装 ZongMenSetting
 		ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
 		settingProto.setNotice(data.getNotice());
 		settingProto.setDeclaration(data.getDeclaration());
-		builder.setSetting(settingProto.build());
-		builder.setLiveness(module.liveness);
+
+		sharedInfoBuilder.setSetting(settingProto.build());
+		sharedInfoBuilder.setLiveness(module.liveness);
 
 		return builder.build();
 	}
@@ -342,7 +352,7 @@ public class ZongMen {
 					joinPidList.add(simplePlayer.getId());
 				});
 				// 通知被加入的玩家 加入宗门
-				ZongMenHelper.broadcastNotifyMsgToPlayer(ZongMenMsg.notifyJoinZongMen_40000044.newBuilder().setZongMen(toProto()).build(),
+				ZongMenHelper.broadcastNotifyMsgToPlayer(ZongMenMsg.notifyJoinZongMen_40000044.newBuilder().setZongMen(toSimpleZongMen().toProto()).build(),
 						PbProtocol.notifyJoinZongMen_40000044, joinPidList);
 				// 更新宗门战斗力排行榜
 				ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);

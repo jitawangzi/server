@@ -5,9 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
@@ -138,6 +136,10 @@ import cn.game.util.BinarySearchUtil;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataRequest_13000521;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndResponse_13100525;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -197,6 +199,8 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleLingShanRewardRequest_13000515, this::lingShanReward);
         putInvoker(PbProtocol.HCBattleDataSaveRequest_13000100, this::hCDataSave);
         putInvoker(PbProtocol.HCBattleDataRequest_13000102, this::hCData);
+        putInvoker(PbProtocol.BattleTowerDataRequest_13000521, this::towerData);
+        putInvoker(PbProtocol.BattleTowerQuickEndRequest_13100524, this::towerQuickEnd);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1067,6 +1071,7 @@ public class BattleHandler extends GameBaseHandler {
         }
         client.sendProtocol(resp);
     }
+
     protected void chapterReward(NetClient client, Object message) {
         BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
         BattleRewardResponse_13000023.Builder resp = BattleRewardResponse_13000023.newBuilder();
@@ -1204,7 +1209,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, errorCode);
             return;
         }
-        errorCode = battleHandler.battleStart(id,subId);
+        errorCode = battleHandler.battleStart(id, subId);
         if (errorCode == 0) {
             // 设置当前在打的关卡数据
             battleModule.setAttackingData(0, type, id, subId, 0, 0);
@@ -1281,7 +1286,7 @@ public class BattleHandler extends GameBaseHandler {
         int hpPercent = req.getHpPercent();
         int killMonsterCount = req.getKillMonsterCount();
         int killMonsterBossCount = req.getKillMonsterBossCount();
-		List<Integer> richManItemsList = req.getRichManItemsList();
+        List<Integer> richManItemsList = req.getRichManItemsList();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         int attackingId = battleModule.getAttackingId();
@@ -1310,33 +1315,32 @@ public class BattleHandler extends GameBaseHandler {
         if (rewards != null) {
             allRewards.addAll(rewards);
         }
-        // 
+        //
         if (richManItemsList != null && !richManItemsList.isEmpty()) {
-        	for (Integer rid : richManItemsList) {
-				RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
-				if (richManItemConfig.ServerOpt == 1) {
-					if (richManItemConfig.OptType == 8) {
-						List<Goods> rewardAddition = RewardHelper.rewardAddition(allRewards, richManItemConfig.ItemParams[0]);
-						if (!rewardAddition.isEmpty()) {
-							List<RewardInfo> resources = PlayerHelper.addResources(player, rewardAddition, OpType.BattleEnd);
-							allRewards.addAll(resources);
-						}
-					} 
-				}
-			}
-        	for (Integer rid : richManItemsList) {
-        		RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
-        		if (richManItemConfig.ServerOpt == 1) {
-        			if (richManItemConfig.OptType == 9) { // 返还体力
-        				ConsumeConfig consumeConfig = ConsumeManager.instance().get(battleConfig.cost); 
-        				List<RewardInfo> resources = PlayerHelper.addResources(player, consumeConfig.cost, OpType.BattleEnd);
-						allRewards.addAll(resources);
-        			}
-        		}
-        	}
+            for (Integer rid : richManItemsList) {
+                RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
+                if (richManItemConfig.ServerOpt == 1) {
+                    if (richManItemConfig.OptType == 8) {
+                        List<Goods> rewardAddition = RewardHelper.rewardAddition(allRewards, richManItemConfig.ItemParams[0]);
+                        if (!rewardAddition.isEmpty()) {
+                            List<RewardInfo> resources = PlayerHelper.addResources(player, rewardAddition, OpType.BattleEnd);
+                            allRewards.addAll(resources);
+                        }
+                    }
+                }
+            }
+            for (Integer rid : richManItemsList) {
+                RichManItemConfig richManItemConfig = RichManItemManager.instance().get(rid);
+                if (richManItemConfig.ServerOpt == 1) {
+                    if (richManItemConfig.OptType == 9) {
+                        // 返还体力
+                        ConsumeConfig consumeConfig = ConsumeManager.instance().get(battleConfig.cost);
+                        List<RewardInfo> resources = PlayerHelper.addResources(player, consumeConfig.cost, OpType.BattleEnd);
+                        allRewards.addAll(resources);
+                    }
+                }
+            }
         }
-			
-
         if (req.getWin()) {
             player.handleEvent(EventTypeEnum.ChapterWin, attackingId, attackingSubId);
         }
@@ -1347,6 +1351,7 @@ public class BattleHandler extends GameBaseHandler {
         //		Chapter chapter = battleModule.getChapter(attackingDungeonId);
         //		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
     }
+
     private void reward(NetClient client, Object message) {
         BattleRewardRequest_13000022 req = (BattleRewardRequest_13000022) message;
         List<Integer> idList = req.getIdList();
@@ -1373,77 +1378,87 @@ public class BattleHandler extends GameBaseHandler {
         client.sendProtocol(resp.build());
     }
 
-	protected void lingShanReward(NetClient client, Object message) {
-		BattleLingShanRewardRequest_13000515 req = (BattleLingShanRewardRequest_13000515) message;
-		BattleLingShanRewardResponse_13000516.Builder resp = BattleLingShanRewardResponse_13000516.newBuilder();
-		int index = req.getIndex();
-		long playerId = client.getPlayerId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		BattleModule battleModule = player.getModule(BattleModule.class);
-		LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-		long rewardBattleIds = battle.getRewardBattleIds();
-		if (ByteHelp.isOne(rewardBattleIds, index)) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		LingShanConfig curFloorConfig = battle.getCurFloorConfig(); 
-		if (curFloorConfig == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
-			return;
-			
-		}
+    protected void lingShanReward(NetClient client, Object message) {
+        BattleLingShanRewardRequest_13000515 req = (BattleLingShanRewardRequest_13000515) message;
+        BattleLingShanRewardResponse_13000516.Builder resp = BattleLingShanRewardResponse_13000516.newBuilder();
+        int index = req.getIndex();
+        long playerId = client.getPlayerId();
+        Player player = PlayerManager.getInstance().getPlayer(playerId);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+        long rewardBattleIds = battle.getRewardBattleIds();
+        if (ByteHelp.isOne(rewardBattleIds, index)) {
+            client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+            return;
+        }
+        LingShanConfig curFloorConfig = battle.getCurFloorConfig();
+        if (curFloorConfig == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+            return;
+        }
+        if (GlobalConst.LingshanBonueLevel[index] > curFloorConfig.StartFloor) {
+            client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+            return;
+        }
+        List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.LingshanBonue[index], OpType.LingShanWenChanFloorReward);
+        resp.addAllRewards(resources);
+        long modifyBit = ByteHelp.modifyBit(rewardBattleIds, index);
+        battle.setRewardBattleIds(modifyBit);
+        client.sendProtocol(resp);
+    }
 
-		if (GlobalConst.LingshanBonueLevel[index] > curFloorConfig.StartFloor) {
-			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-			return;
-		}
-		List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.LingshanBonue[index], OpType.LingShanWenChanFloorReward);
-		resp.addAllRewards(resources);
-		
-		long modifyBit = ByteHelp.modifyBit(rewardBattleIds, index);
-		battle.setRewardBattleIds(modifyBit);
+    protected void lingShanBuyTimes(NetClient client, Object message) {
+        BattleLingShanBuyTimesRequest_13000513 req = (BattleLingShanBuyTimesRequest_13000513) message;
+        BattleLingShanBuyTimesResponse_13000514.Builder resp = BattleLingShanBuyTimesResponse_13000514.newBuilder();
+        long playerId = client.getPlayerId();
+        Player player = PlayerManager.getInstance().getPlayer(playerId);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+        int battleTimes = battle.getBattleTimes();
+        int payTimes = battle.getPayTimes();
+        if (payTimes >= GameUtil.length(GlobalConst.LingshanChallangeCost)) {
+            client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+            return;
+        }
+        PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.LingshanChallangeCost[battleTimes], OpType.LingShanBuyTimes);
+        battle.setPayTimes(payTimes + 1);
+        client.sendProtocol(resp);
+    }
 
-		client.sendProtocol(resp);
-	}
+    protected void lingShanInfo(NetClient client, Object message) {
+        BattleLingShanRequest_13000511 req = (BattleLingShanRequest_13000511) message;
+        BattleLingShanResponse_13000512.Builder resp = BattleLingShanResponse_13000512.newBuilder();
+        long playerId = client.getPlayerId();
+        Player player = PlayerManager.getInstance().getPlayer(playerId);
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+        resp.setLastCompleteFloor(battle.getLastCompleteFloor());
+        resp.setBattleTimes(battle.getBattleTimes());
+        resp.setPayTimes(battle.getPayTimes());
+        resp.addAllRewardBattleIds(ByteHelp.binary1List(battle.getRewardBattleIds()));
+        // 排行榜玩家
+        CompletionStage<List<PlayerRankInfo>> rankPagePlayerInfos = RankHelper.getRankPagePlayerInfos(player.getServerId(), RankType.LingShanWenChan, 1, 3);
+        rankPagePlayerInfos.thenAccept(r -> {
+            resp.addAllRankPlayers(r);
+            client.sendProtocol(resp);
+        }).exceptionally(player::handleFailFunction);
+    }
 
-	protected void lingShanBuyTimes(NetClient client, Object message) {
-		BattleLingShanBuyTimesRequest_13000513 req = (BattleLingShanBuyTimesRequest_13000513) message;
-		BattleLingShanBuyTimesResponse_13000514.Builder resp = BattleLingShanBuyTimesResponse_13000514.newBuilder();
-		long playerId = client.getPlayerId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		BattleModule battleModule = player.getModule(BattleModule.class);
-		LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-		int battleTimes = battle.getBattleTimes();
-		int payTimes = battle.getPayTimes();
-		if (payTimes >= GameUtil.length(GlobalConst.LingshanChallangeCost)) {
-			client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
-			return;
-		}
-		PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.LingshanChallangeCost[battleTimes], OpType.LingShanBuyTimes);
-		battle.setPayTimes(payTimes + 1);
-		client.sendProtocol(resp);
-	}
+    private void towerData(NetClient client, Object message) {
+        BattleTowerDataRequest_13000521 req = (BattleTowerDataRequest_13000521) message;
+        BattleTowerDataResponse_13000522 defaultInstance = BattleTowerDataResponse_13000522.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleTowerDataResponse_13000522.Builder resp = BattleTowerDataResponse_13000522.newBuilder();
+        client.sendProtocol(resp.build());
+    }
 
-	protected void lingShanInfo(NetClient client, Object message) {
-		BattleLingShanRequest_13000511 req = (BattleLingShanRequest_13000511) message;
-		BattleLingShanResponse_13000512.Builder resp = BattleLingShanResponse_13000512.newBuilder();
-		long playerId = client.getPlayerId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		BattleModule battleModule = player.getModule(BattleModule.class);
-		LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-
-		resp.setLastCompleteFloor(battle.getLastCompleteFloor());
-		resp.setBattleTimes(battle.getBattleTimes());
-		resp.setPayTimes(battle.getPayTimes());
-		resp.addAllRewardBattleIds(ByteHelp.binary1List(battle.getRewardBattleIds()));
-		// 排行榜玩家
-		CompletionStage<List<PlayerRankInfo>> rankPagePlayerInfos = RankHelper.getRankPagePlayerInfos(player.getServerId(),
-				RankType.LingShanWenChan, 1, 3);
-		rankPagePlayerInfos.thenAccept(r -> {
-			resp.addAllRankPlayers(r);
-			client.sendProtocol(resp);
-		}).exceptionally(player::handleFailFunction);
-
-	}
-
+    private void towerQuickEnd(NetClient client, Object message) {
+        BattleTowerQuickEndRequest_13100524 req = (BattleTowerQuickEndRequest_13100524) message;
+        int battleId = req.getBattleId();
+        int quickCount = req.getQuickCount();
+        BattleTowerQuickEndResponse_13100525 defaultInstance = BattleTowerQuickEndResponse_13100525.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleTowerQuickEndResponse_13100525.Builder resp = BattleTowerQuickEndResponse_13100525.newBuilder();
+        client.sendProtocol(resp.build());
+    }
 }

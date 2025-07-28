@@ -11,7 +11,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.SimplePlayer;
 
 public interface PlayerDataMapper {
-    /**
+	/**
 	 * @mbg.generated
 	 */
 	int deleteByPrimaryKey(long playerId);
@@ -110,6 +110,15 @@ public interface PlayerDataMapper {
 	List<SimplePlayer> selectSimplePlayersLimit(HashMap<String, Object> hashMap);
 
 	Long selectIdByName(String name);
+
+	/** 
+	 * 更新某个玩家的宗门信息
+	 * @param playerId
+	 * @param unionId
+	 * @param unionName
+	 * @return
+	 */
+	int updatePlayerUnion(@Param("playerId") long playerId, @Param("unionId") long unionId, @Param("unionName") String unionName);
 
 	/**
 	 * @Description 执行一条sql语句

@@ -93,7 +93,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	// 获取宗门信息
 	private void getZongMenInfo(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
-		ZongMenMsg.ZongMenInfoProto infoProto = info.toProto(playerId);
+		ZongMenMsg.ZongMenAllInfo infoProto = info.toProto(playerId);
 		sendMsgToGameServer(playerId, client, ZongMenMsg.getZongMenInfoResponse_40000022.newBuilder().setInfo(infoProto).build(),
 				PbProtocol.getZongMenInfoResponse_40000022);
 	}
@@ -151,7 +151,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		settingRequest.setDeclaration(req.getDeclaration());
 		settingRequest.setIcon(req.getIcon());
 		settingRequest.setAutoJoin(req.getAutoJoin());
-		settingRequest.setTianDaoLevel(req.getTianDaoLevel());
 
 		boolean setZongmenSetting = zongmenService.setZongmenSetting(zongMenId, settingRequest); 
 		if (setZongmenSetting) {
@@ -252,7 +251,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	private void findZongMen(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
 		ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
-		res.setZongMen(info.toProto());
+		res.setZongMen(info.toProto().getShowInfo());
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.findZongMenResponse_40000004);
 	}
 

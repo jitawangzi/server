@@ -39,11 +39,11 @@ public class MailModule extends BasePlayerModule  {
 
 	/** 公告邮件比较特殊，保存一个不删除。设置删除标记位，为了服务器一次更新只发一次公告邮件  */
 	@JsonIgnore
-	private Mail notice;
+	private volatile Mail notice;
 	/**
 	 * 领取过的全服邮件版本号
 	 */
-	private long globalMailId;
+	private volatile long globalMailId;
 
 	public void sendOnline(Mail mail, boolean notify) {
 
