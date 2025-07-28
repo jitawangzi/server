@@ -60,6 +60,8 @@ public class TowerBattle extends XiYouBattleHandler {
             curFloor.put(DungeonTypeEnum.GemTowerThunder.getId(), DungeonTypeEnum.GemTowerThunder.getId() * 10000 + 1);
             rewardCount = GlobalConst.MainTowerRewardMax;
             floorCount = GlobalConst.MainTowerFloorMax;
+            LocalDate currentDate = LocalDate.now();
+            this.radomBuff = currentDate.getDayOfMonth();
         }
     }
 
