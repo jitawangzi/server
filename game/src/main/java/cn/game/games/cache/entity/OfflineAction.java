@@ -25,6 +25,10 @@ public class OfflineAction implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
+	private int subType;
+	/**
+	 * @mbg.generated
+	 */
 	private String params;
 	/**
 	 * @mbg.generated
@@ -71,6 +75,20 @@ public class OfflineAction implements Serializable, DbEntity {
 	 */
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public int getSubType() {
+		return subType;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setSubType(int subType) {
+		this.subType = subType;
 	}
 
 	/**
