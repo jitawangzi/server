@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.game.games.net.game.module.battle.EquipTowerBattle;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
@@ -82,7 +83,7 @@ public class SimplePlayer implements Serializable {
 	public Map<Integer, Long> assetsMap = new HashMap<>();
 	
 	private List<EquipPartShow> equipPartShows = new ArrayList<EquipPartShow>();
-
+	private Map<Integer,String> equipBattleRecord = new HashMap<>();
 	@Deprecated
 	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
 			String unionName, long offLinetime) {
@@ -151,6 +152,8 @@ public class SimplePlayer implements Serializable {
 		this.assetsMap.putAll(player.getCurrencyModule().getCurrencyMap().getMap());
 		this.recharge = player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
 		this.equipPartShows = EquipPartShow.toEquipPartShowList(player);
+		EquipTowerBattle equipTowerBattle=player.getBattleModule().getBattle(DungeonTypeEnum.EquipTower);
+		this.equipBattleRecord =equipTowerBattle.getBattleRecord();
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -162,6 +165,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setOnline(simplePlayerInfo.getOnline());
 		simplePlayer.setOfflineTime(simplePlayerInfo.getOfflineTime());
 		simplePlayer.setServerId(simplePlayerInfo.getServerId());
+
 	}
 	public SimplePlayer initDataEx() {
 //		setServerId(ServerContext.getInstance().getServerId());
@@ -178,6 +182,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setHead(Integer.parseInt(npcConfig.Icon));
 		return simplePlayer;
 	}
+
 	public SimplePlayerInfo toSimplePlayerInfo() {
 
 		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
@@ -193,8 +198,10 @@ public class SimplePlayer implements Serializable {
 		builder.setServerName(serverName);
 		builder.setTiandaoLevel(tdLevel);
 		builder.setCombatEffectiveness(combatEffectiveness);
-		builder.setFigure(figure) ; 
-
+		builder.setFigure(figure);
+		equipBattleRecord.forEach((k, v) -> {
+			builder.addEquipBattleRecord(v);
+		});
 		return builder.build();
 	}
 

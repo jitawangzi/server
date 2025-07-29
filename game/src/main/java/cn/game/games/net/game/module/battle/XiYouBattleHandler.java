@@ -65,7 +65,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 	 * @return
 	 */
 	@Override
-	public int checkCustom(int id, int subId) {
+	public int checkCustom(int id, int subId,long ... args) {
 		return 0 ; 
 	}
 

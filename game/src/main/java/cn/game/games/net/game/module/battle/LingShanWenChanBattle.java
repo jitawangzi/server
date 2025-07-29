@@ -53,7 +53,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	}
 	
 	@Override
-	public int checkCustom(int id, int subId) {
+	public int checkCustom(int id, int subId,long ... args) {
 		LingShanConfig floorConfig = getFloorConfig(subId, id);
 		int power = player.getAttrModule().getPower();
 		int floorInConfig = getFloorInConfig(subId, floorConfig);

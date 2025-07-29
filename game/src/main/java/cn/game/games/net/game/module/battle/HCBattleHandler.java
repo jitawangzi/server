@@ -54,7 +54,7 @@ public abstract class HCBattleHandler extends IBattleHandler {
 	 * @return
 	 */
 	@Override
-	public int checkCustom(int id, int subId) {
+	public int checkCustom(int id, int subId,long ... args) {
 		return 0 ; 
 	}
 	

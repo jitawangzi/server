@@ -67,7 +67,8 @@ public enum CacheType {
 	/**** 玩家id --宗门id 用于确认玩家是否拥有宗门，离线的玩家被审批加入宗门使用 */
 	PLAYER_ID_ZONG_MEN_ID,
 	//************宗门相关***********
-
+	/****层数 里可以助战的玩家ID列表 */
+	EQUIP_TOWER_FLOOR_ID,
 	;
 
 	public String key(Object... ks) {

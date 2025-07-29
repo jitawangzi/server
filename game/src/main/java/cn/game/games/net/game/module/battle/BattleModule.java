@@ -576,6 +576,11 @@ public class BattleModule extends BasePlayerModule  {
 				battle.setPlayer(player);
 				battle.InitTowerBattle();
 				battlesMap.put(battle.getType(), battle);
+			}else if (func == InitialUI.EquipTower) {
+				EquipTowerBattle battle = new EquipTowerBattle();
+				battle.setPlayer(player);
+				battle.initEquipBattle();
+				battlesMap.put(battle.getType(), battle);
 			}
 			break;
 		}

@@ -89,7 +89,7 @@ public class TowerBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public int checkCustom(int id, int subId) {
+    public int checkCustom(int id, int subId,long ... args) {
         BattleConfig battleConfig = BattleManager.instance().getNullable(id);
         if (battleConfig == null) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
