@@ -623,7 +623,7 @@
     ${sql}
 	</select>
   
-  <update id="updatePlayerUnion" >
+  <update id="updatePlayerUnion">
     update t_player_data
    	set
     union_id = #{unionId,jdbcType=BIGINT},

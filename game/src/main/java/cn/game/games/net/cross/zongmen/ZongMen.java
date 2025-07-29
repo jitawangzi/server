@@ -72,7 +72,7 @@ public class ZongMen {
 		data.setLv((byte) 1);
 		data.setIcon(req.getIcon() == 0 ? GlobalConst.ZongmenIconRes : req.getIcon());
 		data.setNotice(StringUtils.isEmpty(req.getNotice()) ? GlobalConst.ZongmenGonggao : req.getNotice());
-		data.setDeclaration(StringUtils.isEmpty(req.getDeclaration()) ? GlobalConst.ZongmenXuanyan : req.getDeclaration());
+		data.setNotification(StringUtils.isEmpty(req.getDeclaration()) ? GlobalConst.ZongmenXuanyan : req.getDeclaration());
 		data.setCreateTime(DateUtil.getTimeByPattern(new Date(), DateUtil.pattern_en));
 		data.setExp(0);
 		data.setServerId(creator.getServerId());
@@ -195,8 +195,7 @@ public class ZongMen {
 
 		// 封装 ZongMenSetting
 		ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
-		settingProto.setNotice(data.getNotice());
-		settingProto.setDeclaration(data.getDeclaration());
+		settingProto.setNotification(data.getNotification()) ; 
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);

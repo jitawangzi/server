@@ -36,10 +36,10 @@ public class ZongmenData implements Serializable, DbEntity {
 	 */
 	private String notice;
 	/**
-	 * 宣言
+	 * 通知，仅成员可见
 	 * @mbg.generated
 	 */
-	private String declaration;
+	private String notification;
 	/**
 	 * 当前经验
 	 * @mbg.generated
@@ -147,15 +147,15 @@ public class ZongmenData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public String getDeclaration() {
-		return declaration;
+	public String getNotification() {
+		return notification;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setDeclaration(String declaration) {
-		this.declaration = declaration;
+	public void setNotification(String notification) {
+		this.notification = notification;
 	}
 
 	/**
