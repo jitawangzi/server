@@ -3,7 +3,7 @@ package cn.game.games.cache.entity;
 import cn.game.games.cache.base.DbEntity;
 import java.io.Serializable;
 
-public class Zongmen implements Serializable, DbEntity {
+public class ZongmenData implements Serializable, DbEntity {
 
 	/**
 	 * 宗门id
@@ -36,25 +36,20 @@ public class Zongmen implements Serializable, DbEntity {
 	 */
 	private String notice;
 	/**
-	 * 宣言
+	 * 通知，仅成员可见
 	 * @mbg.generated
 	 */
-	private String declaration;
+	private String notification;
 	/**
 	 * 当前经验
 	 * @mbg.generated
 	 */
 	private int exp;
 	/**
-	 * 宗门所在的服务器节点id，暂时用不到
+	 * 该宗门属于哪个逻辑服务器id
 	 * @mbg.generated
 	 */
-	private String serverNodeId;
-	/**
-	 * 该宗门属于那个逻辑服务器id
-	 * @mbg.generated
-	 */
-	private String createServerId;
+	private String serverId;
 	/**
 	 * 所有模块数据
 	 * @mbg.generated
@@ -152,15 +147,15 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public String getDeclaration() {
-		return declaration;
+	public String getNotification() {
+		return notification;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setDeclaration(String declaration) {
-		this.declaration = declaration;
+	public void setNotification(String notification) {
+		this.notification = notification;
 	}
 
 	/**
@@ -180,29 +175,15 @@ public class Zongmen implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public String getServerNodeId() {
-		return serverNodeId;
+	public String getServerId() {
+		return serverId;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setServerNodeId(String serverNodeId) {
-		this.serverNodeId = serverNodeId;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public String getCreateServerId() {
-		return createServerId;
-	}
-
-	/**
-	 * @mbg.generated
-	 */
-	public void setCreateServerId(String createServerId) {
-		this.createServerId = createServerId;
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
 	}
 
 	/**
@@ -224,7 +205,7 @@ public class Zongmen implements Serializable, DbEntity {
 	 */
 	@Override
 	public Class<?> getMapperClass() {
-		return cn.game.games.net.data.mapper.ZongmenMapper.class;
+		return cn.game.games.net.data.mapper.ZongmenDataMapper.class;
 	}
 
 	/**

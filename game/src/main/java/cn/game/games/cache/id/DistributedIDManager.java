@@ -21,7 +21,7 @@ public class DistributedIDManager extends GenericDistributedIDManager {
 		case PLAYER:
 			return PlayerManager.getInstance().getPlayer(objectId) != null;
 		case ZONGMEN:
-			return ZongMenManager.getInstance().getZongMenInfo(objectId) != null;
+			return ZongMenManager.getInstance().getZongMen(objectId) != null;
 		default:
 			throw new IllegalArgumentException("Unsupported object type: " + objectType);
 		}

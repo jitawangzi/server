@@ -10,7 +10,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.db.GenericDataLoader;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
-import cn.game.games.net.cross.zongmen.ZongMenInfo;
+import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.cross.zongmen.ZongMenMember;
 import cn.game.protocol.generated.config.GuildBargainConfig;
@@ -47,7 +47,7 @@ public class CrossServerImpl implements CrossServerInterface {
 
 	@Override
 	public io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongmenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
 		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
 		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
 		int bargainTotalNum = bargain.getBargainTotalNum();
@@ -57,7 +57,7 @@ public class CrossServerImpl implements CrossServerInterface {
 
 	@Override
 	public Future<Boolean> buyZongmenBargain(long zongmenId, long playerId) {
-		ZongMenInfo zongMenInfo = ZongMenManager.getInstance().getZongMenInfo(zongmenId);
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
 		ZongMenMember member = zongMenInfo.getMember(playerId);
 		if (!member.isBargain()) {
 			return Future.succeededFuture(false);

@@ -154,7 +154,6 @@ public class ZongMenHandler extends GameBaseHandler {
         putInvoker(PbProtocol.ZongMenActiveRewardRequest_40000045, this::rewardLiveness);
         putInvoker(PbProtocol.ZongMenBargainRequest_40000060, this::bargain);
         putInvoker(PbProtocol.ZongMenBargainBuyRequest_40000062, this::buyBargain);
-        putInvoker(PbProtocol.ZongMenGetMyApplyZongMenIdListRequest_40000055, this::getMyApplyZongMenIdList);
         putInvoker(PbProtocol.ZongMenQuickJoinRequest_40000065, this::quickJoinZongMen);
         putInvoker(PbProtocol.updateZongMenAssetRequest_40000037, this::updateAsset);
         putInvoker(PbProtocol.ZongMenBountyAcceptRequest_40000070, this::bountyAccept);
@@ -187,40 +186,6 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
-    }
-
-    // 获取申请过的宗门列表
-    private void getMyApplyZongMenIdList(NetClient client, Object o) {
-        ZongMenMsg.ZongMenGetMyApplyZongMenIdListRequest_40000055 req = (ZongMenMsg.ZongMenGetMyApplyZongMenIdListRequest_40000055) o;
-        ZongMenMsg.ZongMenGetMyApplyZongMenIdListResponse_40000056.Builder res = ZongMenMsg.ZongMenGetMyApplyZongMenIdListResponse_40000056.newBuilder();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ZongMenModule zongMenModule = player.getZongmenModule();
-        if (player.getZongMenId() != 0 || zongMenModule.applyJoinList.isEmpty()) {
-            client.sendProtocol(res.build());
-            return;
-        }
-        ZongMenHelper.getSimpleZongMenListAsync(zongMenModule.getApplyJoinList()).thenAccept(resultList -> {
-            if (resultList == null) {
-                // 没有申请宗门
-                zongMenModule.getApplyJoinList().clear();
-                client.sendProtocol(res.build());
-                return;
-            }
-            resultList.forEach(obj -> {
-                SimpleZongMen simpleZongMen = (SimpleZongMen) obj;
-                if (!simpleZongMen.getApplyPidList().contains(player.getPlayerId())) {
-                    zongMenModule.removeApplyJoinList(simpleZongMen.getId());
-                }
-            });
-            zongMenModule.getApplyJoinList().forEach(zongMenId -> {
-                res.addZongMenIdList(zongMenId.intValue());
-            });
-            client.sendProtocol(res.build());
-        }).exceptionally(err -> {
-            client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-            err.printStackTrace();
-            return null;
-        });
     }
 
     private void bargain(NetClient client, Object o) {
@@ -512,7 +477,7 @@ public class ZongMenHandler extends GameBaseHandler {
                 ZongMenMsg.applyJoinZongMenResponse_40000008 applyRes = (ZongMenMsg.applyJoinZongMenResponse_40000008) callBack.response;
                 if (applyRes.hasZongMen()) {
                     // 玩家直接加入宗门
-                    player.getZongmenModule().setZongMenInfo(applyRes.getZongMen());
+                    player.getZongmenModule().setZongMenInfo(applyRes.getZongMen().getShowInfo().getSimpleInfo());
                     player.getZongmenModule().refreshZongMenTask();
                     player.getShopModule().refreshZongMenShop();
                 }
@@ -586,7 +551,7 @@ public class ZongMenHandler extends GameBaseHandler {
                     PlayerHelper.delResources(player, GlobalConst.ZongmenCreationConsume, OpType.zongMenChangeName);
                     ZongMenMsg.createZongMenResponse_40000006 createRes = (ZongMenMsg.createZongMenResponse_40000006) createZongMenCallback.response;
                     // 设置玩家宗门信息
-                    player.getZongmenModule().setZongMenInfo(createRes.getZongMen());
+                    player.getZongmenModule().setZongMenInfo(createRes.getZongMen().getShowInfo().getSimpleInfo());
                     player.getZongmenModule().refreshZongMenTask();
                     player.getShopModule().refreshZongMenShop();
                     client.sendProtocol(createRes);

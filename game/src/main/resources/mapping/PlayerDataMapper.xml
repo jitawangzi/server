@@ -623,4 +623,11 @@
     ${sql}
 	</select>
   
+  <update id="updatePlayerUnion">
+    update t_player_data
+   	set
+    union_id = #{unionId,jdbcType=BIGINT},
+    union_name = #{unionName,jdbcType=VARCHAR}
+    where player_id = #{playerId,jdbcType=BIGINT}
+  </update>
 </mapper>

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.core.cache.RedisLocalCache;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
 /**
@@ -17,172 +19,164 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
 	public long playerId;
-    /**玩家战斗力 */
-    int power;
-    /** 加入时间戳*/
-    long joinTime;
-    /**贡献值 */
-    int contribution;
-    /**累计贡献值 */
-    int totalContribution;
-    /**职位 */
+	/** 加入时间戳*/
+	long joinTime;
+	/**贡献值 */
+	int contribution;
+	/**累计贡献值 */
+	int totalContribution;
+	/**职位 */
 	public int position;
-    /** 领取过的宗门活跃度奖励  */
-    List<Integer> rewardLivenessIndexList  = new ArrayList<>();
+	/** 领取过的宗门活跃度奖励  */
+	List<Integer> rewardLivenessIndexList = new ArrayList<>();
 
-    /** 是否已砍价 */
+	/** 是否已砍价 */
 	public boolean isBargain;
-    /** 砍价时间 */
-    long bargainTime;
-    /** 砍价后是否购买 */
-    boolean isBargainBuy;
-    /** 是否切换了宗门 */
-    boolean isNewZongmen;
+	/** 砍价时间 */
+	long bargainTime;
+	/** 砍价后是否购买 */
+	boolean isBargainBuy;
+	/** 是否切换了宗门 */
+	boolean isNewZongmen;
 
-    /** 宗门商店购买的物品数量 */
-	public Map<Integer, Integer> buyShopItemNumMap = new HashMap<>();
+	public ZongMenMember() {
+	}
 
+	public ZongMenMember(long playerId, int position) {
+		this.playerId = playerId;
+		setJoinTime(System.currentTimeMillis());
+		setContribution(0);
+		setTotalContribution(0);
+		setPosition(position);
+	}
 
-    public ZongMenMember() {
-    }
-    public ZongMenMember(long playerId, int power,int position) {
-        this.playerId = playerId;
-        this.power = power;
-        setJoinTime(System.currentTimeMillis());
-        setContribution(0);
-        setTotalContribution(0);
-        setPosition(position);
-    }
+	public long getPlayerId() {
+		return playerId;
+	}
 
-    public long getPlayerId() {
-        return playerId;
-    }
+	public void setPlayerId(long playerId) {
+		this.playerId = playerId;
+	}
 
-    public void setPlayerId(long playerId) {
-        this.playerId = playerId;
-    }
+	/** 
+	 * 获取成员战斗力
+	 * @return
+	 */
+	public int getPower() {
+		return PlayerHelper.getSimplePlayer(playerId).getCombatEffectiveness();
+	}
 
-    public int getPower() {
-        return power;
-    }
+	/** 
+	 * 获取成员名字
+	 * @return
+	 */
+	public String getName() {
+		return PlayerHelper.getSimplePlayer(playerId).getName();
+	}
 
-    public void setPower(int power) {
-        this.power = power;
-    }
+	public long getJoinTime() {
+		return joinTime;
+	}
 
-    public long getJoinTime() {
-        return joinTime;
-    }
+	public void setJoinTime(long joinTime) {
+		this.joinTime = joinTime;
+	}
 
-    public void setJoinTime(long joinTime) {
-        this.joinTime = joinTime;
-    }
+	public int getContribution() {
+		return contribution;
+	}
 
-    public int getContribution() {
-        return contribution;
-    }
+	public void setContribution(int contribution) {
+		this.contribution = contribution;
+	}
 
-    public void setContribution(int contribution) {
-        this.contribution = contribution;
-    }
+	public int getTotalContribution() {
+		return totalContribution;
+	}
 
-    public int getTotalContribution() {
-        return totalContribution;
-    }
+	public void setTotalContribution(int totalContribution) {
+		this.totalContribution = totalContribution;
+	}
 
-    public void setTotalContribution(int totalContribution) {
-        this.totalContribution = totalContribution;
-    }
+	public int getPosition() {
+		return position;
+	}
 
-    public int getPosition() {
-        return position;
-    }
+	public void setPosition(int position) {
+		this.position = position;
+	}
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
+	public void addcontribution(int contribution) {
+		this.contribution += contribution;
+		this.totalContribution += contribution;
+	}
 
-    public void addcontribution(int contribution){
-        this.contribution += contribution;
-        this.totalContribution += contribution;
-    }
+	public List<Integer> getRewardLivenessIndexList() {
+		return rewardLivenessIndexList;
+	}
 
-    public List<Integer> getRewardLivenessIndexList() {
-        return rewardLivenessIndexList;
-    }
+	public void setRewardLivenessIndexList(List<Integer> rewardLivenessIndexList) {
+		this.rewardLivenessIndexList = rewardLivenessIndexList;
+	}
 
-    public void setRewardLivenessIndexList(List<Integer> rewardLivenessIndexList) {
-        this.rewardLivenessIndexList = rewardLivenessIndexList;
-    }
+	public boolean isBargain() {
+		return isBargain;
+	}
 
+	public void setBargain(boolean isBargain) {
+		this.isBargain = isBargain;
+	}
 
-    public boolean isBargain() {
-        return isBargain;
-    }
+	public boolean isBargainBuy() {
+		return isBargainBuy;
+	}
 
-    public void setBargain(boolean isBargain) {
-        this.isBargain = isBargain;
-    }
+	public void setBargainBuy(boolean isBargainBuy) {
+		this.isBargainBuy = isBargainBuy;
+	}
 
-    public boolean isBargainBuy() {
-        return isBargainBuy;
-    }
+	public long getBargainTime() {
+		return bargainTime;
+	}
 
-    public void setBargainBuy(boolean isBargainBuy) {
-        this.isBargainBuy = isBargainBuy;
-    }
+	public void setBargainTime(long bargainTime) {
+		this.bargainTime = bargainTime;
+	}
 
-    public long getBargainTime() {
-        return bargainTime;
-    }
+	public boolean isNewZongmen() {
+		return isNewZongmen;
+	}
 
-    public void setBargainTime(long bargainTime) {
-        this.bargainTime = bargainTime;
-    }
+	public void setNewZongmen(boolean isNewZongmen) {
+		this.isNewZongmen = isNewZongmen;
+	}
 
-    public boolean isNewZongmen() {
-        return isNewZongmen;
-    }
+	public ZongMenMsg.ZongMenMemberInfo.Builder toProto() {
+		ZongMenMsg.ZongMenMemberInfo.Builder builder = ZongMenMsg.ZongMenMemberInfo.newBuilder();
+		builder.setJoinTime((int) (joinTime / 1000L));
+		builder.setPosition(position);
+		builder.setTodayContribute(contribution);
+		builder.setTotalContribute(totalContribution);
+		return builder;
+	}
 
-    public void setNewZongmen(boolean isNewZongmen) {
-        this.isNewZongmen = isNewZongmen;
-    }
-    public ZongMenMsg.ZongMenMemberProto.Builder toProto() {
-        ZongMenMsg.ZongMenMemberProto.Builder builder = ZongMenMsg.ZongMenMemberProto.newBuilder();
-        builder.setJoinTime((int) (joinTime/1000L));
-        builder.setPid((int) playerId);
-        builder.setPosition(position);
-        builder.setTodayContribute(contribution);
-        builder.setTotalContribute(totalContribution);
-        return builder;
-    }
+	@Override
+	public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
+		return new ZongMenConstants.ZongMenEvenType[] { ZongMenConstants.ZongMenEvenType.CROSS_DAY };
+	}
 
-    @Override
-    public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
-        return new ZongMenConstants.ZongMenEvenType[]{ZongMenConstants.ZongMenEvenType.CROSS_DAY};
-    }
-
-    @Override
-    public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMenInfo info, Object... params) {
-        switch (type){
-            case CROSS_DAY ->{
-                //每日重置 贡献度
-                this.totalContribution = 0;
-                // 每日重置砍价状态
-                this.isBargain = false ;
-                this.bargainTime = 0;
-                this.isBargainBuy = false;
-                this.isNewZongmen = false;
-            }
-        }
-    }
-
-    public void refreshWeekShop() {
-        buyShopItemNumMap.clear();
-    }
-    public void addShopItemNum(int itemId,int count){
-        int newCount = buyShopItemNumMap.getOrDefault(itemId,0) + count;
-        buyShopItemNumMap.put(itemId,newCount);
-    }
+	@Override
+	public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMen info, Object... params) {
+		switch (type) {
+		case CROSS_DAY -> {
+			// 每日重置 贡献度
+			this.totalContribution = 0;
+			// 每日重置砍价状态
+			this.isBargain = false;
+			this.bargainTime = 0;
+			this.isBargainBuy = false;
+			this.isNewZongmen = false;
+		}
+		}
+	}
 }
-

@@ -37,6 +37,13 @@ public class GameUtil {
 		}
 		return list;
 	}
+	public static String[] transformToStringArray(List<Long> list) {
+		String[] ret = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			ret[i] = String.valueOf(list.get(i));
+		}
+		return ret;
+	}
 	
 	public static List<Integer> transform1(int[] array) {
 		List<Integer> list = new ArrayList<>(array.length);

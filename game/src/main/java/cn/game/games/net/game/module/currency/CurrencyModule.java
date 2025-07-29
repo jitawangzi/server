@@ -27,6 +27,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
 	/** 货币,key:  {@link Money}*/
 	private MapWrapper currencyMap = new MapWrapper();
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -96,6 +97,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 	public GoodsTypeEnum getGoodsTypeEnum() {
 		return GoodsTypeEnum.Resource;
 	}
+
 	@Override
 	public Currency newInstance() {
 		return new Currency();
@@ -103,8 +105,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 
 	@Override
 	public RewardInfo toRewardInfo(Currency reward) {
-		return RewardInfo.newBuilder()
-				.setAsset(AssetInfo.newBuilder().setId(reward.getConfigId()).setCount(reward.getCount())).build();
+		return RewardInfo.newBuilder().setAsset(AssetInfo.newBuilder().setId(reward.getConfigId()).setCount(reward.getCount())).build();
 
 	}
 
@@ -170,8 +171,14 @@ public class CurrencyModule extends GoodsModule<Currency> {
 		}
 		currencyMap.setValue(id, curExp);
 
-		player.getGameClient().sendProtocol(PlayerExpLevelPush_01100050.newBuilder()
-				.setExpLevel(ExpLevelInfo.newBuilder().setId(id).setExp((int) currencyMap.getValue(id)).setLevel(levelsMap.getValue(id)).build()).build());
+		player.getGameClient()
+				.sendProtocol(PlayerExpLevelPush_01100050.newBuilder()
+						.setExpLevel(ExpLevelInfo.newBuilder()
+								.setId(id)
+								.setExp((int) currencyMap.getValue(id))
+								.setLevel(levelsMap.getValue(id))
+								.build())
+						.build());
 
 	}
 

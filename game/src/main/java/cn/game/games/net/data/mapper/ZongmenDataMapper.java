@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import cn.game.games.cache.entity.Zongmen;
+import cn.game.games.cache.entity.ZongmenData;
 
-public interface ZongmenMapper {
+public interface ZongmenDataMapper {
 
 	/**
 	 * @mbg.generated
@@ -16,42 +16,37 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insert(Zongmen row);
+	int insert(ZongmenData row);
 
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Zongmen row);
+	int insertOrUpdate(ZongmenData row);
 
 	/**
 	 * @mbg.generated
 	 */
-	Zongmen selectByPrimaryKey(long id);
+	ZongmenData selectByPrimaryKey(long id);
 
 	/**
 	 * @mbg.generated
 	 */
-	int updateByPrimaryKey(Zongmen row);
+	int updateByPrimaryKey(ZongmenData row);
 
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> selectByServerNodeIdIndex(@Param("serverNodeId") String serverNodeId);
+	List<ZongmenData> selectAll();
 
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> selectAll();
+	List<ZongmenData> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
 	 */
-	List<Zongmen> getBatchOffset(@Param("offset") int offset, @Param("limit") int limit);
-
-	/**
-	 * @mbg.generated
-	 */
-	List<Zongmen> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
+	List<ZongmenData> getBatchCursor(@Param("lastId") long lastId, @Param("limit") int limit);
 
 	/**
 	 * @mbg.generated
@@ -61,17 +56,17 @@ public interface ZongmenMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertBatch(List<Zongmen> records);
+	int insertBatch(List<ZongmenData> records);
 
 	/**
 	 * @mbg.generated
 	 */
-	int deleteBatch(List<Zongmen> records);
+	int deleteBatch(List<ZongmenData> records);
 
 	/**
 	 * @mbg.generated
 	 */
-	int updateBatch(@Param("recordList") List<Zongmen> recordList);
+	int updateBatch(@Param("recordList") List<ZongmenData> recordList);
 
 	/**
 	 * @mbg.generated

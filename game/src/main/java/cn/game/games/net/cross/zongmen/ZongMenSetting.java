@@ -8,6 +8,7 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.protocol.generated.manager.GuildIconManager;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.LockUtil;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -42,7 +43,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
     }
 
     @Override
-    public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMenInfo info, Object... params) {
+    public void handleEventType(ZongMenConstants.ZongMenEvenType type, ZongMen info, Object... params) {
         switch (type) {
             case ZONG_MEN_LEVEL_UP:
                 //宗门等级提升
@@ -68,34 +69,20 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param operatorName 操作者名称
      * @return 是否成功
      */
-    public Future<Boolean> changeZongmenName(ZongMenInfo zongMenInfo, String newName, String operatorName) {
-        Promise<Boolean> promise = Promise.promise();
-        
-        RedisLocalCache.getInstance().getAsync(CacheType.ZONG_MEN_NAME_ID.key(newName)).onSuccess((result) -> {
-            if (result == null) { // 该名称未被占用
-                boolean redisLock = LockUtil.tryLockNoWaitSync(6, CacheType.ZONG_MEN_NAME_CHANGE_LOCK.key(newName));
-                if (redisLock) {
-                    // 删除旧的宗门名称id映射
-                    zongMenInfo.delZongMenNameIdRedisData();
-                    zongMenInfo.getData().setName(newName);
-                    // 名称修改：玩家昵称修改宗门名称为宗门昵称
-                    zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME, operatorName, newName);
-                    // 保存新的宗门名称id映射
-                    ZongMenManager.getInstance().saveRedisNameIdMap(newName, zongMenInfo.getId());
-                    this.lastChangeNameTimer = System.currentTimeMillis();
-                    promise.complete(true);
-                } else {
-                    promise.complete(false);
-                }
-            } else { // 该名称被占用
-                promise.complete(false);
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            promise.complete(false);
-        });
-        
-        return promise.future();
+    public boolean changeZongmenName(ZongMen zongMenInfo, String newName, String operatorName) {
+        boolean trySet = RedisUtil.trySet(ZongMenHelper.getNameKey(newName), newName); 
+		if (!trySet) {
+			// 名称修改失败,已经存在了
+			return false;
+		}
+
+        // 删除旧的宗门名称id映射
+        zongMenInfo.delZongMenNameIdRedisData();
+        zongMenInfo.getData().setName(newName);
+        // 名称修改：玩家昵称修改宗门名称为宗门昵称
+        zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NAME, operatorName, newName);
+        this.lastChangeNameTimer = System.currentTimeMillis();
+        return true; 
     }
 
     /**
@@ -114,7 +101,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param notice 公告内容
      * @param operatorName 操作者名称
      */
-    public void changeNotice(ZongMenInfo zongMenInfo, String notice, String operatorName) {
+    public void changeNotice(ZongMen zongMenInfo, String notice, String operatorName) {
         zongMenInfo.getData().setNotice(notice);
         // 公告修改：玩家昵称修改了公告
         zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_NOTICE, operatorName);
@@ -126,8 +113,9 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param declaration 宣言内容
      * @param operatorName 操作者名称
      */
-    public void changeDeclaration(ZongMenInfo zongMenInfo, String declaration, String operatorName) {
-        zongMenInfo.getData().setDeclaration(declaration);
+    public void changeDeclaration(ZongMen zongMenInfo, String declaration, String operatorName) {
+        zongMenInfo.getData().setNotification(declaration);
+        
         // 宣言修改：玩家昵称修改了宣言
         zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION, operatorName);
     }
@@ -137,7 +125,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param zongMenInfo 宗门信息
      * @param icon 图标ID
      */
-    public void changeIcon(ZongMenInfo zongMenInfo, int icon) {
+    public void changeIcon(ZongMen zongMenInfo, int icon) {
         zongMenInfo.getData().setIcon(icon);
     }
 
