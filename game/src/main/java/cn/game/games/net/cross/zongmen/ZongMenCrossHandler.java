@@ -251,7 +251,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	private void findZongMen(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
 		ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
-		res.setZongMen(info.toProto().getShowInfo());
+		res.setZongMen(info.toShowProto());
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.findZongMenResponse_40000004);
 	}
 

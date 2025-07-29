@@ -31,6 +31,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenPersonalInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSharedInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
@@ -178,69 +179,54 @@ public class ZongMen {
 		return simpleZongMen;
 	}
 
-	public ZongMenMsg.ZongMenAllInfo toProto(long... notifyPids) {
-		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
+	public ZongMenMsg.ZongMenShowInfo toShowProto() {
 		ZongMenShowInfo.Builder showInfoBuilder = ZongMenShowInfo.newBuilder();
-		ZongMenSharedInfo.Builder sharedInfoBuilder = ZongMenSharedInfo.newBuilder();
-		ZongMenPersonalInfo.Builder personalInfoBuilder = ZongMenPersonalInfo.newBuilder();
-
 		showInfoBuilder.setSimpleInfo(toSimpleZongMen().toProto());
-
-		sharedInfoBuilder.setExp(getExp());
-		sharedInfoBuilder.setBargain(module.bargain.toProto());
-
-		// 封装 ZongMenMemberProto
-		Map<Long, ZongMenMsg.ZongMenMemberInfo.Builder> memberProtoMap = new HashMap<>();
 		module.menMemberMap.forEach((pid, member) -> {
-			memberProtoMap.put(pid, member.toProto());
+			showInfoBuilder.addMembers(member.toProto().build());
 		});
-
-		List<Long> pidList = new ArrayList<>(module.menMemberMap.keySet());
-		// 该玩家有审批权限 同步 申请列表
-		if (notifyPids != null && notifyPids.length > 0) {
-			long playerId = notifyPids[0];
-			ZongMenMember member = getMember(playerId);
-			GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
-			if (permissionsConfig.Approval) {
-				pidList.addAll(module.applyList);
-			}
-			personalInfoBuilder.setIsBargain(member.isBargain);
-			personalInfoBuilder.setIsBargainBuy(member.isBargainBuy);
-		}
-
-		// redis 同步加载 SimplePlayer
-		List<SimplePlayer> simplePlayerList = null;
-		try {
-			simplePlayerList = PlayerManager.getInstance()
-					.batchGetSimplePlayerListFromRedisAsync(pidList)
-					.toCompletionStage()
-					.toCompletableFuture()
-					.get(1, TimeUnit.SECONDS);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (simplePlayerList != null) {
-			simplePlayerList.forEach(simplePlayer -> {
-				if (memberProtoMap.containsKey(simplePlayer.getId())) {
-					memberProtoMap.get(simplePlayer.getId()).setSimplePlayer(simplePlayer.toSimplePlayerInfo());
-				} else if (module.applyList.contains(simplePlayer.getId())) {// 同步申请列表
-					sharedInfoBuilder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
-				}
-			});
-		}
-
-		ZongMenHelper.sortMemberList(memberProtoMap.values()).forEach(memberProto -> {
-			showInfoBuilder.addMembers(memberProto.build()) ;
-		});
+		return showInfoBuilder.build() ; 
+	}
+	public ZongMenMsg.ZongMenSharedInfo toSharedProto(long playerId) {
+		ZongMenSharedInfo.Builder builder = ZongMenSharedInfo.newBuilder();
+		
+		builder.setExp(getExp());
+		builder.setBargain(module.bargain.toProto());
 
 		// 封装 ZongMenSetting
 		ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
 		settingProto.setNotice(data.getNotice());
 		settingProto.setDeclaration(data.getDeclaration());
 
-		sharedInfoBuilder.setSetting(settingProto.build());
-		sharedInfoBuilder.setLiveness(module.liveness);
-
+		builder.setSetting(settingProto.build());
+		builder.setLiveness(module.liveness);
+		// 申请列表，看权限发
+		ZongMenMember member = getMember(playerId);
+		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
+		if (permissionsConfig.Approval) {
+			List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance().multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList)); 
+			for (SimplePlayer simplePlayer : simplePlayers) {
+                if (simplePlayer != null) {
+                    builder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
+                }
+			}
+		}
+		return builder.build() ; 
+	}
+	public ZongMenMsg.ZongMenPersonalInfo toPersonalProto(long playerId) {
+		ZongMenPersonalInfo.Builder builder = ZongMenPersonalInfo.newBuilder();
+		
+		ZongMenMember member = getMember(playerId);
+		builder.setIsBargain(member.isBargain);
+		builder.setIsBargainBuy(member.isBargainBuy);
+		return builder.build() ; 
+	}
+		
+	public ZongMenMsg.ZongMenAllInfo toProto(long playerId) {
+		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
+		builder.setShowInfo(toShowProto());
+		builder.setSharedInfo(toSharedProto(playerId));
+		builder.setPersonalInfo(toPersonalProto(playerId));
 		return builder.build();
 	}
 
@@ -309,10 +295,21 @@ public class ZongMen {
 	public void addExp(int addExp) {
 		int totalExp = getExp() + addExp;
 		GuildBasicConfig basicConfig = GuildBasicManager.instance().get(getLv());
+		GuildBasicConfig nextConfig = GuildBasicManager.instance().getNullable(getLv() + 1);
+		if (basicConfig == null) {
+			return; // 配置错误
+		}
 		while (totalExp >= basicConfig.Exp) {
 			totalExp -= basicConfig.Exp;
+			nextConfig = GuildBasicManager.instance().getNullable(getLv() + 1);
+			if (nextConfig == null) {
+				break; 
+			}
 			setLv(getLv() + 1);
-			basicConfig = GuildBasicManager.instance().get(getLv());
+			basicConfig = GuildBasicManager.instance().getNullable(getLv());
+			if (basicConfig == null) {
+				break; 
+			}
 			handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this, getLv());
 		}
 		setExp(totalExp);
