@@ -254,3 +254,10 @@
 254,ZongMenBountyRewardRequest_40000072,0x40000072,,,,,领取当前悬赏任务奖励
 255,BattleTowerDataRequest_13000521,0x13000521,,,,,塔数据请求
 256,BattleTowerQuickEndRequest_13100524,0x13100524,,,,,扫荡
+257,BattleEquipTowerDataRequest_13000526,0x13000526,,,,,装备塔数据请求
+258,BattleEquipTowerGetTicketRequest_13000533,0x13000533,,,,,领取装备塔门票
+259,BattleEquipTowerHelpPlayerRequest_13000531,0x13000531,,,,,助战玩家列表点击刷新
+260,BattleEquipTowerGetHelpRewardRequest_13000535,0x13000535,,,,,领取助战奖励请求
+261,BattleEquipTowerGetHelpRewardRequest_13000537,0x13000537,,,,,查看助战情况请求
+262,BattleEquipTowerGetHelpInfoRequest_13000537,0x13000537,,,,,查看助战情况请求
+263,BattleEquipTowerFindHelpRewardRequest_13000537,0x13000537,,,,,查看助战奖励情况请求

@@ -35,7 +35,7 @@ public abstract class IBattleHandler {
 	 * @param subId
 	 * @return
 	 */
-	abstract int checkCustom(int id, int subId);
+	abstract int checkCustom(int id, int subId,long ... args);
 	
 	/** 
 	 * 战斗开始前的一些处理。 

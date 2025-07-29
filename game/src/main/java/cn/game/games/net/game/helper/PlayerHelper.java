@@ -1813,4 +1813,8 @@ public class PlayerHelper {
 			return null;
 		});
 	}
+	public static SimplePlayer getSimplePlayer(long playerId) {
+		String key = CacheType.PLAYER_SIMPLE.key(playerId);
+		return RedisLocalCache.getInstance().get(key);
+	}
 }

@@ -3,6 +3,7 @@ package cn.game.login;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import cn.game.util.*;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 
@@ -27,12 +28,6 @@ import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
 import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.util.Config;
-import cn.game.util.GameUtil;
-import cn.game.util.RedisUtil;
-import cn.game.util.ServerType;
-import cn.game.util.SpringApolloLoader;
-import cn.game.util.SpringContextLoader;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
 import io.vertx.core.DeploymentOptions;

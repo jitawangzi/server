@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
+
+import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Chapter;
@@ -140,6 +142,16 @@ import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataRequest_13000521;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndResponse_13100525;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataRequest_13000526;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataResponse_13000527;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerResponse_13000532;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetTicketRequest_13000533;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetTicketResponse_13000534;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_13000535;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardResponse_13000536;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardResponse_13000538;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -201,6 +213,11 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.HCBattleDataRequest_13000102, this::hCData);
         putInvoker(PbProtocol.BattleTowerDataRequest_13000521, this::towerData);
         putInvoker(PbProtocol.BattleTowerQuickEndRequest_13100524, this::towerQuickEnd);
+        putInvoker(PbProtocol.BattleEquipTowerDataRequest_13000526, this::equipTowerData);
+        putInvoker(PbProtocol.BattleEquipTowerHelpPlayerRequest_13000531, this::equipTowerHelpPlayer);
+        putInvoker(PbProtocol.BattleEquipTowerGetTicketRequest_13000533, this::equipTowerGetTicket);
+        putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardRequest_13000535, this::equipTowerGetHelpReward);
+        putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardRequest_13000537, this::equipTowerFindHelpReward);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1449,14 +1466,12 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         TowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.GemTower);
-
         BattleTowerDataResponse_13000522.Builder resp = BattleTowerDataResponse_13000522.newBuilder();
         resp.setFloorCount(towerBattle.getFloorCount());
         resp.setRadomBuff(towerBattle.getRadomBuff());
         resp.setRewardCount(towerBattle.getRewardCount());
-        Map<Integer, Integer> list =   towerBattle.getCurFloor();
+        Map<Integer, Integer> list = towerBattle.getCurFloor();
         list.forEach((k, v) -> resp.putCurFloor(k, v));
-
         client.sendProtocol(resp.build());
     }
 
@@ -1473,11 +1488,96 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, result.getErrorCode());
             return;
         }
-        player.handleEvent(EventTypeEnum.BattleEnd, DungeonTypeEnum.GemTower, quickCount, true, 0, 0);
+        //player.handleEvent(EventTypeEnum.BattleEnd, DungeonTypeEnum.GemTower, battleId,quickCount, true, 0, 0);
         if (result.getValue() != null) {
             resp.addAllRewards(result.getValue());
         }
         resp.setRewardCount(towerBattle.getRewardCount());
+        client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerData(NetClient client, Object message) {
+        BattleEquipTowerDataRequest_13000526 req = (BattleEquipTowerDataRequest_13000526) message;
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        BattleEquipTowerDataResponse_13000527.Builder resp = BattleEquipTowerDataResponse_13000527.newBuilder();
+
+        resp.setTicketCount(towerBattle.getTicketCount());
+        resp.setNextTicketTime(towerBattle.getNextGetTicketTime());
+        resp.setCurFloor(towerBattle.getCurFloor());
+        client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerHelpPlayer(NetClient client, Object message) {
+        BattleEquipTowerHelpPlayerRequest_13000531 req = (BattleEquipTowerHelpPlayerRequest_13000531) message;
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        BattleEquipTowerHelpPlayerResponse_13000532.Builder resp = BattleEquipTowerHelpPlayerResponse_13000532.newBuilder();
+        towerBattle.getHelpPlayerInfo(req.getFloor());
+        towerBattle.getSimplePlayerMap().forEach((k, v) -> {
+            if (k == req.getFloor()) {
+                v.forEach(p -> {
+                    resp.addHelpPlayerList(PlayerHelper.getSimplePlayer(p).toSimplePlayerInfo());
+                });
+            }
+        });
+        client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerGetTicket(NetClient client, Object message) {
+        BattleEquipTowerGetTicketRequest_13000533 req = (BattleEquipTowerGetTicketRequest_13000533) message;
+        BattleEquipTowerGetTicketResponse_13000534 defaultInstance = BattleEquipTowerGetTicketResponse_13000534.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleEquipTowerGetTicketResponse_13000534.Builder resp = BattleEquipTowerGetTicketResponse_13000534.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        List<RewardInfo> getTicket = towerBattle.getTicket();
+        resp.setTicketCount(towerBattle.getTicketCount());
+        resp.setNextTicketTime(towerBattle.getNextGetTicketTime());
+        if (getTicket != null && getTicket.size() > 0) {
+            resp.setReward(getTicket.get(0));
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerGetHelpReward(NetClient client, Object message) {
+        BattleEquipTowerGetHelpRewardRequest_13000535 req = (BattleEquipTowerGetHelpRewardRequest_13000535) message;
+        long battleID = req.getBattleID();
+        int floor = req.getFloor();
+        int type = req.getType();
+        BattleEquipTowerGetHelpRewardResponse_13000536 defaultInstance = BattleEquipTowerGetHelpRewardResponse_13000536.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        List<RewardInfo> reward=   towerBattle.getHelpReward(floor,battleID,type);
+
+        BattleEquipTowerGetHelpRewardResponse_13000536.Builder resp = BattleEquipTowerGetHelpRewardResponse_13000536.newBuilder();
+        resp.addAllRewards(reward);
+        client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerFindHelpReward(NetClient client, Object message) {
+        BattleEquipTowerFindHelpRewardRequest_13000537 req = (BattleEquipTowerFindHelpRewardRequest_13000537) message;
+        BattleEquipTowerFindHelpRewardResponse_13000538 defaultInstance = BattleEquipTowerFindHelpRewardResponse_13000538.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleEquipTowerFindHelpRewardResponse_13000538.Builder resp = BattleEquipTowerFindHelpRewardResponse_13000538.newBuilder();
+
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        towerBattle.getHelpRewardMap().forEach((k, v) -> {
+            v.forEach((k1, v1) -> {
+                resp.addHelpReward(
+                        BaseMsg.EquipTowerHelpRewardInfo.newBuilder()
+                                .setHelpfloor(k)
+                                .setHelpReward(v1)
+                                .setHelpID(k1)
+                );
+            });
+        });
+
         client.sendProtocol(resp.build());
     }
 }

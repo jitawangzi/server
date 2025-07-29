@@ -188,6 +188,7 @@ public class ShopModule extends BasePlayerModule {
 		refreshShopNewDay();
 		refreshShopNewWeek();
 		refreshShopNewMonth();
+		refreshGemTowerItems();
 	}
 
 	private void refreshShopNewDay() {
@@ -214,7 +215,7 @@ public class ShopModule extends BasePlayerModule {
 
 		refreshGinsengTreeItems();
 
-		refreshGemTowerItems();
+
 	}
 
 	public void refreshZongMenShop() {
@@ -317,10 +318,10 @@ public class ShopModule extends BasePlayerModule {
 		// 刷新爬塔商店
 		int shop = 19;
 		shopItemsMap.removeAll(shop);
-		int level = player.getLevel(Asset.RSGTreeExp);
+		int level = player.getLevel();
 		DragonStoreManager.instance().list().forEach(shopConfig ->{
 			if (level >= shopConfig.LevelUnlock) {
-				shopItemsMap.put(shop, new ShopItem(shopConfig.ID));
+				shopItemsMap.put(shop, new ShopItem(shopConfig.Item));
 			}
 		});
 	}
@@ -347,6 +348,8 @@ public class ShopModule extends BasePlayerModule {
 
 		//刷新宗门商店
 		refreshZongMenShop();
+
+		refreshGemTowerItems();
 	}
 
 	private void refreshShopByShopType(int shop) {

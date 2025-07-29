@@ -89,7 +89,7 @@ public class TowerBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public int checkCustom(int id, int subId) {
+    public int checkCustom(int id, int subId,long ... args) {
         BattleConfig battleConfig = BattleManager.instance().getNullable(id);
         if (battleConfig == null) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
@@ -154,6 +154,10 @@ public class TowerBattle extends XiYouBattleHandler {
             } else {
                 curFloor.put(battleConfig.BattleType, -1);
             }
+            if(battleConfig.BattleType==DungeonTypeEnum.GemTower.getId()) {
+                rewardCount--;
+            }
+            floorCount--;
             return ResultObject.success();
         } else { // 失败了，最终结算
 
@@ -187,7 +191,10 @@ public class TowerBattle extends XiYouBattleHandler {
             if (count > rewardCount) {
                 count = rewardCount;
             }
-            rewardCount -= count;
+            if(battleConfig.BattleType==DungeonTypeEnum.GemTower.getId())
+            {
+                rewardCount-=count;
+            }
             OpType opType = OpType.GemTowerSweep;
             for (int i = 0; i < count; i++) {
                 List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
