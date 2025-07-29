@@ -2,9 +2,12 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.protocol.protobuf.BaseMsg.EquipTowerHelpRewardInfo;
 import cn.game.protocol.protobuf.BaseMsg.PlayerRankInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -14,6 +17,12 @@ import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchResponse_13000063;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000061;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataPush_13100528;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataResponse_13000527;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardResponse_13000538;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardResponse_13000536;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetTicketResponse_13000534;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerResponse_13000532;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndResponse_13000004;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndResponse_13000006;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldStartResponse_13000002;
@@ -48,6 +57,9 @@ import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualInfoResponse_13000091;
 import cn.game.protocol.protobuf.BattleMsg.BattleSpiritualReceiveActivePointResponse_13000093;
 import cn.game.protocol.protobuf.BattleMsg.BattleStaminaResponse_13000051;
 import cn.game.protocol.protobuf.BattleMsg.BattleSweepResponse_13000025;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataPush_13100523;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
+import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndResponse_13100525;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesResponse_13000304;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldBossInfoResponse_13000302;
 import cn.game.protocol.protobuf.BattleMsg.BattleWorldRewardResponse_13000306;
@@ -61,16 +73,6 @@ import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
-import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataPush_13100523;
-import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndResponse_13100525;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataResponse_13000527;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataPush_13100528;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerResponse_13000532;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetTicketResponse_13000534;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardResponse_13000536;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpInfoResponse_13000538;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardResponse_13000538;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -132,12 +134,10 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleTowerDataResponse_13000522, this::towerData);
         putInvoker(PbProtocol.BattleTowerDataPush_13100523, this::towerDataPush);
         putInvoker(PbProtocol.BattleTowerQuickEndResponse_13100525, this::towerQuickEnd);
-        putInvoker(PbProtocol.BattleEquipTowerDataResponse_13000527, this::equipTowerData);
         putInvoker(PbProtocol.BattleEquipTowerDataPush_13100528, this::equipTowerDataPush);
         putInvoker(PbProtocol.BattleEquipTowerHelpPlayerResponse_13000532, this::equipTowerHelpPlayer);
         putInvoker(PbProtocol.BattleEquipTowerGetTicketResponse_13000534, this::equipTowerGetTicket);
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardResponse_13000536, this::equipTowerGetHelpReward);
-        putInvoker(PbProtocol.BattleEquipTowerGetHelpInfoResponse_13000538, this::equipTowerGetHelpInfo);
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardResponse_13000538, this::equipTowerFindHelpReward);
     }
 
@@ -473,14 +473,6 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void equipTowerData(NetClient netClient, Object message) {
-        BattleEquipTowerDataResponse_13000527 resp = (BattleEquipTowerDataResponse_13000527) message;
-        int ticketCount = resp.getTicketCount();
-        long nextTicketTime = resp.getNextTicketTime();
-        int helpRewardCount = resp.getHelpRewardCount();
-        List<SimplePlayerInfo> helpPlayerListList = resp.getHelpPlayerListList();
-        Client client = (Client) netClient;
-    }
 
     private void equipTowerDataPush(NetClient netClient, Object message) {
         BattleEquipTowerDataPush_13100528 resp = (BattleEquipTowerDataPush_13100528) message;
@@ -509,11 +501,6 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void equipTowerGetHelpInfo(NetClient netClient, Object message) {
-        BattleEquipTowerGetHelpInfoResponse_13000538 resp = (BattleEquipTowerGetHelpInfoResponse_13000538) message;
-        List<EquipTowerHelpRewardInfo> helpRewardList = resp.getHelpRewardList();
-        Client client = (Client) netClient;
-    }
 
     private void equipTowerFindHelpReward(NetClient netClient, Object message) {
         BattleEquipTowerFindHelpRewardResponse_13000538 resp = (BattleEquipTowerFindHelpRewardResponse_13000538) message;

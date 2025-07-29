@@ -5,11 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-<<<<<<< HEAD
 
 import cn.game.protocol.protobuf.BaseMsg;
-=======
->>>>>>> refs/heads/zongmen
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Chapter;
@@ -216,14 +213,11 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.HCBattleDataRequest_13000102, this::hCData);
         putInvoker(PbProtocol.BattleTowerDataRequest_13000521, this::towerData);
         putInvoker(PbProtocol.BattleTowerQuickEndRequest_13100524, this::towerQuickEnd);
-<<<<<<< HEAD
         putInvoker(PbProtocol.BattleEquipTowerDataRequest_13000526, this::equipTowerData);
         putInvoker(PbProtocol.BattleEquipTowerHelpPlayerRequest_13000531, this::equipTowerHelpPlayer);
         putInvoker(PbProtocol.BattleEquipTowerGetTicketRequest_13000533, this::equipTowerGetTicket);
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardRequest_13000535, this::equipTowerGetHelpReward);
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardRequest_13000537, this::equipTowerFindHelpReward);
-=======
->>>>>>> refs/heads/zongmen
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {

@@ -1295,11 +1295,6 @@ public class PlayerHelper {
 		Future<Void> future = saveSimplePlayerToRedis(player);
 		return future.map(player);
 	}
-	
-	public static SimplePlayer getSimplePlayer(long playerId) {
-		String key = CacheType.PLAYER_SIMPLE.key(playerId);
-		return RedisLocalCache.getInstance().get(key);
-	}
 
 	/** 
 	 * 创建新玩家，保存到数据库
