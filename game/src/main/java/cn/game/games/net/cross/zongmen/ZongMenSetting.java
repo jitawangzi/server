@@ -114,7 +114,7 @@ public class ZongMenSetting implements ZongMenConstants.ZongMenEventHandler {
      * @param operatorName 操作者名称
      */
     public void changeDeclaration(ZongMen zongMenInfo, String declaration, String operatorName) {
-        zongMenInfo.getData().setDeclaration(declaration);
+        zongMenInfo.getData().setNotification(declaration);
         
         // 宣言修改：玩家昵称修改了宣言
         zongMenInfo.handleEvent(ZongMenConstants.ZongMenEvenType.CHANGE_ZONG_MEN_DECLARATION, operatorName);
