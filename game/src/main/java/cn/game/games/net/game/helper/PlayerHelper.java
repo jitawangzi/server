@@ -640,7 +640,7 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
-		player.handleEvent(EventTypeEnum.Login);
+		player.handleEvent(EventTypeEnum.LoginStart);
 
 		long playerId = player.getData().getPlayerId();
 		player.getData().setLoginDate(DateUtil.getStringDate());
@@ -1175,7 +1175,11 @@ public class PlayerHelper {
 		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
 		PlayerHelper.refresh(player);
-		player.handleEvent(EventTypeEnum.Reconnect);
+		if (reconnect) {
+			player.handleEvent(EventTypeEnum.Reconnect);
+		}else {
+			player.handleEvent(EventTypeEnum.Relogin);
+		}
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 		resp2.setReconnect(reconnect);
 		resp2.setInfo(PbBuilder.buildPlayerInfo(player));

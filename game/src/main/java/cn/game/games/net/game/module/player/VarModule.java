@@ -93,19 +93,19 @@ public class VarModule extends BasePlayerModule {
 		builder.setWechatSetting(setting);
 	}
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-//		return new Class[] { VariableMapper.class };
-		return null;
-	}
-
-//	@Override
-//	protected void initFromDb(ListIterator<?> iterator) {
-//		List<Variable> list = (List<Variable>) iterator.next();
-//		for (Variable variable : list) {
-//			varMap.put(variable.getType(), variable.getValue());
-//		}
-//	}
+	/*	@Override
+		public Class<?>[] defaultDbMapperClass() {
+			return new Class[] { VariableMapper.class };
+			return null;
+		}
+	
+		@Override
+		protected void initFromDb(ListIterator<?> iterator) {
+			List<Variable> list = (List<Variable>) iterator.next();
+			for (Variable variable : list) {
+				varMap.put(variable.getType(), variable.getValue());
+			}
+		}*/
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {

@@ -53,6 +53,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptRequest_40000070;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptResponse_40000071;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshRequest_40000074;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartRequest_40000076;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartResponse_40000077;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleEndRequest_40000078;
@@ -476,10 +477,9 @@ public class ZongMenHandler extends GameBaseHandler {
             } else {
                 ZongMenMsg.applyJoinZongMenResponse_40000008 applyRes = (ZongMenMsg.applyJoinZongMenResponse_40000008) callBack.response;
                 if (applyRes.hasZongMen()) {
+                	ZongMenSimpleInfo simpleInfo = applyRes.getZongMen().getShowInfo().getSimpleInfo(); 
                     // 玩家直接加入宗门
-                    player.getZongmenModule().setZongMenInfo(applyRes.getZongMen().getShowInfo().getSimpleInfo());
-                    player.getZongmenModule().refreshZongMenTask();
-                    player.getShopModule().refreshZongMenShop();
+                    player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName());
                 }
                 client.sendProtocol(callBack.response);
             }
@@ -551,9 +551,8 @@ public class ZongMenHandler extends GameBaseHandler {
                     PlayerHelper.delResources(player, GlobalConst.ZongmenCreationConsume, OpType.zongMenChangeName);
                     ZongMenMsg.createZongMenResponse_40000006 createRes = (ZongMenMsg.createZongMenResponse_40000006) createZongMenCallback.response;
                     // 设置玩家宗门信息
-                    player.getZongmenModule().setZongMenInfo(createRes.getZongMen().getShowInfo().getSimpleInfo());
-                    player.getZongmenModule().refreshZongMenTask();
-                    player.getShopModule().refreshZongMenShop();
+                    ZongMenSimpleInfo simpleInfo = createRes.getZongMen().getShowInfo().getSimpleInfo(); 
+                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName()) ; 
                     client.sendProtocol(createRes);
                 } else {
                     // 创建宗门失败

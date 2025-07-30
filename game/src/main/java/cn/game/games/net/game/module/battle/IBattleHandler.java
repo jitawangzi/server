@@ -82,6 +82,8 @@ public abstract class IBattleHandler {
 	abstract void newDay();
 
 	abstract void onLogin();
+	
+	abstract void reLogin();
 
 	public boolean hasRedPoint() {
 		return false;

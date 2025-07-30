@@ -65,6 +65,9 @@ public abstract class HCBattleHandler extends IBattleHandler {
 
 	@Override
 	public void onLogin() {
-
+	}
+	@Override
+	public void reLogin() {
+		
 	}
 }

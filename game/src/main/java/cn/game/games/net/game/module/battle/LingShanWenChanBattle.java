@@ -33,7 +33,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	private int payTimes;
 	/** 领取过宝箱奖励的索引  */
 	private long rewardBattleIds;
-	/** 本次战斗的起始id/层数,应该是lastCompleteFloor 的下一层 */
+	/** 本次战斗的起始id/层数,应该是lastCompleteFloor 的下一层,如果不为0，表示正在进行中 */
 	private int startFloor;
 
 	public LingShanWenChanBattle() {
@@ -76,6 +76,20 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		}
 		return 0;
 	}
+	
+	@Override
+	public void onLogin() {
+		
+	}
+	
+	@Override
+	public void reLogin() {
+		BattleModule battleModule = player.getModule(BattleModule.class);
+		int attackingSubId = battleModule.getAttackingSubId();
+		if (startFloor > 0 && attackingSubId > 0) {
+			end(attackingSubId); 
+		}
+	}
 
 	@Override
 	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
@@ -88,25 +102,31 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			RankService.getInstance().setScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), attackingSubId);
 			return ResultObject.success();
 		} else { // 失败了，最终结算
-			// 每一关的通过奖励
-			List<int[][]> allRewardList = new ArrayList<>();
-			for (int floor = startFloor; floor < attackingSubId; floor++) {
-				allRewardList.add(getReward(floor, false));
-			}
-			// 上一关的扫荡奖励
-			if (attackingSubId > 1) {
-				allRewardList.add(getReward(attackingSubId - 1, true));
-			}
-
-			List<RewardInfo> rewards = new ArrayList<>();
-
-			for (int[][] array : allRewardList) {
-				List<RewardInfo> resources = PlayerHelper.addResources(player, array, OpType.LingShanWenChan);
-				rewards.addAll(resources);
-			}
-			battleTimes++;
+			List<RewardInfo> rewards = end(attackingSubId);
 			return ResultObject.success(rewards);
 		}
+	}
+
+	private List<RewardInfo> end(int attackingSubId) {
+		// 每一关的通过奖励
+		List<int[][]> allRewardList = new ArrayList<>();
+		for (int floor = startFloor; floor < attackingSubId; floor++) {
+			allRewardList.add(getReward(floor, false));
+		}
+		// 上一关的扫荡奖励
+		if (attackingSubId > 1) {
+			allRewardList.add(getReward(attackingSubId - 1, true));
+		}
+
+		List<RewardInfo> rewards = new ArrayList<>();
+
+		for (int[][] array : allRewardList) {
+			List<RewardInfo> resources = PlayerHelper.addResources(player, array, OpType.LingShanWenChan);
+			rewards.addAll(resources);
+		}
+		startFloor = 0; // 重置开始层数
+		battleTimes++;
+		return rewards;
 	}
 	
 	private int[][] getReward(int floor,boolean sweep) {
@@ -223,16 +243,5 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public void setRewardBattleIds(long rewardBattleIds) {
 		this.rewardBattleIds = rewardBattleIds;
 	}
-
-	public int getStartFloor() {
-		return startFloor;
-	}
-
-	public void setStartFloor(int startFloor) {
-		this.startFloor = startFloor;
-	}
-
-	
-	
 
 }

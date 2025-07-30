@@ -26,7 +26,7 @@ import cn.game.protocol.protobuf.ZongMenMsg;
 public class ZongMenModule extends BasePlayerModule {
 
 	/** 上一个宗门的id */
-	private int lastId;
+	private long lastId;
 	/** 宗门反复加入次数 * */
 	int disbandCount;
 	/** 宗门贡献值 */
@@ -76,13 +76,13 @@ public class ZongMenModule extends BasePlayerModule {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		return new EventTypeEnum[] { EventTypeEnum.LoginSuccess, EventTypeEnum.NewDay };
+		return new EventTypeEnum[] { EventTypeEnum.LoginFinish, EventTypeEnum.NewDay };
 	}
 
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
-		case LoginSuccess -> {
+		case LoginFinish -> {
 			checkZongMen();
 		}
 		case NewDay -> { // 跨天刷新宗门任务
@@ -133,13 +133,7 @@ public class ZongMenModule extends BasePlayerModule {
 		} else {
 			// 有宗门
 			if (player.getZongMenId() != lastId) {
-				// 离线期间被审批加入宗门，不是第一次加入
-				if (lastId > 0) {
-					change();
-				} else {
-					// 初次加入
-					initFirstTime();
-				}
+				join(player.getZongMenId(), player.getZongMenName());
 			} else {
 				// 已经有宗门了,并且没有变化
 			}
@@ -151,8 +145,10 @@ public class ZongMenModule extends BasePlayerModule {
 	 */
 	private void initFirstTime() {
 		
-		lastId = (int) player.getZongMenId(); 
-
+		lastId = player.getZongMenId(); 
+		
+        refreshZongMenTask();
+        player.getShopModule().refreshZongMenShop();
 	}
 
 	/** 
@@ -161,6 +157,8 @@ public class ZongMenModule extends BasePlayerModule {
 	private void change() {
 
 		lastId = (int) player.getZongMenId(); 
+        refreshZongMenTask();
+        player.getShopModule().refreshZongMenShop();
 	}
 
 	private void getZongMenInfo() {
@@ -195,30 +193,13 @@ public class ZongMenModule extends BasePlayerModule {
 		player.getPointRewardModule().clearActiveRewardList(PointRewardType.QUEST, QuestTypeEnum.ZongMen.ID);
 	}
 
-	public void setZongMenInfo(ZongMenMsg.ZongMenSimpleInfo zongMen) {
-		player.getData().setUnionId(zongMen.getId());
-		player.getData().setUnionName(zongMen.getName());
-		getApplyJoinList().clear();
-//		List<ZongMenMsg.ZongMenMemberInfo> memberListList = zongMen.getMemberListList();
-//		for (ZongMenMsg.ZongMenMemberInfo zongMenMemberProto : memberListList) {
-//			if (zongMenMemberProto.getPid() == playerId) {
-//				joinTime = zongMenMemberProto.getJoinTime();
-//				break;
-//			}
-//		}
-	}
-
 	public void kickZongMen(ZongMenMsg.notifyQuitZongMen_40000024 quitZongMenMsg) {
 		clearZongMen();
 		player.getGameClient().sendProtocol(quitZongMenMsg);
 	}
 
 	public void joinZongMen(ZongMenMsg.notifyJoinZongMen_40000044 req) {
-		setZongMenInfo(req.getZongMen());
-		refreshZongMenTask();
-		player.getShopModule().refreshZongMenShop();
-		inited = true;
-		lastId = req.getZongMen().getId();
+		join(req.getZongMen().getId(), req.getZongMen().getName());
 	}
 
 	public void joinAndPush(ZongMenMsg.notifyJoinZongMen_40000044 req) {
@@ -235,12 +216,24 @@ public class ZongMenModule extends BasePlayerModule {
 
 	}
 
-	public void join(int zongmenId) {
+	public void join(long zongmenId,String zongmenName) {
 		if (zongmenId == lastId) {
 			return;
 		}
 		player.getData().setUnionId(zongmenId);
+		player.getData().setUnionName(zongmenName);
+		
+		// 之前有加入过宗门，不是第一次加入
+		if (lastId > 0) {
+			change();
+		} else {
+			// 初次加入
+			initFirstTime();
+		}
+		
 		lastId = zongmenId; 
+		applyJoinList.clear(); 
+		inited = true;
 	}
 
 	public List<Long> getApplyJoinList() {
@@ -281,11 +274,11 @@ public class ZongMenModule extends BasePlayerModule {
 		this.contribute += value;
 	}
 
-	public int getLastId() {
+	public long getLastId() {
 		return lastId;
 	}
 
-	public void setLastId(int lastId) {
+	public void setLastId(long lastId) {
 		this.lastId = lastId;
 	}
 
