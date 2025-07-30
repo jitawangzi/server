@@ -532,8 +532,10 @@ public class BattleModule extends BasePlayerModule  {
 		case GetItem: {
 			int itemId = event.getParameter(0);
 			int itemCount = event.getParameter(1);
-			EquipTowerBattle towerBattle = getBattle(DungeonTypeEnum.EquipTower);
-			towerBattle.addRank(itemCount);
+			if(itemId == 101002) {
+				EquipTowerBattle towerBattle = getBattle(DungeonTypeEnum.EquipTower);
+				towerBattle.addRank(itemCount);
+			}
 			break;
 		}
 		case FuncOpen: {
