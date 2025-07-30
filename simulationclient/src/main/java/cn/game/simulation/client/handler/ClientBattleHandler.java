@@ -2,9 +2,7 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.EquipTowerHelpRewardInfo;
@@ -139,6 +137,7 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleEquipTowerGetTicketResponse_13000534, this::equipTowerGetTicket);
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardResponse_13000536, this::equipTowerGetHelpReward);
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardResponse_13000538, this::equipTowerFindHelpReward);
+        putInvoker(PbProtocol.BattleEquipTowerDataResponse_13000527, this::equipTowerData);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -473,7 +472,6 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-
     private void equipTowerDataPush(NetClient netClient, Object message) {
         BattleEquipTowerDataPush_13100528 resp = (BattleEquipTowerDataPush_13100528) message;
         int ticketCount = resp.getTicketCount();
@@ -501,10 +499,17 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-
     private void equipTowerFindHelpReward(NetClient netClient, Object message) {
         BattleEquipTowerFindHelpRewardResponse_13000538 resp = (BattleEquipTowerFindHelpRewardResponse_13000538) message;
         List<EquipTowerHelpRewardInfo> helpRewardList = resp.getHelpRewardList();
+        Client client = (Client) netClient;
+    }
+
+    private void equipTowerData(NetClient netClient, Object message) {
+        BattleEquipTowerDataResponse_13000527 resp = (BattleEquipTowerDataResponse_13000527) message;
+        int ticketCount = resp.getTicketCount();
+        long nextTicketTime = resp.getNextTicketTime();
+        int curFloor = resp.getCurFloor();
         Client client = (Client) netClient;
     }
 }

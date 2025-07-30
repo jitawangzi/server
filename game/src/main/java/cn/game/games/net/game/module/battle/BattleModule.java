@@ -1,34 +1,27 @@
 package cn.game.games.net.game.module.battle;
 
-import static java.util.stream.Collectors.toList;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.Chapter;
+import cn.game.games.cache.entity.EquiptowerHelp;
+import cn.game.games.cache.entity.Mail;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
+import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
+import cn.game.games.net.data.mapper.MailMapper;
+import cn.game.games.net.data.mapper.UnionMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
@@ -38,6 +31,16 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static java.util.stream.Collectors.toList;
 
 /**    
  * 战役、章
@@ -526,6 +529,13 @@ public class BattleModule extends BasePlayerModule  {
 			this.adRogueCountPerBattle = 0;
 			break;
 		}
+		case GetItem: {
+			int itemId = event.getParameter(0);
+			int itemCount = event.getParameter(1);
+			EquipTowerBattle towerBattle = getBattle(DungeonTypeEnum.EquipTower);
+			towerBattle.addRank(itemCount);
+			break;
+		}
 		case FuncOpen: {
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.HangingUpp) {
@@ -580,6 +590,7 @@ public class BattleModule extends BasePlayerModule  {
 				EquipTowerBattle battle = new EquipTowerBattle();
 				battle.setPlayer(player);
 				battle.initEquipBattle();
+				player.getQuestModule().refreshQuest(QuestTypeEnum.EquipTower);
 				battlesMap.put(battle.getType(), battle);
 			}
 			break;
@@ -660,4 +671,44 @@ public class BattleModule extends BasePlayerModule  {
 	public PatrolInfo buildPatrolInfo() {
 		return PatrolInfo.newBuilder().setAdPatrolCount(adPatrolCount).setQuickPatrolCount(quickPatrolCount).setRewardTime(lastPatrolRewardTime).build();
 	}
+
+
+	@Override
+	public Class<?>[] defaultDbMapperClass() {
+		return new Class<?>[] { EquiptowerHelpMapper.class };
+	}
+
+	@Override
+	public boolean alwaysStoreDataInStandaloneTable() {
+		return true;
+	}
+
+	/**
+	 * 战报
+	 */
+	private transient Map<Long, EquiptowerHelp> helpData = new HashMap<>();
+	@Override
+	protected void initFromDb(ListIterator<?> iterator) {
+		List<EquiptowerHelp> equiptowerHelps = (List<EquiptowerHelp>) iterator.next();
+		for (EquiptowerHelp help : equiptowerHelps) {
+			this.helpData.put(help.getId(),help) ;
+		}
+		// 检查过期的
+		int deltime =( int)(DateUtil.getDayTimeBySet(0, 0, 0)/1000);
+		List<Long> deleteIds = new ArrayList<>();
+		for (EquiptowerHelp help  : this.helpData.values()) {
+			if (deltime > help.getExpiredTime()) {
+				deleteIds.add(help.getId());
+				help.delete();
+			}
+		}
+		for (Long id : deleteIds) {
+			helpData.remove( id);
+		}
+	}
+
+    public Map<Long, EquiptowerHelp> getHelpData() {
+        return helpData;
+    }
+
 }

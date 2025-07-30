@@ -200,7 +200,7 @@ public class SimplePlayer implements Serializable {
 		builder.setCombatEffectiveness(combatEffectiveness);
 		builder.setFigure(figure);
 		equipBattleRecord.forEach((k, v) -> {
-			builder.addEquipBattleRecord(v);
+			builder.putEquipBattleRecord(k,v);
 		});
 		return builder.build();
 	}
