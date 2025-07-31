@@ -1418,7 +1418,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
             return;
         }
-        if (GlobalConst.LingshanBonueLevel[index] > curFloorConfig.StartFloor) {
+        if (GlobalConst.LingshanBonueLevel[index] < curFloorConfig.StartFloor || GlobalConst.LingshanBonueLevel[index] > curFloorConfig.EndFloor) {
             client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
             return;
         }
