@@ -5,28 +5,24 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
-import cn.game.core.cache.CacheType;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.RemoteProxy;
+import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenBargain;
 import cn.game.games.net.cross.zongmen.ZongMenConstants;
-import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
 import cn.game.games.net.cross.zongmen.ZongMenMember;
 import cn.game.games.net.cross.zongmen.ZongMenSetting;
-import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
-import cn.game.protocol.generated.config.ShopItemConfig;
-import cn.game.protocol.generated.config.ZongmenStoreConfig;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.util.LockUtil;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
 
 /**
@@ -35,8 +31,9 @@ import io.vertx.core.Future;
  * @author: ly
  * @create: 2025-02-08 14:45 @Version 1.0
  */
+@Component
 public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
-	private static final ZongmenServiceInterface INSTANCE = new ZongmenService();
+	private static final ZongmenServiceInterface INSTANCE  = new ZongmenService();
 	private static final Logger log = LoggerFactory.getLogger(ZongmenService.class);
 
 	protected ZongmenService() {
@@ -45,7 +42,12 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	public static ZongmenServiceInterface getInstance() {
 		return INSTANCE;
 	}
-
+	@Bean
+	public static ZongmenServiceInterface zongmenService() {
+		log.info("Spring is getting the bean from static @Bean factory method.");
+		return INSTANCE;
+	}
+    
 	/** 失败处理：抛出业务异常 */
 	private void fail(ErrorMsgEnum errorMsgEnum) {
 		throw new LogicException(errorMsgEnum.ID);
@@ -68,12 +70,21 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 宗门信息
 	 */
 	@Override
-	public ZongMen getZongmen(long zongMenId, long playerId) {
+	public ZongMen getZongmen(long zongMenId) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
-		if (zongMenInfo == null || zongMenInfo.getMember(playerId) == null) {
+		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		return zongMenInfo;
+	}
+	
+	@Override
+	public ZongMenShowInfo getZongmenShowInfo(long zongMenId) {
+		ZongMen zongMen = ZongMenManager.getInstance().getZongMen(zongMenId);
+		if (zongMen == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+		return zongMen.toShowProto();
 	}
 
 	/**

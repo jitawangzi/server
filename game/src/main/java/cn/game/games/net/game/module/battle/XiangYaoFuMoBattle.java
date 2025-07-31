@@ -81,8 +81,7 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 		if (sweepTimes >= GlobalConst.DemonsChallangeCost.length) {
 			return ResultObject.fail(ErrorMsgEnum.times_limit.getId());
 		}
-		int cost = GlobalConst.DemonsChallangeCost[sweepTimes];
-		PlayerHelper.delResources(player, Asset.diamond.ID, cost, OpType.XiangYaoChuMo);
+		PlayerHelper.delResources(player, GlobalConst.DemonsChallangeCost[sweepTimes], OpType.XiangYaoChuMo);
 		sweepTimes++;
 
 		BattleConfig battleConfig = BattleManager.instance().get(id);

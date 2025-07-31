@@ -19,6 +19,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -53,6 +54,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptRequest_40000070;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptResponse_40000071;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshRequest_40000074;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartRequest_40000076;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartResponse_40000077;
@@ -571,16 +573,15 @@ public class ZongMenHandler extends GameBaseHandler {
         ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
         long zongMenId = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        sendMsgToZongMenServer(zongMenId, player, req).onSuccess(result -> {
-            if (result.errorCode == ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(result.response);
-            } else {
-                client.sendProtocol(res.build(), result.errorCode);
-            }
-        }).onFailure(err -> {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
-            err.printStackTrace();
-        });
+        if (zongMenId <= 0 ) {
+			player.fail(ErrorMsgEnum.request_parameter_error, "zongMenId <= 0");
+		}
+        ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, zongMenId); 
+        ZongMenShowInfo zongmenShowInfo = serviceInterface.getZongmenShowInfo(zongMenId); 
+        
+        res.setZongMen(zongmenShowInfo); 
+        client.sendProtocol(res.build());
+        
     }
 
     private void zongMenList(NetClient client, Object o) {

@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,7 +182,7 @@ public interface RpcClient {
 		} catch (Exception e) {
 			String errorMsg = MessageFormat.format("远程调用获取结果异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
 					Thread.currentThread().getName());
-			log.error(errorMsg, e);
+			log.error(errorMsg, ExceptionUtils.getRootCause(e));
 			throw new RuntimeException(e);
 		}
 	}
