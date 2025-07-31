@@ -71,6 +71,8 @@ import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -138,6 +140,8 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardResponse_13000536, this::equipTowerGetHelpReward);
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardResponse_13000538, this::equipTowerFindHelpReward);
         putInvoker(PbProtocol.BattleEquipTowerDataResponse_13000527, this::equipTowerData);
+        putInvoker(PbProtocol.BattleLingShanFloorSkipResponse_13000518, this::lingShanFloorSkip);
+        putInvoker(PbProtocol.BattleLingShanEndResponse_1300051a, this::lingShanEnd);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -510,6 +514,18 @@ public class ClientBattleHandler extends BaseHandler {
         int ticketCount = resp.getTicketCount();
         long nextTicketTime = resp.getNextTicketTime();
         int curFloor = resp.getCurFloor();
+        Client client = (Client) netClient;
+    }
+
+    private void lingShanFloorSkip(NetClient netClient, Object message) {
+        BattleLingShanFloorSkipResponse_13000518 resp = (BattleLingShanFloorSkipResponse_13000518) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
+        Client client = (Client) netClient;
+    }
+
+    private void lingShanEnd(NetClient netClient, Object message) {
+        BattleLingShanEndResponse_1300051a resp = (BattleLingShanEndResponse_1300051a) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
         Client client = (Client) netClient;
     }
 }

@@ -509,7 +509,7 @@ public class ZongMenHandler extends GameBaseHandler {
             return;
         }
         if (name == null || name.length() > GlobalConst.ZongmenName) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_too_long.ID);
             return;
         }
         if (!StringUtils.isEmpty(req.getNotice())) {

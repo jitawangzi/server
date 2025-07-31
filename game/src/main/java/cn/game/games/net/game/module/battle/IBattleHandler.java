@@ -38,6 +38,17 @@ public abstract class IBattleHandler {
 	abstract int checkCustom(int id, int subId,long ... args);
 	
 	/** 
+	 * 扫荡时规则可能和普通战斗不一样，单独拆出来一个方法用于检查扫荡
+	 * @param id
+	 * @param subId
+	 * @param args
+	 * @return
+	 */
+	int quickEndCheck(int id, int subId,long ... args) {
+		return 0 ; 
+	}
+	
+	/** 
 	 * 战斗开始前的一些处理。 
 	 * @param id
 	 * @return

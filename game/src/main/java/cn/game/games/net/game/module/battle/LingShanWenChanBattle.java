@@ -58,12 +58,26 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		int power = player.getAttrModule().getPower();
 		int floorInConfig = getFloorInConfig(subId, floorConfig);
 
-		int Capacity = floorConfig.Capacity + floorInConfig * floorConfig.CapacityAdd;
-		boolean ok = floorConfig != null && (subId == lastCompleteFloor + 1 || Capacity <= power);
+		boolean ok = floorConfig != null && (subId == lastCompleteFloor + 1);
 		if (!ok) {
 			return ErrorMsgEnum.pre_condition_check_error.getId();
 		}
-		if (subId <= lastCompleteFloor) {
+		if (subId < lastCompleteFloor) {
+			return ErrorMsgEnum.request_parameter_error.getId();
+		}
+		return 0 ; 
+	}
+	@Override
+	public int quickEndCheck(int id, int subId,long ... args) {
+		LingShanConfig floorConfig = getFloorConfig(subId, id);
+		int power = player.getAttrModule().getPower();
+		int floorInConfig = getFloorInConfig(subId, floorConfig);
+
+		boolean ok = floorConfig != null && (subId == lastCompleteFloor);
+		if (!ok) {
+			return ErrorMsgEnum.pre_condition_check_error.getId();
+		}
+		if (subId < lastCompleteFloor) {
 			return ErrorMsgEnum.request_parameter_error.getId();
 		}
 		return 0 ; 
@@ -73,6 +87,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public int battleStart(int id,int subId) {
 		if (this.startFloor == 0) {
 			this.startFloor = subId;
+			battleTimes++;
 		}
 		return 0;
 	}
@@ -89,6 +104,23 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		if (startFloor > 0 && attackingSubId > 0) {
 			end(attackingSubId); 
 		}
+	}
+	
+	public List<RewardInfo> skipFloor(int floor) {
+		LingShanConfig floorConfig = getFloorConfig(floor); // 校验数据
+
+		int power = player.getAttrModule().getPower();
+		// TODO 
+		power = 50000 ;// 临时测试用
+		int floorInConfig = getFloorInConfig(floor, floorConfig);
+
+		int Capacity = floorConfig.Capacity + floorInConfig * floorConfig.CapacityAdd;
+		boolean ok = floorConfig != null && (Capacity <= power);
+		if (!ok) {
+			throw new LogicException(ErrorMsgEnum.pre_condition_check_error.getId());
+		}
+		lastCompleteFloor = floor; // 记录最后通关的层数
+		return end(floor); // 直接结算
 	}
 
 	@Override
@@ -107,10 +139,13 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		}
 	}
 
-	private List<RewardInfo> end(int attackingSubId) {
+	public List<RewardInfo> end(int attackingSubId) {
 		// 每一关的通过奖励
 		List<int[][]> allRewardList = new ArrayList<>();
 		for (int floor = startFloor; floor < attackingSubId; floor++) {
+			if (floor == 0) {
+				continue; 
+			}
 			allRewardList.add(getReward(floor, false));
 		}
 		// 上一关的扫荡奖励
@@ -125,7 +160,6 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			rewards.addAll(resources);
 		}
 		startFloor = 0; // 重置开始层数
-		battleTimes++;
 		return rewards;
 	}
 	

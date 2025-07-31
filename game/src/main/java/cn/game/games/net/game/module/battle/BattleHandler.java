@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
 import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
@@ -152,6 +151,10 @@ import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardResponse_13000536;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardResponse_13000538;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipRequest_13000517;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndRequest_13000519;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -218,6 +221,8 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleEquipTowerGetTicketRequest_13000533, this::equipTowerGetTicket);
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardRequest_13000535, this::equipTowerGetHelpReward);
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardRequest_13000537, this::equipTowerFindHelpReward);
+        putInvoker(PbProtocol.BattleLingShanFloorSkipRequest_13000517, this::lingShanFloorSkip);
+        putInvoker(PbProtocol.BattleLingShanEndRequest_13000519, this::lingShanEnd);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1276,7 +1281,7 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         IBattleHandler battleHandler = battleModule.getBattle(type);
-        int errorCode = battleHandler.check(typeId, subId);
+        int errorCode = battleHandler.quickEndCheck(typeId, subId);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
             return;
@@ -1502,7 +1507,6 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
         BattleEquipTowerDataResponse_13000527.Builder resp = BattleEquipTowerDataResponse_13000527.newBuilder();
-
         resp.setTicketCount(towerBattle.getTicketCount());
         resp.setNextTicketTime(towerBattle.getNextGetTicketTime());
         resp.setCurFloor(towerBattle.getCurFloor());
@@ -1549,11 +1553,9 @@ public class BattleHandler extends GameBaseHandler {
         int type = req.getType();
         BattleEquipTowerGetHelpRewardResponse_13000536 defaultInstance = BattleEquipTowerGetHelpRewardResponse_13000536.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
-        List<RewardInfo> reward=   towerBattle.getHelpReward(floor,battleID,type);
-
+        List<RewardInfo> reward = towerBattle.getHelpReward(floor, battleID, type);
         BattleEquipTowerGetHelpRewardResponse_13000536.Builder resp = BattleEquipTowerGetHelpRewardResponse_13000536.newBuilder();
         resp.addAllRewards(reward);
         client.sendProtocol(resp.build());
@@ -1564,20 +1566,41 @@ public class BattleHandler extends GameBaseHandler {
         BattleEquipTowerFindHelpRewardResponse_13000538 defaultInstance = BattleEquipTowerFindHelpRewardResponse_13000538.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleEquipTowerFindHelpRewardResponse_13000538.Builder resp = BattleEquipTowerFindHelpRewardResponse_13000538.newBuilder();
-
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
         towerBattle.getHelpRewardMap().forEach((k, v) -> {
             v.forEach((k1, v1) -> {
-                resp.addHelpReward(
-                        BaseMsg.EquipTowerHelpRewardInfo.newBuilder()
-                                .setHelpfloor(k)
-                                .setHelpReward(v1)
-                                .setHelpID(k1)
-                );
+                resp.addHelpReward(BaseMsg.EquipTowerHelpRewardInfo.newBuilder().setHelpfloor(k).setHelpReward(v1).setHelpID(k1));
             });
         });
+        client.sendProtocol(resp.build());
+    }
 
+    private void lingShanFloorSkip(NetClient client, Object message) {
+        BattleLingShanFloorSkipRequest_13000517 req = (BattleLingShanFloorSkipRequest_13000517) message;
+        int floor = req.getFloor();
+        BattleLingShanFloorSkipResponse_13000518 defaultInstance = BattleLingShanFloorSkipResponse_13000518.getDefaultInstance();
+        BattleLingShanFloorSkipResponse_13000518.Builder resp = BattleLingShanFloorSkipResponse_13000518.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+        List<RewardInfo> rewards = battle.skipFloor(floor); 
+        resp.addAllRewards(rewards); 
+        client.sendProtocol(resp.build());
+    }
+
+    private void lingShanEnd(NetClient client, Object message) {
+        BattleLingShanEndRequest_13000519 req = (BattleLingShanEndRequest_13000519) message;
+        BattleLingShanEndResponse_1300051a defaultInstance = BattleLingShanEndResponse_1300051a.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleLingShanEndResponse_1300051a.Builder resp = BattleLingShanEndResponse_1300051a.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+		int attackingSubId = battleModule.getAttackingSubId();
+		List<RewardInfo> end = battle.end(battle.getLastCompleteFloor()); 
+		if (end != null && !end.isEmpty()) {
+			resp.addAllRewards(end);
+		}
         client.sendProtocol(resp.build());
     }
 }
