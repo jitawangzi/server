@@ -48,7 +48,7 @@ public class AttrModule extends BasePlayerModule {
 	 * 计算所有属性，给客户端战斗时使用。
 	 */
 	public void calcAllAttr() {
-
+	
 		calcHeroAttr();
 
 		playerAttrCalcMap.forEach((k, v) -> {

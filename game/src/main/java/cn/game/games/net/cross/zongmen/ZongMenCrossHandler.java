@@ -2,7 +2,6 @@ package cn.game.games.net.cross.zongmen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.spi.LocaleServiceProvider;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
-import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.games.net.cross.zongmen.service.ZongmenService;
@@ -21,6 +19,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenCrossMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 
 /**
  * @ClassName ZongMenHandler
@@ -92,7 +91,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	// 获取宗门信息
 	private void getZongMenInfo(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
+		ZongMen info = zongmenService.getZongmen(zongMenId);
 		ZongMenMsg.ZongMenAllInfo infoProto = info.toProto(playerId);
 		sendMsgToGameServer(playerId, client, ZongMenMsg.getZongMenInfoResponse_40000022.newBuilder().setInfo(infoProto).build(),
 				PbProtocol.getZongMenInfoResponse_40000022);
@@ -124,10 +123,10 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		int power = Integer.parseInt(paramList.get(0));
 		String playerName = paramList.get(1);
 
-		ZongMen info = zongmenService.applyJoinZongmen(zongMenId, playerId, playerName, power);
+		ZongMenAllInfo info = zongmenService.applyJoinZongmen(zongMenId, playerId);
 		ZongMenMsg.applyJoinZongMenResponse_40000008.Builder res = ZongMenMsg.applyJoinZongMenResponse_40000008.newBuilder();
 		if (info != null) {
-			res.setZongMen(info.toProto(playerId));
+			res.setZongMen(info);
 		}
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.applyJoinZongMenResponse_40000008);
 	}
@@ -165,7 +164,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	// 获取宗门日志
 	private void getZongMenLog(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
+		ZongMen info = zongmenService.getZongmen(zongMenId);
 		ZongMenMsg.getZongMenLogResponse_40000026.Builder res = ZongMenMsg.getZongMenLogResponse_40000026.newBuilder();
 		res.addAllLogList(info.getModule().optLog.toProto());
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.getZongMenLogResponse_40000026);
@@ -250,7 +249,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	// 查找宗门
 	private void findZongMen(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
+		ZongMen info = zongmenService.getZongmen(zongMenId);
 		ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
 		res.setZongMen(info.toShowProto());
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.findZongMenResponse_40000004);
@@ -258,7 +257,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	// 宗门聊天
 	private void zongMenChat(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMen info = zongmenService.getZongmen(zongMenId, playerId);
+		ZongMen info = zongmenService.getZongmen(zongMenId);
 		List<Long> memberIdList = new ArrayList<>(info.getModule().menMemberMap.keySet());
 		ZongMenHelper.broadcastNotifyMsgToPlayer(message, PbProtocol.ChatMessagePush_31010001, memberIdList);
 	}

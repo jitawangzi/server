@@ -25,14 +25,14 @@ public class RescueAttrCalc extends PlayerAttrCalc {
 	public void calcAttr() {
 		DevelopModule developModule = player.getDevelopModule();
 		// 强援
-		Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
-		rescueMarks.forEach((k, v) -> {
-			int lv = developModule.getCultivationLv(k, 2);
-			if (lv > 0) {
-				RescueConfig config = DevelopHelper.getRescueConfig(v, lv);
-				attrMap.add(config.RescueMulHurtPerGrow[0], config.RescueMulHurtPerGrow[1] * lv);
-			}
-		});
+		/*		Map<Integer, List<RescueConfig>> rescueMarks = RescueManager.instance().getRescueMarks();
+				rescueMarks.forEach((k, v) -> {
+					int lv = developModule.getCultivationLv(k, 2);
+					if (lv > 0) {
+						RescueConfig config = DevelopHelper.getRescueConfig(v, lv);
+						attrMap.add(config.RescueMulHurtPerGrow[0], config.RescueMulHurtPerGrow[1] * lv);
+					}
+				});*/
 	}
 	@Override
 	public InitialUI getFunction() {

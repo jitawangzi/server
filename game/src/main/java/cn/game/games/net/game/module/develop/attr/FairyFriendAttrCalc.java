@@ -22,19 +22,23 @@ public class FairyFriendAttrCalc extends PlayerAttrCalc {
 
 	@Override
 	public void calcAttr() {
-		FairyFriendModule fairyFriendModule = player.getModule(FairyFriendModule.class);
-		Collection<FairyFriend> list = fairyFriendModule.list();
-		for (FairyFriend fairyFriend : list) {
-			FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager
-					.instance()
-					.getUIFairyListIDLV(fairyFriend.getConfigId(), fairyFriend.getLevel());
-			if (favorabilityConfig == null) {
-				continue;
-			}
-			for (int[] attrs : favorabilityConfig.Attr) {
-				attrMap.add(attrs[0], attrs[1]);
-			}
-		}
+		
+		// 先不计算仙友属性
+		/*		FairyFriendModule fairyFriendModule = player.getModule(FairyFriendModule.class);
+				Collection<FairyFriend> list = fairyFriendModule.list();
+				for (FairyFriend fairyFriend : list) {
+					FairyFriendFavorabilityConfig favorabilityConfig = FairyFriendFavorabilityManager
+							.instance()
+							.getUIFairyListIDLV(fairyFriend.getConfigId(), fairyFriend.getLevel());
+					if (favorabilityConfig == null) {
+						continue;
+					}
+					for (int[] attrs : favorabilityConfig.Attr) {
+						attrMap.add(attrs[0], attrs[1]);
+					}
+				}*/
+		
+		
 	}
 	@Override
 	public InitialUI getFunction() {

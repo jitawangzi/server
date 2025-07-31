@@ -209,6 +209,10 @@ public class BattleModule extends BasePlayerModule  {
 			ShiLuoZhenJingBattle battle = getBattle(battleType);
 			return battle != null && BattleHelper.isComplete(battle.getCompleteBattleId(), battleId);
 		}
+		if (battleType == DungeonTypeEnum.XiangYaoFuMo.getId()) {
+			XiangYaoFuMoBattle battle = getBattle(battleType);
+			return battle != null && BattleHelper.isComplete(battle.getLastCompleteBattleId(), battleId);
+		}
 		return false;
 	}
 

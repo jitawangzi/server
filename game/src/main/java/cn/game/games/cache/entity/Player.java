@@ -686,6 +686,14 @@ public class Player {
 	public void fail(ErrorMsgEnum errorMsgEnum) {
 		throw new LogicException(errorMsgEnum.ID);
 	}
+	/** 
+	 * 主动抛出一个错误，中断当前流程。 
+	 * @param errorMsgEnum
+	 * @param errorMsg
+	 */
+	public void fail(ErrorMsgEnum errorMsgEnum,String errorMsg) {
+		throw new LogicException(errorMsgEnum.ID,errorMsg);
+	}
 
 	public long getPlayerId() {
 		return playerId;

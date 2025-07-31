@@ -23,17 +23,18 @@ public class PotentialAttrCalc extends PlayerAttrCalc {
 		// 潜力
 		// 初始修炼等级
 		// 突破属性： 当前值 = 初始值 +（lv-1）*每级成长值+INT(LV/10)*突破成长值
-		Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
-		potentialMarks.forEach((k, v) -> {
-			int lv = developModule.getCultivationLv(k, 1);
-			if (lv > 0) {
-				PotentialConfig config = DevelopHelper.getPotentialConfig(v, lv);
-				int breakLevel = developModule.getPotentiaBreakLevelMap().getValue(config.ID);
-				int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1]
-						+ breakLevel * config.BreakthroughGrowth[1];
-				attrMap.add(config.PotentialBase[0], attrValue);
-			}
-		});
+		
+		/*		Map<Integer, List<PotentialConfig>> potentialMarks = PotentialManager.instance().getPotentialMarks();
+				potentialMarks.forEach((k, v) -> {
+					int lv = developModule.getCultivationLv(k, 1);
+					if (lv > 0) {
+						PotentialConfig config = DevelopHelper.getPotentialConfig(v, lv);
+						int breakLevel = developModule.getPotentiaBreakLevelMap().getValue(config.ID);
+						int attrValue = config.PotentialBase[1] + (lv - 1) * config.PotentialGrow[1]
+								+ breakLevel * config.BreakthroughGrowth[1];
+						attrMap.add(config.PotentialBase[0], attrValue);
+					}
+				});*/
 	}
 	@Override
 	public InitialUI getFunction() {

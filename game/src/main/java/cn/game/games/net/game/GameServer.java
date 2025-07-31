@@ -37,6 +37,7 @@ import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
+import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
@@ -484,14 +485,17 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public CrossServerInterface getCrossServerInterface(DistributedObjectType objectType, long targetId) {
-
+		return  getRemoteCrossServerInterface(CrossServerInterface.class, objectType, targetId);
+	}
+	public <T> T getRemoteCrossServerInterface(Class<T> remoteInterface, DistributedObjectType objectType, long targetId) {
+		
 		CallType callType = CallType.PointToPoint;
 		String serverId = IdCache.getManager(objectType).getServerId(targetId);
 		if (StringUtils.isEmpty(serverId)) {
 			callType = CallType.LoadBalancer;
 		}
 		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
+		return  RpcFactory.getImpl(remoteInterface, ServerContext.getInstance().getRpcClient(), callType, serverId,
 				ServerType.Cross, targetId);
 	}
 

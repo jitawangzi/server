@@ -6,11 +6,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
+
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
@@ -19,6 +22,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.SimpleZongMen;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -28,14 +32,10 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
-import cn.game.protocol.generated.config.ShopItemConfig;
-import cn.game.protocol.generated.config.ZongmenStoreConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.QuestPointRewardManager;
-import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -43,29 +43,32 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgRequest_41000045;
 import cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgResponse_41000046;
 import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.util.DateUtil;
-import cn.game.util.ServerType;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
-import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetRequest_40000037;
-import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetResponse_40000038;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptRequest_40000070;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyAcceptResponse_40000071;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshRequest_40000074;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartRequest_40000076;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartResponse_40000077;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleEndRequest_40000078;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleEndResponse_40000079;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleReportRequest_4000007a;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleReportResponse_4000007b;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartRequest_40000076;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyBattleStartResponse_40000077;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyPlayerRequest_4000007c;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyPlayerResponse_4000007d;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerResponse_40000052;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardRequest_40000072;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardResponse_40000073;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshRequest_40000074;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerResponse_40000052;
+import cn.game.protocol.protobuf.ZongMenMsg.applyJoinZongMenResponse_40000008;
+import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetRequest_40000037;
+import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetResponse_40000038;
+import cn.game.util.DateUtil;
+import cn.game.util.ServerType;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 /**
  * @ClassName ZongMenHandler
@@ -461,6 +464,7 @@ public class ZongMenHandler extends GameBaseHandler {
     private void applyJoinZongMen(NetClient client, Object o) {
         ZongMenMsg.applyJoinZongMenRequest_40000007 req = (ZongMenMsg.applyJoinZongMenRequest_40000007) o;
         ZongMenMsg.applyJoinZongMenResponse_40000008.Builder res = ZongMenMsg.applyJoinZongMenResponse_40000008.newBuilder();
+        int id = req.getId(); 
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getZongMenId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
@@ -471,22 +475,16 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
             return;
         }
-        sendMsgToZongMenServer(req.getId(), player, req, player.getAttrModule().getPower() + "", player.getPlayerName()).onSuccess(callBack -> {
-            if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(res.build(), callBack.errorCode);
-            } else {
-                ZongMenMsg.applyJoinZongMenResponse_40000008 applyRes = (ZongMenMsg.applyJoinZongMenResponse_40000008) callBack.response;
-                if (applyRes.hasZongMen()) {
-                	ZongMenSimpleInfo simpleInfo = applyRes.getZongMen().getShowInfo().getSimpleInfo(); 
-                    // 玩家直接加入宗门
-                    player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName());
-                }
-                client.sendProtocol(callBack.response);
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
-        });
+        ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, id); 
+        ZongMenAllInfo zongmen = serviceInterface.applyJoinZongmen(id, player.getPlayerId()); 
+        if (zongmen != null) {
+        	ZongMenSimpleInfo simpleInfo = zongmen.getShowInfo().getSimpleInfo(); 
+            // 玩家直接加入宗门
+            player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName());
+            client.sendProtocol(res.setZongMen(zongmen).build());
+		}else {
+            client.sendProtocol(applyJoinZongMenResponse_40000008.getDefaultInstance());
+		}
     }
 
     private void createZongMen(NetClient client, Object o) {
@@ -571,16 +569,15 @@ public class ZongMenHandler extends GameBaseHandler {
         ZongMenMsg.findZongMenResponse_40000004.Builder res = ZongMenMsg.findZongMenResponse_40000004.newBuilder();
         long zongMenId = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        sendMsgToZongMenServer(zongMenId, player, req).onSuccess(result -> {
-            if (result.errorCode == ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(result.response);
-            } else {
-                client.sendProtocol(res.build(), result.errorCode);
-            }
-        }).onFailure(err -> {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
-            err.printStackTrace();
-        });
+        if (zongMenId <= 0 ) {
+			player.fail(ErrorMsgEnum.request_parameter_error, "zongMenId <= 0");
+		}
+        ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, zongMenId); 
+        ZongMenShowInfo zongmenShowInfo = serviceInterface.getZongmenShowInfo(zongMenId); 
+        
+        res.setZongMen(zongmenShowInfo); 
+        client.sendProtocol(res.build());
+        
     }
 
     private void zongMenList(NetClient client, Object o) {

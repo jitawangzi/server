@@ -2,13 +2,16 @@ package cn.game.games.net.cross.zongmen.service;
 
 import java.util.List;
 
+import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.zongmen.ZongMen;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
 
-public interface ZongmenServiceInterface {
+public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 
 	/**
 	 * 创建宗门
@@ -21,20 +24,24 @@ public interface ZongmenServiceInterface {
 	/**
 	 * 获取宗门信息
 	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
 	 * @return 宗门信息
 	 */
-	ZongMen getZongmen(long zongMenId, long playerId);
+	ZongMen getZongmen(long zongMenId);
+	
+	/** 
+	 * 获取某个宗门的展示数据
+	 * @param zongMenId
+	 * @return
+	 */
+	ZongMenShowInfo getZongmenShowInfo(long zongMenId);
 
 	/**
 	 * 申请加入宗门
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
-	 * @param playerName 玩家名称
-	 * @param power 战斗力
 	 * @return 宗门信息
 	 */
-	ZongMen applyJoinZongmen(long zongMenId, long playerId, String playerName, int power);
+	ZongMenAllInfo applyJoinZongmen(long zongMenId, long playerId);
 
 	/**
 	 * 解散宗门

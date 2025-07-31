@@ -189,7 +189,10 @@ public class ZongMen {
 	}
 	public ZongMenMsg.ZongMenSharedInfo toSharedProto(long playerId) {
 		ZongMenSharedInfo.Builder builder = ZongMenSharedInfo.newBuilder();
-		
+		ZongMenMember member = getMember(playerId);
+		if (member == null) {
+			return builder.build(); // 非宗门成员
+		}
 		builder.setExp(getExp());
 		builder.setBargain(module.bargain.toProto());
 
@@ -200,7 +203,7 @@ public class ZongMen {
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);
 		// 申请列表，看权限发
-		ZongMenMember member = getMember(playerId);
+
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
 		if (permissionsConfig.Approval) {
 			List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance().multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList)); 
@@ -216,11 +219,19 @@ public class ZongMen {
 		ZongMenPersonalInfo.Builder builder = ZongMenPersonalInfo.newBuilder();
 		
 		ZongMenMember member = getMember(playerId);
+		if (member == null) {
+			return builder.build(); // 非宗门成员
+		}
 		builder.setIsBargain(member.isBargain);
 		builder.setIsBargainBuy(member.isBargainBuy);
 		return builder.build() ; 
 	}
 		
+	/** 
+	 * 
+	 * @param playerId 一般表示该宗门内的某个成员id，如果是0，表示非工会成员
+	 * @return
+	 */
 	public ZongMenMsg.ZongMenAllInfo toProto(long playerId) {
 		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
 		builder.setShowInfo(toShowProto());
