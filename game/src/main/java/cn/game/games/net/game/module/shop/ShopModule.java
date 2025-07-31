@@ -303,16 +303,16 @@ public class ShopModule extends BasePlayerModule {
 		// 刷新体力商店
 		int shop = 18;
 		shopItemsMap.removeAll(shop);
-//		int level = player.getLevel(Asset.RSGTreeExp);
-//		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
-//		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
-//			if (level >= rsgTreeShopConfig.Condition) {
-//				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
-//				if (shopItemConfig != null) {
-//					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
-//				}
-//			}
-//		}
+		int level = player.getLevel(Asset.RSGTreeExp);
+		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
+		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
+			if (level >= rsgTreeShopConfig.Condition) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+				if (shopItemConfig != null) {
+					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+				}
+			}
+		}
 	}
 	public void refreshGemTowerItems() {
 		// 刷新爬塔商店
