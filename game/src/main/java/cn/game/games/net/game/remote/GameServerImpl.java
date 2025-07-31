@@ -6,6 +6,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import cn.game.games.cache.entity.EquiptowerHelp;
+import cn.game.games.net.game.module.battle.EquipTowerBattle;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
@@ -164,5 +167,15 @@ public class GameServerImpl implements GameServerInterface {
 			});
 		});
 	}
+
+	@Override
+	public Future<Void> addEquipTowerHelp(long playerId, EquiptowerHelp help) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		EquipTowerBattle equipTower = player.getBattleModule().getBattle(DungeonTypeEnum.EquipTower);
+		equipTower.addHelpReward_onLine(help);
+		return Future.succeededFuture();
+
+	}
+
 
 }

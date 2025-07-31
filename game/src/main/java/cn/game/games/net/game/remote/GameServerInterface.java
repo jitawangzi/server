@@ -3,6 +3,7 @@ package cn.game.games.net.game.remote;
 import java.util.List;
 
 import cn.game.core.net.remote.RemoteGameServerInterface;
+import cn.game.games.cache.entity.EquiptowerHelp;
 import io.vertx.core.Future;
 
 /**
@@ -29,4 +30,6 @@ public interface GameServerInterface extends RemoteGameServerInterface {
 	 * @return
 	 */
 	public Future<?> rename(long playerId, String name);
+
+	public Future<Void> addEquipTowerHelp(long playerId, EquiptowerHelp help);
 }
