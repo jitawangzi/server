@@ -63,13 +63,13 @@ public class QuestModule extends BasePlayerModule {
 	/** 一些累计的计数,类型->数量 ，类型带额外参数的 */
 	private StringMapWrapper cumulativeCountExtMap = new StringMapWrapper();
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public Class<?>[] defaultDbMapperClass() {
 		return new Class[] { QuestMapper.class, ConditionCountMapper.class };
 	}
-
-	/*	protected void initFromDb(ListIterator<?> iterator) {
+	
+		protected void initFromDb(ListIterator<?> iterator) {
 			List<Quest> list = (List<Quest>) iterator.next();
 			List<ConditionCount> conditionList = (List<ConditionCount>) iterator.next();
 			for (Quest e : list) {

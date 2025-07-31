@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class BattleModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
+			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
@@ -509,6 +509,12 @@ public class BattleModule extends BasePlayerModule  {
 				updateLineup(DungeonTypeEnum.BattleChapter.getId(), 0, uidStrings);
 				updateLineupChoose(DungeonTypeEnum.BattleChapter.getId(), 0);
             }
+			break;
+		}
+		case Relogin: {
+			battlesMap.forEach((k, v) -> {
+				v.reLogin();
+			});
 			break;
 		}
 		case PLAYER_CREATE: {

@@ -75,7 +75,7 @@ public class TaskExecutorService implements AutoCloseable {
 		this.executor = Executors.newThreadPerTaskExecutor(factory);
 
 		this.monitor = new ExecutionMonitor(this, config);
-		this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(30));
+		this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(60));
 
 		// 启动定期清理邮箱任务
 		startMailboxCleaner();

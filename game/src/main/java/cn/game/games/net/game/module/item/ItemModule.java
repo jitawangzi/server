@@ -37,10 +37,10 @@ public class ItemModule extends AbstractItemModule<Item> {
 		}
 	}
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { ItemMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class<?>[] { ItemMapper.class };
+//	}
 
 	/**
 	 * 增加一个道具数量

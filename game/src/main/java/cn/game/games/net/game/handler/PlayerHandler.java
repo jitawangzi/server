@@ -702,6 +702,9 @@ public class PlayerHandler extends GameBaseHandler {
 //				}).compose(u -> loginFutrue);
 //	}
 
+	
+	// 目前这个协议没有单独使用，先保留功能。 
+	@Deprecated
 	private void reconnect(NetClient client, Object message) {
 		PlayerReconnecRequest_01000065 req = (PlayerReconnecRequest_01000065) message;
 		PlayerReconnecResponse_01000066.Builder resp = PlayerReconnecResponse_01000066.newBuilder();

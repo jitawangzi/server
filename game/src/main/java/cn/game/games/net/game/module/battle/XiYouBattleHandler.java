@@ -78,6 +78,10 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 	public void onLogin() {
 
 	}
+	@Override
+	public void reLogin() {
+		
+	}
 	
 	@Override
 	int battleStart(int id) {

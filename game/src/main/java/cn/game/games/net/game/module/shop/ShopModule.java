@@ -57,10 +57,10 @@ public class ShopModule extends BasePlayerModule {
 	/** 每天免费开取次数 */
 	private int freeOpenBoxCount;
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { ShopItemMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class<?>[] { ShopItemMapper.class };
+//	}
 
 	public List<ShopItem> getShopItems(int shop) {
 		return (List<ShopItem>) shopItemsMap.get(shop);

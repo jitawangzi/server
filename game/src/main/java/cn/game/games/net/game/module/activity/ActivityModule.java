@@ -197,10 +197,10 @@ public class ActivityModule extends BasePlayerModule {
 		});
 	}
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class[] { ActivityMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class[] { ActivityMapper.class };
+//	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {

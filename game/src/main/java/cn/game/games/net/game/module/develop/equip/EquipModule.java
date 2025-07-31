@@ -51,10 +51,10 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		}
 	}
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class<?>[] { EquipMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class<?>[] { EquipMapper.class };
+//	}
 
 	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {

@@ -90,10 +90,10 @@ public class PlayerModule extends BasePlayerModule {
 	/** 账号也记录一下，如果离线修复数据时触发bi使用 */
 	private Account account;
 
-	@Override
-	public Class<?>[] defaultDbMapperClass() {
-		return new Class[] { PlayerIdsMapper.class };
-	}
+//	@Override
+//	public Class<?>[] defaultDbMapperClass() {
+//		return new Class[] { PlayerIdsMapper.class };
+//	}
 
 //	@Override
 //	protected void initFromDb(ListIterator<?> iterator) {

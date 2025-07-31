@@ -261,3 +261,5 @@
 261,BattleEquipTowerGetHelpRewardRequest_13000537,0x13000537,,,,,查看助战情况请求
 262,BattleEquipTowerGetHelpInfoRequest_13000537,0x13000537,,,,,查看助战情况请求
 263,BattleEquipTowerFindHelpRewardRequest_13000537,0x13000537,,,,,查看助战奖励情况请求
+264,BattleLingShanEndRequest_13000519,0x13000519,,,,,结束灵山问禅
+265,BattleLingShanFloorSkipRequest_13000517,0x13000517,,,,,灵山问禅跳关

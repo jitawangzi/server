@@ -22,7 +22,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected transient Player player;
 	protected transient long playerId;
-	protected transient Class<?>[] defaultDbMapperClass;
+	private transient Class<?>[] defaultDbMapperClass;
 	private transient int tableCount = 0;
 
 	protected static final int INIT_PRIORITY_MIDDLE = 1_0000;
@@ -88,7 +88,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 		initFromDbAfter();
 		int nextIndexAfter = iterator.nextIndex();
 		if (nextIndexAfter - nextIndex != tableCount) {
-			String error = MessageFormat.format("op[{0}]tableCount count[{1}] Iterator count[{2}]",
+			String error = MessageFormat.format("PlayerModule[{0}]tableCount count[{1}] Iterator count[{2}]",
 					this.getClass().getSimpleName(), tableCount, (nextIndexAfter - nextIndex));
 			throw new IllegalArgumentException(error);
 		}
@@ -103,10 +103,11 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 
 	/** 
-	 * 单表情况下先不用这个了
+	 * 这个模块的部分或者所有数据，需要使用独立的表存储数据， 
+	 * 则返回对应表的Mapper class 
 	 * @return
 	 */
-	public Class<?>[] defaultDbMapperClass() {
+	protected Class<?>[] defaultDbMapperClass() {
 		return null;
 	};
 
@@ -154,13 +155,14 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	}
 	
 	/** 
-	 * 总是使用独立的数据表来存储数据，只有在单表存储玩家数据时，这个配置才有用，配置单独的数据表来存储玩家数据
-	 * 配置为true后，需要手动处理数据的更新,并且不序列化这个模块的数据，注意添加JsonIgnone
+	 * 手动配置这个模块的数据(部分或者全部数据)需要使用独立的表来存储数据,
+	 * 也可以直接通过复写 {@link #defaultDbMapperClass()} 来代替，可以忽略这个方法。 
+	 * 配置为true后，需要手动处理独立的表数据的更新,并且不能序列化这部分的数据，注意声明为transient 或者添加JsonIgnone注解。
 	 * 一般方便离线操作的，数据量大的，数据结构和条目比较稳定修改不频繁的，可以设置为true
-	 * @return
+	 * @return 是否使用了独立的数据库表来存储数据
 	 */
 	public boolean alwaysStoreDataInStandaloneTable() {
-		return false ; 
+		return this.defaultDbMapperClass != null && this.defaultDbMapperClass.length > 0;
 	}
 
 	@Override
