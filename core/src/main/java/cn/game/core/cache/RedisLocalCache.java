@@ -252,7 +252,7 @@ public class RedisLocalCache {
 	 */
 	public <T> List<T> multiGet(CacheType cacheType, String... keys) {
 		if (keys == null || keys.length == 0) {
-			throw new IllegalArgumentException("keys must not be empty");
+			return Collections.EMPTY_LIST;
 		}
 		List<String> list = new ArrayList<>(keys.length);
 		for (String key : keys) {
