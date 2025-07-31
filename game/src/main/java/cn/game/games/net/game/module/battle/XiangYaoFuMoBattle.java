@@ -6,9 +6,11 @@ import cn.game.core.exception.LogicException;
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -63,6 +65,7 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 			if (battleConfig.preBattle == lastCompleteBattleId) { // 第一次通关
 				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.XiangYaoChuMo);
 				lastCompleteBattleId = battleConfig.ID;
+				RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.XiangYaoFuMo, player.getPlayerId(), battleModule.getAttackingId());
 				return ResultObject.success(reward);
 			}
 		}
