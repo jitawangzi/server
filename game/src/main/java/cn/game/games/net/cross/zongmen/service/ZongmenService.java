@@ -22,6 +22,7 @@ import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
 
@@ -96,7 +97,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 宗门信息
 	 */
 	@Override
-	public ZongMen applyJoinZongmen(long zongMenId, long playerId, String playerName, int power) {
+	public ZongMenAllInfo applyJoinZongmen(long zongMenId, long playerId) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -114,12 +115,13 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		// 开启自动加入 则直接加入宗门
 		if (zongMenInfo.isAutoJoin()) {
 			zongMenInfo.joinZongMen(playerId, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+			return zongMenInfo.toProto(playerId); 
 		} else if (zongMenInfo.getModule().setting.getAutoJoin() == 2) {
 			zongMenInfo.applyJoin(playerId);
 		} else {
 			fail(ErrorMsgEnum.zong_men_not_allow_join);
 		}
-		return zongMenInfo;
+		return null;
 	}
 
 	/**

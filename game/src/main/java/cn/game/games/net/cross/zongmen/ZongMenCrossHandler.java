@@ -2,7 +2,6 @@ package cn.game.games.net.cross.zongmen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.spi.LocaleServiceProvider;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
-import cn.game.games.net.cross.zongmen.dto.CreateZongmenRequest;
 import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.games.net.cross.zongmen.service.ZongmenService;
@@ -21,6 +19,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenCrossMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 
 /**
  * @ClassName ZongMenHandler
@@ -124,10 +123,10 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		int power = Integer.parseInt(paramList.get(0));
 		String playerName = paramList.get(1);
 
-		ZongMen info = zongmenService.applyJoinZongmen(zongMenId, playerId, playerName, power);
+		ZongMenAllInfo info = zongmenService.applyJoinZongmen(zongMenId, playerId);
 		ZongMenMsg.applyJoinZongMenResponse_40000008.Builder res = ZongMenMsg.applyJoinZongMenResponse_40000008.newBuilder();
 		if (info != null) {
-			res.setZongMen(info.toProto(playerId));
+			res.setZongMen(info);
 		}
 		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.applyJoinZongMenResponse_40000008);
 	}
