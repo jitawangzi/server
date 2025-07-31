@@ -7,21 +7,21 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RankConfig;
+import cn.game.protocol.generated.config.TowerConfig;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.TowerManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 宝石塔 龙渊秘藏
@@ -115,6 +115,15 @@ public class TowerBattle extends XiYouBattleHandler {
                 // 扫荡
             }
         } else {
+            TowerConfig towerConfig =  TowerManager.instance().get(battleType);
+            if(towerConfig==null)
+            {
+                return ErrorMsgEnum.pre_condition_check_error.ID;
+            }
+            LocalDate currentDate = LocalDate.now();
+            if(!Arrays.asList(towerConfig.time).contains(currentDate.getDayOfWeek().getValue())) {
+                return ErrorMsgEnum.pre_condition_check_error.ID;
+            }
             //分塔只有打 没有扫荡  且不扣奖励次数 只有升层次数
             if (curTowerBattleId != id) {
                 return ErrorMsgEnum.pre_condition_check_error.ID;
