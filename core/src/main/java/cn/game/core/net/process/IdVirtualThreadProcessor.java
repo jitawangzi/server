@@ -1,10 +1,13 @@
 package cn.game.core.net.process;
 
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 import cn.game.core.execute.TaskExecutorService;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
+import cn.game.core.net.vertx.VxContextRegistry;
+import io.vertx.core.Future;
 
 public class IdVirtualThreadProcessor extends AbstractProcessor {
 
@@ -39,5 +42,15 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 		} catch (Exception e) {
 			throw new RuntimeException("Error processing callable for objectId: " + objectId, e);
 		}
+	}
+	
+
+	@Override
+	public <T, R> Future<T> process(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper) {
+		Future<R> execute = TaskExecutorService.getInstance().execute(objectId, supplier,false,"", 10000);
+		if (mapper != null) {
+			return execute.compose(mapper);
+		}
+		return execute.map(r -> (T) r) ; 
 	}
 }

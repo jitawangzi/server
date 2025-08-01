@@ -84,14 +84,15 @@ public class DeadlockGuard {
 				String msg = "Potential deadlock: entity " + currentId + " description " + description + " synchronously waiting for "
 						+ targetId
 						+ ", targetId is already in call stack: " + stack + "\nJava Call Stack:\n" + stackTrace;
-				LOGGER.error(msg);
-				throw new IllegalStateException(msg);
+				// 先不抛出异常，某些情况下允许跨id同步。 
+				LOGGER.warn(msg);
+//				throw new IllegalStateException(msg);
 			} else {
 				LOGGER.warn(
 						"Possibly unsafe cross-id sync wait: entity {} description {} synchronously waiting for {}, call stack: {}\nJava Call Stack:\n{}",
 						currentId, description, targetId, stack, stackTrace);
-				// 先抛异常，严格避免跨id同步调用,后期看看有没有必要允许
-				throw new CrossIdSyncWaitException(targetId, description);
+				// 先不抛出异常，某些情况下允许跨id同步
+//				throw new CrossIdSyncWaitException(targetId, description);
 			}
 		}
 	}

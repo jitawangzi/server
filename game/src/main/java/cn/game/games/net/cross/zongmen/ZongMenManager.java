@@ -235,4 +235,8 @@ public class ZongMenManager {
 	public void delZongMen(long id) {
 		zongMenMap.remove(id);
 	}
+
+	public Collection<ZongMen> getAllZongMen() {
+		return zongMenMap.values();
+	}
 }

@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.zongmen.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.RemoteProxy;
 import cn.game.games.net.cross.zongmen.ZongMen;
@@ -459,6 +461,18 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 
 	@Override
 	public ZongMenAllInfo randomJoin(long playerId) {
-		return null;
+		Collection<ZongMen> allZongMen = ZongMenManager.getInstance().getAllZongMen(); 
+		for (ZongMen zongMen : allZongMen) {
+            if (zongMen.canAutoJoin()) {
+                return ServerContext.getInstance().getProcessor().process(zongMen.getId(), () -> {
+                	if (zongMen.isFull()) {
+                		return null ; 
+					}
+                	zongMen.addMember(List.of(playerId)); 
+                	return zongMen.toProto(playerId) ; 
+                }) ; 
+            }
+		}
+		return null ; 
 	}
 }

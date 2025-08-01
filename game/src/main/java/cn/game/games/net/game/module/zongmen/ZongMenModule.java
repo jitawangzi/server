@@ -7,6 +7,8 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -15,6 +17,7 @@ import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 
 /**
  * @ClassName ZongMenModule
@@ -133,7 +136,7 @@ public class ZongMenModule extends BasePlayerModule {
 		} else {
 			// 有宗门
 			if (player.getZongMenId() != lastId) {
-				join(player.getZongMenId(), player.getZongMenName());
+				join(player.getZongMenId(), player.getZongMenName(),0);
 			} else {
 				// 已经有宗门了,并且没有变化
 			}
@@ -199,7 +202,7 @@ public class ZongMenModule extends BasePlayerModule {
 	}
 
 	public void joinZongMen(ZongMenMsg.notifyJoinZongMen_40000044 req) {
-		join(req.getZongMen().getId(), req.getZongMen().getName());
+		join(req.getZongMen().getId(), req.getZongMen().getName(), req.getZongMen().getLevel());
 	}
 
 	public void joinAndPush(ZongMenMsg.notifyJoinZongMen_40000044 req) {
@@ -216,16 +219,24 @@ public class ZongMenModule extends BasePlayerModule {
 
 	}
 
-	public void join(long zongmenId,String zongmenName) {
+	public void join(long zongmenId,String zongmenName,int level) {
 		if (zongmenId == lastId) {
 			return;
 		}
 		player.getData().setUnionId(zongmenId);
 		player.getData().setUnionName(zongmenName);
 		
+		if (level == 0) {
+			ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(zongmenId); 
+			ZongMenShowInfo zongmenShowInfo = zongmenProxy.getZongmenShowInfo(zongmenId); 
+			level= zongmenShowInfo.getSimpleInfo().getLevel(); 
+		}
+		
+		boolean isFirstJoin = true;
 		// 之前有加入过宗门，不是第一次加入
 		if (lastId > 0) {
 			change();
+			isFirstJoin = false;
 		} else {
 			// 初次加入
 			initFirstTime();
@@ -234,6 +245,7 @@ public class ZongMenModule extends BasePlayerModule {
 		lastId = zongmenId; 
 		applyJoinList.clear(); 
 		inited = true;
+		player.handleEvent(EventTypeEnum.ZongMenJoin, zongmenId, zongmenName, level,isFirstJoin);
 	}
 
 	public List<Long> getApplyJoinList() {

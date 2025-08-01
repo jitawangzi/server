@@ -37,8 +37,8 @@ public class OneToOneMailboxManager implements MailboxManager {
 //			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
 //		}
 		if (entityId == 0) {
-			// 0的时候，不对应任何实体，随机返回一个邮箱ID，避免0的任务堆积到一起。
-			return ThreadLocalRandom.current().nextInt(128);
+			// 0的时候，不对应任何实体，随机返回一个邮箱ID，避免0的任务堆积到一起。并且避开默认队列
+			return ThreadLocalRandom.current().nextInt(1000000000, 1000000128);
 		}
 		return entityId;
 	}

@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.zongmen;
 
+import java.net.ResponseCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -17,6 +18,7 @@ import com.google.protobuf.Message;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.cross.remote.CrossServerInterface;
@@ -26,6 +28,7 @@ import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
@@ -194,7 +197,21 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
 		}
-        ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, 0); 
+        ZongMenAllInfo joined = null; 
+        List<ZongmenServiceInterface> allServerInterface = ServerHelper.getAllServerInterface(ServerType.Cross, ZongmenServiceInterface.class); 
+        for (ZongmenServiceInterface zongmenServiceInterface : allServerInterface) {
+			ZongMenAllInfo randomJoin = zongmenServiceInterface.randomJoin(player.getPlayerId()); 
+			if (randomJoin != null) {
+				joined = randomJoin; 
+				break ; 
+			}
+		}
+        if (joined != null) {
+        	ZongMenSimpleInfo simpleInfo = joined.getShowInfo().getSimpleInfo(); 
+        	zongmenModule.join(simpleInfo.getId(), simpleInfo.getName(),simpleInfo.getLevel());
+        	res.setZongmen(joined); ;
+		}
+        client.sendProtocol(res.build());
 
     }
 
@@ -486,7 +503,7 @@ public class ZongMenHandler extends GameBaseHandler {
         if (zongmen != null) {
         	ZongMenSimpleInfo simpleInfo = zongmen.getShowInfo().getSimpleInfo(); 
             // 玩家直接加入宗门
-            player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName());
+            player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName(),simpleInfo.getLevel());
             client.sendProtocol(res.setZongMen(zongmen).build());
 		}else {
             client.sendProtocol(applyJoinZongMenResponse_40000008.getDefaultInstance());
@@ -556,7 +573,7 @@ public class ZongMenHandler extends GameBaseHandler {
                     ZongMenMsg.createZongMenResponse_40000006 createRes = (ZongMenMsg.createZongMenResponse_40000006) createZongMenCallback.response;
                     // 设置玩家宗门信息
                     ZongMenSimpleInfo simpleInfo = createRes.getZongMen().getShowInfo().getSimpleInfo(); 
-                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName()) ; 
+                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName(),simpleInfo.getLevel()) ; 
                     client.sendProtocol(createRes);
                 } else {
                     // 创建宗门失败
