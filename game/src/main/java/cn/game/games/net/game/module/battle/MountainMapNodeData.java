@@ -1,5 +1,8 @@
 package cn.game.games.net.game.module.battle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MountainMapNodeData {
     /**
      * 节点id
@@ -20,15 +23,15 @@ public class MountainMapNodeData {
     /**
      * 等级参数
      */
-    private float levelpro;
+    private int levelpro;
     /**
      * 事件参数
      */
-    private float eventId;
+    private int eventId;
     /**
      * 商店参数
      */
-    private float shopId;
+    private List<Integer> shopId =new ArrayList<>();
 
     public int getNodeId() {
         return nodeId;
@@ -62,29 +65,23 @@ public class MountainMapNodeData {
         this.monsterId = monsterId;
     }
 
-    public float getLevelpro() {
+    public int getLevelpro() {
         return levelpro;
     }
 
-    public void setLevelpro(float levelpro) {
+    public void setLevelpro(int levelpro) {
         this.levelpro = levelpro;
     }
 
-    public float getEventId() {
+    public int getEventId() {
         return eventId;
     }
 
-    public void setEventId(float eventId) {
+    public void setEventId(int eventId) {
         this.eventId = eventId;
     }
 
-    public float getShopId() {
-        return shopId;
-    }
 
-    public void setShopId(float shopId) {
-        this.shopId = shopId;
-    }
 
     public void clear()
     {
@@ -93,6 +90,14 @@ public class MountainMapNodeData {
         monsterId=0;
         levelpro=0;
         eventId=0;
-        shopId=0;
+        shopId.clear();
+    }
+
+    public List<Integer> getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(List<Integer> shopId) {
+        this.shopId = shopId;
     }
 }

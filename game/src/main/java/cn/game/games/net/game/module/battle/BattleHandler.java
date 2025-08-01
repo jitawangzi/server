@@ -155,6 +155,16 @@ import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipRequest_130005
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndRequest_13000519;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainDataRequest_13000539;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainDataResponse_1300053a;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeRequest_13000541;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_13000542;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardRequest_13000543;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000544;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetRequest_13000545;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000546;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFloorRequest_13000547;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000548;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -223,6 +233,11 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleEquipTowerFindHelpRewardRequest_13000537, this::equipTowerFindHelpReward);
         putInvoker(PbProtocol.BattleLingShanFloorSkipRequest_13000517, this::lingShanFloorSkip);
         putInvoker(PbProtocol.BattleLingShanEndRequest_13000519, this::lingShanEnd);
+        putInvoker(PbProtocol.BattleMountainDataRequest_13000539, this::mountainData);
+        putInvoker(PbProtocol.BattleMountainFinishNodeRequest_13000541, this::mountainFinishNode);
+        putInvoker(PbProtocol.BattleMountainGetRewardRequest_13000543, this::mountainGetReward);
+        putInvoker(PbProtocol.BattleMountainMapResetRequest_13000545, this::mountainMapReset);
+        putInvoker(PbProtocol.BattleMountainNextFloorRequest_13000547, this::mountainNextFloor);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1554,7 +1569,7 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
-        List<RewardInfo> reward = towerBattle.getHelpReward(battleID,floor);
+        List<RewardInfo> reward = towerBattle.getHelpReward(battleID, floor);
         BattleEquipTowerGetHelpRewardResponse_13000536.Builder resp = BattleEquipTowerGetHelpRewardResponse_13000536.newBuilder();
         resp.addAllRewards(reward);
         client.sendProtocol(resp.build());
@@ -1583,8 +1598,8 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-        List<RewardInfo> rewards = battle.skipFloor(floor); 
-        resp.addAllRewards(rewards); 
+        List<RewardInfo> rewards = battle.skipFloor(floor);
+        resp.addAllRewards(rewards);
         client.sendProtocol(resp.build());
     }
 
@@ -1595,11 +1610,91 @@ public class BattleHandler extends GameBaseHandler {
         BattleLingShanEndResponse_1300051a.Builder resp = BattleLingShanEndResponse_1300051a.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-		int attackingSubId = battleModule.getAttackingSubId();
-		List<RewardInfo> end = battle.end(battle.getLastCompleteFloor()); 
-		if (end != null && !end.isEmpty()) {
-			resp.addAllRewards(end);
-		}
+        int attackingSubId = battleModule.getAttackingSubId();
+        List<RewardInfo> end = battle.end(battle.getLastCompleteFloor());
+        if (end != null && !end.isEmpty()) {
+            resp.addAllRewards(end);
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private void mountainData(NetClient client, Object message) {
+        BattleMountainDataRequest_13000539 req = (BattleMountainDataRequest_13000539) message;
+        BattleMountainDataResponse_1300053a defaultInstance = BattleMountainDataResponse_1300053a.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleMountainDataResponse_1300053a.Builder resp = BattleMountainDataResponse_1300053a.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaShengXunShanBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.MountainBattle);
+        var mapData = towerBattle.getMountainMapData();
+        resp.setCurNodeId(mapData.getCurNodeId());
+        resp.setScore(mapData.getScore());
+        resp.setScoreMax(mapData.getScoreMax());
+        resp.setHp(mapData.getHp());
+        resp.setScore(mapData.getScore());
+        resp.setRefreshNum(mapData.getRefreshNum());
+        resp.setEndTime(mapData.getEndTime());
+        mapData.getMapData().forEach((k, v) -> {
+            v.forEach(node-> {
+               var builder= BaseMsg.MountainMapNodeData.newBuilder()
+                        .setNodeID(node.getNodeId())
+                        .setNodeType(node.getNodeType())
+                        .setEventId(node.getEventId())
+                        .setLevelpro(node.getLevelpro())
+                        .setNodeStatus(node.getNodeStatus())
+                        ;
+                node.getShopId().forEach(shopId->builder.addShopId(shopId));
+
+                resp.addMapdata(builder.build());
+            });
+        });
+        mapData.getScoreReward().forEach((k, v) -> {
+            resp.putScoreReward(k, v);
+        });
+        mapData.getBuffBag().forEach( v -> {
+            resp.addBuffBag( v);
+        });
+        client.sendProtocol(resp.build());
+    }
+
+    private void mountainFinishNode(NetClient client, Object message) {
+        BattleMountainFinishNodeRequest_13000541 req = (BattleMountainFinishNodeRequest_13000541) message;
+        int nodeId = req.getNodeId();
+        int param = req.getParam();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleMountainFinishNodeResponse_13000542.Builder resp = BattleMountainFinishNodeResponse_13000542.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        DaShengXunShanBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.MountainBattle);
+        towerBattle.finishNode(nodeId, param);
+        resp.setScore(towerBattle.getMountainMapData().getScore());
+        resp.setScoreMax(towerBattle.getMountainMapData().getScoreMax());
+        resp.setHp(towerBattle.getMountainMapData().getHp());
+
+        client.sendProtocol(resp.build());
+    }
+
+    private void mountainGetReward(NetClient client, Object message) {
+        BattleMountainGetRewardRequest_13000543 req = (BattleMountainGetRewardRequest_13000543) message;
+        int rewardId = req.getRewardId();
+        BattleMountainGetRewardResponse_13000544 defaultInstance = BattleMountainGetRewardResponse_13000544.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleMountainGetRewardResponse_13000544.Builder resp = BattleMountainGetRewardResponse_13000544.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void mountainMapReset(NetClient client, Object message) {
+        BattleMountainMapResetRequest_13000545 req = (BattleMountainMapResetRequest_13000545) message;
+        BattleMountainGetRewardResponse_13000546 defaultInstance = BattleMountainGetRewardResponse_13000546.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleMountainGetRewardResponse_13000546.Builder resp = BattleMountainGetRewardResponse_13000546.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void mountainNextFloor(NetClient client, Object message) {
+        BattleMountainNextFloorRequest_13000547 req = (BattleMountainNextFloorRequest_13000547) message;
+        int floor = req.getFloor();
+        BattleMountainGetRewardResponse_13000548 defaultInstance = BattleMountainGetRewardResponse_13000548.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleMountainGetRewardResponse_13000548.Builder resp = BattleMountainGetRewardResponse_13000548.newBuilder();
         client.sendProtocol(resp.build());
     }
 }
