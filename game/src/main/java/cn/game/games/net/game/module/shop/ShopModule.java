@@ -1,11 +1,6 @@
 package cn.game.games.net.game.module.shop;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -325,6 +320,23 @@ public class ShopModule extends BasePlayerModule {
 			}
 		});
 	}
+	public void refreshGemTowerItems_LevelUp() {
+		// 刷新爬塔商店
+		int shop = 19;
+		int level = player.getLevel();
+		DragonStoreManager.instance().list().forEach(shopConfig ->{
+			if (level >= shopConfig.LevelUnlock) {
+				List<ShopItem> tmp = (List<ShopItem>)shopItemsMap.get(shop);
+				for (int i = 0; i <	tmp.size() ; i++) {
+					ShopItem item = tmp.get(i);
+					if (item.getItemId()==shopConfig.Item) {
+						return;
+					}
+				}
+				shopItemsMap.put(shop, new ShopItem(shopConfig.Item));
+			}
+		});
+	}
 	public void refreshHunhuoItems(int shop) {
 		// 刷新魂火商店
 		shopItemsMap.removeAll(shop);
@@ -468,6 +480,10 @@ public class ShopModule extends BasePlayerModule {
 		}
 		case NewMonth:{
 			refreshShopNewMonth();
+			break;
+		}
+		case LevelUp:{
+			refreshGemTowerItems_LevelUp();
 			break;
 		}
 		case CostItem: {
