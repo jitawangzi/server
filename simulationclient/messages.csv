@@ -263,3 +263,8 @@
 263,BattleEquipTowerFindHelpRewardRequest_13000537,0x13000537,,,,,查看助战奖励情况请求
 264,BattleLingShanEndRequest_13000519,0x13000519,,,,,结束灵山问禅
 265,BattleLingShanFloorSkipRequest_13000517,0x13000517,,,,,灵山问禅跳关
+266,BattleMountainDataRequest_13000539,0x13000539,,,,,巡山数据请求
+267,BattleMountainFinishNodeRequest_13000541,0x13000541,,,,,完成节点请求
+268,BattleMountainGetRewardRequest_13000543,0x13000543,,,,,完成进度奖励请求
+269,BattleMountainMapResetRequest_13000545,0x13000545,,,,,重置
+270,BattleMountainNextFloorRequest_13000547,0x13000547,,,,,下一层
