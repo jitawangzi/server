@@ -2,6 +2,7 @@ package cn.game.core.cache.id;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.base.ServerContext;
 import cn.game.core.task.SchedulerService;
 import cn.game.util.Config;
+import cn.game.util.LuaScriptUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
@@ -85,10 +87,11 @@ public class IdCache {
 			GenericDistributedIDManager manager = getManager(distributedObjectType);
 			Collection<Long> allIds = manager.getAllIds();
 			for (Long id : allIds) {
-				RFuture<Void> idFuture = setServerId(manager.generateRedisKey(id));
-				idFuture.onComplete((v, throwable) -> {
+				CompletionStage<Boolean> idFuture = trySetServerIdAsync(manager.generateRedisKey(id));
+				idFuture.whenComplete((v, throwable) -> {
 					if (throwable != null) {
 						log.error(distributedObjectType + " " + id + " setServerId error ", throwable);
+						// TODO 需要进一步的处理
 					}
 				});
 			}
@@ -106,15 +109,8 @@ public class IdCache {
 		}
 	}
 
-	public static RFuture<Void> setServerId(DistributedObjectType objectType, long id) {
-		GenericDistributedIDManager manager = getManager(objectType);
-		String redisKey = manager.generateRedisKey(id);
-		return setServerId(redisKey);
-	}
-
-	private static RFuture<Void> setServerId(String key) {
-		return RedisUtil.setAsync(key, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
-				TimeUnit.SECONDS);
+	private static CompletionStage<Boolean> trySetServerIdAsync(String key) {
+		return LuaScriptUtil.trySetWithExpectAsync(key, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS); 
 	}
 
 	/**
@@ -122,13 +118,26 @@ public class IdCache {
 	 * @param playerId
 	 * @return
 	 */
-	public static RFuture<Boolean> trySetServerId(DistributedObjectType objectType, long id) {
-		GenericDistributedIDManager manager = getManager(objectType);
-		String redisKey = manager.generateRedisKey(id);
-		return RedisUtil.trySetAsync(redisKey,
-				ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, TimeUnit.SECONDS);
+	public static CompletionStage<Boolean> trySetServerIdAsync(DistributedObjectType objectType, long id) {
+		String redisKey = generateRedisKey(objectType, id); 
+		return trySetServerIdAsync(redisKey); 
+	}
+	/** 
+	 * 同步设置某个id的的服务器id
+	 * @param objectType
+	 * @param id
+	 * @return
+	 */
+	public static boolean trySetServerId(DistributedObjectType objectType, long id) {
+		String redisKey = generateRedisKey(objectType, id); 
+		return LuaScriptUtil.trySetWithExpect(redisKey, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS); 
 	}
 
+	public static String generateRedisKey(DistributedObjectType objectType, long id) {
+		GenericDistributedIDManager manager = getManager(objectType);
+		return manager.generateRedisKey(id);
+	}
+	
 	/** 
 	 * 设置某个id的的服务器id,一般用在非并发的情况下
 	 * 例如 服务器启动加载数据， 或者初始化新对象时
@@ -137,11 +146,7 @@ public class IdCache {
 	 * @return 是否设置成功,true:设置成功,false 设置失败，可能是对象在其他服务器管理了
 	 */
 	public static boolean initServerId(DistributedObjectType objectType, long id) {
-		GenericDistributedIDManager manager = getManager(objectType);
-		String redisKey = manager.generateRedisKey(id);
-		boolean result = RedisUtil.trySet(redisKey, ServerContext.getInstance().getServerId(),
-				Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS,
-				TimeUnit.SECONDS);
+		boolean result = trySetServerId(objectType, id); 
 		return result;
 		/**
 		if (result) {

@@ -1327,7 +1327,7 @@ public class PlayerHelper {
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
 			return Future.succeededFuture();
 		}
-		return VxHolder.toVertxFuture(IdCache.trySetServerId(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
+		return VxHolder.toVertxFuture(IdCache.trySetServerIdAsync(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
 			if (!locked) {
 				return Future.failedFuture(ErrorMsgEnum.player_lock.getId() + "");
 			}
