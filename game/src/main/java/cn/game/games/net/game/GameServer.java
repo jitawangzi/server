@@ -27,6 +27,7 @@ import org.redisson.api.RLock;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
+import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
@@ -65,6 +66,7 @@ import cn.game.games.net.cross.zongmen.service.ZongmenService;
 import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.DataFixManager;
@@ -440,16 +442,6 @@ public class GameServer implements GameServerMBean {
 	}
 
 	/**
-	 * 是否是本地服务器
-	 * @param serverId
-	 * @return
-	 */
-	@Deprecated
-	public boolean isLocalServer(String serverId) {
-		return StringUtils.isEmpty(serverId) || ServerContext.getInstance().getServerId().equals(serverId);
-	}
-
-	/**
 	 * 获取逻辑服远程调用接口
 	 * @param serverId 逻辑服id,如果不是指定某个id的服务器,则传null
 	 * @return
@@ -466,16 +458,7 @@ public class GameServer implements GameServerMBean {
 	 * @return
 	 */
 	public GameServerInterface getGameServerInterface(DistributedObjectType objectType, long targetId) {
-
-		String serverId = IdCache.getManager(objectType).getServerId(targetId);
-		if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
-			// 对象不在线，或者在当前服务器，直接由当前服务器处理
-			return (GameServerInterface) SpringContextLoader.getContext().getBean(GameServerInterface.class);
-		}
-		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(GameServerInterface.class, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId,
-				ServerType.Game, targetId);
-
+		return ServerHelper.getRemoteInterfaceProxy(ServerType.Game, GameServerInterface.class, objectType, targetId);
 	}
 
 	/**
@@ -488,44 +471,18 @@ public class GameServer implements GameServerMBean {
 		return  getRemoteCrossServerInterface(CrossServerInterface.class, objectType, targetId);
 	}
 	public <T> T getRemoteCrossServerInterface(Class<T> remoteInterface, DistributedObjectType objectType, long targetId) {
-		
-		CallType callType = CallType.PointToPoint;
-		String serverId = IdCache.getManager(objectType).getServerId(targetId);
-		if (StringUtils.isEmpty(serverId)) {
-			callType = CallType.LoadBalancer;
-		}
-		// 其他服务器在线，通过远程调用
-		return  RpcFactory.getImpl(remoteInterface, ServerContext.getInstance().getRpcClient(), callType, serverId,
-				ServerType.Cross, targetId);
+		return ServerHelper.getRemoteInterfaceProxy(ServerType.Cross, remoteInterface, objectType, targetId);
 	}
 
 	public ZongmenServiceInterface getZongmenProxy(long targetId) {
-
-		CallType callType = CallType.PointToPoint;
-		String serverId = IdCache.getManager(DistributedObjectType.ZONGMEN).getServerId(targetId);
-		if (StringUtils.isEmpty(serverId)) {
-			callType = CallType.LoadBalancer;
-		}
-		// 其他服务器在线，通过远程调用
-		return RpcFactory.getImpl(ZongmenService.class, ServerContext.getInstance().getRpcClient(), callType, serverId,
-				ServerType.Cross, targetId);
+		return ServerHelper.getRemoteInterfaceProxy(ServerType.Cross, ZongmenService.class, DistributedObjectType.ZONGMEN, targetId);
 	}
-
 	/** 
 	 * 获取所有跨服的远程接口，用于点对点通讯。 
 	 * @return
 	 */
-	public List<CrossServerInterface> getAllCrossServerInterface() {
-
-		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross);
-		List<CrossServerInterface> ret = new ArrayList<>();
-
-		for (String serverId : serverSet) {
-			CrossServerInterface impl = RpcFactory.getImpl(CrossServerInterface.class, ServerContext.getInstance().getRpcClient(),
-					CallType.PointToPoint, serverId, ServerType.Cross, 0);
-			ret.add(impl);
-		}
-		return ret;
+	public <T extends RemoteCrossServerInterface> List<T> getAllCrossServerInterface(Class<T> clazz) {
+		return ServerHelper.getAllServerInterface(ServerType.Cross, clazz) ; 
 	}
 
 	/** 

@@ -148,7 +148,7 @@ public class ZongMenModule extends BasePlayerModule {
 		lastId = player.getZongMenId(); 
 		
         refreshZongMenTask();
-        player.getShopModule().refreshZongMenShop();
+        player.getShopModule().refreshShopByShopType(17);
 	}
 
 	/** 
@@ -158,7 +158,7 @@ public class ZongMenModule extends BasePlayerModule {
 
 		lastId = (int) player.getZongMenId(); 
         refreshZongMenTask();
-        player.getShopModule().refreshZongMenShop();
+//        player.getShopModule().refreshZongMenShop(17);
 	}
 
 	private void getZongMenInfo() {

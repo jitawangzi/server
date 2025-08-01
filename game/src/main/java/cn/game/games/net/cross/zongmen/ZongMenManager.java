@@ -224,8 +224,8 @@ public class ZongMenManager {
 				.setScoreAsync(zongMenInfo.getData().getServerId(), RankType.ZongMen, zongMenInfo.getId(), zongMenInfo.callTotalPower());
 	}
 
-	private RFuture<Void> saveZongMenServerId(long id) {
-		return IdCache.setServerId(DistributedObjectType.ZONGMEN, id);
+	private CompletionStage<Boolean> saveZongMenServerId(long id) {
+		return IdCache.trySetServerIdAsync(DistributedObjectType.ZONGMEN, id);
 	}
 
 	public void clearZongMenServerId(long id) {

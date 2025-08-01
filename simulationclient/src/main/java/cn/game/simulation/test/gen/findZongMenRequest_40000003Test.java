@@ -14,7 +14,7 @@ public class findZongMenRequest_40000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.findZongMenRequest_40000003.newBuilder() ; 
 		
-		builder.setId(8880001);
+		builder.setId(892440001);
 		
 		return builder.build() ; 
 	}

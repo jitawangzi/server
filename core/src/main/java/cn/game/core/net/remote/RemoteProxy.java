@@ -82,20 +82,7 @@ public interface RemoteProxy {
 	 */
 	default Object invokeClass(Class<?> clazz, String methodName, Class<?>[] paramTypes, Object... args) {
 		try {
-			Object bean = null;
-			// 1. 先尝试从Spring容器获取
-			try {
-				bean = SpringContextLoader.getContext().getBean(clazz);
-			} catch (NoSuchBeanDefinitionException e) {
-				// Spring容器中没有找到，尝试获取单例实例
-				bean = ClassHelper.getSingletonInstance(clazz);
-			}
-
-			if (bean == null) {
-				throw new IllegalStateException("No instance found for class: " + clazz.getName()
-						+ ". The instance must be either managed by Spring or be a singleton class.");
-			}
-
+			Object bean = ClassHelper.getSingletonInstance(clazz);
 			Method method = ClassHelper.findMethod(bean.getClass(), methodName, paramTypes);
 			ReflectionUtils.makeAccessible(method);
 			return method.invoke(bean, args);
@@ -103,7 +90,5 @@ public interface RemoteProxy {
 			throw new RuntimeException("RemoteProxy Method invocation failed", e);
 		}
 	}
-
-
 
 }

@@ -15,7 +15,6 @@ import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartResponse_13000056;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchResponse_13000063;
 import cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepResponse_13000061;
 import cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointResponse_13000071;
-import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataPush_13100528;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerDataResponse_13000527;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardResponse_13000538;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardResponse_13000536;
@@ -139,7 +138,6 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleTowerDataResponse_13000522, this::towerData);
         putInvoker(PbProtocol.BattleTowerDataPush_13100523, this::towerDataPush);
         putInvoker(PbProtocol.BattleTowerQuickEndResponse_13100525, this::towerQuickEnd);
-        putInvoker(PbProtocol.BattleEquipTowerDataPush_13100528, this::equipTowerDataPush);
         putInvoker(PbProtocol.BattleEquipTowerHelpPlayerResponse_13000532, this::equipTowerHelpPlayer);
         putInvoker(PbProtocol.BattleEquipTowerGetTicketResponse_13000534, this::equipTowerGetTicket);
         putInvoker(PbProtocol.BattleEquipTowerGetHelpRewardResponse_13000536, this::equipTowerGetHelpReward);
@@ -483,13 +481,6 @@ public class ClientBattleHandler extends BaseHandler {
         BattleTowerQuickEndResponse_13100525 resp = (BattleTowerQuickEndResponse_13100525) message;
         List<RewardInfo> rewardsList = resp.getRewardsList();
         int rewardCount = resp.getRewardCount();
-        Client client = (Client) netClient;
-    }
-
-    private void equipTowerDataPush(NetClient netClient, Object message) {
-        BattleEquipTowerDataPush_13100528 resp = (BattleEquipTowerDataPush_13100528) message;
-        int ticketCount = resp.getTicketCount();
-        long nextTicketTime = resp.getNextTicketTime();
         Client client = (Client) netClient;
     }
 

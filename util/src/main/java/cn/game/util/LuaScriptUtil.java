@@ -29,6 +29,7 @@ public class LuaScriptUtil {
 		ADD_SET_BATCH_WITH_LIMIT("add_set_batch_with_limit.lua", "批量向集合添加元素，但限制集合大小不超过指定值", true),
 		ADD_LIST_WITH_FIFO_LIMIT("add_list_with_fifo_limit.lua", "向列表添加元素，如果超过大小限制则移除最老的元素", true),
 		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
+		TRY_SET_WITH_EXPECT("try_set_with_expect.lua", "条件设置键值对并指定过期时间，仅当键不存在或当前值与预期值相同时才设置", true),
 
 		;
 
@@ -91,7 +92,7 @@ public class LuaScriptUtil {
 	}
 
 	/**
-	 * 执行 Lua 脚本
+	 * 异步执行 Lua 脚本
 	 *
 	 * @param script 要执行的脚本
 	 * @param codec Redis 编解码器
@@ -100,12 +101,19 @@ public class LuaScriptUtil {
 	 * @param <T> 返回值类型
 	 * @return 脚本执行结果
 	 */
-	public static <T> CompletionStage<T> executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
+	public static <T> CompletionStage<T> executeLuaScriptAsync(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
 		if (script.useSha1) {
 			return rScript.evalShaAsync(RScript.Mode.READ_WRITE, script.sha1, RScript.ReturnType.VALUE, keys, values);
 		}
 		return rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
+	}
+	public static <T> T executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
+		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
+		if (script.useSha1) {
+			return rScript.evalSha(RScript.Mode.READ_WRITE, script.sha1, RScript.ReturnType.VALUE, keys, values);
+		}
+		return rScript.eval(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
 	}
 
 	/** 
@@ -116,7 +124,7 @@ public class LuaScriptUtil {
 	 * @return
 	 */
 	public static CompletionStage<Double> updateScoreIfGreater(String key, long member, double newScore) {
-		return executeLuaScript(LuaScript.UPDATE_SET_SCORE_IF_GREATER, LongCodec.INSTANCE, List.of(key), member, newScore)
+		return executeLuaScriptAsync(LuaScript.UPDATE_SET_SCORE_IF_GREATER, LongCodec.INSTANCE, List.of(key), member, newScore)
 				.thenApply(result -> {
 			if (result instanceof Number) {
 				return ((Number) result).doubleValue();
@@ -134,7 +142,7 @@ public class LuaScriptUtil {
 	 * @return 更新后的值
 	 */
 	public static CompletionStage<Long> incrementWithMax(String key, long increment, long maxValue) {
-		return executeLuaScript(LuaScript.INCREMENT_WITH_MAX, LongCodec.INSTANCE, List.of(key), increment, maxValue);
+		return executeLuaScriptAsync(LuaScript.INCREMENT_WITH_MAX, LongCodec.INSTANCE, List.of(key), increment, maxValue);
 	}
 
 	/** 
@@ -145,7 +153,35 @@ public class LuaScriptUtil {
 	 * @return 更新后的值
 	 */
 	public static CompletionStage<Long> updateHashConditional(String key, long expectedValue, long addValue) {
-		return executeLuaScript(LuaScript.UPDATE_HASH_CONDITIONAL, LongCodec.INSTANCE, List.of(key), expectedValue, addValue);
+		return executeLuaScriptAsync(LuaScript.UPDATE_HASH_CONDITIONAL, LongCodec.INSTANCE, List.of(key), expectedValue, addValue);
+	}
+	/**
+	 * 设置某个key的值，只有当key不存在，或者值等于预期值时设置  并指定过期时间
+	 * @param key Redis键
+	 * @param value 要设置的值
+	 * @param expireSeconds 过期时间（秒）
+	 * @return true表示设置成功，false表示失败（被其他值占用）
+	 */
+	public static boolean trySetWithExpect(String key, String value, int expireSeconds) {
+	    Long result = executeLuaScript(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds);
+	    return result != null && result == 1;
+	}
+
+	/**
+	 * 设置某个key的值，只有当key不存在，或者值等于预期值时设置  并指定过期时间（异步版本）
+	 * @param key Redis键
+	 * @param value 要设置的值
+	 * @param expireSeconds 过期时间（秒）
+	 * @return CompletionStage<Boolean>
+	 */
+	public static CompletionStage<Boolean> trySetWithExpectAsync(String key, String value, int expireSeconds) {
+	    return executeLuaScriptAsync(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds)
+	            .thenApply(result -> {
+	                if (result instanceof Number) {
+	                    return ((Number) result).longValue() == 1;
+	                }
+	                return false;
+	            });
 	}
 
 }

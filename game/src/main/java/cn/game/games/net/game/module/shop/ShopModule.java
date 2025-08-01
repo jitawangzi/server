@@ -1,9 +1,12 @@
 package cn.game.games.net.game.module.shop;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import cn.game.protocol.generated.manager.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -12,7 +15,6 @@ import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.data.mapper.ShopItemMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -24,6 +26,16 @@ import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.DragonStoreManager;
+import cn.game.protocol.generated.manager.FundPassManager;
+import cn.game.protocol.generated.manager.HeishiManager;
+import cn.game.protocol.generated.manager.HunhuoManager;
+import cn.game.protocol.generated.manager.RSGTreeShopManager;
+import cn.game.protocol.generated.manager.RechargeStoreManager;
+import cn.game.protocol.generated.manager.ResidentPackManager;
+import cn.game.protocol.generated.manager.ShopItemManager;
+import cn.game.protocol.generated.manager.ShopManager;
+import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -33,20 +45,17 @@ import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class ShopModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish, EventTypeEnum.NewDay,
-			EventTypeEnum.NewWeek,EventTypeEnum.NewMonth,
-			EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen, EventTypeEnum.CostItem };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish,
+			EventTypeEnum.NewDay, EventTypeEnum.NewWeek, EventTypeEnum.NewMonth, EventTypeEnum.LevelUp, EventTypeEnum.FuncOpen,
+			EventTypeEnum.CostItem };
 
 //	private Map<Long, ShopItem> itemsMap = new HashMap<Long, ShopItem>();
 	/** key：shopId，value 商品 */
 	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
 	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
-	@Deprecated
-	@JsonIgnore
-	private int heishiRefreshTimes;
 	private IntMapWrapper heishiRefreshTimesMap = new IntMapWrapper();
-	
+
 	/** 上次免费看广告开宝箱时间 */
 	private int lastFreeOpenBoxTime;
 	/** 每天免费开取次数 */
@@ -70,80 +79,6 @@ public class ShopModule extends BasePlayerModule {
 		}
 		return null;
 	}
-
-	/*private void initShopItemGroup(int day, ShopItemGroupConfig config) {
-		List<Integer> calcItemIdList = calcItemIdList(config);
-		for (Integer itemId : calcItemIdList) {
-			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
-			ShopItem item = new ShopItem();
-			item.setPlayerId(playerId);
-			item.setGroupId(config.ID);
-			item.setId(IdUtil.getId());
-			item.setItemBuyTimes(0);
-			item.setItemId(itemId);
-			item.setCreateDay(day);
-			int discount = randomDiscount(item.getItemId());
-			item.setItemDiscount(discount);
-	
-			initAddCache(item);
-			item.insert();
-		}
-	}
-	
-	private int randomDiscount(int itemId) {
-		int discount = 0;
-		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
-		if (shopItemConfig.PurchaseType == 2) { // 带折扣的
-			discount = Rnd.randomId(shopItemConfig.Discount);
-		}
-	
-		return discount;
-	}
-	
-	private List<Integer> calcItemIdList(ShopItemGroupConfig config) {
-		List<Integer> ret = new ArrayList<>();
-		if (config.ShopType == 1) { // 直接配置商品id的
-			if (config.ID1.length > 0) {
-				ret.add(config.ID1[0][0]);
-			}
-			if (config.ID2.length > 0) {
-				ret.add(config.ID2[0][0]);
-			}
-			if (config.ID3.length > 0) {
-				ret.add(config.ID3[0][0]);
-			}
-			if (config.ID4.length > 0) {
-				ret.add(config.ID4[0][0]);
-			}
-			if (config.ID5.length > 0) {
-				ret.add(config.ID5[0][0]);
-			}
-			if (config.ID6.length > 0) {
-				ret.add(config.ID6[0][0]);
-			}
-		} else if (config.ShopType == 2) { // 随机商品id
-			if (config.ID1.length > 0) {
-				ret.add(Rnd.randomId(config.ID1));
-			}
-			if (config.ID2.length > 0) {
-				ret.add(Rnd.randomId(config.ID2));
-			}
-			if (config.ID3.length > 0) {
-				ret.add(Rnd.randomId(config.ID3));
-			}
-			if (config.ID4.length > 0) {
-				ret.add(Rnd.randomId(config.ID4));
-			}
-			if (config.ID5.length > 0) {
-				ret.add(Rnd.randomId(config.ID5));
-			}
-			if (config.ID6.length > 0) {
-				ret.add(Rnd.randomId(config.ID6));
-			}
-		}
-		return ret;
-	}*/
-
 
 	public int getLastFreeOpenBoxTime() {
 		return lastFreeOpenBoxTime;
@@ -175,63 +110,135 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 	}
+
 	public Map<Integer, List<Integer>> getFundPassRewardsMap() {
 		return fundPassRewardsMap;
 	}
 
+	/** 
+	 * 初始化所有的商店
+	 */
 	private void initShop() {
-		refreshShopNewDay();
-		refreshShopNewWeek();
-		refreshShopNewMonth();
-		refreshGemTowerItems();
+		Collection<ShopConfig> list = ShopManager.instance().list();
+		for (ShopConfig shopConfig : list) {
+			refreshShop(shopConfig.ID);
+		}
 	}
 
-	private void refreshShopNewDay() {
-		Collection<ShopConfig> shops = ShopManager.instance().list();
-		for (ShopConfig shopConfig : shops) {
-			if (shopConfig.Refresh == 1) {
-				shopItemsMap.removeAll(shopConfig.ID);
+	/** 
+	 * 初始化或者重新初始化商店
+	 * @param shopId
+	 */
+	private void refreshShop(int shopId) {
+		ShopConfig shopConfig = ShopManager.instance().get(shopId);
+		switch (shopConfig.Type) {
+		case 1: {
+			break;
+		}
+		case 2: {
+			// 刷新黑市
+			refreshHeishiItems(shopId);
+			break;
+		}
+		case 3:
+		case 4: {
+			// 刷新金币、钻石商店
+			Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
+			for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
+				shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
+			}
+			break;
+		}
+		case 5: {
+			// 体力购买商店
+			refreshStaminaItems(shopId);
+			break;
+		}
+		case 10: {
+			refreshHunhuoItems(shopId);
+			break;
+		}
+		case 11: {
+			break;
+		}
+		case 12:
+		case 13:
+		case 14: {
+			refreshGift(shopId);
+			break;
+		}
+		case 15: {
+			// 大道争锋商店
+			refreshHunhuoItems(shopId);
+			break;
+		}
+		case 16: {
+			// 神通商店？
+			break;
+		}
+		case 17: {
+			refreshZongMenShop(shopId);
+			break;
+		}
+		case 18: {
+			// 刷新人参果树商店
+			refreshGinsengTreeItems(shopId);
+			break;
+		}
+		case 19: {
+			refreshGemTowerItems(shopId);
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unexpected  shop type: " + shopConfig.Type);
+		}
+
+	}
+
+	private void refreshShopByRefreshType(int refreshType) {
+		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(refreshType);
+		for (ShopConfig shopConfig : refreshList) {
+			refreshShop(shopConfig.ID);
+		}
+	}
+
+	/** 
+	 * 根据商店类型来进行刷新
+	 * @param shopType
+	 */
+	public void refreshShopByShopType(int shopType) {
+		Collection<ShopConfig> list = ShopManager.instance().list();
+		for (ShopConfig shopConfig : list) {
+			if (shopConfig.Type == shopType) {
+				refreshShop(shopConfig.ID);
 			}
 		}
-		// 刷新黑市
-		refreshHeishiItems(0, PlayerHelper.REFRESH_TYPE_DAY);
-		heishiRefreshTimes = 0;
-		heishiRefreshTimesMap.clear();
-		// 刷新金币、钻石商店
-		Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
-		for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
-			shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
-		}
-		// 体力购买商店
-		refreshStaminaItems();
-
-		//刷新每日商店
-		refreshEveryDayShop();
-
-		refreshGinsengTreeItems();
-
-
 	}
 
-	public void refreshZongMenShop() {
-		clearZongMenShop();
-		if (player.getZongMenId() == 0) return;
-		ZongmenStoreManager.instance().list().forEach(shopConfig ->{
-			shopItemsMap.put(17, new ShopItem(shopConfig.Item));
+	/** 
+	 * 根据类型获取配置，一般是获取商店表id
+	 * @param shopType
+	 * @return
+	 */
+	public List<ShopConfig> getShopConfigListByType(int shopType) {
+		List<ShopConfig> list = new ArrayList<>();
+		Collection<ShopConfig> shopConfigs = ShopManager.instance().list();
+		for (ShopConfig shopConfig : shopConfigs) {
+			if (shopConfig.Type == shopType) {
+				list.add(shopConfig);
+			}
+		}
+		return list;
+	}
+
+	public void refreshZongMenShop(int shop) {
+		if (player.getZongMenId() == 0)
+			return;
+		shopItemsMap.removeAll(shop);
+		ZongmenStoreManager.instance().list().forEach(shopConfig -> {
+			shopItemsMap.put(shop, new ShopItem(shopConfig.Item));
 			log.info(String.format("refreshZongMenShop add ItemId:%d", shopConfig.Item));
 		});
-	}
-
-	public void clearZongMenShop(){
-		shopItemsMap.removeAll(17);
-	}
-
-	/**
-	 * 每日礼包
-	 */
-	private void refreshEveryDayShop() {
-		int shop = 12;
-		refreshShopByShopType(shop);
 	}
 
 	/** 
@@ -239,47 +246,30 @@ public class ShopModule extends BasePlayerModule {
 	 * @param shopId 
 	 * @param 刷新类型 
 	 */
-	public void refreshHeishiItems(int shopId, int refreshType) {
-		Collection<ShopConfig> shops = ShopManager.instance().list();
-		for (ShopConfig shopConfig : shops) {
-			if (shopConfig.Type != 2) {
-				continue;
-			}
-			if (shopId > 0 && shopConfig.ID != shopId) {
-				continue;
-			}
-			if (shopConfig.Refresh != refreshType) {
-				continue;
-			}
-			// 刷新黑市
-			int shop = shopConfig.ID;
-			shopItemsMap.removeAll(shop);
+	public void refreshHeishiItems(int shop) {
 
-			List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, 1);
-			int fixCount = 0;
-			if (typeList != null) {
-				fixCount = typeList.size();
-				for (HeishiConfig heishiConfig : typeList) {
-					shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
-				}
-			}
+		// 刷新黑市
+		shopItemsMap.removeAll(shop);
 
-			typeList = HeishiManager.instance().getShopIDTypeList(shop, 2);
-			if (typeList != null) {
-				List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList,
-						GlobalConst.HeishiShelvesCnt - fixCount);
-				for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
-					shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
-				}
+		List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, 1);
+		int fixCount = 0;
+		if (typeList != null) {
+			fixCount = typeList.size();
+			for (HeishiConfig heishiConfig : typeList) {
+				shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
 			}
-
+		}
+		typeList = HeishiManager.instance().getShopIDTypeList(shop, 2);
+		if (typeList != null) {
+			List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList,
+					GlobalConst.HeishiShelvesCnt - fixCount);
+			for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
+				shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
+			}
 		}
 	}
 
-
-	public void refreshStaminaItems() {
-		// 刷新体力商店
-		int shop = 5;
+	public void refreshStaminaItems(int shop) {
 		shopItemsMap.removeAll(shop);
 
 		// 刷新体力购买，写死id 5、6
@@ -294,9 +284,10 @@ public class ShopModule extends BasePlayerModule {
 
 	}
 
-	public void refreshGinsengTreeItems() {
-		// 刷新体力商店
-		int shop = 18;
+	public void refreshGinsengTreeItems(int shop) {
+		if (!player.isFuncOpen(InitialUI.RSGTree)) {
+			return;
+		}
 		shopItemsMap.removeAll(shop);
 		int level = player.getLevel(Asset.RSGTreeExp);
 		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
@@ -309,27 +300,43 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 	}
-	public void refreshGemTowerItems() {
+
+	/** 
+	 * 人参果树升级时，解锁新增的商店物品
+	 */
+	private void addGinsengTreeItems(int shop) {
+		int level = player.getLevel(Asset.RSGTreeExp);
+		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
+		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
+			if (level == rsgTreeShopConfig.Condition) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+				if (shopItemConfig != null) {
+					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+				}
+			}
+		}
+	}
+
+	public void refreshGemTowerItems(int shop) {
 		// 刷新爬塔商店
-		int shop = 19;
 		shopItemsMap.removeAll(shop);
 		int level = player.getLevel();
-		DragonStoreManager.instance().list().forEach(shopConfig ->{
+		DragonStoreManager.instance().list().forEach(shopConfig -> {
 			if (level >= shopConfig.LevelUnlock) {
 				shopItemsMap.put(shop, new ShopItem(shopConfig.Item));
 			}
 		});
 	}
-	public void refreshGemTowerItems_LevelUp() {
+
+	public void refreshGemTowerItems_LevelUp(int shop) {
 		// 刷新爬塔商店
-		int shop = 19;
 		int level = player.getLevel();
-		DragonStoreManager.instance().list().forEach(shopConfig ->{
+		DragonStoreManager.instance().list().forEach(shopConfig -> {
 			if (level >= shopConfig.LevelUnlock) {
-				List<ShopItem> tmp = (List<ShopItem>)shopItemsMap.get(shop);
-				for (int i = 0; i <	tmp.size() ; i++) {
+				List<ShopItem> tmp = (List<ShopItem>) shopItemsMap.get(shop);
+				for (int i = 0; i < tmp.size(); i++) {
 					ShopItem item = tmp.get(i);
-					if (item.getItemId()==shopConfig.Item) {
+					if (item.getItemId() == shopConfig.Item) {
 						return;
 					}
 				}
@@ -337,6 +344,7 @@ public class ShopModule extends BasePlayerModule {
 			}
 		});
 	}
+
 	public void refreshHunhuoItems(int shop) {
 		// 刷新魂火商店
 		shopItemsMap.removeAll(shop);
@@ -348,80 +356,26 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 
-	private void refreshShopNewWeek() {
-		refreshHunhuoItems(10);
-		refreshHunhuoItems(15);
-		//刷新 每周礼包
-		int shop = 13;
-		refreshShopByShopType(shop);
-
-		// 刷新黑市
-		refreshHeishiItems(0, PlayerHelper.REFRESH_TYPE_WEEK);
-
-		//刷新宗门商店
-		refreshZongMenShop();
-
-		refreshGemTowerItems();
-	}
-
-	private void refreshShopByShopType(int shop) {
+	private void refreshGift(int shop) {
 		shopItemsMap.removeAll(shop);
-		ResidentPackManager.instance().list().stream().filter(residentPackConfig -> residentPackConfig.ShopID == shop)
+		ResidentPackManager.instance()
+				.list()
+				.stream()
+				.filter(residentPackConfig -> residentPackConfig.ShopID == shop)
 				.forEach(residentPackConfig -> {
-					shopItemsMap.put(shop,new ShopItem(residentPackConfig.ShopItemId));
-					if (!ServerContext.getInstance().getRunMode().isProduction()){
-						log.info(String.format("refreshShopByShopType shopId:%d, itemId:%d, pid:%d", shop,residentPackConfig.ShopItemId,player.getPlayerId()));
+					shopItemsMap.put(shop, new ShopItem(residentPackConfig.ShopItemId));
+					if (!ServerContext.getInstance().getRunMode().isProduction()) {
+						log.info(String.format("refreshShopByShopType shopId:%d, itemId:%d, pid:%d", shop, residentPackConfig.ShopItemId,
+								player.getPlayerId()));
 					}
 				});
 	}
-
-	/*private void refreshShop() {
-		Set<Integer> keySet = new HashSet<Integer>(groupItemsMap.keySet());
-		for (Integer group : keySet) {
-			ShopItemGroupConfig groupConfig = ShopItemGroupManager.instance().get(group);
-			if (groupConfig.ResetType == 1) { // 按天重置
-				Collection<ShopItem> groupItems = groupItemsMap.get(group);
-				int createDay = 0;
-				for (ShopItem item : groupItems) {
-					createDay = item.getCreateDay();
-					break;
-				}
-				int nowDay = DateUtil.getDay();
-				boolean needRefresh = nowDay - createDay >= groupConfig.ResetParameter;
-				if (!needRefresh) {
-					continue;
-				}
-				if (groupConfig.ShopType == 1) { // 直接配置商品id的
-					for (ShopItem item : groupItems) {
-						int discount = randomDiscount(item.getItemId());
-						if (item.getItemBuyTimes() > 0 || item.getItemDiscount() != discount) {
-							item.setItemBuyTimes(0);
-							item.setItemDiscount(discount);
-							item.update();
-						}
-					}
-				} else if (groupConfig.ShopType == 2) {
-					// 随机商品id的，一般商品id会变,先删除旧的在创建新的
-					for (ShopItem item : groupItems) {
-						item.delete();
-					}
-					for (ShopItem item : groupItems) {
-						removeCache(item);
-					}
-					groupItemsMap.removeAll(group);
-	
-					initShopItemGroup(nowDay, groupConfig);
-				}
-			}
-	
-		}
-	}*/
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		this.fundPassRewardsMap.forEach((k, v) -> {
 			FundPassInfo.Builder fb = FundPassInfo.newBuilder();
-			fb.setId(k) ; 
+			fb.setId(k);
 			fb.addAllRewardIds(v);
 			builder.addFundPass(fb.build());
 		});
@@ -435,14 +389,13 @@ public class ShopModule extends BasePlayerModule {
 		// 合并游戏使用。
 		Collection<ShopConfig> list = ShopManager.instance().list();
 		for (ShopConfig shopConfig : list) {
-			cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder groupBuilder = ShopGroupItemInfo.newBuilder(); 
-			groupBuilder.setShopId(shopConfig.ID) ; 
+			cn.game.protocol.protobuf.ShopMsg.ShopGroupItemInfo.Builder groupBuilder = ShopGroupItemInfo.newBuilder();
+			groupBuilder.setShopId(shopConfig.ID);
 			Collection<ShopItem> shopItems = getShopItems(shopConfig.ID);
 			for (ShopItem shopItem : shopItems) {
 				groupBuilder.addItems(shopItem.toProto());
 			}
 		}
-		
 
 	}
 
@@ -461,7 +414,7 @@ public class ShopModule extends BasePlayerModule {
 			} else if (func == InitialUI.Passport) {
 				initFundPass();
 			} else if (func == InitialUI.RSGTree) {
-				refreshGinsengTreeItems();
+				refreshShopByShopType(18);
 			}
 			break;
 		}
@@ -470,20 +423,32 @@ public class ShopModule extends BasePlayerModule {
 			break;
 		}
 		case NewDay: {
-			refreshShopNewDay();
+			refreshShopByRefreshType(1);
 			freeOpenBoxCount = 0;
+			heishiRefreshTimesMap.clear();
 			break;
 		}
 		case NewWeek: {
-			refreshShopNewWeek();
+			refreshShopByRefreshType(2);
 			break;
 		}
-		case NewMonth:{
-			refreshShopNewMonth();
+		case NewMonth: {
+			refreshShopByRefreshType(3);
 			break;
 		}
-		case LevelUp:{
-			refreshGemTowerItems_LevelUp();
+		case LevelUp: {
+			int exp = event.getIntParameter(0);
+			if (exp == Asset.playerExp.ID) {
+				List<ShopConfig> shopConfigListByType = getShopConfigListByType(19);
+				for (ShopConfig shopConfig : shopConfigListByType) {
+					refreshGemTowerItems_LevelUp(shopConfig.ID);
+				}
+			} else if (exp == Asset.RSGTreeExp.ID) {
+				List<ShopConfig> shopConfigListByType = getShopConfigListByType(18);
+				for (ShopConfig shopConfig : shopConfigListByType) {
+					addGinsengTreeItems(shopConfig.ID);
+				}
+			}
 			break;
 		}
 		case CostItem: {
@@ -508,7 +473,4 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 
-	private void refreshShopNewMonth() {
-		refreshShopByShopType(14);
-	}
 }

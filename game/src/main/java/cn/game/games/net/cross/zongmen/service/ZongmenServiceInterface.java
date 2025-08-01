@@ -140,5 +140,12 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @return 是否成功
 	 */
 	void updateContributeValue(long zongMenId, long playerId, int value);
+	
+	/** 
+	 * 玩家随机加入一个可以加的宗门
+	 * @param playerId
+	 * @return 成功加入的宗门，如果为null，表示没有能加入的宗门
+	 */
+	ZongMenAllInfo randomJoin(long playerId);
 
 }

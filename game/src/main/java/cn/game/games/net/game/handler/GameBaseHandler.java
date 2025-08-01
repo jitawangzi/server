@@ -29,11 +29,14 @@ public abstract class GameBaseHandler extends BaseHandler {
 		}
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
-			if (player.isFuncOpen(getInitialUI())) {
-				return true;
+			if (player.isIslogouting()) {
+				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.player_logouting.getId());
+				return false;
 			}
-			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.func_not_open.getId());
-			return false;
+			if (!player.isFuncOpen(getInitialUI())) {
+				client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.func_not_open.getId());
+				return false;
+			}
 		}
 		return true;
 	}
