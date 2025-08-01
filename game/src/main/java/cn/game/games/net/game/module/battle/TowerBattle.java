@@ -150,9 +150,12 @@ public class TowerBattle extends XiYouBattleHandler {
             boolean newRecord = battleModule.getAttackingId() == curFloor.get(battleConfig.BattleType);
             if (newRecord) {
                 OpType opType = OpType.GemTowerFirstFinish;
-                List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
-                allRewards.addAll(reward);
-                addRank(battleConfig.BattleType, battleModule.getAttackingId());
+                if (rewardCount >0 || battleConfig.BattleType != DungeonTypeEnum.GemTower.getId()) {
+                    List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
+                    allRewards.addAll(reward);
+                    addRank(battleConfig.BattleType, battleModule.getAttackingId());
+                    rewardCount--;
+                }
             } else {
                 OpType opType = OpType.GemTowerSweep;
                 List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
@@ -162,9 +165,6 @@ public class TowerBattle extends XiYouBattleHandler {
                 curFloor.put(battleConfig.BattleType, battleModule.getAttackingId() + 1);
             } else {
                 curFloor.put(battleConfig.BattleType, -1);
-            }
-            if(battleConfig.BattleType==DungeonTypeEnum.GemTower.getId()) {
-                rewardCount--;
             }
             floorCount--;
             return ResultObject.success();

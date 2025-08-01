@@ -1548,14 +1548,13 @@ public class BattleHandler extends GameBaseHandler {
 
     private void equipTowerGetHelpReward(NetClient client, Object message) {
         BattleEquipTowerGetHelpRewardRequest_13000535 req = (BattleEquipTowerGetHelpRewardRequest_13000535) message;
-        long battleID = req.getBattleID();
-        int floor = req.getFloor();
-        int type = req.getType();
+        List<Long> battleID = req.getBattleIDList();
+        List<Integer> floor = req.getFloorList();
         BattleEquipTowerGetHelpRewardResponse_13000536 defaultInstance = BattleEquipTowerGetHelpRewardResponse_13000536.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
-        List<RewardInfo> reward = towerBattle.getHelpReward(floor, battleID, type);
+        List<RewardInfo> reward = towerBattle.getHelpReward(battleID,floor);
         BattleEquipTowerGetHelpRewardResponse_13000536.Builder resp = BattleEquipTowerGetHelpRewardResponse_13000536.newBuilder();
         resp.addAllRewards(reward);
         client.sendProtocol(resp.build());

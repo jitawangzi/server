@@ -179,42 +179,39 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         return PlayerHelper.addResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerTicket);
     }
 
-    public List<RewardInfo> getHelpReward(int floor, long helpId, int type) {
+    public List<RewardInfo> getHelpReward(List<Long> helpIds , List<Integer> floors ) {
         List<RewardInfo> allReward = new ArrayList<>();
-        if (type == 1) {
+        if (helpIds.size() > 1) {
             // 一键领取
-            List<RewardInfo> finalAllRewards = new ArrayList<>();
-            helpRewardMap.forEach((floorId, helpMap) -> {
-                helpMap.forEach((k, isGet) -> {
-                    if (isGet == 0) {
-                        int battleId = 1;
-                        BattleConfig battleConfig = BattleManager.instance().get(battleId);
-                        var tmp = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
-                        finalAllRewards.addAll(tmp);
-                    }
-                });
-            });
-            allReward.addAll(finalAllRewards);
+            for (int i = 0; i < helpIds.size(); i++) {
+                getHelpRewardOne(allReward,floors.get(i),helpIds.get(i));
+            }
         } else {
-            if (!helpRewardMap.containsKey(floor)) {
-                return allReward;
-            }
-            if (!helpRewardMap.get(floor).containsKey(helpId)) {
-                return allReward;
-            }
-            //已领取
-            if (helpRewardMap.get(floor).get(helpId) != 0) {
-                return allReward;
-            }
-            helpRewardMap.get(floor).put(helpId, 1);
-            int battleId = 1;
-            BattleConfig battleConfig = BattleManager.instance().get(battleId);
-            allReward = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
-
+            int floor=floors.get(0);
+            long helpId =helpIds.get(0);
+            getHelpRewardOne(allReward,floor,helpId);
         }
         return allReward;
     }
+     public void getHelpRewardOne(List<RewardInfo> allReward,int  floor,long helpId )
+     {
 
+         if (!helpRewardMap.containsKey(floor)) {
+             return ;
+         }
+         if (!helpRewardMap.get(floor).containsKey(helpId)) {
+             return ;
+         }
+         //已领取
+         if (helpRewardMap.get(floor).get(helpId) != 0) {
+             return ;
+         }
+         helpRewardMap.get(floor).put(helpId, 1);
+         int battleId = DungeonTypeEnum.EquipTower.getId()*10000+floor;
+         BattleConfig battleConfig = BattleManager.instance().get(battleId);
+         var tmp = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
+         allReward.addAll(tmp);
+     }
     @Override
     public int checkCustom(int id, int subId, long... args) {
         BattleConfig battleConfig = BattleManager.instance().getNullable(id);
@@ -259,8 +256,6 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         List<RewardInfo> allRewards = new ArrayList<>();
         OpType opType = OpType.EquipTowerFinish;
         if (request.getWin()) {
-            List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, opType);
-            allRewards.addAll(reward);
            int battlefloor= battleModule.getAttackingId()%10;
             boolean newRecord = battlefloor == curFloor;
             if (newRecord) {
@@ -281,8 +276,6 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             }
             return ResultObject.success();
         } else { // 失败了，最终结算
-            List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FailRandom, opType);
-            allRewards.addAll(reward);
             boolean newRecord = battleModule.getAttackingId() == curFloor;
             if (newRecord) {
                 curFloor++;
