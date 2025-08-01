@@ -11,12 +11,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.ReflectionUtils;
 
+import cn.game.util.SpringContextLoader;
+
 public class ClassHelper {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClassHelper.class);
 	/** 按照优先级定义可能的方法名 */
 	private static final String[] singletonMethodNames = { "getInstance", "getSingleton", "instance", "getDefault", "get" };
 
@@ -196,7 +202,22 @@ public class ClassHelper {
 		return method;
 	}
 
+	/** 
+	 * 获取某个class的单例实例
+	 * @param clazz
+	 * @return
+	 */
 	public static Object getSingletonInstance(Class<?> clazz) {
+		Object bean = null;
+		// 先尝试从Spring容器获取
+		try {
+			bean = SpringContextLoader.getContext().getBean(clazz);
+		} catch (NoSuchBeanDefinitionException e) {
+		}
+		if (bean != null) {
+			return bean;
+		}
+		LOGGER.warn("clazz [{}] is not managed by Spring, try to reflect to obtain singleton instances, not recommended");		// Spring容器中没有找到，尝试获取单例实例
 		// 按优先级尝试常见的单例获取方法
 		Method[] methods = clazz.getDeclaredMethods();
 
@@ -236,7 +257,6 @@ public class ClassHelper {
 
 		throw new IllegalStateException("No singleton instance accessor found for class: " + clazz.getName());
 	}
-
 	/**
 	 * 从泛型接口或泛型父类中提取指定位置的泛型参数类型
 	 *

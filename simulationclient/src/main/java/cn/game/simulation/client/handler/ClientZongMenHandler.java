@@ -175,7 +175,7 @@ public class ClientZongMenHandler extends GameBaseHandler {
 
     private void quickJoin(NetClient netClient, Object message) {
         ZongMenQuickJoinResponse_40000066 resp = (ZongMenQuickJoinResponse_40000066) message;
-        ZongMenShowInfo info = resp.getInfo();
+        ZongMenAllInfo info = resp.getZongmen();
         Client client = (Client) netClient;
     }
 

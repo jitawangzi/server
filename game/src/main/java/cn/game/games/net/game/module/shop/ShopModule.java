@@ -309,6 +309,23 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 	}
+	/** 
+	 * 人参果树升级时，解锁新增的商店物品
+	 */
+	private void addGinsengTreeItems() {
+		// 刷新体力商店
+		int shop = 18;
+		int level = player.getLevel(Asset.RSGTreeExp);
+		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
+		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
+			if (level == rsgTreeShopConfig.Condition) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+				if (shopItemConfig != null) {
+					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
+				}
+			}
+		}
+	}
 	public void refreshGemTowerItems() {
 		// 刷新爬塔商店
 		int shop = 19;
@@ -483,7 +500,12 @@ public class ShopModule extends BasePlayerModule {
 			break;
 		}
 		case LevelUp:{
-			refreshGemTowerItems_LevelUp();
+			int exp = event.getIntParameter(0);
+			if (exp == Asset.playerExp.ID) {
+				refreshGemTowerItems_LevelUp();
+			}else if (exp == Asset.RSGTreeExp.ID) {
+				addGinsengTreeItems();
+			}
 			break;
 		}
 		case CostItem: {

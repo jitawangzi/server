@@ -26,6 +26,7 @@ import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.generated.helper.ManagerHelper;
@@ -193,16 +194,7 @@ public class CrossServer {
 	 * @return
 	 */
 	public List<CrossServerInterface> getAllCrossServerInterface() {
-		List<CrossServerInterface> list = new ArrayList<>();
-
-		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross);
-
-		for (String serverId : serverSet) {
-			CrossServerInterface crossServerInterface = RpcFactory.getImpl(CrossServerInterface.class,
-					ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId, ServerType.Cross);
-			list.add(crossServerInterface);
-		}
-		return list;
+		return ServerHelper.getAllServerInterface(ServerType.Cross, CrossServerInterface.class); 
 	}
 	/**
 	 * 获取处理某类型对象的跨服远程调用接口

@@ -94,6 +94,15 @@ public class ZongMen {
 		module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this, member, member.getName());
 	}
 
+	/** 
+	 * 判断一个宗门是否可以自动加入
+	 * 一般需要人数没满，并且设置了自动加入
+	 * @return
+	 */
+	public boolean canAutoJoin() {
+		return !isFull() && isAutoJoin();
+	}
+
 	public ZongmenData getData() {
 		return data;
 	}
@@ -185,8 +194,9 @@ public class ZongMen {
 		module.menMemberMap.forEach((pid, member) -> {
 			showInfoBuilder.addMembers(member.toProto().build());
 		});
-		return showInfoBuilder.build() ; 
+		return showInfoBuilder.build();
 	}
+
 	public ZongMenMsg.ZongMenSharedInfo toSharedProto(long playerId) {
 		ZongMenSharedInfo.Builder builder = ZongMenSharedInfo.newBuilder();
 		ZongMenMember member = getMember(playerId);
@@ -198,7 +208,7 @@ public class ZongMen {
 
 		// 封装 ZongMenSetting
 		ZongMenMsg.ZongMenSettingProto.Builder settingProto = module.setting.toProto();
-		settingProto.setNotification(data.getNotification()) ; 
+		settingProto.setNotification(data.getNotification());
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);
@@ -206,27 +216,29 @@ public class ZongMen {
 
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
 		if (permissionsConfig.Approval) {
-			List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance().multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList)); 
+			List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance()
+					.multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList));
 			for (SimplePlayer simplePlayer : simplePlayers) {
-                if (simplePlayer != null) {
-                    builder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
-                }
+				if (simplePlayer != null) {
+					builder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
+				}
 			}
 		}
-		return builder.build() ; 
+		return builder.build();
 	}
+
 	public ZongMenMsg.ZongMenPersonalInfo toPersonalProto(long playerId) {
 		ZongMenPersonalInfo.Builder builder = ZongMenPersonalInfo.newBuilder();
-		
+
 		ZongMenMember member = getMember(playerId);
 		if (member == null) {
 			return builder.build(); // 非宗门成员
 		}
 		builder.setIsBargain(member.isBargain);
 		builder.setIsBargainBuy(member.isBargainBuy);
-		return builder.build() ; 
+		return builder.build();
 	}
-		
+
 	/** 
 	 * 
 	 * @param playerId 一般表示该宗门内的某个成员id，如果是0，表示非工会成员
@@ -313,12 +325,12 @@ public class ZongMen {
 			totalExp -= basicConfig.Exp;
 			nextConfig = GuildBasicManager.instance().getNullable(getLv() + 1);
 			if (nextConfig == null) {
-				break; 
+				break;
 			}
 			setLv(getLv() + 1);
 			basicConfig = GuildBasicManager.instance().getNullable(getLv());
 			if (basicConfig == null) {
-				break; 
+				break;
 			}
 			handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_LEVEL_UP, this, getLv());
 		}
@@ -337,36 +349,40 @@ public class ZongMen {
 		}
 	}
 
+	/** 
+	 * 增加成员
+	 * @param targetPidList
+	 * @param playerName
+	 */
+	public void addMember(List<Long> targetPidList) {
+		List<Long> joinPidList = new ArrayList<>();
+		for (Long targetPid : targetPidList) {
+			if (isFull()) {
+				break;
+			}
+			// 删除申请记录
+			module.removeApply(targetPid);
+			// 加入宗门
+			joinZongMen(targetPid, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+			joinPidList.add(targetPid);
+		}
+		// 通知被加入的玩家 加入宗门
+		ZongMenHelper.broadcastNotifyMsgToPlayer(
+				ZongMenMsg.notifyJoinZongMen_40000044.newBuilder().setZongMen(toSimpleZongMen().toProto()).build(),
+				PbProtocol.notifyJoinZongMen_40000044, joinPidList);
+		// 更新宗门战斗力排行榜
+		ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
+	}
+	
 	/**
 	 * 审批 同意 加入
 	 *
 	 * @param targetPidListList 被加入的列表
 	 * @param playerName 审批人
 	 */
-	public void addMemberAuth(List<Long> targetPidListList, String playerName) {
-		boolean addMemberLock = LockUtil.tryLockNoWaitSync(3, CacheType.ZONG_MEN_JOIN_PLAYER_LOCK.key(getId()));
-		if (addMemberLock) {
-			PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPidListList).onSuccess(res -> {
-				List<Long> joinPidList = new ArrayList<>();
-				res.forEach(simplePlayer -> {
-					if (isFull()) {
-						return;
-					}
-					// 删除申请记录
-					module.removeApply(simplePlayer.getId());
-					// 加入宗门
-					joinZongMen(simplePlayer.getId(), ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-					joinPidList.add(simplePlayer.getId());
-				});
-				// 通知被加入的玩家 加入宗门
-				ZongMenHelper.broadcastNotifyMsgToPlayer(ZongMenMsg.notifyJoinZongMen_40000044.newBuilder().setZongMen(toSimpleZongMen().toProto()).build(),
-						PbProtocol.notifyJoinZongMen_40000044, joinPidList);
-				// 更新宗门战斗力排行榜
-				ZongMenManager.getInstance().saveZongMenTotalPowerRank(this);
-			}).onFailure(err -> {
-				err.printStackTrace();
-			});
-		}
+	public void addMemberAuth(List<Long> targetPidList, String playerName) {
+		addMember(targetPidList);
+		
 	}
 
 	// 删除申请记录

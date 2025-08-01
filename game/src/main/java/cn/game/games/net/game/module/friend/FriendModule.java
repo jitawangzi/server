@@ -179,13 +179,7 @@ public class FriendModule extends BasePlayerModule {
 
 		return friend != null && (friend.getRelation() == Friend.FRIEND || friend.getRelation() == Friend.ATTENTION);
 	}
-	public boolean isFriend(Friend friend, boolean localServer) {
-
-		return friend != null && (friend.getRelation() == Friend.FRIEND || friend.getRelation() == Friend.ATTENTION) && localServer
-				? GameServer.getInstance().isLocalServer(friend.getServerId())
-				: !GameServer.getInstance().isLocalServer(friend.getServerId());
-	}
-
+	
 	public boolean isApplicationLimit() {
 		return this.applications.size() >= 50;
 	}

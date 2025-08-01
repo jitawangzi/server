@@ -26,11 +26,10 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
 
-/**
- * @ClassName ZongmenService
- * @description: 宗门服务 - 宗门系统的核心业务逻辑服务
- * @author: ly
- * @create: 2025-02-08 14:45 @Version 1.0
+/**    
+ * 宗门服务 - 宗门系统的核心业务逻辑服务
+ * 2025年8月1日 13:33:44
+ * @author SYQ
  */
 @Component
 public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
@@ -456,5 +455,10 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
 		member.setTotalContribution(value);
+	}
+
+	@Override
+	public ZongMenAllInfo randomJoin(long playerId) {
+		return null;
 	}
 }

@@ -15,7 +15,7 @@ public class createZongMenRequest_40000005Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.newBuilder() ; 
 		
-		builder.setName("名字"+Rnd.nextInt(10000));
+		builder.setName(client.getPlayerAllInfo().getPlayer().getName());
 		
 		return builder.build() ; 
 	}
@@ -24,7 +24,7 @@ public class createZongMenRequest_40000005Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.newBuilder() ; 
 		
-		builder.setName(Rnd.nextInt(1000000)+"");
+		builder.setName(client.getPlayerAllInfo().getPlayer().getName());
 		
 		return builder.build() ; 
 	}

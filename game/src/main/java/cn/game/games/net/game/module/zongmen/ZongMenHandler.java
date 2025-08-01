@@ -190,6 +190,12 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
+        if (player.getZongMenId() > 0) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
+            return;
+		}
+        ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, 0); 
+
     }
 
     private void bargain(NetClient client, Object o) {
