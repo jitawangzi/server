@@ -121,7 +121,11 @@ public class TowerBattle extends XiYouBattleHandler {
                 return ErrorMsgEnum.pre_condition_check_error.ID;
             }
             LocalDate currentDate = LocalDate.now();
-            if(!Arrays.asList(towerConfig.time).contains(currentDate.getDayOfWeek().getValue())) {
+            boolean result = Arrays.asList(Arrays.stream(towerConfig.time)
+                            .boxed()
+                            .toArray(Integer[]::new))
+                    .contains(currentDate.getDayOfWeek().getValue());
+            if(!result) {
                 return ErrorMsgEnum.pre_condition_check_error.ID;
             }
             //分塔只有打 没有扫荡  且不扣奖励次数 只有升层次数
@@ -150,11 +154,18 @@ public class TowerBattle extends XiYouBattleHandler {
             boolean newRecord = battleModule.getAttackingId() == curFloor.get(battleConfig.BattleType);
             if (newRecord) {
                 OpType opType = OpType.GemTowerFirstFinish;
-                if (rewardCount >0 || battleConfig.BattleType != DungeonTypeEnum.GemTower.getId()) {
+                if (battleConfig.BattleType != DungeonTypeEnum.GemTower.getId()) {
                     List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
                     allRewards.addAll(reward);
                     addRank(battleConfig.BattleType, battleModule.getAttackingId());
-                    rewardCount--;
+                }else if (battleConfig.BattleType == DungeonTypeEnum.GemTower.getId())
+                {
+                    if(rewardCount >0  ) {
+                        List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, opType);
+                        allRewards.addAll(reward);
+                        addRank(battleConfig.BattleType, battleModule.getAttackingId());
+                        rewardCount--;
+                    }
                 }
             } else {
                 OpType opType = OpType.GemTowerSweep;
