@@ -364,10 +364,6 @@ public class ShopModule extends BasePlayerModule {
 				.filter(residentPackConfig -> residentPackConfig.ShopID == shop)
 				.forEach(residentPackConfig -> {
 					shopItemsMap.put(shop, new ShopItem(residentPackConfig.ShopItemId));
-					if (!ServerContext.getInstance().getRunMode().isProduction()) {
-						log.info(String.format("refreshShopByShopType shopId:%d, itemId:%d, pid:%d", shop, residentPackConfig.ShopItemId,
-								player.getPlayerId()));
-					}
 				});
 	}
 

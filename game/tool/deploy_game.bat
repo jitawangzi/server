@@ -1,3 +1,5 @@
+chcp 65001
+
 call %workspace%\game\tool\update_copy.bat
 
 call %workspace%\game\tool\packet.bat

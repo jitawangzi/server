@@ -70,11 +70,9 @@ public class MailboxManagerFactory {
 
 		@Override
 		protected long mapToMailboxId(long entityId) {
-			// 特殊情况：entityId==0 保持独立邮箱
 			if (entityId == 0) {
-				return 0L;
+				return mapToMailboxId0();
 			}
-
 			// 使用自定义映射策略
 			return mappingStrategy.mapToMailboxId(entityId, getBucketCount());
 		}

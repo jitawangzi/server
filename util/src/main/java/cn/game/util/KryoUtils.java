@@ -1,19 +1,30 @@
 package cn.game.util;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.VersionFieldSerializer;
+import com.google.protobuf.Message;
 
+import cn.game.util.reflect.ClassHelper;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.CollectionsEmptyListSerializer;
 import de.javakaffee.kryoserializers.CollectionsEmptyMapSerializer;
@@ -40,12 +51,14 @@ import de.javakaffee.kryoserializers.guava.ReverseListSerializer;
 import de.javakaffee.kryoserializers.guava.TreeBasedTableSerializer;
 import de.javakaffee.kryoserializers.guava.TreeMultimapSerializer;
 import de.javakaffee.kryoserializers.guava.UnmodifiableNavigableSetSerializer;
+import de.javakaffee.kryoserializers.protobuf.ProtobufSerializer;
 
 /**
  * 代替protostuff，不要序列化匿名类
  * 支持JDK 21虚拟线程的Kryo工具类
  */
 public class KryoUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(KryoUtils.class);
 
 	// 为普通线程使用ThreadLocal
 	private static final ThreadLocal<Kryo> standardKryoThreadLocal = ThreadLocal.withInitial(() -> {
@@ -69,6 +82,11 @@ public class KryoUtils {
 	private static final KryoPool standardKryoPool = new KryoPool(false);
 	private static final KryoPool versionedKryoPool = new KryoPool(true);
 
+	public static void init() {
+		
+		
+	}
+	
 	/**
 	 * Kryo 对象池实现
 	 */
@@ -307,7 +325,7 @@ public class KryoUtils {
 		kryo.register(InvocationHandler.class, new JdkProxySerializer());
 		UnmodifiableCollectionsSerializer.registerSerializers(kryo);
 		SynchronizedCollectionsSerializer.registerSerializers(kryo);
-
+		
 		// custom serializers for non-jdk libs
 		ImmutableListSerializer.registerSerializers(kryo);
 		ImmutableSetSerializer.registerSerializers(kryo);
@@ -324,5 +342,47 @@ public class KryoUtils {
 		ArrayTableSerializer.registerSerializers(kryo);
 		HashBasedTableSerializer.registerSerializers(kryo);
 		TreeBasedTableSerializer.registerSerializers(kryo);
+		
+		// protobuf
+		registerProtobufSerializers(kryo);
 	}
+	
+	   // 使用Spring扫描并批量注册protobuf类
+    private static void registerProtobufSerializers(Kryo kryo) {
+    	long timeMillis = System.currentTimeMillis(); 
+    	
+        String basePackage = "cn.game.protocol.protobuf"; // 
+        // Message的子类
+        Set<Class<? extends Message>> subclasses = ClassHelper.findSubclasses(basePackage, Message.class); 
+        
+        Set<Class<?>> allMessageClasses = new HashSet<>();
+        for (Class<? extends Message> outer : subclasses) {
+            collectProtobufMessageTypes(outer, allMessageClasses, Message.class);
+        }
+        
+        // 注意先排序，再注册，确保不同kryo实例，类的注册顺序是一致的
+        List<Class<?>> sorted = new ArrayList<>(allMessageClasses);
+        sorted.sort(Comparator.comparing(Class::getName));
+
+        for (Class<?> clazz : sorted) {
+            kryo.register(clazz, new ProtobufSerializer());
+        }
+        LOGGER.debug("注册protobuf类 耗时：{} ms, 共注册类数：{}",(System.currentTimeMillis() - timeMillis),allMessageClasses.size());
+    }
+    private static void collectProtobufMessageTypes(Class<?> clazz, Set<Class<?>> result, Class<?> messageSuperClass) {
+        // 只收集非接口、非抽象、且 Message 类型
+        if (!clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers())
+                && messageSuperClass.isAssignableFrom(clazz)) {
+            result.add(clazz);
+        }
+        // 递归收集该类的所有 public static 内部类
+        for (Class<?> inner : clazz.getDeclaredClasses()) {
+            // 只收集 public static
+            int mod = inner.getModifiers();
+            if (Modifier.isPublic(mod) && Modifier.isStatic(mod)) {
+                collectProtobufMessageTypes(inner, result, messageSuperClass);
+            }
+        }
+    }
+    
 }

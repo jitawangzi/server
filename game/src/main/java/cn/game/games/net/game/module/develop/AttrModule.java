@@ -158,11 +158,4 @@ public class AttrModule extends BasePlayerModule {
 	public Map<Long, IntMapWrapper> getHeroAttrs() {
 		return heroAttrs;
 	}
-
-	//同步战斗力到宗门
-	public void notifyZongMenPower() {
-		if (player.getZongMenId() > 0) {
-			ZongMenHandler.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051.newBuilder().setFightPower(power).build());
-		}
-	}
 }

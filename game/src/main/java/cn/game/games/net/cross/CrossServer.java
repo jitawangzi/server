@@ -32,6 +32,7 @@ import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
+import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
@@ -81,6 +82,7 @@ public class CrossServer {
 				shutdown();
 			}
 		});
+		KryoUtils.init(); 
 
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();

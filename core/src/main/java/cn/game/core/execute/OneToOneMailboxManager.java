@@ -33,14 +33,14 @@ public class OneToOneMailboxManager implements MailboxManager {
 	@return 邮箱ID
 	*/
 	protected long mapToMailboxId(long entityId) {
-//		if (entityId == 0) {
-//			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
-//		}
 		if (entityId == 0) {
-			// 0的时候，不对应任何实体，随机返回一个邮箱ID，避免0的任务堆积到一起。并且避开默认队列
-			return ThreadLocalRandom.current().nextInt(1000000000, 1000000128);
+			return mapToMailboxId0();
 		}
 		return entityId;
+	}
+	protected long mapToMailboxId0() {
+			// 0的时候，不对应任何实体，随机返回一个邮箱ID，避免0的任务堆积到一起。并且避开默认队列
+		return ThreadLocalRandom.current().nextLong(Long.MAX_VALUE - 128, Long.MAX_VALUE);
 	}
 
 	@Override

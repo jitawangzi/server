@@ -42,11 +42,8 @@ public class SharedMailboxManager extends OneToOneMailboxManager {
 	*/
 	@Override
 	protected long mapToMailboxId(long entityId) {
-//		if (entityId == 0) {
-//			throw new IllegalArgumentException("Entity ID cannot be 0, it should not have a mailbox.");
-//		}
 		if (entityId == 0) {
-			return ThreadLocalRandom.current().nextInt(bucketCount);
+			return mapToMailboxId0();
 		}
 		// 其他ID映射到共享邮箱
 		return Math.abs(entityId % bucketCount);

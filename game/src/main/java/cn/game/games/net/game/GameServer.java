@@ -82,6 +82,7 @@ import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
+import cn.game.util.KryoUtils;
 import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -182,8 +183,9 @@ public class GameServer implements GameServerMBean {
 		});
 		initScheduleTask();
 //		initLoadManager();
-		// ******************** 业务逻辑启动 **************************
+		KryoUtils.init(); 
 
+		// ******************** 业务逻辑启动 **************************
 		ManagerHelper.init();
 
 		ActivityStateManager.getInstance().start();

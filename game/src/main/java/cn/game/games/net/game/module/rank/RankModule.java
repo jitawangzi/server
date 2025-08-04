@@ -95,7 +95,6 @@ public class RankModule extends BasePlayerModule {
 			RankService.getInstance().updateMaxValueAsync(player.getServerId(), RankType.CurrentHeroCombat, playerId, allCombat);
 		}
 		attrModule.setPower((int) allCombat);
-		attrModule.notifyZongMenPower();
 
 	}
 

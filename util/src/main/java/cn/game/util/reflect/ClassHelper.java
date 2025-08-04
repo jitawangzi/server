@@ -9,12 +9,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.util.ReflectionUtils;
@@ -25,27 +28,60 @@ public class ClassHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClassHelper.class);
 	/** 按照优先级定义可能的方法名 */
 	private static final String[] singletonMethodNames = { "getInstance", "getSingleton", "instance", "getDefault", "get" };
+    // 用于缓存扫描结果（线程安全）
+    private static final Map<String, Set<Class<?>>> subclassCache = new ConcurrentHashMap<>();
 
-	public static <T> Set<Class<? extends T>> findSubclasses(String basePackage, Class<? extends T> superClass) {
+
+	public static <T> Set<Class<? extends T>> findSubclasses(String basePackage, Class<? extends T> superClass,
+			boolean includeAbstractClasses, boolean includeInterfaces) {
+        // 拼接唯一key
+        String key = basePackage + "|" + superClass.getName() + "|" + includeAbstractClasses + "|" + includeInterfaces;
+        // 先从缓存查找
+        @SuppressWarnings("unchecked")
+        Set<Class<? extends T>> cached = (Set<Class<? extends T>>) (Set<?>) subclassCache.get(key);
+        if (cached != null) {
+            return cached;
+        }
+     // 没有缓存，执行扫描
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
+		provider.setResourceLoader(new DefaultResourceLoader());
 		TypeFilter filter = new AssignableTypeFilter(superClass);
 
 		provider.addIncludeFilter(filter);
-
 		Set<Class<? extends T>> subclasses = new HashSet<>();
 		for (org.springframework.beans.factory.config.BeanDefinition candidate : provider.findCandidateComponents(basePackage)) {
 			try {
 				Class<? extends T> cls = (Class<? extends T>) Class.forName(candidate.getBeanClassName());
-				boolean b = subclasses.add(cls);
-				if (!b) {
-					throw new IllegalArgumentException("重复的类名称: " + candidate.getBeanClassName());
+				boolean isInterface = cls.isInterface();
+				boolean isAbstract = Modifier.isAbstract(cls.getModifiers());
+				// 过滤条件优化
+				if ((includeInterfaces || !isInterface) && (includeAbstractClasses || (!isAbstract && !isInterface))) {
+					boolean b =  subclasses.add((Class<? extends T>) cls);
+					if (!b) {
+						throw new IllegalArgumentException("重复的类名称: " + candidate.getBeanClassName());
+					}
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
+        // 缓存结果（不可变Set更安全）
+	    Set<Class<?>> immutable = Set.copyOf(subclasses);
+	    subclassCache.put(key, immutable);
 
-		return subclasses;
+	    @SuppressWarnings("unchecked")
+	    Set<Class<? extends T>> result = (Set<Class<? extends T>>) (Set<?>) immutable;
+	    return result;
+	}
+	/** 
+	 * 找到某个包下的某个类的所有子类，不包括抽象类和接口。 
+	 * @param <T>
+	 * @param basePackage
+	 * @param superClass
+	 * @return
+	 */
+	public static <T> Set<Class<? extends T>> findSubclasses(String basePackage, Class<? extends T> superClass) {
+		return findSubclasses(basePackage, superClass, false, false);
 	}
 
 	/** 
@@ -217,7 +253,7 @@ public class ClassHelper {
 		if (bean != null) {
 			return bean;
 		}
-		LOGGER.warn("clazz [{}] is not managed by Spring, try to reflect to obtain singleton instances, not recommended");		// Spring容器中没有找到，尝试获取单例实例
+		LOGGER.warn("clazz [{}] is not managed by Spring, try to reflect to obtain singleton instances, not recommended"); // Spring容器中没有找到，尝试获取单例实例
 		// 按优先级尝试常见的单例获取方法
 		Method[] methods = clazz.getDeclaredMethods();
 
@@ -257,6 +293,7 @@ public class ClassHelper {
 
 		throw new IllegalStateException("No singleton instance accessor found for class: " + clazz.getName());
 	}
+
 	/**
 	 * 从泛型接口或泛型父类中提取指定位置的泛型参数类型
 	 *
