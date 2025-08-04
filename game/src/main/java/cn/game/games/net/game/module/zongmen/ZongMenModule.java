@@ -148,19 +148,15 @@ public class ZongMenModule extends BasePlayerModule {
 	 */
 	private void initFirstTime() {
 		
-		lastId = player.getZongMenId(); 
-		
         refreshZongMenTask();
         player.getShopModule().refreshShopByShopType(17);
 	}
 
 	/** 
-	 * 由一个工会，加入到另外一个工会时
+	 * 由一个工会退出后，  加入到另外一个工会时
 	 */
 	private void change() {
-
-		lastId = (int) player.getZongMenId(); 
-        refreshZongMenTask();
+//        refreshZongMenTask();
 //        player.getShopModule().refreshZongMenShop(17);
 	}
 

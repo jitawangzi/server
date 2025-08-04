@@ -73,8 +73,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 				case PbProtocol.ZongMenBargainBuyRequest_40000062 -> buyBargain(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.findZongMenRequest_40000003 -> findZongMen(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.ChatMessagePush_31010001 -> zongMenChat(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.ZongMenUpdateMemberFightPowerRequest_40000051 ->
-					updateMemberFightPower(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.ZongMenUpdateContributeValueReq_40000057 ->
 					updateContributeValue(zongMenId, playerId, message, paramList, client);
 				}
@@ -260,15 +258,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		ZongMen info = zongmenService.getZongmen(zongMenId);
 		List<Long> memberIdList = new ArrayList<>(info.getModule().menMemberMap.keySet());
 		ZongMenHelper.broadcastNotifyMsgToPlayer(message, PbProtocol.ChatMessagePush_31010001, memberIdList);
-	}
-
-	// 更新成员战斗力
-	private void updateMemberFightPower(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051 req = (ZongMenMsg.ZongMenUpdateMemberFightPowerRequest_40000051) message;
-
-		zongmenService.updateMemberFightPower(zongMenId, playerId, req.getFightPower());
-		sendMsgToGameServer(playerId, client, ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.newBuilder().setResult(true).build(),
-				PbProtocol.ZongMenUpdateContributeValueRes_40000058);
 	}
 
 	// 更新贡献度

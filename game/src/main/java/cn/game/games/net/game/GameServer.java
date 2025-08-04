@@ -183,7 +183,6 @@ public class GameServer implements GameServerMBean {
 		});
 		initScheduleTask();
 //		initLoadManager();
-		KryoUtils.init(); 
 
 		// ******************** 业务逻辑启动 **************************
 		ManagerHelper.init();

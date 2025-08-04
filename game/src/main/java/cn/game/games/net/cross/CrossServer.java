@@ -82,8 +82,6 @@ public class CrossServer {
 				shutdown();
 			}
 		});
-		KryoUtils.init(); 
-
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
 		crossActivityService.init();

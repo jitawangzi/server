@@ -123,16 +123,6 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	void buyBargain(long zongMenId, long playerId);
 
 	/**
-	 * 更新成员战斗力
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param fightPower 战斗力
-	 * @return 是否成功
-	 */
-	@Deprecated
-	boolean updateMemberFightPower(long zongMenId, long playerId, int fightPower);
-
-	/**
 	 * 更新贡献度
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID

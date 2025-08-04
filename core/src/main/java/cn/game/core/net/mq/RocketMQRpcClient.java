@@ -14,7 +14,7 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.util.Config;
-import cn.game.util.KryoUtils;
+import cn.game.util.SerializationUtil;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
 
@@ -46,10 +46,10 @@ public class RocketMQRpcClient implements RpcClient {
 	}
 
 	public static void send(String topic, String tags, int msgId, Object body) {
-		send(topic, tags, msgId, KryoUtils.serializeClassAndObject(body));
+		send(topic, tags, msgId, SerializationUtil.serializeClassAndObject(body));
 	}
 	public static void send(String topic, int msgId, Object body) {
-		send(topic, "", msgId, KryoUtils.serializeClassAndObject(body));
+		send(topic, "", msgId, SerializationUtil.serializeClassAndObject(body));
 	}
 	public static void send(String topic, String tags, com.google.protobuf.Message body) {
 		int msgId = PbProtocol.getInstance().getMsgId(body.getClass().getSimpleName());

@@ -54,8 +54,8 @@ import de.javakaffee.kryoserializers.guava.UnmodifiableNavigableSetSerializer;
 import de.javakaffee.kryoserializers.protobuf.ProtobufSerializer;
 
 /**
- * 代替protostuff，不要序列化匿名类
- * 支持JDK 21虚拟线程的Kryo工具类
+ * 支持JDK 21虚拟线程的Kryo工具类,不要直接使用。
+ * 一般用来序列化普通的java对象，不要序列化protobuf类
  */
 public class KryoUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(KryoUtils.class);
@@ -344,10 +344,11 @@ public class KryoUtils {
 		TreeBasedTableSerializer.registerSerializers(kryo);
 		
 		// protobuf
-		registerProtobufSerializers(kryo);
+//		registerProtobufSerializers(kryo);
 	}
 	
 	   // 使用Spring扫描并批量注册protobuf类
+	// 不再使用了，不使用kryo序列化protobuf类型的类，分布式下有类id注册问题，兼容性差
     private static void registerProtobufSerializers(Kryo kryo) {
     	long timeMillis = System.currentTimeMillis(); 
     	
