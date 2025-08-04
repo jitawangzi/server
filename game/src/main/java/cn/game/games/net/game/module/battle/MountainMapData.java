@@ -23,17 +23,25 @@ public class MountainMapData {
      */
     private int score;
     /**
+     * 积分最大值
+     */
+    private int scoreMax;
+    /**
      * 奖励
      */
     private Map<Integer, Integer> scoreReward=new HashMap<>();
     /**
      * 血量
      */
-    private float hp;
+    private int hp;
     /**
      * 结束时间
      */
     private int endTime;
+    /**
+     * 刷新次数(剩余)
+     */
+    private int refreshNum;
     /**
      *  buff列表
      */
@@ -56,11 +64,11 @@ public class MountainMapData {
         this.endTime = endTime;
     }
 
-    public float getHp() {
+    public int getHp() {
         return hp;
     }
 
-    public void setHp(float hp) {
+    public void setHp(int hp) {
         this.hp = hp;
     }
 
@@ -94,5 +102,29 @@ public class MountainMapData {
 
     public void setCurNodeId(int curNodeId) {
         this.curNodeId = curNodeId;
+    }
+
+    public int getRefreshNum() {
+        return refreshNum;
+    }
+
+    public void setRefreshNum(int refreshNum) {
+        this.refreshNum = refreshNum;
+    }
+
+    public int getScoreMax() {
+        return scoreMax;
+    }
+
+    public void setScoreMax(int scoreMax) {
+        this.scoreMax = scoreMax;
+    }
+
+    public List<Integer> getBuffBag() {
+        return buffBag;
+    }
+
+    public void setBuffBag(List<Integer> buffBag) {
+        this.buffBag = buffBag;
     }
 }

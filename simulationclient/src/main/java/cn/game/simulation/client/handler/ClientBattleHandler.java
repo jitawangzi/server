@@ -72,6 +72,11 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainDataResponse_1300053a;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_13000542;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000544;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000546;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000548;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -140,6 +145,11 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleEquipTowerDataResponse_13000527, this::equipTowerData);
         putInvoker(PbProtocol.BattleLingShanFloorSkipResponse_13000518, this::lingShanFloorSkip);
         putInvoker(PbProtocol.BattleLingShanEndResponse_1300051a, this::lingShanEnd);
+        putInvoker(PbProtocol.BattleMountainDataResponse_1300053a, this::mountainData);
+        putInvoker(PbProtocol.BattleMountainFinishNodeResponse_13000542, this::mountainFinishNode);
+        putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000544, this::mountainGetReward);
+        putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000546, this::mountainGetReward);
+        putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000548, this::mountainGetReward);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -517,6 +527,51 @@ public class ClientBattleHandler extends BaseHandler {
     private void lingShanEnd(NetClient netClient, Object message) {
         BattleLingShanEndResponse_1300051a resp = (BattleLingShanEndResponse_1300051a) message;
         List<RewardInfo> rewardsList = resp.getRewardsList();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainData(NetClient netClient, Object message) {
+        BattleMountainDataResponse_1300053a resp = (BattleMountainDataResponse_1300053a) message;
+        List<MountainMapNodeData> mapdataList = resp.getMapdataList();
+        int curNodeId = resp.getCurNodeId();
+        int score = resp.getScore();
+        int endTime = resp.getEndTime();
+        int hp = resp.getHp();
+        Map<Integer, Integer> scoreRewardMap = resp.getScoreRewardMap();
+        int scoreMax = resp.getScoreMax();
+        int refreshNum = resp.getRefreshNum();
+        List<Integer> buffBagList = resp.getBuffBagList();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainFinishNode(NetClient netClient, Object message) {
+        BattleMountainFinishNodeResponse_13000542 resp = (BattleMountainFinishNodeResponse_13000542) message;
+        int score = resp.getScore();
+        int hp = resp.getHp();
+        int scoreMax = resp.getScoreMax();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainGetReward(NetClient netClient, Object message) {
+        BattleMountainGetRewardResponse_13000544 resp = (BattleMountainGetRewardResponse_13000544) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainGetReward(NetClient netClient, Object message) {
+        BattleMountainGetRewardResponse_13000546 resp = (BattleMountainGetRewardResponse_13000546) message;
+        List<MountainMapNodeData> mapdataList = resp.getMapdataList();
+        int curNodeId = resp.getCurNodeId();
+        int score = resp.getScore();
+        int hp = resp.getHp();
+        int refreshNum = resp.getRefreshNum();
+        List<Integer> buffBagList = resp.getBuffBagList();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainGetReward(NetClient netClient, Object message) {
+        BattleMountainGetRewardResponse_13000548 resp = (BattleMountainGetRewardResponse_13000548) message;
+        int curNodeId = resp.getCurNodeId();
         Client client = (Client) netClient;
     }
 }

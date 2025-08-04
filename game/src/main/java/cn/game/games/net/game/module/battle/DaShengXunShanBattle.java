@@ -7,20 +7,16 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RankConfig;
-import cn.game.protocol.generated.config.TowerConfig;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.RankManager;
-import cn.game.protocol.generated.manager.TowerManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.MountainNodeType;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -68,6 +64,14 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         return nodeId / 10 % 100;
     }
 
+    int getFloor(int nodeId) {
+        return nodeId / 1000;
+    }
+
+    int getIndex(int nodeId) {
+        return nodeId % 10;
+    }
+
     int getNodeUid(int floor, int line, int index) {
         return floor * 1000 + line * 10 + index;
     }
@@ -110,24 +114,70 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         return null;
     }
 
-    public void finishNode(int Uid, int floor) {
+    private boolean checkCanFinihsh(int nodeId) {
+        MountainMapNodeData nodeData = getMountainrNodeData(nodeId);
+        if (nodeData == null) {
+            return false;
+        }
+        if (nodeData.getNodeStatus() != 0) {
+            return false;
+        }
+        int floor = getFloor(mountainMapData.getCurNodeId());
+        int line = getLine(mountainMapData.getCurNodeId());
+        int index = getIndex(mountainMapData.getCurNodeId());
+        int n1 = getNodeUid(floor, line + 1, 1);
+        int n2 = getNodeUid(floor, line + 1, 2);
+        int n3 = getNodeUid(floor, line + 1, 3);
+        if (line == 3 || line == 5 || line == 7 || line == 9) {
+            // 一层3个点 3解2
+            if (index == 1) {
+                //解1个
+                return nodeId == n1;
+            } else if (index == 2) {
+                //解2个
+                return nodeId == n1 || nodeId == n2;
+            } else if (index == 3) {
+                //解1个
+                return nodeId == n2;
+            }
+        } else if (line == 2 || line == 4 || line == 6 || line == 8) {
+            // 一层2个点 2解3
+            if (index == 1) {
+                //解2个
+                return nodeId == n1 || n2 == nodeId;
+            } else if (index == 2) {
+                //解2个
+                return nodeId == n3 || n2 == nodeId;
+            }
+        } else if (line == 1) {
+            // 全解
+            return nodeId == n1 || n2 == nodeId;
+        } else if (line == 10) {
+            // 全解
+            return nodeId == getNodeUid(floor, line + 1, 1);
+        }
+        return true;
+    }
+
+    public void finishNode(int Uid, int para) {
 
         MountainMapNodeData nodeData = getMountainrNodeData(Uid);
         if (nodeData == null) {
             return;
         }
-        if (nodeData.getNodeStatus() == 2) {
+        if (!checkCanFinihsh(Uid)) {
             return;
         }
         int nodeType = nodeData.getNodeType();
+        boolean success = true;
         switch (MountainNodeType.get(nodeType)) {
             case MountainNodeType.Battle:
                 break;
             case MountainNodeType.Event:
+                handleEventNode(nodeData, para);
                 break;
             case MountainNodeType.Shop:
-                break;
-            case MountainNodeType.Reward:
+                success = handleShopNode(nodeData, para);
                 break;
             case MountainNodeType.Boss:
                 break;
@@ -137,17 +187,42 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             default:
                 break;
         }
+        if (success) {
+            nodeData.setNodeStatus(1);
+            mountainMapData.setCurNodeId(Uid);
+        }
     }
+
     void handleHpNode(MountainMapNodeData nodeData) {
         // 没有配置 就是回复30%  由有圣物就是50%
         int addNum = 5000;
+        var tmp = mountainMapData.getHp() + addNum;
+        mountainMapData.setHp(tmp);
+    }
 
+    void handleEventNode(MountainMapNodeData nodeData, int param) {
+        // 事件
+    }
+
+    boolean handleShopNode(MountainMapNodeData nodeData, int param) {
+        // 商店选择
+        int buffId = 1;
+        //扣钱 加BUFF
+        int costID = GlobalConst.TicketItemId;
+        int cosNum = 10;
+        long num = player.getItemModule().getCount(costID);
+        if (num >= cosNum) {
+            PlayerHelper.delResources(player, costID, cosNum, OpType.MountainBattleBuffShop);
+        } else {
+            return false;
+        }
+        mountainMapData.getBuffBag().add(buffId);
+        return true;
     }
 
     @Override
     void newDay() {
         reset();
-
     }
 
     /**
@@ -197,8 +272,15 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
 
     @Override
     public int getType() {
-        return DungeonTypeEnum.GemTower.getId();
+        return DungeonTypeEnum.MountainBattle.getId();
     }
 
 
+    public MountainMapData getMountainMapData() {
+        return mountainMapData;
+    }
+
+    public void setMountainMapData(MountainMapData mountainMapData) {
+        this.mountainMapData = mountainMapData;
+    }
 }
