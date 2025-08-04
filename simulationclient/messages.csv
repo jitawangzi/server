@@ -268,3 +268,6 @@
 268,BattleMountainGetRewardRequest_13000543,0x13000543,,,,,完成进度奖励请求
 269,BattleMountainMapResetRequest_13000545,0x13000545,,,,,重置
 270,BattleMountainNextFloorRequest_13000547,0x13000547,,,,,下一层
+271,BattlePVEVPChallengeRequest_13000552,0x13000552,,,,,大圣擂台挑战数据
+272,BattlePVEVPDataRequest_13000549,0x13000549,,,,,大圣擂台数据请求
+273,BattlePVEVPRecordRequest_13000550,0x13000550,,,,,大圣擂台战斗记录数据
