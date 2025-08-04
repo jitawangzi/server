@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.develop.hero;
 
+import java.lang.foreign.ValueLayout.OfBoolean;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,8 +10,11 @@ import org.slf4j.LoggerFactory;
 import cn.game.games.cache.entity.Hero;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.HeroLvConfig;
 import cn.game.protocol.generated.manager.HeroBreakManager;
+import cn.game.protocol.generated.manager.HeroLvManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.util.GameUtil;
 import cn.game.util.Rnd;
 
 public class HeroHelper {
@@ -173,5 +177,21 @@ public class HeroHelper {
 
 		return heroCount == 10 ? 1 : 3;
 	}
+	
+	public static int[][] calcLvCost(int[][] costArray,int configId, int lv){
+		if (costArray == null) {
+			costArray = new int[][] {};
+		}
+		HeroLvConfig heroLvConfig = HeroLvManager.instance().get(lv); 
 
+        costArray = GameUtil.mergeAdd(costArray, heroLvConfig.LvConsumeMoney) ; 
+        if (heroLvConfig.LvConsumeItem2 > 0) {
+            costArray = GameUtil.mergeAdd(costArray, new int[][] {{213001,heroLvConfig.LvConsumeItem2}}) ; 
+		}
+        if (heroLvConfig.LvConsumeFragment > 0) {
+        	HeroConfig heroConfig = HeroManager.instance().get(configId); 
+        	costArray = GameUtil.mergeAdd(costArray, new int[][] {{heroConfig.Fragment,heroLvConfig.LvConsumeFragment}}) ; 
+        }
+        return costArray;
+	}
 }

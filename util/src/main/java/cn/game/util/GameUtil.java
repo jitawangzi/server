@@ -203,6 +203,160 @@ public class GameUtil {
 		}
 		return ret;
 	}
+	
+	
+	/** 
+	 * 合并两个数组，result中相同id的数量加上add中的数量
+	 * 需要确保id的顺序是一致的,例如： 
+	 * arr1 
+		202002;10
+		202003;10
+		202004;20
+		202005;20
+		
+		arr2
+		202002;30
+		202003;30
+	 * @param result 结果
+	 * @param add  增加的数据（不可变类型）
+	 * @return
+	 */
+	public static int[][] fastMergeAddPrefix(int[][] result, int[][] add) {
+	    if (add == null || add.length == 0) return result;
+	    if (result == null || result.length == 0) {
+	        // 返回add的深拷贝
+	        int[][] ret = new int[add.length][2];
+	        for (int i = 0; i < add.length; i++) {
+	            ret[i][0] = add[i][0];
+	            ret[i][1] = add[i][1];
+	        }
+	        return ret;
+	    }
+
+	    int m = result.length, n = add.length;
+
+	    // result更长或等长，则直接原地合并前n项
+	    if (m >= n) {
+	        for (int i = 0; i < n; i++) {
+	            if (result[i][0] != add[i][0]) {
+	                throw new IllegalArgumentException("ID mismatch at index " + i);
+	            }
+	            result[i][1] += add[i][1];
+	        }
+	        return result;
+	    }
+
+	    // add更长，需分配新空间，合并前m项，其余部分拷贝add
+	    int[][] ret = new int[n][2];
+	    // 合并前m项
+	    for (int i = 0; i < m; i++) {
+	        if (result[i][0] != add[i][0]) {
+	            throw new IllegalArgumentException("ID mismatch at index " + i);
+	        }
+	        ret[i][0] = result[i][0];
+	        ret[i][1] = result[i][1] + add[i][1];
+	    }
+	    // 拷贝add剩余部分
+	    for (int i = m; i < n; i++) {
+	        ret[i][0] = add[i][0];
+	        ret[i][1] = add[i][1];
+	    }
+	    return ret;
+	}
+	
+	/** 
+	 * 合并两个数组，result中相同id的数量加上add中的数量
+	 * @param result 结果
+	 * @param add  增加的数据（不可变类型）
+	 * @return
+	 */
+	public static int[][] mergeAdd(int[][] result, int[][] add) {
+	    if (add == null || add.length == 0) return result;
+	    if (result == null || result.length == 0) {
+	        // 返回add的深拷贝
+	        int[][] ret = new int[add.length][2];
+	        for (int i = 0; i < add.length; i++) {
+	            ret[i][0] = add[i][0];
+	            ret[i][1] = add[i][1];
+	        }
+	        return ret;
+	    }
+
+	    int m = result.length, n = add.length;
+	    int i = 0, j = 0;
+
+	    // 先判断是否需要扩容
+	    boolean needExpand = false;
+	    while (i < m && j < n) {
+	        if (result[i][0] == add[j][0]) {
+	            i++; j++;
+	        } else if (result[i][0] < add[j][0]) {
+	            i++;
+	        } else {
+	            // add中有result没有的id，且还没遍历完result
+	            needExpand = true;
+	            break;
+	        }
+	    }
+	    // 如果add有剩余，也说明有新增的id
+	    if (j < n) needExpand = true;
+
+	    if (!needExpand) {
+	        // 直接原地合并
+	        i = 0; j = 0;
+	        while (i < m && j < n) {
+	            if (result[i][0] == add[j][0]) {
+	                result[i][1] += add[j][1];
+	                i++; j++;
+	            } else if (result[i][0] < add[j][0]) {
+	                i++;
+	            } else {
+	                // 理论不会到达
+	                j++;
+	            }
+	        }
+	        return result;
+	    }
+
+	    // 扩容合并
+	    int[][] ret = new int[m + n][2];
+	    i = 0; j = 0;
+	    int k = 0;
+	    while (i < m && j < n) {
+	        if (result[i][0] == add[j][0]) {
+	            ret[k][0] = result[i][0];
+	            ret[k][1] = result[i][1] + add[j][1];
+	            i++; j++;
+	        } else if (result[i][0] < add[j][0]) {
+	            ret[k][0] = result[i][0];
+	            ret[k][1] = result[i][1];
+	            i++;
+	        } else {
+	            ret[k][0] = add[j][0];
+	            ret[k][1] = add[j][1];
+	            j++;
+	        }
+	        k++;
+	    }
+	    // 剩余部分
+	    while (i < m) {
+	        ret[k][0] = result[i][0];
+	        ret[k][1] = result[i][1];
+	        i++; k++;
+	    }
+	    while (j < n) {
+	        ret[k][0] = add[j][0];
+	        ret[k][1] = add[j][1];
+	        j++; k++;
+	    }
+	    // 截取有效长度
+	    int[][] finalRet = new int[k][2];
+	    for (int t = 0; t < k; t++) {
+	        finalRet[t][0] = ret[t][0];
+	        finalRet[t][1] = ret[t][1];
+	    }
+	    return finalRet;
+	}
 
 	public static int[] transformIdAndCount(List<Integer> idList, List<Integer> countList) {
 		if (idList == null || countList == null) {
