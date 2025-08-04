@@ -1,7 +1,9 @@
 package cn.game.games.net.game.module.develop.gem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.game.games.cache.base.DbEntity;
@@ -13,6 +15,7 @@ public class Gem extends ItemNoStack implements Serializable, DbEntity {
 	private boolean isLock;
 
 	private Map<Integer, Integer> gemAttrs = new HashMap<Integer, Integer>();
+	private List<Integer> gemSkills = new ArrayList<>();
 
 	/**
 	 * @mbg.generated
@@ -35,6 +38,14 @@ public class Gem extends ItemNoStack implements Serializable, DbEntity {
 		this.isLock = isLock;
 	}
 
+	public List<Integer> getGemSkills() {
+		return gemSkills;
+	}
+
+	public void setGemSkills(List<Integer> gemSkills) {
+		this.gemSkills = gemSkills;
+	}
+
 	/**
 	 * @mbg.generated
 	 */
@@ -44,6 +55,6 @@ public class Gem extends ItemNoStack implements Serializable, DbEntity {
 	}
 
 	public GemInfo toGemInfo() {
-		return GemInfo.newBuilder().setUid(getId() + "").setConfigId(getConfigId()).setIsLock(isLock).putAllAttrs(gemAttrs).build();
+		return GemInfo.newBuilder().setUid(getId() + "").setConfigId(getConfigId()).setIsLock(isLock).putAllAttrs(gemAttrs).addAllSkills(gemSkills) .build();
 	}
 }
