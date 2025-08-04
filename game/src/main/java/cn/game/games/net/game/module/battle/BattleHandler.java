@@ -162,9 +162,15 @@ import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_1300
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardRequest_13000543;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000544;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetRequest_13000545;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000546;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFloorRequest_13000547;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000548;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPDataRequest_13000549;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPDataResponse_1300054a;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordRequest_13000550;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordResponse_13000551;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeResponse_13000553;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_13000546;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -236,6 +242,9 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleMountainDataRequest_13000539, this::mountainData);
         putInvoker(PbProtocol.BattleMountainFinishNodeRequest_13000541, this::mountainFinishNode);
         putInvoker(PbProtocol.BattleMountainGetRewardRequest_13000543, this::mountainGetReward);
+        putInvoker(PbProtocol.BattlePVEVPDataRequest_13000549, this::pVEVPData);
+        putInvoker(PbProtocol.BattlePVEVPRecordRequest_13000550, this::pVEVPRecord);
+        putInvoker(PbProtocol.BattlePVEVPChallengeRequest_13000552, this::pVEVPChallenge);
         putInvoker(PbProtocol.BattleMountainMapResetRequest_13000545, this::mountainMapReset);
         putInvoker(PbProtocol.BattleMountainNextFloorRequest_13000547, this::mountainNextFloor);
     }
@@ -1634,24 +1643,17 @@ public class BattleHandler extends GameBaseHandler {
         resp.setRefreshNum(mapData.getRefreshNum());
         resp.setEndTime(mapData.getEndTime());
         mapData.getMapData().forEach((k, v) -> {
-            v.forEach(node-> {
-               var builder= BaseMsg.MountainMapNodeData.newBuilder()
-                        .setNodeID(node.getNodeId())
-                        .setNodeType(node.getNodeType())
-                        .setEventId(node.getEventId())
-                        .setLevelpro(node.getLevelpro())
-                        .setNodeStatus(node.getNodeStatus())
-                        ;
-                node.getShopId().forEach(shopId->builder.addShopId(shopId));
-
+            v.forEach(node -> {
+                var builder = BaseMsg.MountainMapNodeData.newBuilder().setNodeID(node.getNodeId()).setNodeType(node.getNodeType()).setEventId(node.getEventId()).setLevelpro(node.getLevelpro()).setNodeStatus(node.getNodeStatus());
+                node.getShopId().forEach(shopId -> builder.addShopId(shopId));
                 resp.addMapdata(builder.build());
             });
         });
         mapData.getScoreReward().forEach((k, v) -> {
             resp.putScoreReward(k, v);
         });
-        mapData.getBuffBag().forEach( v -> {
-            resp.addBuffBag( v);
+        mapData.getBuffBag().forEach(v -> {
+            resp.addBuffBag(v);
         });
         client.sendProtocol(resp.build());
     }
@@ -1668,7 +1670,6 @@ public class BattleHandler extends GameBaseHandler {
         resp.setScore(towerBattle.getMountainMapData().getScore());
         resp.setScoreMax(towerBattle.getMountainMapData().getScoreMax());
         resp.setHp(towerBattle.getMountainMapData().getHp());
-
         client.sendProtocol(resp.build());
     }
 
@@ -1680,21 +1681,45 @@ public class BattleHandler extends GameBaseHandler {
         BattleMountainGetRewardResponse_13000544.Builder resp = BattleMountainGetRewardResponse_13000544.newBuilder();
         client.sendProtocol(resp.build());
     }
-
     private void mountainMapReset(NetClient client, Object message) {
         BattleMountainMapResetRequest_13000545 req = (BattleMountainMapResetRequest_13000545) message;
-        BattleMountainGetRewardResponse_13000546 defaultInstance = BattleMountainGetRewardResponse_13000546.getDefaultInstance();
+        BattleMountainMapResetResponse_13000546 defaultInstance = BattleMountainMapResetResponse_13000546.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleMountainGetRewardResponse_13000546.Builder resp = BattleMountainGetRewardResponse_13000546.newBuilder();
+        BattleMountainMapResetResponse_13000546.Builder resp = BattleMountainMapResetResponse_13000546.newBuilder();
         client.sendProtocol(resp.build());
     }
 
     private void mountainNextFloor(NetClient client, Object message) {
         BattleMountainNextFloorRequest_13000547 req = (BattleMountainNextFloorRequest_13000547) message;
         int floor = req.getFloor();
-        BattleMountainGetRewardResponse_13000548 defaultInstance = BattleMountainGetRewardResponse_13000548.getDefaultInstance();
+        BattleMountainNextFlooResponse_13000548 defaultInstance = BattleMountainNextFlooResponse_13000548.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattleMountainGetRewardResponse_13000548.Builder resp = BattleMountainGetRewardResponse_13000548.newBuilder();
+        BattleMountainNextFlooResponse_13000548.Builder resp = BattleMountainNextFlooResponse_13000548.newBuilder();
         client.sendProtocol(resp.build());
     }
+    private void pVEVPData(NetClient client, Object message) {
+        BattlePVEVPDataRequest_13000549 req = (BattlePVEVPDataRequest_13000549) message;
+        BattlePVEVPDataResponse_1300054a defaultInstance = BattlePVEVPDataResponse_1300054a.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattlePVEVPDataResponse_1300054a.Builder resp = BattlePVEVPDataResponse_1300054a.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void pVEVPRecord(NetClient client, Object message) {
+        BattlePVEVPRecordRequest_13000550 req = (BattlePVEVPRecordRequest_13000550) message;
+        BattlePVEVPRecordResponse_13000551 defaultInstance = BattlePVEVPRecordResponse_13000551.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattlePVEVPRecordResponse_13000551.Builder resp = BattlePVEVPRecordResponse_13000551.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+    private void pVEVPChallenge(NetClient client, Object message) {
+        BattlePVEVPChallengeRequest_13000552 req = (BattlePVEVPChallengeRequest_13000552) message;
+        BattlePVEVPChallengeResponse_13000553 defaultInstance = BattlePVEVPChallengeResponse_13000553.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattlePVEVPChallengeResponse_13000553.Builder resp = BattlePVEVPChallengeResponse_13000553.newBuilder();
+        client.sendProtocol(resp.build());
+    }
+
+
 }

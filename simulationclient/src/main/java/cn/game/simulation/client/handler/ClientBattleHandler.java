@@ -77,6 +77,11 @@ import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_1300
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000544;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000546;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000548;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_13000546;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPDataResponse_1300054a;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordResponse_13000551;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeResponse_13000553;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -150,6 +155,11 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000544, this::mountainGetReward);
         putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000546, this::mountainGetReward);
         putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000548, this::mountainGetReward);
+        putInvoker(PbProtocol.BattleMountainMapResetResponse_13000546, this::mountainMapReset);
+        putInvoker(PbProtocol.BattleMountainNextFlooResponse_13000548, this::mountainNextFloo);
+        putInvoker(PbProtocol.BattlePVEVPDataResponse_1300054a, this::pVEVPData);
+        putInvoker(PbProtocol.BattlePVEVPRecordResponse_13000551, this::pVEVPRecord);
+        putInvoker(PbProtocol.BattlePVEVPChallengeResponse_13000553, this::pVEVPChallenge);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -572,6 +582,42 @@ public class ClientBattleHandler extends BaseHandler {
     private void mountainGetReward(NetClient netClient, Object message) {
         BattleMountainGetRewardResponse_13000548 resp = (BattleMountainGetRewardResponse_13000548) message;
         int curNodeId = resp.getCurNodeId();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainMapReset(NetClient netClient, Object message) {
+        BattleMountainMapResetResponse_13000546 resp = (BattleMountainMapResetResponse_13000546) message;
+        List<MountainMapNodeData> mapdataList = resp.getMapdataList();
+        int curNodeId = resp.getCurNodeId();
+        int score = resp.getScore();
+        int hp = resp.getHp();
+        int refreshNum = resp.getRefreshNum();
+        List<Integer> buffBagList = resp.getBuffBagList();
+        Client client = (Client) netClient;
+    }
+
+    private void mountainNextFloo(NetClient netClient, Object message) {
+        BattleMountainNextFlooResponse_13000548 resp = (BattleMountainNextFlooResponse_13000548) message;
+        int curNodeId = resp.getCurNodeId();
+        Client client = (Client) netClient;
+    }
+
+    private void pVEVPData(NetClient netClient, Object message) {
+        BattlePVEVPDataResponse_1300054a resp = (BattlePVEVPDataResponse_1300054a) message;
+        int challengeCount = resp.getChallengeCount();
+        int endTime = resp.getEndTime();
+        Client client = (Client) netClient;
+    }
+
+    private void pVEVPRecord(NetClient netClient, Object message) {
+        BattlePVEVPRecordResponse_13000551 resp = (BattlePVEVPRecordResponse_13000551) message;
+        List<PVEVPRecordData> recordListList = resp.getRecordListList();
+        Client client = (Client) netClient;
+    }
+
+    private void pVEVPChallenge(NetClient netClient, Object message) {
+        BattlePVEVPChallengeResponse_13000553 resp = (BattlePVEVPChallengeResponse_13000553) message;
+        List<PlayerRankInfo> playersList = resp.getPlayersList();
         Client client = (Client) netClient;
     }
 }
