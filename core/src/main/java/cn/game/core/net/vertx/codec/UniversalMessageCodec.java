@@ -44,7 +44,7 @@ public class UniversalMessageCodec implements MessageCodec<Object, Object> {
                 buffer.appendInt(0);
             }
         } else if (obj instanceof Message) {
-            Integer msgId = PbProtocol.getInstance().getMsgId(obj.getClass().getSimpleName());
+            Integer msgId = PbProtocol.getInstance().getMsgIdOrNull(obj.getClass().getSimpleName());
             if (msgId != null && msgId > 0) {
                 buffer.appendByte(TYPE_PROTOBUF_WITH_MSGID);
                 buffer.appendInt(msgId);
