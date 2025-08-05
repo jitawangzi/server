@@ -4,6 +4,8 @@ import java.util.List;
 
 import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.games.cache.entity.EquiptowerHelp;
+import cn.game.games.net.game.module.award.Goods;
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
 /**
@@ -15,7 +17,8 @@ public interface GameServerInterface extends RemoteGameServerInterface {
 
 	public boolean addFriend(long playerId, long friendId, String serverId);
 
-	public boolean addMail(long playerId, String serverId, int titleId, int contentId, int typeId, String resourceText);
+	public Future<@Nullable Object> addMail(long receiverId, int mailId, String sender, String title, String content, int type, List<Goods> attachmentList,
+			boolean notify);
 
 	public void notifyAddForbidAccount(List<Long> pids, String reason, String timer );
 	public void notifyDelForbidAccount(List<Long> pids );

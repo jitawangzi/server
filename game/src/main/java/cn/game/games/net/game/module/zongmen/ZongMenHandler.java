@@ -208,7 +208,7 @@ public class ZongMenHandler extends GameBaseHandler {
 		}
         if (joined != null) {
         	ZongMenSimpleInfo simpleInfo = joined.getShowInfo().getSimpleInfo(); 
-        	zongmenModule.join(simpleInfo.getId(), simpleInfo.getName(),simpleInfo.getLevel());
+        	zongmenModule.join(simpleInfo.getId(), simpleInfo.getName());
         	res.setZongmen(joined); ;
 		}
         client.sendProtocol(res.build());
@@ -503,7 +503,7 @@ public class ZongMenHandler extends GameBaseHandler {
         if (zongmen != null) {
         	ZongMenSimpleInfo simpleInfo = zongmen.getShowInfo().getSimpleInfo(); 
             // 玩家直接加入宗门
-            player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName(),simpleInfo.getLevel());
+            player.getZongmenModule().join(simpleInfo.getId(),simpleInfo.getName());
             client.sendProtocol(res.setZongMen(zongmen).build());
 		}else {
             client.sendProtocol(applyJoinZongMenResponse_40000008.getDefaultInstance());
@@ -573,7 +573,7 @@ public class ZongMenHandler extends GameBaseHandler {
                     ZongMenMsg.createZongMenResponse_40000006 createRes = (ZongMenMsg.createZongMenResponse_40000006) createZongMenCallback.response;
                     // 设置玩家宗门信息
                     ZongMenSimpleInfo simpleInfo = createRes.getZongMen().getShowInfo().getSimpleInfo(); 
-                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName(),simpleInfo.getLevel()) ; 
+                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName()) ; 
                     client.sendProtocol(createRes);
                 } else {
                     // 创建宗门失败

@@ -30,6 +30,8 @@ import cn.game.protocol.protobuf.MailMsg.MailNewPush_12010001;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
 
 public class MailModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginSuccess };
@@ -45,16 +47,17 @@ public class MailModule extends BasePlayerModule  {
 	 */
 	private volatile long globalMailId;
 
-	public void sendOnline(Mail mail, boolean notify) {
+	public Future<@Nullable Object> sendOnline(Mail mail, boolean notify) {
 
-		addMail(mail);
+		Future<@Nullable Object> mailFuture = addMail(mail);
 		if (notify) {
 			MailInfo mailInfo = PbBuilder.buildMailInfo(mail);
 			player.getGameClient().sendProtocol(MailNewPush_12010001.newBuilder().setMail(mailInfo).build());
 		}
+		return mailFuture; 
 	}
 
-	private void addMail(Mail mail) {
+	private Future<@Nullable Object> addMail(Mail mail) {
 
 		if (MailHelper.isNoticeMail(mail)) {
 			if (notice != null) {
@@ -65,7 +68,7 @@ public class MailModule extends BasePlayerModule  {
 			}
 		}
 		mails.put(mail.getId(), mail);
-		mail.insert();
+		return mail.insert();
 	}
 
 	public Mail get(long id) {

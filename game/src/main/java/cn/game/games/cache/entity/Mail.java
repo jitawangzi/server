@@ -314,7 +314,18 @@ public class Mail implements Serializable, DbEntity {
 		this.attachment = JSON.toJSONString(this.attachmentList);
 	}
 
-	public static Mail valueOf(long receiverId, int mailId, String sender, String title, String content, byte type,
+	/** 
+	 * 全参数邮件实例化
+	 * @param receiverId
+	 * @param mailId
+	 * @param sender
+	 * @param title
+	 * @param content
+	 * @param type
+	 * @param attachmentList
+	 * @return
+	 */
+	public static Mail valueOf(long receiverId, int mailId, String sender, String title, String content, int type,
 			List<Goods> attachmentList) {
 
 		Mail mail = new Mail();
@@ -330,12 +341,30 @@ public class Mail implements Serializable, DbEntity {
 		mail.setSeeTime(0);
 		mail.setSender(sender == null ? "" : sender);
 		mail.setTitle(title == null ? "" : title);
-		mail.setType(type);
+		if (type == 0) {
+			MailConfig mailConfig = MailManager.instance().getNullable(mailId);
+			if (mailConfig != null) {
+				mail.setType((byte) mailConfig.Type); 
+			}
+		}else {
+			mail.setType((byte) type);
+		}
 		mail.setIsDeleted(false);
 		return mail;
-
 	}
 
+	/** 
+	 * 玩家发送的邮件，直接指定类型
+	 * @param receiverId
+	 * @param sender
+	 * @param title
+	 * @param content
+	 * @return
+	 */
+	public static Mail valueOf(long receiverId, String sender,String title, String content) {
+		return valueOf(receiverId, 0, sender, title, content, 3, null); 
+	}
+	
 	public static Mail valueOfMailId(long receiverId, int mailId) {
 		return valueOfMailId(receiverId, mailId, "", "", null);
 	}
@@ -344,38 +373,8 @@ public class Mail implements Serializable, DbEntity {
 		return valueOfMailId(receiverId, mailId, "", "", goods);
 	}
 
-	public static Mail valueOfMailId(long receiverId, int mailId, String content, String title, List<Goods> goods) {
-
-		MailConfig mailConfig = MailManager.instance().getNullable(mailId);
-
-//		List<Goods> goods = new ArrayList<>();
-//		for (int[] re : mailConfig.Reward) {
-//			Goods g = new Goods();
-//			g.setId(re[0]);
-//			g.setCount(re[1]);
-//			goods.add(g);
-//		}
-		Mail mail = new Mail();
-		mail.setPlayerId(receiverId);
-		mail.setMailId(mailId);
-		mail.setAttachmentList(goods == null ? new ArrayList<Goods>() : goods);
-		mail.setContent(content == null ? "" : content);
-		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
-		mail.setId(IdUtil.getId());
-		mail.setReceive(false);
-		mail.setReceiveTime(0);
-		mail.setSee(false);
-		mail.setSeeTime(0);
-//		mail.setSender(sender == null ? "" : sender);
-//		mail.setType(type);
-
-		mail.setSender("");
-		mail.setTitle(title == null ? "" : title);
-		mail.setType(mailConfig == null ? 0 : (byte) mailConfig.Type);
-		mail.setIsDeleted(false);
-
-		return mail;
-
+	public static Mail valueOfMailId(long receiverId, int mailId, String title, String content, List<Goods> goods) {
+		return valueOf(receiverId, mailId, "", title, content, 0, goods); 
 	}
 
 }
