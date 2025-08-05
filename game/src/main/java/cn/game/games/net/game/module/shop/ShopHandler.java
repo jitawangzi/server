@@ -388,12 +388,20 @@ public class ShopHandler extends GameBaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
 			return;
 		}
+
+		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
+		if (shopItemConfig.UnlockCondition > 0) {
+			if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
+				client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+				return ; 
+			}
+		}
+	
 		//宗门不存在
 		if (shopId == 17 && player.getZongMenId() == 0){
 			client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 			return;
 		}
-		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.ShopItemQuota) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
 			return;
@@ -474,6 +482,12 @@ public class ShopHandler extends GameBaseHandler {
 		ShopModule shopModule = player.getShopModule();
 		Collection<ShopItem> shopItems = shopModule.getShopItems(shop);
 		for (ShopItem shopItem : shopItems) {
+			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
+			if (shopItemConfig.UnlockCondition > 0) {
+				if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
+					continue; 
+				}
+			}
 			resp.addItems(shopItem.toProto());
 		}
 		client.sendProtocol(resp.build());

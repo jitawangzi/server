@@ -156,7 +156,6 @@ public class VxHolder {
 		}
 		httpClient = WebClient.create(vertx, webClientOption);
 
-		vertx.eventBus().registerDefaultCodec(ServiceException.class, new ServiceExceptionMessageCodec());
 		vertx.eventBus().registerDefaultCodec(ProtobufProtocol.class, new ProtobufProtocolCodec());
 		vertx.eventBus().registerCodec(protobufMessageCodec);
 		vertx.eventBus().registerCodec(protocolCodec);

@@ -289,5 +289,14 @@ public class ZongMenModule extends BasePlayerModule {
 	public void setLastId(long lastId) {
 		this.lastId = lastId;
 	}
+	
+	public int getLevel() {
+		if (player.getZongMenId() == 0) {
+			return 0;
+		}
+		ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getZongMenId());
+		ZongMenShowInfo zongmenShowInfo = zongmenProxy.getZongmenShowInfo(player.getZongMenId());
+		return zongmenShowInfo.getSimpleInfo().getLevel();
+	}
 
 }

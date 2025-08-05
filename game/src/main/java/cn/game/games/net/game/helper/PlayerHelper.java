@@ -42,6 +42,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.cache.GameCacheService;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
@@ -62,8 +63,10 @@ import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.net.game.module.zongmen.ZongMenModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
@@ -1024,20 +1027,9 @@ public class PlayerHelper {
 	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
-	public static boolean checkCondition(Player player, List<Integer> conditions) {
+	public static boolean checkCondition(Player player, int ... conditions) {
 
-		return checkCondition(player, conditions, false);
-	}
-
-	/** 
-	 * 是否满足所有条件
-	 * @param player
-	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
-	 * @return
-	 */
-	public static boolean checkCondition(Player player, int[] conditions) {
-
-		return checkCondition(player, GameUtil.transform1(conditions));
+		return checkCondition(player,false, conditions);
 	}
 
 	/**
@@ -1048,9 +1040,9 @@ public class PlayerHelper {
 	 *            
 	 * @return true,如果满足任意条件
 	 */
-	public static boolean checkCondition(Player player, List<Integer> conditions, boolean or) {
+	public static boolean checkCondition(Player player,boolean or, int ... conditions) {
 
-		if (conditions.isEmpty()) {
+		if (conditions == null || conditions.length == 0) {
 			return true;
 		}
 		if (or) {
@@ -1113,9 +1105,11 @@ public class PlayerHelper {
 			return player.getQuestModule().getCumulativeCount(type);
 		}
 		if (type.countType == 1) {
+			// 直接根据当前数据获取的：
             return switch (type) {
-                // 直接根据当前数据获取的：
                 case PlayerLevel -> player.getLevel();
+                case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp) ; 
+                case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId()) ; 
                 case ChapterFinish -> {
                     BattleModule battleModule = player.getModule(BattleModule.class);
                     yield battleModule.isBattlePass(id) ? 1 : 0;

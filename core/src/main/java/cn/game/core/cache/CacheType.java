@@ -1,9 +1,9 @@
 package cn.game.core.cache;
 
-/**
- * 缓存类型，作为缓存key的前缀
- * @author abc
- *
+/**    
+ * 
+ * 2025年8月5日 14:15:26
+ * @author SYQ
  */
 public enum CacheType {
 	
