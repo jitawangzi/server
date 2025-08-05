@@ -1243,6 +1243,7 @@ public class BattleHandler extends GameBaseHandler {
         int type = req.getType();
         int id = req.getTypeId();
         int subId = req.getFieldId();
+        long helpPlayerId = req.getHelpPlayerId();
         //		String uidString = req.getUid();
         //		long uid = StringUtils.isEmpty(uidString) ? 0 : Long.parseLong(uidString);
         long playerId = client.getPlayerId();
@@ -1250,7 +1251,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         //		long randomSeed = System.currentTimeMillis() ;
         IBattleHandler battleHandler = battleModule.getBattle(type);
-        int errorCode = battleHandler.check(id, subId);
+        int errorCode = battleHandler.check(id, subId,helpPlayerId);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
             return;
@@ -1701,7 +1702,11 @@ public class BattleHandler extends GameBaseHandler {
         BattlePVEVPDataRequest_13000549 req = (BattlePVEVPDataRequest_13000549) message;
         BattlePVEVPDataResponse_1300054a defaultInstance = BattlePVEVPDataResponse_1300054a.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         BattlePVEVPDataResponse_1300054a.Builder resp = BattlePVEVPDataResponse_1300054a.newBuilder();
+        resp.setChallengeCount(pvevpBattle.getTicketCount());
+        resp.setEndTime(pvevpBattle.getEndTime());
         client.sendProtocol(resp.build());
     }
 
@@ -1710,16 +1715,24 @@ public class BattleHandler extends GameBaseHandler {
         BattlePVEVPRecordResponse_13000551 defaultInstance = BattlePVEVPRecordResponse_13000551.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattlePVEVPRecordResponse_13000551.Builder resp = BattlePVEVPRecordResponse_13000551.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
+        pvevpBattle.getBattleRecordFromRedis();
+        pvevpBattle.recordDataList.forEach(v -> {
+            resp.addRecordList(v);
+        });
         client.sendProtocol(resp.build());
     }
 
     private void pVEVPChallenge(NetClient client, Object message) {
         BattlePVEVPChallengeRequest_13000552 req = (BattlePVEVPChallengeRequest_13000552) message;
-        BattlePVEVPChallengeResponse_13000553 defaultInstance = BattlePVEVPChallengeResponse_13000553.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        BattlePVEVPChallengeResponse_13000553.Builder resp = BattlePVEVPChallengeResponse_13000553.newBuilder();
-        client.sendProtocol(resp.build());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
+        pvevpBattle.getRadomPlayer(req.getType());
+        // client.sendProtocol(resp.build());
     }
+
 
 
 }

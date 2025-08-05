@@ -27,7 +27,7 @@ public abstract class IBattleHandler {
 	 * @param subId TODO
 	 * @return
 	 */
-	abstract int check(int id, int subId);
+	abstract int check(int id, int subId,long ...args);
 	
 	/** 
 	 * 玩法的特殊规则校验

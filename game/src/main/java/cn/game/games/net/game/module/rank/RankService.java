@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -40,7 +41,7 @@ import cn.game.util.LuaScriptUtil;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
-/**    
+/**
  * 排行榜服务类，提供了各种操作排行榜的方法。
  * 2024年9月6日 下午8:53:27
  * @author SYQ
@@ -53,7 +54,7 @@ public class RankService {
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
 	private static final long TIME_END = DateUtil.currentTimeSeconds() + DateUtil.DAY_SECONDS * 365;
 
-	
+
 	private static final int DEFAULT_PAGE_SIZE = 50;
 
 	private RankService() {
@@ -65,10 +66,10 @@ public class RankService {
 
 	private String[] getServerIds() {
 		return VirtualServerManager.instance()
-		.list()
-		.stream()
-		.map(r -> r.ID)
-		.collect(toList())
+				.list()
+				.stream()
+				.map(r -> r.ID)
+				.collect(toList())
 				.toArray(new String[] {});
 	}
 	/**
@@ -137,8 +138,8 @@ public class RankService {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
 			if (v != null) {
-                v.printStackTrace();
-            }
+				v.printStackTrace();
+			}
 		});
 	}
 
@@ -195,6 +196,72 @@ public class RankService {
 	public CompletionStage<List<RankEntry>> getTopNAsync(String serverId, RankType type, int n) {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.entryRangeReversedAsync(0, n - 1).thenApply(entrys -> convertToRankEntries(entrys, 1, n));
+	}
+	/**
+	 * 同步获取指定排名的玩家信息。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param rankId 排名
+	 * @return 玩家信息
+	 */
+	public RankEntry getRankEntry(String serverId, RankType type, int rankId) {
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return convertToRankEntries(rank.entryRangeReversed(rankId-1, rankId-1) , 1, 1).get(0);
+	}
+	/**
+	 * 异步获取指定排名的玩家信息。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param rankId 排名
+	 * @return 异步操作的Future，包含指定排名的玩家信息
+	 */
+	public CompletionStage <RankEntry> getRankEntryAsync(String serverId, RankType type, int rankId) {
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return rank.entryRangeReversedAsync(rankId-1, rankId-1).thenApply(entrys ->   convertToRankEntries(entrys , 1, 1)).thenApply(list -> list.get(0));
+	}
+	/**
+	 * 同步获取排行榜的最后一个玩家信息。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @return 最后一个玩家信息
+	 */
+	public List<RankEntry> getLastN(String serverId, RankType type,int n) {
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		int size = rank.size();
+		if(size<=n) {
+			n=size  ;
+		}
+		Collection<ScoredEntry<Long>> entrys = rank.entryRangeReversed(size-n-1,  size-1);
+		return convertToRankEntries(entrys, 1, n);
+	}
+	/**
+	 * 异步获取排行榜的最后N个玩家信息（排名最低的玩家）。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param n 获取的玩家数量
+	 * @return 异步操作的Future，包含最后N个玩家信息
+	 */
+	public CompletionStage<List<RankEntry>> getLastNAsync(String serverId, RankType type, int n) {
+		if (n <= 0) {
+			return CompletableFuture.completedFuture(new ArrayList<>());
+		}
+		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return rank.sizeAsync().thenCompose(size -> {
+			if (size <= 0) {
+				return CompletableFuture.completedFuture(new ArrayList<>());
+			}
+
+			int actualN = Math.min(n, size);
+			int startIndex = size - actualN;
+			int endIndex = size - 1;
+
+			return rank.entryRangeReversedAsync(startIndex, endIndex)
+					.thenApply(entries -> convertToRankEntries(entries, 1, actualN));
+		});
 	}
 
 	/**
@@ -276,7 +343,7 @@ public class RankService {
 		return rank.revRankAsync(playerId).thenApply(r -> r != null ? r + 1 : -1);
 	}
 
-	/** 
+	/**
 	 * 异步获取某人的当前排行分数
 	 * @param serverId
 	 * @param type
@@ -288,7 +355,7 @@ public class RankService {
 		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
 
-	/** 
+	/**
 	 * 获取某人的当前排行分数
 	 * @param serverId
 	 * @param type
@@ -301,7 +368,7 @@ public class RankService {
 		return score != null ? score.longValue() : 0;
 	}
 
-	/** 
+	/**
 	 * 异步获取某人的当前排行数据
 	 * @param serverId
 	 * @param type
@@ -314,7 +381,7 @@ public class RankService {
 		return scoreAsync.thenCombine(rankAsync, (score, rank) -> new RankEntry(rank, playerId, score));
 	}
 
-	/** 
+	/**
 	 * 获取某人的当前排行分数
 	 * @param serverId
 	 * @param type
@@ -330,9 +397,7 @@ public class RankService {
 	/**
 	 * 删除某个排行榜
 	 *
-	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
 	 * @return 异步操作的Future
 	 */
 	public void removeRank(RankType type) {
@@ -347,9 +412,7 @@ public class RankService {
 	/**
 	 * 异步删除某个排行榜
 	 *
-	 * @param serverId 服务器ID
 	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
 	 * @return 异步操作的Future
 	 */
 	public CompletableFuture<Void> removeRankAsync(RankType type) {
@@ -369,7 +432,7 @@ public class RankService {
 		return rank.toCompletableFuture();
 	}
 
-	/** 
+	/**
 	 * 异步从排行榜中移除玩家。
 	 * @param type 排行榜类型
 	 * @param serverId 服务器ID 
@@ -381,7 +444,7 @@ public class RankService {
 		return rank.removeAsync(playerId);
 	}
 
-	/** 
+	/**
 	 * 把一个玩家从所有排行榜中移除
 	 * @param playerId
 	 * @return
@@ -406,7 +469,7 @@ public class RankService {
 		return entrys.stream().map(entry -> new RankEntry(0, entry.getValue(), (long) entry.getScore().doubleValue())).collect(Collectors.toList());
 	}
 
-	/** 
+	/**
 	 * 转成自定义的RankEntry对象
 	 * @param entrys
 	 * @param page
@@ -423,7 +486,7 @@ public class RankService {
 		return rankEntries;
 	}
 
-	/** 
+	/**
 	 * RankEntry 类型转成PlayerRank类型
 	 * @param entryAsync
 	 * @return
@@ -445,8 +508,8 @@ public class RankService {
 		return playerRankAsync;
 	}
 
-	/** 
-	 * 
+	/**
+	 *
 	 * 根据分数查找符合条件的玩家id
 	 * @param serverId
 	 * @param type
@@ -460,7 +523,7 @@ public class RankService {
 		return scoredSortedSet.valueRangeAsync(scoreStart, true, scoreEnd, true, 0, count);
 	}
 
-	/** 
+	/**
 	 * 如果当前值大于历史值则更新，注意不能并发调用。 
 	 * @param serverId
 	 * @param type
@@ -494,7 +557,7 @@ public class RankService {
 		return resultFuture;
 	}
 
-	/** 
+	/**
 	 * 如果当前值大于历史值则更新,使用lua脚本实现,保证原子性
 	 * @param serverId
 	 * @param type
@@ -508,7 +571,7 @@ public class RankService {
 	}
 
 
-	/** 
+	/**
 	 * 初始化排行榜结算任务
 	 */
 	public void initRewardTask() {
