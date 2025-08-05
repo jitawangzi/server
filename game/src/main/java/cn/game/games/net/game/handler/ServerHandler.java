@@ -76,7 +76,6 @@ import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
-import cn.game.util.SerializationUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
@@ -443,7 +442,7 @@ public class ServerHandler extends GameBaseHandler {
 		GameDataPush_7d00000a request = (GameDataPush_7d00000a) message;
 		String mapperClass = request.getMapperClass();
 		String method = request.getMethod();
-		Object arg = SerializationUtil.deserializeClassAndObject(request.getArg().toByteArray());
+		Object arg = KryoUtils.deserializeClassAndObject(request.getArg().toByteArray());
 		Class<?> clazz = null;
 		try {
 			clazz = Class.forName(mapperClass);
@@ -470,7 +469,7 @@ public class ServerHandler extends GameBaseHandler {
 				e.printStackTrace();
 			}
 			ByteString arg = proto.getArg();
-			Object obj = SerializationUtil.deserializeClassAndObject(arg.toByteArray());
+			Object obj = KryoUtils.deserializeClassAndObject(arg.toByteArray());
 			DbTask dbTask = new DbTask(clazz, proto.getMethod(), obj);
 			list.add(dbTask);
 		}
@@ -485,7 +484,7 @@ public class ServerHandler extends GameBaseHandler {
 
 	protected void dbBatch2(NetClient client, Object message) {
 		GameDataPushBatch2_7d00000c request = (GameDataPushBatch2_7d00000c) message;
-		List<DbTask> list = (List<DbTask>) SerializationUtil.deserializeClassAndObject(request.getArg().toByteArray());
+		List<DbTask> list = (List<DbTask>) KryoUtils.deserializeClassAndObject(request.getArg().toByteArray());
 
 		DataGameServerInterface dataGameServerInterface = SpringContextLoader.getContext()
 				.getBean(DataGameServerInterface.class);

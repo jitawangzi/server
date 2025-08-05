@@ -22,7 +22,7 @@ public class RankListRequest_35000001Test extends ServerTest{
 //		builder.setType(rankType.ID);
 
 		// 指定排行榜
-		builder.setType(RankType.Battle.ID);
+		builder.setType(RankType.LingShanWenChan.ID);
 		builder.setPage(1);
 		builder.setPageSize(100);
 		

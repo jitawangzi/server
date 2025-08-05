@@ -50,7 +50,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
 					message.fail(ReplyFailure.ERROR.toInt(), errString);
 				} else {
-					message.reply(r.result(), VxHolder.customOptions);
+					message.reply(r.result(), VxHolder.universalOptions);
 				}
 			});
 		},true);

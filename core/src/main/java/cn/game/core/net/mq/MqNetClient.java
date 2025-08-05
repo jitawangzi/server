@@ -5,7 +5,7 @@ import org.apache.rocketmq.client.utils.MessageUtil;
 import org.apache.rocketmq.common.message.Message;
 
 import cn.game.core.net.client.AbstractNetClient;
-import cn.game.util.SerializationUtil;
+import cn.game.util.KryoUtils;
 
 public class MqNetClient extends AbstractNetClient {
 
@@ -16,7 +16,7 @@ public class MqNetClient extends AbstractNetClient {
 	}
 	@Override
 	public void sendProtocol(Object message) {
-		byte[] body = SerializationUtil.serializeClassAndObject(message);
+		byte[] body = KryoUtils.serializeClassAndObject(message);
 		Message replyMessage = null;
 		try {
 			replyMessage = MessageUtil.createReplyMessage(this.message, body);

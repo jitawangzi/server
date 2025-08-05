@@ -128,11 +128,11 @@ public interface RpcClient {
 
 	private Future<?> handleVertxFuture(CallType callType, Command command, String targetAddr, long startLong) {
 		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
-			Future<Message<Object>> request = request(targetAddr, command, VxHolder.customOptions);
+			Future<Message<Object>> request = request(targetAddr, command, VxHolder.universalOptions);
 			return request.map(r -> r.body())
 					.onFailure(t -> logError(targetAddr, command, startLong, t));
 		} else if (callType == CallType.Broadcast) {
-			broadcast(targetAddr, command, VxHolder.customOptions);
+			broadcast(targetAddr, command, VxHolder.universalOptions);
 			// 广播没有返回结果
 			return Future.succeededFuture();
 		}
@@ -142,13 +142,13 @@ public interface RpcClient {
 	private CompletableFuture<?> handleCompletionStage(CallType callType, Command command, String targetAddr,
 			long startLong) {
 		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
-			Future<Message<Object>> request = request(targetAddr, command, VxHolder.customOptions);
+			Future<Message<Object>> request = request(targetAddr, command, VxHolder.universalOptions);
 			return request.map(r -> r.body())
 					.onFailure(t -> logError(targetAddr, command, startLong, t))
 					.toCompletionStage()
 					.toCompletableFuture();
 		} else if (callType == CallType.Broadcast) {
-			broadcast(targetAddr, command, VxHolder.customOptions);
+			broadcast(targetAddr, command, VxHolder.universalOptions);
 			return CompletableFuture.completedFuture(null);
 		}
 		return CompletableFuture.failedFuture(new IllegalArgumentException("Unsupported call type: " + callType));
@@ -167,7 +167,7 @@ public interface RpcClient {
 		if (ServerContext.getInstance().getRunMode() == RunMode.TEST) {
 			timeout = 600;
 		}
-		DeliveryOptions options = new DeliveryOptions().setSendTimeout(timeout * 1000).setCodecName(VxHolder.customMessageCodec.name());
+		DeliveryOptions options = new DeliveryOptions().setSendTimeout(timeout * 1000).setCodecName(VxHolder.universalMessageCodec.name());
 		try {
 			Future<Message<Object>> request = request(targetAddr, command, options);
 			Message<Object> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);

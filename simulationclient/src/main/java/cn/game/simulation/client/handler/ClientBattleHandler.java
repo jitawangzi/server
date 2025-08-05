@@ -2,10 +2,14 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.EquipTowerHelpRewardInfo;
+import cn.game.protocol.protobuf.BaseMsg.MountainMapNodeData;
+import cn.game.protocol.protobuf.BaseMsg.PVEVPRecordData;
 import cn.game.protocol.protobuf.BaseMsg.PlayerRankInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -27,13 +31,22 @@ import cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseResponse_13000032;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupResponse_13000049;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesResponse_13000514;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
+import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanResponse_13000512;
 import cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardResponse_13000516;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardResponse_13000204;
 import cn.game.protocol.protobuf.BattleMsg.BattleLostInfoResponse_13000202;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainDataResponse_1300053a;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_13000542;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_13000546;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
 import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmBuffUpdateResponse_13000083;
 import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmQuickResponse_13000085;
 import cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmResponse_13000081;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeResponse_13000553;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPDataResponse_1300054a;
+import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordResponse_13000551;
 import cn.game.protocol.protobuf.BattleMsg.BattlePatrolRewardResponse_13000045;
 import cn.game.protocol.protobuf.BattleMsg.BattlePvPEndResponse_13000116;
 import cn.game.protocol.protobuf.BattleMsg.BattlePvPInfoResponse_13000118;
@@ -70,18 +83,6 @@ import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipResponse_13000518;
-import cn.game.protocol.protobuf.BattleMsg.BattleLingShanEndResponse_1300051a;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainDataResponse_1300053a;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainFinishNodeResponse_13000542;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000544;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000546;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainGetRewardResponse_13000548;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_13000546;
-import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
-import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPDataResponse_1300054a;
-import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordResponse_13000551;
-import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeResponse_13000553;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -153,8 +154,6 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleMountainDataResponse_1300053a, this::mountainData);
         putInvoker(PbProtocol.BattleMountainFinishNodeResponse_13000542, this::mountainFinishNode);
         putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000544, this::mountainGetReward);
-        putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000546, this::mountainGetReward);
-        putInvoker(PbProtocol.BattleMountainGetRewardResponse_13000548, this::mountainGetReward);
         putInvoker(PbProtocol.BattleMountainMapResetResponse_13000546, this::mountainMapReset);
         putInvoker(PbProtocol.BattleMountainNextFlooResponse_13000548, this::mountainNextFloo);
         putInvoker(PbProtocol.BattlePVEVPDataResponse_1300054a, this::pVEVPData);
@@ -562,28 +561,10 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void mountainGetReward(NetClient netClient, Object message) {
-        BattleMountainGetRewardResponse_13000544 resp = (BattleMountainGetRewardResponse_13000544) message;
-        List<RewardInfo> rewardsList = resp.getRewardsList();
-        Client client = (Client) netClient;
-    }
 
     private void mountainGetReward(NetClient netClient, Object message) {
-        BattleMountainGetRewardResponse_13000546 resp = (BattleMountainGetRewardResponse_13000546) message;
-        List<MountainMapNodeData> mapdataList = resp.getMapdataList();
-        int curNodeId = resp.getCurNodeId();
-        int score = resp.getScore();
-        int hp = resp.getHp();
-        int refreshNum = resp.getRefreshNum();
-        List<Integer> buffBagList = resp.getBuffBagList();
-        Client client = (Client) netClient;
     }
 
-    private void mountainGetReward(NetClient netClient, Object message) {
-        BattleMountainGetRewardResponse_13000548 resp = (BattleMountainGetRewardResponse_13000548) message;
-        int curNodeId = resp.getCurNodeId();
-        Client client = (Client) netClient;
-    }
 
     private void mountainMapReset(NetClient netClient, Object message) {
         BattleMountainMapResetResponse_13000546 resp = (BattleMountainMapResetResponse_13000546) message;

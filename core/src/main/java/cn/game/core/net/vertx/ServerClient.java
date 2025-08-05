@@ -27,18 +27,11 @@ public class ServerClient extends AbstractNetClient {
 		if (message instanceof Builder) {
 			message = ((Builder) message).build();
 		}
-		if (message instanceof ProtobufProtocol) {
-			this.message.reply(message);
-		} else if (message instanceof com.google.protobuf.Message) {
-			this.message.reply(message, VxHolder.protobufOptions);
-		} else if (message instanceof IProtocol) {
-			this.message.reply(message, VxHolder.protocolOptions);
-		}else if (message instanceof Throwable) {
+		if (message instanceof Throwable) {
 			this.message.reply(new ServiceException(500, HelperUtils.generateDebugInfo((Throwable) message).toString()),
-					VxHolder.defaultOptions);
+					VxHolder.universalOptions);
 		} else {
-			// 这里返回自定义对象数据，只是返回数据，不需要msgId
-			this.message.reply(new ObjectProtocol(0, message), VxHolder.protocolOptions);
+			this.message.reply(message, VxHolder.universalOptions);
 		}
 	}
 

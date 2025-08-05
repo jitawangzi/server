@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
+import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.protocol.IProtocol;
@@ -24,6 +25,7 @@ import cn.game.core.net.vertx.codec.CustomMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufMessageCodec;
 import cn.game.core.net.vertx.codec.ProtobufProtocolCodec;
 import cn.game.core.net.vertx.codec.ProtocolCodec;
+import cn.game.core.net.vertx.codec.UniversalMessageCodec;
 import cn.game.core.util.AsyncUtils;
 import cn.game.util.IpUtil;
 import cn.game.util.LockUtil;
@@ -42,6 +44,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBusOptions;
+import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.http.HttpServerOptions;
@@ -71,12 +74,15 @@ public class VxHolder {
 	public static final ProtobufMessageCodec protobufMessageCodec = new ProtobufMessageCodec();
 	public static final CustomMessageCodec customMessageCodec = new CustomMessageCodec();
 	public static final ProtocolCodec<?> protocolCodec = new ProtocolCodec<IProtocol<?>>();
+	public static final UniversalMessageCodec universalMessageCodec = new UniversalMessageCodec();
 	/** 如果直接发protobuf类型的消息，需要指定这个 */
 	public static final DeliveryOptions protobufOptions = new DeliveryOptions().setCodecName(protobufMessageCodec.name());
 	public static final DeliveryOptions customOptions = new DeliveryOptions().setCodecName(customMessageCodec.name());
 	/** IProtocol类型消息 */
 	public static final DeliveryOptions protocolOptions = new DeliveryOptions().setCodecName(protocolCodec.name());
 	public static final DeliveryOptions defaultOptions = new DeliveryOptions();
+	
+	public static final DeliveryOptions universalOptions = new DeliveryOptions().setCodecName(universalMessageCodec.name());
 	private static List<Verticle> verticles;
 	public static ZookeeperClusterManager zookeeperClusterManager;
 
@@ -155,6 +161,8 @@ public class VxHolder {
 		vertx.eventBus().registerCodec(protobufMessageCodec);
 		vertx.eventBus().registerCodec(protocolCodec);
 		vertx.eventBus().registerCodec(customMessageCodec);
+		
+		vertx.eventBus().registerCodec(universalMessageCodec);
 
 		deployVerticles();
 		inited = true;
@@ -251,15 +259,12 @@ public class VxHolder {
 	 * @return
 	 */
 	public static <T> Future<T> requestRemoteServer(String serverId, Object message) {
-		if (message instanceof com.google.protobuf.Message) {
-			return vertx.eventBus().request(serverId, message, protobufOptions).map(msg -> convertResponseObject(msg.body()));
-		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
-			return vertx.eventBus()
-					.request(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions)
-					.map(msg -> convertResponseObject(msg.body()));
-		} else if (message instanceof IProtocol) {
-			return vertx.eventBus().request(serverId, message, protocolOptions).map(msg -> convertResponseObject(msg.body()));
-		} else {
+		if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			message = ((com.google.protobuf.MessageLite.Builder) message).build();
+		}
+		if (message instanceof com.google.protobuf.Message || message instanceof IProtocol) {
+			return vertx.eventBus().request(serverId, message, universalOptions).map(msg -> convertResponseObject(msg.body()));
+		}  else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
 	}
@@ -279,12 +284,11 @@ public class VxHolder {
 	 * @param message
 	 */
 	public static void sendRemoteServer(String serverId, Object message) {
-		if (message instanceof com.google.protobuf.Message) {
-			vertx.eventBus().send(serverId, message, protobufOptions);
-		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
-			vertx.eventBus().send(serverId, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
-		} else if (message instanceof IProtocol) {
-			vertx.eventBus().send(serverId, message, protocolOptions);
+		if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			message = ((com.google.protobuf.MessageLite.Builder) message).build();
+		}
+		if (message instanceof com.google.protobuf.Message || message instanceof IProtocol) {
+			vertx.eventBus().send(serverId, message, universalOptions);
 		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
@@ -309,15 +313,10 @@ public class VxHolder {
 	 */
 	public static void broadcastRemoteServer(ServerType serverType, Object message) {
 		String serverAddr = serverType.name();
-		if (message instanceof com.google.protobuf.Message) {
-			vertx.eventBus().publish(serverAddr, message, protobufOptions);
-		} else if (message instanceof com.google.protobuf.MessageLite.Builder) {
-			vertx.eventBus().publish(serverAddr, ((com.google.protobuf.MessageLite.Builder) message).build(), protobufOptions);
-		} else if (message instanceof IProtocol) {
-			vertx.eventBus().publish(serverAddr, message, protocolOptions);
-		} else {
-			new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
+		if (message instanceof com.google.protobuf.MessageLite.Builder) {
+			message = ((com.google.protobuf.MessageLite.Builder) message).build();
 		}
+		vertx.eventBus().publish(serverAddr, message, universalOptions);
 	}
 
 	public static Buffer toBuffer(int msgId, byte[] byteArray) {

@@ -22,7 +22,7 @@ public class MessageTest {
 
 
 	private static void testRequestGameSereverCallback() {
-		DeliveryOptions options = new DeliveryOptions(VxHolder.protobufOptions);
+		DeliveryOptions options = new DeliveryOptions(VxHolder.universalOptions);
 		options.setSendTimeout(3000);
 		Future<Message<ServerStatusResponse_7d000902>> future = VxHolder.vertx.eventBus().request("game_test",
 				ServerStatusRequest_7d000901.getDefaultInstance(), options);

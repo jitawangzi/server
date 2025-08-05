@@ -12,6 +12,11 @@ public class RankExample {
 		RankService rankService = RankService.getInstance();
 		String serverId = "server1";
 
+		
+		RankService.getInstance().setScoreAsync("server1", RankType.LingShanWenChan, 240200009, 5);
+		RankService.getInstance().setScoreAsync("server1", RankType.LingShanWenChan, 240200010, 5);
+		
+		
 		// 同步调用
 		rankService.setScore(serverId, RankType.Battle, 1001, 50);
 		rankService.setScore(serverId, RankType.Battle, 1002, 75);

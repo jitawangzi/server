@@ -1,7 +1,7 @@
 package cn.game.core.net.protocol.object;
 
 import cn.game.core.net.protocol.BaseProtocol;
-import cn.game.util.SerializationUtil;
+import cn.game.util.KryoUtils;
 
 public abstract class BaseObjectProtocol<T> extends BaseProtocol<T> {
 
@@ -35,12 +35,12 @@ public abstract class BaseObjectProtocol<T> extends BaseProtocol<T> {
 	}
 	@Override
 	public byte[] serializeData() {
-		return SerializationUtil.serializeClassAndObject(data);
+		return KryoUtils.serializeClassAndObject(data);
 	}
 
 	@Override
 	public void deserializeData(byte[] data) {
-		this.data = (T) SerializationUtil.deserializeClassAndObject(data);
+		this.data = (T) KryoUtils.deserializeClassAndObject(data);
 	}
 
 	@Override
