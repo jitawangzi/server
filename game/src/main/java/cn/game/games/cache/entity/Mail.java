@@ -1,6 +1,7 @@
 package cn.game.games.cache.entity;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
 
 public class Mail implements Serializable, DbEntity {
-    /**
+	/**
 	 * @mbg.generated
 	 */
 	private long id;
@@ -318,6 +319,7 @@ public class Mail implements Serializable, DbEntity {
 	 * 全参数邮件实例化
 	 * @param receiverId
 	 * @param mailId
+	 * @param contentArguments
 	 * @param sender
 	 * @param title
 	 * @param content
@@ -325,13 +327,19 @@ public class Mail implements Serializable, DbEntity {
 	 * @param attachmentList
 	 * @return
 	 */
-	public static Mail valueOf(long receiverId, int mailId, String sender, String title, String content, int type,
-			List<Goods> attachmentList) {
+	public static Mail valueOf(long receiverId, int mailId, Object[] contentArguments, String sender, String title, String content,
+			int type, List<Goods> attachmentList) {
+		MailConfig mailConfig = MailManager.instance().getNullable(mailId);
 
 		Mail mail = new Mail();
 		mail.setMailId(mailId);
 		mail.setAttachmentList(attachmentList);
 		mail.setContent(content == null ? "" : content);
+		if (contentArguments != null && contentArguments.length > 0) {
+			if (mailConfig != null && StringUtils.isEmpty(mailConfig.Content)) {
+				mail.setContent(MessageFormat.format(mailConfig.Content, contentArguments));
+			}
+		}
 		mail.setCreateTime((int) (System.currentTimeMillis() / 1000));
 		mail.setId(IdUtil.getId());
 		mail.setPlayerId(receiverId);
@@ -342,11 +350,10 @@ public class Mail implements Serializable, DbEntity {
 		mail.setSender(sender == null ? "" : sender);
 		mail.setTitle(title == null ? "" : title);
 		if (type == 0) {
-			MailConfig mailConfig = MailManager.instance().getNullable(mailId);
 			if (mailConfig != null) {
-				mail.setType((byte) mailConfig.Type); 
+				mail.setType((byte) mailConfig.Type);
 			}
-		}else {
+		} else {
 			mail.setType((byte) type);
 		}
 		mail.setIsDeleted(false);
@@ -361,10 +368,10 @@ public class Mail implements Serializable, DbEntity {
 	 * @param content
 	 * @return
 	 */
-	public static Mail valueOf(long receiverId, String sender,String title, String content) {
-		return valueOf(receiverId, 0, sender, title, content, 3, null); 
+	public static Mail valueOf(long receiverId, String sender, String title, String content) {
+		return valueOf(receiverId, 0,null, sender, title, content, 3, null);
 	}
-	
+
 	public static Mail valueOfMailId(long receiverId, int mailId) {
 		return valueOfMailId(receiverId, mailId, "", "", null);
 	}
@@ -374,7 +381,7 @@ public class Mail implements Serializable, DbEntity {
 	}
 
 	public static Mail valueOfMailId(long receiverId, int mailId, String title, String content, List<Goods> goods) {
-		return valueOf(receiverId, mailId, "", title, content, 0, goods); 
+		return valueOf(receiverId, mailId,null, "", title, content, 0, goods);
 	}
 
 }

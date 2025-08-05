@@ -306,7 +306,7 @@ public class GmHandler extends GameBaseHandler {
                           for (String pid : pids) {
                             MailHelper.sendMail(
                                 Long.parseLong(pid.trim()),
-                                    0,
+                                    0,null,
                                 "系统管理员",
                                 gmMail.getTitle(),
                                 gmMail.getContext(),

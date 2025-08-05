@@ -44,50 +44,8 @@ public class MailHelper {
 	public static final byte SYSTEM = 2;
 	/***GM 邮件的id*/
 	public static final int GM_MAIL_ID = 18;
-
-	/**
-	 * 全服邮件
-	 */
+	/** 全服邮件 */
 	static List<GmMail> globalMailList = new CopyOnWriteArrayList<>();
-
-	public static void initLoadGlobalMail() {
-		DAO.execute(GmMailMapper.class, "selectGlobalMailList").onSuccess(rs -> {
-			;
-			if (rs != null) {
-				List<GmMail> list = (List<GmMail>) rs;
-				if (!list.isEmpty()) {
-					globalMailList.clear();
-					globalMailList.addAll(list);
-					globalMailList.sort(Comparator.comparingInt(GmMail::getId));
-				}
-			}
-		}).onFailure(rs -> {
-			log.error("加载全服邮件失败", rs);
-		});
-
-	}
-
-	/** 
-	 * 通用的发送邮件方法，所有的邮件都通过这个方法发送。需要指定全部参数
-	 * @param receiverId
-	 * @param mailId
-	 * @param sender
-	 * @param title
-	 * @param content
-	 * @param type
-	 * @param attachmentList
-	 * @param notify
-	 * @return
-	 */
-	public static Future<@Nullable Object> sendMail(long receiverId, int mailId, String sender, String title, String content, int type,
-			List<Goods> attachmentList, boolean notify) {
-		GameServerInterface remoteInterfaceProxy = ServerHelper.getRemoteInterfaceProxy(ServerType.Game, GameServerInterface.class,
-				DistributedObjectType.PLAYER, receiverId);
-		return remoteInterfaceProxy.addMail(receiverId, mailId, sender, title, content, type, attachmentList, notify).onFailure(e -> {
-			log.error("发送邮件失败，receiverId = {}, mailId = {}, sender = {}, title = {}, content = {}, type = {}, attachmentList = {}",
-					receiverId, mailId, sender, title, content, type, attachmentList, e);
-		});
-	}
 
 	/** 
 	 * 只提供邮件id的发送方法，相关数据从配置表读取，其他默认
@@ -99,9 +57,24 @@ public class MailHelper {
 		if (mailId == 0) {
 			return Future.failedFuture("mailId cannot be 0");
 		}
-		return sendMail(receiverId, mailId, null, notify);
+		return sendMail(receiverId, mailId, null, null, null, null, 0, null, notify);
 	}
+	
 
+	/** 
+	 * 只提供邮件id的发送方法，相关数据从配置表读取，其他默认。
+	 * 可能需要外部参数来格式化邮件内容。
+	 * @param receiverId
+	 * @param mailId
+	 * @param contentArguments 邮件内容参数，可能需要外部参数来格式化邮件内容。
+	 * @param notify
+	 */
+	public static Future<@Nullable Object> sendMail(long receiverId, int mailId, Object[] contentArguments, boolean notify) {
+		if (mailId == 0) {
+			return Future.failedFuture("mailId cannot be 0");
+		}
+		return sendMail(receiverId, mailId, contentArguments, null, null, null, 0, null, notify);
+	}
 	/** 
 	 * 发送邮件， 手动指定奖励内容，其余数据从配置表中读取。 
 	 * @param receiverId
@@ -112,9 +85,34 @@ public class MailHelper {
 		if (mailId == 0) {
 			return Future.failedFuture("mailId cannot be 0");
 		}
-		return sendMail(receiverId, mailId, null, null, null, 0, goods, notify);
+		return sendMail(receiverId, mailId, null, null, null, null, 0, goods, notify);
 	}
 	
+	/** 
+	 * 通用的发送邮件方法，所有的邮件都通过这个方法发送。需要指定全部参数
+	 * 尽量不要直接调用这个方法，使用简化参数的方法。 
+	 * @param receiverId
+	 * @param mailId
+	 * @param contentArguments
+	 * @param sender
+	 * @param title
+	 * @param content
+	 * @param type
+	 * @param attachmentList
+	 * @param notify
+	 * @return
+	 */
+	public static Future<@Nullable Object> sendMail(long receiverId, int mailId, Object[] contentArguments, String sender, String title,
+			String content, int type, List<Goods> attachmentList, boolean notify) {
+		GameServerInterface remoteInterfaceProxy = ServerHelper.getRemoteInterfaceProxy(ServerType.Game, GameServerInterface.class,
+				DistributedObjectType.PLAYER, receiverId);
+		return remoteInterfaceProxy.addMail(receiverId, mailId, contentArguments, sender, title, content, type, attachmentList, notify)
+				.onFailure(e -> {
+					log.error("发送邮件失败，receiverId = {}, mailId = {}, sender = {}, title = {}, content = {}, type = {}, attachmentList = {}",
+							receiverId, mailId, sender, title, content, type, attachmentList, e);
+				});
+	}
+
 	/** 
 	 * 玩家给玩家发邮件
 	 * @param receiverId
@@ -124,7 +122,7 @@ public class MailHelper {
 	 * @return
 	 */
 	public static Future<Object> sendMailFromPlayer(long receiverId, String sender, String title, String content) {
-		return sendMail(receiverId, 0, sender, title, content, 3, null, true);
+		return sendMail(receiverId, 0, null, sender, title, content, 3, null, true);
 	}
 
 	@Deprecated
@@ -137,7 +135,7 @@ public class MailHelper {
 			goods.setCount(entry.getValue());
 			attachmentList.add(goods);
 		}
-		sendMail(receiverId, 0, sender, title, content, type, attachmentList, notify);
+		sendMail(receiverId, 0, null, sender, title, content, type, attachmentList, notify);
 	}
 
 	/**
@@ -194,8 +192,8 @@ public class MailHelper {
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
-					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList,
-							true);
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE,
+							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("addGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
 				}
@@ -220,8 +218,8 @@ public class MailHelper {
 			try {
 				if (canAddMail(player, gmMail)) {
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
-					sendMail(player.getPlayerId(), 0, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE, attachmentList,
-							true);
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE,
+							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("onLoginAddGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
 				}
@@ -267,6 +265,23 @@ public class MailHelper {
 			return false;
 		}
 		return true;
+	}
+
+	public static void initLoadGlobalMail() {
+		DAO.execute(GmMailMapper.class, "selectGlobalMailList").onSuccess(rs -> {
+			;
+			if (rs != null) {
+				List<GmMail> list = (List<GmMail>) rs;
+				if (!list.isEmpty()) {
+					globalMailList.clear();
+					globalMailList.addAll(list);
+					globalMailList.sort(Comparator.comparingInt(GmMail::getId));
+				}
+			}
+		}).onFailure(rs -> {
+			log.error("加载全服邮件失败", rs);
+		});
+
 	}
 
 	public static boolean removeGlobalMail(Integer gmMailId) {

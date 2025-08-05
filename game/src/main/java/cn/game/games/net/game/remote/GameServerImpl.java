@@ -79,9 +79,9 @@ public class GameServerImpl implements GameServerInterface {
 	}
 
 	@Override
-	public Future<@Nullable Object> addMail(long receiverId, int mailId, String sender, String title, String content, int type,
+	public Future<@Nullable Object> addMail(long receiverId, int mailId, Object[] contentArguments, String sender, String title, String content, int type,
 			List<Goods> attachmentList, boolean notify) {
-		Mail mail = Mail.valueOf(receiverId, mailId,sender,title,content,type, attachmentList);
+		Mail mail = Mail.valueOf(receiverId, mailId,contentArguments,sender,title,content,type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();

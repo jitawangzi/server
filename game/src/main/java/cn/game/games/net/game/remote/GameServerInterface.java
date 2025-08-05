@@ -17,7 +17,20 @@ public interface GameServerInterface extends RemoteGameServerInterface {
 
 	public boolean addFriend(long playerId, long friendId, String serverId);
 
-	public Future<@Nullable Object> addMail(long receiverId, int mailId, String sender, String title, String content, int type, List<Goods> attachmentList,
+	/** 
+	 * 发邮件
+	 * @param receiverId
+	 * @param mailId
+	 * @param contentArguments
+	 * @param sender
+	 * @param title
+	 * @param content
+	 * @param type
+	 * @param attachmentList
+	 * @param notify
+	 * @return
+	 */
+	public Future<@Nullable Object> addMail(long receiverId, int mailId, Object[] contentArguments, String sender, String title, String content, int type, List<Goods> attachmentList,
 			boolean notify);
 
 	public void notifyAddForbidAccount(List<Long> pids, String reason, String timer );
