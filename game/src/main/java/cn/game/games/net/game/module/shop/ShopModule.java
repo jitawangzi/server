@@ -16,6 +16,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.config.FixItemStoreConfig;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DragonStoreManager;
+import cn.game.protocol.generated.manager.FixItemStoreManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.HunhuoManager;
@@ -131,6 +133,12 @@ public class ShopModule extends BasePlayerModule {
 	 */
 	private void refreshShop(int shopId) {
 		ShopConfig shopConfig = ShopManager.instance().get(shopId);
+		// 优先使用通用的刷新方法
+		if (shopConfig.ItemRefreshType == 1) {
+			refreshFixItems(shopId);
+			return ; 
+		}
+		// 特殊规则自定义刷新方法
 		switch (shopConfig.Type) {
 		case 1: {
 			break;
@@ -372,6 +380,18 @@ public class ShopModule extends BasePlayerModule {
 			for (HunhuoConfig hunhuoConfig : configs) {
 				shopItemsMap.put(shop, new ShopItem(hunhuoConfig.Item));
 			}
+		}
+	}
+	
+	/** 
+	 * 刷新固定商品的商店
+	 * @param shop
+	 */
+	public void refreshFixItems(int shop) {
+		shopItemsMap.removeAll(shop);
+		List<FixItemStoreConfig> itemList = FixItemStoreManager.instance().getShopIDList(shop);
+		for (FixItemStoreConfig config : itemList) {
+			shopItemsMap.put(shop, new ShopItem(config.Item));
 		}
 	}
 

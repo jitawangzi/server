@@ -18,6 +18,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
+import cn.game.util.IntMapWrapper;
 
 /**
  * @ClassName ZongMenModule
@@ -45,6 +46,9 @@ public class ZongMenModule extends BasePlayerModule {
 	/** 申请过加入宗门列表 */
 	List<Long> applyJoinList = new ArrayList<>();
 	private boolean inited = false;
+	
+	/** 每日捐献次数记录 */
+	private IntMapWrapper donateMap = new IntMapWrapper();
 
 	public int getDisbandCount() {
 		return disbandCount;
@@ -90,6 +94,7 @@ public class ZongMenModule extends BasePlayerModule {
 		}
 		case NewDay -> { // 跨天刷新宗门任务
 			refreshZongMenTask();
+			donateMap.clear(); 
 		}
 		}
 	}
@@ -293,4 +298,9 @@ public class ZongMenModule extends BasePlayerModule {
 		return zongmenShowInfo.getSimpleInfo().getLevel();
 	}
 
+	public IntMapWrapper getDonateMap() {
+		return donateMap;
+	}
+
+	
 }

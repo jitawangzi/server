@@ -1,9 +1,7 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -43,6 +41,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.setZongMenSettingResponse_40000014;
 import cn.game.protocol.protobuf.ZongMenMsg.updateMemberAuthResponse_40000042;
 import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetResponse_40000038;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateResponse_40000068;
 
 @Component
 public class ClientZongMenHandler extends GameBaseHandler {
@@ -83,6 +82,7 @@ public class ClientZongMenHandler extends GameBaseHandler {
         putInvoker(PbProtocol.ZongMenBountyBattleEndResponse_40000079, this::bountyBattleEnd);
         putInvoker(PbProtocol.ZongMenBountyBattleReportResponse_4000007b, this::bountyBattleReport);
         putInvoker(PbProtocol.ZongMenBountyPlayerResponse_4000007d, this::bountyPlayer);
+        putInvoker(PbProtocol.ZongMenDonateResponse_40000068, this::donate);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -230,6 +230,12 @@ public class ClientZongMenHandler extends GameBaseHandler {
         ZongMenBountyPlayerResponse_4000007d resp = (ZongMenBountyPlayerResponse_4000007d) message;
         SimplePlayerInfo player = resp.getPlayer();
         ZongMenBountyMissionProto mission = resp.getMission();
+        Client client = (Client) netClient;
+    }
+
+    private void donate(NetClient netClient, Object message) {
+        ZongMenDonateResponse_40000068 resp = (ZongMenDonateResponse_40000068) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
         Client client = (Client) netClient;
     }
 }

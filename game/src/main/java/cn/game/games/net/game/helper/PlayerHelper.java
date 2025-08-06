@@ -610,7 +610,6 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void refresh(Player player) {
-		player.handleEvent(EventTypeEnum.LoginSuccess);
 		refreshDay(player);
 		refreshFiveDay(player);
 		refreshWeek(player);
@@ -669,6 +668,7 @@ public class PlayerHelper {
 //			e.printStackTrace();
 //		}
 		player.handleEvent(EventTypeEnum.LoginFinish);
+		player.handleEvent(EventTypeEnum.LoginSuccess);
 		Collection<BasePlayerModule> allModule = player.getAllModule();
 		for (BasePlayerModule basePlayerModule : allModule) {
 			basePlayerModule.onLogin();
@@ -1168,11 +1168,12 @@ public class PlayerHelper {
 
 		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
-		PlayerHelper.refresh(player);
+//		PlayerHelper.refresh(player);
 		if (reconnect) {
 			player.handleEvent(EventTypeEnum.Reconnect);
 		}else {
 			player.handleEvent(EventTypeEnum.Relogin);
+			player.handleEvent(EventTypeEnum.LoginSuccess);
 		}
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 		resp2.setReconnect(reconnect);

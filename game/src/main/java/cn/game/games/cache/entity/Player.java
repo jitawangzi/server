@@ -543,6 +543,25 @@ public class Player {
 		}
 		return promise.future();
 	}
+	/** 
+	 * 包含广告和普通货币的购买，不涉及到rmb支付
+	 * @param cost
+	 * @return
+	 */
+	public void pay(int[] cost) {
+		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
+			return;
+		}
+		int costType = cost[0];
+
+		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
+			PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
+		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
+			handleEvent(EventTypeEnum.WatchAds);
+		} else {
+			throw new LogicException(ErrorMsgEnum.unknown.getId(), "未知的支付类型：" + costType);
+		}
+	}
 
 	/** 
 	 * 获取福利的加成值
