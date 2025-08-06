@@ -26,8 +26,6 @@ public enum CacheType {
 	
 	/** 玩家简单信息 */
 	PLAYER_SIMPLE,
-	/** 机器人简单信息 */
-	ROBOT_SIMPLE,
 	/** 自增起始id */
 	Player_MAX_ID,
 

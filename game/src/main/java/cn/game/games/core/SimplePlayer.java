@@ -43,6 +43,9 @@ public class SimplePlayer implements Serializable {
 	public byte gender; // 性别： 1男2女
 	public int figure ; 
 
+	/** 是否是机器人 */
+	public boolean isRobot ; 
+	
 	public String unionName;
 	public long unionId;
 	public long offlineTime;
@@ -221,9 +224,7 @@ public class SimplePlayer implements Serializable {
         return builder.build();
     }
 	
-	public boolean isRobot() {
-		return false;
-	}
+
 
 	public PlayerShowInfo toShowInfo() {
 
