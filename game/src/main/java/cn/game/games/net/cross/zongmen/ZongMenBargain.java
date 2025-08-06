@@ -58,9 +58,6 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		bargainTotalNum += bargainCount;
 		memberBargainNum++;
 
-		member.setBargain(true);
-		member.setBargainTime(System.currentTimeMillis());
-
 		// 异步记录砍价日志
 		int bargainCountTmp = bargainCount;
 		Future<SimplePlayer> simplePlayerFuture = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(member.getPlayerId()));

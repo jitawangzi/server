@@ -203,6 +203,10 @@ public class ShopModule extends BasePlayerModule {
 
 	}
 
+	/** 
+	 * 按照商店的刷新类型  刷新整个商店
+	 * @param refreshType 日、月、周
+	 */
 	private void refreshShopByRefreshType(int refreshType) {
 		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(refreshType);
 		for (ShopConfig shopConfig : refreshList) {
@@ -210,14 +214,11 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 	/** 
-	 * 不刷新整个商店，只刷新商店中的商品
+	 * 不刷新整个商店，只重置商店中的商品购买次数
 	 * @param refreshType 1天  2周  3月
 	 */
-	private void refreshShopItemByRefreshType(int refreshType) {
+	private void refreshShopItemBuyCount(int refreshType) {
 		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(4);
-		if (refreshList == null) {
-			return ; 
-		}
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
@@ -461,17 +462,17 @@ public class ShopModule extends BasePlayerModule {
 			freeOpenBoxCount = 0;
 			heishiRefreshTimesMap.clear();
 			refreshShopByRefreshType(1);
-			refreshShopItemByRefreshType(1);
+			refreshShopItemBuyCount(1);
 			break;
 		}
 		case NewWeek: {
 			refreshShopByRefreshType(2);
-			refreshShopItemByRefreshType(2);
+			refreshShopItemBuyCount(2);
 			break;
 		}
 		case NewMonth: {
 			refreshShopByRefreshType(3);
-			refreshShopItemByRefreshType(3);
+			refreshShopItemBuyCount(3);
 			break;
 		}
 		case LevelUp: {

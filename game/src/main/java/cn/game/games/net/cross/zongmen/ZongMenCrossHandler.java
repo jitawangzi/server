@@ -90,7 +90,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	// 获取宗门信息
 	private void getZongMenInfo(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMen info = zongmenService.getZongmen(zongMenId);
-		ZongMenMsg.ZongMenAllInfo infoProto = info.toProto(playerId);
+		ZongMenMsg.ZongMenAllInfo infoProto = info.toProto();
 		sendMsgToGameServer(playerId, client, ZongMenMsg.getZongMenInfoResponse_40000022.newBuilder().setInfo(infoProto).build(),
 				PbProtocol.getZongMenInfoResponse_40000022);
 	}
@@ -101,7 +101,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 		zongmenService.createZongmen(req, playerId).map(zongMenInfo -> {
 			ZongMenMsg.createZongMenResponse_40000006.Builder res = ZongMenMsg.createZongMenResponse_40000006.newBuilder();
-			res.setZongMen(zongMenInfo.toProto(playerId));
+			res.setZongMen(zongMenInfo.toProto());
 			sendMsgToGameServer(playerId, client, res.build(), PbProtocol.createZongMenResponse_40000006);
 			return null ; 
 		}).onFailure(err -> {

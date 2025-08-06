@@ -33,13 +33,17 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 	List<Integer> rewardLivenessIndexList = new ArrayList<>();
 
 	/** 是否已砍价 */
-	public boolean isBargain;
+	@Deprecated
+	public transient boolean isBargain;
 	/** 砍价时间 */
-	long bargainTime;
+	@Deprecated
+	transient long bargainTime;
+	@Deprecated
 	/** 砍价后是否购买 */
-	boolean isBargainBuy;
-	/** 是否切换了宗门 */
-	boolean isNewZongmen;
+	transient boolean isBargainBuy;
+	/** 当日累计砍掉的价格数量 */
+	private int bargainCount; 
+	
 
 	public ZongMenMember() {
 	}
@@ -122,38 +126,6 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		this.rewardLivenessIndexList = rewardLivenessIndexList;
 	}
 
-	public boolean isBargain() {
-		return isBargain;
-	}
-
-	public void setBargain(boolean isBargain) {
-		this.isBargain = isBargain;
-	}
-
-	public boolean isBargainBuy() {
-		return isBargainBuy;
-	}
-
-	public void setBargainBuy(boolean isBargainBuy) {
-		this.isBargainBuy = isBargainBuy;
-	}
-
-	public long getBargainTime() {
-		return bargainTime;
-	}
-
-	public void setBargainTime(long bargainTime) {
-		this.bargainTime = bargainTime;
-	}
-
-	public boolean isNewZongmen() {
-		return isNewZongmen;
-	}
-
-	public void setNewZongmen(boolean isNewZongmen) {
-		this.isNewZongmen = isNewZongmen;
-	}
-
 	public ZongMenMsg.ZongMenMemberInfo.Builder toProto() {
 		ZongMenMsg.ZongMenMemberInfo.Builder builder = ZongMenMsg.ZongMenMemberInfo.newBuilder();
 		builder.setJoinTime((int) (joinTime / 1000L));
@@ -178,7 +150,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 			this.isBargain = false;
 			this.bargainTime = 0;
 			this.isBargainBuy = false;
-			this.isNewZongmen = false;
+			bargainCount = 0;
 		}
 		case CROSS_WEEK -> {
 			this.weekContribution = 0;
