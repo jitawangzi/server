@@ -730,7 +730,35 @@ public final class Rnd {
 		}
 		return -1;
 	}
-
+	/**
+	 * 生成指定范围内的N个不重复随机数
+	 *
+	 * @param start 起始值（包含）
+	 * @param end 结束值（包含）
+	 * @param n 需要生成的随机数个数
+	 * @return 包含N个不重复随机数的列表
+	 * @throws IllegalArgumentException 当参数不合法时抛出异常
+	 */
+	public static List<Integer> generateRandomNumbers(int start, int end, int n) {
+		// 参数验证
+		if (start > end) {
+			throw new IllegalArgumentException("起始值不能大于结束值");
+		}
+		int rangeSize = end - start + 1;
+		if (n > rangeSize) {
+			throw new IllegalArgumentException("请求的随机数个数不能超过范围大小");
+		}
+		if (n <= 0) {
+			return new ArrayList<>();
+		}
+		// 创建完整范围列表并随机打乱
+		List<Integer> allNumbers = new ArrayList<>(rangeSize);
+		for (int i = start; i <= end; i++) {
+			allNumbers.add(i);
+		}
+		Collections.shuffle(allNumbers);
+		return allNumbers.subList(0, n);
+	}
 	public static void main(String args[]) {
 		int[] x = new int[] {11,22,33,44,55,66} ; 
 		int[] randomSubArray = randomSubArray(x, 3);

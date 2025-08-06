@@ -65,6 +65,8 @@ public enum CacheType {
 	//************宗门相关***********
 	/****层数 里可以助战的玩家ID列表 */
 	EQUIP_TOWER_FLOOR_ID,
+	/****PVEVP战报 */
+	PVEVP_RECORD_ID,
 	;
 
 	public String key(Object... ks) {

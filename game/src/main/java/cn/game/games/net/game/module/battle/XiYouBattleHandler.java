@@ -20,7 +20,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 public abstract class XiYouBattleHandler extends IBattleHandler {
 
 	@Override
-	public int check(int id, int subId) {
+	public int check(int id, int subId,long ...args) {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 //		BattleFieldConfig levelConfig = BattleFieldManager.instance().get(id);

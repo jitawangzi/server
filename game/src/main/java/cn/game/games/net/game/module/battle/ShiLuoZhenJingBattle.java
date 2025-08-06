@@ -113,7 +113,7 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	}
 
 	@Override
-	public int check(int id, int subId) {
+	public int check(int id, int subId,long ... args) {
 		if (id != startBattleId || subId != battleStage) {
 			return ErrorMsgEnum.request_parameter_error.ID;
 		}

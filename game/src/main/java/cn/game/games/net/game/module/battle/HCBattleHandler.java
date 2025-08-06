@@ -19,7 +19,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  */
 public abstract class HCBattleHandler extends IBattleHandler {
 	@Override
-	public int check(int id, int subId) {
+	public int check(int id, int subId,long ...args) {
 
 		HCBattleConfig battleConfig = HCBattleManager.instance().get(id);
 		BattleModule battleModule = player.getBattleModule();

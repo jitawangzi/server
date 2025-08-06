@@ -45,7 +45,7 @@ public class WorldBossBattle extends XiYouBattleHandler {
 	}
 
 	@Override
-	public int check(int id, int subId) {
+	public int check(int id, int subId,long ... args) {
 //		ChapterModule battleModule = player.getModule(ChapterModule.class);
 //		BattleConfig battleConfig = BattleManager.instance().get(id);
 		if (BattleHelper.isNowAfter2330()) {
