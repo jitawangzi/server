@@ -207,6 +207,9 @@ public class ShopModule extends BasePlayerModule {
 	 */
 	private void refreshShopItemByRefreshType(int refreshType) {
 		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(4);
+		if (refreshList == null) {
+			return ; 
+		}
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
