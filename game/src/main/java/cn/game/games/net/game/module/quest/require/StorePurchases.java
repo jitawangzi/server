@@ -4,10 +4,12 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.manager.ShopManager;
 
 /**    
- * 黑市购买商品
+ * 商店购买商品
  * 2024年5月8日 下午5:50:06
  * @author SYQ
  */
@@ -24,8 +26,13 @@ public class StorePurchases extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
+		int param = getParam();
+		if (param == 0) {
+			return true; 
+		}
 		int shopId = event.getIntParameter(0);
-		return shopId == 2;
+		ShopConfig shopConfig = ShopManager.instance().get(shopId); 
+		return shopConfig.Type == param;
 	}
 
 }

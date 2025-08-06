@@ -51,7 +51,14 @@ public class PointRewardData {
 			data.conditionStage = battleConfig.BattleBoxTrigger;
 			data.randomRewardStage = battleConfig.BattleBoxRandomId;
 			data.opType = OpType.WorldBoss;
-		} else {
+		} else if (type == PointRewardType.Guild) {
+			QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(subType);
+			data.pointType = questPointRewardConfig.PointType;
+
+			data.conditionStage = questPointRewardConfig.Stage;
+			data.fixRewardStage = questPointRewardConfig.Reward;
+			data.opType = OpType.ZongMenQuestReward;
+		}else {
 			throw new IllegalArgumentException("没有实现的PointRewardType :" + type);
 		}
 		return data;

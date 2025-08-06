@@ -25,6 +25,8 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 	int contribution;
 	/**累计贡献值 */
 	int totalContribution;
+	/** 本周贡献 */
+	int weekContribution;
 	/**职位 */
 	public int position;
 	/** 领取过的宗门活跃度奖励  */
@@ -108,6 +110,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
 	public void addcontribution(int contribution) {
 		this.contribution += contribution;
+		this.weekContribution += contribution;
 		this.totalContribution += contribution;
 	}
 
@@ -162,7 +165,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
 	@Override
 	public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
-		return new ZongMenConstants.ZongMenEvenType[] { ZongMenConstants.ZongMenEvenType.CROSS_DAY };
+		return new ZongMenConstants.ZongMenEvenType[] { ZongMenConstants.ZongMenEvenType.CROSS_DAY,ZongMenConstants.ZongMenEvenType.CROSS_WEEK };
 	}
 
 	@Override
@@ -176,6 +179,9 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 			this.bargainTime = 0;
 			this.isBargainBuy = false;
 			this.isNewZongmen = false;
+		}
+		case CROSS_WEEK -> {
+			this.weekContribution = 0;
 		}
 		}
 	}

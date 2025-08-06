@@ -132,6 +132,7 @@ public enum EventTypeEnum {
 	ZongMenBargain(303, "宗门砍价"),
 	/** 加入某个宗门，参数 ：1 宗门id，2宗门名字， 3  是否是第一次加入宗门  */
 	ZongMenJoin(304, "加入某个宗门"),
+	ZongMenDonate(305, "宗门捐献"),
 	;
 	private int id;
 	private String desc;

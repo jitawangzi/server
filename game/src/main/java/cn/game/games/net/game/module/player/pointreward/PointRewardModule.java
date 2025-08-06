@@ -37,11 +37,12 @@ public class PointRewardModule extends BasePlayerModule {
 		}
 		return map;
 	}
+
 	public List<Integer> getActiveRewardList(PointRewardType type, int subId) {
 		Map<Integer, List<Integer>> map = activeRewardMap.get(type);
 		if (map == null) {
 			map = new HashMap<Integer, List<Integer>>();
-			activeRewardMap.put(type, map) ; 
+			activeRewardMap.put(type, map);
 		}
 		List<Integer> list = map.get(subId);
 		if (list == null) {
@@ -68,12 +69,13 @@ public class PointRewardModule extends BasePlayerModule {
 	}
 
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, int... index) {
-		return addReward(type, subType, 0,true, index);
+		return addReward(type, subType, 0, true, index);
 	}
+
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, boolean isLocalPoint, int... index) {
-		return addReward(type, subType, 0,isLocalPoint, index);
+		return addReward(type, subType, 0, isLocalPoint, index);
 	}
-	
+
 	/**
 	 * 领取任务积分宝箱奖励，达到xx积分，领取xx奖励的逻辑
 	 *
@@ -86,7 +88,7 @@ public class PointRewardModule extends BasePlayerModule {
 	 */
 	public ResultObject<List<RewardInfo>> addReward(PointRewardType type, int subType, long count, boolean isLocalPoint, int... index) {
 
-		if (!canReward(type, subType, count,isLocalPoint, index)) {
+		if (!canReward(type, subType, count, isLocalPoint, index)) {
 			return ResultObject.fail(ErrorMsgEnum.request_parameter_error.getId());
 		}
 
@@ -118,7 +120,8 @@ public class PointRewardModule extends BasePlayerModule {
 						} else if (fixRewardStage != null) {
 							reward = PlayerHelper.addResources(player, GameUtil.arrayAddition(fixRewardStage[i], welfareValue), opType);
 						} else {
-							throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
+							throw new IllegalArgumentException(
+									MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
 						}
 						totalRewards.addAll(reward);
 						activeRewardList.add(i);
@@ -145,7 +148,8 @@ public class PointRewardModule extends BasePlayerModule {
 				} else if (fixRewardStage != null) {
 					reward = PlayerHelper.addResources(player, GameUtil.arrayAddition(fixRewardStage[ix], welfareValue), opType);
 				} else {
-					throw new IllegalArgumentException(MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
+					throw new IllegalArgumentException(
+							MessageFormat.format("Invalid reward type,type[{}]subType[{}]index[{}]", type, subType, index));
 				}
 				totalRewards.addAll(reward);
 				activeRewardList.add(ix);
@@ -206,7 +210,7 @@ public class PointRewardModule extends BasePlayerModule {
 				if (activeRewardList.contains(ix)) {
 					return false;
 				}
-				if (isLocalPoint){
+				if (isLocalPoint) {
 					long point = count > 0 ? count : player.getCurrencyModule().getCount(pointType);
 					int needPoint = conditionStage[ix];
 					if (point < needPoint) {
@@ -221,6 +225,7 @@ public class PointRewardModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 	}
+
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {

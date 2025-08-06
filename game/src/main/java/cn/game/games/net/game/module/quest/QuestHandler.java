@@ -68,7 +68,6 @@ public class QuestHandler extends GameBaseHandler {
 		putInvoker(PbProtocol.QuestBranchPriorityRequest_20000028, this::branchPriority);
 		putInvoker(PbProtocol.QuestUpdateRequest_20000030, this::update);
 
-
 		putInvoker(PbProtocol.InviteTaskListRequest_20000041, InviteHandler::list);
 		putInvoker(PbProtocol.RewardInviteTaskRequest_20000043, InviteHandler::rewardInviteTask);
 	}
@@ -116,6 +115,7 @@ public class QuestHandler extends GameBaseHandler {
 		}
 		client.sendProtocol(resp);
 	}
+
 	protected void accept(NetClient client, Object message) {
 		QuestAcceptRequest_20000026 req = (QuestAcceptRequest_20000026) message;
 		QuestAcceptResponse_20000027.Builder resp = QuestAcceptResponse_20000027.newBuilder();
@@ -124,7 +124,7 @@ public class QuestHandler extends GameBaseHandler {
 		int id = req.getId();
 		QuestModule questModule = player.getModule(QuestModule.class);
 		Quest quest = questModule.get(id);
-		if (quest == null) { // 接任务之前应该已经有了 
+		if (quest == null) { // 接任务之前应该已经有了
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
@@ -138,11 +138,12 @@ public class QuestHandler extends GameBaseHandler {
 		resp.setQuest(quest.toQuestInfo());
 		client.sendProtocol(resp);
 	}
+
 	protected void groupDetail(NetClient client, Object message) {
 		QuestChallengeGroupDetailRequest_20000022 req = (QuestChallengeGroupDetailRequest_20000022) message;
 		QuestChallengeGroupDetailResponse_20000023.Builder resp = QuestChallengeGroupDetailResponse_20000023.newBuilder();
 		int id = req.getId();
-		
+
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		QuestModule questModule = player.getModule(QuestModule.class);
 
@@ -190,29 +191,34 @@ public class QuestHandler extends GameBaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 //		QuestModule questModule = player.getModule(QuestModule.class);
 		PointRewardModule pointRewardModule = player.getPointRewardModule();
-		//检测是否领取宗门活跃度奖励
-		if (type == QuestTypeEnum.ZongMen){
-			if (player.getZongMenId() == 0){
+		// 检测是否领取宗门活跃度奖励
+		if (type == QuestTypeEnum.ZongMen) {
+			if (player.getZongMenId() == 0) {
 				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 				return;
 			}
-			//领取宗门活跃度奖励
-			ZongMenHelper.sendMsgToZongMenServer(player, ZongMenMsg.ZongMenActiveRewardRequest_40000045.newBuilder().addAllIndexList(req.getIndexList()).build())
+			// 领取宗门活跃度奖励
+			ZongMenHelper
+					.sendMsgToZongMenServer(player,
+							ZongMenMsg.ZongMenActiveRewardRequest_40000045.newBuilder().addAllIndexList(req.getIndexList()).build())
 					.onSuccess(result -> {
-						if (result.getErrorCode() == ErrorMsgEnum.ok.ID){
-							if (addRewardPoint(false,client, pointRewardModule, type, index, resp)) return;
+						if (result.getErrorCode() == ErrorMsgEnum.ok.ID) {
+							if (addRewardPoint(false, client, pointRewardModule, type, index, resp))
+								return;
 							client.sendProtocol(resp);
 						} else {
 							client.sendProtocol(resp, result.getErrorCode());
 						}
-					}).onFailure(err -> {
+					})
+					.onFailure(err -> {
 						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 						err.printStackTrace();
 					});
 			return;
 		}
 
-		if (addRewardPoint(true,client, pointRewardModule, type, index, resp)) return;
+		if (addRewardPoint(true, client, pointRewardModule, type, index, resp))
+			return;
 		client.sendProtocol(resp.build());
 		if (type == QuestTypeEnum.SevenDaysCarniva) {
 			for (Integer integer : index) {
@@ -221,8 +227,9 @@ public class QuestHandler extends GameBaseHandler {
 		}
 	}
 
-	private boolean addRewardPoint(boolean isLocalPoint,NetClient client, PointRewardModule pointRewardModule, QuestTypeEnum type, List<Integer> index, QuestReceiveActivePointResponse_20000009.Builder resp) {
-		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID ,isLocalPoint,Ints.toArray(index));
+	private boolean addRewardPoint(boolean isLocalPoint, NetClient client, PointRewardModule pointRewardModule, QuestTypeEnum type,
+			List<Integer> index, QuestReceiveActivePointResponse_20000009.Builder resp) {
+		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID, isLocalPoint, Ints.toArray(index));
 		if (!resultObject.isOK()) {
 			client.sendProtocol(resp, resultObject.getErrorCode());
 			return true;
@@ -238,6 +245,7 @@ public class QuestHandler extends GameBaseHandler {
 		resp.addAllQuestGroups(player.getQuestModule().buildAllGroup());
 		client.sendProtocol(resp);
 	}
+
 	protected void list(NetClient client, Object message) {
 		QuestListRequest_20000001 req = (QuestListRequest_20000001) message;
 		QuestListResponse_20000002.Builder resp = QuestListResponse_20000002.newBuilder();
@@ -272,6 +280,7 @@ public class QuestHandler extends GameBaseHandler {
 		resp.addAllRewards(rewards);
 		client.sendProtocol(resp);
 	}
+
 	protected void receive(NetClient client, Object message) {
 		QuestReceiveRequest_20000004 req = (QuestReceiveRequest_20000004) message;
 		QuestReceiveResponse_20000005.Builder resp = QuestReceiveResponse_20000005.newBuilder();
@@ -281,15 +290,14 @@ public class QuestHandler extends GameBaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		QuestModule questModule = player.getModule(QuestModule.class);
 
-
-		//玩家领取宗门任务 检测
+		// 玩家领取宗门任务 检测
 		for (int id : ids) {
 			QuestConfig questConfig = QuestManager.instance().get(id);
-			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getZongMenId() == 0)  {
+			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getZongMenId() == 0) {
 				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 				return;
 			}
-	    }
+		}
 //		List<Integer> ret = new ArrayList<>();
 //		if (id > 0) {
 //			ret.add(id);
