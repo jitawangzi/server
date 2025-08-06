@@ -56,6 +56,7 @@ import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
+import cn.game.games.core.SimpleRobot;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.collector.PlayerConcurrencyCollector;
 import cn.game.games.core.event.server.ServerEventBus;
@@ -198,6 +199,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
+		initRobots();
 //		initAllSimplePlayers();
 		kickClientsAfterChangeTime();
 
@@ -259,6 +261,32 @@ public class GameServer implements GameServerMBean {
 				};
 				PlayerHelper.loadAndProcessPlayers(function);
 			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			lock.unlock();
+		}
+	}
+	/** 
+	 * 初始化1000个机器人，给某些玩法使用
+	 */
+	private void initRobots() {
+		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
+		if (lock == null) {
+			return;
+		}
+		try {
+			SimpleRobot robotCheck = RedisUtil.get(CacheType.ROBOT_SIMPLE.key(1000)); 
+			if (robotCheck != null) {
+				return; // 已经存在了
+			}
+			for (int i = 1; i <= 1000; i++) {
+				SimpleRobot robot = new SimpleRobot();
+				robot.id = i ; 
+				robot.name = "猴子" + i;
+				RedisUtil.set(CacheType.ROBOT_SIMPLE.key(i), robot);
+			}
+			
 		} catch (Exception e) {
 			throw e;
 		} finally {

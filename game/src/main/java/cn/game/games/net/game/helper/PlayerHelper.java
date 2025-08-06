@@ -137,6 +137,14 @@ public class PlayerHelper {
 	public static final int REFRESH_TYPE_MONTH = 3;
 
 	/** 
+	 * 判断某个id是不是机器人
+	 * @param id
+	 * @return
+	 */
+	public static boolean isRobot(long id) {
+		return id < 10000; 
+	}
+	/** 
 	 * 判断玩家是否有足够的物品
 	 * @param player
 	 * @param list entry key:物品id,entry value:数量

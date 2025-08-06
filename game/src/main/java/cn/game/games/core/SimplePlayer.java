@@ -220,6 +220,10 @@ public class SimplePlayer implements Serializable {
 		builder.setIsOnline(online);
         return builder.build();
     }
+	
+	public boolean isRobot() {
+		return false;
+	}
 
 	public PlayerShowInfo toShowInfo() {
 
