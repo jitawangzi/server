@@ -238,17 +238,17 @@
 274,ZongMenDonateRequest_40000067,0x40000067,,,,,宗门捐献
 275,BattleBuyTicketRequest_13000554,0x13000554,,,,,大圣擂台购买次数数据请求
 276,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
-277,ZongMenBargainBuyRequest_40000062,0x40000062,,,,,购买宗门砍价物品
-278,ZongMenBargainRequest_40000060,0x40000060,,,,,宗门砍价
-279,ZongMenQuickJoinRequest_40000065,0x40000065,,,,,快速一键加入宗门
-280,applyJoinZongMenRequest_40000007,0x40000007,,,,,申请加入宗门
-281,createZongMenRequest_40000005,0x40000005,,,,,创建宗门
-282,dissolveZongMenRequest_40000011,0x40000011,,,,,解散宗门
-283,findZongMenRequest_40000003,0x40000003,,,,,查找宗门
-284,getZongMenInfoRequest_40000021,0x40000021,,,,,获取宗门信息
-285,getZongMenListRequest_40000001,0x40000001,,,,,宗门列表
-286,getZongMenLogRequest_40000025,0x40000025,,,,,宗门日志请求
-287,quitZongMenRequest_40000017,0x40000017,,,,,退出宗门
-288,setZongMenMemberPositionRequest_40000015,0x40000015,,,,,宗门权限管理
-289,setZongMenSettingRequest_40000013,0x40000013,,,,,宗门设置相关 有值 则替换，没有值 则不修改
-290,updateMemberAuthRequest_40000041,0x40000041,,,,,宗门成员权限管理
+277,ZongMenBargainBuyRequest_40000062,0x40000062,,6000,101,,购买宗门砍价物品
+278,ZongMenBargainRequest_40000060,0x40000060,,6000,100,,宗门砍价
+279,ZongMenQuickJoinRequest_40000065,0x40000065,,6000,7,,快速一键加入宗门
+280,applyJoinZongMenRequest_40000007,0x40000007,,6000,6,,申请加入宗门
+281,createZongMenRequest_40000005,0x40000005,,6000,2,,创建宗门
+282,dissolveZongMenRequest_40000011,0x40000011,,6000,5,,解散宗门
+283,findZongMenRequest_40000003,0x40000003,,6000,,,查找宗门
+284,getZongMenInfoRequest_40000021,0x40000021,,6000,4,,获取宗门信息
+285,getZongMenListRequest_40000001,0x40000001,,6000,1,,宗门列表
+286,getZongMenLogRequest_40000025,0x40000025,,6000,3,,宗门日志请求
+287,quitZongMenRequest_40000017,0x40000017,,6000,8,,退出宗门
+288,setZongMenMemberPositionRequest_40000015,0x40000015,,6000,,,宗门职位更改
+289,setZongMenSettingRequest_40000013,0x40000013,,6000,,,宗门设置相关 有值 则替换，没有值 则不修改
+290,updateMemberAuthRequest_40000041,0x40000041,,6000,,,"宗门成员权限管理,同意申请，踢人等。"
