@@ -670,6 +670,9 @@ public class RankService {
 				BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
 					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
 							r -> r.RewardStage);
+					if (PlayerHelper.isRobot(rankEntry.getPlayerId())) {
+						return CompletableFuture.completedFuture(null) ; 
+					}
 					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
 					return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false).onSuccess(v -> {
 						totalProcessCount.incrementAndGet();

@@ -16,6 +16,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.config.FixItemStoreConfig;
 import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeishiConfig;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.DragonStoreManager;
+import cn.game.protocol.generated.manager.FixItemStoreManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.HunhuoManager;
@@ -131,6 +133,12 @@ public class ShopModule extends BasePlayerModule {
 	 */
 	private void refreshShop(int shopId) {
 		ShopConfig shopConfig = ShopManager.instance().get(shopId);
+		// 优先使用通用的刷新方法
+		if (shopConfig.ItemRefreshType == 1) {
+			refreshFixItems(shopId);
+			return ; 
+		}
+		// 特殊规则自定义刷新方法
 		switch (shopConfig.Type) {
 		case 1: {
 			break;
@@ -195,6 +203,10 @@ public class ShopModule extends BasePlayerModule {
 
 	}
 
+	/** 
+	 * 按照商店的刷新类型  刷新整个商店
+	 * @param refreshType 日、月、周
+	 */
 	private void refreshShopByRefreshType(int refreshType) {
 		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(refreshType);
 		for (ShopConfig shopConfig : refreshList) {
@@ -202,14 +214,11 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 	/** 
-	 * 不刷新整个商店，只刷新商店中的商品
+	 * 不刷新整个商店，只重置商店中的商品购买次数
 	 * @param refreshType 1天  2周  3月
 	 */
-	private void refreshShopItemByRefreshType(int refreshType) {
+	private void refreshShopItemBuyCount(int refreshType) {
 		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(4);
-		if (refreshList == null) {
-			return ; 
-		}
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
@@ -374,6 +383,18 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 	}
+	
+	/** 
+	 * 刷新固定商品的商店
+	 * @param shop
+	 */
+	public void refreshFixItems(int shop) {
+		shopItemsMap.removeAll(shop);
+		List<FixItemStoreConfig> itemList = FixItemStoreManager.instance().getShopIDList(shop);
+		for (FixItemStoreConfig config : itemList) {
+			shopItemsMap.put(shop, new ShopItem(config.Item));
+		}
+	}
 
 	private void refreshGift(int shop) {
 		shopItemsMap.removeAll(shop);
@@ -441,17 +462,17 @@ public class ShopModule extends BasePlayerModule {
 			freeOpenBoxCount = 0;
 			heishiRefreshTimesMap.clear();
 			refreshShopByRefreshType(1);
-			refreshShopItemByRefreshType(1);
+			refreshShopItemBuyCount(1);
 			break;
 		}
 		case NewWeek: {
 			refreshShopByRefreshType(2);
-			refreshShopItemByRefreshType(2);
+			refreshShopItemBuyCount(2);
 			break;
 		}
 		case NewMonth: {
 			refreshShopByRefreshType(3);
-			refreshShopItemByRefreshType(3);
+			refreshShopItemBuyCount(3);
 			break;
 		}
 		case LevelUp: {

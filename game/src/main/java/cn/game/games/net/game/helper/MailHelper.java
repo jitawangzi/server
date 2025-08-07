@@ -164,7 +164,7 @@ public class MailHelper {
 	 */
 	public static int getNoticeMailId() {
 		List<MailConfig> typeList = MailManager.instance().getTypeList(1);
-		if (typeList == null) {
+		if (typeList.isEmpty()) {
 			return 0;
 		}
 		return typeList.get(typeList.size() - 1).ID;

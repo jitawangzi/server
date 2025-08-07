@@ -8,29 +8,31 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ShopItemListRequest_15000001Test extends ServerTest{
+public class ShopItemListRequest_15000001Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.newBuilder() ; 
-		
-		builder.setShopId(18);
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001
+				.newBuilder();
+
+		builder.setShopId(17);
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001
+				.newBuilder();
+
 		builder.setShopId(15);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    ShopItemListRequest_15000001Test instance = new ShopItemListRequest_15000001Test();
-	    instance.start();
+		ShopItemListRequest_15000001Test instance = new ShopItemListRequest_15000001Test();
+		instance.start();
 	}
 
 }

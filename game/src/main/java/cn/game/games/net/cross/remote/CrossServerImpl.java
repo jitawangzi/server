@@ -59,13 +59,6 @@ public class CrossServerImpl implements CrossServerInterface {
 	public Future<Boolean> buyZongmenBargain(long zongmenId, long playerId) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
 		ZongMenMember member = zongMenInfo.getMember(playerId);
-		if (!member.isBargain()) {
-			return Future.succeededFuture(false);
-		}
-		if (member.isBargainBuy()) {
-			return Future.succeededFuture(false);
-		}
-		member.setBargainBuy(true);
 		return Future.succeededFuture(true);
 	}
 

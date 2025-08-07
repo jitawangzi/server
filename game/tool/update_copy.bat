@@ -1,92 +1,92 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem À­È¡ÅäÖÃ±íÊı¾İÊ±£¬¸ù¾İ³ö°üµÄ·ÖÖ§£¬Ñ¡Ôñ²»Í¬µÄÅäÖÃ±í·ÖÖ§Êı¾İ
+rem æ‹‰å–é…ç½®è¡¨æ•°æ®æ—¶ï¼Œæ ¹æ®å‡ºåŒ…çš„åˆ†æ”¯ï¼Œé€‰æ‹©ä¸åŒçš„é…ç½®è¡¨åˆ†æ”¯æ•°æ®
 
-rem ÏßÉÏ³ö°üµÄ´úÂë·ÖÖ§
+rem çº¿ä¸Šå‡ºåŒ…çš„ä»£ç åˆ†æ”¯
 set SOURCE_CODE_BRANCH=pre_release
-rem Èç¹ûµ±Ç°´úÂëÊÇÉÏÃæµÄ·ÖÖ§£¬ÔòÊ¹ÓÃÏÂÃæµÄÅäÖÃ±í·ÖÖ§
+rem å¦‚æœå½“å‰ä»£ç æ˜¯ä¸Šé¢çš„åˆ†æ”¯ï¼Œåˆ™ä½¿ç”¨ä¸‹é¢çš„é…ç½®è¡¨åˆ†æ”¯
 set META_BRANCH=xianshang
-rem ÉèÖÃÄ¬ÈÏÔ¶³Ì²Ö¿âÃû£¨Í¨³£ÊÇorigin£©
+rem è®¾ç½®é»˜è®¤è¿œç¨‹ä»“åº“åï¼ˆé€šå¸¸æ˜¯originï¼‰
 set REMOTE_NAME=origin
 
-rem »ñÈ¡µ±Ç°´úÂë·ÖÖ§Ãû
+rem è·å–å½“å‰ä»£ç åˆ†æ”¯å
 for /f "tokens=* USEBACKQ" %%F in (`git rev-parse --abbrev-ref HEAD`) do set current_branch=%%F
 if %errorlevel% neq 0 (
-    echo [´íÎó] »ñÈ¡µ±Ç°´úÂë·ÖÖ§Ê§°Ü
+    echo [é”™è¯¯] è·å–å½“å‰ä»£ç åˆ†æ”¯å¤±è´¥
     pause
     exit /b 1
 )
 
-rem »ñÈ¡µ±Ç°ÅäÖÃ±í·ÖÖ§Ãû
+rem è·å–å½“å‰é…ç½®è¡¨åˆ†æ”¯å
 for /f "tokens=* USEBACKQ" %%F in (`git -C %metafolder% rev-parse --abbrev-ref HEAD`) do set current_meta_branch=%%F
 if %errorlevel% neq 0 (
-    echo [´íÎó] »ñÈ¡µ±Ç°ÅäÖÃ±í·ÖÖ§Ê§°Ü
+    echo [é”™è¯¯] è·å–å½“å‰é…ç½®è¡¨åˆ†æ”¯å¤±è´¥
     pause
     exit /b 1
 )
 
 cls
-echo µ±Ç°´úÂë·ÖÖ§: %current_branch%
-echo µ±Ç°ÅäÖÃ±í·ÖÖ§: %current_meta_branch%
+echo å½“å‰ä»£ç åˆ†æ”¯: %current_branch%
+echo å½“å‰é…ç½®è¡¨åˆ†æ”¯: %current_meta_branch%
 echo.
 
-rem ±£´æµ±Ç°ÅäÖÃ±íµÄ·ÖÖ§×´Ì¬
+rem ä¿å­˜å½“å‰é…ç½®è¡¨çš„åˆ†æ”¯çŠ¶æ€
 set original_meta_branch=%current_meta_branch%
 
 if "%current_branch%"=="%SOURCE_CODE_BRANCH%" (
-    rem Èç¹û´úÂë·ÖÖ§ÊÇpre_release£¬ÇĞ»»ÅäÖÃ±íµ½xianshang·ÖÖ§
-    echo [²Ù×÷] ÇĞ»»ÅäÖÃ±íµ½%META_BRANCH%·ÖÖ§...
+    rem å¦‚æœä»£ç åˆ†æ”¯æ˜¯pre_releaseï¼Œåˆ‡æ¢é…ç½®è¡¨åˆ°xianshangåˆ†æ”¯
+    echo [æ“ä½œ] åˆ‡æ¢é…ç½®è¡¨åˆ°%META_BRANCH%åˆ†æ”¯...
     git -C %metafolder% checkout -q %META_BRANCH%
     if %errorlevel% neq 0 (
-        echo [´íÎó] ÇĞ»»ÅäÖÃ±í·ÖÖ§Ê§°Ü
+        echo [é”™è¯¯] åˆ‡æ¢é…ç½®è¡¨åˆ†æ”¯å¤±è´¥
         pause
         exit /b 1
     )
-    echo [³É¹¦] ÒÑÇĞ»»µ½%META_BRANCH%·ÖÖ§
+    echo [æˆåŠŸ] å·²åˆ‡æ¢åˆ°%META_BRANCH%åˆ†æ”¯
     echo.
     
-    rem À­È¡xianshang·ÖÖ§µÄ×îĞÂ´úÂë
-    echo [²Ù×÷] ÕıÔÚÀ­È¡×îĞÂÅäÖÃ...
+    rem æ‹‰å–xianshangåˆ†æ”¯çš„æœ€æ–°ä»£ç 
+    echo [æ“ä½œ] æ­£åœ¨æ‹‰å–æœ€æ–°é…ç½®...
     git -C %metafolder% pull %REMOTE_NAME% %META_BRANCH%
 ) else (
-    rem Èç¹û²»ÊÇpre_release·ÖÖ§£¬Ö±½ÓÔÚµ±Ç°ÅäÖÃ±í·ÖÖ§À­È¡
-    echo [²Ù×÷] ÕıÔÚÀ­È¡×îĞÂÅäÖÃ...
+    rem å¦‚æœä¸æ˜¯pre_releaseåˆ†æ”¯ï¼Œç›´æ¥åœ¨å½“å‰é…ç½®è¡¨åˆ†æ”¯æ‹‰å–
+    echo [æ“ä½œ] æ­£åœ¨æ‹‰å–æœ€æ–°é…ç½®...
     git -C %metafolder% pull %REMOTE_NAME% %current_meta_branch%
 )
 
 if %errorlevel% neq 0 (
-    echo [´íÎó] À­È¡ÅäÖÃÊ§°Ü
+    echo [é”™è¯¯] æ‹‰å–é…ç½®å¤±è´¥
     pause
     exit /b 1
 )
-echo [³É¹¦] ÅäÖÃÀ­È¡Íê³É
+echo [æˆåŠŸ] é…ç½®æ‹‰å–å®Œæˆ
 echo.
 
-echo [²Ù×÷] ¿ªÊ¼¸´ÖÆÎÄ¼ş...
+echo [æ“ä½œ] å¼€å§‹å¤åˆ¶æ–‡ä»¶...
 call %workspace%\game\tool\copy.bat
 if %errorlevel% neq 0 (
-    echo [´íÎó] ¸´ÖÆÎÄ¼şÊ§°Ü
+    echo [é”™è¯¯] å¤åˆ¶æ–‡ä»¶å¤±è´¥
     pause
     exit /b 1
 )
-echo [³É¹¦] ÎÄ¼ş¸´ÖÆÍê³É
+echo [æˆåŠŸ] æ–‡ä»¶å¤åˆ¶å®Œæˆ
 echo.
 
-rem Èç¹ûÖ®Ç°ÇĞ»»¹ıÅäÖÃ±í·ÖÖ§£¬ĞèÒªÇĞ»»»ØÔ­À´µÄ·ÖÖ§
+rem å¦‚æœä¹‹å‰åˆ‡æ¢è¿‡é…ç½®è¡¨åˆ†æ”¯ï¼Œéœ€è¦åˆ‡æ¢å›åŸæ¥çš„åˆ†æ”¯
 if "%current_branch%"=="%SOURCE_CODE_BRANCH%" (
     if not "%original_meta_branch%"=="%META_BRANCH%" (
-        echo [²Ù×÷] »¹Ô­ÅäÖÃ±í·ÖÖ§µ½Ô­Ê¼×´Ì¬...
+        echo [æ“ä½œ] è¿˜åŸé…ç½®è¡¨åˆ†æ”¯åˆ°åŸå§‹çŠ¶æ€...
         git -C %metafolder% checkout -q %original_meta_branch%
         if %errorlevel% neq 0 (
-            echo [´íÎó] »¹Ô­ÅäÖÃ±í·ÖÖ§Ê§°Ü
+            echo [é”™è¯¯] è¿˜åŸé…ç½®è¡¨åˆ†æ”¯å¤±è´¥
             pause
             exit /b 1
         )
-        echo [³É¹¦] ÒÑ»¹Ô­µ½Ô­Ê¼×´Ì¬
+        echo [æˆåŠŸ] å·²è¿˜åŸåˆ°åŸå§‹çŠ¶æ€
         echo.
     )
 )
 
-echo ËùÓĞ²Ù×÷ÒÑÍê³É!
+echo æ‰€æœ‰æ“ä½œå·²å®Œæˆ!
 exit /b 0

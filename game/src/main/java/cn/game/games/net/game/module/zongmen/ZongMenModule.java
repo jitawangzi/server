@@ -12,12 +12,15 @@ import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenPersonalInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
+import cn.game.util.IntMapWrapper;
 
 /**
  * @ClassName ZongMenModule
@@ -45,6 +48,14 @@ public class ZongMenModule extends BasePlayerModule {
 	/** 申请过加入宗门列表 */
 	List<Long> applyJoinList = new ArrayList<>();
 	private boolean inited = false;
+	
+	/** 每日捐献次数记录 */
+	private IntMapWrapper donateMap = new IntMapWrapper();
+	/** 当日砍价次数 */
+	private int bargainCount;
+	/** 砍价后是否购买 */
+	private boolean isBargainBuy;
+	
 
 	public int getDisbandCount() {
 		return disbandCount;
@@ -90,6 +101,10 @@ public class ZongMenModule extends BasePlayerModule {
 		}
 		case NewDay -> { // 跨天刷新宗门任务
 			refreshZongMenTask();
+			donateMap.clear(); 
+			// 砍价重置为1次
+			player.getCurrencyModule().setCount(Asset.ZongMenBargain.ID, 1);
+			bargainCount = 0 ; 
 		}
 		}
 	}
@@ -293,4 +308,18 @@ public class ZongMenModule extends BasePlayerModule {
 		return zongmenShowInfo.getSimpleInfo().getLevel();
 	}
 
+	public IntMapWrapper getDonateMap() {
+		return donateMap;
+	}
+	
+	public ZongMenPersonalInfo toPersonalInfo() {
+		ZongMenPersonalInfo.Builder builder = ZongMenPersonalInfo.newBuilder();
+		builder.setIsBargainBuy(isBargainBuy);
+		builder.setBargainCount(bargainCount);
+		builder.putAllDonate(donateMap.getMap()) ; 
+		
+		return builder.build();
+	}
+
+	
 }

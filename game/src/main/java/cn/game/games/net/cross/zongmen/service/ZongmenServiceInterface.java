@@ -34,6 +34,13 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @return
 	 */
 	ZongMenShowInfo getZongmenShowInfo(long zongMenId);
+	
+	/** 
+	 * 获取工会成员可以看到的工会共享数据 
+	 * @param zongMenId
+	 * @return
+	 */
+	ZongMenAllInfo getZongMenAllInfoForMember(long zongMenId);
 
 	/**
 	 * 申请加入宗门

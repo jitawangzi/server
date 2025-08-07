@@ -137,6 +137,14 @@ public class PlayerHelper {
 	public static final int REFRESH_TYPE_MONTH = 3;
 
 	/** 
+	 * 判断某个id是不是机器人
+	 * @param id
+	 * @return
+	 */
+	public static boolean isRobot(long id) {
+		return id < 10000; 
+	}
+	/** 
 	 * 判断玩家是否有足够的物品
 	 * @param player
 	 * @param list entry key:物品id,entry value:数量
@@ -610,7 +618,6 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void refresh(Player player) {
-		player.handleEvent(EventTypeEnum.LoginSuccess);
 		refreshDay(player);
 		refreshFiveDay(player);
 		refreshWeek(player);
@@ -669,6 +676,7 @@ public class PlayerHelper {
 //			e.printStackTrace();
 //		}
 		player.handleEvent(EventTypeEnum.LoginFinish);
+		player.handleEvent(EventTypeEnum.LoginSuccess);
 		Collection<BasePlayerModule> allModule = player.getAllModule();
 		for (BasePlayerModule basePlayerModule : allModule) {
 			basePlayerModule.onLogin();
@@ -1168,11 +1176,12 @@ public class PlayerHelper {
 
 		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
-		PlayerHelper.refresh(player);
+//		PlayerHelper.refresh(player);
 		if (reconnect) {
 			player.handleEvent(EventTypeEnum.Reconnect);
 		}else {
 			player.handleEvent(EventTypeEnum.Relogin);
+			player.handleEvent(EventTypeEnum.LoginSuccess);
 		}
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 		resp2.setReconnect(reconnect);

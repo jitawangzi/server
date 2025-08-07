@@ -88,6 +88,14 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		}
 		return zongMen.toShowProto();
 	}
+	@Override
+	public ZongMenAllInfo getZongMenAllInfoForMember(long zongMenId) {
+		ZongMen zongMen = ZongMenManager.getInstance().getZongMen(zongMenId);
+		if (zongMen == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+		return zongMen.toProto();
+	}
 
 	/**
 	 * 申请加入宗门
@@ -116,7 +124,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		// 开启自动加入 则直接加入宗门
 		if (zongMenInfo.isAutoJoin()) {
 			zongMenInfo.joinZongMen(playerId, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-			return zongMenInfo.toProto(playerId); 
+			return zongMenInfo.toProto(); 
 		} else if (zongMenInfo.getModule().setting.getAutoJoin() == 2) {
 			zongMenInfo.applyJoin(playerId);
 		} else {
@@ -416,7 +424,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		if (!member.isBargain) {
 			fail(ErrorMsgEnum.zong_men_player_not_bargain);
 		}
-		member.setBargainBuy(true);
 	}
 
 	/**
@@ -449,7 +456,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
                 		return null ; 
 					}
                 	zongMen.addMember(List.of(playerId)); 
-                	return zongMen.toProto(playerId) ; 
+                	return zongMen.toProto() ; 
                 }) ; 
             }
 		}

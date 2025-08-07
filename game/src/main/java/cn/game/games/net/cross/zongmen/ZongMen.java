@@ -197,12 +197,12 @@ public class ZongMen {
 		return showInfoBuilder.build();
 	}
 
-	public ZongMenMsg.ZongMenSharedInfo toSharedProto(long playerId) {
+	/** 
+	 * 工会成员间可以看到的共享数据
+	 * @return
+	 */
+	public ZongMenMsg.ZongMenSharedInfo toSharedProto() {
 		ZongMenSharedInfo.Builder builder = ZongMenSharedInfo.newBuilder();
-		ZongMenMember member = getMember(playerId);
-		if (member == null) {
-			return builder.build(); // 非宗门成员
-		}
 		builder.setExp(getExp());
 		builder.setBargain(module.bargain.toProto());
 
@@ -212,30 +212,14 @@ public class ZongMen {
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);
-		// 申请列表，看权限发
-
-		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
-		if (permissionsConfig.Approval) {
-			List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance()
-					.multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList));
-			for (SimplePlayer simplePlayer : simplePlayers) {
-				if (simplePlayer != null) {
-					builder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
-				}
+		// 申请列表，先都发下去
+		List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance()
+				.multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(module.applyList));
+		for (SimplePlayer simplePlayer : simplePlayers) {
+			if (simplePlayer != null) {
+				builder.addApplyPlayerList(simplePlayer.toSimplePlayerInfo());
 			}
 		}
-		return builder.build();
-	}
-
-	public ZongMenMsg.ZongMenPersonalInfo toPersonalProto(long playerId) {
-		ZongMenPersonalInfo.Builder builder = ZongMenPersonalInfo.newBuilder();
-
-		ZongMenMember member = getMember(playerId);
-		if (member == null) {
-			return builder.build(); // 非宗门成员
-		}
-		builder.setIsBargain(member.isBargain);
-		builder.setIsBargainBuy(member.isBargainBuy);
 		return builder.build();
 	}
 
@@ -244,11 +228,10 @@ public class ZongMen {
 	 * @param playerId 一般表示该宗门内的某个成员id，如果是0，表示非工会成员
 	 * @return
 	 */
-	public ZongMenMsg.ZongMenAllInfo toProto(long playerId) {
+	public ZongMenMsg.ZongMenAllInfo toProto() {
 		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
 		builder.setShowInfo(toShowProto());
-		builder.setSharedInfo(toSharedProto(playerId));
-		builder.setPersonalInfo(toPersonalProto(playerId));
+		builder.setSharedInfo(toSharedProto());
 		return builder.build();
 	}
 
