@@ -171,6 +171,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552;
 import cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeResponse_13000553;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_13000546;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
+import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554;
+import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -247,6 +249,7 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattlePVEVPChallengeRequest_13000552, this::pVEVPChallenge);
         putInvoker(PbProtocol.BattleMountainMapResetRequest_13000545, this::mountainMapReset);
         putInvoker(PbProtocol.BattleMountainNextFloorRequest_13000547, this::mountainNextFloor);
+        putInvoker(PbProtocol.BattleBuyTicketRequest_13000554, this::buyTicket);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1251,7 +1254,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         //		long randomSeed = System.currentTimeMillis() ;
         IBattleHandler battleHandler = battleModule.getBattle(type);
-        int errorCode = battleHandler.check(id, subId,helpPlayerId);
+        int errorCode = battleHandler.check(id, subId, helpPlayerId);
         if (errorCode > 0) {
             client.sendProtocol(resp, errorCode);
             return;
@@ -1682,6 +1685,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleMountainGetRewardResponse_13000544.Builder resp = BattleMountainGetRewardResponse_13000544.newBuilder();
         client.sendProtocol(resp.build());
     }
+
     private void mountainMapReset(NetClient client, Object message) {
         BattleMountainMapResetRequest_13000545 req = (BattleMountainMapResetRequest_13000545) message;
         BattleMountainMapResetResponse_13000546 defaultInstance = BattleMountainMapResetResponse_13000546.getDefaultInstance();
@@ -1698,6 +1702,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleMountainNextFlooResponse_13000548.Builder resp = BattleMountainNextFlooResponse_13000548.newBuilder();
         client.sendProtocol(resp.build());
     }
+
     private void pVEVPData(NetClient client, Object message) {
         BattlePVEVPDataRequest_13000549 req = (BattlePVEVPDataRequest_13000549) message;
         BattlePVEVPDataResponse_1300054a defaultInstance = BattlePVEVPDataResponse_1300054a.getDefaultInstance();
@@ -1733,6 +1738,15 @@ public class BattleHandler extends GameBaseHandler {
         // client.sendProtocol(resp.build());
     }
 
-
-
+    private void buyTicket(NetClient client, Object message) {
+        BattleBuyTicketRequest_13000554 req = (BattleBuyTicketRequest_13000554) message;
+        BattleBuyTicketResponse_13000555 defaultInstance = BattleBuyTicketResponse_13000555.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleBuyTicketResponse_13000555.Builder resp = BattleBuyTicketResponse_13000555.newBuilder();
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
+        pvevpBattle. buyCount();
+        resp.setBuyCount(pvevpBattle.getBuyCount());
+        client.sendProtocol(resp.build());
+    }
 }

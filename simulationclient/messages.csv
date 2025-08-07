@@ -271,3 +271,4 @@
 271,BattlePVEVPChallengeRequest_13000552,0x13000552,,,,,大圣擂台挑战数据
 272,BattlePVEVPDataRequest_13000549,0x13000549,,,,,大圣擂台数据请求
 273,BattlePVEVPRecordRequest_13000550,0x13000550,,,,,大圣擂台战斗记录数据
+274,BattleBuyTicketRequest_13000554,0x13000554,,,,,大圣擂台数据请求

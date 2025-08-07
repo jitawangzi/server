@@ -496,6 +496,11 @@ public class BattleModule extends BasePlayerModule  {
 			newDay();
 			break;
 		}
+		case NewWeek: {
+			PVEVPBattle p=getBattle(DungeonTypeEnum.PVEVPBattle);
+			p.newWeek();
+			break;
+		}
 		case LoginFinish: {
 			updateStoreStaminas();
 			battlesMap.forEach((k, v) -> {
