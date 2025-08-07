@@ -89,44 +89,44 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	// 获取宗门信息
 	private void getZongMenInfo(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMen info = zongmenService.getZongmen(zongMenId);
-		ZongMenMsg.ZongMenAllInfo infoProto = info.toProto();
-		sendMsgToGameServer(playerId, client, ZongMenMsg.getZongMenInfoResponse_40000022.newBuilder().setInfo(infoProto).build(),
-				PbProtocol.getZongMenInfoResponse_40000022);
+//		ZongMen info = zongmenService.getZongmen(zongMenId);
+//		ZongMenMsg.ZongMenServiceInfo infoProto = info.toProto();
+//		sendMsgToGameServer(playerId, client, ZongMenMsg.getZongMenInfoResponse_40000022.newBuilder().setInfo(infoProto).build(),
+//				PbProtocol.getZongMenInfoResponse_40000022);
 	}
 
 	// 创建宗门
 	private void createZongMen(long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMenMsg.createZongMenRequest_40000005 req = (ZongMenMsg.createZongMenRequest_40000005) message;
 
-		zongmenService.createZongmen(req, playerId).map(zongMenInfo -> {
-			ZongMenMsg.createZongMenResponse_40000006.Builder res = ZongMenMsg.createZongMenResponse_40000006.newBuilder();
-			res.setZongMen(zongMenInfo.toProto());
-			sendMsgToGameServer(playerId, client, res.build(), PbProtocol.createZongMenResponse_40000006);
-			return null ; 
-		}).onFailure(err -> {
-			if (err instanceof LogicException le) {
-				sendErrorCodeMsgToGameServer(playerId, client, le.getErrorCode(), PbProtocol.createZongMenResponse_40000006);
-			} else {
-				log.error("create zongmen fail", err);
-				sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.createZongMenResponse_40000006);
-			}
-		});
+//		zongmenService.createZongmen(req, playerId).map(zongMenInfo -> {
+//			ZongMenMsg.createZongMenResponse_40000006.Builder res = ZongMenMsg.createZongMenResponse_40000006.newBuilder();
+//			res.setZongMen(zongMenInfo.toProto());
+//			sendMsgToGameServer(playerId, client, res.build(), PbProtocol.createZongMenResponse_40000006);
+//			return null ; 
+//		}).onFailure(err -> {
+//			if (err instanceof LogicException le) {
+//				sendErrorCodeMsgToGameServer(playerId, client, le.getErrorCode(), PbProtocol.createZongMenResponse_40000006);
+//			} else {
+//				log.error("create zongmen fail", err);
+//				sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.createZongMenResponse_40000006);
+//			}
+//		});
 	}
 
 	// 申请加入宗门
 	private void applyJoinZongMen(long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMenMsg.applyJoinZongMenRequest_40000007 req = (ZongMenMsg.applyJoinZongMenRequest_40000007) message;
-		long zongMenId = req.getId();
-		int power = Integer.parseInt(paramList.get(0));
-		String playerName = paramList.get(1);
-
-		ZongMenAllInfo info = zongmenService.applyJoinZongmen(zongMenId, playerId);
-		ZongMenMsg.applyJoinZongMenResponse_40000008.Builder res = ZongMenMsg.applyJoinZongMenResponse_40000008.newBuilder();
-		if (info != null) {
-			res.setZongMen(info);
-		}
-		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.applyJoinZongMenResponse_40000008);
+//		long zongMenId = req.getId();
+//		int power = Integer.parseInt(paramList.get(0));
+//		String playerName = paramList.get(1);
+//
+//		ZongMenAllInfo info = zongmenService.applyJoinZongmen(zongMenId, playerId);
+//		ZongMenMsg.applyJoinZongMenResponse_40000008.Builder res = ZongMenMsg.applyJoinZongMenResponse_40000008.newBuilder();
+//		if (info != null) {
+//			res.setZongMen(info);
+//		}
+//		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.applyJoinZongMenResponse_40000008);
 	}
 
 	// 解散宗门

@@ -17,6 +17,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.zongmen.ZongMenHandler;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.manual.OpType;
@@ -24,6 +25,10 @@ import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenPersonalInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenServiceInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenServiceInfo;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -227,5 +232,17 @@ public class ZongMenHelper {
 	public static  boolean trySetName(String name, long newZongMenId) {
 		String nameKey = getNameKey(name);
 		return RedisUtil.trySet(nameKey, newZongMenId);
+	}
+	
+	public static  ZongMenAllInfo buildAllInfo(ZongMenServiceInfo serviceInfo,long playerId) {
+		ZongMenAllInfo.Builder builder = ZongMenAllInfo.newBuilder();
+		builder.setSharedInfo(serviceInfo.getSharedInfo()) ; 
+		builder.setShowInfo(serviceInfo.getShowInfo()) ; 
+		Player player = PlayerManager.getInstance().getPlayer(playerId); 
+		ZongMenPersonalInfo personalInfo = player.getZongmenModule().toPersonalInfo(); 
+		builder.setPersonalInfo(personalInfo); 
+		return builder.build(); 
+		
+		
 	}
 }

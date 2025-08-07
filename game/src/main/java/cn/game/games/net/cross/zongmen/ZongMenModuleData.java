@@ -23,6 +23,7 @@ public class ZongMenModuleData {
 	@JsonIgnore
 	Map<ZongMenConstants.ZongMenEvenType, List<ZongMenConstants.ZongMenEventHandler>> eventTypeHandleMaps = new HashMap<>();
 
+	private long zongmenId; 
 	/***      宗门操作日志 */
 	ZongMenOptLog optLog;
 	/***      宗门 成员列表 */
@@ -77,12 +78,13 @@ public class ZongMenModuleData {
 		}
 	}
 
-	public void init() {
+	public void init(long zongmenId) {
 		optLog = new ZongMenOptLog();
 		setting = new ZongMenSetting();
 		setting.setAutoJoin(2);
 
 		bargain = new ZongMenBargain();
+		bargain.setZongMenId(zongmenId);
 	}
 
 	public void afterInit(ZongMen info) {
@@ -141,6 +143,10 @@ public class ZongMenModuleData {
 
 	public void setBargain(ZongMenBargain bargain) {
 		this.bargain = bargain;
+	}
+
+	public long getZongmenId() {
+		return zongmenId;
 	}
 
 }

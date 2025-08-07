@@ -321,5 +321,16 @@ public class ZongMenModule extends BasePlayerModule {
 		return builder.build();
 	}
 
+	public boolean isInited() {
+		return inited;
+	}
+
+	public int getBargainCount() {
+		return bargainCount;
+	}
+
+	public boolean isBargainBuy() {
+		return isBargainBuy;
+	}
 	
 }

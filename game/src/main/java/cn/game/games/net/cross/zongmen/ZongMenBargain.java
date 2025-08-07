@@ -1,6 +1,7 @@
 package cn.game.games.net.cross.zongmen;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.game.core.cache.CacheType;
@@ -18,10 +19,11 @@ import io.vertx.core.Future;
  * @author SYQ
  */
 public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
+	private long zongMenId;
 	/** 累计砍下来的数量 */
 	private int bargainTotalNum;
-	/** 累计砍价人数 */
-	private int memberBargainNum;
+	/** 累计砍价次数 */
+	private int bargainTimes;
 	/** 刷新出来的砍价物品id ： GuildBargain 表id */
 	private int bargainItemId;
 	/** 砍价数量记录 */
@@ -34,12 +36,11 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 	private void refreshBargain() {
 		bargainLogMap.clear();
 		bargainTotalNum = 0;
-		memberBargainNum = 0;
-		bargainItemId++;
-		GuildBargainConfig nullable = GuildBargainManager.instance().getNullable(bargainItemId);
-		if (nullable == null) {
-			bargainItemId = 1;
-		}
+		bargainTimes = 0;
+		ZongMen zongMen = ZongMenManager.getInstance().getZongMen(zongMenId); 
+		List<GuildBargainConfig> levelList = GuildBargainManager.instance().getLevelList(zongMen.getLv()); 
+		GuildBargainConfig guildBargainConfig = Rnd.randomElement(levelList); 
+		bargainItemId = guildBargainConfig.ID;
 	}
 
 	/**
@@ -47,25 +48,28 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 	 * @param member 砍价成员
 	 * @return 砍价数量
 	 */
-	public int performBargain(ZongMenMember member) {
+	public int performBargain(long playerId,int level) {
 		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargainItemId);
-		int bargainCount = Rnd.nextInt(guildBargainConfig.Bargain[0], guildBargainConfig.Bargain[1] + 1);
-
-		if (bargainCount + bargainTotalNum > guildBargainConfig.Price[1]) {
-			bargainCount = guildBargainConfig.Price[1] - bargainTotalNum;
-		}
-
-		bargainTotalNum += bargainCount;
-		memberBargainNum++;
+		int curMax = guildBargainConfig.Price[1] - bargainTotalNum;
+		int[] range = bargainTimes >= guildBargainConfig.Bargain.length - 1
+				? guildBargainConfig.Bargain[guildBargainConfig.Bargain.length - 1]
+				: guildBargainConfig.Bargain[bargainTimes];
+		float rangeLow = range[0] / 100f;
+		float rangeHigh = range[1] / 100f;
+		double nextDouble = Rnd.nextDouble(rangeLow, rangeHigh); 
+		
+		int count = (int) ((curMax - guildBargainConfig.PriceLow[1]) * nextDouble);
+		
+		bargainTotalNum += count;
+		bargainTimes++;
 
 		// 异步记录砍价日志
-		int bargainCountTmp = bargainCount;
-		Future<SimplePlayer> simplePlayerFuture = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(member.getPlayerId()));
+		Future<SimplePlayer> simplePlayerFuture = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		simplePlayerFuture.onSuccess(simplePlayer -> {
-			addBargainLog(simplePlayer.getName(), bargainCountTmp);
+			addBargainLog(simplePlayer.getName(), count);
 		});
 
-		return bargainCount;
+		return count;
 	}
 
 	public ZongMenConstants.ZongMenEvenType[] getRegisterEvent() {
@@ -83,10 +87,6 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		return bargainTotalNum;
 	}
 
-	public int getMemberBargainNum() {
-		return memberBargainNum;
-	}
-
 	public int getBargainItemId() {
 		return bargainItemId;
 	}
@@ -95,24 +95,25 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		this.bargainTotalNum = bargainTotalNum;
 	}
 
-	public void setMemberBargainNum(int memberBargainNum) {
-		this.memberBargainNum = memberBargainNum;
-	}
-
 	public void setBargainItemId(int bargainItemId) {
 		this.bargainItemId = bargainItemId;
 	}
 
 	public void addBargainLog(String playerName, int num) {
-		bargainLogMap.put(playerName, num);
+		bargainLogMap.compute(playerName, (k, v) -> v == null ? num : v + num);
 	}
 
 	public ZongMenMsg.ZongMenBargainSharedInfo toProto() {
 		return ZongMenMsg.ZongMenBargainSharedInfo.newBuilder()
 				.setTotalBargainCount(bargainTotalNum)
-				.setTotalMemberCount(memberBargainNum)
+				.setTotalMemberCount(bargainLogMap.size())
 				.setBargainItemId(bargainItemId)
 				.putAllBargainLogMap(bargainLogMap)
 				.build();
 	}
+
+	public void setZongMenId(long zongMenId) {
+		this.zongMenId = zongMenId;
+	}
+	
 }

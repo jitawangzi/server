@@ -8,10 +8,11 @@ import cn.game.games.net.cross.zongmen.dto.MemberAuthRequest;
 import cn.game.games.net.cross.zongmen.dto.ZongmenSettingRequest;
 import cn.game.protocol.protobuf.ZongMenMsg;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenServiceInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
 
-public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
+public interface ZongmenServiceInterface extends RemoteCrossServerInterface {
 
 	/**
 	 * 创建宗门
@@ -19,7 +20,7 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @param createPlayerId 创建玩家ID
 	 * @return 新宗门信息
 	 */
-	Future<ZongMen> createZongmen(ZongMenMsg.createZongMenRequest_40000005 req,long createPlayerId);
+	Future<ZongMenServiceInfo> createZongmen(long createPlayerId, String name, String notice, String declaration, int icon);
 
 	/**
 	 * 获取宗门信息
@@ -27,20 +28,20 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @return 宗门信息
 	 */
 	ZongMen getZongmen(long zongMenId);
-	
+
 	/** 
 	 * 获取某个宗门的展示数据
 	 * @param zongMenId
 	 * @return
 	 */
 	ZongMenShowInfo getZongmenShowInfo(long zongMenId);
-	
+
 	/** 
 	 * 获取工会成员可以看到的工会共享数据 
 	 * @param zongMenId
 	 * @return
 	 */
-	ZongMenAllInfo getZongMenAllInfoForMember(long zongMenId);
+	ZongMenServiceInfo getZongMenAllInfoForMember(long zongMenId);
 
 	/**
 	 * 申请加入宗门
@@ -48,7 +49,7 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @param playerId 玩家ID
 	 * @return 宗门信息
 	 */
-	ZongMenAllInfo applyJoinZongmen(long zongMenId, long playerId);
+	ZongMenServiceInfo applyJoinZongmen(long zongMenId, long playerId);
 
 	/**
 	 * 解散宗门
@@ -112,12 +113,11 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 */
 	void receiveActiveReward(long zongMenId, long playerId, List<Integer> indexList);
 
-
 	/**
 	 * 宗门砍价
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
-	 * @return 砍价次数
+	 * @return 当前的砍价id， 砍掉了多少的数量
 	 */
 	int bargain(long zongMenId, long playerId);
 
@@ -129,6 +129,13 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 */
 	void buyBargain(long zongMenId, long playerId);
 
+	/** 
+	 * 查看工会的砍价物品当前购买价格
+	 * @param zongmenId
+	 * @return
+	 */
+	int getBargainPrice(long zongmenId);
+
 	/**
 	 * 更新贡献度
 	 * @param zongMenId 宗门ID
@@ -137,12 +144,12 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface{
 	 * @return 是否成功
 	 */
 	void updateContributeValue(long zongMenId, long playerId, int value);
-	
+
 	/** 
 	 * 玩家随机加入一个可以加的宗门
 	 * @param playerId
 	 * @return 成功加入的宗门，如果为null，表示没有能加入的宗门
 	 */
-	ZongMenAllInfo randomJoin(long playerId);
+	ZongMenServiceInfo randomJoin(long playerId);
 
 }

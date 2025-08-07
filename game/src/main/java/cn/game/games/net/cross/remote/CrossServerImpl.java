@@ -45,22 +45,4 @@ public class CrossServerImpl implements CrossServerInterface {
 		return IdCache.getManager(type).isObjectInCurrentServer(objectId);
 	}
 
-	@Override
-	public io.vertx.core.Future<Integer> zongmenBargainPrice(long zongmenId) {
-		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
-		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
-		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
-		int bargainTotalNum = bargain.getBargainTotalNum();
-		int price = guildBargainConfig.Price[1] - bargainTotalNum;
-		return io.vertx.core.Future.succeededFuture(price);
-	}
-
-	@Override
-	public Future<Boolean> buyZongmenBargain(long zongmenId, long playerId) {
-		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
-		ZongMenMember member = zongMenInfo.getMember(playerId);
-		return Future.succeededFuture(true);
-	}
-
-
 }

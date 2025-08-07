@@ -176,17 +176,17 @@ public class ZongMenManager {
 	 * @param createPlayerId 门主pid
 	 * @return 新的宗门
 	 */
-	public Future<ZongMen> createZongMen(ZongMenMsg.createZongMenRequest_40000005 req, long createPlayerId) {
+	public Future<ZongMen> createZongMen(long createPlayerId,String name,String notice,String declaration,int icon) {
 		long newZongMenId = ZongMenHelper.createZongMenId();
 
-		boolean trySetName = ZongMenHelper.trySetName(req.getName(), createPlayerId); 
+		boolean trySetName = ZongMenHelper.trySetName(name, createPlayerId); 
 		if (!trySetName) {
 			return Future.failedFuture("宗门名称已存在，请重新输入名称");
 		}
 		// 创建宗门
 		ZongMen zongMenInfo = new ZongMen();
 		// 宗门初始化
-		zongMenInfo.init(req,newZongMenId, createPlayerId);
+		zongMenInfo.init(name,notice,declaration,icon,newZongMenId, createPlayerId);
 		zongMenInfo.updateModuleData();
 		Promise<ZongMen> promise = Promise.promise();
 		DAO.insert(zongMenInfo.getData()).onSuccess(res -> {

@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.zongmen;
 
+import java.lang.foreign.ValueLayout.OfBoolean;
 import java.net.ResponseCache;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildDonateConfig;
 import cn.game.protocol.generated.config.QuestPointRewardConfig;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
@@ -74,6 +76,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateRequest_40000067;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateResponse_40000068;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenServiceInfo;
 
 /**
  * @ClassName ZongMenHandler
@@ -200,10 +203,10 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
-        ZongMenAllInfo joined = null;
+        ZongMenServiceInfo joined = null;
         List<ZongmenServiceInterface> allServerInterface = ServerHelper.getAllServerInterface(ServerType.Cross, ZongmenServiceInterface.class);
         for (ZongmenServiceInterface zongmenServiceInterface : allServerInterface) {
-            ZongMenAllInfo randomJoin = zongmenServiceInterface.randomJoin(player.getPlayerId());
+            ZongMenServiceInfo randomJoin = zongmenServiceInterface.randomJoin(player.getPlayerId());
             if (randomJoin != null) {
                 joined = randomJoin;
                 break;
@@ -212,8 +215,8 @@ public class ZongMenHandler extends GameBaseHandler {
         if (joined != null) {
             ZongMenSimpleInfo simpleInfo = joined.getShowInfo().getSimpleInfo();
             zongmenModule.join(simpleInfo.getId(), simpleInfo.getName());
-            res.setZongmen(joined);
-            ;
+            ZongMenAllInfo allInfo = ZongMenHelper.buildAllInfo(joined, player.getPlayerId());
+            res.setZongmen(allInfo);
         }
         client.sendProtocol(res.build());
     }
@@ -222,17 +225,30 @@ public class ZongMenHandler extends GameBaseHandler {
         ZongMenMsg.ZongMenBargainRequest_40000060 req = (ZongMenMsg.ZongMenBargainRequest_40000060) o;
         ZongMenMsg.ZongMenBargainResponse_40000061.Builder res = ZongMenMsg.ZongMenBargainResponse_40000061.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (player.getZongMenId() < 0 ) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
+            return ; 
+		}
         ZongMenModule zongmenModule = player.getZongmenModule();
         long joinTime = zongmenModule.getJoinTime();
         if (zongmenModule.getDisbandCount() > 0 && System.currentTimeMillis() / 1000 - joinTime < GlobalConst.ZongmenBargainCD) {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
-        autoForwardZongMenServer(client, res, req, result -> {
-            player.handleEvent(EventTypeEnum.ZongMenBargain);
-            client.sendProtocol(result);
-            return null;
-        });
+        int bargainCount = zongmenModule.getBargainCount(); 
+        if (bargainCount >= GlobalConst.ZongmenBargainMax) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.times_limit.ID);
+			return ; 
+		}
+        // 先扣次数
+        PlayerHelper.delResources(player, Asset.ZongMenBargain.ID, 1, OpType.ZongMenBargain);
+        ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getZongMenId()); 
+        int count = zongmenProxy.bargain(player.getZongMenId(), player.getPlayerId()); 
+
+        res.setCount(count); 
+        player.handleEvent(EventTypeEnum.ZongMenBargain);
+        client.sendProtocol(res.build());
+    
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -243,28 +259,13 @@ public class ZongMenHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
-        CrossServerInterface crossServerInterface = GameServer.getInstance().getCrossServerInterface(DistributedObjectType.ZONGMEN, player.getZongMenId());
-        Future<Integer> priceFuture = crossServerInterface.zongmenBargainPrice(player.getZongMenId());
-        priceFuture.map(price -> {
-            GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
-            if (price > 0) {
-                if (PlayerHelper.isEnough(player, guildBargainConfig.Price[0], price)) {
-                    Future<Boolean> buyZongmenBargain = crossServerInterface.buyZongmenBargain(player.getZongMenId(), player.getPlayerId());
-                    buyZongmenBargain.onSuccess(result -> {
-                        if (result) {
-                            PlayerHelper.delResources(player, guildBargainConfig.Price[0], price, OpType.ZongMenBargain);
-                            List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
-                            res.addAllRewards(rewards);
-                            client.sendProtocol(res.build());
-                        } else {
-                            client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
-                        }
-                    }).onFailure(player::handleFail);
-                }
-                ;
-            }
-            return null;
-        }).onFailure(player::handleFail);
+        ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getZongMenId()); 
+        int bargainPrice = zongmenProxy.getBargainPrice(player.getZongMenId()); 
+        GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(1);
+        PlayerHelper.delResources(player, guildBargainConfig.Price[0], bargainPrice, OpType.ZongMenBargain);
+        List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.ZongMenBargain);
+        res.addAllRewards(rewards);
+        client.sendProtocol(res.build());
     }
 
     // 领取任务活跃度奖励
@@ -503,12 +504,13 @@ public class ZongMenHandler extends GameBaseHandler {
             return;
         }
         ZongmenServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, id);
-        ZongMenAllInfo zongmen = serviceInterface.applyJoinZongmen(id, player.getPlayerId());
+        ZongMenServiceInfo zongmen = serviceInterface.applyJoinZongmen(id, player.getPlayerId());
         if (zongmen != null) {
             ZongMenSimpleInfo simpleInfo = zongmen.getShowInfo().getSimpleInfo();
             // 玩家直接加入宗门
             player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName());
-            client.sendProtocol(res.setZongMen(zongmen).build());
+            ZongMenAllInfo allInfo = ZongMenHelper.buildAllInfo(zongmen, player.getPlayerId()); 
+            client.sendProtocol(res.setZongMen(allInfo).build());
         } else {
             client.sendProtocol(applyJoinZongMenResponse_40000008.getDefaultInstance());
         }
@@ -569,25 +571,19 @@ public class ZongMenHandler extends GameBaseHandler {
                     return;
                 }
             }
-            // 创建宗门
-            sendMsgToZongMenServer(player, req, player.getPlayerName(), player.getAttrModule().getPower() + "", player.getServerId()).onSuccess(createZongMenCallback -> {
-                if (createZongMenCallback.errorCode == ErrorMsgEnum.ok.ID) {
-                    // 创建宗门成功
-                    PlayerHelper.delResources(player, GlobalConst.ZongmenCreationConsume, OpType.zongMenChangeName);
-                    ZongMenMsg.createZongMenResponse_40000006 createRes = (ZongMenMsg.createZongMenResponse_40000006) createZongMenCallback.response;
-                    // 设置玩家宗门信息
-                    ZongMenSimpleInfo simpleInfo = createRes.getZongMen().getShowInfo().getSimpleInfo();
-                    player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName());
-                    client.sendProtocol(createRes);
-                } else {
-                    // 创建宗门失败
-                    client.sendProtocol(res.build(), createZongMenCallback.errorCode);
-                }
-            }).// 创建宗门异常
-            onFailure(err -> {
-                err.printStackTrace();
-                client.sendProtocol(res, ErrorMsgEnum.unknown.getId());
-            });
+    		ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(0); 
+    		Future<ZongMenServiceInfo> zongmen = zongmenProxy.createZongmen(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon()); 
+    		zongmen.map(r -> {
+                // 创建宗门成功
+                PlayerHelper.delResources(player, GlobalConst.ZongmenCreationConsume, OpType.zongMenChangeName);
+                // 设置玩家宗门信息
+                ZongMenSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
+                player.getZongmenModule().join(simpleInfo.getId(), simpleInfo.getName());
+                ZongMenAllInfo allInfo = ZongMenHelper.buildAllInfo(r, player.getPlayerId());
+                res.setZongMen(allInfo); 
+                client.sendProtocol(res);
+    			return null ; 
+			}).onFailure(player::handleFail); 
         });
     }
 

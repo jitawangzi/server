@@ -2,14 +2,10 @@ package cn.game.games.net.cross.zongmen;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 
-import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.cache.entity.ZongmenData;
@@ -20,20 +16,16 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBasicConfig;
-import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBasicManager;
-import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenPersonalInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSharedInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 
 /**
@@ -60,26 +52,26 @@ public class ZongMen {
 		module.registerAllModuleEventHandler();
 	}
 
-	public void init(ZongMenMsg.createZongMenRequest_40000005 req, long newZongMenId, long createPlayerId) {
+	public void init(String name,String notice,String declaration,int icon, long newZongMenId, long createPlayerId) {
 		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId);
 
 		module = new ZongMenModuleData();
 		saveDataTimer = System.currentTimeMillis() + ZongMenConstants.SAVE_ZONG_MEN_DATA_TIMER;
 		// 初始化 Zongmen 对象
 		data = new ZongmenData();
-		data.setName(req.getName());
+		data.setName(name);
 		data.setId(newZongMenId);
 		data.setLv((byte) 1);
-		data.setIcon(req.getIcon() == 0 ? GlobalConst.ZongmenIconRes : req.getIcon());
-		data.setNotice(StringUtils.isEmpty(req.getNotice()) ? GlobalConst.ZongmenGonggao : req.getNotice());
-		data.setNotification(StringUtils.isEmpty(req.getDeclaration()) ? GlobalConst.ZongmenXuanyan : req.getDeclaration());
+		data.setIcon(icon == 0 ? GlobalConst.ZongmenIconRes : icon);
+		data.setNotice(StringUtils.isEmpty(notice) ? GlobalConst.ZongmenGonggao : notice);
+		data.setNotification(StringUtils.isEmpty(declaration) ? GlobalConst.ZongmenXuanyan : declaration);
 		data.setCreateTime(DateUtil.getTimeByPattern(new Date(), DateUtil.pattern_en));
 		data.setExp(0);
 		data.setServerId(creator.getServerId());
 
 		// 初始化各个模块
 		module = new ZongMenModuleData();
-		module.init();
+		module.init(newZongMenId);
 		module.afterInit(this);
 		module.registerAllModuleEventHandler();
 
@@ -223,13 +215,8 @@ public class ZongMen {
 		return builder.build();
 	}
 
-	/** 
-	 * 
-	 * @param playerId 一般表示该宗门内的某个成员id，如果是0，表示非工会成员
-	 * @return
-	 */
-	public ZongMenMsg.ZongMenAllInfo toProto() {
-		ZongMenMsg.ZongMenAllInfo.Builder builder = ZongMenMsg.ZongMenAllInfo.newBuilder();
+	public ZongMenMsg.ZongMenServiceInfo toProto() {
+		ZongMenMsg.ZongMenServiceInfo.Builder builder = ZongMenMsg.ZongMenServiceInfo.newBuilder();
 		builder.setShowInfo(toShowProto());
 		builder.setSharedInfo(toSharedProto());
 		return builder.build();
