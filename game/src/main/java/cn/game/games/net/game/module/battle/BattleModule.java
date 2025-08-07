@@ -496,6 +496,11 @@ public class BattleModule extends BasePlayerModule  {
 			newDay();
 			break;
 		}
+		case NewWeek: {
+			PVEVPBattle p=getBattle(DungeonTypeEnum.PVEVPBattle);
+			p.newWeek();
+			break;
+		}
 		case LoginFinish: {
 			updateStoreStaminas();
 			battlesMap.forEach((k, v) -> {
@@ -603,6 +608,12 @@ public class BattleModule extends BasePlayerModule  {
 				battle.setPlayer(player);
 				battle.initEquipBattle();
 				player.getQuestModule().refreshQuest(QuestTypeEnum.EquipTower);
+				battlesMap.put(battle.getType(), battle);
+			}
+			else if (func == InitialUI.DaSheng) {
+				PVEVPBattle battle = new PVEVPBattle();
+				battle.setPlayer(player);
+				battle.initPvevpBattle();
 				battlesMap.put(battle.getType(), battle);
 			}
 			break;

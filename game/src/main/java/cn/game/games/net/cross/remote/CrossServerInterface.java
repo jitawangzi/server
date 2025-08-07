@@ -31,4 +31,8 @@ public interface CrossServerInterface extends RemoteCrossServerInterface {
 	 */
 	<T, ID extends Number> int loadDataDistributed(Class<? extends GenericDataLoader<T, ID>> loaderClass, ID id);
 
+	Future<Integer> zongmenBargainPrice(long zongmenId);
+
+	Future<Boolean> buyZongmenBargain(long zongmenId, long playerId);
+
 }

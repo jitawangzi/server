@@ -2,15 +2,16 @@ package cn.game.games.net.game.module.rank;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import cn.game.protocol.generated.config.DaShengExtraPointsConfig;
+import cn.game.protocol.generated.config.DaShengNPCConfig;
+import cn.game.protocol.generated.manager.*;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
@@ -31,9 +32,6 @@ import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.protocol.generated.manager.RankManager;
-import cn.game.protocol.generated.manager.RankRewardManager;
-import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.LockUtil;
@@ -79,7 +77,7 @@ public class RankService {
 	 * @param type 排行榜类型
 	 * @return Redis键
 	 */
-	private String getKey(String serverId, RankType type) {
+	public String getKey(String serverId, RankType type) {
 		return CacheType.SET_RANK.key(serverId, type.name());
 	}
 
@@ -603,9 +601,58 @@ public class RankService {
 		if (rankConfig.ResetRank) {
 			log.info("removeRank, rankId:{}", rankId);
 			removeRank(rankType);
+			if (rankType == RankType.DaShengLeiTaiSeason) {
+				for (String serverId : serverIds) {
+					// 准备NPC数据
+					setNpcToRank(serverId,rankType);
+				}
+			}
+		}else
+		{
+			if (rankType==RankType.DaDaoZhengFengDay) {
+				if (LocalDate.now().getDayOfWeek().getValue() == 1) {
+					removeRank(rankType);
+				}
+			}
 		}
 	}
+	public  void setNpcToRank(String serverId, RankType rankType)
+	{
+     // 准备NPC数据
+		Map<Long, Long> npcScores = new HashMap<>();
+		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
+		for (DaShengNPCConfig config : list2) {
+			for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
+				long npcPlayerId = rankPosition;
+				npcScores.put(npcPlayerId, (long) config.Integral);
+			}
+		}
+		// 异步批量设置
+		batchSetScoreAsync(serverId, rankType, npcScores)
+				.whenComplete((result, throwable) -> {
+					if (throwable != null) {
+						log.error("NPC批量初始化失败: serverId={}", serverId, throwable);
+					} else {
+						log.info("NPC批量初始化成功: serverId={}, count={}", serverId, npcScores.size());
+					}
+				});
+	}
+	/**
+	 * 批量设置玩家分数
+	 * @param serverId 服务器ID
+	 * * @param type 排行榜类型
+	 * @param playerScores 玩家ID和分数的映射
+	 * @return 异步操作结果
+	 */
+	public CompletionStage<Void> batchSetScoreAsync(String serverId, RankType type, Map<Long, Long> playerScores) {
+		List<CompletionStage<Boolean>> futures = playerScores.entrySet().stream()
+				.map(entry -> setScoreAsync(serverId, type, entry.getKey(), entry.getValue()))
+				.collect(Collectors.toList());
 
+		return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+				.thenRun(() -> log.debug("批量设置分数完成: serverId={}, type={}, count={}",
+						serverId, type, playerScores.size()));
+	}
 	public void reward(String[] serverIds, int... rankIds) {
 		log.info("start rank reward,rankIds[{}]serverIds[{}] server[{}]", rankIds, serverIds, ServerContext.getInstance().getServerId());
 

@@ -18,10 +18,13 @@ import java.util.stream.Stream;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import cn.game.core.cache.RedisLocalCache;
+import cn.game.protocol.generated.enume.RankType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
+import org.apache.poi.ss.formula.functions.Rank;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
@@ -208,7 +211,11 @@ public class GameServer implements GameServerMBean {
 		DataFixManager.getInstance().init();
 
 		GameIdManagerInitializer.initialize();
-
+		var key= RankService.getInstance().getKey(serverId, RankType.DaShengLeiTaiDay);
+		if(!RedisLocalCache.getInstance().exists(key)) {
+			RankService.getInstance().setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
+			RankService.getInstance().setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
+		};
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);

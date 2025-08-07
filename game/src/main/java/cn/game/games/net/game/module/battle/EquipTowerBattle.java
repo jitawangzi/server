@@ -266,10 +266,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
                 String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(battlefloor);
                 RedisUtil.getRedis().getSet(rediskey).add(player.getPlayerId());
             }
-            // todo 上传记录
-            if(newRecord||battleModule.getAttackingSubId()==1) {
-                battleRecord.put(battlefloor,request.getEquipBattleRecord());
-            }
+
             if(cacheHelpPlayerId>0) {
                 addHelpRewards(cacheHelpPlayerId, battleModule.getAttackingId());
                 cacheHelpPlayerId = 0;
@@ -279,14 +276,16 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             boolean newRecord = battleModule.getAttackingId() == curFloor;
             if (newRecord) {
                 curFloor++;
-                if (MAXFLOOR < curFloor) {
+                if (MAXFLOOR <= curFloor) {
                     curFloor = MAXFLOOR;
                 }
             }
             return ResultObject.success();
         }
     }
-
+     public void setRecord(int floor ,String request ) {
+         battleRecord.put(floor,request);
+     }
     public void addRank(int addPoint) {
         RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.EquipTower, player.getPlayerId(), addPoint);
     }
