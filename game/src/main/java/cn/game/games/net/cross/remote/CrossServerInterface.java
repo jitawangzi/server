@@ -3,7 +3,6 @@ package cn.game.games.net.cross.remote;
 
 import cn.game.core.db.GenericDataLoader;
 import cn.game.core.net.remote.RemoteCrossServerInterface;
-import io.vertx.core.Future;
 
 /**    
  * Cross提供给Game、Cross服务器调用的远程接口

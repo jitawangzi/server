@@ -9,14 +9,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.db.GenericDataLoader;
-import cn.game.games.net.cross.zongmen.ZongMenBargain;
-import cn.game.games.net.cross.zongmen.ZongMen;
-import cn.game.games.net.cross.zongmen.ZongMenManager;
-import cn.game.games.net.cross.zongmen.ZongMenMember;
-import cn.game.protocol.generated.config.GuildBargainConfig;
-import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.util.SpringContextLoader;
-import io.vertx.core.Future;
 
 @Component
 public class CrossServerImpl implements CrossServerInterface {
