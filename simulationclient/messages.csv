@@ -274,3 +274,5 @@
 274,BattleBuyTicketRequest_13000554,0x13000554,,,,,大圣擂台数据请求
 275,ZongMenDonateRequest_40000067,0x40000067,,,,,宗门捐献
 276,BattleEquipTowerRecordRequest_13000528,0x13000528,,,,,查看战斗记录上传请求
+277,ZongMenDonateRequest_40000067,0x40000067,,,,,宗门捐献
+
