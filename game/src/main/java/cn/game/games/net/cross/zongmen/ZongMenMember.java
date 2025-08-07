@@ -51,8 +51,6 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 	public ZongMenMember(long playerId, int position) {
 		this.playerId = playerId;
 		setJoinTime(System.currentTimeMillis());
-		setContribution(0);
-		setTotalContribution(0);
 		setPosition(position);
 	}
 
@@ -88,21 +86,6 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		this.joinTime = joinTime;
 	}
 
-	public int getContribution() {
-		return contribution;
-	}
-
-	public void setContribution(int contribution) {
-		this.contribution = contribution;
-	}
-
-	public int getTotalContribution() {
-		return totalContribution;
-	}
-
-	public void setTotalContribution(int totalContribution) {
-		this.totalContribution = totalContribution;
-	}
 
 	public int getPosition() {
 		return position;
@@ -110,6 +93,10 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 
 	public void setPosition(int position) {
 		this.position = position;
+	}
+
+	public int getWeekContribution() {
+		return weekContribution;
 	}
 
 	public void addcontribution(int contribution) {
@@ -145,7 +132,7 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		switch (type) {
 		case CROSS_DAY -> {
 			// 每日重置 贡献度
-			this.totalContribution = 0;
+			this.contribution = 0;
 			// 每日重置砍价状态
 			this.isBargain = false;
 			this.bargainTime = 0;

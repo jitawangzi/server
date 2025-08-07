@@ -25,8 +25,6 @@ import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.protocol.protobuf.ZongMenMsg;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenServiceInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import io.vertx.core.Future;
@@ -343,21 +341,27 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		}
 	}
 
-	/**
-	 * 更新宗门资产
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param assetId 资产ID
-	 * @param value 资产值
-	 * @return 是否成功
-	 */
 	@Override
-	public void updateZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
+	public Future<?> addZongmenAsset(long zongMenId, long playerId, int assetId, int value) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		zongMenInfo.addZongMenAsset(playerId, assetId, value);
+		
+		return Future.succeededFuture();
+	}
+	@Override
+	public Future<?> addMemberContribute(long zongMenId, long playerId, int value) {
+		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
+		if (zongMenInfo == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+		ZongMenMember member = zongMenInfo.getMember(playerId); 
+		if (member != null) {
+			member.addcontribution(value);
+		}
+		return Future.succeededFuture();
 	}
 
 	/**
@@ -392,7 +396,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	 * @return 砍价次数
 	 */
 	@Override
-	public int bargain(long zongMenId, long playerId) {
+	public int[] bargain(long zongMenId, long playerId) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
 		if (zongMenInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -407,7 +411,7 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 
 		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
 		int bargainCount = bargain.performBargain(playerId,zongMenInfo.getLv());
-		return bargainCount;
+		return new int[] {bargain.getBargainItemId(), bargainCount};
 	}
 
 	/**
@@ -431,26 +435,6 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		}
 	}
 
-	/**
-	 * 更新贡献度
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param value 贡献度值
-	 * @return 是否成功
-	 */
-	@Override
-	public void updateContributeValue(long zongMenId, long playerId, int value) {
-		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
-		if (zongMenInfo == null) {
-			fail(ErrorMsgEnum.zong_men_not_exist);
-		}
-		ZongMenMember member = zongMenInfo.getMember(playerId);
-		if (member == null) {
-			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
-		}
-		member.setTotalContribution(value);
-	}
-
 	@Override
 	public ZongMenServiceInfo randomJoin(long playerId) {
 		Collection<ZongMen> allZongMen = ZongMenManager.getInstance().getAllZongMen(); 
@@ -470,12 +454,12 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 	
 
 	@Override
-	public int getBargainPrice(long zongmenId) {
+	public int[] getBargainPrice(long zongmenId) {
 		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongmenId);
 		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
 		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
 		int bargainTotalNum = bargain.getBargainTotalNum();
 		int price = guildBargainConfig.Price[1] - bargainTotalNum;
-		return price;
+		return new int[] {guildBargainConfig.ID,price};
 	}
 }

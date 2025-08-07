@@ -190,35 +190,14 @@ public class QuestHandler extends GameBaseHandler {
 		long playerId = client.getPlayerId();
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 //		QuestModule questModule = player.getModule(QuestModule.class);
-		PointRewardModule pointRewardModule = player.getPointRewardModule();
-		// 检测是否领取宗门活跃度奖励
-		if (type == QuestTypeEnum.ZongMen) {
-			if (player.getZongMenId() == 0) {
-				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
-				return;
-			}
-			// 领取宗门活跃度奖励
-			ZongMenHelper
-					.sendMsgToZongMenServer(player,
-							ZongMenMsg.ZongMenActiveRewardRequest_40000045.newBuilder().addAllIndexList(req.getIndexList()).build())
-					.onSuccess(result -> {
-						if (result.getErrorCode() == ErrorMsgEnum.ok.ID) {
-							if (addRewardPoint(false, client, pointRewardModule, type, index, resp))
-								return;
-							client.sendProtocol(resp);
-						} else {
-							client.sendProtocol(resp, result.getErrorCode());
-						}
-					})
-					.onFailure(err -> {
-						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
-						err.printStackTrace();
-					});
+		PointRewardModule pointRewardModule = player.getPointRewardModule(); 
+		
+		ResultObject resultObject = pointRewardModule.addReward(PointRewardType.QUEST, type.ID, Ints.toArray(index));
+		if (!resultObject.isOK()) {
+			client.sendProtocol(resp, resultObject.getErrorCode());
 			return;
 		}
-
-		if (addRewardPoint(true, client, pointRewardModule, type, index, resp))
-			return;
+		resp.addAllRewards((Iterable<? extends RewardInfo>) resultObject.getValue());
 		client.sendProtocol(resp.build());
 		if (type == QuestTypeEnum.SevenDaysCarniva) {
 			for (Integer integer : index) {

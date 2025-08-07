@@ -2,9 +2,7 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.EquipTowerHelpRewardInfo;
@@ -83,6 +81,7 @@ import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -159,6 +158,7 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattlePVEVPDataResponse_1300054a, this::pVEVPData);
         putInvoker(PbProtocol.BattlePVEVPRecordResponse_13000551, this::pVEVPRecord);
         putInvoker(PbProtocol.BattlePVEVPChallengeResponse_13000553, this::pVEVPChallenge);
+        putInvoker(PbProtocol.BattleBuyTicketResponse_13000555, this::buyTicket);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -561,10 +561,8 @@ public class ClientBattleHandler extends BaseHandler {
         Client client = (Client) netClient;
     }
 
-
     private void mountainGetReward(NetClient netClient, Object message) {
     }
-
 
     private void mountainMapReset(NetClient netClient, Object message) {
         BattleMountainMapResetResponse_13000546 resp = (BattleMountainMapResetResponse_13000546) message;
@@ -599,6 +597,12 @@ public class ClientBattleHandler extends BaseHandler {
     private void pVEVPChallenge(NetClient netClient, Object message) {
         BattlePVEVPChallengeResponse_13000553 resp = (BattlePVEVPChallengeResponse_13000553) message;
         List<PlayerRankInfo> playersList = resp.getPlayersList();
+        Client client = (Client) netClient;
+    }
+
+    private void buyTicket(NetClient netClient, Object message) {
+        BattleBuyTicketResponse_13000555 resp = (BattleBuyTicketResponse_13000555) message;
+        int buyCount = resp.getBuyCount();
         Client client = (Client) netClient;
     }
 }

@@ -308,14 +308,8 @@ public class PlayerHelper {
 		}
 		List<RewardInfo> rewards = null;
 		try {
-			if (ZongMenHelper.isZongMenAsset(id)){//跟新宗门资源
-				rewards = new ArrayList<>();
-				 rewards.add(ZongMenHelper.addZongMenResources(player, id, value, opType));
-			}else {
-				GoodsModule goodsModule = player.getGoodsModule(id);
-				rewards = goodsModule.addReward(id, value, opType);
-			}
-
+			GoodsModule goodsModule = player.getGoodsModule(id);
+			rewards = goodsModule.addReward(id, value, opType);
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.handleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resourceUpdate(player, id, value, opType, true);
@@ -404,18 +398,8 @@ public class PlayerHelper {
 		}
 
 		//宗门贡献度
-		boolean ret = false;
-		if (id == Asset.ZongMenContribute.ID){
-			if (player.getZongMenId() == 0){//宗门不存在
-				return ;
-			}else {
-				ret = player.getZongmenModule().subContribute(value);
-			}
-		} else {
-			GoodsModule goodsModule = player.getGoodsModule(id);
-			ret = goodsModule.del(id, value, consumeType);
-		}
-
+		GoodsModule goodsModule = player.getGoodsModule(id);
+		boolean ret = goodsModule.del(id, value, consumeType);
 		if (ret) {
 			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);
 //			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,

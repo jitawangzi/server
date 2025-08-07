@@ -7,11 +7,11 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ZongMenMsgRequest_41000045Test extends ServerTest{
+public class BattleBuyTicketRequest_13000554Test extends ServerTest{
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgPush_41000045.Builder builder = cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgPush_41000045.newBuilder() ; 
+		cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554.newBuilder() ; 
 		
 		
 		
@@ -20,7 +20,7 @@ public class ZongMenMsgRequest_41000045Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgPush_41000045.Builder builder = cn.game.protocol.protobuf.ZongMenCrossMsg.ZongMenMsgPush_41000045.newBuilder() ; 
+		cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554.newBuilder() ; 
 		
 		
 		
@@ -28,7 +28,7 @@ public class ZongMenMsgRequest_41000045Test extends ServerTest{
 	}
 	
 	public static void main(String args[]) throws Exception {
-	    ZongMenMsgRequest_41000045Test instance = new ZongMenMsgRequest_41000045Test();
+	    BattleBuyTicketRequest_13000554Test instance = new BattleBuyTicketRequest_13000554Test();
 	    instance.start();
 	}
 

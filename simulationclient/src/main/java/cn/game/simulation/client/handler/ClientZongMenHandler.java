@@ -1,14 +1,15 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenActiveRewardResponse_40000046;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenAllInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBargainBuyResponse_40000063;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBargainResponse_40000061;
@@ -23,11 +24,11 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyPlayerResponse_4000007d
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyProto;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardResponse_40000073;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateResponse_40000068;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenLogProto;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenQuickJoinResponse_40000066;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenUpdateMemberFightPowerResponse_40000052;
 import cn.game.protocol.protobuf.ZongMenMsg.applyJoinZongMenResponse_40000008;
 import cn.game.protocol.protobuf.ZongMenMsg.createZongMenResponse_40000006;
 import cn.game.protocol.protobuf.ZongMenMsg.dissolveZongMenResponse_40000012;
@@ -39,9 +40,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.quitZongMenResponse_40000018;
 import cn.game.protocol.protobuf.ZongMenMsg.setZongMenMemberPositionResponse_40000016;
 import cn.game.protocol.protobuf.ZongMenMsg.setZongMenSettingResponse_40000014;
 import cn.game.protocol.protobuf.ZongMenMsg.updateMemberAuthResponse_40000042;
-import cn.game.protocol.protobuf.ZongMenMsg.updateZongMenAssetResponse_40000038;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateResponse_40000068;
 
 @Component
 public class ClientZongMenHandler extends GameBaseHandler {
@@ -69,12 +68,9 @@ public class ClientZongMenHandler extends GameBaseHandler {
         putInvoker(PbProtocol.getZongMenInfoResponse_40000022, this::getInfo);
         putInvoker(PbProtocol.getZongMenLogResponse_40000026, this::getLog);
         putInvoker(PbProtocol.updateMemberAuthResponse_40000042, this::updateMemberAuth);
-        putInvoker(PbProtocol.ZongMenActiveRewardResponse_40000046, this::activeReward);
         putInvoker(PbProtocol.ZongMenBargainResponse_40000061, this::bargain);
         putInvoker(PbProtocol.ZongMenBargainBuyResponse_40000063, this::bargainBuy);
         putInvoker(PbProtocol.ZongMenQuickJoinResponse_40000066, this::quickJoin);
-        putInvoker(PbProtocol.updateZongMenAssetResponse_40000038, this::updateAsset);
-        putInvoker(PbProtocol.ZongMenUpdateMemberFightPowerResponse_40000052, this::updateMemberFightPower);
         putInvoker(PbProtocol.ZongMenBountyAcceptResponse_40000071, this::bountyAccept);
         putInvoker(PbProtocol.ZongMenBountyRewardResponse_40000073, this::bountyReward);
         putInvoker(PbProtocol.ZongMenBountyTargetRefreshResponse_40000075, this::bountyTargetRefresh);
@@ -154,12 +150,6 @@ public class ClientZongMenHandler extends GameBaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void activeReward(NetClient netClient, Object message) {
-        ZongMenActiveRewardResponse_40000046 resp = (ZongMenActiveRewardResponse_40000046) message;
-        List<Integer> rewardIndexListList = resp.getRewardIndexListList();
-        List<RewardInfo> dropsList = resp.getDropsList();
-        Client client = (Client) netClient;
-    }
 
     private void bargain(NetClient netClient, Object message) {
         ZongMenBargainResponse_40000061 resp = (ZongMenBargainResponse_40000061) message;
@@ -176,17 +166,6 @@ public class ClientZongMenHandler extends GameBaseHandler {
     private void quickJoin(NetClient netClient, Object message) {
         ZongMenQuickJoinResponse_40000066 resp = (ZongMenQuickJoinResponse_40000066) message;
         ZongMenAllInfo info = resp.getZongmen();
-        Client client = (Client) netClient;
-    }
-
-    private void updateAsset(NetClient netClient, Object message) {
-        updateZongMenAssetResponse_40000038 resp = (updateZongMenAssetResponse_40000038) message;
-        Client client = (Client) netClient;
-    }
-
-    private void updateMemberFightPower(NetClient netClient, Object message) {
-        ZongMenUpdateMemberFightPowerResponse_40000052 resp = (ZongMenUpdateMemberFightPowerResponse_40000052) message;
-        boolean result = resp.getResult();
         Client client = (Client) netClient;
     }
 

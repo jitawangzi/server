@@ -35,7 +35,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 
 	@Override
 	protected void inititialize() {
-		putInvoker(PbProtocol.ZongMenMsgRequest_41000045, this::dispatchMsg);
+		putInvoker(PbProtocol.ZongMenMsgPush_41000045, this::dispatchMsg);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 	}
 
 	private void dispatchMsg(NetClient client, Object o) {
-		ZongMenCrossMsg.ZongMenMsgRequest_41000045 request = (ZongMenCrossMsg.ZongMenMsgRequest_41000045) o;
+		ZongMenCrossMsg.ZongMenMsgPush_41000045 request = (ZongMenCrossMsg.ZongMenMsgPush_41000045) o;
 		int msgId = request.getMsgId();
 		long playerId = request.getPlayerId();
 		long zongMenId = request.getZongMenId();
@@ -66,15 +66,13 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 				case PbProtocol.setZongMenMemberPositionRequest_40000015 ->
 					setZongMenMemberPosition(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.quitZongMenRequest_40000017 -> quitZongMen(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.updateZongMenAssetRequest_40000037 -> updateZongMenAsset(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.updateMemberAuthRequest_40000041 -> updateMemberAuth(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.ZongMenActiveRewardRequest_40000045 -> ZongMenActiveReward(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.ZongMenBargainRequest_40000060 -> bargain(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.ZongMenBargainBuyRequest_40000062 -> buyBargain(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.findZongMenRequest_40000003 -> findZongMen(zongMenId, playerId, message, paramList, client);
 				case PbProtocol.ChatMessagePush_31010001 -> zongMenChat(zongMenId, playerId, message, paramList, client);
-				case PbProtocol.ZongMenUpdateContributeValueReq_40000057 ->
-					updateContributeValue(zongMenId, playerId, message, paramList, client);
+				default -> {
+					ZongMenManager.log.error("Unknown msgId: " + msgId + " for playerId: " + playerId);
+					sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, msgId + 1);
+				}
 				}
 
 			} catch (LogicException e) {
@@ -189,20 +187,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 				PbProtocol.quitZongMenResponse_40000018);
 	}
 
-	// 更新宗门资产
-	private void updateZongMenAsset(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMenMsg.updateZongMenAssetRequest_40000037 req = (ZongMenMsg.updateZongMenAssetRequest_40000037) message;
-
-		req.getZongMenAssetMapsList().forEach(reward -> {
-			int id = reward.getAsset().getId();
-			int num = (int) reward.getAsset().getCount();
-			zongmenService.updateZongmenAsset(zongMenId, playerId, id, num);
-		});
-
-		sendMsgToGameServer(playerId, client, ZongMenMsg.updateZongMenAssetResponse_40000038.newBuilder().build(),
-				PbProtocol.updateZongMenAssetResponse_40000038);
-	}
-
 	// 成员权限管理
 	private void updateMemberAuth(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMenMsg.updateMemberAuthRequest_40000041 req = (ZongMenMsg.updateMemberAuthRequest_40000041) message;
@@ -221,30 +205,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 				PbProtocol.updateMemberAuthResponse_40000042);
 	}
 
-	// 领取宗门活跃度奖励
-	private void ZongMenActiveReward(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMenMsg.ZongMenActiveRewardRequest_40000045 req = (ZongMenMsg.ZongMenActiveRewardRequest_40000045) message;
-
-		zongmenService.receiveActiveReward(zongMenId, playerId, req.getIndexListList());
-		sendMsgToGameServer(playerId, client, ZongMenMsg.ZongMenActiveRewardResponse_40000046.newBuilder().build(),
-				PbProtocol.ZongMenActiveRewardResponse_40000046);
-	}
-
-	// 宗门砍价
-	private void bargain(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		int count = zongmenService.bargain(zongMenId, playerId);
-		ZongMenMsg.ZongMenBargainResponse_40000061.Builder res = ZongMenMsg.ZongMenBargainResponse_40000061.newBuilder();
-		res.setCount(count);
-		sendMsgToGameServer(playerId, client, res.build(), PbProtocol.ZongMenBargainResponse_40000061);
-	}
-
-	// 砍价购买
-	private void buyBargain(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		zongmenService.buyBargain(zongMenId, playerId);
-		sendMsgToGameServer(playerId, client, ZongMenMsg.ZongMenBargainBuyResponse_40000063.newBuilder().build(),
-				PbProtocol.ZongMenBargainBuyResponse_40000063);
-	}
-
 	// 查找宗门
 	private void findZongMen(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
 		ZongMen info = zongmenService.getZongmen(zongMenId);
@@ -258,15 +218,6 @@ public class ZongMenCrossHandler extends GameBaseHandler {
 		ZongMen info = zongmenService.getZongmen(zongMenId);
 		List<Long> memberIdList = new ArrayList<>(info.getModule().menMemberMap.keySet());
 		ZongMenHelper.broadcastNotifyMsgToPlayer(message, PbProtocol.ChatMessagePush_31010001, memberIdList);
-	}
-
-	// 更新贡献度
-	private void updateContributeValue(long zongMenId, long playerId, Message message, List<String> paramList, NetClient client) {
-		ZongMenMsg.ZongMenUpdateContributeValueReq_40000057 req = (ZongMenMsg.ZongMenUpdateContributeValueReq_40000057) message;
-
-		zongmenService.updateContributeValue(zongMenId, playerId, req.getValue());
-		sendMsgToGameServer(playerId, client, ZongMenMsg.ZongMenUpdateContributeValueRes_40000058.newBuilder().setResult(true).build(),
-				PbProtocol.ZongMenUpdateContributeValueRes_40000058);
 	}
 
 	public void sendErrorCodeMsgToGameServer(long playerId, NetClient client, int errorCode, int msgId) {

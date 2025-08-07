@@ -6,7 +6,6 @@ import java.util.List;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
 import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
@@ -35,8 +34,6 @@ public class ZongMenModule extends BasePlayerModule {
 	private long lastId;
 	/** 宗门反复加入次数 * */
 	int disbandCount;
-	/** 宗门贡献值 */
-	long contribute;
 
 	/**
 	 * 下次加入宗门的时间 第二次及后续解散时，宗主需要1小时才可加入其它宗门（ZongmenSuzerainCD）
@@ -101,10 +98,24 @@ public class ZongMenModule extends BasePlayerModule {
 		}
 		case NewDay -> { // 跨天刷新宗门任务
 			refreshZongMenTask();
-			donateMap.clear(); 
+			donateMap.clear();
 			// 砍价重置为1次
 			player.getCurrencyModule().setCount(Asset.ZongMenBargain.ID, 1);
-			bargainCount = 0 ; 
+			bargainCount = 0;
+			isBargainBuy = false;
+		}
+		case GetItem -> {
+			// 可能更新公会资源
+			if (player.getZongMenId() > 0) {
+				int id = event.get(0);
+				int count = event.get(1);
+				if (id == Asset.ZongMenExp.ID || id == Asset.ZongMenPoint.ID) {
+					ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getZongMenId()); 
+					zongmenProxy.addZongmenAsset(player.getZongMenId(), playerId, id, count) ;
+				}else if (id == Asset.ZongMenContribute.ID) {
+					
+				}
+			}; 
 		}
 		}
 	}
@@ -175,40 +186,9 @@ public class ZongMenModule extends BasePlayerModule {
 //        player.getShopModule().refreshZongMenShop(17);
 	}
 
-	private void getZongMenInfo() {
-		ZongMenMsg.getZongMenInfoRequest_40000021 request = ZongMenMsg.getZongMenInfoRequest_40000021.newBuilder().build();
-		ZongMenHandler.sendMsgToZongMenServer(player, request).onSuccess(msg -> {
-			// 玩家宗门 可能被解散了
-			if (msg.errorCode == ErrorMsgEnum.zong_men_not_exist.ID) {
-				clearZongMen();
-			} else if (msg.errorCode == ErrorMsgEnum.ok.ID) {
-				ZongMenMsg.getZongMenInfoResponse_40000022 response = (ZongMenMsg.getZongMenInfoResponse_40000022) msg.response;
-//				if (StringUtils.isEmpty(zongMenName)) {
-//					setZongMenInfo(response.getInfo());
-//				}
-			}
-		}).onFailure(err -> {
-			err.printStackTrace();
-		});
-	}
-
-	@Deprecated
-	public void clearZongMen() {
-//		applyJoinList.clear();
-//		player.getShopModule().clearZongMenShop();
-		contribute = 0;
-		// 退出宗门 暂停宗门任务进度
-		QuestModule questModule = player.getQuestModule();
-		List<QuestConfig> zongMenTaskList = QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
-		for (QuestConfig config : zongMenTaskList) {
-			questModule.remove(config.ID);
-		}
-		// 清除宗门活跃度领取记录
-		player.getPointRewardModule().clearActiveRewardList(PointRewardType.QUEST, QuestTypeEnum.ZongMen.ID);
-	}
 
 	public void kickZongMen(ZongMenMsg.notifyQuitZongMen_40000024 quitZongMenMsg) {
-		clearZongMen();
+		quit();
 		player.getGameClient().sendProtocol(quitZongMenMsg);
 	}
 
@@ -221,13 +201,15 @@ public class ZongMenModule extends BasePlayerModule {
 		player.getGameClient().sendProtocol(req);
 	}
 
+	/** 
+	 * 退出一个公会
+	 */
 	public void quit() {
 		if (lastId == 0) {
 			return;
 		}
 		lastId = 0;
-		contribute = 0;
-
+		player.getCurrencyModule().setCount(Asset.ZongMenContribute.ID, 0);
 	}
 
 	public void join(long zongmenId,String zongmenName) {
@@ -264,33 +246,6 @@ public class ZongMenModule extends BasePlayerModule {
 	public void removeApplyJoinList(Long zongMenId) {
 		applyJoinList.remove(zongMenId);
 	}
-
-	public long getContribute() {
-		return contribute;
-	}
-
-	public void setContribute(long contribute) {
-		this.contribute = contribute;
-	}
-
-	public boolean subContribute(long value) {
-		if (this.contribute > value) {
-			this.contribute -= value;
-			ZongMenHelper.sendMsgToZongMenServer(player,
-					ZongMenMsg.ZongMenUpdateContributeValueReq_40000057.newBuilder().setIsAdd(false).setValue((int) contribute).build());
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public void addContribute(int value) {
-		if (value < 0) {
-			return;
-		}
-		this.contribute += value;
-	}
-
 	public long getLastId() {
 		return lastId;
 	}
@@ -332,5 +287,14 @@ public class ZongMenModule extends BasePlayerModule {
 	public boolean isBargainBuy() {
 		return isBargainBuy;
 	}
+
+	public void setBargainCount(int bargainCount) {
+		this.bargainCount = bargainCount;
+	}
+
+	public void setBargainBuy(boolean isBargainBuy) {
+		this.isBargainBuy = isBargainBuy;
+	}
+	
 	
 }

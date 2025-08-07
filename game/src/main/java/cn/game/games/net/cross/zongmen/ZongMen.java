@@ -10,6 +10,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.cache.entity.ZongmenData;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
@@ -253,6 +254,7 @@ public class ZongMen {
 
 	// 解散宗门
 	public void dissolveZongMen() {
+
 		// 删除所有玩家
 		module.removeAllMember();
 		// 删除宗门排行榜
@@ -276,7 +278,7 @@ public class ZongMen {
 	}
 
 	public void quitZongMen(ZongMenMember member, String playerName) {
-		module.removeMember(member.getPlayerId());
+		module.removeMember(member.getPlayerId(),0);
 		module.handleEvent(ZongMenConstants.ZongMenEvenType.QUIT_ZONG_MEN, this, playerName);
 	}
 
@@ -312,10 +314,8 @@ public class ZongMen {
 			module.setLiveness(module.liveness + num);
 		} else if (id == Asset.ZongMenExp.ID) {// 宗门经验
 			addExp(num);
-		} else if (id == Asset.ZongMenContribute.ID) {// 个人贡献
-			ZongMenMember member = getMember(playerId);
-			member.addcontribution(num);
-
+		} else {
+			throw new IllegalArgumentException("不支持的宗门资产类型: " + id);
 		}
 	}
 
@@ -366,7 +366,7 @@ public class ZongMen {
 	public void kickMember(List<Long> targetPidListList, String playerName) {
 		PlayerManager.getInstance().batchGetSimplePlayerListFromRedisAsync(targetPidListList).onSuccess(res -> {
 			res.forEach(simplePlayer -> {
-				module.removeMember(simplePlayer.getId());
+				module.removeMember(simplePlayer.getId(),1);
 				handleEvent(ZongMenConstants.ZongMenEvenType.ZONG_MEN_KICK_MEMBER, playerName, simplePlayer.getName());
 			});
 			// 更新宗门战斗力排行榜
@@ -384,48 +384,44 @@ public class ZongMen {
 	 */
 	public void checkZongZhuTransfer(long now) {
 		List<ZongMenMember> memberList = new ArrayList<>(module.menMemberMap.values());
+		ZongMenMember masterMember = module.getMasterMember(); 
+		SimplePlayer simplePlayerMaster = PlayerHelper.getSimplePlayer(masterMember.getPlayerId()); 
+		if (DateUtil.diffDays(now, simplePlayerMaster.getLastLoginTimer()) < GlobalConst.ZongmenSuzerainTransfer) {
+			return ; 
+		}
 
+		if (memberList.size() <= 1) {// 宗门没人
+			return;
+		}
+		
 		memberList.sort((m1, m2) -> {
 			if (m1.position == m2.position) {
-				if (m1.getTotalContribution() == m2.getTotalContribution()) {
-					return m1.getPower() - m2.getPower();
+				if (m1.getWeekContribution() == m2.getWeekContribution()) {
+					SimplePlayer simplePlayer1 = PlayerHelper.getSimplePlayer(m1.getPlayerId());
+					SimplePlayer simplePlayer2 = PlayerHelper.getSimplePlayer(m2.getPlayerId());
+					return (int) (simplePlayer2.lastLoginTimer - simplePlayer1.lastLoginTimer) ;
 				}
-				return m1.getTotalContribution() - m2.getTotalContribution();
+				return m1.getWeekContribution() - m2.getWeekContribution();
 			}
 			return m1.position < m2.position ? 1 : -1;
 		});
 		ZongMenMember zongZhu = memberList.get(0);
-		PlayerManager.getInstance().getSimplePlayerFromRedisAsync(zongZhu.getPlayerId()).onSuccess(player -> {
-			if (DateUtil.diffDays(now, player.getLastLoginTimer()) >= GlobalConst.ZongmenSuzerainTransfer) {
-				if (memberList.size() <= 1) {// 宗门没人
-					return;
-				}
-				List<Long> targetPidListList = new ArrayList<>();
-				PlayerManager.getInstance().batchGetSimplePlayerFromRedisAsync(targetPidListList).thenAccept(simplePlayerMap -> {
-					// 被转让的人
-					ZongMenMember targetZongZhu = null;
-					for (int i = 1; i < memberList.size(); i++) {
-						long lastLoginTimer = simplePlayerMap.get(memberList.get(i).getPlayerId()).getLastLoginTimer();
-						if (DateUtil.diffDays(now, lastLoginTimer) < GlobalConst.ZongmenSuzerainTransfer) {
-							targetZongZhu = memberList.get(i);
-							break;
-						}
-					}
-					if (targetZongZhu == null) {
-						return;
-					}
-					// 转让宗主
-					zongZhuTransfer(zongZhu, targetZongZhu);
-
-				}).exceptionally(err -> {
-					err.printStackTrace();
-					return null;
-				});
+		
+		// 被转让的人
+		ZongMenMember targetZongZhu = null;
+		for (int i = 1; i < memberList.size(); i++) {
+			SimplePlayer simplePlayer = PlayerHelper.getSimplePlayer(masterMember.getPlayerId()); 
+			long lastLoginTimer =  simplePlayer.lastLoginTimer; 
+			if (DateUtil.diffDays(now, lastLoginTimer) < GlobalConst.ZongmenSuzerainTransfer) {
+				targetZongZhu = memberList.get(i);
+				break;
 			}
-		}).onFailure(err -> {
-			err.printStackTrace();
-		});
-
+		}
+		if (targetZongZhu == null) {
+			return;
+		}
+		// 转让宗主
+		zongZhuTransfer(zongZhu, targetZongZhu);
 	}
 
 	public void zongZhuTransfer(ZongMenMember zongZhu, ZongMenMember targetZongZhu) {

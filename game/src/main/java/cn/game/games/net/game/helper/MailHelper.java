@@ -69,7 +69,7 @@ public class MailHelper {
 	 * @param contentArguments 邮件内容参数，可能需要外部参数来格式化邮件内容。
 	 * @param notify
 	 */
-	public static Future<@Nullable Object> sendMail(long receiverId, int mailId, Object[] contentArguments, boolean notify) {
+	public static Future<@Nullable Object> sendMail(long receiverId, int mailId, boolean notify, Object... contentArguments) {
 		if (mailId == 0) {
 			return Future.failedFuture("mailId cannot be 0");
 		}

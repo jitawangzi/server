@@ -17,6 +17,8 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
 import cn.game.core.util.IdUtil.IdType;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
+import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.zongmen.ZongMenHandler;
 import cn.game.protocol.generated.enume.Asset;
@@ -137,40 +139,6 @@ public class ZongMenHelper {
 		serverIdList.forEach(serverId -> {
 			VxHolder.requestRemoteServer(serverId, req);
 		});
-	}
-
-	public static boolean isZongMenAsset(int idType) {
-		return idType == Asset.ZongMenPoint.ID || idType == Asset.ZongMenExp.ID || idType == Asset.ZongMenContribute.ID;
-	}
-
-	/**
-	 * 是否包含 宗门的资源
-	 * @param assetArr 资源
-	 * @return true 包含 需要去宗门服务器处理 扣除逻辑 ，false 不包含
-	 */
-	public static boolean containsZongMenAsset(int[][] assetArr) {
-		for (int[] arr : assetArr) {
-			int idType = arr[0];
-			if (isZongMenAsset(idType)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static RewardMsg.RewardInfo addZongMenResources(Player player, int id, int value, OpType opType) {
-		if (id == Asset.ZongMenContribute.ID) {
-			player.getZongmenModule().addContribute(value);
-		}
-		RewardMsg.RewardInfo rewardInfo = RewardMsg.RewardInfo.newBuilder()
-				.setAsset(BaseMsg.AssetInfo.newBuilder().setId(id).setCount(value).build())
-				.build();
-		// 领取的是宗门任务奖励 则存储宗门奖励 并同步到宗门服务器
-		// 同步宗门任务掉落 到宗门服务器
-		ZongMenMsg.updateZongMenAssetRequest_40000037.Builder builder = ZongMenMsg.updateZongMenAssetRequest_40000037.newBuilder();
-		builder.addZongMenAssetMaps(rewardInfo);
-		sendMsgToZongMenServer(player, builder.build());
-		return rewardInfo;
 	}
 
 	public static Future<ZongMenHandler.ZongMenCallbackMsg> sendMsgToZongMenServer(Player player, Message req, String... params) {

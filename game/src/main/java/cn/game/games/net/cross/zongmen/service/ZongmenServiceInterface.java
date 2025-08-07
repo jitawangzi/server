@@ -95,14 +95,23 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface {
 	void updateMemberAuth(long zongMenId, MemberAuthRequest request);
 
 	/**
-	 * 更新宗门资产
+	 * 增加宗门资产，经验、活跃度等
 	 * @param zongMenId 宗门ID
 	 * @param playerId 玩家ID
 	 * @param assetId 资产ID
 	 * @param value 资产值
 	 * @return 是否成功
 	 */
-	void updateZongmenAsset(long zongMenId, long playerId, int assetId, int value);
+	Future<?> addZongmenAsset(long zongMenId, long playerId, int assetId, int value);
+	
+	/** 
+	 * 增加某个成员的贡献值
+	 * @param zongMenId
+	 * @param playerId
+	 * @param value
+	 * @return
+	 */
+	Future<?> addMemberContribute(long zongMenId, long playerId, int value);
 
 	/**
 	 * 领取宗门活跃度奖励
@@ -119,7 +128,7 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface {
 	 * @param playerId 玩家ID
 	 * @return 当前的砍价id， 砍掉了多少的数量
 	 */
-	int bargain(long zongMenId, long playerId);
+	int[] bargain(long zongMenId, long playerId);
 
 	/**
 	 * 砍价购买
@@ -132,18 +141,9 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface {
 	/** 
 	 * 查看工会的砍价物品当前购买价格
 	 * @param zongmenId
-	 * @return
+	 * @return  当前的砍价id， 当前购买价格
 	 */
-	int getBargainPrice(long zongmenId);
-
-	/**
-	 * 更新贡献度
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @param value 贡献度值
-	 * @return 是否成功
-	 */
-	void updateContributeValue(long zongMenId, long playerId, int value);
+	int[] getBargainPrice(long zongmenId);
 
 	/** 
 	 * 玩家随机加入一个可以加的宗门
