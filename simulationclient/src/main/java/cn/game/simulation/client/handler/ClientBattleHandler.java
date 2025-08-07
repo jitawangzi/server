@@ -82,6 +82,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordResponse_13000529;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -159,6 +160,7 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattlePVEVPRecordResponse_13000551, this::pVEVPRecord);
         putInvoker(PbProtocol.BattlePVEVPChallengeResponse_13000553, this::pVEVPChallenge);
         putInvoker(PbProtocol.BattleBuyTicketResponse_13000555, this::buyTicket);
+        putInvoker(PbProtocol.BattleEquipTowerRecordResponse_13000529, this::equipTowerRecord);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -603,6 +605,11 @@ public class ClientBattleHandler extends BaseHandler {
     private void buyTicket(NetClient netClient, Object message) {
         BattleBuyTicketResponse_13000555 resp = (BattleBuyTicketResponse_13000555) message;
         int buyCount = resp.getBuyCount();
+        Client client = (Client) netClient;
+    }
+
+    private void equipTowerRecord(NetClient netClient, Object message) {
+        BattleEquipTowerRecordResponse_13000529 resp = (BattleEquipTowerRecordResponse_13000529) message;
         Client client = (Client) netClient;
     }
 }

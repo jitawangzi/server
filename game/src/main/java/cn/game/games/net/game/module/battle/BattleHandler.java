@@ -173,6 +173,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleMountainMapResetResponse_130005
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainNextFlooResponse_13000548;
 import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554;
 import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordRequest_13000528;
+import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordResponse_13000529;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -250,6 +252,7 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleMountainMapResetRequest_13000545, this::mountainMapReset);
         putInvoker(PbProtocol.BattleMountainNextFloorRequest_13000547, this::mountainNextFloor);
         putInvoker(PbProtocol.BattleBuyTicketRequest_13000554, this::buyTicket);
+        putInvoker(PbProtocol.BattleEquipTowerRecordRequest_13000528, this::equipTowerRecord);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1745,8 +1748,20 @@ public class BattleHandler extends GameBaseHandler {
         BattleBuyTicketResponse_13000555.Builder resp = BattleBuyTicketResponse_13000555.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
-        pvevpBattle. buyCount();
+        pvevpBattle.buyCount();
         resp.setBuyCount(pvevpBattle.getBuyCount());
         client.sendProtocol(resp.build());
+    }
+
+    private void equipTowerRecord(NetClient client, Object message) {
+        BattleEquipTowerRecordRequest_13000528 req = (BattleEquipTowerRecordRequest_13000528) message;
+        int floor = req.getFloor();
+        String record = req.getRecord();
+        BattleEquipTowerRecordResponse_13000529 defaultInstance = BattleEquipTowerRecordResponse_13000529.getDefaultInstance();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        EquipTowerBattle equipTowerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
+        equipTowerBattle.setRecord(floor,record);
+        client.sendProtocol(defaultInstance);
     }
 }
