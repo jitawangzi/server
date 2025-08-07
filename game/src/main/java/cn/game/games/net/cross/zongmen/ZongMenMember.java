@@ -32,19 +32,6 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 	/** 领取过的宗门活跃度奖励  */
 	List<Integer> rewardLivenessIndexList = new ArrayList<>();
 
-	/** 是否已砍价 */
-	@Deprecated
-	public transient boolean isBargain;
-	/** 砍价时间 */
-	@Deprecated
-	transient long bargainTime;
-	@Deprecated
-	/** 砍价后是否购买 */
-	transient boolean isBargainBuy;
-	/** 当日累计砍掉的价格数量 */
-	private int bargainCount; 
-	
-
 	public ZongMenMember() {
 	}
 
@@ -133,11 +120,6 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		case CROSS_DAY -> {
 			// 每日重置 贡献度
 			this.contribution = 0;
-			// 每日重置砍价状态
-			this.isBargain = false;
-			this.bargainTime = 0;
-			this.isBargainBuy = false;
-			bargainCount = 0;
 		}
 		case CROSS_WEEK -> {
 			this.weekContribution = 0;

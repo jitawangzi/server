@@ -405,34 +405,10 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		if (member == null) {
 			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
-		if (member.isBargain) {
-			fail(ErrorMsgEnum.repeat_request);
-		}
 
 		ZongMenBargain bargain = zongMenInfo.getModule().getBargain();
 		int bargainCount = bargain.performBargain(playerId,zongMenInfo.getLv());
 		return new int[] {bargain.getBargainItemId(), bargainCount};
-	}
-
-	/**
-	 * 砍价购买
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @return 是否成功
-	 */
-	@Override
-	public void buyBargain(long zongMenId, long playerId) {
-		ZongMen zongMenInfo = ZongMenManager.getInstance().getZongMen(zongMenId);
-		if (zongMenInfo == null) {
-			fail(ErrorMsgEnum.zong_men_not_exist);
-		}
-		ZongMenMember member = zongMenInfo.getMember(playerId);
-		if (member == null) {
-			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
-		}
-		if (!member.isBargain) {
-			fail(ErrorMsgEnum.zong_men_player_not_bargain);
-		}
 	}
 
 	@Override

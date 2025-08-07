@@ -130,14 +130,6 @@ public interface ZongmenServiceInterface extends RemoteCrossServerInterface {
 	 */
 	int[] bargain(long zongMenId, long playerId);
 
-	/**
-	 * 砍价购买
-	 * @param zongMenId 宗门ID
-	 * @param playerId 玩家ID
-	 * @return 是否成功
-	 */
-	void buyBargain(long zongMenId, long playerId);
-
 	/** 
 	 * 查看工会的砍价物品当前购买价格
 	 * @param zongmenId
