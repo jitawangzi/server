@@ -65,16 +65,18 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private int endTime = 0;
     public transient List<BaseMsg.PVEVPRecordData> recordDataList = new ArrayList<>();
 
-    // 限制最大记录数，防止无限增长
-    final int MAX_RECORDS = 50;
+
     public PVEVPBattle() {
     }
 
 
     @Override
     void newDay() {
+        reset();
     }
-
+   public  void initPvevpBattle() {
+        newWeek();
+    }
     @Override
     public void onLogin() {
        if(inBattleRank!=null)
@@ -92,7 +94,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
            inBattleRank = null;
        }
     }
-
     void newWeek() {
         // 获取下周一凌晨的时间戳（毫秒）
         long nextMondayMillis = DateUtil.addWeekBeginTimer(1);
@@ -100,16 +101,13 @@ public class PVEVPBattle extends XiYouBattleHandler {
         endTime= (int)(nextMondayMillis / 1000);
         reset();
     }
-
     /**
      * 每天重置数据
      */
     public void reset() {
-        ticketCount=3;
-        buyCount=4;
+        ticketCount=GlobalConst.DaShengFreeTicket;
+        buyCount=GlobalConst.DaShengBuyTicket;
     }
-
-
     @Override
     public int checkCustom(int id, int subId, long... args) {
 
@@ -174,10 +172,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
             inBattleRank = null;
            // return ResultObject.success();
         }
-
         return ResultObject.success();
     }
-
     void createBattleRecord_Target( long change, boolean iswin,String rediskey) {
         // 给对方积分
         BaseMsg.PVEVPRecordData.Builder recordDataOther = BaseMsg.PVEVPRecordData.newBuilder();
@@ -193,7 +189,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(record2);
-        RedisUtil.getRedis().getList(rediskey).trim(0, MAX_RECORDS - 1);
+        RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport - 1);
     }
     void createBattleRecord_My(SimplePlayer simplePlayer, long change, boolean iswin,String rediskey) {
         BaseMsg.PVEVPRecordData.Builder recordData = BaseMsg.PVEVPRecordData.newBuilder();
@@ -209,7 +205,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(record);
-        RedisUtil.getRedis().getList(rediskey).trim(0, MAX_RECORDS - 1);
+        RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
+ - 1);
 
     }
     void createBattleRecord_Robot(SimplePlayer simplePlayer, long change, boolean iswin,String rediskey){
@@ -225,7 +222,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
         BaseMsg.PVEVPRecordData record = recordData.build();
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(record);
-        RedisUtil.getRedis().getList(rediskey).trim(0, MAX_RECORDS - 1);;
+        RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
+ - 1);;
     }
 
     void getBattleRecordFromRedis() {
@@ -269,12 +267,12 @@ public class PVEVPBattle extends XiYouBattleHandler {
             rankIds.add(3);
             rankIds.add(4);
         }
-        int before = (int) (myscore * 0.7f);
+        int before = (int) (myscore * GlobalConst.DaShengRankingRatio[0]/ 10000.0f);
         if (before >= myscore - 3) {
             before = myscore - 3;
         }
         rankIds.addAll(Rnd.generateRandomNumbers(before, myscore - 1, 3));
-        int end = (int) (myscore * 1.1f);
+        int end = (int) (myscore * GlobalConst.DaShengRankingRatio[1]/ 10000.0f);
         if (end <= myscore + 1) {
             end = myscore + 1;
         }
@@ -424,9 +422,10 @@ public class PVEVPBattle extends XiYouBattleHandler {
         if(buyCount<=0) {
             return;
         }
-        int num = 100;
-        if (  PlayerHelper.isEnough(player, Asset.diamond.ID,num)){
-            PlayerHelper.delResources(player, Asset.diamond.ID,num, OpType.PVEVPBattleBuyTicket);
+        int id = GlobalConst.DaShengTicketPrice[0];
+        int num = GlobalConst.DaShengTicketPrice[1];
+        if (  PlayerHelper.isEnough(player, id,num)){
+            PlayerHelper.delResources(player, id,num, OpType.PVEVPBattleBuyTicket);
         }else {
             return ;
         }

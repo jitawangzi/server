@@ -404,6 +404,17 @@ public class RedisLocalCache {
 
 		return promise.future();
 	}
-	
-
+	/**
+	 * 检查key是否存在
+	 * @param key Redis键
+	 * @return true表示存在，false表示不存在
+	 */
+	public  boolean exists(String key) {
+		try {
+			RBucket<Object> bucket = redissonClient.getBucket(key);
+			return bucket.isExists();
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

@@ -610,6 +610,12 @@ public class BattleModule extends BasePlayerModule  {
 				player.getQuestModule().refreshQuest(QuestTypeEnum.EquipTower);
 				battlesMap.put(battle.getType(), battle);
 			}
+			else if (func == InitialUI.DaSheng) {
+				PVEVPBattle battle = new PVEVPBattle();
+				battle.setPlayer(player);
+				battle.initPvevpBattle();
+				battlesMap.put(battle.getType(), battle);
+			}
 			break;
 		}
 		default:

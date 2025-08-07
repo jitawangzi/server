@@ -77,7 +77,7 @@ public class RankService {
 	 * @param type 排行榜类型
 	 * @return Redis键
 	 */
-	private String getKey(String serverId, RankType type) {
+	public String getKey(String serverId, RankType type) {
 		return CacheType.SET_RANK.key(serverId, type.name());
 	}
 
@@ -604,23 +604,7 @@ public class RankService {
 			if (rankType == RankType.DaShengLeiTaiSeason) {
 				for (String serverId : serverIds) {
 					// 准备NPC数据
-					Map<Long, Long> npcScores = new HashMap<>();
-					List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
-					for (DaShengNPCConfig config : list2) {
-						for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
-							long npcPlayerId = rankPosition;
-							npcScores.put(npcPlayerId, (long) config.Integral);
-						}
-					}
-					// 异步批量设置
-					batchSetScoreAsync(serverId, rankType, npcScores)
-							.whenComplete((result, throwable) -> {
-								if (throwable != null) {
-									log.error("NPC批量初始化失败: serverId={}", serverId, throwable);
-								} else {
-									log.info("NPC批量初始化成功: serverId={}, count={}", serverId, npcScores.size());
-								}
-							});
+					setNpcToRank(serverId,rankType);
 				}
 			}
 		}else
@@ -631,6 +615,27 @@ public class RankService {
 				}
 			}
 		}
+	}
+	public  void setNpcToRank(String serverId, RankType rankType)
+	{
+     // 准备NPC数据
+		Map<Long, Long> npcScores = new HashMap<>();
+		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
+		for (DaShengNPCConfig config : list2) {
+			for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
+				long npcPlayerId = rankPosition;
+				npcScores.put(npcPlayerId, (long) config.Integral);
+			}
+		}
+		// 异步批量设置
+		batchSetScoreAsync(serverId, rankType, npcScores)
+				.whenComplete((result, throwable) -> {
+					if (throwable != null) {
+						log.error("NPC批量初始化失败: serverId={}", serverId, throwable);
+					} else {
+						log.info("NPC批量初始化成功: serverId={}, count={}", serverId, npcScores.size());
+					}
+				});
 	}
 	/**
 	 * 批量设置玩家分数
