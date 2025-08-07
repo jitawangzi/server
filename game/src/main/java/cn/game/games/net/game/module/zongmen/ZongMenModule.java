@@ -97,7 +97,7 @@ public class ZongMenModule extends BasePlayerModule {
 			checkZongMen();
 		}
 		case NewDay -> { // 跨天刷新宗门任务
-			refreshZongMenTask();
+			initZongMenTask();
 			donateMap.clear();
 			// 砍价重置为1次
 			player.getCurrencyModule().setCount(Asset.ZongMenBargain.ID, 1);
@@ -120,16 +120,9 @@ public class ZongMenModule extends BasePlayerModule {
 		}
 	}
 
-	public void refreshZongMenTask() {
-		if (player.getZongMenId() == 0)
-			return;
-		List<QuestConfig> zongMenTaskList = QuestManager.instance().getTypeList(QuestTypeEnum.ZongMen.ID);
+	public void initZongMenTask() {
 		QuestModule questModule = player.getQuestModule();
-		for (QuestConfig config : zongMenTaskList) {
-			questModule.remove(config.ID);
-			questModule.open(config.ID, true);
-			log.info(String.format("玩家[%d] 刷新宗门任务 宗门ID[%d] 任务ID[%d]", player.getPlayerId(), player.getZongMenId(), config.ID));
-		}
+		questModule.refreshQuest(QuestTypeEnum.ZongMen);
 	}
 
 	private void checkZongMen() {
@@ -174,7 +167,7 @@ public class ZongMenModule extends BasePlayerModule {
 	 */
 	private void initFirstTime() {
 		
-        refreshZongMenTask();
+        initZongMenTask();
         player.getShopModule().refreshShopByShopType(17);
 	}
 

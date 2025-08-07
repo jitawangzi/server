@@ -729,6 +729,9 @@ public class ZongMenHandler extends GameBaseHandler {
 		List<RewardInfo> resources = PlayerHelper.addResources(player, guildDonateConfig.Reward, OpType.ZongMenDonate);
 		resp.addAllRewards(resources); 
 		donateMap.add(id); 
+		
+		player.handleEvent(EventTypeEnum.ZongMenDonate);
+		
 		client.sendProtocol(resp);
 	
     }

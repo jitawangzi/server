@@ -877,6 +877,7 @@ public class QuestModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			refreshQuest(QuestTypeEnum.Daily);
+			refreshQuest(QuestTypeEnum.ZongMen);
 			player.getCurrencyModule().setCount(Asset.DailyPoint.ID, 0);
 
 			PointRewardModule pointRewardModule = player.getPointRewardModule();
