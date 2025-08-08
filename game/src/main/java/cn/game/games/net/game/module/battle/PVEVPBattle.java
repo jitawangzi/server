@@ -146,13 +146,14 @@ public class PVEVPBattle extends XiYouBattleHandler {
             // 计算积分
             long myAddScore=  calScore(myScore,Math.abs(targetScore-myScore),true,myScore>targetScore);
             long targetDelScore=  calScore(targetScore,Math.abs(targetScore-myScore),false,myScore<targetScore);
+            myRank= new RankEntry(RankType.DaShengLeiTaiSeason.ID, player.getPlayerId(), myScore+myAddScore);
 
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), myAddScore);
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(), myAddScore);
+            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), myRank.getScore());
+            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(), myRank.getScore());
             RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getPlayerId(), targetDelScore);
             RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getPlayerId(), targetDelScore);
-            // 生成战报
 
+            // 生成战报
             if (isRobot) {
                 createBattleRecord_Robot(null, (int) myAddScore, true,rediskeyMy);
             } else {
@@ -370,6 +371,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             CompletionStage<Void> dataLoadingStage;
             if (myRank.getScore() == 0) {
                 // 新玩家，获取排行榜末尾玩家
+                myRank= new RankEntry(RankType.DaShengLeiTaiSeason.ID, player.getPlayerId(), 1000);
                 dataLoadingStage = RankService.getInstance()
                         .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
                         .thenAccept(rankEntries -> {
