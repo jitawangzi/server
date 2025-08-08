@@ -37,6 +37,7 @@ import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -63,6 +64,8 @@ import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
@@ -73,6 +76,7 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
+import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -84,6 +88,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
+import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.HeroBandBookManager;
@@ -142,8 +147,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static boolean isRobot(long id) {
-		return id < 10000; 
+		return id < 10000;
 	}
+
 	/** 
 	 * 判断玩家是否有足够的物品
 	 * @param player
@@ -342,17 +348,17 @@ public class PlayerHelper {
 	@Deprecated
 	public static void delResources(Player player, int id, int value, int mode, OpType consumeType) {
 		if (value <= 0) {
-			return ;
+			return;
 		}
 		if (mode != 0) {
 			if (value > 100) {
-				return ;
+				return;
 			}
 			long playerValue = player.getGoodsModule(id).getCount(id);
 			value = Math.round(playerValue * (100 - value) / 100f);
 		}
 
-		 delResources(player, id, value, consumeType, true);
+		delResources(player, id, value, consumeType, true);
 	}
 
 	/**
@@ -394,10 +400,10 @@ public class PlayerHelper {
 	public static void delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
 
 		if (value <= 0) {
-			return ;
+			return;
 		}
 
-		//宗门贡献度
+		// 宗门贡献度
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		boolean ret = goodsModule.del(id, value, consumeType);
 		if (ret) {
@@ -1019,9 +1025,9 @@ public class PlayerHelper {
 	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
-	public static boolean checkCondition(Player player, int ... conditions) {
+	public static boolean checkCondition(Player player, int... conditions) {
 
-		return checkCondition(player,false, conditions);
+		return checkCondition(player, false, conditions);
 	}
 
 	/**
@@ -1032,7 +1038,7 @@ public class PlayerHelper {
 	 *            
 	 * @return true,如果满足任意条件
 	 */
-	public static boolean checkCondition(Player player,boolean or, int ... conditions) {
+	public static boolean checkCondition(Player player, boolean or, int... conditions) {
 
 		if (conditions == null || conditions.length == 0) {
 			return true;
@@ -1086,6 +1092,7 @@ public class PlayerHelper {
 			throw new IllegalArgumentException(condition + " 计数类型是0，只能从任务处获取数据");
 		}
 		int id = conditionConfig.idParam;
+		int numParam = conditionConfig.numParam;
 		int[] extParam = conditionConfig.extParam;
 
 		if (type.countType == 2) {
@@ -1098,31 +1105,39 @@ public class PlayerHelper {
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：
-            return switch (type) {
-                case PlayerLevel -> player.getLevel();
-                case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp) ; 
-                case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId()) ; 
-                case ChapterFinish -> {
-                    BattleModule battleModule = player.getModule(BattleModule.class);
-                    yield battleModule.isBattlePass(id) ? 1 : 0;
-                }
-                case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
-                default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);
-            };
+			return switch (type) {
+			case PlayerLevel -> player.getLevel();
+			case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp);
+			case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId());
+			case ChapterFinish -> {
+				BattleModule battleModule = player.getModule(BattleModule.class);
+				yield battleModule.isBattlePass(id) ? 1 : 0;
+			}
+			case EquipQualityNum -> {
+				EquipModule module = player.getModule(EquipModule.class);
+				yield module.getEquipCountGTQuality(extParam[0]);
+			}
+			case EquipEnhanceLevel -> {
+				EquipModule module = player.getModule(EquipModule.class);
+				yield module.getEquipPartCountGTlevel(extParam[0]);
+			}
+			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
+			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);
+			};
 		}
 		throw new IllegalArgumentException(" not suport condition  " + type);
 	}
 
 	public static boolean operator(int value, int configValue, int operator) {
-        return switch (operator) {
-            case 1 -> value > configValue;
-            case 2 -> value >= configValue;
-            case 3 -> value == configValue;
-            case 4 -> value <= configValue;
-            case 5 -> value < configValue;
-            case 6 -> value != configValue;
-            default -> false;
-        };
+		return switch (operator) {
+		case 1 -> value > configValue;
+		case 2 -> value >= configValue;
+		case 3 -> value == configValue;
+		case 4 -> value <= configValue;
+		case 5 -> value < configValue;
+		case 6 -> value != configValue;
+		default -> false;
+		};
 	}
 
 	/**
@@ -1163,7 +1178,7 @@ public class PlayerHelper {
 //		PlayerHelper.refresh(player);
 		if (reconnect) {
 			player.handleEvent(EventTypeEnum.Reconnect);
-		}else {
+		} else {
 			player.handleEvent(EventTypeEnum.Relogin);
 			player.handleEvent(EventTypeEnum.LoginSuccess);
 		}
@@ -1236,7 +1251,6 @@ public class PlayerHelper {
 		PlayerManager.getInstance().initAdd(player);
 		return player;
 	}
-
 
 	public static Future<Player> initPlayerData(Player player) {
 
@@ -1407,11 +1421,10 @@ public class PlayerHelper {
 		data.setOfflineTime(System.currentTimeMillis());
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.parseDate(data.getLoginDate()).getTime()) / 1000));
 
-
 		return saveClientCache(playerId).onSuccess(r -> {
 			clearPlayer(playerId);
 
-			//推送玩家离线的微信通知
+			// 推送玩家离线的微信通知
 			player.addWechatOfflineNotifyTask();
 
 			GameLogger.logout(player);
@@ -1632,8 +1645,7 @@ public class PlayerHelper {
 			return (Future<?>) gameServerInterface.invokeStatic(thisClass, method.getName(), method.getParameterTypes(), methodArgs);
 		} else {
 			// 如果当前方法是实例方法
-			return (Future<?>) gameServerInterface.invoke2(thisClass.getName(), method.getName(), method.getParameterTypes(),
-					methodArgs);
+			return (Future<?>) gameServerInterface.invoke2(thisClass.getName(), method.getName(), method.getParameterTypes(), methodArgs);
 		}
 	}
 
@@ -1654,7 +1666,7 @@ public class PlayerHelper {
 			return PlayerHelper.loadPlayerFromDb(playerId).compose(playerDb -> {
 				return modifyPlayerFinal(function, playerDb, online);
 			}).onFailure(e -> {
-                log.error("modifyPlayer error, playerId: " + playerId); 
+				log.error("modifyPlayer error, playerId: " + playerId);
 			});
 		} else {
 			return modifyPlayerFinal(function, player, online);
@@ -1766,7 +1778,7 @@ public class PlayerHelper {
 				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
 			}
 			PlayerHelper.clearPlayer(playerId);
-			//删除微信推送的任务
+			// 删除微信推送的任务
 			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
 		}
 
@@ -1790,20 +1802,24 @@ public class PlayerHelper {
 			// 简要数据
 			String key = CacheType.PLAYER_SIMPLE.key(playerId);
 			return RedisLocalCache.getInstance().deleteAsync(key).thenApply(result -> playerData);
-		}).thenCompose(playerData -> DAO.executeDbTaskList(tasks).toCompletionStage().thenApply(result -> playerData)).thenCompose(playerData -> {
-			// 删除login账号,这里可以使用传递下来的playerData
-			return VxHolder
-					.requestRemoteServer(ServerType.Login,
-							LoginPlayerDeleteRequest_7d000080.newBuilder()
-									.setPlayerId(playerData.getPlayerId())
-									.setAccount(playerData.getDeviceId())
-									.build())
-					.toCompletionStage();
-		}).exceptionally(e -> {
-			log.error("", e);
-			return null;
-		});
+		})
+				.thenCompose(playerData -> DAO.executeDbTaskList(tasks).toCompletionStage().thenApply(result -> playerData))
+				.thenCompose(playerData -> {
+					// 删除login账号,这里可以使用传递下来的playerData
+					return VxHolder
+							.requestRemoteServer(ServerType.Login,
+									LoginPlayerDeleteRequest_7d000080.newBuilder()
+											.setPlayerId(playerData.getPlayerId())
+											.setAccount(playerData.getDeviceId())
+											.build())
+							.toCompletionStage();
+				})
+				.exceptionally(e -> {
+					log.error("", e);
+					return null;
+				});
 	}
+
 	public static SimplePlayer getSimplePlayer(long playerId) {
 		String key = CacheType.PLAYER_SIMPLE.key(playerId);
 		return RedisLocalCache.getInstance().get(key);

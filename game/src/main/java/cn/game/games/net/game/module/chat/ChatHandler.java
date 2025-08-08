@@ -165,7 +165,7 @@ public class ChatHandler extends GameBaseHandler {
 					break;
 				}
 				case UNINON_CHAT: {
-					if (sendPlayer.getZongMenId() == 0){//宗门不存在
+					if (sendPlayer.getGuildId() == 0){//宗门不存在
 						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 						return;
 					}

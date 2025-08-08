@@ -30,7 +30,7 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 	private Map<String, Integer> bargainLogMap = new HashMap<>();
 
 	void init() {
-		refreshBargain();
+		initBargain();
 	}
 
 	private void refreshBargain() {
@@ -39,6 +39,11 @@ public class ZongMenBargain implements ZongMenConstants.ZongMenEventHandler {
 		bargainTimes = 0;
 		ZongMen zongMen = ZongMenManager.getInstance().getZongMen(zongMenId); 
 		List<GuildBargainConfig> levelList = GuildBargainManager.instance().getLevelList(zongMen.getLv()); 
+		GuildBargainConfig guildBargainConfig = Rnd.randomElement(levelList); 
+		bargainItemId = guildBargainConfig.ID;
+	}
+	public void initBargain() {
+		List<GuildBargainConfig> levelList = GuildBargainManager.instance().getLevelList(1); 
 		GuildBargainConfig guildBargainConfig = Rnd.randomElement(levelList); 
 		bargainItemId = guildBargainConfig.ID;
 	}

@@ -125,9 +125,11 @@ public class ZongmenService implements RemoteProxy, ZongmenServiceInterface {
 		}
 
 		// 开启自动加入 则直接加入宗门
-		if (zongMenInfo.isAutoJoin()) {
-			zongMenInfo.joinZongMen(playerId, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-			return zongMenInfo.toProto(); 
+		if (zongMenInfo.isAutoJoin() && !zongMenInfo.isFull()) {
+			boolean joinZongMen = zongMenInfo.joinZongMen(playerId, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+			if (joinZongMen) {
+				return zongMenInfo.toProto(); 
+			}
 		} else if (zongMenInfo.getModule().setting.getAutoJoin() == 2) {
 			zongMenInfo.applyJoin(playerId);
 		} else {

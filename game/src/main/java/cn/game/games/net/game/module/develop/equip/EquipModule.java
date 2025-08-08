@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.develop.equip;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,5 +114,28 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		return equipPartMap;
 	}
 	
+	public int getEquipPartCountGTlevel(int level) {
+		int count = 0;
+		Collection<EquipPart> values = equipPartMap.values();
+		for (EquipPart equipPart : values) {
+			if (equipPart.getStrength() >= level) {
+				count++;
+			}
+		}
+		return count;
+	}
+	public int getEquipCountGTQuality(int quality) {
+		int count = 0;
+		
+		Collection<EquipPart> values = equipPartMap.values();
+		for (EquipPart equipPart : values) {
+			Equip equip = get(equipPart.getEquipUid());
+			EquipConfig equipConfig = EquipManager.instance().get(equip.getConfigId());
+			if (equipConfig.quality >= quality) {
+				count++;
+			}
+		}
+		return count;
+	}
 
 }

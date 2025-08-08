@@ -272,7 +272,7 @@ public class QuestHandler extends GameBaseHandler {
 		// 玩家领取宗门任务 检测
 		for (int id : ids) {
 			QuestConfig questConfig = QuestManager.instance().get(id);
-			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getZongMenId() == 0) {
+			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getGuildId() == 0) {
 				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 				return;
 			}

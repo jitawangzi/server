@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.util.AsyncUtils;
+import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.cache.entity.ZongmenData;
 import cn.game.games.core.SimplePlayer;
-import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
@@ -28,6 +31,8 @@ import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.RedisUtil;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
 
 /**
  * @ClassName ZongMen
@@ -37,6 +42,8 @@ import cn.game.util.RedisUtil;
  * @create: 2025-02-05 14:45 @Version 1.0
  */
 public class ZongMen {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ZongMen.class);
+	
 	/**数据库 t_zongmen 表的数据*/
 	private ZongmenData data;
 	/**宗门模块的数据 */
@@ -81,10 +88,26 @@ public class ZongMen {
 		joinZongMen(createPlayerId, ZongMenConstants.ZONG_MEN_POSITION_ZONG_ZHU);
 	}
 
-	public void joinZongMen(long joinPlayerId, int position) {
+	public boolean joinZongMen(long joinPlayerId, int position) {
+		
+		GuildJoin guildJoin = new GuildJoin();
+		guildJoin.setPlayerId(joinPlayerId);
+		guildJoin.setGuildId(getId());
+		guildJoin.setCreateTime(System.currentTimeMillis());
+		Future<@Nullable Object> insert = guildJoin.insert(); 
+		try {
+			@Nullable
+			Object await = AsyncUtils.await(insert);
+		} catch (Exception e) {
+			// 可能重复加入
+			LOGGER.warn(joinPlayerId + " joinZongMen failed",e);
+			return false ; 
+		} 
+		
 		ZongMenMember member = new ZongMenMember(joinPlayerId, position);
 		module.addMember(member, this);
 		module.handleEvent(ZongMenConstants.ZongMenEvenType.JOIN_ZONG_MEN, this, member, member.getName());
+		return true ; 
 	}
 
 	/** 
@@ -333,8 +356,10 @@ public class ZongMen {
 			// 删除申请记录
 			module.removeApply(targetPid);
 			// 加入宗门
-			joinZongMen(targetPid, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
-			joinPidList.add(targetPid);
+			boolean joinZongMen = joinZongMen(targetPid, ZongMenConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+			if (joinZongMen) {
+				joinPidList.add(targetPid);
+			}
 		}
 		// 通知被加入的玩家 加入宗门
 		ZongMenHelper.broadcastNotifyMsgToPlayer(

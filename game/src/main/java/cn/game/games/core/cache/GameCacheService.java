@@ -33,10 +33,10 @@ public class GameCacheService {
 	public int getPlayerGuildLevel(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId); 
 		return cacheManager.getPlayerData(CacheDataType.PLAYER_GUILD_LEVEL, playerId, r -> {
-			if (player == null || player.getZongMenId() <= 0) {
+			if (player == null || player.getGuildId() <= 0) {
 				return 0; // 玩家未加入公会
 			}
-			return fetchPlayeGuildLevelFromRemote(player.getZongMenId());
+			return fetchPlayeGuildLevelFromRemote(player.getGuildId());
 		});
 	}
 	// ============ 服务器级别数据 ============

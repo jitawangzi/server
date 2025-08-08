@@ -66,8 +66,10 @@ public enum EventTypeEnum {
 	Skill(10, "获得技能"),
 	/** 获得装备 */
 	Equip(11, "获得装备"),
-	/** 装备强化 */
-	EquipUp(12, "装备强化"),
+	/** 装备穿戴  参数： 配置表id*/
+	EquipWear(13, "装备穿戴"),
+	/** 装备强化  参数： Equip*/
+	EquipEquipWear(13, "装备强化"),
 	/** 英雄上阵 参数，hero */
 	HeroBattle(14, "英雄上阵"),
 	HeroBattleDismiss(15, "英雄下阵"),
@@ -102,6 +104,10 @@ public enum EventTypeEnum {
 	HeroQuality(30, "英雄品质提升"),
 	/** 第一次通关主线  参数: 章节id ，battle表id*/
 	ChapterFirstWin(33, "第一次通关主线 "),
+	
+	/** 装备部位强化 参数：pos，level*/
+	EquipPartStrength(35, "装备部位强化"),
+	
 	//成就相关
 	/** 开启战斗 :  Battle战役id，关卡id*/
 	BattleStart(54, "开启战斗"),

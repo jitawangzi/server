@@ -260,7 +260,7 @@ public class ShopModule extends BasePlayerModule {
 	}
 
 	public void refreshZongMenShop(int shop) {
-		if (player.getZongMenId() == 0)
+		if (player.getGuildId() == 0)
 			return;
 		shopItemsMap.removeAll(shop);
 		ZongmenStoreManager.instance().list().forEach(shopConfig -> {

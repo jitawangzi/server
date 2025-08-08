@@ -398,7 +398,7 @@ public class ShopHandler extends GameBaseHandler {
 		}
 	
 		//宗门不存在
-		if (shopId == 17 && player.getZongMenId() == 0){
+		if (shopId == 17 && player.getGuildId() == 0){
 			client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 			return;
 		}
