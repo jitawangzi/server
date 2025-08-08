@@ -298,7 +298,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             rb.setPlayer(v.getPlayer().toSimplePlayerInfo());
             long score = v.getRankEntry().getScore();
             rb.setScore((score < 0 ? 0 : score) + "");
-            resp.addPlayers(rb);
+            resp.addChallengePlayers(rb);
         });
         player.getGameClient().sendProtocol(resp.build());
     }

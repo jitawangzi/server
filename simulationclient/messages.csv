@@ -252,3 +252,4 @@
 288,setZongMenMemberPositionRequest_40000015,0x40000015,,6000,,,宗门职位更改
 289,setZongMenSettingRequest_40000013,0x40000013,,6000,,,宗门设置相关 有值 则替换，没有值 则不修改
 290,updateMemberAuthRequest_40000041,0x40000041,,6000,,,"宗门成员权限管理,同意申请，踢人等。"
+291,BattleEquipTowerRecordRequest_13000528,0x13000528,,,,,查看战斗记录上传请求
