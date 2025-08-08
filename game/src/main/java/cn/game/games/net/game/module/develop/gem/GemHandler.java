@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -92,6 +93,8 @@ public class GemHandler extends GameBaseHandler {
             }
 		}
 		gemPosMap.put(uid, pos);
+		
+		player.handleEvent(EventTypeEnum.GemWear, gem.getConfigId());
 
         client.sendProtocol(defaultInstance);
     }

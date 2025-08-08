@@ -66,6 +66,7 @@ import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
+import cn.game.games.net.game.module.develop.gem.GemModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
@@ -1120,6 +1121,10 @@ public class PlayerHelper {
 			case EquipEnhanceLevel -> {
 				EquipModule module = player.getModule(EquipModule.class);
 				yield module.getEquipPartCountGTlevel(extParam[0]);
+			}
+			case GemWearNum -> {
+				GemModule module = player.getModule(GemModule.class);
+				yield module.getCountGTQuality(extParam[0]);
 			}
 			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
 			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);

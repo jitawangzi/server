@@ -107,6 +107,8 @@ public enum EventTypeEnum {
 	
 	/** 装备部位强化 参数：pos，level*/
 	EquipPartStrength(35, "装备部位强化"),
+	/** 宝石穿戴 参数： 配置表id */
+	GemWear(36, "宝石穿戴"),
 	
 	//成就相关
 	/** 开启战斗 :  Battle战役id，关卡id*/

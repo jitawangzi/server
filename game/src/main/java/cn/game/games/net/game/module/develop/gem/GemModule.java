@@ -62,4 +62,11 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 	public void checkConfig(int id) {
 		GemManager.instance().get(id);
 	}
+
+	public int getCountGTQuality(int quality) {
+		return (int) list().stream().filter(gem -> {
+			GemConfig config =  GemManager.instance().get(gem.getConfigId());
+			return config.quality >= quality; 
+		}).count();
+	}
 }

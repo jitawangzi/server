@@ -4,13 +4,13 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
-import cn.game.protocol.generated.config.EquipConfig;
+import cn.game.protocol.generated.config.GemConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
-import cn.game.protocol.generated.manager.EquipManager;
+import cn.game.protocol.generated.manager.GemManager;
 
-@ConditionType(type = ConditionTypeEnum.EquipQualityNum)
+@ConditionType(type = ConditionTypeEnum.GemWearNum)
 public class GemWearNum extends AbstractCumulativeCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.EquipWear };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.GemWear };
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -22,7 +22,7 @@ public class GemWearNum extends AbstractCumulativeCondition {
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
 		int id = event.getIntParameter(0);
-		EquipConfig equipConfig = EquipManager.instance().get(id); 
-		return equipConfig.quality >= getParam();
+		GemConfig config = GemManager.instance().get(id); 
+		return config.quality >= getParam();
 	}
 }
