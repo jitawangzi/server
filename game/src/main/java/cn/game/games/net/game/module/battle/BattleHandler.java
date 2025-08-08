@@ -1627,7 +1627,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
         int attackingSubId = battleModule.getAttackingSubId();
-        List<RewardInfo> end = battle.end(battle.getLastCompleteFloor());
+        List<RewardInfo> end = battle.end(battle.getLastCompleteFloor(),true);
         if (end != null && !end.isEmpty()) {
             resp.addAllRewards(end);
         }
