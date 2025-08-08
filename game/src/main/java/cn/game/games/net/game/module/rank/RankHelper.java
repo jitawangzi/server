@@ -14,29 +14,30 @@ public class RankHelper {
 
 	public static CompletionStage<RankInfo> getRankInfo(Player player, RankType rankType, int page, int pageSize) {
 		String serverId = player.getServerId();
-		RankModule rankModule = player.getModule(RankModule.class);
+//		RankModule rankModule = player.getModule(RankModule.class);
 		long playerId = player.getPlayerId();
 
-		CompletionStage<RankEntry> rankAsync = RankService.getInstance().getRankEntryAsync(serverId, rankType, playerId);
+		CompletionStage<RankEntry> myRankEntryAsync= RankService.getInstance().getRankEntryAsync(serverId, rankType, playerId);
+		CompletionStage<PlayerRank> myPlayerRankAsync = RankService.getInstance().convertToPlayerRankEntry(myRankEntryAsync);
+		CompletionStage<List<RankEntry>> rankEntryAsync = RankService.getInstance().getPageAsync(serverId, rankType, page, pageSize);
+		CompletionStage<List<PlayerRank>> playerRankAsync = RankService.getInstance().convertToPlayerRankEntries(rankEntryAsync);
 
-		CompletionStage<List<RankEntry>> pageAsync = RankService.getInstance().getPageAsync(serverId, rankType, page, pageSize);
-
-		CompletionStage<List<PlayerRank>> playerRankAsync = RankService.getInstance().convertToPlayerRankEntries(pageAsync);
-
-		return rankAsync.thenCombine(playerRankAsync, (rank, rankEntries) -> {
+		return myPlayerRankAsync.thenCombine(playerRankAsync, (myPlayerRank, rankEntries) -> {
 			RankInfo.Builder rankInfo = RankInfo.newBuilder();
-			for (PlayerRank entry : rankEntries) {
-				PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
-				rb.setRank(entry.getRankEntry().getRank());
-				rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
-				long score = entry.getRankEntry().getScore();
-				rb.setScore((score < 0 ? 0 : score) + "");
-				rankInfo.addPlayers(rb);
+			for (PlayerRank playerRank : rankEntries) {
+				rankInfo.addPlayers(toRankInfo(playerRank));
 			}
-			rankInfo.setRank(rank == null ? -1 : rank.getRank());
-			rankInfo.setScore(rank != null ? rank.getScore() + "" : rankModule.getScore(rankType));
+			rankInfo.setMyRankInfo(toRankInfo(myPlayerRank)); 
 			return rankInfo.build();
 		});
+	}
+	public static PlayerRankInfo toRankInfo(PlayerRank entry) {
+		PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
+		rb.setRank(entry.getRankEntry().getRank());
+		rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
+		long score = entry.getRankEntry().getScore();
+		rb.setScore((score < 0 ? 0 : score) + "");
+		return rb.build();
 	}
 
 	public static CompletionStage<List<PlayerRankInfo>> getRankPagePlayerInfos(String serverId, RankType rankType, int page, int pageSize) {
