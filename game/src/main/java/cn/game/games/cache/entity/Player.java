@@ -884,12 +884,8 @@ public class Player {
 		VxHolder.requestRemoteServer(ServerType.Login, req.build());
 	}
 
-	public long getZongMenId() {
-		return data.getUnionId(); 
-	}
-
-	public String getZongMenName() {
-		return data.getUnionName();
+	public long getGuildId() {
+		return getZongmenModule().getGuildId(); 
 	}
 
 	public String getPlayerName() {

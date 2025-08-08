@@ -9,8 +9,10 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.core.cache.CacheType;
+import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.net.cross.zongmen.ZongMenConstants.ZongMenEvenType;
 import cn.game.games.net.game.helper.MailHelper;
+import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ZongMenMsg;
@@ -25,7 +27,7 @@ import cn.game.util.RedisUtil;
  */
 public class ZongMenModuleData  implements ZongMenConstants.ZongMenEventHandler{
 	transient Map<ZongMenConstants.ZongMenEvenType, List<ZongMenConstants.ZongMenEventHandler>> eventTypeHandleMaps = new HashMap<>();
-	private static ZongMenEvenType[]  eventTypes = ZongMenConstants.ZongMenEvenType.values();
+	private static ZongMenEvenType[]  eventTypes = new ZongMenEvenType[] {ZongMenEvenType.CROSS_DAY};
 
 	private long zongmenId; 
 	/***      宗门操作日志 */
@@ -141,6 +143,10 @@ public class ZongMenModuleData  implements ZongMenConstants.ZongMenEventHandler{
 		if (mailId > 0) {
 			MailHelper.sendMail(playerId, mailId,true,zongMen.getName()); 
 		}
+		
+		GuildJoin guildJoin = new GuildJoin();
+		guildJoin.setPlayerId(playerId);
+		guildJoin.delete(); 
 		ZongMenManager.log.info(" removeMember playerId:{}", playerId);
 	}
 
@@ -170,7 +176,7 @@ public class ZongMenModuleData  implements ZongMenConstants.ZongMenEventHandler{
 
 	@Override
 	public ZongMenEvenType[] getRegisterEvent() {
-		return null;
+		return eventTypes;
 	}
 	
 	public ZongMenMember getMasterMember(){

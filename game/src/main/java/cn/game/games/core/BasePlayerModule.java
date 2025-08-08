@@ -23,6 +23,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	protected transient Player player;
 	protected transient long playerId;
 	private transient Class<?>[] defaultDbMapperClass;
+	private transient String[] defaultSelectMethodName;
 	private transient int tableCount = 0;
 
 	protected static final int INIT_PRIORITY_MIDDLE = 1_0000;
@@ -47,6 +48,7 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 			this.player = player;
 			this.playerId = player.getPlayerId();
 			setDefaultDbMapperClass();
+			setDefaultSelectMethodName();
 			if (this instanceof EventHandler) {
 				player.registerEventHandler((PlayerEventHandler) this);
 			}
@@ -64,6 +66,10 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	private void setDefaultDbMapperClass() {
 		this.defaultDbMapperClass = defaultDbMapperClass();
+	}
+
+	private void setDefaultSelectMethodName() {
+		this.defaultSelectMethodName = defaultSelectMethodName();
 	}
 
 	/**
@@ -110,6 +116,15 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	protected Class<?>[] defaultDbMapperClass() {
 		return null;
 	};
+	/** 
+	 * 对应mapper class 的查询方法名
+	 * 如果不设置，则使用MapperConstant.selectByPlayerId
+	 * 如果有自定义的查询方法名，则返回对应的查询方法名数组
+	 * @return
+	 */
+	protected String[] defaultSelectMethodName() {
+		return null;
+	};
 
 	/**
 	 * 从数据库中初始化数据,这里只是将数据从db加载到内存，数据的进一步初始化，
@@ -140,8 +155,13 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	public void defaultDbTasks(List<DbTask> dbTasks) {
 		if (defaultDbMapperClass != null) {
+			if (defaultSelectMethodName != null && defaultSelectMethodName.length != defaultDbMapperClass.length) {
+				throw new IllegalArgumentException("defaultSelectMethodName length must match defaultDbMapperClass length");
+			}
 			for (int i = 0; i < defaultDbMapperClass.length; i++) {
-				dbTasks.add(new DbTask(defaultDbMapperClass[i], MapperConstant.selectByPlayerId, player.getPlayerId()));
+				dbTasks.add(new DbTask(defaultDbMapperClass[i],
+						defaultSelectMethodName == null ? MapperConstant.selectByPlayerId : defaultSelectMethodName[i],
+						player.getPlayerId()));
 			}
 		}
 	}

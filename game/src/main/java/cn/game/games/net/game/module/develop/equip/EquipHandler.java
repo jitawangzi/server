@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -62,6 +63,8 @@ public class EquipHandler extends GameBaseHandler {
 
 		EquipPart equipPart = module.getEquipPart(equipConfig.pos);
 		equipPart.setEquipUid(uid);
+		
+		player.handleEvent(EventTypeEnum.EquipWear, equipConfig.ID);
 
         client.sendProtocol(defaultInstance);
     }
@@ -103,6 +106,7 @@ public class EquipHandler extends GameBaseHandler {
 		PlayerHelper.delResources(player, curConfig.cost, OpType.EquipPartStrength);
 
 		equipPart.setStrength(equipPart.getStrength() + 1);
+		player.handleEvent(EventTypeEnum.EquipPartStrength,type,equipPart.getStrength());
 
 		client.sendProtocol(defaultInstance);
     }

@@ -69,6 +69,8 @@ public class RpcFactory {
 		} else {
 			// 用Byte Buddy代理类
 			try {
+	            // 创建包含Invocation的拦截器实例
+	            ByteBuddyInterceptor interceptor = new ByteBuddyInterceptor(invocation);
 				// 只拦截非Object类方法
 				return new ByteBuddy().subclass(clazz)
 						.method(ElementMatchers.isPublic() // 只拦截public方法
@@ -79,7 +81,7 @@ public class RpcFactory {
 								.and(ElementMatchers.not(ElementMatchers.isBridge()))
 						// 你可以根据实际情况加更多排除条件
 						)
-						.intercept(MethodDelegation.to(new ByteBuddyInterceptor()))
+						.intercept(MethodDelegation.to(interceptor))
 						.make()
 						.load(clazz.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
 						.getLoaded()
@@ -176,16 +178,28 @@ public class RpcFactory {
 
 	// 定义拦截逻辑
 	public static class ByteBuddyInterceptor {
-		@RuntimeType
-		public Object intercept(@Origin Method method, @AllArguments Object[] args, @SuperCall Callable<?> superCall) throws Exception {
-			// 前置逻辑
-			System.out.println("Before " + method.getName());
-			// 调用原方法
-			Object result = superCall.call();
-			// 后置逻辑
-			System.out.println("After " + method.getName());
-			return result;
-		}
+	    private final Invocation invocation;
+	    
+	    public ByteBuddyInterceptor(Invocation invocation) {
+	        this.invocation = invocation;
+	    }
+	    
+	    @RuntimeType
+	    public Object intercept(@Origin Method method, @AllArguments Object[] args, @SuperCall Callable<?> superCall) throws Exception {
+	        try {
+	            // Object类方法直接调用原方法
+	            String mname = method.getName();
+	            if (objectMethods.get(mname) != null) {
+	                return superCall.call();
+	            }
+	            
+	            // 其他方法通过RPC调用
+	            return invocation.rpcClient.invoke(invocation.callType, method, args, invocation.targetAddr, invocation.objectId);
+	        } catch (Exception e) {
+	            log.error("rpc invoke 调用出现异常", e);
+	            throw new RuntimeException(e);
+	        }
+	    }
 	}
 
 }
