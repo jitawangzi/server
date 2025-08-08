@@ -13,6 +13,8 @@ public class updateMemberAuthRequest_40000041Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.updateMemberAuthRequest_40000041.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.updateMemberAuthRequest_40000041.newBuilder() ; 
 		
+		builder.setOptType(1);
+		builder.addTargetPidList(240200326); 
 		
 		
 		return builder.build() ; 

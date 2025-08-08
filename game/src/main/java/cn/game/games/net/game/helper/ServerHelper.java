@@ -12,6 +12,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -61,6 +62,15 @@ public class ServerHelper {
 		}
 		// 在其他服务器，通过远程调用
 		return RpcFactory.getImpl(clazz, ServerContext.getInstance().getRpcClient(), callType, serverId, serverType, targetId);
+	}
+	
+	/** 
+	 * 获取宗门远程代理接口
+	 * @param targetId
+	 * @return
+	 */
+	public static ZongmenServiceInterface getZongmenProxy(long targetId) {
+		return getRemoteInterfaceProxy(ServerType.Cross, ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, targetId);
 	}
 
 }

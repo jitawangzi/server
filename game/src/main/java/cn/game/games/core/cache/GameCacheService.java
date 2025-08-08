@@ -7,7 +7,7 @@ import cn.game.core.cache.CacheDataType;
 import cn.game.core.cache.SimpleCacheManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
-import cn.game.games.net.game.GameServer;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
@@ -89,7 +89,7 @@ public class GameCacheService {
 		if (zongmenId <= 0) {
 			return 0;
 		}
-		ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(zongmenId);
+		ZongmenServiceInterface zongmenProxy = ServerHelper.getZongmenProxy(zongmenId);
 		ZongMenShowInfo zongmenShowInfo = zongmenProxy.getZongmenShowInfo(zongmenId);
 		if (zongmenShowInfo == null) {
 			return 0;

@@ -13,6 +13,7 @@ import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
 import cn.game.games.net.data.mapper.GuildJoinMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -129,7 +130,7 @@ public class ZongMenModule extends BasePlayerModule {
 				int id = event.get(0);
 				int count = event.get(1);
 				if (id == Asset.ZongMenExp.ID || id == Asset.ZongMenPoint.ID) {
-					ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getGuildId());
+					ZongmenServiceInterface zongmenProxy = ServerHelper.getZongmenProxy(player.getGuildId());
 					zongmenProxy.addZongmenAsset(player.getGuildId(), playerId, id, count);
 				} else if (id == Asset.ZongMenContribute.ID) {
 
@@ -243,7 +244,7 @@ public class ZongMenModule extends BasePlayerModule {
 		if (player.getGuildId() == 0) {
 			return 0;
 		}
-		ZongmenServiceInterface zongmenProxy = GameServer.getInstance().getZongmenProxy(player.getGuildId());
+		ZongmenServiceInterface zongmenProxy = ServerHelper.getZongmenProxy(player.getGuildId());
 		ZongMenShowInfo zongmenShowInfo = zongmenProxy.getZongmenShowInfo(player.getGuildId());
 		return zongmenShowInfo.getSimpleInfo().getLevel();
 	}

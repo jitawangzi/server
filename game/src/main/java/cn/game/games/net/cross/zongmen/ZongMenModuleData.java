@@ -103,7 +103,7 @@ public class ZongMenModuleData  implements ZongMenConstants.ZongMenEventHandler{
 	public void addMember(ZongMenMember member, ZongMen info) {
 		menMemberMap.put(member.playerId, member);
 		registerEventHandler(member);
-		RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId), info.getId());
+//		RedisUtil.setAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(member.playerId), info.getId());
 	}
 
 	public void addApply(long playerId) {
@@ -133,7 +133,7 @@ public class ZongMenModuleData  implements ZongMenConstants.ZongMenEventHandler{
 	 */
 	public void removeMember(long playerId,int quitType) {
 		menMemberMap.remove(playerId);
-		RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
+//		RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
 		ZongMenHelper.notifyMsgToPlayer(playerId, ZongMenMsg.notifyQuitZongMen_40000024.newBuilder().build(),
 				PbProtocol.notifyQuitZongMen_40000024);
 		

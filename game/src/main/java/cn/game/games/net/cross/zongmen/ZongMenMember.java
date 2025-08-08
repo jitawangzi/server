@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.protobuf.ZongMenMsg;
 
@@ -106,6 +107,9 @@ public class ZongMenMember implements ZongMenConstants.ZongMenEventHandler {
 		builder.setPosition(position);
 		builder.setTodayContribute(contribution);
 		builder.setTotalContribute(totalContribution);
+		SimplePlayer simplePlayer = PlayerHelper.getSimplePlayer(playerId); 
+		builder.setSimplePlayer(simplePlayer.toSimplePlayerInfo());
+		
 		return builder;
 	}
 
