@@ -55,7 +55,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 		}
 		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart);
 		
-		return checkCustom(id, subId);
+		return checkCustom(id, subId,args);
 	}
 	
 	/** 

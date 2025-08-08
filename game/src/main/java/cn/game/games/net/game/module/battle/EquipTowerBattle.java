@@ -33,6 +33,7 @@ import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 import org.redisson.api.RFuture;
 
@@ -132,11 +133,16 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             return;
         }
         String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(floor);
-        Set<Object> future = RedisUtil.getRedis().getSet(rediskey).random(10);
+        Set<Object> future = RedisUtil.getRedis().getSet(rediskey).random(11);
         List<Long> players = new ArrayList<>();
         for (Object element : future) {
             // 处理每个随机元素
-            players.add((Long) element);
+            if ((Long) element != player.getPlayerId()) {
+                players.add((Long) element);
+            }
+            if (players.size() == 10) {
+                break;
+            }
         }
         simplePlayerMap.put(floor, players);
     }
@@ -149,15 +155,19 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         equiptowerHelp.setHelpPlayerId(player.getPlayerId());
         int deltime = (int) (DateUtil.nextDayStartTime(DateUtil.currentTimeMillis(), 1) / 1000);
         equiptowerHelp.setExpiredTime(deltime);
-        equiptowerHelp.insert();
+        Future<@Nullable Object> insert =equiptowerHelp.insert();
+        insert.onFailure(t-> {
+            System.err.println(t);
+        });
         // 通知在线玩家
-        if(PlayerManager.getInstance().isOnline(help)) {
+        if (PlayerManager.getInstance().isOnline(help)) {
             GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, help);
             gameServerInterface.addEquipTowerHelp(help, equiptowerHelp);
         }
     }
+
     // 在线接收
-    public void addHelpReward_onLine(EquiptowerHelp equiptowerHelp ) {
+    public void addHelpReward_onLine(EquiptowerHelp equiptowerHelp) {
         int floorId = equiptowerHelp.getFloor();
         long helpId = equiptowerHelp.getId();
         if (!helpRewardMap.containsKey(floorId)) {
@@ -179,51 +189,52 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         return PlayerHelper.addResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerTicket);
     }
 
-    public List<RewardInfo> getHelpReward(List<Long> helpIds , List<Integer> floors ) {
+    public List<RewardInfo> getHelpReward(List<Long> helpIds, List<Integer> floors) {
         List<RewardInfo> allReward = new ArrayList<>();
         if (helpIds.size() > 1) {
             // 一键领取
             for (int i = 0; i < helpIds.size(); i++) {
-                getHelpRewardOne(allReward,floors.get(i),helpIds.get(i));
+                getHelpRewardOne(allReward, floors.get(i), helpIds.get(i));
             }
         } else {
-            int floor=floors.get(0);
-            long helpId =helpIds.get(0);
-            getHelpRewardOne(allReward,floor,helpId);
+            int floor = floors.get(0);
+            long helpId = helpIds.get(0);
+            getHelpRewardOne(allReward, floor, helpId);
         }
         return allReward;
     }
-     public void getHelpRewardOne(List<RewardInfo> allReward,int  floor,long helpId )
-     {
 
-         if (!helpRewardMap.containsKey(floor)) {
-             return ;
-         }
-         if (!helpRewardMap.get(floor).containsKey(helpId)) {
-             return ;
-         }
-         //已领取
-         if (helpRewardMap.get(floor).get(helpId) != 0) {
-             return ;
-         }
-         helpRewardMap.get(floor).put(helpId, 1);
-         int battleId = DungeonTypeEnum.EquipTower.getId()*10000+floor;
-         BattleConfig battleConfig = BattleManager.instance().get(battleId);
-         var tmp = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
-         allReward.addAll(tmp);
-     }
+    public void getHelpRewardOne(List<RewardInfo> allReward, int floor, long helpId) {
+
+        if (!helpRewardMap.containsKey(floor)) {
+            return;
+        }
+        if (!helpRewardMap.get(floor).containsKey(helpId)) {
+            return;
+        }
+        //已领取
+        if (helpRewardMap.get(floor).get(helpId) != 0) {
+            return;
+        }
+        helpRewardMap.get(floor).put(helpId, 1);
+        int battleId = DungeonTypeEnum.EquipTower.getId() * 10000 + floor;
+        BattleConfig battleConfig = BattleManager.instance().get(battleId);
+        var tmp = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
+        allReward.addAll(tmp);
+    }
+
     @Override
     public int checkCustom(int id, int subId, long... args) {
         BattleConfig battleConfig = BattleManager.instance().getNullable(id);
         if (battleConfig == null) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
-        long num = player.getItemModule().getCount(GlobalConst.TicketItemId);
-        if (num > 0){
-            PlayerHelper.delResources(player,GlobalConst.TicketItemId,num, OpType.EquipTowerStart);
-        }else {
-            return ErrorMsgEnum.times_limit.ID;
-        }
+        // long num = player.getItemModule().getCount(GlobalConst.TicketItemId);
+        // if (num > 0){
+        PlayerHelper.delResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerStart);
+        // }else {
+        //     return ErrorMsgEnum.times_limit.ID;
+        // }
         int floor = id % 10;
         if (floor > curFloor) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
@@ -256,8 +267,12 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         List<RewardInfo> allRewards = new ArrayList<>();
         OpType opType = OpType.EquipTowerFinish;
         if (request.getWin()) {
-           int battlefloor= battleModule.getAttackingId()%10;
+            int battlefloor = battleModule.getAttackingId() % 10;
             boolean newRecord = battlefloor == curFloor;
+            if (cacheHelpPlayerId > 0) {
+                addHelpRewards(cacheHelpPlayerId, battlefloor);
+                cacheHelpPlayerId = 0;
+            }
             if (newRecord) {
                 curFloor++;
                 if (MAXFLOOR < curFloor) {
@@ -265,11 +280,6 @@ public class EquipTowerBattle extends XiYouBattleHandler {
                 }
                 String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(battlefloor);
                 RedisUtil.getRedis().getSet(rediskey).add(player.getPlayerId());
-            }
-
-            if(cacheHelpPlayerId>0) {
-                addHelpRewards(cacheHelpPlayerId, battleModule.getAttackingId());
-                cacheHelpPlayerId = 0;
             }
             return ResultObject.success();
         } else { // 失败了，最终结算
@@ -283,9 +293,11 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             return ResultObject.success();
         }
     }
-     public void setRecord(int floor ,String request ) {
-         battleRecord.put(floor,request);
-     }
+
+    public void setRecord(int floor, String request) {
+        battleRecord.put(floor, request);
+    }
+
     public void addRank(int addPoint) {
         RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.EquipTower, player.getPlayerId(), addPoint);
     }
