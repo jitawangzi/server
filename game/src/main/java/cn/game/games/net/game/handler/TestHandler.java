@@ -28,7 +28,6 @@ import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Hero;
@@ -49,6 +48,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleHandler;
 import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
@@ -226,6 +226,18 @@ public class TestHandler extends GameBaseHandler {
                     }
                     break;
                 }
+            case "lingshan":
+            {
+            	// 设置灵山问禅层数
+            	if (p1 == 0) {
+            		throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+            	}
+            	BattleModule battleModule = player.getBattleModule();
+            	LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan); 
+            	battle.setLastCompleteFloor(p1);
+            	
+            	break;
+            }
             case "slzj":
                 {
                     // 设置失落真经关卡id
