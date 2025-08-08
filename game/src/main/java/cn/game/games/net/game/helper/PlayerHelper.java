@@ -64,6 +64,10 @@ import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.battle.IBattleHandler;
+import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
+import cn.game.games.net.game.module.battle.PVEVPBattle;
+import cn.game.games.net.game.module.battle.TowerBattle;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.develop.gem.GemModule;
@@ -99,6 +103,7 @@ import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.UserUpgradeManager;
 import cn.game.protocol.generated.manager.VIPManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -1125,6 +1130,22 @@ public class PlayerHelper {
 			case GemWearNum -> {
 				GemModule module = player.getModule(GemModule.class);
 				yield module.getCountGTQuality(extParam[0]);
+			}
+			case LingShanLevel -> {
+				BattleModule module = player.getModule(BattleModule.class);
+				LingShanWenChanBattle battle = module.getBattle(DungeonTypeEnum.LingShanWenChan); 
+				yield battle == null ? 0 : battle.getLastCompleteFloor();
+			}
+			case DaShengPoints -> {
+				BattleModule module = player.getModule(BattleModule.class);
+				PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle); 
+				yield battle != null ? (int) battle.getMyRank().getScore():0;
+			}
+			case LongYuanLevel -> {
+				// 龙渊密藏-中间塔达到层数
+				BattleModule module = player.getModule(BattleModule.class);
+				TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower); 
+				yield battle == null ? 0 : battle.getCurFloor().getOrDefault(DungeonTypeEnum.GemTower.getId(), 0);
 			}
 			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
 			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);

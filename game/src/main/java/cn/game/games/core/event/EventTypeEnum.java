@@ -109,9 +109,13 @@ public enum EventTypeEnum {
 	EquipPartStrength(35, "装备部位强化"),
 	/** 宝石穿戴 参数： 配置表id */
 	GemWear(36, "宝石穿戴"),
+	/** 大圣擂台积分增加. 参数 1 增加前的旧积分 2 增加的积分 */
+	DaShengPointsAdd(38, "大圣擂台积分增加"),
+	/** 大王来巡山通关 */
+	XunShanComplete(39, "大王来巡山通关"),
 	
 	//成就相关
-	/** 开启战斗 :  Battle战役id，关卡id*/
+	/** 开启战斗 :  BattleConfig, id，子id*/
 	BattleStart(54, "开启战斗"),
 	/** 开启战斗 : HCBattle id，关卡id*/
 	HCBattleStart(55, "开启战斗"),

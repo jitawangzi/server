@@ -598,7 +598,6 @@ public class ClientBattleHandler extends BaseHandler {
 
     private void pVEVPChallenge(NetClient netClient, Object message) {
         BattlePVEVPChallengeResponse_13000553 resp = (BattlePVEVPChallengeResponse_13000553) message;
-        List<PlayerRankInfo> playersList = resp.getPlayersList();
         Client client = (Client) netClient;
     }
 
