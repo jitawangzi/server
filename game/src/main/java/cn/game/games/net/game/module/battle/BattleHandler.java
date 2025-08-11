@@ -1659,9 +1659,9 @@ public class BattleHandler extends GameBaseHandler {
         mapData.getScoreReward().forEach((k, v) -> {
             resp.putScoreReward(k, v);
         });
-        mapData.getBuffBag().forEach(v -> {
-            resp.addBuffBag(v);
-        });
+//        mapData.getBuffBag().forEach(v -> {
+//            resp.addBuffBag(v);
+//        });
         client.sendProtocol(resp.build());
     }
 
@@ -1751,6 +1751,7 @@ public class BattleHandler extends GameBaseHandler {
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         pvevpBattle.buyCount();
         resp.setBuyCount(pvevpBattle.getBuyCount());
+        resp.setChallengeCount(pvevpBattle.getTicketCount());
         client.sendProtocol(resp.build());
     }
 

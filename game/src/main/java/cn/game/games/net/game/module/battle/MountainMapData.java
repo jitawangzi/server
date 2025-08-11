@@ -49,8 +49,8 @@ public class MountainMapData {
     /**
      *  buff列表
      */
-    private  List<Integer> buffBag=new ArrayList<>();
 
+    private Map<Integer,Integer> buffBag = new HashMap<>();
 
     public Map<Integer, List<MountainMapNodeData>> getMapData() {
         return mapData;
@@ -124,13 +124,8 @@ public class MountainMapData {
         this.scoreMax = scoreMax;
     }
 
-    public List<Integer> getBuffBag() {
-        return buffBag;
-    }
 
-    public void setBuffBag(List<Integer> buffBag) {
-        this.buffBag = buffBag;
-    }
+
 
     public int getRankId() {
         return rankId;
@@ -138,5 +133,13 @@ public class MountainMapData {
 
     public void setRankId(int rankId) {
         this.rankId = rankId;
+    }
+
+    public Map<Integer, Integer> getBuffBag() {
+        return buffBag;
+    }
+
+    public void setBuffBag(Map<Integer, Integer> buffBag) {
+        this.buffBag = buffBag;
     }
 }
