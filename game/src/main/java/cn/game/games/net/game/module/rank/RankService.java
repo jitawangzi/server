@@ -625,9 +625,8 @@ public class RankService {
 			}
 		}
 	}
-	public  void setNpcToRank(String serverId, RankType rankType)
-	{
-     // 准备NPC数据
+	public void setNpcToRank() {
+		// 准备NPC数据
 		Map<Long, Long> npcScores = new HashMap<>();
 		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
 		for (DaShengNPCConfig config : list2) {
@@ -636,15 +635,49 @@ public class RankService {
 				npcScores.put(npcPlayerId, (long) config.Integral);
 			}
 		}
-		// 异步批量设置
-		batchSetScoreAsync(serverId, rankType, npcScores)
-				.whenComplete((result, throwable) -> {
-					if (throwable != null) {
-						log.error("NPC批量初始化失败: serverId={}", serverId, throwable);
-					} else {
-						log.info("NPC批量初始化成功: serverId={}, count={}", serverId, npcScores.size());
-					}
-				});
+
+		String[] serverIds = getServerIds();
+		RankType[] rankTypes = {RankType.DaShengLeiTaiDay, RankType.DaShengLeiTaiSeason};
+		for (String serverId : serverIds) {
+			for (RankType rankType : rankTypes) {
+				var key = RankService.getInstance().getKey(serverId, rankType);
+				if (!RedisLocalCache.getInstance().exists(key)) {
+					// 异步批量设置
+					batchSetScoreAsync(serverId, rankType, npcScores)
+							.whenComplete((result, throwable) -> {
+								if (throwable != null) {
+									log.error("NPC批量初始化失败: serverId={}, rankType={}", serverId, rankType, throwable);
+								} else {
+									log.info("NPC批量初始化成功: serverId={}, rankType={}, count={}", serverId, rankType, npcScores.size());
+								}
+							});
+				}
+			}
+		}
+	}
+
+	public void setNpcToRank(String serverId, RankType rankType) {
+		// 准备NPC数据
+		Map<Long, Long> npcScores = new HashMap<>();
+		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
+		for (DaShengNPCConfig config : list2) {
+			for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
+				long npcPlayerId = rankPosition;
+				npcScores.put(npcPlayerId, (long) config.Integral);
+			}
+		}
+		var key = RankService.getInstance().getKey(serverId, rankType);
+		if (!RedisLocalCache.getInstance().exists(key)) {
+			// 异步批量设置
+			batchSetScoreAsync(serverId, rankType, npcScores)
+					.whenComplete((result, throwable) -> {
+						if (throwable != null) {
+							log.error("NPC批量初始化失败: serverId={}, rankType={}", serverId, rankType, throwable);
+						} else {
+							log.info("NPC批量初始化成功: serverId={}, rankType={}, count={}", serverId, rankType, npcScores.size());
+						}
+					});
+		}
 	}
 	/**
 	 * 批量设置玩家分数

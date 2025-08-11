@@ -1715,6 +1715,7 @@ public class BattleHandler extends GameBaseHandler {
         BattlePVEVPDataResponse_1300054a.Builder resp = BattlePVEVPDataResponse_1300054a.newBuilder();
         resp.setChallengeCount(pvevpBattle.getTicketCount());
         resp.setEndTime(pvevpBattle.getEndTime());
+        resp.setBuyCount(pvevpBattle.getBuyCount());
         client.sendProtocol(resp.build());
     }
 

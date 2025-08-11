@@ -43,6 +43,10 @@ public class MountainMapData {
      */
     private int refreshNum;
     /**
+     * 排行榜id
+     */
+    private int rankId;
+    /**
      *  buff列表
      */
     private  List<Integer> buffBag=new ArrayList<>();
@@ -126,5 +130,13 @@ public class MountainMapData {
 
     public void setBuffBag(List<Integer> buffBag) {
         this.buffBag = buffBag;
+    }
+
+    public int getRankId() {
+        return rankId;
+    }
+
+    public void setRankId(int rankId) {
+        this.rankId = rankId;
     }
 }
