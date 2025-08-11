@@ -161,7 +161,7 @@ public class GameClientManager {
 		for (GameClient gc : idletimeouts) {
 			try {
 				log.warn("{}start logout by timeout", gc);
-				gc.getContext().runOnContext(r -> {
+				ServerContext.getInstance().getProcessor().process(gc.getPlayerId(), () -> {
 					logout(gc, LogoutType.Timeout);
 //					log.info("{}logout by timeout", gc);
 				});
@@ -191,7 +191,7 @@ public class GameClientManager {
 			promise.complete();
 		}
 		for (GameClient gameClient : lists) {
-			gameClient.getContext().runOnContext(r -> {
+			ServerContext.getInstance().getProcessor().process(gameClient.getPlayerId(), () -> {
 				Future<?> logout = logout(gameClient, LogoutType.ServerClose);
 //				futures.add(logout);
 				logout.onComplete(ar -> {
@@ -206,7 +206,6 @@ public class GameClientManager {
 				});
 			});
 		}
-
 //		CompositeFuture all = CompositeFuture.join(futures);
 		try {
 			AsyncUtils.await(future, Config.shutdownWaitTime, TimeUnit.SECONDS);

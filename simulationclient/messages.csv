@@ -248,7 +248,7 @@
 284,getZongMenInfoRequest_40000021,0x40000021,,6000,4,,获取宗门信息
 285,getZongMenListRequest_40000001,0x40000001,,6000,1,,宗门列表
 286,getZongMenLogRequest_40000025,0x40000025,,6000,3,,宗门日志请求
-287,quitZongMenRequest_40000017,0x40000017,,6000,8,,退出宗门
+287,quitZongMenRequest_40000017,0x40000017,,6000,,,退出宗门
 288,setZongMenMemberPositionRequest_40000015,0x40000015,,6000,,,宗门职位更改
 289,setZongMenSettingRequest_40000013,0x40000013,,6000,,,宗门设置相关 有值 则替换，没有值 则不修改
 290,updateMemberAuthRequest_40000041,0x40000041,,6000,,,"宗门成员权限管理,同意申请，踢人等。"

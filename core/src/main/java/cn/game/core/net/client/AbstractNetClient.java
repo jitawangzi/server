@@ -55,15 +55,6 @@ public abstract class AbstractNetClient implements NetClient
 	public boolean isActive() {
 		return true;
 	}
-
-	@Override
-	public Context getContext() {
-		return VxContextRegistry.getInstance().getContext(getPlayerId());
-	}
-	@Override
-	public void setContext(ContextInternal context) {
-//		this.context = context;
-	}
 	@Override
 	public void close() {
 	}

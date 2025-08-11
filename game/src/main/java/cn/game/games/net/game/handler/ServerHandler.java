@@ -376,7 +376,7 @@ public class ServerHandler extends GameBaseHandler {
 				client.sendProtocol(resp.build());
 			});
 		} else {
-			PlayerHelper.addTask(playerId, r -> {
+			PlayerHelper.addTask(playerId, () -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
 				if (payItem == null || payItem.isFinish()) {
 					log.error("PayItem online ship fail : " + payItem);
@@ -418,7 +418,7 @@ public class ServerHandler extends GameBaseHandler {
 		ProtobufProtocol protocol = new ProtobufProtocol(
 				PbProtocol.getInstance().getMsgId("GamePlayerRequest_7d000015"), request, -1);
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-		PlayerHelper.addTask(playerId, v -> {
+		PlayerHelper.addTask(playerId, () -> {
 			dispatch(gameClient, protocol);
 		});
 
@@ -428,7 +428,7 @@ public class ServerHandler extends GameBaseHandler {
 	protected void playerLogout(NetClient client, Object message) {
 		GamePlayerLogoutRequest_7d000101 request = (GamePlayerLogoutRequest_7d000101) message;
 		long playerId = request.getPlayerId();
-		PlayerHelper.addTask(playerId, v -> {
+		PlayerHelper.addTask(playerId, () -> {
 			Future<?> logout = GameClientManager.getInstance().logout(playerId, LogoutType.ClientRequest);
 			logout.onComplete(r -> {
 				Throwable cause = r.cause();
@@ -565,7 +565,7 @@ public class ServerHandler extends GameBaseHandler {
 				Future<GamePlayerLogoutResponse_7d000102> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
 				requestRemoteServer.onFailure(ee -> {
-					PlayerHelper.addTask(playerId, r -> {
+					PlayerHelper.addTask(playerId, () -> {
 						log.warn("multi player found, notify other fail, logout current " + playerId) ; 
 						GameClientManager.getInstance().logout(playerId, LogoutType.LoginOtherServer);
 					});

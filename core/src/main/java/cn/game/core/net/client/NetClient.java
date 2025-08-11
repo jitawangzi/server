@@ -31,11 +31,6 @@ public interface NetClient {
 	
 	String getIp();
 
-	public Context getContext();
-
-	@Deprecated
-	public void setContext(ContextInternal context);
-
 	/**
 	 * 连接是否活跃
 	 * @return

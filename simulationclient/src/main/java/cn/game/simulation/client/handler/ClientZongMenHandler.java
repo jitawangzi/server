@@ -26,6 +26,7 @@ import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyRewardResponse_40000073
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenBountyTargetRefreshResponse_40000075;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenDonateResponse_40000068;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenLogProto;
+import cn.game.protocol.protobuf.ZongMenMsg.ZongMenMemberInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenQuickJoinResponse_40000066;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
 import cn.game.protocol.protobuf.ZongMenMsg.ZongMenSimpleInfo;
@@ -87,6 +88,8 @@ public class ClientZongMenHandler extends GameBaseHandler {
         int total = resp.getTotal();
         int page = resp.getPage();
         Client client = (Client) netClient;
+        
+		client.zongmenIds = zongMenListList.stream().map(ZongMenSimpleInfo::getId).toList();
     }
 
     private void find(NetClient netClient, Object message) {
@@ -136,6 +139,17 @@ public class ClientZongMenHandler extends GameBaseHandler {
         getZongMenInfoResponse_40000022 resp = (getZongMenInfoResponse_40000022) message;
         ZongMenAllInfo info = resp.getInfo();
         Client client = (Client) netClient;
+        if (info != null) {
+			client.zongMenPersonalInfo = info.getPersonalInfo();
+			List<ZongMenMemberInfo> membersList = info.getShowInfo().getMembersList(); 
+			for (ZongMenMemberInfo zongMenMemberInfo : membersList) {
+				if (Long.parseLong(zongMenMemberInfo.getSimplePlayer().getId()) == client.getPlayerId()) {
+                    client.zongMenMember = zongMenMemberInfo;
+                    break;
+					
+				}
+			}
+		}
     }
 
     private void getLog(NetClient netClient, Object message) {

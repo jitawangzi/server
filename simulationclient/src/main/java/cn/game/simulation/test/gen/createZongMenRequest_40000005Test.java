@@ -23,10 +23,13 @@ public class createZongMenRequest_40000005Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.createZongMenRequest_40000005.newBuilder() ; 
+		// 压测下，10% 概率自己创建，90% 加入别人
+		if (Rnd.hitPercentage(10)) {
+			builder.setName(client.getPlayerAllInfo().getPlayer().getName());
+			return builder.build() ; 
+		}
+		return null ; 
 		
-		builder.setName(client.getPlayerAllInfo().getPlayer().getName());
-		
-		return builder.build() ; 
 	}
 	
 	public static void main(String args[]) throws Exception {

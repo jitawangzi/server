@@ -26,7 +26,7 @@ public class StoreStaminaJob implements Job
 		Collection<GameClient> gameClients = GameClientManager.getInstance().getGameClients();
 		for (GameClient gameClient : gameClients) {
 			Player player = PlayerManager.getInstance().getPlayer(gameClient.getPlayerId());
-			PlayerHelper.addTask(gameClient.getPlayerId(), r -> {
+			PlayerHelper.addTask(gameClient.getPlayerId(), () -> {
 				player.getBattleModule().addStoreStaminas((int) (now / 1000));
 			});
 		}

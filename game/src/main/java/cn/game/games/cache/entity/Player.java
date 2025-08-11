@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.Message;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.event.EventProcessor;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.vertx.VxHolder;
@@ -151,9 +152,12 @@ public class Player {
 	 * @param handler
 	 * @return
 	 */
-	public long setPeriodicTask(long delay, Handler<Long> handler) {
-		long timer = ((ContextInternal) gameClient.getContext()).setPeriodic(delay, handler);
-//		log.info("player : " + playerId + "添加定时任务：" + timer);
+	public long setPeriodicTask(long delay, Handler<Player> handler) {
+		long timer = VxHolder.vertx.setPeriodic(delay, r -> {
+			ServerContext.getInstance().getProcessor().process(playerId, () -> {
+				handler.handle(this);
+			}, false);
+		});
 		timerTask.add(timer);
 		return timer;
 	}
@@ -164,11 +168,15 @@ public class Player {
 	 * @param handler
 	 * @return
 	 */
-	public long setTimerTask(long delay, Handler<Long> handler) {
+	public long setTimerTask(long delay, Handler<Player> handler) {
 		if (delay <= 0) {
-			gameClient.getContext().runOnContext(v -> handler.handle(0L));
+			ServerContext.getInstance().getProcessor().process(playerId,()-> handler.handle(this), false);
 		} else {
-			long timer = ((ContextInternal) gameClient.getContext()).setTimer(delay, handler);
+			long timer = VxHolder.vertx.setPeriodic(delay, r -> {
+				ServerContext.getInstance().getProcessor().process(playerId, () -> {
+					handler.handle(this);
+				}, false);
+			});
 			timerTask.add(timer);
 			return timer;
 		}

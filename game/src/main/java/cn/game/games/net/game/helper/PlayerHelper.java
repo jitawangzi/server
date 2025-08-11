@@ -1230,7 +1230,6 @@ public class PlayerHelper {
 	 */
 	public static Future<Player> loadPlayerFromDb(PlayerData playerData) {
 		GameClient gameClient = new GameClient(null); // 临时的
-		gameClient.setContext((ContextInternal) VxHolder.vertx.getOrCreateContext());
 		Player player = new Player(playerData);
 		player.setGameClient(gameClient);
 		player.setOnline(false);
@@ -1421,15 +1420,12 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param action
 	 */
-	public static void addTask(long playerId, Handler<Void> action) {
-		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-		if (gameClient != null) {
-			gameClient.getContext().runOnContext(action);
-		}
-	}
-
-	public static void addTask(Player player, Handler<Void> action) {
-		player.getGameClient().getContext().runOnContext(action);
+	public static void addTask(long playerId, Runnable task) {
+//		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+//		if (gameClient != null) {
+//			gameClient.getContext().runOnContext(action);
+//		}
+		ServerContext.getInstance().getProcessor().process(playerId, task);
 	}
 
 	/** 
@@ -1707,12 +1703,7 @@ public class PlayerHelper {
 				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 				return Future.failedFuture("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 			}
-			Promise<Boolean> promise = Promise.promise();
-			gameClient.getContext().runOnContext(v -> {
-				Boolean apply = function.apply(modify);
-				promise.complete(apply);
-			});
-			return promise.future();
+			return ServerContext.getInstance().getProcessor().process(modify.getPlayerId(), () -> function.apply(modify),null);
 		} else {
 			return modifyPlayerOffline(function, modify);
 		}
