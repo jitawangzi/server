@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.battle;
 import cn.game.core.cache.CacheType;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.quest.require.ConsumesDiamonds;
 import cn.game.games.net.game.module.rank.PlayerRank;
@@ -161,6 +162,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), myAddScore, true,rediskeyMy);
             }
             resetCache();
+            player.handleEvent(EventTypeEnum.DaShengPointsAdd,myScore,myAddScore);
            // return ResultObject.success();
         } else { // 失败了，最终结算
             // 生成战报
@@ -469,4 +471,10 @@ public class PVEVPBattle extends XiYouBattleHandler {
     public void setBuyCount(int buyCount) {
         this.buyCount = buyCount;
     }
+
+
+	public RankEntry getMyRank() {
+		return myRank;
+	}
+    
 }

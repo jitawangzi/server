@@ -510,10 +510,6 @@ public class GameServer implements GameServerMBean {
 	public <T> T getRemoteCrossServerInterface(Class<T> remoteInterface, DistributedObjectType objectType, long targetId) {
 		return ServerHelper.getRemoteInterfaceProxy(ServerType.Cross, remoteInterface, objectType, targetId);
 	}
-
-	public ZongmenServiceInterface getZongmenProxy(long targetId) {
-		return ServerHelper.getRemoteInterfaceProxy(ServerType.Cross, ZongmenService.class, DistributedObjectType.ZONGMEN, targetId);
-	}
 	/** 
 	 * 获取所有跨服的远程接口，用于点对点通讯。 
 	 * @return

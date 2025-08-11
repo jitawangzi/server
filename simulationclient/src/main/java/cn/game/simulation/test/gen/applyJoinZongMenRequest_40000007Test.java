@@ -12,7 +12,7 @@ public class applyJoinZongMenRequest_40000007Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ZongMenMsg.applyJoinZongMenRequest_40000007.Builder builder = cn.game.protocol.protobuf.ZongMenMsg.applyJoinZongMenRequest_40000007.newBuilder() ; 
-		builder.setId(892440001); 
+		builder.setId(894990001); 
 		
 		return builder.build() ; 
 	}

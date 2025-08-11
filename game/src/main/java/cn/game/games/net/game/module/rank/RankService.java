@@ -505,6 +505,15 @@ public class RankService {
 		});
 		return playerRankAsync;
 	}
+	public CompletionStage<PlayerRank> convertToPlayerRankEntry(CompletionStage<RankEntry> entryAsync) {
+		CompletionStage<PlayerRank> playerRankAsync = entryAsync.thenCompose(rankEntry -> {
+			Future<SimplePlayer> ret = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(rankEntry.getPlayerId()));
+			return ret.toCompletionStage().thenApply(simplePlayer -> {
+				return new PlayerRank(rankEntry, simplePlayer); 
+			});
+		});
+		return playerRankAsync;
+	}
 
 	/**
 	 *

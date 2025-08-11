@@ -102,7 +102,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingSubId = battleModule.getAttackingSubId();
 		if (startFloor > 0 && attackingSubId > 0) {
-			end(attackingSubId); 
+			end(attackingSubId,false); 
 		}
 	}
 	
@@ -120,7 +120,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			throw new LogicException(ErrorMsgEnum.pre_condition_check_error.getId());
 		}
 		lastCompleteFloor = floor; // 记录最后通关的层数
-		return end(floor); // 直接结算
+		return end(floor,true); // 直接结算
 	}
 
 	@Override
@@ -134,12 +134,12 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			RankService.getInstance().setScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), attackingSubId);
 			return ResultObject.success();
 		} else { // 失败了，最终结算
-			List<RewardInfo> rewards = end(attackingSubId);
+			List<RewardInfo> rewards = end(attackingSubId,false);
 			return ResultObject.success(rewards);
 		}
 	}
 
-	public List<RewardInfo> end(int attackingSubId) {
+	public List<RewardInfo> end(int attackingSubId,boolean win) {
 		// 每一关的通过奖励
 		List<int[][]> allRewardList = new ArrayList<>();
 		for (int floor = startFloor; floor < attackingSubId; floor++) {
@@ -147,6 +147,9 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 				continue; 
 			}
 			allRewardList.add(getReward(floor, false));
+		}
+		if (win) {
+			allRewardList.add(getReward(attackingSubId, false));
 		}
 		// 上一关的扫荡奖励
 		if (attackingSubId > 1) {
