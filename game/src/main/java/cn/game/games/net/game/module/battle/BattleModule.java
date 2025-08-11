@@ -31,6 +31,8 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
+
+import com.alibaba.excel.util.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
@@ -322,7 +324,7 @@ public class BattleModule extends BasePlayerModule  {
 	}
 
 	public boolean addStoreStaminas(int time) {
-		if (storeStaminas.size() >= 60) {
+		if (storeStaminas.size() >= GlobalConst.RSGTreeEnergyFruitMax) {
 			return false;
 		}
 		storeStaminas.add(time);
@@ -330,7 +332,11 @@ public class BattleModule extends BasePlayerModule  {
 	}
 
 	public void updateStoreStaminas() {
-		Instant instant = Instant.ofEpochMilli(player.getData().getOfflineTime());
+		long offlineTime = player.getData().getOfflineTime(); 
+		if (offlineTime == 0) {
+			offlineTime = DateUtil.currentTimeMillis(); 
+		}
+		Instant instant = Instant.ofEpochMilli(offlineTime);
 
 		LocalDateTime lastOnlineTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
 		LocalDateTime currentOnlineTime = LocalDateTime.now();
@@ -352,7 +358,7 @@ public class BattleModule extends BasePlayerModule  {
 		LocalDateTime startOfDay = from.toLocalDate().atStartOfDay();
 
 		for (LocalDateTime date = startOfDay; date.isBefore(to.plusDays(1)); date = date.plusDays(1)) {
-			for (int hour : REWARD_HOURS) {
+			for (int hour : GlobalConst.RSGTreeEnergyHour) {
 				LocalDateTime rewardTime = date.with(LocalTime.of(hour, 0));
 				rewardTimes.add(rewardTime);
 			}
@@ -661,7 +667,7 @@ public class BattleModule extends BasePlayerModule  {
 		}
 		builder.setPatrol(buildPatrolInfo());
 
-		builder.addAllStoreStaminas(storeStaminas);
+//		builder.addAllStoreStaminas(storeStaminas);
 		builder.setMergeSweepTimes(daySweepCount);
 		builder.setBattleRewardMultipleTimes(battleRewardMultipleTimes);
 		builder.setShareReliveCount(shareReliveCount);
