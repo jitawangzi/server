@@ -12,7 +12,7 @@ import cn.game.games.core.push.PushService;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.zongmen.ZongMenHandler;
+import cn.game.games.net.game.module.guild.GuildHandler;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.ChatMsg.ChatMessageInfo;
@@ -92,7 +92,7 @@ public class ChatHandler extends GameBaseHandler {
 			PushService.getInstance().pushMessage(notAtMeMessage, false, serverId);
 			break;
 		}
-		//宗门聊天
+		//公会聊天
 		case UNINON_CHAT: {
 
 			break;
@@ -165,7 +165,7 @@ public class ChatHandler extends GameBaseHandler {
 					break;
 				}
 				case UNINON_CHAT: {
-					if (sendPlayer.getGuildId() == 0){//宗门不存在
+					if (sendPlayer.getGuildId() == 0){//公会不存在
 						client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 						return;
 					}
@@ -173,7 +173,7 @@ public class ChatHandler extends GameBaseHandler {
 					messageBuilder.setChatType(chatType);
 					messageBuilder.setContent(content);
 					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-					ZongMenHandler.sendMsgToZongMenServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
+					GuildHandler.sendMsgToGuildServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
 					break;
 				}
 				default:

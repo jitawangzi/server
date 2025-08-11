@@ -20,7 +20,7 @@ import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.VertxFutureConverter;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.net.cross.zongmen.ZongMenModuleData;
+import cn.game.games.net.cross.guild.GuildModuleData;
 import cn.game.games.net.data.mapper.FriendMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.util.Config;
@@ -40,7 +40,7 @@ public class GGameTest {
 
 	public static void main(String[] args) throws Exception {
 
-		String jsonStringWithType = JsonUtil.toJsonStringWithType(new ZongMenModuleData());
+		String jsonStringWithType = JsonUtil.toJsonStringWithType(new GuildModuleData());
 		System.err.println(jsonStringWithType);
 		initEnv();
 		PlayerDataMapper playerDataMapper = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);

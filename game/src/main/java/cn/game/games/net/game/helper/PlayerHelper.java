@@ -48,7 +48,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.cross.guild.GuildHelper;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
@@ -74,7 +74,7 @@ import cn.game.games.net.game.module.develop.gem.GemModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.games.net.game.module.zongmen.ZongMenModule;
+import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
@@ -409,7 +409,7 @@ public class PlayerHelper {
 			return;
 		}
 
-		// 宗门贡献度
+		// 公会贡献度
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		boolean ret = goodsModule.del(id, value, consumeType);
 		if (ret) {

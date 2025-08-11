@@ -5,7 +5,7 @@ import java.util.Collection;
 import cn.game.core.cache.CacheConfig;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.GenericDistributedIDManager;
-import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.games.net.cross.guild.GuildManager;
 import cn.game.games.net.game.manager.PlayerManager;
 
 public class DistributedIDManager extends GenericDistributedIDManager {
@@ -20,8 +20,8 @@ public class DistributedIDManager extends GenericDistributedIDManager {
 		switch (objectType) {
 		case PLAYER:
 			return PlayerManager.getInstance().getPlayer(objectId) != null;
-		case ZONGMEN:
-			return ZongMenManager.getInstance().getZongMen(objectId) != null;
+		case GUILD:
+			return GuildManager.getInstance().getGuild(objectId) != null;
 		default:
 			throw new IllegalArgumentException("Unsupported object type: " + objectType);
 		}
@@ -33,8 +33,8 @@ public class DistributedIDManager extends GenericDistributedIDManager {
 		switch (objectType) {
 		case PLAYER:
 			return PlayerManager.getInstance().getAllPlayer().keySet();
-		case ZONGMEN:
-			return ZongMenManager.getInstance().getAllZongMenIds();
+		case GUILD:
+			return GuildManager.getInstance().getAllGuildIds();
 		default:
 			throw new IllegalArgumentException("Unsupported object type: " + objectType);
 		}

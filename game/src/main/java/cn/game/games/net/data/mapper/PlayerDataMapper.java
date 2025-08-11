@@ -112,7 +112,7 @@ public interface PlayerDataMapper {
 	Long selectIdByName(String name);
 
 	/** 
-	 * 更新某个玩家的宗门信息
+	 * 更新某个玩家的公会信息
 	 * @param playerId
 	 * @param unionId
 	 * @param unionName

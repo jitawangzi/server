@@ -12,7 +12,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
-import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -65,12 +65,12 @@ public class ServerHelper {
 	}
 	
 	/** 
-	 * 获取宗门远程代理接口
+	 * 获取公会远程代理接口
 	 * @param targetId
 	 * @return
 	 */
-	public static ZongmenServiceInterface getZongmenProxy(long targetId) {
-		return getRemoteInterfaceProxy(ServerType.Cross, ZongmenServiceInterface.class, DistributedObjectType.ZONGMEN, targetId);
+	public static GuildServiceInterface getGuildProxy(long targetId) {
+		return getRemoteInterfaceProxy(ServerType.Cross, GuildServiceInterface.class, DistributedObjectType.GUILD, targetId);
 	}
 
 }

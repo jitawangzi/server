@@ -66,8 +66,8 @@ import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
-import cn.game.games.net.cross.zongmen.service.ZongmenService;
-import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
+import cn.game.games.net.cross.guild.service.GuildService;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
@@ -226,18 +226,18 @@ public class GameServer implements GameServerMBean {
 		System.err.println("Game Server startup complete");
 
 		// 在创建代理前添加
-//		Method[] methods = ZongmenService.class.getDeclaredMethods();
+//		Method[] methods = GuildService.class.getDeclaredMethods();
 //		System.out.println("类方法数量: " + methods.length);
 //		for (Method method : methods) {
 //			System.out.println("方法: " + method.getName() + ", 参数: " + Arrays.toString(method.getParameterTypes()));
 //		}
-//		for (Method m : ZongmenService.class.getDeclaredMethods()) {
+//		for (Method m : GuildService.class.getDeclaredMethods()) {
 //			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
 //		}
 
-//		ZongmenService zongmenProxy = getZongmenProxy(1);
-//		zongmenProxy.setMemberPosition(start, start, start, 0);
-//		System.out.println("Game Server startup complete, zongmenProxy setMemberPosition complete");
+//		GuildService guildProxy = getGuildProxy(1);
+//		guildProxy.setMemberPosition(start, start, start, 0);
+//		System.out.println("Game Server startup complete, guildProxy setMemberPosition complete");
 	}
 
 	/** 

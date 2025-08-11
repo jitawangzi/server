@@ -57,7 +57,7 @@ public class PointRewardData {
 
 			data.conditionStage = questPointRewardConfig.Stage;
 			data.fixRewardStage = questPointRewardConfig.Reward;
-			data.opType = OpType.ZongMenQuestReward;
+			data.opType = OpType.GuildQuestReward;
 		}else {
 			throw new IllegalArgumentException("没有实现的PointRewardType :" + type);
 		}

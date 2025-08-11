@@ -25,7 +25,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.net.cross.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
-import cn.game.games.net.cross.zongmen.ZongMenManager;
+import cn.game.games.net.cross.guild.GuildManager;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -92,8 +92,8 @@ public class CrossServer {
 
 		new Thread(WatchServiceManager.getInstance().setWatchDirs("xml", "config"), "WatchServiceManager").start();
 		ManagerHelper.init();
-		//初始化宗门
-		ZongMenManager.getInstance().init();
+		//初始化公会
+		GuildManager.getInstance().init();
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		System.err.println("Cross Server startup complete");
 
@@ -114,7 +114,7 @@ public class CrossServer {
 		LoggerType.Stdout.logger.info("CrossServer shutdown start");
 
 		IdCache.clearAllCurrentServerId();
-		ZongMenManager.getInstance().saveAllZongMenData(true);
+		GuildManager.getInstance().saveAllGuildData(true);
 
 		stopWatch.stop();
 		LoggerType.Stdout.logger.info("CrossServer shutdown complete, elapsed time: {} ms", stopWatch.getTime());

@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
-import cn.game.games.net.game.module.zongmen.ZongMenHandler;
-import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.games.net.cross.guild.GuildHelper;
+import cn.game.games.net.game.module.guild.GuildHandler;
+import cn.game.protocol.protobuf.GuildMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 

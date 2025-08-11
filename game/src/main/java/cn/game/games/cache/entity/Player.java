@@ -66,7 +66,7 @@ import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.vip.VipModule;
-import cn.game.games.net.game.module.zongmen.ZongMenModule;
+import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.protocol.generated.config.FairyFriendFavorabilityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.VIPConfig;
@@ -318,8 +318,8 @@ public class Player {
 		return getModule(GuaranteeModule.class);
 	}
 
-	public ZongMenModule getZongmenModule() {
-		return getModule(ZongMenModule.class);
+	public GuildModule getGuildModule() {
+		return getModule(GuildModule.class);
 	}
 
 	public Player() {
@@ -893,7 +893,7 @@ public class Player {
 	}
 
 	public long getGuildId() {
-		return getZongmenModule().getGuildId(); 
+		return getGuildModule().getGuildId(); 
 	}
 
 	public String getPlayerName() {
