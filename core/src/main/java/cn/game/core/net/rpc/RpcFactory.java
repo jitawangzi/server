@@ -110,7 +110,7 @@ public class RpcFactory {
 	}
 
 	// InvocationHandler 适用于JDK Proxy和Byte Buddy
-	private static class Invocation implements InvocationHandler {
+	static class Invocation implements InvocationHandler {
 		private RpcClient rpcClient;
 		/** 是否同步阻塞调用 ,暂时不用了，使用 返回值类型和 callBackTask 来区分异步*/
 		@Deprecated
@@ -143,6 +143,19 @@ public class RpcFactory {
 				throw new RuntimeException(e);
 			}
 		}
+
+		public long getObjectId() {
+			return objectId;
+		}
+
+		public RpcClient getRpcClient() {
+			return rpcClient;
+		}
+
+		public String getTargetAddr() {
+			return targetAddr;
+		}
+		
 	}
 
 	// 缓存Key

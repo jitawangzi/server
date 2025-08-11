@@ -36,6 +36,11 @@ public class VertxRpcClient extends AbstractVerticle implements RpcClient {
 	public <T> void send(T message) {
 		throw new UnsupportedOperationException();
 	}
+	
+	 @Override
+	 public <T> void fireAndForget(String addr, T message, DeliveryOptions options) {
+	     vertx.eventBus().send(addr, message, options);
+	 }
 
 
 	@Override
