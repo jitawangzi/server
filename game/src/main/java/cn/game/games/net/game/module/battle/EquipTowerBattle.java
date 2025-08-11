@@ -237,10 +237,12 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         }
         BattleModule battleModule= player.getBattleModule();
         int unlock =EquipTowerManager.instance().get(floor).mainBattleId ;
-        if( battleModule.isBattlePass( unlock))
+        if(!battleModule.isBattlePass( unlock))
         {
             return ErrorMsgEnum.BattleLevel_pre.ID;
         }
+
+
         if (args.length > 0) {
             long helpPlayerId = args[0];
             if(helpPlayerId>0)
@@ -349,4 +351,9 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     public void setBattleRecord(Map<Integer, String> battleRecord) {
         this.battleRecord = battleRecord;
     }
+
+
+
+
+
 }
