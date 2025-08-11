@@ -97,7 +97,7 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteResponse_6f000045;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutRequest_6f000042;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutResponse_6f000043;
 import cn.game.protocol.protobuf.TestMsg.TestRunRequest_6f000020;
-import cn.game.util.CentosTimeShift;
+import cn.game.util.SystemTimeShift;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
@@ -351,7 +351,7 @@ public class TestHandler extends GameBaseHandler {
                 }
             case "ctime":
             {
-            	CentosTimeShift.main(new String[] { params.getStringParameter(1) }); 
+            	SystemTimeShift.main(new String[] { params.getStringParameter(1) }); 
             	break;
             }
             default:
