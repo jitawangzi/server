@@ -1,21 +1,17 @@
 package cn.game.games.net.game.module.battle;
 
 import cn.game.games.core.ResultObject;
-import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.MountainEventManager;
-import cn.game.protocol.generated.manager.MountainResultManager;
-import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.*;
 import cn.game.protocol.manual.DungeonTypeEnum;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.MountainNodeType;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.Rnd;
 
 import java.util.*;
 
@@ -32,7 +28,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
 
     public DaShengXunShanBattle() {
     }
-
+    private final int SHOP_COIN = 100902;
     /**
      * 生成地图数据 4层 11行 最多3个点
      */
@@ -100,8 +96,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         int startId = getNodeUid(floor, 1, 1);
         mapData.get(startId).setNodeType(MountainNodeType.Start.getType());
         //第2行 两个战斗
-        mapData.get(getNodeUid(floor, 2, 0)).setNodeType(MountainNodeType.Battle.getType());
-        mapData.get(getNodeUid(floor, 2, 1)).setNodeType(MountainNodeType.Battle.getType());
+        mapData.get(getNodeUid(floor, 2, 0)).setNodeType(MountainNodeType.Easy.getType());
+        mapData.get(getNodeUid(floor, 2, 1)).setNodeType(MountainNodeType.Easy.getType());
         //最后1行一定是BOSS
         int endId = getNodeUid(floor, 11, 1);
         mapData.get(endId).setNodeType(MountainNodeType.Boss.getType());
@@ -171,8 +167,9 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         int nodeType = nodeData.getNodeType();
         boolean success = true;
         switch (MountainNodeType.get(nodeType)) {
-            case MountainNodeType.Battle:
+            case MountainNodeType.Easy:
                 break;
+            case MountainNodeType.Hp:
             case MountainNodeType.Event:
                 handleEventNode(nodeData, para);
                 break;
@@ -181,36 +178,40 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                 break;
             case MountainNodeType.Boss:
                 break;
-            case MountainNodeType.Hp:
-                handleHpNode(nodeData);
-                break;
+
             default:
                 break;
         }
         if (success) {
             nodeData.setNodeStatus(1);
             mountainMapData.setCurNodeId(Uid);
+            if(nodeType==MountainNodeType.Hard.getType()
+            ||nodeType==MountainNodeType.Easy.getType()
+            ||nodeType==MountainNodeType.Boss.getType())
+            {
+                MountainLayerConfig moduleLayer = MountainLayerManager.instance().get(getFloor(Uid));
+                if(moduleLayer==    null) {
+                    return;
+                }
+                addScore(moduleLayer.monsterParam);
+            }
+
         }
     }
-
-    void handleHpNode(MountainMapNodeData nodeData) {
-        // 没有配置 就是回复30%  由有圣物就是50%
-        int addNum = 5000;
-        var tmp = mountainMapData.getHp() + addNum;
-        mountainMapData.setHp(tmp);
-    }
     private  void  addBuff(int buffId) {
+        MountainBuffConfig buffConfig = MountainBuffManager.instance().get(buffId);
+        if(buffConfig==    null) {
+            return;
+        }
         if(mountainMapData.getBuffBag().containsKey(buffId))
         {
             int newcount=mountainMapData.getBuffBag().get(buffId)+1;
-//            if(newcount>=)
-//            {
-//
-//            }
+            if(newcount>=buffConfig.addMax) {
+                newcount=buffConfig.addMax;
+            }
             mountainMapData.getBuffBag().put(buffId,newcount);
         }else {
             mountainMapData.getBuffBag().put(buffId,1);
-
         }
     }
 
@@ -231,35 +232,57 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         }
         switch (resultConfig.type) {
             case 1:
+            {
                 int buffId = param[1];
+                addBuff(buffId);
+            }
                 break;
-                case 2:
-                    break;
-                        case 3:
-                            break;
-                                case 4:
-                                    break;
-                                    case 5:
-                                        break;
-                                        case 6:
-                                            break;
+            case 2:
+            {
+                int buffId = param[1];
+                addBuff(buffId);
+                int buffId2 = param[2];
+                addBuff(buffId2);
+            }
+                break;
+            case 3: {
+                int addNum = resultConfig.param[0];
+                PlayerHelper.addResources(player, SHOP_COIN, addNum, OpType.MountainBattleEventAdd);
+            }
+                break;
+            case 4: {
+                int begin = resultConfig.param[0];
+                int end = resultConfig.param[1];
+                int addNum = Rnd.generateRandomNumbers(begin, end, 1).get(0);
+                PlayerHelper.addResources(player, SHOP_COIN, addNum, OpType.MountainBattleEventAdd);
+            }
+                break;
+            case 5:
+                // todo  待定  要和客户端确认血量是万分比 还是真实血量
+                break;
+            case 6:
+            {
+                // todo  待定  要和客户端确认血量是万分比 还是真实血量
+                int addpercent = resultConfig.param[0];
+                mountainMapData.setHp(mountainMapData.getHp() + addpercent);
+            }
+                break;
 
         }
     }
 
     boolean handleShopNode(MountainMapNodeData nodeData, int...    param) {
         // 商店选择
-        int buffId = 1;
-        //扣钱 加BUFF
-        int costID = GlobalConst.TicketItemId;
-        int cosNum = 10;
-        long num = player.getItemModule().getCount(costID);
-        if (num >= cosNum) {
-            PlayerHelper.delResources(player, costID, cosNum, OpType.MountainBattleBuffShop);
-        } else {
+        int buffId = param[0];
+        MountainBuffConfig buffConfig = MountainBuffManager.instance().get(buffId);
+        if(buffConfig==    null) {
             return false;
         }
-       // mountainMapData.getBuffBag().add(buffId);
+        //扣钱 加BUFF
+        int costID = SHOP_COIN;
+        int cosNum = buffConfig.price;
+        PlayerHelper.delResources(player, costID, cosNum, OpType.MountainBattleBuffShop);
+        addBuff(buffId);
         return true;
     }
 
@@ -289,8 +312,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
         BattleModule battleModule = player.getModule(BattleModule.class);
         if (request.getWin()) {
-            BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
-            List<RewardInfo> allRewards = new ArrayList<>();
+             int nodeId= request.getDaShengNodeId();
+             finishNode(nodeId);
 
             return ResultObject.success();
         } else { // 失败了，最终结算
@@ -298,13 +321,13 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             return ResultObject.success();
         }
     }
-
-    public void addRank(int battelType, int battleId) {
-        // 23-27 ->14-18
-        RankType rankType = RankType.get(battelType - 9);
-        RankConfig rankConfig = RankManager.instance().get(rankType.ID);
-        if (BattleHelper.isComplete(battleId, rankConfig.Request)) {
-            RankService.getInstance().setScoreAsync(player.getServerId(), rankType, player.getPlayerId(), battleId);
+    void addScore(int score) {
+        mountainMapData.setScore(mountainMapData.getScore() + score);
+        if(mountainMapData.getScoreMax() < mountainMapData.getScore())
+        {
+            mountainMapData.setScoreMax(mountainMapData.getScore());
+            RankType rankType = RankType.get(1);
+            RankService.getInstance().setScoreAsync(player.getServerId(), rankType, player.getPlayerId(),  mountainMapData.getScoreMax());
         }
     }
 

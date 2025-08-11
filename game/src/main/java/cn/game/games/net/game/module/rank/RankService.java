@@ -258,7 +258,17 @@ public class RankService {
 			int endIndex = size - 1;
 
 			return rank.entryRangeReversedAsync(startIndex, endIndex)
-					.thenApply(entries -> convertToRankEntries(entries, 1, actualN));
+					.thenApply(
+							entries ->
+							{
+								List<RankEntry> rankEntries = new ArrayList<>();
+								int rankBegin =startIndex + 1; // 从当前页的起始排名开始
+								for (ScoredEntry<Long> entry : entries) {
+									rankEntries.add(new RankEntry(rankBegin++, entry.getValue(), (long) entry.getScore().doubleValue()));
+								}
+								return rankEntries;
+							}
+					);
 		});
 	}
 
