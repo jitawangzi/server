@@ -335,7 +335,7 @@ public class PlayerManager {
 		// 玩家在线
 		if (hasCache(playerId)) {
 			Player player = id_players.get(playerId);
-			PlayerHelper.addTask(playerId, r -> {
+			PlayerHelper.addTask(playerId, () -> {
 				GameClientManager.getInstance().logout(playerId, LogoutType.ForbidAccount);
 			});
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);

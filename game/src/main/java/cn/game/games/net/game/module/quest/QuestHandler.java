@@ -11,7 +11,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.cross.zongmen.ZongMenHelper;
+import cn.game.games.net.cross.guild.GuildHelper;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -44,7 +44,7 @@ import cn.game.protocol.protobuf.QuestMsg.QuestReceiveResponse_20000005;
 import cn.game.protocol.protobuf.QuestMsg.QuestUpdateRequest_20000030;
 import cn.game.protocol.protobuf.QuestMsg.QuestUpdateResponse_20000031;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.GuildMsg;
 
 @Component
 public class QuestHandler extends GameBaseHandler {
@@ -269,10 +269,10 @@ public class QuestHandler extends GameBaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		QuestModule questModule = player.getModule(QuestModule.class);
 
-		// 玩家领取宗门任务 检测
+		// 玩家领取公会任务 检测
 		for (int id : ids) {
 			QuestConfig questConfig = QuestManager.instance().get(id);
-			if (questConfig.Type == QuestTypeEnum.ZongMen.ID && player.getGuildId() == 0) {
+			if (questConfig.Type == QuestTypeEnum.Guild.ID && player.getGuildId() == 0) {
 				client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 				return;
 			}

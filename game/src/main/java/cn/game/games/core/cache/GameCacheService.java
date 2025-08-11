@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.cache.CacheDataType;
 import cn.game.core.cache.SimpleCacheManager;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.cross.zongmen.service.ZongmenServiceInterface;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.protocol.protobuf.ZongMenMsg.ZongMenShowInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.util.RedisUtil;
 
 public class GameCacheService {
@@ -85,16 +85,16 @@ public class GameCacheService {
 		return RedisUtil.get(redisKey);
 	}
 
-	private int fetchPlayeGuildLevelFromRemote(long zongmenId) {
-		if (zongmenId <= 0) {
+	private int fetchPlayeGuildLevelFromRemote(long guildId) {
+		if (guildId <= 0) {
 			return 0;
 		}
-		ZongmenServiceInterface zongmenProxy = ServerHelper.getZongmenProxy(zongmenId);
-		ZongMenShowInfo zongmenShowInfo = zongmenProxy.getZongmenShowInfo(zongmenId);
-		if (zongmenShowInfo == null) {
+		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
+		GuildShowInfo guildShowInfo = guildProxy.getGuildShowInfo(guildId);
+		if (guildShowInfo == null) {
 			return 0;
 		}
-		return zongmenShowInfo.getSimpleInfo().getLevel();
+		return guildShowInfo.getSimpleInfo().getLevel();
 	}
 
 }

@@ -26,10 +26,6 @@ public class IdCache {
 //		managers.put(DistributedObjectType.PLAYER,
 //				new DistributedIDManager(DistributedObjectType.PLAYER,
 //						new CacheConfig(8192, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.PLAYER_SERVER_ID)));
-//		// 工会id缓存配置
-//		managers.put(DistributedObjectType.ZONGMEN,
-//				new DistributedIDManager(DistributedObjectType.ZONGMEN,
-//						new CacheConfig(1024, Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.ZONG_MEN_SERVER_ID)));
 //	}
 	
 	/**
@@ -74,8 +70,8 @@ public class IdCache {
 		return manager.getServerId(playerId);
 	}
 
-	public static String getZongMenServerId(long playerId) {
-		GenericDistributedIDManager manager = getManager(DistributedObjectType.ZONGMEN);
+	public static String getGuildServerId(long playerId) {
+		GenericDistributedIDManager manager = getManager(DistributedObjectType.GUILD);
 		return manager.getServerId(playerId);
 	}
 

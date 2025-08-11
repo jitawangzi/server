@@ -31,7 +31,7 @@ public class NewDayJob implements Job
 		Collection<GameClient> gameClients = GameClientManager.getInstance().getGameClients();
 		for (GameClient gameClient : gameClients) {
 			Player player = PlayerManager.getInstance().getPlayer(gameClient.getPlayerId());
-			PlayerHelper.addTask(gameClient.getPlayerId(), r -> {
+			PlayerHelper.addTask(gameClient.getPlayerId(), () -> {
 				PlayerHelper.refresh(player);
 				// 通知客户端跨天了， 使用登陆来刷新所有数据。
 				gameClient.sendProtocol(PlayerResetPush_01100016.getDefaultInstance());

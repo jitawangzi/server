@@ -647,7 +647,8 @@ public class BattleModule extends BasePlayerModule  {
 	};
 
 	public boolean isStaminaExpire(int now, int time) {
-		return now - time > DateUtil.DAY_SECONDS * 7;
+		// 先不过期。 
+		return now - time > DateUtil.DAY_SECONDS * 7000;
 	}
 
 	@Override

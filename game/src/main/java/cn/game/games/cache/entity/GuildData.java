@@ -1,0 +1,220 @@
+package cn.game.games.cache.entity;
+
+import cn.game.games.cache.base.DbEntity;
+import java.io.Serializable;
+
+public class GuildData implements Serializable, DbEntity {
+
+	/**
+	 * 公会id
+	 * @mbg.generated
+	 */
+	private long id;
+	/**
+	 * 公会名称
+	 * @mbg.generated
+	 */
+	private String name;
+	/**
+	 * 公会创建时间
+	 * @mbg.generated
+	 */
+	private String createTime;
+	/**
+	 * 等级
+	 * @mbg.generated
+	 */
+	private byte lv;
+	/**
+	 * 公会图标
+	 * @mbg.generated
+	 */
+	private int icon;
+	/**
+	 * 公告
+	 * @mbg.generated
+	 */
+	private String notice;
+	/**
+	 * 通知，仅成员可见
+	 * @mbg.generated
+	 */
+	private String notification;
+	/**
+	 * 当前经验
+	 * @mbg.generated
+	 */
+	private int exp;
+	/**
+	 * 该公会属于哪个逻辑服务器id
+	 * @mbg.generated
+	 */
+	private String serverId;
+	/**
+	 * 所有模块数据
+	 * @mbg.generated
+	 */
+	private String modules;
+	/**
+	 * @mbg.generated
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @mbg.generated
+	 */
+	public long getId() {
+		return id;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public byte getLv() {
+		return lv;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setLv(byte lv) {
+		this.lv = lv;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public int getIcon() {
+		return icon;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setIcon(int icon) {
+		this.icon = icon;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getNotice() {
+		return notice;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setNotice(String notice) {
+		this.notice = notice;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getNotification() {
+		return notification;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setNotification(String notification) {
+		this.notification = notification;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public int getExp() {
+		return exp;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getServerId() {
+		return serverId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public String getModules() {
+		return modules;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setModules(String modules) {
+		this.modules = modules;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	@Override
+	public Class<?> getMapperClass() {
+		return cn.game.games.net.data.mapper.GuildDataMapper.class;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	@Override
+	public Object primaryKey() {
+		return id;
+	}
+
+
+}

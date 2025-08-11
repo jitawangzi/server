@@ -72,7 +72,6 @@ public class WebSocketVerticle extends AbstractVerticle {
 							log.warn("session[{}]新连接，但是没有先发登录请求，msgID[{}]", ws, msgID);
 							return;
 						}
-						client.setContext(context);
 						client.setIp(ws.remoteAddress().host());
 					}
 					if (ServerContext.getInstance().getRunMode().isPressure() && ServerContext.getInstance().isPressureDev()) {

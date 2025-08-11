@@ -73,7 +73,7 @@ import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
-import cn.game.protocol.protobuf.ZongMenMsg;
+import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -125,7 +125,7 @@ public class ServerHandler extends GameBaseHandler {
 
 
 		putInvoker(PbProtocol.NotifyInviteBindAndLvUpRequest_7d000041, this::InviteLvChange);
-		putInvoker(PbProtocol.NotifyZongMenMsgToGame_7d000047, this::zongMenMsgNotify);
+		putInvoker(PbProtocol.NotifyGuildMsgToGame_7d000047, this::guildMsgNotify);
 
 
 
@@ -133,34 +133,34 @@ public class ServerHandler extends GameBaseHandler {
 //		putInvoker(PbProtocol.LoginGameArchiveCreateRequest_7d000303, this::archiveCreate);
 	}
 
-	private void zongMenMsgNotify(NetClient client, Object o) {
-		ServerMsg.NotifyZongMenMsgToGame_7d000047 req = (ServerMsg.NotifyZongMenMsgToGame_7d000047) o;
+	private void guildMsgNotify(NetClient client, Object o) {
+		ServerMsg.NotifyGuildMsgToGame_7d000047 req = (ServerMsg.NotifyGuildMsgToGame_7d000047) o;
 		int msgId = req.getMsgId();
 		Message message = PbProtocol.getInstance().parseFrom(msgId, req.getData());
 		req.getPlayerIdList().forEach(pid ->{
 			Player player = PlayerManager.getInstance().getPlayer(pid);
 			if (player == null) {
-				log.error("zongMenMsgNotify player is null");
+				log.error("guildMsgNotify player is null");
 				return;
 			}
 			switch (msgId){
-				//玩家 退出 宗门
-				case PbProtocol.notifyQuitZongMen_40000024 -> {
-					player.getZongmenModule().kickZongMen((ZongMenMsg.notifyQuitZongMen_40000024) message);
+				//玩家 退出 公会
+				case PbProtocol.GuildQuitPush_40000024 -> {
+					player.getGuildModule().kickGuild((GuildMsg.GuildQuitPush_40000024) message);
 				}
-				//玩家 加入 宗门
-				case PbProtocol.notifyJoinZongMen_40000044 -> player.getZongmenModule().joinZongMen((ZongMenMsg.notifyJoinZongMen_40000044) message);
-				case PbProtocol.ChatMessagePush_31010001 -> {//宗门聊天
-					zongMenChat(player,(ChatMsg.ChatMessagePush_31010001) message);
+				//玩家 加入 公会
+				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinGuild((GuildMsg.GuildJoinPush_40000044) message);
+				case PbProtocol.ChatMessagePush_31010001 -> {//公会聊天
+					guildChat(player,(ChatMsg.ChatMessagePush_31010001) message);
 				}
 				default -> {
-					log.error(String.format("zongMenMsgNotify msgId:%d is error",req.getMsgId()));
+					log.error(String.format("guildMsgNotify msgId:%d is error",req.getMsgId()));
 				}
 			}
 		});
 	}
 
-	private void zongMenChat(Player notifyPlayer, ChatMsg.ChatMessagePush_31010001 req) {
+	private void guildChat(Player notifyPlayer, ChatMsg.ChatMessagePush_31010001 req) {
 		notifyPlayer.getGameClient().sendProtocol(req);
 	}
 
@@ -376,7 +376,7 @@ public class ServerHandler extends GameBaseHandler {
 				client.sendProtocol(resp.build());
 			});
 		} else {
-			PlayerHelper.addTask(playerId, r -> {
+			PlayerHelper.addTask(playerId, () -> {
 				PayItem payItem = player.getPlayerModule().getPayItems(uid);
 				if (payItem == null || payItem.isFinish()) {
 					log.error("PayItem online ship fail : " + payItem);
@@ -418,7 +418,7 @@ public class ServerHandler extends GameBaseHandler {
 		ProtobufProtocol protocol = new ProtobufProtocol(
 				PbProtocol.getInstance().getMsgId("GamePlayerRequest_7d000015"), request, -1);
 		GameClient gameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
-		PlayerHelper.addTask(playerId, v -> {
+		PlayerHelper.addTask(playerId, () -> {
 			dispatch(gameClient, protocol);
 		});
 
@@ -428,7 +428,7 @@ public class ServerHandler extends GameBaseHandler {
 	protected void playerLogout(NetClient client, Object message) {
 		GamePlayerLogoutRequest_7d000101 request = (GamePlayerLogoutRequest_7d000101) message;
 		long playerId = request.getPlayerId();
-		PlayerHelper.addTask(playerId, v -> {
+		PlayerHelper.addTask(playerId, () -> {
 			Future<?> logout = GameClientManager.getInstance().logout(playerId, LogoutType.ClientRequest);
 			logout.onComplete(r -> {
 				Throwable cause = r.cause();
@@ -565,7 +565,7 @@ public class ServerHandler extends GameBaseHandler {
 				Future<GamePlayerLogoutResponse_7d000102> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
 				requestRemoteServer.onFailure(ee -> {
-					PlayerHelper.addTask(playerId, r -> {
+					PlayerHelper.addTask(playerId, () -> {
 						log.warn("multi player found, notify other fail, logout current " + playerId) ; 
 						GameClientManager.getInstance().logout(playerId, LogoutType.LoginOtherServer);
 					});

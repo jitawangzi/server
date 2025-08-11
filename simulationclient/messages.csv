@@ -215,7 +215,6 @@
 251,DefenceLevelUpRequest_25000031,0x25000031,,,,,防线升级
 252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,防线皮肤升星
 253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,防线皮肤更换
-254,ZongMenBountyRewardRequest_40000072,0x40000072,,,,,领取当前悬赏任务奖励
 255,BattleTowerDataRequest_13000521,0x13000521,,,,,塔数据请求
 256,BattleTowerQuickEndRequest_13100524,0x13100524,,,,,扫荡
 257,BattleEquipTowerDataRequest_13000526,0x13000526,,,,,装备塔数据请求
@@ -235,21 +234,21 @@
 271,BattlePVEVPChallengeRequest_13000552,0x13000552,,,,,大圣擂台挑战数据
 272,BattlePVEVPDataRequest_13000549,0x13000549,,,,,大圣擂台数据请求
 273,BattlePVEVPRecordRequest_13000550,0x13000550,,,,,大圣擂台战斗记录数据
-274,ZongMenDonateRequest_40000067,0x40000067,,,,,宗门捐献
 275,BattleBuyTicketRequest_13000554,0x13000554,,,,,大圣擂台购买次数数据请求
 276,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
-277,ZongMenBargainBuyRequest_40000062,0x40000062,,6000,101,,购买宗门砍价物品
-278,ZongMenBargainRequest_40000060,0x40000060,,6000,100,,宗门砍价
-279,ZongMenQuickJoinRequest_40000065,0x40000065,,6000,7,,快速一键加入宗门
-280,applyJoinZongMenRequest_40000007,0x40000007,,6000,6,,申请加入宗门
-281,createZongMenRequest_40000005,0x40000005,,6000,2,,创建宗门
-282,dissolveZongMenRequest_40000011,0x40000011,,6000,5,,解散宗门
-283,findZongMenRequest_40000003,0x40000003,,6000,,,查找宗门
-284,getZongMenInfoRequest_40000021,0x40000021,,6000,4,,获取宗门信息
-285,getZongMenListRequest_40000001,0x40000001,,6000,1,,宗门列表
-286,getZongMenLogRequest_40000025,0x40000025,,6000,3,,宗门日志请求
-287,quitZongMenRequest_40000017,0x40000017,,6000,8,,退出宗门
-288,setZongMenMemberPositionRequest_40000015,0x40000015,,6000,,,宗门职位更改
-289,setZongMenSettingRequest_40000013,0x40000013,,6000,,,宗门设置相关 有值 则替换，没有值 则不修改
-290,updateMemberAuthRequest_40000041,0x40000041,,6000,,,"宗门成员权限管理,同意申请，踢人等。"
 291,BattleEquipTowerRecordRequest_13000528,0x13000528,,,,,查看战斗记录上传请求
+292,GuildApplyJoinRequest_40000007,0x40000007,,,,,申请加入公会
+293,GuildBargainBuyRequest_40000062,0x40000062,,,,,购买公会砍价物品
+294,GuildBargainRequest_40000060,0x40000060,,,,,公会砍价
+295,GuildCreateRequest_40000005,0x40000005,,,,,创建公会
+296,GuildDissolveRequest_40000011,0x40000011,,,,,解散公会
+297,GuildDonateRequest_40000067,0x40000067,,,,,公会捐献
+298,GuildFindRequest_40000003,0x40000003,,,,,查找公会
+299,GuildInfoRequest_40000021,0x40000021,,,,,获取公会信息
+300,GuildListRequest_40000001,0x40000001,,,,,公会列表
+301,GuildLogRequest_40000025,0x40000025,,,,,公会日志请求
+302,GuildMemberAuthRequest_40000041,0x40000041,,,,,"公会成员权限管理,同意申请，踢人等。"
+303,GuildMemberPositionSetRequest_40000015,0x40000015,,,,,公会职位更改
+304,GuildQuickJoinRequest_40000065,0x40000065,,,,,快速一键加入公会
+305,GuildQuitRequest_40000017,0x40000017,,,,,退出公会
+306,GuildSettingRequest_40000013,0x40000013,,,,,公会设置相关 有值 则替换，没有值 则不修改

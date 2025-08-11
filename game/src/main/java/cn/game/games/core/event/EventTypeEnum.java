@@ -142,11 +142,11 @@ public enum EventTypeEnum {
 
 	HeroRecruit(90, "英雄招募"),
 
-	/** 宗门砍价 */
-	ZongMenBargain(303, "宗门砍价"),
-	/** 加入某个宗门，参数 ：1 宗门id，2宗门名字， 3  是否是第一次加入宗门  */
-	ZongMenJoin(304, "加入某个宗门"),
-	ZongMenDonate(305, "宗门捐献"),
+	/** 公会砍价 */
+	GuildBargain(303, "公会砍价"),
+	/** 加入某个公会，参数 ：1 公会id，2公会名字， 3  是否是第一次加入公会  */
+	GuildJoin(304, "加入某个公会"),
+	GuildDonate(305, "公会捐献"),
 	;
 	private int id;
 	private String desc;

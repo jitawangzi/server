@@ -13,7 +13,7 @@ public class GameIdManagerInitializer {
 				new CacheConfig(8192, cn.game.util.Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.PLAYER_SERVER_ID)));
 
 		// 注册工会ID管理器
-		IdCache.registerManager(new DistributedIDManager(DistributedObjectType.ZONGMEN,
+		IdCache.registerManager(new DistributedIDManager(DistributedObjectType.GUILD,
 				new CacheConfig(1024, cn.game.util.Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.ZONG_MEN_SERVER_ID)));
 
 		// 初始化定时任务

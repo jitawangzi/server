@@ -37,7 +37,6 @@ import cn.game.protocol.generated.manager.RechargeStoreManager;
 import cn.game.protocol.generated.manager.ResidentPackManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.ShopManager;
-import cn.game.protocol.generated.manager.ZongmenStoreManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.ShopMsg.FundPassInfo;
@@ -185,7 +184,7 @@ public class ShopModule extends BasePlayerModule {
 			break;
 		}
 		case 17: {
-			refreshZongMenShop(shopId);
+//			refreshGuildShop(shopId);
 			break;
 		}
 		case 18: {
@@ -257,16 +256,6 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 		return list;
-	}
-
-	public void refreshZongMenShop(int shop) {
-		if (player.getGuildId() == 0)
-			return;
-		shopItemsMap.removeAll(shop);
-		ZongmenStoreManager.instance().list().forEach(shopConfig -> {
-			shopItemsMap.put(shop, new ShopItem(shopConfig.Item));
-			log.info(String.format("refreshZongMenShop add ItemId:%d", shopConfig.Item));
-		});
 	}
 
 	/** 

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.task.TaskManager;
 import cn.game.games.cache.entity.Player;
@@ -299,27 +300,22 @@ public class ActivityStateManager {
 
 		@Override
 		public void run() {
+			setState(id, ActivityState.START_VALUE);
 
-			TaskManager.getInstance().addMainTask(() -> {
-
-				setState(id, ActivityState.START_VALUE);
-
-				ActivityConfig activityConfig = ActivityManager.instance().get(id);
-				if (!activityConfig.isMultiplayer) {
-					ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
-					for (Player player : allPlayer.values()) {
-						player.getGameClient().getContext().runOnContext(r -> {
-
-							ActivityModule activityModule = player.getActivityModule();
-							activityModule.open(id, true);
-						});
-					}
-				} else {
-//					activityModule.open(id, true);
-					activeActivitys.add(id);
-					ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityOpenTime, id);
+			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+			if (!activityConfig.isMultiplayer) {
+				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
+				for (Player player : allPlayer.values()) {
+					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+						ActivityModule activityModule = player.getActivityModule();
+						activityModule.open(id, true);
+					}); 
 				}
-			});
+			} else {
+				activeActivitys.add(id);
+				ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityOpenTime, id);
+			}
+		
 		}
 	}
 
@@ -334,26 +330,25 @@ public class ActivityStateManager {
 
 		@Override
 		public void run() {
+			setState(id, ActivityState.CLOSE_VALUE);
+			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+			if (!activityConfig.isMultiplayer) {
 
-			TaskManager.getInstance().addMainTask(() -> {
-				setState(id, ActivityState.CLOSE_VALUE);
-				ActivityConfig activityConfig = ActivityManager.instance().get(id);
-				if (!activityConfig.isMultiplayer) {
+				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
+				for (Player player : allPlayer.values()) {
 
-					ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
-					for (Player player : allPlayer.values()) {
-
-						player.getGameClient().getContext().runOnContext(r -> {
-							ActivityModule activityModule = player.getActivityModule();
-							activityModule.shutdown(id);
-						});
-					}
-				} else {
-					ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityShutDownTime, id);
-//					activityModule.shutdown(id);
-					activeActivitys.remove(id);
+					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+						// 关闭活动
+						ActivityModule activityModule = player.getActivityModule();
+						activityModule.shutdown(id);
+					});
 				}
-			});
+			} else {
+				ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityShutDownTime, id);
+//				activityModule.shutdown(id);
+				activeActivitys.remove(id);
+			}
+		
 		}
 	}
 
@@ -376,7 +371,7 @@ public class ActivityStateManager {
 			if (!activityConfig.isMultiplayer) {
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
-					player.getGameClient().getContext().runOnContext(r -> {
+					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
 						ActivityModule activityModule = player.getActivityModule();
 						activityModule.destroy(id);
 					});

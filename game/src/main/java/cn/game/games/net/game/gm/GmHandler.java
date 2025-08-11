@@ -596,7 +596,7 @@ public class GmHandler extends GameBaseHandler {
         StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
     PlayerHelper.addTask(
         playerId,
-        r -> {
+        () -> {
 				GameClientManager.getInstance().logout(playerId, LogoutType.GMKick);
           client.sendProtocol(response);
         });
