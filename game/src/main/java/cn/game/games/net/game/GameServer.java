@@ -211,11 +211,7 @@ public class GameServer implements GameServerMBean {
 		DataFixManager.getInstance().init();
 
 		GameIdManagerInitializer.initialize();
-		var key= RankService.getInstance().getKey(serverId, RankType.DaShengLeiTaiDay);
-		if(!RedisLocalCache.getInstance().exists(key)) {
-			RankService.getInstance().setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
-			RankService.getInstance().setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
-		};
+		RankService.getInstance().setNpcToRank();
 //		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
 //				"selectMaxId", null);
 //		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);

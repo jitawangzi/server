@@ -20,10 +20,12 @@ import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.EquipTowerConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.EquipTowerManager;
 import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -229,29 +231,35 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         if (battleConfig == null) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
-        // long num = player.getItemModule().getCount(GlobalConst.TicketItemId);
-        // if (num > 0){
-        PlayerHelper.delResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerStart);
-        // }else {
-        //     return ErrorMsgEnum.times_limit.ID;
-        // }
         int floor = id % 10;
         if (floor > curFloor) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
+        BattleModule battleModule= player.getBattleModule();
+        int unlock =EquipTowerManager.instance().get(floor).mainBattleId ;
+        if( battleModule.isBattlePass( unlock))
+        {
+            return ErrorMsgEnum.BattleLevel_pre.ID;
+        }
         if (args.length > 0) {
             long helpPlayerId = args[0];
-            if (!simplePlayerMap.containsKey(floor)) {
-                return ErrorMsgEnum.pre_condition_check_error.ID;
-            }
-            if (!simplePlayerMap.get(floor).contains(helpPlayerId)) {
-                FriendModule friendModule = player.getModule(FriendModule.class);
-                if (!friendModule.isFriend(helpPlayerId)) {
+            if(helpPlayerId>0)
+            {
+                if (!simplePlayerMap.containsKey(floor)) {
                     return ErrorMsgEnum.pre_condition_check_error.ID;
                 }
+                if (!simplePlayerMap.get(floor).contains(helpPlayerId)) {
+                    FriendModule friendModule = player.getModule(FriendModule.class);
+                    if (!friendModule.isFriend(helpPlayerId)) {
+                        return ErrorMsgEnum.pre_condition_check_error.ID;
+                    }
+                }
+                cacheHelpPlayerId = helpPlayerId;
             }
-            cacheHelpPlayerId = helpPlayerId;
         }
+
+
+        PlayerHelper.delResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerStart);
         return 0;
     }
 
