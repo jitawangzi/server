@@ -10,6 +10,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RSGFetterConfig;
@@ -319,6 +320,27 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeEnergyResponse_39000022 defaultInstance = GinsengTreeEnergyResponse_39000022.getDefaultInstance();
         GinsengTreeEnergyResponse_39000022.Builder resp = GinsengTreeEnergyResponse_39000022.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getBattleModule(); 
+        List<Integer> storeStaminas = battleModule.getStoreStaminas(); 
+        if (storeStaminas.isEmpty()) {
+        	client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
+			return ; 
+		}
+        int energyCount = storeStaminas.size();
+        if (count > energyCount) {
+        	client.sendProtocol(defaultInstance, ErrorMsgEnum.times_limit.ID);
+			return ; 
+		}
+        if (count > 0 ) {
+        	energyCount = count; 
+        	for (int i = 0; i < count; i++) {
+        		storeStaminas.removeFirst(); 
+			}
+		} else{
+			storeStaminas.clear(); 
+		}
+        List<RewardInfo> resources = PlayerHelper.addResources(player, Asset.playerEnergy.ID,energyCount *  GlobalConst.RSGTreeEnergyFruitAdd,OpType.GinsengTree); 
+        resp.addAllRewards(resources);
         client.sendProtocol(resp.build());
     }
 }

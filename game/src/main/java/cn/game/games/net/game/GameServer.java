@@ -320,7 +320,7 @@ public class GameServer implements GameServerMBean {
 	 * 主要方便测试跨天的一些逻辑。 
 	 */
 	private void kickClientsAfterChangeTime() {
-		if (!ServerContext.getInstance().getRunMode().isTest()) {
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
 			return; // 非测试模式不需要
 		}
 		AtomicLong lastCheckTime = new AtomicLong(System.currentTimeMillis());

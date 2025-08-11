@@ -41,7 +41,7 @@ public class SimplePlayer implements Serializable {
 	public int head; // 头像
 	public int headFrame; // 头像
 	public byte gender; // 性别： 1男2女
-	public int figure ; 
+	public int figure = 1400001; 
 
 	/** 是否是机器人 */
 	public boolean isRobot ; 

@@ -199,6 +199,8 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 		builder.putAllHangUpRandomRewardMap(hangUpRandomRewardMap.getMap());
 		builder.addAllHeroIdList(heroIdList);
+		// 体力以前存到BattleModule里了
+		builder.setEnergyFruitCount(player.getBattleModule().getStoreStaminas().size()) ; 
 
 		return builder.build();
 	}
