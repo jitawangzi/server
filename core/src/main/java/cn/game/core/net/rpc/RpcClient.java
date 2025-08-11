@@ -91,6 +91,12 @@ public interface RpcClient {
 	 * @param message
 	 */
 	public <T> void send(T message);
+	
+	
+	 <T> void fireAndForget(String addr, T message, DeliveryOptions options);
+
+	 
+	 
 	/** 
 	 * 是否允许同步请求
 	 * @return

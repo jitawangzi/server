@@ -172,4 +172,8 @@ public class RocketMQRpcClient implements RpcClient {
 	public <T> void broadcast(String addr, T message, DeliveryOptions options) {
 		throw new UnsupportedOperationException("RocketMQ does not support broadcast with DeliveryOptions.");
 	}
+	@Override
+	public <T> void fireAndForget(String addr, T message, DeliveryOptions options) {
+		throw new UnsupportedOperationException("RocketMQ does not support fireAndForget with DeliveryOptions.");
+	}
 }

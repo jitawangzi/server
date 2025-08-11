@@ -3,9 +3,7 @@ package cn.game.games.net.game.module.ginseng;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
@@ -46,6 +44,8 @@ import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeEnergyRequest_39000021;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeEnergyResponse_39000022;
 
 @Component
 public class GinsengTreeHandler extends GameBaseHandler {
@@ -55,10 +55,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         return 0x39;
     }
 
-	@Override
-	protected InitialUI getInitialUI() {
-		return InitialUI.RSGTree;
-	}
+    @Override
+    protected InitialUI getInitialUI() {
+        return InitialUI.RSGTree;
+    }
 
     @Override
     protected void inititialize() {
@@ -70,16 +70,17 @@ public class GinsengTreeHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GinsengTreeHarvestRequest_39000013, this::harvest);
         putInvoker(PbProtocol.GinsengTreeHangUpRequest_39000015, this::hangUp);
         putInvoker(PbProtocol.GinsengTreeHeroRequest_39000017, this::hero);
+        putInvoker(PbProtocol.GinsengTreeEnergyRequest_39000021, this::energy);
     }
 
     private void info(NetClient client, Object message) {
         GinsengTreeInfoRequest_39000001 req = (GinsengTreeInfoRequest_39000001) message;
         GinsengTreeInfoResponse_39000002 defaultInstance = GinsengTreeInfoResponse_39000002.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-//		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-//			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-//			return;
-//		}
+        //		if (!player.isFuncOpen(InitialUI.RSGTree)) {
+        //			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+        //			return;
+        //		}
         GinsengTreeInfoResponse_39000002.Builder resp = GinsengTreeInfoResponse_39000002.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         resp.setTreeInfo(module.buildGinsengTreeInfo());
@@ -90,10 +91,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeWateringRequest_39000003 req = (GinsengTreeWateringRequest_39000003) message;
         GinsengTreeWateringResponse_39000004 defaultInstance = GinsengTreeWateringResponse_39000004.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeWateringResponse_39000004.Builder resp = GinsengTreeWateringResponse_39000004.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         int waterTimes = module.getWaterTimes();
@@ -126,10 +127,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeBugRequest_39000005 req = (GinsengTreeBugRequest_39000005) message;
         GinsengTreeBugResponse_39000006 defaultInstance = GinsengTreeBugResponse_39000006.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeBugResponse_39000006.Builder resp = GinsengTreeBugResponse_39000006.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         int bugs = module.getBugs();
@@ -148,10 +149,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         int count = req.getCount();
         GinsengTreeInsecticidesResponse_39000008 defaultInstance = GinsengTreeInsecticidesResponse_39000008.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeInsecticidesResponse_39000008.Builder resp = GinsengTreeInsecticidesResponse_39000008.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         int insecticidesTimes = module.getInsecticidesTimes();
@@ -173,10 +174,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeFertilizationRequest_39000011 req = (GinsengTreeFertilizationRequest_39000011) message;
         GinsengTreeFertilizationResponse_39000012 defaultInstance = GinsengTreeFertilizationResponse_39000012.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeFertilizationResponse_39000012.Builder resp = GinsengTreeFertilizationResponse_39000012.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         PlayerHelper.delResources(player, 212001, 1, OpType.GinsengTreeInsectic);
@@ -207,10 +208,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
         int pos = req.getPos();
         GinsengTreeHarvestResponse_39000014 defaultInstance = GinsengTreeHarvestResponse_39000014.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeHarvestResponse_39000014.Builder resp = GinsengTreeHarvestResponse_39000014.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         IntMapWrapper map = module.getFruitMap();
@@ -219,10 +220,9 @@ public class GinsengTreeHandler extends GameBaseHandler {
             return;
         }
         map.remove(pos);
-
         List<Integer> heroIdList = module.getHeroIdList();
         Map<Integer, Integer> fetterMap = new HashMap<>();
-        if (!heroIdList.isEmpty()){
+        if (!heroIdList.isEmpty()) {
             List<RSGFetterConfig> list = RSGFetterManager.instance().list();
             for (RSGFetterConfig rsgFetterConfig : list) {
                 if (GameUtil.containsAll(heroIdList, rsgFetterConfig.HeroList)) {
@@ -232,23 +232,21 @@ public class GinsengTreeHandler extends GameBaseHandler {
         }
         RSGRewardConfig rsgRewardConfig = null;
         List<RSGRewardConfig> list = RSGRewardManager.instance().list();
-        if (fetterMap.isEmpty()){
+        if (fetterMap.isEmpty()) {
             rsgRewardConfig = Rnd.randomElement(list);
-        }else {
-            int index =  Rnd.randomIndex(list,e -> {
-                int weigetAdd = 0 ;
-                if (!fetterMap.isEmpty()){
+        } else {
+            int index = Rnd.randomIndex(list, e -> {
+                int weigetAdd = 0;
+                if (!fetterMap.isEmpty()) {
                     weigetAdd = fetterMap.getOrDefault(e.ID, 0);
                 }
                 return e.RewardWeight + weigetAdd;
             });
             rsgRewardConfig = list.get(index);
         }
-
-//        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
+        //        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
         List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
         resp.addAllRewards(resources);
-
         module.startFruitTask();
         client.sendProtocol(resp.build());
     }
@@ -257,41 +255,37 @@ public class GinsengTreeHandler extends GameBaseHandler {
         GinsengTreeHangUpRequest_39000015 req = (GinsengTreeHangUpRequest_39000015) message;
         GinsengTreeHangUpResponse_39000016 defaultInstance = GinsengTreeHangUpResponse_39000016.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeHangUpResponse_39000016.Builder resp = GinsengTreeHangUpResponse_39000016.newBuilder();
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
         //		int hangUpStartTime = module.getHangUpStartTime();
         module.setHangUpStartTime(DateUtil.currentTimeSeconds());
-
-		int minutes = module.calcHangUpReward();
-
-		if (module.getHangUpRandomRewardMap().getMap().isEmpty()) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
-			return;
-		}
-		// 随机奖励
-		IntMapWrapper rewardMap = new IntMapWrapper();
-		rewardMap.getMap().putAll(module.getHangUpRandomRewardMap().getMap());
-
-		// 固定奖励
-		int level = player.getLevel(Asset.RSGTreeExp);
-		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
-		int[][] rewardArray = GameUtil.arrayMultiple(rsgTreeLvConfig.Reward, minutes);
-		for (int[] is : rewardArray) {
-			rewardMap.add(is[0], is[1]);
-		}
-		// 所有奖励做一个英雄数量加成
-		int heroSize = module.getHeroIdList().size();
-		if (heroSize > 0) {
-			rewardMap.getMap().replaceAll((k, v) -> v + ((int) (heroSize / 10000f) * v));
-		}
-
-		List<RewardInfo> resources = PlayerHelper.addResources(player, rewardMap.getMap(), OpType.GinsengTreeHangUp);
-		resp.addAllRewards(resources);
-		module.getHangUpRandomRewardMap().clear();
+        int minutes = module.calcHangUpReward();
+        if (module.getHangUpRandomRewardMap().getMap().isEmpty()) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+            return;
+        }
+        // 随机奖励
+        IntMapWrapper rewardMap = new IntMapWrapper();
+        rewardMap.getMap().putAll(module.getHangUpRandomRewardMap().getMap());
+        // 固定奖励
+        int level = player.getLevel(Asset.RSGTreeExp);
+        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
+        int[][] rewardArray = GameUtil.arrayMultiple(rsgTreeLvConfig.Reward, minutes);
+        for (int[] is : rewardArray) {
+            rewardMap.add(is[0], is[1]);
+        }
+        // 所有奖励做一个英雄数量加成
+        int heroSize = module.getHeroIdList().size();
+        if (heroSize > 0) {
+            rewardMap.getMap().replaceAll((k, v) -> v + ((int) (heroSize / 10000f) * v));
+        }
+        List<RewardInfo> resources = PlayerHelper.addResources(player, rewardMap.getMap(), OpType.GinsengTreeHangUp);
+        resp.addAllRewards(resources);
+        module.getHangUpRandomRewardMap().clear();
         client.sendProtocol(resp.build());
     }
 
@@ -300,23 +294,31 @@ public class GinsengTreeHandler extends GameBaseHandler {
         int heroId = req.getHeroId();
         GinsengTreeHeroResponse_39000018 defaultInstance = GinsengTreeHeroResponse_39000018.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.RSGTree)) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
-			return;
-		}
+        if (!player.isFuncOpen(InitialUI.RSGTree)) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
+            return;
+        }
         GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
-
-        HeroModule heroModule = player.getHeroModule(); 
-		if (!heroModule.has(heroId)) {
+        HeroModule heroModule = player.getHeroModule();
+        if (!heroModule.has(heroId)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
             return;
-		}
-		List<Integer> heroIdList = module.getHeroIdList();
-		if (heroIdList.contains(heroId)) {
-			heroIdList.remove(Integer.valueOf(heroId));
-		} else {
-			heroIdList.add(heroId);
-		}
+        }
+        List<Integer> heroIdList = module.getHeroIdList();
+        if (heroIdList.contains(heroId)) {
+            heroIdList.remove(Integer.valueOf(heroId));
+        } else {
+            heroIdList.add(heroId);
+        }
         client.sendProtocol(defaultInstance);
+    }
+
+    private void energy(NetClient client, Object message) {
+        GinsengTreeEnergyRequest_39000021 req = (GinsengTreeEnergyRequest_39000021) message;
+        int count = req.getCount();
+        GinsengTreeEnergyResponse_39000022 defaultInstance = GinsengTreeEnergyResponse_39000022.getDefaultInstance();
+        GinsengTreeEnergyResponse_39000022.Builder resp = GinsengTreeEnergyResponse_39000022.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
     }
 }
