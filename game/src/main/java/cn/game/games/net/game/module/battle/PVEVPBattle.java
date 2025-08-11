@@ -45,20 +45,15 @@ import java.util.stream.Collectors;
 public class PVEVPBattle extends XiYouBattleHandler {
 
     /**
-     * 界缓存的 这一次刷新行为中缓存的玩家 暂不使用
-     *
-     * @param rankType
-     * @return
-     */
-    private transient Map<Integer, PlayerRank> cachePlayerRankMap = new ConcurrentHashMap<>();
-    /**
      * 界面上显示的那4个人
      *
      * @param rankType
      * @return
      */
-    private Map<Integer, PlayerRank> mainShowRank = new ConcurrentHashMap<>();
-    private  PlayerRank inBattleRank;
+    private transient Map<Integer, PlayerRank> mainShowRank = new ConcurrentHashMap<>();
+   // private  Map<Integer, Long> mainShowRank2 = new ConcurrentHashMap<>();
+    private transient  PlayerRank inBattleRank;
+    private   long   inBattleRankPlayerId;
     private transient RankEntry myRank;
     private transient int refreshTime = 0;
     private int ticketCount = 0;
@@ -80,19 +75,19 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
     @Override
     public void onLogin() {
-       if(inBattleRank!=null)
+       if(inBattleRankPlayerId>0)
        {
-           String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRank.getRankEntry().getPlayerId());
+           String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRankPlayerId);
            String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
-           boolean isRobot = inBattleRank.getPlayer().getId()<10000;
+           boolean isRobot = inBattleRankPlayerId<10000;
            // 生成战报
            if (isRobot) {
                createBattleRecord_Robot(null, 0, false,rediskeyMy);
            } else {
                createBattleRecord_Target(0,true,rediskeyTarget);
-               createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
+               createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
            }
-           inBattleRank = null;
+           inBattleRankPlayerId = 0L;
        }
     }
     void newWeek() {
@@ -122,6 +117,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //            return ErrorMsgEnum.PVEVP_Season_Over.getId();
 //        }
         inBattleRank = mainShowRank.get(subId);
+        inBattleRankPlayerId=inBattleRank.getRankEntry().getPlayerId();
         return 0;
     }
 
@@ -173,6 +169,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
             }
             inBattleRank = null;
+            inBattleRankPlayerId = 0L;
            // return ResultObject.success();
         }
         return ResultObject.success();
@@ -236,8 +233,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
             recordDataList.add((BaseMsg.PVEVPRecordData) recordData);
         });
     }
-
-
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
         return ResultObject.success();
@@ -247,12 +242,10 @@ public class PVEVPBattle extends XiYouBattleHandler {
     public int getType() {
         return DungeonTypeEnum.PVEVPBattle.getId();
     }
-
     /**
      * 重置缓存数据 用于战斗胜利后
      */
     private void resetCache() {
-        cachePlayerRankMap.clear();
         mainShowRank.clear();
         inBattleRank = null;
     }
@@ -362,7 +355,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private void setData(RankEntry rankEntry) {
         var simplePlayer = PlayerHelper.getSimplePlayer(rankEntry.getPlayerId());
         var playerRank = new PlayerRank(rankEntry, simplePlayer);
-        cachePlayerRankMap.put(rankEntry.getRank(), playerRank);
         mainShowRank.put(rankEntry.getRank(), playerRank);
     }
 
@@ -378,7 +370,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
                         .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
                         .thenAccept(rankEntries -> {
                             mainShowRank.clear();
-                            cachePlayerRankMap.clear();
                             rankEntries.forEach(this::setData);
                         });
             } else {
@@ -437,41 +428,21 @@ public class PVEVPBattle extends XiYouBattleHandler {
         ticketCount++;
     }
 
-
-
-
     public int getTicketCount() {
         return ticketCount;
-    }
-
-    public void setTicketCount(int ticketCount) {
-        this.ticketCount = ticketCount;
     }
 
     public int getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
-        this.endTime = endTime;
-    }
-
     public Map<Integer, PlayerRank> getMainShowRank() {
         return mainShowRank;
-    }
-
-    public void setMainShowRank(Map<Integer, PlayerRank> mainShowRank) {
-        this.mainShowRank = mainShowRank;
     }
 
     public int getBuyCount() {
         return buyCount;
     }
-
-    public void setBuyCount(int buyCount) {
-        this.buyCount = buyCount;
-    }
-
 
 	public RankEntry getMyRank() {
 		return myRank;
