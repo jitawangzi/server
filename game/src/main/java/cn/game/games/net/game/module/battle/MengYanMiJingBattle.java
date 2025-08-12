@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.protocol.protobuf.BattleMsg;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cn.game.games.core.ResultObject;
@@ -277,7 +278,7 @@ public class MengYanMiJingBattle extends XiYouBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
 
 		if (!request.getWin()) {
 			this.battleCompleted(false);

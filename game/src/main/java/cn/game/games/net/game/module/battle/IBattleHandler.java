@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.battle;
 
 import java.util.List;
 
+import cn.game.protocol.protobuf.BattleMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
@@ -67,8 +68,8 @@ public abstract class IBattleHandler {
 	 * @param request
 	 * @return	战斗奖励，这里一般处理每个玩法的特殊奖励，通用奖励在这之后处理
 	 */
-	abstract ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request);
-	
+	abstract ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response);
+
 	/** 
 	 * 战斗奖励
 	 * @param request

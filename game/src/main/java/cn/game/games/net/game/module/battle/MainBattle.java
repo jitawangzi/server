@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.battle;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.protocol.protobuf.BattleMsg;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.game.games.cache.entity.Chapter;
@@ -45,7 +46,7 @@ public class MainBattle extends XiYouBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
 		boolean win = request.getWin();
 		int killMonsterCount = request.getKillMonsterCount();
 		int hpPercent = request.getHpPercent();
