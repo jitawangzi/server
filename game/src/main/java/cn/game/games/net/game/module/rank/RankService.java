@@ -640,12 +640,8 @@ public class RankService {
 		Map<Long, Long> npcScores = new HashMap<>();
 		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
 		for (DaShengNPCConfig config : list2) {
-			for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
-				long npcPlayerId = rankPosition;
-				npcScores.put(npcPlayerId, (long) config.Integral);
-			}
+			npcScores.put((long)config.ID, (long) config.Integral);
 		}
-
 		String[] serverIds = getServerIds();
 		RankType[] rankTypes = {RankType.DaShengLeiTaiDay, RankType.DaShengLeiTaiSeason};
 		for (String serverId : serverIds) {
@@ -671,10 +667,7 @@ public class RankService {
 		Map<Long, Long> npcScores = new HashMap<>();
 		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
 		for (DaShengNPCConfig config : list2) {
-			for (int rankPosition = config.RankStart; rankPosition <= config.RankEnd; rankPosition++) {
-				long npcPlayerId = rankPosition;
-				npcScores.put(npcPlayerId, (long) config.Integral);
-			}
+			npcScores.put((long)config.ID, (long) config.Integral);
 		}
 		var key = RankService.getInstance().getKey(serverId, rankType);
 		if (!RedisLocalCache.getInstance().exists(key)) {

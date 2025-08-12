@@ -54,6 +54,9 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             }
             mountainMapData.getMapData().put(i, floor);
         }
+        int rankId = getSeasonRankId();
+        mountainMapData.setRankId(rankId);
+        mountainMapData.setRefreshNum(3);
     }
 
     int getLine(int nodeId) {
@@ -193,7 +196,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                 if(moduleLayer==    null) {
                     return;
                 }
-                addScore(moduleLayer.monsterParam);
+                addScore(moduleLayer.monsterPoint[nodeType-1]);
             }
 
         }
@@ -288,13 +291,25 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
 
     @Override
     void newDay() {
-        reset();
+       // reset();
     }
 
     /**
-     * 每天重置数据
+     * 重置数据
      */
-    public void reset() {
+    public void resetMap() {
+        int num = mountainMapData.getRefreshNum();
+        if(num<=0) {
+            return;
+        }
+        mountainMapData.setRefreshNum(num--);
+        clearSeasonRank();
+        mountainMapData.setScore(0);
+        mountainMapData.setScoreMax(0);
+        mountainMapData.setRankId(0);
+        mountainMapData.setSuccess(false);
+
+        mountainMapData.setCurNodeId(0);
 
     }
 
@@ -330,7 +345,36 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             RankService.getInstance().setScoreAsync(player.getServerId(), rankType, player.getPlayerId(),  mountainMapData.getScoreMax());
         }
     }
-
+    /**
+     * 设置赛季排行榜id
+     */
+    int getSeasonRankId()
+    {
+        int myLevel=player.getData().getLevel();
+        int rankId=RankType. PatrollMountain1.ID;
+        for (int[] ints : GlobalConst.MountainPlayerLevelParam) {
+            if(ints[0]>myLevel) {
+                break;
+            }
+            rankId++;
+        }
+        if(rankId>RankType. PatrollMountain4.ID) {
+            rankId=RankType. PatrollMountain4.ID;
+        }
+        return rankId;
+    }
+    /**
+     * 重置排行榜  换榜单直接清空  不换榜单则保留
+     */
+    void clearSeasonRank() {
+        int lastrank = mountainMapData.getRankId();
+        int newrank = getSeasonRankId();
+        if(newrank>lastrank)
+        {
+           //换榜单 则清空老榜单
+            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.get(lastrank) , player.getPlayerId(),  0);
+        }
+    }
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
         return ResultObject.success();
