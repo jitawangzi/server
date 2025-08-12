@@ -130,18 +130,26 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             return;
         }
         int begin =0;
-        begin=genNodeType(keys,begin,MountainNodeType.Event);
-        begin=genNodeType(keys,begin,MountainNodeType.Shop);
-        begin=genNodeType(keys,begin,MountainNodeType.Hard);
-        begin=genNodeType(keys,begin,MountainNodeType.Hp);
+        List<Integer> eventPool=new ArrayList<>();
+        MountainEventManager.instance().list().forEach(eventConfig -> {
+            eventPool.add(eventConfig.ID);
+        });
+        Collections.shuffle(eventPool);
+        begin=genNodeType(keys,begin,MountainNodeType.Event, eventPool);
+        begin=genNodeType(keys,begin,MountainNodeType.Shop,eventPool );
+        begin=genNodeType(keys,begin,MountainNodeType.Hard,eventPool );
+        begin=genNodeType(keys,begin,MountainNodeType.Hp, eventPool);
         mapData.get(endId).setNodeType(MountainNodeType.Event.getType());
         for(int i=begin;i<keys.size();i++) {
             int nodeId = keys.get(i);
             mapData.get(nodeId).setNodeType(MountainNodeType.Easy.getType());
         }
+
+
+            // nodeData.setEventId(MountainEventManager.instance().list().);
     }
 
-    Integer genNodeType( List<Integer> keys,int begin,MountainNodeType type)
+    Integer genNodeType(List<Integer> keys, int begin, MountainNodeType type, List<Integer> eventPool)
     {
         // 随机事件
         MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(type.getType());
@@ -154,16 +162,46 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         for(int i=begin;i<begin+num;i++) {
             int nodeId = keys.get(i);
             mapData.get(nodeId).setNodeType(type.getType());
+            if(type==MountainNodeType.Event
+            || type==MountainNodeType.Hp)
+            {
+                int indexe= Rnd.get(0,eventPool.size()-1);
+                int eventId=eventPool.get(indexe);
+                mapData.get(nodeId).setEventId(eventId);
+            }else if(type==MountainNodeType.Shop)
+            {
+                HashMap<Integer,List<Integer>> shoppItemPool=new HashMap<>();
+                for (int[] ints : GlobalConst.MountainShopRefreshRule) {
+                    int shoptype= ints[0];
+                    int shoptnum= ints[1];
+                    List<MountainBuffConfig> buffList=MountainBuffManager.instance().getTypeList(shoptype);
+                    if (buffList.size()<shoptnum)
+                    {
+                        shoptnum=buffList.size();
+                    }
+                    Collections.shuffle(buffList);
+                    buffList.subList(0,shoptnum).forEach(buffConfig -> {
+                        mapData.get(nodeId).getShopId().add(buffConfig.ID);
+                    });
+                }
+
+            }
+
         }
         return end;
     }
-    public void radomBuffId(MountainMapNodeData nodeData) {
+    public void radomBuffId(MountainMapNodeData nodeData, List<Integer> buffIdLis) {
+        List<Integer> buffIdList=new ArrayList<>();
         if(nodeData.getNodeType()==MountainNodeType.Event.getType())
         {
-            int size=MountainEventManager.instance().list().size();
-            int index= Rnd.get(0,size-1);
-          //  nodeData.setEventId(MountainEventManager.instance().list());
+            MountainEventManager.instance().list().forEach(eventConfig -> {
+                buffIdList.add(eventConfig.ID);
+            });
+
+          // nodeData.setEventId(MountainEventManager.instance().list().);
         }
+        int size=MountainEventManager.instance().list().size();
+        int index= Rnd.get(0,size-1);
     }
 
     MountainMapNodeData getMountainrNodeData(int nodeUid) {

@@ -11,8 +11,9 @@ public class PVEVPRecordData {
     public int headFrame;
     public long battleTime;
     public int type;
+    public long playerId;
 
-    public PVEVPRecordData(int result, String name, int level, int combatEffectiveness, int scoreChange, int head, int headFrame, long battleTime, int type) {
+    public PVEVPRecordData(int result, String name, int level, int combatEffectiveness, int scoreChange, int head, int headFrame, long battleTime, int type, long playerId) {
         this.result = result;
         this.name = name;
         this.level = level;
@@ -22,6 +23,7 @@ public class PVEVPRecordData {
         this.headFrame = headFrame;
         this.battleTime = battleTime;
         this.type = type;
+        this.playerId = playerId;
     }
     public PVEVPRecordData() {
     }

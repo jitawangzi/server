@@ -5,7 +5,6 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
-import cn.game.games.net.game.module.quest.require.ConsumesDiamonds;
 import cn.game.games.net.game.module.rank.PlayerRank;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
@@ -13,7 +12,6 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.DaShengExtraPointsConfig;
 import cn.game.protocol.generated.config.DaShengPointsConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.DaShengExtraPointsManager;
@@ -28,14 +26,11 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
-import org.apache.poi.ss.formula.functions.Rank;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 /**
  * PVEVP  大圣擂台
@@ -61,7 +56,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private int buyCount = 0;
     private int endTime = 0;
     public transient List<PVEVPRecordData> recordDataList = new ArrayList<>();
-
+    private transient  volatile boolean refreshFlag = true;
 
     public PVEVPBattle() {
     }
@@ -89,6 +84,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
            }
            inBattleRankPlayerId = 0L;
+           mainShowRank.clear();
        }
     }
     void newWeek() {
@@ -119,6 +115,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //        }
         inBattleRank = mainShowRank.get(subId);
         inBattleRankPlayerId=inBattleRank.getRankEntry().getPlayerId();
+        ticketCount--;
         return 0;
     }
 
@@ -136,8 +133,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
         if (request.getWin()) {
             BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
             List<RewardInfo> allRewards = new ArrayList<>();
-
-            ticketCount--;
             // 当前积分
             long targetScore = inBattleRank.getRankEntry().getScore();
             long myScore = myRank.getScore();
@@ -188,7 +183,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 player.getData().getHead(),
                 player.getData().getHeadFrame(),
                 DateUtil.currentTimeSeconds(),
-                2
+                2,
+                player.getPlayerId()
         );
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
@@ -203,7 +199,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 simplePlayer.getHead(),
                 simplePlayer.getHeadFrame(),
                 DateUtil.currentTimeSeconds(),
-                1
+                1,
+                simplePlayer.getId()
         );
 
         // 使用 List 保持插入顺序
@@ -221,7 +218,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
                  simplePlayer.getHead(),
                  simplePlayer.getHeadFrame(),
                  DateUtil.currentTimeSeconds(),
-                  type
+                  type,
+                simplePlayer.getId()
         );
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
@@ -300,6 +298,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             rb.setScore((score < 0 ? 0 : score) + "");
             resp.addChallengePlayers(rb);
         });
+        refreshFlag = false;
         player.getGameClient().sendProtocol(resp.build());
     }
 
@@ -371,6 +370,11 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
 
     public void getRadomPlayer(int type) {
+
+        if(refreshFlag) {
+            return;
+        }
+        refreshFlag = true;
         if (type == 1) {
             // 请求
             myRank = RankService.getInstance().getRankEntry(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId());

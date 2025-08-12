@@ -1731,15 +1731,15 @@ public class BattleHandler extends GameBaseHandler {
         pvevpBattle.getBattleRecordFromRedis();
         pvevpBattle.recordDataList.forEach(v -> {
             BaseMsg.PVEVPRecordData.Builder builder = BaseMsg.PVEVPRecordData.newBuilder();
-            builder.setResult(v.result)
-                    .setName(v.name)
-                    .setLevel(v.level)
-                    .setCombatEffectiveness(v.combatEffectiveness)
-                    .setScoreChange(v.scoreChange)
-                    .setHead(v.head)
-                    .setHeadFrame(v.headFrame)
-                    .setBattleTime(v.battleTime)
-                    .setType(v.type);
+            builder.setResult(v.result);
+            builder.setName(v.name);
+            builder.setLevel(v.level);
+            builder.setCombatEffectiveness(v.combatEffectiveness);
+            builder.setScoreChange(v.scoreChange);
+            builder.setHead(v.head);
+            builder.setHeadFrame(v.headFrame);
+            builder.setBattleTime(v.battleTime);
+            builder.setType(v.type);
             resp.addRecordList(builder);
         });
         client.sendProtocol(resp.build());
