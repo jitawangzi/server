@@ -11,6 +11,7 @@ import cn.game.protocol.manual.MountainNodeType;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
 
 import java.util.*;
@@ -29,6 +30,31 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     public DaShengXunShanBattle() {
     }
     private final int SHOP_COIN = 100902;
+    private final int END_NODEID3 = 3111;
+    private final int END_NODEID4 = 4111;
+    private final int BEGIN_NODEID = 1011;
+    /**
+     * 生成数据
+     */
+    public void initMountainData() {
+
+        mountainMapData.setMapData(new HashMap<>());
+        mountainMapData.setScore(0);
+        mountainMapData.setScoreReward(new HashMap<>());
+        mountainMapData.setHp(100);
+        mountainMapData.setScoreMax(100);
+        mountainMapData.setCurNodeId(0);
+        mountainMapData.setBuffBag(new HashMap<>());
+        // 获取下周一凌晨的时间戳（毫秒）
+        long nextMondayMillis = DateUtil.addWeekBeginTimer(1);
+        // 转换为秒级时间戳
+        int endTime= (int)(nextMondayMillis / 1000);
+        mountainMapData.setEndTime(endTime);
+        mountainMapData.setSuccess(false);
+        mountainMapData.setRefreshNum(3);
+        int rankId = getSeasonRankId();
+        mountainMapData.setRankId(rankId);
+    }
     /**
      * 生成地图数据 4层 11行 最多3个点
      */
@@ -54,9 +80,11 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             }
             mountainMapData.getMapData().put(i, floor);
         }
-        int rankId = getSeasonRankId();
-        mountainMapData.setRankId(rankId);
-        mountainMapData.setRefreshNum(3);
+        mountainMapData.setCurNodeId(BEGIN_NODEID);
+        // 构造随机节点
+        mountainMapData.getMapData().forEach((floor, line) -> {
+            initMountainNodeData_Floor(line, floor);
+        });
     }
 
     int getLine(int nodeId) {
@@ -78,32 +106,63 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     /**
      * 初始化节点数据
      */
-    public void initMountainNodeData() {
-        // 构造随机节点
-        mountainMapData.getMapData().forEach((floor, line) -> {
-            initMountainNodeData_Floor(line, floor);
-        });
-    }
 
     public void initMountainNodeData_Floor(List<MountainMapNodeData> line, int floor) {
         // 构造随机节点
         Map<Integer, Integer> radomPool = new HashMap<>();
         line.forEach(node -> {
-            if (getLine(node.getNodeId()) > 2 && getLine(node.getNodeId()) <= 10) {
+            if (getLine(node.getNodeId()) >= 2 && getLine(node.getNodeId()) <= 10) {
                 radomPool.put(node.getNodeId(), 0);
             }
-            ;
         });
-
+        List<Integer> keys = radomPool.keySet().stream().toList();
+        Collections.shuffle(keys);
         //第一个起点
         int startId = getNodeUid(floor, 1, 1);
         mapData.get(startId).setNodeType(MountainNodeType.Start.getType());
-        //第2行 两个战斗
-        mapData.get(getNodeUid(floor, 2, 0)).setNodeType(MountainNodeType.Easy.getType());
-        mapData.get(getNodeUid(floor, 2, 1)).setNodeType(MountainNodeType.Easy.getType());
         //最后1行一定是BOSS
         int endId = getNodeUid(floor, 11, 1);
         mapData.get(endId).setNodeType(MountainNodeType.Boss.getType());
+        // 随机事件
+        MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(MountainNodeType.Event.getType());
+        if(mountainBlockConfig==    null) {
+            return;
+        }
+        int begin =0;
+        begin=genNodeType(keys,begin,MountainNodeType.Event);
+        begin=genNodeType(keys,begin,MountainNodeType.Shop);
+        begin=genNodeType(keys,begin,MountainNodeType.Hard);
+        begin=genNodeType(keys,begin,MountainNodeType.Hp);
+        mapData.get(endId).setNodeType(MountainNodeType.Event.getType());
+        for(int i=begin;i<keys.size();i++) {
+            int nodeId = keys.get(i);
+            mapData.get(nodeId).setNodeType(MountainNodeType.Easy.getType());
+        }
+    }
+
+    Integer genNodeType( List<Integer> keys,int begin,MountainNodeType type)
+    {
+        // 随机事件
+        MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(type.getType());
+        if(mountainBlockConfig==    null) {
+            return begin;
+    }
+        int index= Rnd.get(0,mountainBlockConfig.createNum.length-1);
+        int num =mountainBlockConfig.createNum[index];
+        int end=begin+num;
+        for(int i=begin;i<begin+num;i++) {
+            int nodeId = keys.get(i);
+            mapData.get(nodeId).setNodeType(type.getType());
+        }
+        return end;
+    }
+    public void radomBuffId(MountainMapNodeData nodeData) {
+        if(nodeData.getNodeType()==MountainNodeType.Event.getType())
+        {
+            int size=MountainEventManager.instance().list().size();
+            int index= Rnd.get(0,size-1);
+          //  nodeData.setEventId(MountainEventManager.instance().list());
+        }
     }
 
     MountainMapNodeData getMountainrNodeData(int nodeUid) {
@@ -293,23 +352,25 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     void newDay() {
        // reset();
     }
+    void newWeek() {
 
+    }
     /**
      * 重置数据
      */
-    public void resetMap() {
+    public void playerResetMap() {
         int num = mountainMapData.getRefreshNum();
         if(num<=0) {
             return;
         }
-        mountainMapData.setRefreshNum(num--);
+        mountainMapData.setRefreshNum(num-1);
         clearSeasonRank();
         mountainMapData.setScore(0);
-        mountainMapData.setScoreMax(0);
-        mountainMapData.setRankId(0);
         mountainMapData.setSuccess(false);
+        long delNum=  player.getGoodsModule(SHOP_COIN).getCount(SHOP_COIN);
+        PlayerHelper.delResources(player, SHOP_COIN, delNum, OpType.MountainRefresh);
+        mountainMapData.getBuffBag().clear();
 
-        mountainMapData.setCurNodeId(0);
 
     }
 
@@ -373,7 +434,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         {
            //换榜单 则清空老榜单
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.get(lastrank) , player.getPlayerId(),  0);
-        }
+            mountainMapData.setRankId(newrank);
+       }
     }
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
