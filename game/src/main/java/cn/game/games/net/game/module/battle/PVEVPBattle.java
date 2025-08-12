@@ -152,7 +152,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(null, (int) myAddScore, true,rediskeyMy);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), (int) myAddScore, true,rediskeyMy);
             } else {
                 createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), myAddScore, true,rediskeyMy);
@@ -163,7 +163,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         } else { // 失败了，最终结算
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(null, 0, false,rediskeyMy);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
             } else {
                 createBattleRecord_Target(0,true,rediskeyTarget);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
