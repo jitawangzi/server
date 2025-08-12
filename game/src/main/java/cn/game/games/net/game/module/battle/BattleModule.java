@@ -507,6 +507,10 @@ public class BattleModule extends BasePlayerModule  {
 			p.newWeek();
 			break;
 		}
+		case SystemTimeChange: {
+			updateStoreStaminas();
+			break;
+		}
 		case LoginFinish: {
 			updateStoreStaminas();
 			battlesMap.forEach((k, v) -> {

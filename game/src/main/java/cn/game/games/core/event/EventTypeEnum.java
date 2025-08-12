@@ -45,6 +45,9 @@ public enum EventTypeEnum {
 	WatchAds(130, "看了一次广告"),
 
 	CultivatesImmortals(133, "提升天道修为等级"),
+	
+	/** 一般是gm指令修改了系统时间,一般只测试用 */
+	SystemTimeChange(135, "系统时间改变"),
 
 	/** 升级,注意是所有等级，包含玩家等级。  参数： 经验，升到的等级*/
 	LevelUp(2, "升级"),

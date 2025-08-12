@@ -1,6 +1,8 @@
 package cn.game.games.net.game.handler;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -43,6 +46,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -60,6 +64,7 @@ import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -98,6 +103,7 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutRequest_6f000042;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutResponse_6f000043;
 import cn.game.protocol.protobuf.TestMsg.TestRunRequest_6f000020;
 import cn.game.util.SystemTimeShift;
+import cn.game.util.SystemTimeShift.PreviewResult;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
@@ -324,16 +330,14 @@ public class TestHandler extends GameBaseHandler {
                     PlayerHelper.deletePlayerData(params.getLong(1));
                     break;
                 }
-            case "citem":
+            case "itemdel":
                 {
-                    if (p1 > 0) {
-                        GoodsModule<? extends Item> goodsModule = player.getGoodsModule(p1);
-                        long count = goodsModule.getCount(p1);
-                        PlayerHelper.delResources(player, p1, count, OpType.Test);
-                    } else {
-                        player.getCurrencyModule().getCurrencyMap().clear();
-                        player.getItemModule().getId_items().clear();
-                    }
+                	long pid = p1; 
+                	if (pid == 0) {
+						pid = playerId; 
+					}
+                	GameServerInterface playerProxy = ServerHelper.getPlayerProxy(pid); 
+                	playerProxy.delResources(pid, p2, p3); 
                     break;
                 }
             case "huanfu":
@@ -351,7 +355,23 @@ public class TestHandler extends GameBaseHandler {
                 }
             case "ctime":
             {
-            	SystemTimeShift.main(new String[] { params.getStringParameter(1) }); 
+            	if (ServerContext.getInstance().getRunMode().isProduction()) {
+					throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID) ;
+				}
+            	
+            	String[] timeArgs=  new String[] { params.getStringParameter(1) }; 
+            	LocalDateTime now = LocalDateTime.now(); 
+            	PreviewResult previewPlannedTime = SystemTimeShift.previewPlannedTime(timeArgs); 
+            	if (previewPlannedTime.crossedDay) {
+					player.getData().setOfflineTime(DateUtil.currentTimeMillis());
+				}
+            	SystemTimeShift.main(timeArgs); 
+            	
+            	LocalDateTime changeAfter = LocalDateTime.now(); 
+            	if (changeAfter.isAfter(now) &&  DateUtil.diff(now, changeAfter, ChronoUnit.DAYS) > 0) {
+					PlayerHelper.refresh(player);
+				}
+            	player.handleEvent(EventTypeEnum.SystemTimeChange);
             	break;
             }
             default:

@@ -1,8 +1,6 @@
 package cn.game.core.net.remote;
 
-import java.util.List;
-
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import io.vertx.core.Future;
 
 /**    
  * Game服务器提供给其他服务器调用的远程接口
@@ -13,9 +11,9 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
  */
 public interface RemoteGameServerInterface extends RemoteServerInterface {
 
-	public List<RewardInfo> addResources(long playerId, int id, int value);
+	public Future<?> addResources(long playerId, int id, int value);
 
-	public boolean delResources(long playerId, int id, int value);
+	public Future<?> delResources(long playerId, int id, int value);
 
 	public boolean alive();
 

@@ -13,6 +13,7 @@ import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
+import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -69,8 +70,16 @@ public class ServerHelper {
 	 * @param targetId
 	 * @return
 	 */
-	public static GuildServiceInterface getGuildProxy(long targetId) {
-		return getRemoteInterfaceProxy(ServerType.Cross, GuildServiceInterface.class, DistributedObjectType.GUILD, targetId);
+	public static GuildServiceInterface getGuildProxy(long guildId) {
+		return getRemoteInterfaceProxy(ServerType.Cross, GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
 	}
-
+	
+	/** 
+	 * 获取玩家的远程代理接口
+	 * @param targetId
+	 * @return
+	 */
+	public static GameServerInterface getPlayerProxy(long playerId) {
+		return ServerHelper.getRemoteInterfaceProxy(ServerType.Game, GameServerInterface.class, DistributedObjectType.PLAYER, playerId);
+	}
 }

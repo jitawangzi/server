@@ -551,7 +551,6 @@ public class ClientBattleHandler extends BaseHandler {
         Map<Integer, Integer> scoreRewardMap = resp.getScoreRewardMap();
         int scoreMax = resp.getScoreMax();
         int refreshNum = resp.getRefreshNum();
-        List<Integer> buffBagList = resp.getBuffBagList();
         Client client = (Client) netClient;
     }
 
