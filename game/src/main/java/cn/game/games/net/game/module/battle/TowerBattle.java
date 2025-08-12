@@ -146,7 +146,7 @@ public class TowerBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request, BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
         if (request.getWin()) {
             BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());

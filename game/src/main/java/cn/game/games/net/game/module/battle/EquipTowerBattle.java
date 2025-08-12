@@ -271,7 +271,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
         BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
         List<RewardInfo> allRewards = new ArrayList<>();

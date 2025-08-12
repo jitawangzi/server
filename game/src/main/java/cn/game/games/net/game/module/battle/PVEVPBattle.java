@@ -28,6 +28,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import org.apache.poi.ss.formula.functions.Rank;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -59,7 +60,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private int ticketCount = 0;
     private int buyCount = 0;
     private int endTime = 0;
-    public transient List<BaseMsg.PVEVPRecordData> recordDataList = new ArrayList<>();
+    public transient List<PVEVPRecordData> recordDataList = new ArrayList<>();
 
 
     public PVEVPBattle() {
@@ -82,9 +83,9 @@ public class PVEVPBattle extends XiYouBattleHandler {
            boolean isRobot = inBattleRankPlayerId<10000;
            // 生成战报
            if (isRobot) {
-               createBattleRecord_Robot(null, 0, false,rediskeyMy);
+               createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy,1);
            } else {
-               createBattleRecord_Target(0,true,rediskeyTarget);
+               createBattleRecord_Target(0,true,rediskeyTarget,2);
                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
            }
            inBattleRankPlayerId = 0L;
@@ -127,7 +128,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
         String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRank.getRankEntry().getPlayerId());
         String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
@@ -152,76 +153,78 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), (int) myAddScore, true,rediskeyMy);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), (int) myAddScore, true,rediskeyMy,1);
             } else {
-                createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
+                createBattleRecord_Target(targetDelScore,false,rediskeyTarget,2);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), myAddScore, true,rediskeyMy);
             }
             resetCache();
+            response.addParams((int)(myScore+myAddScore)   );
+            response.addParams((int)myAddScore   );
             player.handleEvent(EventTypeEnum.DaShengPointsAdd,myScore,myAddScore);
+           //  int rank = RankService.getInstance().getRank(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId());
            // return ResultObject.success();
         } else { // 失败了，最终结算
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy,1);
             } else {
-                createBattleRecord_Target(0,true,rediskeyTarget);
+                createBattleRecord_Target(0,true,rediskeyTarget,2);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
             }
             inBattleRank = null;
             inBattleRankPlayerId = 0L;
            // return ResultObject.success();
         }
+
         return ResultObject.success();
     }
-    void createBattleRecord_Target( long change, boolean iswin,String rediskey) {
-        // 给对方积分
-        BaseMsg.PVEVPRecordData.Builder recordDataOther = BaseMsg.PVEVPRecordData.newBuilder();
-        recordDataOther.setBattleTime(DateUtil.currentTimeSeconds());
-        recordDataOther.setName(player.getPlayerName());
-        recordDataOther.setHead(player.getData().getHead());
-        recordDataOther.setLevel(player.getData().getLevel());
-        recordDataOther.setHeadFrame(player.getData().getHeadFrame());
-        recordDataOther.setResult(iswin ? 0 : 1);
-        recordDataOther.setCombatEffectiveness(player.getAttrModule().getPower());
-        recordDataOther.setScoreChange((int)change);
-        BaseMsg.PVEVPRecordData record2 = recordDataOther.build();
-
+    void createBattleRecord_Target( long change, boolean iswin,String rediskey,int type) {
+        var recordData = new PVEVPRecordData(iswin ? 1 : 0,
+                player.getPlayerName(),
+                player.getData().getLevel(),
+                player.getAttrModule().getPower(),
+                (int)change,
+                player.getData().getHead(),
+                player.getData().getHeadFrame(),
+                DateUtil.currentTimeSeconds(),
+                1
+        );
         // 使用 List 保持插入顺序
-        RedisUtil.getRedis().getList(rediskey).add(record2);
+        RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport - 1);
     }
     void createBattleRecord_My(SimplePlayer simplePlayer, long change, boolean iswin,String rediskey) {
-        BaseMsg.PVEVPRecordData.Builder recordData = BaseMsg.PVEVPRecordData.newBuilder();
-        recordData.setBattleTime(DateUtil.currentTimeSeconds());
-        recordData.setName(simplePlayer.getName());
-        recordData.setHead(simplePlayer.getHead());
-        recordData.setLevel(simplePlayer.getLevel());
-        recordData.setHeadFrame(simplePlayer.getHeadFrame());
-        recordData.setResult(iswin ? 1 : 0);
-        recordData.setCombatEffectiveness(simplePlayer.getCombatEffectiveness());
-        recordData.setScoreChange((int)change);
-        BaseMsg.PVEVPRecordData record = recordData.build();
+        var recordData = new PVEVPRecordData(iswin ? 1 : 0,
+                simplePlayer.getName(),
+                simplePlayer.getLevel(),
+                simplePlayer.getCombatEffectiveness(),
+                (int)change,
+                simplePlayer.getHead(),
+                simplePlayer.getHeadFrame(),
+                DateUtil.currentTimeSeconds(),
+                1
+        );
 
         // 使用 List 保持插入顺序
-        RedisUtil.getRedis().getList(rediskey).add(record);
+        RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
  - 1);
 
     }
-    void createBattleRecord_Robot(SimplePlayer simplePlayer, long change, boolean iswin,String rediskey){
-        BaseMsg.PVEVPRecordData.Builder recordData = BaseMsg.PVEVPRecordData.newBuilder();
-        recordData.setBattleTime(DateUtil.currentTimeSeconds());
-        recordData.setName(simplePlayer.getName());
-        recordData.setHead(simplePlayer.getHead());
-        recordData.setLevel(simplePlayer.getLevel());
-        recordData.setHeadFrame(simplePlayer.getHeadFrame());
-        recordData.setResult(iswin ? 1 : 0);
-        recordData.setCombatEffectiveness(simplePlayer.getCombatEffectiveness());
-        recordData.setScoreChange((int)change);
-        BaseMsg.PVEVPRecordData record = recordData.build();
+    void createBattleRecord_Robot(SimplePlayer simplePlayer, long change, boolean iswin,String rediskey,int type){
+        var recordData = new PVEVPRecordData(iswin ? 1 : 0,
+                 simplePlayer.getName(),
+                 simplePlayer.getLevel(),
+                 simplePlayer.getCombatEffectiveness(),
+                 (int)change,
+                 simplePlayer.getHead(),
+                 simplePlayer.getHeadFrame(),
+                 DateUtil.currentTimeSeconds(),
+                  type
+        );
         // 使用 List 保持插入顺序
-        RedisUtil.getRedis().getList(rediskey).add(record);
+        RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
  - 1);;
     }
@@ -230,7 +233,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         recordDataList.clear();
         String rediskey = CacheType.PVEVP_RECORD_ID.key(player.getPlayerId());
         RedisUtil.getRedis().getList(rediskey).forEach(recordData -> {
-            recordDataList.add((BaseMsg.PVEVPRecordData) recordData);
+            recordDataList.add((PVEVPRecordData) recordData);
         });
     }
     @Override
@@ -248,6 +251,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private void resetCache() {
         mainShowRank.clear();
         inBattleRank = null;
+        inBattleRankPlayerId = 0L;
     }
 
     /**
@@ -306,14 +310,20 @@ public class PVEVPBattle extends XiYouBattleHandler {
         }
 
         RankService rankService = RankService.getInstance();
-
+        List<CompletionStage<Void>> updateTasks = new ArrayList<>();
         // 并行获取所有排名数据
-        List<CompletionStage<Void>> updateTasks = rankIds.stream()
-                .map(rankId -> rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId)
-                        .thenAccept(this::setData))
-                .toList();
-
-        // 等待所有任务完成
+        rankIds.forEach(rankId -> {
+            CompletionStage <RankEntry> rankEntry = rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId);
+            updateTasks.add(rankEntry.thenAccept(this::setData));
+        });
+//        List<CompletionStage<Void>> updateTasks = rankIds.stream()
+//                .map(rankId ->
+//                {var rankEntry =rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId
+//                })
+//                .thenAccept(this::setData))
+//                .toList();
+//
+//        // 等待所有任务完成
         return CompletableFuture.allOf(updateTasks.toArray(new CompletableFuture[0]));
     }
 
@@ -345,9 +355,11 @@ public class PVEVPBattle extends XiYouBattleHandler {
             }
         }
         basescore += extraScore;
-        if (isHight) {
+        if (iswin) {
+            //胜利 最小是0分
             basescore = basescore < 0 ? 0 : basescore;
         } else {
+            //失败 最大是0分
             basescore = basescore > 0 ? 0 : basescore;
         }
         return basescore;
@@ -375,13 +387,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
             } else {
                 // 已有排名的玩家，获取随机对手
                 List<Integer> targetRankIds;
-                if (mainShowRank.size() > 0) {
-                    // 使用现有排名ID更新数据
-                    targetRankIds = new ArrayList<>(mainShowRank.keySet());
-                } else {
-                    // 生成新的随机排名ID
-                    targetRankIds = radomPlayer(myRank.getRank());
-                }
+                // 生成新的随机排名ID
+                targetRankIds = radomPlayer(myRank.getRank());
                 dataLoadingStage = fillMainShowRankAsync(targetRankIds);
             }
 

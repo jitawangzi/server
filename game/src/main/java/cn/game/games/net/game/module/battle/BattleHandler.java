@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
+
+import cn.game.games.cache.entity.Base;
 import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
@@ -1354,7 +1356,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleConfig battleConfig = BattleManager.instance().get(attackingId);
         player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         IBattleHandler battleHandler = battleModule.getBattle(attackingType);
-        ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req);
+        ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req,resp);
         if (result.getErrorCode() > 0) {
             client.sendProtocol(resp, result.getErrorCode());
             return;
@@ -1728,7 +1730,17 @@ public class BattleHandler extends GameBaseHandler {
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         pvevpBattle.getBattleRecordFromRedis();
         pvevpBattle.recordDataList.forEach(v -> {
-            resp.addRecordList(v);
+            BaseMsg.PVEVPRecordData.Builder builder = BaseMsg.PVEVPRecordData.newBuilder();
+            builder.setResult(v.result)
+                    .setName(v.name)
+                    .setLevel(v.level)
+                    .setCombatEffectiveness(v.combatEffectiveness)
+                    .setScoreChange(v.scoreChange)
+                    .setHead(v.head)
+                    .setHeadFrame(v.headFrame)
+                    .setBattleTime(v.battleTime)
+                    .setType(v.type);
+            resp.addRecordList(builder);
         });
         client.sendProtocol(resp.build());
     }

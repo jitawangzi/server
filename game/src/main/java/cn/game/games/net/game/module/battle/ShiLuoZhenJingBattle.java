@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.battle;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.protocol.protobuf.BattleMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.core.ResultObject;
@@ -127,7 +128,7 @@ public class ShiLuoZhenJingBattle extends XiYouBattleHandler {
 	}
 
 	@Override
-	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+	public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request, BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
 
 		if (!request.getWin()) {
 			return ResultObject.success();

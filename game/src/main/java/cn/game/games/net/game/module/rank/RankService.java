@@ -217,7 +217,10 @@ public class RankService {
 	 */
 	public CompletionStage <RankEntry> getRankEntryAsync(String serverId, RankType type, int rankId) {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		return rank.entryRangeReversedAsync(rankId-1, rankId-1).thenApply(entrys ->   convertToRankEntries(entrys , 1, 1)).thenApply(list -> list.get(0));
+		return rank.entryRangeReversedAsync(rankId-1, rankId-1).thenApply(
+				entrys ->
+						convertToRankEntries(entrys , rankId)).thenApply(
+								list -> list.get(0));
 	}
 	/**
 	 * 同步获取排行榜的最后一个玩家信息。
@@ -493,7 +496,17 @@ public class RankService {
 		}
 		return rankEntries;
 	}
-
+	/**
+	 * 转成自定义 制定名次的的RankEntry对象
+	 * @param entrys
+	 */
+	public List<RankEntry> convertToRankEntries(Collection<ScoredEntry<Long>> entrys,int rankId) {
+		List<RankEntry> rankEntries = new ArrayList<>();
+		for (ScoredEntry<Long> entry : entrys) {
+			rankEntries.add(new RankEntry(rankId, entry.getValue(), (long) entry.getScore().doubleValue()));
+		}
+		return rankEntries;
+	}
 	/**
 	 * RankEntry 类型转成PlayerRank类型
 	 * @param entryAsync

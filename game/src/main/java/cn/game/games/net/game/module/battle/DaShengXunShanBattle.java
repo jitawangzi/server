@@ -9,6 +9,7 @@ import cn.game.protocol.generated.manager.*;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.MountainNodeType;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
@@ -385,7 +386,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     }
 
     @Override
-    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request) {
+    public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
         if (request.getWin()) {
              int nodeId= request.getDaShengNodeId();
