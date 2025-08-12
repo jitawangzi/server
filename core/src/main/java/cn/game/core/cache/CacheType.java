@@ -1,7 +1,7 @@
 package cn.game.core.cache;
 
 /**    
- * 
+ * redis key 类型
  * 2025年8月5日 14:15:26
  * @author SYQ
  */

@@ -1,24 +1,30 @@
 package cn.game.core.cache;
 
 public enum CacheDataType {
-	// 玩家相关数据 - 短TTL，保证数据一致性
-	PLAYER_GUILD_LEVEL("player_guild_level", 15), // 15秒
+	// 玩家相关数据 - 短TTL，保证更高的新鲜度
+	PLAYER_GUILD_LEVEL("player_guild_level", 15, 50_000, CacheBackend.REMOTE, true),
 
 	// 公会相关数据 - 中等TTL
-	GUILD_MEMBERS("guild_members", 180), // 3分钟
+	GUILD_MEMBERS("guild_members", 180, 50_000, CacheBackend.REMOTE, false),
 
-	// 服务器级别数据 - 长TTL
-	RANKING_DATA("ranking", 600), // 10分钟
+	// 服务器级别数据(示例) - 较长TTL
+	RANKING_DATA("ranking", 600, 20_000, CacheBackend.REDIS, false),
 
-	// Redis缓存数据
-	REDIS_CACHE("redis_cache", 600); // 10分钟
+	// 直接使用 Redis 的通用数据 - 统一通过 REDIS 访问
+	REDIS_CACHE("redis_cache", 600, 100_000, CacheBackend.REDIS, false);
 
 	private final String prefix;
 	private final long ttlSeconds;
+	private final long maximumSize;
+	private final CacheBackend backend;
+	private final boolean playerScoped;
 
-	CacheDataType(String prefix, long ttlSeconds) {
+	CacheDataType(String prefix, long ttlSeconds, long maximumSize, CacheBackend backend, boolean playerScoped) {
 		this.prefix = prefix;
 		this.ttlSeconds = ttlSeconds;
+		this.maximumSize = maximumSize;
+		this.backend = backend;
+		this.playerScoped = playerScoped;
 	}
 
 	public String getPrefix() {
@@ -27,5 +33,23 @@ public enum CacheDataType {
 
 	public long getTtlSeconds() {
 		return ttlSeconds;
+	}
+
+	public long getMaximumSize() {
+		return maximumSize;
+	}
+
+	public CacheBackend getBackend() {
+		return backend;
+	}
+
+	public boolean isPlayerScoped() {
+		return playerScoped;
+	}
+
+	public enum CacheBackend {
+		REDIS,
+		REMOTE,   // 跨服/远端服务
+		MIXED     // 既可能来自 Redis，也可能来自其他服务（可据业务自定义）
 	}
 }
