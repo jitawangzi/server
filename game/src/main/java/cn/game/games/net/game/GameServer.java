@@ -204,7 +204,7 @@ public class GameServer implements GameServerMBean {
 		initSimplePlayers();
 		initRobots(1000);
 //		initAllSimplePlayers();
-		kickClientsAfterChangeTime();
+//		kickClientsAfterChangeTime();
 
 		MailHelper.initLoadGlobalMail();
 

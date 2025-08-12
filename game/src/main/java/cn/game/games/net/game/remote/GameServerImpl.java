@@ -19,8 +19,10 @@ import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
 import cn.game.games.cache.entity.Friend;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.GoodsModule;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -47,16 +49,31 @@ public class GameServerImpl implements GameServerInterface {
 	}
 
 	@Override
-	public List<RewardInfo> addResources(long playerId, int id, int value) {
-//		return PlayerHelper.addResources(player, id, value);
-		return null;
+	public Future<?> addResources(long playerId, int id, int value) {
+		return PlayerHelper.modifyPlayer(playerId, player -> {
+			PlayerHelper.addResources(player, id, value, OpType.GM);
+			return true;
+		});
 	}
 
 	@Override
-	public boolean delResources(long playerId, int id, int value) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		PlayerHelper.delResources(player, id, value, OpType.GM);
-		return true;
+	public Future<?> delResources(long playerId, int itemId, int count) {
+
+		return PlayerHelper.modifyPlayer(playerId, player -> {
+			if (itemId > 0) {
+				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(itemId);
+				long totalCount = goodsModule.getCount(itemId);
+				long countDel = count > totalCount ? totalCount : count;
+				if (count == 0) {
+					countDel = totalCount;
+				}
+				PlayerHelper.delResources(player, itemId, countDel, OpType.Test);
+			} else {
+				player.getCurrencyModule().getCurrencyMap().clear();
+				player.getItemModule().getId_items().clear();
+			}
+			return true;
+		});
 	}
 
 	@Override
@@ -79,9 +96,9 @@ public class GameServerImpl implements GameServerInterface {
 	}
 
 	@Override
-	public Future<@Nullable Object> addMail(long receiverId, int mailId, Object[] contentArguments, String sender, String title, String content, int type,
-			List<Goods> attachmentList, boolean notify) {
-		Mail mail = Mail.valueOf(receiverId, mailId,contentArguments,sender,title,content,type, attachmentList);
+	public Future<@Nullable Object> addMail(long receiverId, int mailId, Object[] contentArguments, String sender, String title,
+			String content, int type, List<Goods> attachmentList, boolean notify) {
+		Mail mail = Mail.valueOf(receiverId, mailId, contentArguments, sender, title, content, type, attachmentList);
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();
