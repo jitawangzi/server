@@ -85,7 +85,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
            if (isRobot) {
                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy,1);
            } else {
-               createBattleRecord_Target(0,true,rediskeyTarget,2);
+               createBattleRecord_Target(0,true,rediskeyTarget);
                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
            }
            inBattleRankPlayerId = 0L;
@@ -155,7 +155,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             if (isRobot) {
                 createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), (int) myAddScore, true,rediskeyMy,1);
             } else {
-                createBattleRecord_Target(targetDelScore,false,rediskeyTarget,2);
+                createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), myAddScore, true,rediskeyMy);
             }
             resetCache();
@@ -169,7 +169,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             if (isRobot) {
                 createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy,1);
             } else {
-                createBattleRecord_Target(0,true,rediskeyTarget,2);
+                createBattleRecord_Target(0,true,rediskeyTarget);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
             }
             inBattleRank = null;
@@ -179,7 +179,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
         return ResultObject.success();
     }
-    void createBattleRecord_Target( long change, boolean iswin,String rediskey,int type) {
+    void createBattleRecord_Target( long change, boolean iswin,String rediskey) {
         var recordData = new PVEVPRecordData(iswin ? 1 : 0,
                 player.getPlayerName(),
                 player.getData().getLevel(),
@@ -188,7 +188,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 player.getData().getHead(),
                 player.getData().getHeadFrame(),
                 DateUtil.currentTimeSeconds(),
-                1
+                2
         );
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
