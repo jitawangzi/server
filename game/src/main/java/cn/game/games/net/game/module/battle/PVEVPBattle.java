@@ -56,7 +56,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     private int buyCount = 0;
     private int endTime = 0;
     public transient List<PVEVPRecordData> recordDataList = new ArrayList<>();
-    private transient  volatile boolean refreshFlag = true;
+    private transient  volatile boolean refreshFlag = false;
 
     public PVEVPBattle() {
     }
