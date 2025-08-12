@@ -58,7 +58,7 @@ public class ServerHelper {
 			// 对象不在线，或者在当前服务器，直接由当前服务器处理
 			if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
 				// 直接返回本地代理
-				return (T) ClassHelper.getSingletonInstance(clazz);
+				return ClassHelper.getSingletonInstance(clazz);
 			}
 		}
 		// 在其他服务器，通过远程调用
