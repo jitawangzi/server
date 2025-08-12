@@ -237,19 +237,19 @@
 275,BattleBuyTicketRequest_13000554,0x13000554,,,,,大圣擂台购买次数数据请求
 276,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,战斗选择强援技能id
 291,BattleEquipTowerRecordRequest_13000528,0x13000528,,,,,查看战斗记录上传请求
-292,GuildApplyJoinRequest_40000007,0x40000007,,,,,申请加入公会
-293,GuildBargainBuyRequest_40000062,0x40000062,,,,,购买公会砍价物品
-294,GuildBargainRequest_40000060,0x40000060,,,,,公会砍价
-295,GuildCreateRequest_40000005,0x40000005,,,,,创建公会
-296,GuildDissolveRequest_40000011,0x40000011,,,,,解散公会
-297,GuildDonateRequest_40000067,0x40000067,,,,,公会捐献
-298,GuildFindRequest_40000003,0x40000003,,,,,查找公会
-299,GuildInfoRequest_40000021,0x40000021,,,,,获取公会信息
-300,GuildListRequest_40000001,0x40000001,,,,,公会列表
-301,GuildLogRequest_40000025,0x40000025,,,,,公会日志请求
-302,GuildMemberAuthRequest_40000041,0x40000041,,,,,"公会成员权限管理,同意申请，踢人等。"
-303,GuildMemberPositionSetRequest_40000015,0x40000015,,,,,公会职位更改
-304,GuildQuickJoinRequest_40000065,0x40000065,,,,,快速一键加入公会
-305,GuildQuitRequest_40000017,0x40000017,,,,,退出公会
-306,GuildSettingRequest_40000013,0x40000013,,,,,公会设置相关 有值 则替换，没有值 则不修改
+292,GuildApplyJoinRequest_40000007,0x40000007,,6000,,7,申请加入公会
+293,GuildBargainBuyRequest_40000062,0x40000062,,6000,,17,购买公会砍价物品
+294,GuildBargainRequest_40000060,0x40000060,,6000,,15,公会砍价
+295,GuildCreateRequest_40000005,0x40000005,,6000,,5,创建公会
+296,GuildDissolveRequest_40000011,0x40000011,,6000,,29,解散公会
+297,GuildDonateRequest_40000067,0x40000067,,6000,,19,公会捐献
+298,GuildFindRequest_40000003,0x40000003,,6000,,3,查找公会
+299,GuildInfoRequest_40000021,0x40000021,,6000,,11,获取公会信息
+300,GuildListRequest_40000001,0x40000001,,6000,,1,公会列表
+301,GuildLogRequest_40000025,0x40000025,,6000,,13,公会日志请求
+302,GuildMemberAuthRequest_40000041,0x40000041,,6000,,21,"公会成员权限管理,同意申请，踢人等。"
+303,GuildMemberPositionSetRequest_40000015,0x40000015,,6000,,23,公会职位更改
+304,GuildQuickJoinRequest_40000065,0x40000065,,6000,,9,快速一键加入公会
+305,GuildQuitRequest_40000017,0x40000017,,6000,,27,退出公会
+306,GuildSettingRequest_40000013,0x40000013,,6000,,25,公会设置相关 有值 则替换，没有值 则不修改
 307,GinsengTreeEnergyRequest_39000021,0x39000021,,,,,人参果树领取体力果实

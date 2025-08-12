@@ -243,8 +243,8 @@ public class ClassHelper {
 	 * @param clazz
 	 * @return
 	 */
-	public static Object getSingletonInstance(Class<?> clazz) {
-		Object bean = null;
+	public static <T> T getSingletonInstance(Class<T> clazz) {
+		T bean = null;
 		// 先尝试从Spring容器获取
 		try {
 			bean = SpringContextLoader.getContext().getBean(clazz);
@@ -263,7 +263,7 @@ public class ClassHelper {
 				Method method = clazz.getDeclaredMethod(methodName);
 				if (Modifier.isStatic(method.getModifiers()) && method.getReturnType().isAssignableFrom(clazz)) {
 					method.setAccessible(true);
-					return method.invoke(null);
+					return (T) method.invoke(null);
 				}
 			} catch (NoSuchMethodException e) {
 				// 继续尝试下一个方法名
@@ -283,14 +283,13 @@ public class ClassHelper {
 
 					method.setAccessible(true);
 					try {
-						return method.invoke(null);
+						return (T) method.invoke(null);
 					} catch (Exception e) {
 						throw new RuntimeException("Failed to get singleton instance", e);
 					}
 				}
 			}
 		}
-
 		throw new IllegalStateException("No singleton instance accessor found for class: " + clazz.getName());
 	}
 
