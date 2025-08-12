@@ -132,10 +132,9 @@ public class RedisLocalCache {
 				} else {
 					promise.fail(ar.cause());
 				}
-				loadingFutures.remove(key);
 			});
 			return (Future<Object>) promise.future();
-		});
+		}).onComplete(x -> loadingFutures.remove(key));
 	}
 
 	private <T> T getFromRedis(String key) {
