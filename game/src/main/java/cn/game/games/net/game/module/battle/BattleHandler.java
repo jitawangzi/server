@@ -982,7 +982,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
             return;
         }
-        PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
+        PlayerHelper.delResourcesWithConsume(player, battleConfig.cost, OpType.BattleSweep);
         battleModule.setDaySweepCount(battleModule.getDaySweepCount() + 1);
         List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
         resp.addAllReward(reward);
@@ -1008,7 +1008,7 @@ public class BattleHandler extends GameBaseHandler {
         if (battleModule.getDaySweepCount() >= GlobalConst.SweepNum) {
             player.handleEvent(EventTypeEnum.WatchAds);
         }
-        PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleSweep);
+        PlayerHelper.delResourcesWithConsume(player, battleConfig.cost, OpType.BattleSweep);
         battleModule.setDaySweepCount(battleModule.getDaySweepCount() + 1);
         List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleSweep);
         resp.addAllReward(reward);
@@ -1040,6 +1040,7 @@ public class BattleHandler extends GameBaseHandler {
         BattlePatrolRewardRequest_13000044 request = (BattlePatrolRewardRequest_13000044) message;
         boolean isFast = request.getIsFast();
         boolean advertising = request.getAdvertising();
+        int multiple = request.getMultiple(); 
         BattlePatrolRewardResponse_13000045.Builder resp = BattlePatrolRewardResponse_13000045.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
@@ -1052,6 +1053,9 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
+        if (multiple < 1 || !player.hasWelfare(WelfareTypeEnum.TravelTimeMultiple)) {
+        	multiple = 1 ;
+		}
         if (isFast) {
             // 快速巡逻次数处理
             if (advertising) {
@@ -1064,12 +1068,14 @@ public class BattleHandler extends GameBaseHandler {
                 player.handleEvent(EventTypeEnum.WatchAds);
             } else {
                 int quickPatrolCount = battleModule.getQuickPatrolCount();
-                if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
-                    client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
-                    return;
-                }
+                if (!player.hasWelfare(WelfareTypeEnum.TravelTimeMultiple)) {
+                	if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
+                		client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+                		return;
+                	}
+        		}
                 // 消耗
-                PlayerHelper.delResources(player, GlobalConst.QuickPatrolConsume, OpType.Patrol);
+                PlayerHelper.delResourcesWithConsume(player, GlobalConst.QuickPatrolConsume ,multiple, OpType.Patrol);
                 battleModule.setQuickPatrolCount(quickPatrolCount + 1);
             }
         }
@@ -1078,6 +1084,7 @@ public class BattleHandler extends GameBaseHandler {
         int hours = 0;
         if (isFast) {
             minute = GlobalConst.QuickPatrolDuration / 60;
+            minute *= multiple; 
             hours = minute / 60;
         } else {
             // 最大巡逻时间

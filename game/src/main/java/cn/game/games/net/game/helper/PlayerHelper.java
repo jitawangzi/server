@@ -386,12 +386,29 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
-	public static void delResources(Player player, int consumeId, OpType consumeType) {
+	public static void delResourcesWithConsume(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
 			return;
 		}
 		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
 		delResources(player, consumeConfig.cost, consumeType);
+	}
+	
+	/** 
+	 * 通过消耗表的id，来扣除玩家的物品
+	 * @param player
+	 * @param consumeId 消耗表的id  {@link ConsumeConfig#ID}
+	 * @param multiple 倍数
+	 * @param consumeType 消耗类型
+	 * @return
+	 */
+	public static void delResourcesWithConsume(Player player, int consumeId,int multiple, OpType consumeType) {
+		if (consumeId == 0) {
+			return;
+		}
+		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
+		int[][] arrayMultiple = GameUtil.arrayMultiple(consumeConfig.cost, multiple);
+		delResources(player, arrayMultiple, consumeType);
 	}
 
 	/**
