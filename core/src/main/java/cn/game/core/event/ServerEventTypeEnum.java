@@ -9,7 +9,14 @@ public enum ServerEventTypeEnum {
 
 	/** 参数：老状态、新状态  */
 	ServerLoad(101, "服务器负载状态变化"),
-
+	/** 一般是gm指令修改了系统时间,一般只测试用 */
+	SystemTimeChange(108, "系统时间改变"),
+	NewDay(109, "过晚上12点，跨天"),
+	/** 跨周 */
+	NewWeek(110, "跨周"),
+	/** 跨月 */
+	NewMonth(111, "跨月"),
+	
 	/**  参数： 活动id */
 	ActivityOpenTime(300, "某活动到达开启时间"),
 	/**  参数： 活动id */

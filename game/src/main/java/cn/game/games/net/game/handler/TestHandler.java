@@ -25,6 +25,7 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.IdCache;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
@@ -102,8 +103,8 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteResponse_6f000045;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutRequest_6f000042;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutResponse_6f000043;
 import cn.game.protocol.protobuf.TestMsg.TestRunRequest_6f000020;
-import cn.game.util.SystemTimeShift;
-import cn.game.util.SystemTimeShift.PreviewResult;
+import cn.game.util.LinuxTimeShift;
+import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
@@ -353,7 +354,7 @@ public class TestHandler extends GameBaseHandler {
                     PlayerHelper.refreshDay(player);
                     break;
                 }
-            case "ctime":
+            case "time":
             {
             	if (ServerContext.getInstance().getRunMode().isProduction()) {
 					throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID) ;
@@ -361,17 +362,31 @@ public class TestHandler extends GameBaseHandler {
             	
             	String[] timeArgs=  new String[] { params.getStringParameter(1) }; 
             	LocalDateTime now = LocalDateTime.now(); 
-            	PreviewResult previewPlannedTime = SystemTimeShift.previewPlannedTime(timeArgs); 
+            	PreviewResult previewPlannedTime = LinuxTimeShift.previewPlannedTime(timeArgs); 
             	if (previewPlannedTime.crossedDay) {
-					player.getData().setOfflineTime(DateUtil.currentTimeMillis());
+            		PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+            			p.getData().setOfflineTime(DateUtil.currentTimeMillis());
+					});
 				}
-            	SystemTimeShift.main(timeArgs); 
+            	LinuxTimeShift.main(timeArgs); 
             	
-            	LocalDateTime changeAfter = LocalDateTime.now(); 
-            	if (changeAfter.isAfter(now) &&  DateUtil.diff(now, changeAfter, ChronoUnit.DAYS) > 0) {
-					PlayerHelper.refresh(player);
+            	LocalDateTime nowDateTime = LocalDateTime.now();
+            	if (previewPlannedTime.crossedDay) {
+					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+						PlayerHelper.refresh(player);
+					});
 				}
-            	player.handleEvent(EventTypeEnum.SystemTimeChange);
+				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+					player.handleEvent(EventTypeEnum.SystemTimeChange);
+				});
+				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.SystemTimeChange);
+            	if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.WEEKS) > 0) {
+    				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewWeek);
+				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.MONTHS) > 0) {
+					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewMonth);
+				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.DAYS) > 0) {
+					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
+				}
             	break;
             }
             default:
@@ -744,22 +759,6 @@ public class TestHandler extends GameBaseHandler {
         }
         System.out.println(MessageFormat.format("{0}次抽卡结果,蓝:{1} 紫:{2} 金:{3} 红:{4}", lp * count, r3, r4, r5, r6));
     }
-
-    /*
-	protected void mail(NetClient client, Object message) {
-		TestMailRequest_6f000010 req = (TestMailRequest_6f000010) message;
-		
-		int receiveId = req.getReceiveId();
-		List<GoodsInfo> attachmentsList = req.getAttachmentsList();
-		List<Goods> attachmentList = new ArrayList<Goods>();
-		for (GoodsInfo goodsInfo : attachmentsList) {
-		Goods g = new Goods();
-		g.setId(goodsInfo.getId());
-		g.setCount(goodsInfo.getCount());
-		attachmentList.add(g);
-		}
-		MailHelper.sendMail(receiveId, req.getSender(), req.getTitle(), req.getContent(), (byte) 0, attachmentList);
-		}*/
     protected void addItem(NetClient client, Object message) {
         TestAddItemRequest_6f000008 req = (TestAddItemRequest_6f000008) message;
         TestAddItemResponse_6f000009.Builder resp = TestAddItemResponse_6f000009.newBuilder();

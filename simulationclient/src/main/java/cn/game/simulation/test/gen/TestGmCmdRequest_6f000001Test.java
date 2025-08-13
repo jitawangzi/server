@@ -11,7 +11,8 @@ public class TestGmCmdRequest_6f000001Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestGmCmdRequest_6f000001.Builder builder = cn.game.protocol.protobuf.TestMsg.TestGmCmdRequest_6f000001.newBuilder() ; 
-		builder.setCmd("itemdel 240200370 100002 10");
+//		builder.setCmd("itemdel 240200370 100002 10");
+		builder.setCmd("time 2d");
 		
 		return builder.build() ; 
 	}
