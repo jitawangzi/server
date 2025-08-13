@@ -19,7 +19,7 @@ public class MountainMapNodeData {
     /**
      * 怪物id
      */
-    private int monsterId;
+    private List<Integer>  monsterIds=new ArrayList<>();
     /**
      * 等级参数
      */
@@ -57,13 +57,6 @@ public class MountainMapNodeData {
         this.nodeType = nodeType;
     }
 
-    public int getMonsterId() {
-        return monsterId;
-    }
-
-    public void setMonsterId(int monsterId) {
-        this.monsterId = monsterId;
-    }
 
     public int getLevelpro() {
         return levelpro;
@@ -87,7 +80,7 @@ public class MountainMapNodeData {
     {
         nodeStatus=0;
         nodeType=0;
-        monsterId=0;
+        monsterIds.clear();
         levelpro=0;
         eventId=0;
         shopId.clear();
@@ -99,5 +92,13 @@ public class MountainMapNodeData {
 
     public void setShopId(List<Integer> shopId) {
         this.shopId = shopId;
+    }
+
+    public List<Integer> getMonsterIds() {
+        return monsterIds;
+    }
+
+    public void setMonsterIds(List<Integer> monsterIds) {
+        this.monsterIds = monsterIds;
     }
 }

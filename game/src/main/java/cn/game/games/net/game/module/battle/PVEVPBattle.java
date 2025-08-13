@@ -87,6 +87,24 @@ public class PVEVPBattle extends XiYouBattleHandler {
            mainShowRank.clear();
        }
     }
+    @Override
+    public void reLogin() {
+        if(inBattleRankPlayerId>0)
+        {
+            String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRankPlayerId);
+            String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
+            boolean isRobot = inBattleRankPlayerId<10000;
+            // 生成战报
+            if (isRobot) {
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy,1);
+            } else {
+                createBattleRecord_Target(0,true,rediskeyTarget);
+                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
+            }
+            inBattleRankPlayerId = 0L;
+            mainShowRank.clear();
+        }
+    }
     void newWeek() {
         // 获取下周一凌晨的时间戳（毫秒）
         long nextMondayMillis = DateUtil.addWeekBeginTimer(1);

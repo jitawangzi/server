@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
 import cn.game.games.cache.entity.Base;
 import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
@@ -177,6 +176,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketRequest_13000554;
 import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordRequest_13000528;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordResponse_13000529;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b;
+import cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagResponse_1300053c;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -255,6 +256,7 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleMountainNextFloorRequest_13000547, this::mountainNextFloor);
         putInvoker(PbProtocol.BattleBuyTicketRequest_13000554, this::buyTicket);
         putInvoker(PbProtocol.BattleEquipTowerRecordRequest_13000528, this::equipTowerRecord);
+        putInvoker(PbProtocol.BattleMountainBuffBagRequest_1300053b, this::mountainBuffBag);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1365,7 +1367,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleConfig battleConfig = BattleManager.instance().get(attackingId);
         player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         IBattleHandler battleHandler = battleModule.getBattle(attackingType);
-        ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req,resp);
+        ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req, resp);
         if (result.getErrorCode() > 0) {
             client.sendProtocol(resp, result.getErrorCode());
             return;
@@ -1638,7 +1640,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
         int attackingSubId = battleModule.getAttackingSubId();
-        List<RewardInfo> end = battle.end(battle.getLastCompleteFloor(),true);
+        List<RewardInfo> end = battle.end(battle.getLastCompleteFloor(), true);
         if (end != null && !end.isEmpty()) {
             resp.addAllRewards(end);
         }
@@ -1670,16 +1672,16 @@ public class BattleHandler extends GameBaseHandler {
         mapData.getScoreReward().forEach((k, v) -> {
             resp.putScoreReward(k, v);
         });
-//        mapData.getBuffBag().forEach(v -> {
-//            resp.addBuffBag(v);
-//        });
+        //        mapData.getBuffBag().forEach(v -> {
+        //            resp.addBuffBag(v);
+        //        });
         client.sendProtocol(resp.build());
     }
 
     private void mountainFinishNode(NetClient client, Object message) {
         BattleMountainFinishNodeRequest_13000541 req = (BattleMountainFinishNodeRequest_13000541) message;
         int nodeId = req.getNodeId();
-        int param = req.getParam();
+        int param = 1;//req.getParam();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleMountainFinishNodeResponse_13000542.Builder resp = BattleMountainFinishNodeResponse_13000542.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);
@@ -1749,6 +1751,7 @@ public class BattleHandler extends GameBaseHandler {
             builder.setHeadFrame(v.headFrame);
             builder.setBattleTime(v.battleTime);
             builder.setType(v.type);
+            builder.setPlayerId(String.valueOf(v.playerId));
             resp.addRecordList(builder);
         });
         client.sendProtocol(resp.build());
@@ -1784,7 +1787,15 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         EquipTowerBattle equipTowerBattle = battleModule.getBattle(DungeonTypeEnum.EquipTower);
-        equipTowerBattle.setRecord(floor,record);
+        equipTowerBattle.setRecord(floor, record);
         client.sendProtocol(defaultInstance);
+    }
+
+    private void mountainBuffBag(NetClient client, Object message) {
+        BattleMountainBuffBagRequest_1300053b req = (BattleMountainBuffBagRequest_1300053b) message;
+        BattleMountainBuffBagResponse_1300053c defaultInstance = BattleMountainBuffBagResponse_1300053c.getDefaultInstance();
+        BattleMountainBuffBagResponse_1300053c.Builder resp = BattleMountainBuffBagResponse_1300053c.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
     }
 }
