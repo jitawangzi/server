@@ -46,6 +46,10 @@ public class MountainMapData {
      * 排行榜id
      */
     private int rankId;
+     /**
+     * 等级系数
+     */
+    private int levelPro;
     /**
      *  buff列表
      */
@@ -141,5 +145,13 @@ public class MountainMapData {
 
     public void setBuffBag(Map<Integer, Integer> buffBag) {
         this.buffBag = buffBag;
+    }
+
+    public int getLevelPro() {
+        return levelPro;
+    }
+
+    public void setLevelPro(int levelPro) {
+        this.levelPro = levelPro;
     }
 }
