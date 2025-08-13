@@ -101,4 +101,18 @@ public class MountainMapNodeData {
     public void setMonsterIds(List<Integer> monsterIds) {
         this.monsterIds = monsterIds;
     }
+
+
+    @Override
+    public String toString() {
+        return "MountainMapNodeData{" +
+                "nodeId=" + nodeId +
+                ", nodeType=" + nodeType +
+                ", eventId=" + eventId +
+                ", nodeStatus=" + nodeStatus +
+                ", shopId=" + shopId +
+                ", monsterIds=" + monsterIds +
+                '}';
+    }
+
 }
