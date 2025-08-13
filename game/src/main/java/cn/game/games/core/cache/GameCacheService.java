@@ -1,9 +1,7 @@
 package cn.game.games.core.cache;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import cn.game.core.cache.CacheDataType;
+import cn.game.core.cache.CacheType;
 import cn.game.core.cache.SimpleCacheManager;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
@@ -12,89 +10,242 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.util.RedisUtil;
+import io.vertx.core.Future;
+import org.redisson.api.RBatch;
+import org.redisson.api.RFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+/**
+ * 游戏侧缓存门面：集中注册各 CacheDataType 的默认 loader，
+ * 对外提供简化易用的 API。读取以显示为主、弱一致性（TTL 内允许旧值）。
+ */
 public class GameCacheService {
-	private static final Logger logger = LoggerFactory.getLogger(GameCacheService.class);
-	private final SimpleCacheManager cacheManager = SimpleCacheManager.getInstance();
-	private static final GameCacheService instance = new GameCacheService() ; 
+	private static final Logger log = LoggerFactory.getLogger(GameCacheService.class);
+
+	private static final GameCacheService INSTANCE = new GameCacheService();
+	private final SimpleCacheManager cache = SimpleCacheManager.getInstance();
+
 	private GameCacheService() {
+		registerLoaders();
 	}
+
 	public static GameCacheService getInstance() {
-		return instance;
+		return INSTANCE;
+	}
+
+	private void registerLoaders() {
+		// 1) 玩家工会等级：远端服务
+		cache.registerLoader(CacheDataType.PLAYER_GUILD_LEVEL,
+				(key) -> CompletableFuture.supplyAsync(() -> fetchPlayerGuildLevel(Long.parseLong(key))), null // 可在将来增加跨服批量 RPC
+		);
+
+		// 2) 公会成员列表：远端服务（示例）
+		cache.registerLoader(CacheDataType.GUILD_MEMBERS,
+				(key) -> CompletableFuture.supplyAsync(() -> fetchGuildMembersFromRemote(Long.parseLong(key))), null);
+
+		// 3) 排行榜数据：存于 Redis（这里覆盖默认，演示 RBatch 批量）
+		cache.registerLoader(CacheDataType.RANKING_DATA, (key) -> CompletableFuture.supplyAsync(() -> RedisUtil.get(key)), (keys) -> {
+			var redisson = RedisUtil.getRedis();
+			RBatch batch = redisson.createBatch();
+			Map<String, RFuture<Object>> rf = new LinkedHashMap<>();
+			for (String k : keys) {
+				rf.put(k, batch.getBucket(k).getAsync());
+			}
+			return batch.executeAsync().toCompletableFuture().thenApply(br -> {
+				Map<String, Object> m = new LinkedHashMap<>();
+				rf.forEach((k, f) -> m.put(k, f.getNow()));
+				return m;
+			});
+		});
+
+		// 4) REDIS_CACHE：SimpleCacheManager 已内置默认 loader，无需重复注册
+	}
+
+	// ========================= 玩家相关便捷 API =========================
+
+	public int getPlayerGuildLevel(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null || player.getGuildId() <= 0) {
+			return 0;
+		}
+		String key = String.valueOf(playerId);
+		Integer lvl = cache.get(CacheDataType.PLAYER_GUILD_LEVEL, key, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
+		return lvl == null ? 0 : lvl;
+	}
+
+	public Future<Integer> getPlayerGuildLevelAsync(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null || player.getGuildId() <= 0) {
+			return Future.succeededFuture(0);
+		}
+		String key = String.valueOf(playerId);
+		return cache.getAsync(CacheDataType.PLAYER_GUILD_LEVEL, key, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
+	}
+
+	// ========================= 服务器级别数据（排行/Redis） =========================
+
+	public Object getRankingData(RankType rankingType) {
+		String redisKey = rankingType.Name;
+		return cache.get(CacheDataType.RANKING_DATA, redisKey, RedisUtil::get);
+	}
+
+	public Future<Object> getRankingDataAsync(RankType rankingType) {
+		String redisKey = rankingType.Name;
+		return cache.getAsync(CacheDataType.RANKING_DATA, redisKey, RedisUtil::get);
+	}
+
+	public String getRedisData(String redisKey) {
+		return cache.get(CacheDataType.REDIS_CACHE, redisKey, RedisUtil::get);
+	}
+
+	public Future<String> getRedisDataAsync(String redisKey) {
+		return cache.getAsync(CacheDataType.REDIS_CACHE, redisKey, RedisUtil::get);
+	}
+
+	public <T> void putRedisData(String redisKey, T value) {
+		cache.put(CacheDataType.REDIS_CACHE, redisKey, value);
+	}
+
+	public <T> Future<Void> putRedisDataAsync(String redisKey, T value) {
+		return cache.putAsync(CacheDataType.REDIS_CACHE, redisKey, value);
+	}
+
+	public Future<Boolean> deleteRedisKeyAsync(String redisKey) {
+		return cache.deleteRemoteAsync(CacheDataType.REDIS_CACHE, redisKey);
+	}
+
+	public boolean existsRedisKey(String redisKey) {
+		return cache.existsRemote(CacheDataType.REDIS_CACHE, redisKey);
+	}
+
+	// ========================= 批量 API 示例 =========================
+
+	public <T> List<T> multiGetRedis(List<String> redisKeys) {
+		return cache.multiGet(CacheDataType.REDIS_CACHE, redisKeys, keys -> {
+			// 同步批量：RBatch
+			var redisson = RedisUtil.getRedis();
+			RBatch batch = redisson.createBatch();
+			List<RFuture<Object>> rf = new ArrayList<>();
+			for (String k : keys) {
+				rf.add(batch.getBucket(k).getAsync());
+			}
+			batch.execute();
+			List<T> out = new ArrayList<>(keys.size());
+			for (RFuture<Object> f : rf) {
+				@SuppressWarnings("unchecked")
+				T v = (T) f.getNow();
+				out.add(v);
+			}
+			return out;
+		}, RedisUtil::get);
 	}
 	
-	// ============ 玩家数据相关 ============
 
 	/** 
-	 * 获取玩家工会等级
-	 * @param playerId
+	 * 可变参数的同步批量获取方法
+	 * @param keys
 	 * @return
 	 */
-	public int getPlayerGuildLevel(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId); 
-		return cacheManager.getPlayerData(CacheDataType.PLAYER_GUILD_LEVEL, playerId, r -> {
-			if (player == null || player.getGuildId() <= 0) {
-				return 0; // 玩家未加入公会
+	public <T> List<T> multiGetRedis(CacheType cacheType, String... keys) {
+		if (keys == null || keys.length == 0) {
+			return Collections.EMPTY_LIST;
+		}
+		List<String> list = new ArrayList<>(keys.length);
+		for (String key : keys) {
+			list.add(cacheType.key(key));
+		}
+		return multiGetRedis(list);
+	}
+
+	public <T> Future<List<T>> multiGetRedisAsync(List<String> redisKeys) {
+		return cache.multiGetAsync(CacheDataType.REDIS_CACHE, redisKeys, keys -> {
+			// 同步批量 loader（给缓存层异步包装）
+			var redisson = RedisUtil.getRedis();
+			RBatch batch = redisson.createBatch();
+			Map<String, RFuture<Object>> rf = new LinkedHashMap<>();
+			for (String k : keys) {
+				rf.put(k, batch.getBucket(k).getAsync());
 			}
-			return fetchPlayeGuildLevelFromRemote(player.getGuildId());
-		});
+			batch.execute();
+			Map<String, T> out = new LinkedHashMap<>();
+			for (Map.Entry<String, RFuture<Object>> e : rf.entrySet()) {
+				@SuppressWarnings("unchecked")
+				T v = (T) e.getValue().getNow();
+				out.put(e.getKey(), v);
+			}
+			return out;
+		}, RedisUtil::get);
 	}
-	// ============ 服务器级别数据 ============
-
-	/**
-	 * 获取排行榜数据（10分钟缓存）
+	
+	/** 
+	 * 可变参数的同步批量获取方法
+	 * @param keys
+	 * @return
 	 */
-	public Object getRankingData(RankType rankingType) {
-		return cacheManager.get(CacheDataType.RANKING_DATA, rankingType.Name, this::fetchFromRedis);
+	public <T> Future<List<T>> multiGetRedisAsync(CacheType cacheType, String... keys) {
+		if (keys == null || keys.length == 0) {
+			return Future.succeededFuture(Collections.emptyList());
+		}
+		List<String> list = new ArrayList<>(keys.length);
+		for (String key : keys) {
+			list.add(cacheType.key(key));
+		}
+		return multiGetRedisAsync(list);
 	}
 
-	/**
-	 * 获取Redis缓存数据（10分钟缓存）
-	 */
-	public String getRedisData(String redisKey) {
-		return cacheManager.get(CacheDataType.REDIS_CACHE, redisKey, this::fetchFromRedis);
+	public Future<List<Integer>> multiGetPlayerGuildLevelAsync(List<Long> playerIds) {
+		List<String> keys = playerIds.stream().map(String::valueOf).collect(Collectors.toList());
+		return cache.multiGetAsync(CacheDataType.PLAYER_GUILD_LEVEL, keys, null, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
 	}
 
-	// ============ 缓存管理方法 ============
+	// ========================= 缓存失效事件 =========================
 
-	/**
-	 * 玩家数据更新后，清除相关缓存
-	 */
 	public void onPlayerDataUpdated(long playerId, CacheDataType... dataTypes) {
-		if (dataTypes.length == 0) {
-			// 清除该玩家所有缓存
-			cacheManager.evictAllPlayerCache(playerId);
+		if (dataTypes == null || dataTypes.length == 0) {
+			cache.evictAllPlayerCache(playerId);
+			log.info("Player data updated -> evict all caches for playerId={}", playerId);
 		} else {
-			// 清除指定类型的缓存
-			for (CacheDataType dataType : dataTypes) {
-				cacheManager.evictPlayerData(dataType, playerId);
+			for (CacheDataType type : dataTypes) {
+				cache.evictPlayerData(type, playerId);
 			}
+			log.info("Player data updated -> evicted types={} for playerId={}", Arrays.toString(dataTypes), playerId);
 		}
-		logger.info("玩家数据更新，清除缓存: playerId={}", playerId);
 	}
 
-	/**
-	 * 玩家下线，清除所有相关缓存
-	 */
 	public void onPlayerLogout(long playerId) {
-		cacheManager.evictAllPlayerCache(playerId);
-		logger.info("玩家下线，清除缓存: playerId={}", playerId);
+		cache.evictAllPlayerCache(playerId);
+		log.info("Player logout -> evict all caches: playerId={}", playerId);
 	}
 
-	private <T> T fetchFromRedis(String redisKey) {
-		return RedisUtil.get(redisKey);
+	public void clearAll() {
+		cache.clearAll();
 	}
 
-	private int fetchPlayeGuildLevelFromRemote(long guildId) {
-		if (guildId <= 0) {
+	public void printStats() {
+		cache.printStats();
+	}
+
+	// ========================= 具体加载逻辑 =========================
+
+	private Integer fetchPlayerGuildLevel(long playerId) {
+		Player p = PlayerManager.getInstance().getPlayer(playerId);
+		if (p == null || p.getGuildId() <= 0) {
 			return 0;
 		}
-		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
-		GuildShowInfo guildShowInfo = guildProxy.getGuildShowInfo(guildId);
-		if (guildShowInfo == null) {
+		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(p.getGuildId());
+		GuildShowInfo info = guildProxy.getGuildShowInfo(p.getGuildId());
+		if (info == null || !info.hasSimpleInfo()) {
 			return 0;
 		}
-		return guildShowInfo.getSimpleInfo().getLevel();
+		return info.getSimpleInfo().getLevel();
 	}
 
+	private List<Long> fetchGuildMembersFromRemote(long guildId) {
+		return Collections.emptyList();
+	}
 }

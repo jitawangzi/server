@@ -16,6 +16,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SystemTimeShift {
+public class LinuxTimeShift {
 
     private static final Path STATE_DIR = Paths.get("/var/lib/java-time-shift");
     private static final Path STATE_FILE = STATE_DIR.resolve("state.properties");
@@ -112,6 +113,8 @@ public class SystemTimeShift {
         System.out.println("  sudo java cn.game.util.SystemTimeShift -1d");
         System.out.println("  sudo java cn.game.util.SystemTimeShift add 1w2d3h");
         System.out.println("  sudo java cn.game.util.SystemTimeShift set \"2025-01-01 00:00:00\"");
+        System.out.println("  sudo java cn.game.util.SystemTimeShift set 23:59[:ss]    仅设置当天时间，日期不变");
+        System.out.println("  也支持不带前导零的日期：set \"2022-1-1 23:59:50\"");
         System.out.println("  sudo java cn.game.util.SystemTimeShift restore   恢复到当前网络时间（chrony > ntpdate > SNTP）");
         System.out.println("  sudo java cn.game.util.SystemTimeShift status");
         System.out.println("单位：s 秒, m 分钟, h 小时, d 天, w 周, mo 月（m=分钟，mo=月份）");
@@ -797,18 +800,46 @@ public class SystemTimeShift {
     }
 
     private static LocalDateTime parseLocalDateTimeFlexible(String dateTime) {
-        String normalized = dateTime.trim().replace('T', ' ');
+        String s = dateTime == null ? "" : dateTime.trim().replace('T', ' ');
+        if (s.isEmpty()) {
+            throw new IllegalArgumentException("时间字符串为空");
+        }
+
+        // 统一空白、分隔符
+        s = s.replaceAll("\\s+", " ");          // 折叠多空格
+        String s2 = s.replace('/', '-').replace('.', '-'); // 兼容 2022/1/1 或 2022.1.1
+
+        // 1) 仅时间：H:m 或 H:m:s（日期保持当天）
         try {
-            return LocalDateTime.parse(normalized, DT);
-        } catch (Exception e) {
+            LocalTime lt = LocalTime.parse(s2, DateTimeFormatter.ofPattern("H:m[:s]"));
+            return LocalDateTime.of(ZonedDateTime.now(ZONE).toLocalDate(), lt);
+        } catch (Exception ignore) {
+            // 不是仅时间格式，继续尝试完整日期时间
+        }
+
+        // 2) 宽松的日期时间：允许不带前导零（yyyy-M-d H:m 或 H:m:s）
+        try {
+            return LocalDateTime.parse(s2, DateTimeFormatter.ofPattern("yyyy-M-d H:m[:s]"));
+        } catch (Exception ignore) {
+            // 3) 回退到你原先的严格格式（保留兼容）
             try {
-                return LocalDateTime.parse(normalized, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm[:ss]"));
-            } catch (Exception ex) {
-                throw new IllegalArgumentException("无法解析时间，期望格式：YYYY-MM-DD HH:MM:SS，例如：2025-01-01 00:00:00");
+                return LocalDateTime.parse(s2, DT); // yyyy-MM-dd HH:mm:ss
+            } catch (Exception e2) {
+                // 4) 再次回退：严格但秒可选
+                try {
+                    return LocalDateTime.parse(s2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm[:ss]"));
+                } catch (Exception e3) {
+                    throw new IllegalArgumentException(
+                        "无法解析时间。支持格式示例：\n" +
+                        "  - yyyy-M-d H:m[:s]（如 2022-1-1 23:59:50）\n" +
+                        "  - yyyy-MM-dd HH:mm[:ss]\n" +
+                        "  - HH:mm[:ss]（仅设置当天时间，日期保持不变）\n" +
+                        "例如：set \"2022-1-1 23:59:50\" 或 set 23:59:30"
+                    );
+                }
             }
         }
     }
-
     private static class NeedsRootException extends Exception {
         NeedsRootException(String msg) { super(msg); }
     }
