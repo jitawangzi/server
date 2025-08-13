@@ -118,8 +118,7 @@ public class CountingModule extends BasePlayerModule {
 			break;
 		}
 		default:
-			// 其他事件不处理
-			break;
+			throw new IllegalArgumentException("not implemented event type: " + event.getType());
 		}
 	}
 
@@ -148,6 +147,15 @@ public class CountingModule extends BasePlayerModule {
 		
 	}
 	
+	/** 
+	 * 增加某个条件类型对应的计数,默认增加1次
+	 * @param type
+	 */
+	public void addCount(ConditionTypeEnum type) {
+		cumulativeCountMap.forEach((k, v) -> {
+			v.add(type.ID, 1);
+		});
+	}
 	/** 
 	 * 增加某个条件类型对应的计数
 	 * @param type

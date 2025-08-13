@@ -75,6 +75,7 @@ import cn.game.protocol.protobuf.ShopMsg.ShopItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeResponse_15000023;
 import cn.game.util.DateUtil;
+import cn.game.util.GameUtil;
 import cn.game.util.IntMapWrapper;
 import io.vertx.core.Future;
 
@@ -381,6 +382,10 @@ public class ShopHandler extends GameBaseHandler {
 		ShopItemBuyResponse_15000004.Builder resp = ShopItemBuyResponse_15000004.newBuilder();
 		int shopId = req.getShopId();
 		int itemId = req.getItemId();
+		int count = req.getCount(); 
+		if (count == 0) {
+			count = 1; 
+		}
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		ShopModule shopModule = player.getShopModule();
 		ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
@@ -396,25 +401,26 @@ public class ShopHandler extends GameBaseHandler {
 				return ; 
 			}
 		}
-	
 		//公会不存在
 		if (shopId == 17 && player.getGuildId() == 0){
 			client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
 			return;
 		}
-		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.ShopItemQuota) {
+		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes()+ count > shopItemConfig.ShopItemQuota) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
 			return;
 		}
 
-		final int[][] itemsAdd = shopItemConfig.Item;
+		
+		final int[][] itemsAdd = GameUtil.arrayMultiple(shopItemConfig.Item, count);
+		final int countTemp = count ; 
 		Supplier<Boolean> addItemAction = () -> {
 			List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
 //			if (shopItemConfig.PurchaseCnt > 0) {
-				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
+				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + countTemp);
 //				shopItem.update();
 //			}
-			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
+			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
 			resp.addAllRewards(resources);
 			client.sendProtocol(resp);
 			GameLogger.shoptrade(player, shopId, itemId);
@@ -425,7 +431,8 @@ public class ShopHandler extends GameBaseHandler {
 			return true;
 		};
 
-		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, shopItemConfig.PurchaseParameter,shopId);
+		
+		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId,GameUtil.arrayMultiple(shopItemConfig.PurchaseParameter, count) ,shopId);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				addItemAction.get();
