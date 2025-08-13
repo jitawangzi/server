@@ -130,7 +130,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         if(mountainBlockConfigBoss ==  null) {
             return ;
         }
-        mapData.get(endId).setMonsterId( Rnd.randomInt(mountainBlockConfigBoss.blockRandom));
+        //mapData.get(endId).setMonsterId( Rnd.randomInt(mountainBlockConfigBoss.blockRandom));
 
         // 随机事件
         MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(MountainNodeType.Event.getType());
