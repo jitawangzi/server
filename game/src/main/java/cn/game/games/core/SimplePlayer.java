@@ -153,7 +153,6 @@ public class SimplePlayer implements Serializable {
         secretscripMap.put(DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),player.getSecretscriptModule().getPvPSecretscriptMap());
 		secretscripInfos.addAll(player.getSecretscriptModule().getSecretscriptInfos());
 		this.assetsMap.putAll(player.getCurrencyModule().getCurrencyMap().getMap());
-		this.recharge = player.getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge);
 		this.equipPartShows = EquipPartShow.toEquipPartShowList(player);
 		EquipTowerBattle equipTowerBattle=player.getBattleModule().getBattle(DungeonTypeEnum.EquipTower);
 		this.equipBattleRecord =equipTowerBattle.getBattleRecord();

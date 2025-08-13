@@ -1121,10 +1121,10 @@ public class PlayerHelper {
 		if (type.countType == 2) {
 			// 累计计数带有额外参数的：
 			if (type == ConditionTypeEnum.EarnHeroCumulation) {
-				return player.getQuestModule().getCumulativeCount(type, extParam);
+				return player.getCountingModule().getCount(condition);
 			}
 			// 累计计数不带额外参数直接获取的
-			return player.getQuestModule().getCumulativeCount(type);
+			return player.getCountingModule().getCount(condition);
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：
