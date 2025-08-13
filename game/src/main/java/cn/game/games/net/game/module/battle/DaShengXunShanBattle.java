@@ -55,6 +55,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         mountainMapData.setRefreshNum(3);
         int rankId = getSeasonRankId();
         mountainMapData.setRankId(rankId);
+        initMountainMapData();
     }
     /**
      * 生成地图数据 4层 11行 最多3个点
@@ -125,6 +126,13 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         int endId = getNodeUid(floor, 11, 1);
         mapData.get(endId).setNodeType(MountainNodeType.Boss.getType());
         // 随机事件
+        MountainBlockConfig mountainBlockConfigBoss = MountainBlockManager.instance().get(MountainNodeType.Boss.getType());
+        if(mountainBlockConfigBoss ==  null) {
+            return ;
+        }
+        mapData.get(endId).setMonsterId( Rnd.randomInt(mountainBlockConfigBoss.blockRandom));
+
+        // 随机事件
         MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(MountainNodeType.Event.getType());
         if(mountainBlockConfig==    null) {
             return;
@@ -135,31 +143,28 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             eventPool.add(eventConfig.ID);
         });
         Collections.shuffle(eventPool);
-        begin=genNodeType(keys,begin,MountainNodeType.Event, eventPool);
-        begin=genNodeType(keys,begin,MountainNodeType.Shop,eventPool );
-        begin=genNodeType(keys,begin,MountainNodeType.Hard,eventPool );
-        begin=genNodeType(keys,begin,MountainNodeType.Hp, eventPool);
+        genNodeType(keys,MountainNodeType.Event, eventPool);
+        genNodeType(keys,MountainNodeType.Shop,eventPool );
+        genNodeType(keys,MountainNodeType.Hard,eventPool );
+        genNodeType(keys,MountainNodeType.Hp, eventPool);
         mapData.get(endId).setNodeType(MountainNodeType.Event.getType());
         for(int i=begin;i<keys.size();i++) {
             int nodeId = keys.get(i);
             mapData.get(nodeId).setNodeType(MountainNodeType.Easy.getType());
         }
-
-
-            // nodeData.setEventId(MountainEventManager.instance().list().);
     }
 
-    Integer genNodeType(List<Integer> keys, int begin, MountainNodeType type, List<Integer> eventPool)
+    void genNodeType(List<Integer> keys,MountainNodeType type, List<Integer> eventPool)
     {
         // 随机事件
         MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(type.getType());
         if(mountainBlockConfig==    null) {
-            return begin;
-    }
+            return ;
+         }
         int index= Rnd.get(0,mountainBlockConfig.createNum.length-1);
         int num =mountainBlockConfig.createNum[index];
-        int end=begin+num;
-        for(int i=begin;i<begin+num;i++) {
+
+        for(int i=0;i<num;i++) {
             int nodeId = keys.get(i);
             mapData.get(nodeId).setNodeType(type.getType());
             if(type==MountainNodeType.Event
@@ -170,7 +175,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                 mapData.get(nodeId).setEventId(eventId);
             }else if(type==MountainNodeType.Shop)
             {
-                HashMap<Integer,List<Integer>> shoppItemPool=new HashMap<>();
+                mapData.get(nodeId).getShopId().clear();
                 for (int[] ints : GlobalConst.MountainShopRefreshRule) {
                     int shoptype= ints[0];
                     int shoptnum= ints[1];
@@ -184,11 +189,9 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                         mapData.get(nodeId).getShopId().add(buffConfig.ID);
                     });
                 }
-
             }
 
         }
-        return end;
     }
     public void radomBuffId(MountainMapNodeData nodeData, List<Integer> buffIdLis) {
         List<Integer> buffIdList=new ArrayList<>();
@@ -391,9 +394,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     void newDay() {
        // reset();
     }
-    void newWeek() {
 
-    }
     /**
      * 重置数据
      */
@@ -429,7 +430,6 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         if (request.getWin()) {
              int nodeId= request.getDaShengNodeId();
              finishNode(nodeId);
-
             return ResultObject.success();
         } else { // 失败了，最终结算
 

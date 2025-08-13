@@ -625,6 +625,11 @@ public class BattleModule extends BasePlayerModule  {
 				battle.setPlayer(player);
 				battle.initPvevpBattle();
 				battlesMap.put(battle.getType(), battle);
+			}	else if (func == InitialUI.PatrollMountain) {
+				DaShengXunShanBattle battle = new DaShengXunShanBattle();
+				battle.setPlayer(player);
+				battle.initMountainData();
+				battlesMap.put(battle.getType(), battle);
 			}
 			break;
 		}
