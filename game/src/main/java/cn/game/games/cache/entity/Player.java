@@ -51,9 +51,11 @@ import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
 import cn.game.games.net.game.module.func.FuncModule;
 import cn.game.games.net.game.module.guarantee.GuaranteeModule;
+import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.games.net.game.module.invite.InviteModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.mail.MailModule;
+import cn.game.games.net.game.module.player.CountingModule;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.VarModule;
@@ -66,7 +68,6 @@ import cn.game.games.net.game.module.shop.ShopHelper;
 import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.vip.VipModule;
-import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.protocol.generated.config.FairyFriendFavorabilityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.VIPConfig;
@@ -96,7 +97,6 @@ import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.internal.ContextInternal;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class Player {
@@ -277,6 +277,9 @@ public class Player {
 	public QuestModule getQuestModule() {
 		return getModule(QuestModule.class);
 	}
+	public CountingModule getCountingModule() {
+		return getModule(CountingModule.class);
+	}
 
 	public CurrencyModule getCurrencyModule() {
 		return getModule(CurrencyModule.class);
@@ -454,7 +457,6 @@ public class Player {
 
 		builder.setCurBattleId(battleModule.getFightMainBattleId());
 		builder.setPower(getAttrModule().getPower());
-		builder.setChargeCumulation(getQuestModule().getCumulativeCount(ConditionTypeEnum.AccumulatedRecharge));
 
 		return builder.build();
 	}

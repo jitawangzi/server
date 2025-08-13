@@ -32,7 +32,7 @@ public class CountingModule extends BasePlayerModule {
 	private static final EventTypeEnum[] events = initEventTypes();
 	/** 刷新类型：  类型->数量*/
 	private Map<Integer, IntMapWrapper> cumulativeCountMap = new HashMap<Integer, IntMapWrapper>();
-	/** 刷新类型：  类型->数量，类型带额外参数的  */
+	/** 刷新类型：  带额外参数的类型->数量 */
 	private Map<Integer, StringMapWrapper> cumulativeCountExtMap = new HashMap<Integer, StringMapWrapper>();
 	
     private static EventTypeEnum[] initEventTypes() {
@@ -51,13 +51,13 @@ public class CountingModule extends BasePlayerModule {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
-			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
+			addCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
 		case NewDay: {
 			reset(1);
 			
-			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
+			addCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
 		case NewWeek: {
@@ -69,43 +69,43 @@ public class CountingModule extends BasePlayerModule {
 			break;
 		}
 		case WatchAds: {
-			addCumulativeCount(ConditionTypeEnum.WatchAdsCumulation, 1);
+			addCount(ConditionTypeEnum.WatchAdsCumulation, 1);
 			break;
 		}
 		case Charge: {
-			addCumulativeCount(ConditionTypeEnum.AccumulatedRecharge, event.getIntParameter(0));
-			addCumulativeCount(ConditionTypeEnum.RechargeCnt, 1);
+			addCount(ConditionTypeEnum.AccumulatedRecharge, event.getIntParameter(0));
+			addCount(ConditionTypeEnum.RechargeCnt, 1);
 			break;
 		}
 		case BattleEnd: {
-			addCumulativeCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
-			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
+			addCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
+			addCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
 			break;
 		}
 		case HeroBreak: {
 			int quality = event.getIntParameter(1);
-			addCumulativeCount(ConditionTypeEnum.BreakHeroCumulation, 1);
-			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, quality);
+			addCount(ConditionTypeEnum.BreakHeroCumulation, 1);
+			addCount(ConditionTypeEnum.EarnHeroCumulation, 1, quality);
 			break;
 		}
 		case Hero: {
 			int id = event.getIntParameter(0);
 			HeroConfig heroConfig = HeroManager.instance().get(id);
-			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, heroConfig.InitialQuality);
+			addCount(ConditionTypeEnum.EarnHeroCumulation, 1, heroConfig.InitialQuality);
 			break;
 		}
 		case CostItem: {
 			int id = event.getIntParameter(0);
 			int count = event.getIntParameter(1);
 			if (id == Asset.diamond.ID) {
-				addCumulativeCount(ConditionTypeEnum.ConsumesDiamonds, count);
+				addCount(ConditionTypeEnum.ConsumesDiamonds, count);
 			}
 			break;
 		}
 		case Patrol: {
 			boolean isFast = event.getBoolParameter(0);
 			if (isFast) {
-				addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
+				addCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
 			}
 			break;
 		}
@@ -113,7 +113,7 @@ public class CountingModule extends BasePlayerModule {
 			int count = event.getIntParameter(0);
 			int typeId = event.getIntParameter(1);
 			if (typeId == 2) {
-				addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
+				addCount(ConditionTypeEnum.SupremeGacha, count);
 			}
 			break;
 		}
@@ -123,6 +123,10 @@ public class CountingModule extends BasePlayerModule {
 		}
 	}
 
+	/** 
+	 * 按照天、周、月来重置计数
+	 * @param type
+	 */
 	private void reset(int type) {
 		IntMapWrapper intMapWrapper = cumulativeCountMap.get(type); 
 		if (intMapWrapper != null) {
@@ -144,48 +148,59 @@ public class CountingModule extends BasePlayerModule {
 		
 	}
 	
-	public void addCumulativeCount(ConditionTypeEnum type, int count) {
+	/** 
+	 * 增加某个条件类型对应的计数
+	 * @param type
+	 * @param count
+	 */
+	public void addCount(ConditionTypeEnum type, int count) {
 		cumulativeCountMap.forEach((k, v) -> {
 			v.add(type.ID, count);
 		});
 	}
 
-	public void addCumulativeCount(ConditionTypeEnum type, int count, int... ext) {
+	/** 
+	 * 增加某个条件类型对应的计数，带额外参数
+	 * @param type
+	 * @param count
+	 * @param ext
+	 */
+	public void addCount(ConditionTypeEnum type, int count, int... ext) {
 		if (ext == null || ext.length == 0) {
-			addCumulativeCount(type, count);
+			addCount(type, count);
 		} else {
 			cumulativeCountExtMap.forEach((k, v) -> {
 				v.add(type.ID, count, ext);
 			});
 		}
 	}
-	
 
 	/** 
-	 * 获取某类型的累计数
-	 * @param type
+	 * 获取某个条件的累计数
+	 * @param condition
 	 * @return
 	 */
-	public int getCumulativeCount(int condition) {
-		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
-		IntMapWrapper map = cumulativeCountMap.computeIfAbsent(conditionConfig.resetType, r -> new IntMapWrapper());
-		return map.getValue(conditionConfig.type);
-	}
-
-	/** 
-	 * 获取某类型的累计数 
-	 * @param type
-	 * @param ext 额外参数
-	 * @return
-	 */
-	public int getCumulativeCount(int condition, int... ext) {
-		
-		if (ext == null ||  ext.length == 0) {
-			return getCumulativeCount(condition);
-		}
+	public int getCount(int condition) {
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition); 
+		if (conditionConfig.extParam.length == 0) {
+			IntMapWrapper map = cumulativeCountMap.computeIfAbsent(conditionConfig.resetType, r -> new IntMapWrapper());
+			return map.getValue(conditionConfig.type);
+		}
 		StringMapWrapper map = cumulativeCountExtMap.computeIfAbsent(conditionConfig.resetType,r -> new StringMapWrapper()); 
-		return map.getValue(conditionConfig.type, ext);
+		return map.getValue(conditionConfig.type, conditionConfig.extParam);
+	}
+	
+	/** 
+	 * 获取某个累计的计数，不重置的计数，一般很少用到
+	 * @param conditionType
+	 * @return
+	 */
+	public int getCumulativeCount(ConditionTypeEnum conditionType) {
+		return getCumulativeCount(conditionType.ID);
+	}
+	public int getCumulativeCount(int conditionType) {
+		IntMapWrapper map = cumulativeCountMap.computeIfAbsent(0, r -> new IntMapWrapper());
+		return map.getValue(conditionType);
 	}
 	
 	@Override

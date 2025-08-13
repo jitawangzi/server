@@ -13,19 +13,15 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.data.mapper.ConditionCountMapper;
-import cn.game.games.net.data.mapper.QuestMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
-import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.QuestConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
-import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.UpdateType;
@@ -43,23 +39,22 @@ import cn.game.util.StringMapWrapper;
  * @author SYQ
  */
 public class QuestModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay,
-			EventTypeEnum.NewWeek, EventTypeEnum.LevelUp, EventTypeEnum.Charge, EventTypeEnum.ChapterWin, EventTypeEnum.BattleEnd, EventTypeEnum.CostItem,
-			EventTypeEnum.FuncOpen, EventTypeEnum.WatchAds, EventTypeEnum.HeroBreak, EventTypeEnum.Hero, EventTypeEnum.Patrol,
-			EventTypeEnum.Draw, EventTypeEnum.QianLi, EventTypeEnum.QiangYuan, EventTypeEnum.ParticipatePVPStart,
-			EventTypeEnum.FairyFriendsTravel, EventTypeEnum.FairyFriendsGift };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.NewWeek,
+			EventTypeEnum.FuncOpen, };
 
 	/** 当前激活的任务 ,key1 ： QuestTypeEnum, key2: QuestConfig id */
 	private Map<Integer, Map<Integer, Quest>> quests;
-//	/** 任务积分宝箱活跃奖励领取情况 */
-//	private Map<Integer, List<Integer>> activeRewardMap = new HashMap<Integer, List<Integer>>();
 
 	@JsonIgnore
 	// 支线任务保留最后一个任务id
 	private Map<Integer, QuestChallenge> challenges;
 
 	/** 一些累计的计数， 类型->数量*/
+	@JsonIgnore
+	@Deprecated
 	private IntMapWrapper cumulativeCountMap = new IntMapWrapper();
+	@JsonIgnore
+	@Deprecated
 	/** 一些累计的计数,类型->数量 ，类型带额外参数的 */
 	private StringMapWrapper cumulativeCountExtMap = new StringMapWrapper();
 
@@ -97,33 +92,6 @@ public class QuestModule extends BasePlayerModule {
 //		QuestHelper.updateBase(quest);
 	}
 
-//	public List<Integer> getActiveRewardList(QuestTypeEnum type) {
-//		
-//		List<Integer> list = activeRewardMap.get(type.ID);
-//		if (list == null) {
-//			list = new ArrayList<>();
-//			activeRewardMap.put(type.ID, list);
-//		}
-//		return list;
-//	}
-
-//	public int checkActiveReceive(QuestTypeEnum type, int index) {
-//		QuestPointRewardConfig questPointRewardConfig = QuestPointRewardManager.instance().get(type.ID);
-//		if (index >= questPointRewardConfig.Stage.length) {
-//			return ErrorMsgEnum.request_parameter_error.getId();
-//		}
-//		long point = player.getCurrencyModule().getCount(questPointRewardConfig.PointType);
-//		List<Integer> activeRewardList = getActiveRewardList(type);
-//		if (activeRewardList.contains(index)) {
-//			return ErrorMsgEnum.repeat_request.getId();
-//		}
-//		int needPoint = questPointRewardConfig.Stage[index];
-//		if (point < needPoint) {
-//			return ErrorMsgEnum.illegal_request.getId();
-//		}
-//		return 0;
-//	}
-
 	public void refreshQuest(QuestTypeEnum type) {
 		if (!player.isFuncOpen(InitialUI.Task)) {
 			return;
@@ -148,27 +116,6 @@ public class QuestModule extends BasePlayerModule {
 		}
 	}
 
-	/** 
-	 * 获取某类型的累计数
-	 * @param type
-	 * @return
-	 */
-	public int getCumulativeCount(ConditionTypeEnum type) {
-		return this.cumulativeCountMap.getValue(type.ID);
-	}
-
-	/** 
-	 * 获取某类型的累计数 
-	 * @param type
-	 * @param ext 额外参数
-	 * @return
-	 */
-	public int getCumulativeCount(ConditionTypeEnum type, int... ext) {
-		if (ext.length > 0) {
-			return this.cumulativeCountExtMap.getValue(type.ID, ext);
-		}
-		return getCumulativeCount(type);
-	}
 
 	public int getFinishedCount(QuestTypeEnum type) {
 //		Map<Integer, Quest> map = this.quests[type.ordinal()];
@@ -361,6 +308,7 @@ public class QuestModule extends BasePlayerModule {
 //		}
 		return false;
 	}
+
 	public Quest get(int id) {
 		QuestConfig questConfig = QuestManager.instance().get(id);
 		return quests.get(questConfig.Type).get(id);
@@ -407,8 +355,7 @@ public class QuestModule extends BasePlayerModule {
 		this.quests.get(group).put(id, quest);
 
 		if (notify) {
-			PlayerHelper.sendProtocol(playerId,
-					QuestGroupPush_20100008.newBuilder().setType(questConfig.Type).build());
+			PlayerHelper.sendProtocol(playerId, QuestGroupPush_20100008.newBuilder().setType(questConfig.Type).build());
 			QuestHelper.notifyQuestChange(quest, UpdateType.ADD);
 		}
 		setState(quest, initState, notify);
@@ -578,8 +525,7 @@ public class QuestModule extends BasePlayerModule {
 
 	public List<Integer> canReceiveIds(int group) {
 
-		return this.quests.get(group).values().stream().filter(QuestHelper::canReceive).map(q -> q.getId())
-				.collect(Collectors.toList());
+		return this.quests.get(group).values().stream().filter(QuestHelper::canReceive).map(q -> q.getId()).collect(Collectors.toList());
 	}
 
 	public Map<Integer, QuestChallenge> getChallenges() {
@@ -637,14 +583,14 @@ public class QuestModule extends BasePlayerModule {
 		switch (state) {
 		case QuestHelper.SHOW:
 //			if (player.getData().getLevel() >= questConfig.getLevel()) {
-				quest.setState(QuestHelper.CAN_ACCEPT);
-				setState(quest);
+			quest.setState(QuestHelper.CAN_ACCEPT);
+			setState(quest);
 //			}
 			break;
 		case QuestHelper.CAN_ACCEPT:
 //			if (questConfig.getAccessMode().get(0) == 1) {
-				quest.setState(QuestHelper.ACCEPTED);
-				setState(quest);
+			quest.setState(QuestHelper.ACCEPTED);
+			setState(quest);
 //			}
 			break;
 		case QuestHelper.ACCEPTED:
@@ -729,38 +675,6 @@ public class QuestModule extends BasePlayerModule {
 		challenges = new HashMap<>();
 	}
 
-	public void addCumulativeCount(ConditionTypeEnum type, int count) {
-		cumulativeCountMap.add(type.ID, count);
-		/*		int id = type.ID;
-				int arg1 = args.length > 0 ? args[0] : 0;
-				int arg2 = args.length > 1 ? args[1] : 0;
-				Integer oldCount = this.conditionCountMap.get(id, arg1, arg2);
-				int newCount = oldCount == null ? count : oldCount + count;
-				this.conditionCountMap.put(id, arg1, arg2, newCount);*/
-		// TODO 似乎这里如果带参数，应该把不带参数的数量也增加一下。
-//		if (oldCount == null) {
-//			conditionCount = new ConditionCount();
-//			conditionCount.setPlayerId(playerId);
-//			conditionCount.setConditionType(id);
-//			conditionCount.setCount(count);
-//			conditionCount.setArg1(arg1);
-//			conditionCount.setArg2(arg2);
-//			conditionCount.insert();
-//			this.conditionCountMap.put(id, arg1, arg2, count);
-//		} else {
-//			conditionCount.setCount(conditionCount.getCount() + count);
-//			conditionCount.update();
-//		}
-	}
-
-	public void addCumulativeCount(ConditionTypeEnum type, int count, int... ext) {
-		if (ext.length == 0) {
-			addCumulativeCount(type, count);
-		} else {
-			cumulativeCountExtMap.add(type.ID, count, ext);
-		}
-	}
-
 	public List<QuestGroupInfo> buildAllGroup() {
 		List<QuestGroupInfo> list = new ArrayList<>();
 
@@ -777,6 +691,7 @@ public class QuestModule extends BasePlayerModule {
 		return list;
 
 	}
+
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 
@@ -810,7 +725,7 @@ public class QuestModule extends BasePlayerModule {
 			}
 		}
 	}
-	
+
 	/** 
 	 * 第一次初始化某种类型的任务
 	 * @param type
@@ -864,6 +779,7 @@ public class QuestModule extends BasePlayerModule {
 	public int processOrder() {
 		return 100;
 	}
+
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
@@ -884,17 +800,9 @@ public class QuestModule extends BasePlayerModule {
 			pointRewardModule.clearActiveRewardList(PointRewardType.QUEST, QuestTypeEnum.Daily.ID);
 
 //			getActiveRewardList(QuestTypeEnum.Daily).clear();
-
-			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
 		case PLAYER_CREATE: {
-			addCumulativeCount(ConditionTypeEnum.CumulativeLogins, 1);
-			break;
-		}
-		case WatchAds: {
-
-			addCumulativeCount(ConditionTypeEnum.WatchAdsCumulation, 1);
 			break;
 		}
 		case FuncOpen: {
@@ -902,82 +810,6 @@ public class QuestModule extends BasePlayerModule {
 			if (func == InitialUI.Task) {
 				initQuestFirst();
 			}
-			break;
-		}
-		case Charge: {
-			addCumulativeCount(ConditionTypeEnum.AccumulatedRecharge, event.getIntParameter(0));
-			addCumulativeCount(ConditionTypeEnum.RechargeCnt, 1);
-			break;
-		}
-//		case QianLi: {
-//			addCumulativeCount(ConditionTypeEnum.UpgradeAltar, 1);
-//			break;
-//		}
-//		case QiangYuan: {
-//			addCumulativeCount(ConditionTypeEnum.UpgradeHuDao, 1);
-//			break;
-//		}
-//		case ParticipatePVPStart: {
-//			addCumulativeCount(ConditionTypeEnum.ParticipatePVP, 1);
-//			break;
-//		}
-		case ChapterWin: {
-			int id = event.getIntParameter(0);
-			// 这个不用了
-//			BattleConfig battleConfig = BattleManager.instance().get(id);
-//			if (battleConfig.BattleType == 2) {
-//				addCumulativeCount(ConditionTypeEnum.EliteFinish, 1);
-//			}
-			break;
-		}
-		case BattleEnd: {
-			addCumulativeCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
-			addCumulativeCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
-			break;
-		}
-//		case FairyFriendsTravel: {
-//			addCumulativeCount(ConditionTypeEnum.ParticipateFairyFriend, event.getIntParameter(0));
-//			break;
-//		}
-//		case FairyFriendsGift: {
-//			addCumulativeCount(ConditionTypeEnum.CumulativeGift, 1);
-//			break;
-//		}
-		case HeroBreak: {
-//			int star = event.getIntParameter(0);
-			int quality = event.getIntParameter(1);
-			addCumulativeCount(ConditionTypeEnum.BreakHeroCumulation, 1);
-			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, quality);
-			break;
-		}
-		case Hero: {
-			int id = event.getIntParameter(0);
-			HeroConfig heroConfig = HeroManager.instance().get(id);
-			addCumulativeCount(ConditionTypeEnum.EarnHeroCumulation, 1, heroConfig.InitialQuality);
-			break;
-		}
-		case CostItem: {
-			int id = event.getIntParameter(0);
-			int count = event.getIntParameter(1);
-			if (id == Asset.diamond.ID) {
-				addCumulativeCount(ConditionTypeEnum.ConsumesDiamonds, count);
-			}
-			break;
-		}
-		case Patrol: {
-			boolean isFast = event.getBoolParameter(0);
-			if (isFast) {
-				addCumulativeCount(ConditionTypeEnum.QuickHangUpCumulation, 1);
-			}
-			break;
-		}
-		case Draw: {
-			int count = event.getIntParameter(0);
-			int typeId = event.getIntParameter(1);
-			if (typeId == 2) {
-				addCumulativeCount(ConditionTypeEnum.SupremeGacha, count);
-			}
-
 			break;
 		}
 		}

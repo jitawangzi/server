@@ -386,12 +386,29 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
-	public static void delResources(Player player, int consumeId, OpType consumeType) {
+	public static void delResourcesWithConsume(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
 			return;
 		}
 		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
 		delResources(player, consumeConfig.cost, consumeType);
+	}
+	
+	/** 
+	 * 通过消耗表的id，来扣除玩家的物品
+	 * @param player
+	 * @param consumeId 消耗表的id  {@link ConsumeConfig#ID}
+	 * @param multiple 倍数
+	 * @param consumeType 消耗类型
+	 * @return
+	 */
+	public static void delResourcesWithConsume(Player player, int consumeId,int multiple, OpType consumeType) {
+		if (consumeId == 0) {
+			return;
+		}
+		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
+		int[][] arrayMultiple = GameUtil.arrayMultiple(consumeConfig.cost, multiple);
+		delResources(player, arrayMultiple, consumeType);
 	}
 
 	/**
@@ -1104,10 +1121,10 @@ public class PlayerHelper {
 		if (type.countType == 2) {
 			// 累计计数带有额外参数的：
 			if (type == ConditionTypeEnum.EarnHeroCumulation) {
-				return player.getQuestModule().getCumulativeCount(type, extParam);
+				return player.getCountingModule().getCount(condition);
 			}
 			// 累计计数不带额外参数直接获取的
-			return player.getQuestModule().getCumulativeCount(type);
+			return player.getCountingModule().getCount(condition);
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：

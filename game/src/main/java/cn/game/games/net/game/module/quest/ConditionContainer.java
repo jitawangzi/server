@@ -18,7 +18,7 @@ public class ConditionContainer {
 	/** 管理的各种条件，或者说是需求 */
 	private List<Condition> requires = new ArrayList<Condition>();
 	/** 条件之间，是or还是and的关系 */
-	transient private boolean condOr;
+	private boolean condOr;
 	/** 所有条件达成时的操作 */
 	transient private Consumer<Condition> achieveAction;
 //	private Consumer<Condition> changeWrapAction;

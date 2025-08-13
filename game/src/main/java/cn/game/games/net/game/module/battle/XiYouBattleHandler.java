@@ -53,7 +53,7 @@ public abstract class XiYouBattleHandler extends IBattleHandler {
 		if (!PlayerHelper.isEnough(player, battleConfig.cost)) {
 			return ErrorMsgEnum.resource_not_enough.getId();
 		}
-		PlayerHelper.delResources(player, battleConfig.cost, OpType.BattleStart);
+		PlayerHelper.delResourcesWithConsume(player, battleConfig.cost, OpType.BattleStart);
 		
 		return checkCustom(id, subId,args);
 	}
