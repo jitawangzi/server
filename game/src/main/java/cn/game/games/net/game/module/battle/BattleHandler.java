@@ -1672,7 +1672,7 @@ public class BattleHandler extends GameBaseHandler {
     private void mountainFinishNode(NetClient client, Object message) {
         BattleMountainFinishNodeRequest_13000541 req = (BattleMountainFinishNodeRequest_13000541) message;
         int nodeId = req.getNodeId();
-        int param = req.getParam();
+        int param = 1;//req.getParam();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleMountainFinishNodeResponse_13000542.Builder resp = BattleMountainFinishNodeResponse_13000542.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);

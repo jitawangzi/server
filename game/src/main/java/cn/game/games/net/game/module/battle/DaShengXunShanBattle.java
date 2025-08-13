@@ -7,6 +7,7 @@ import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.*;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.MountainNodeType;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -111,13 +112,12 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
 
     public void initMountainNodeData_Floor(List<MountainMapNodeData> line, int floor) {
         // 构造随机节点
-        Map<Integer, Integer> radomPool = new HashMap<>();
+        List<Integer> keys =new ArrayList<>();
         line.forEach(node -> {
             if (getLine(node.getNodeId()) >= 2 && getLine(node.getNodeId()) <= 10) {
-                radomPool.put(node.getNodeId(), 0);
+                keys.add(node.getNodeId());
             }
         });
-        List<Integer> keys = radomPool.keySet().stream().toList();
         Collections.shuffle(keys);
         //第一个起点
         int startId = getNodeUid(floor, 1, 1);
@@ -130,13 +130,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         if(mountainBlockConfigBoss ==  null) {
             return ;
         }
-        //mapData.get(endId).setMonsterId( Rnd.randomInt(mountainBlockConfigBoss.blockRandom));
-
+        radomMonster(mountainBlockConfigBoss,endId);
         // 随机事件
-        MountainBlockConfig mountainBlockConfig = MountainBlockManager.instance().get(MountainNodeType.Event.getType());
-        if(mountainBlockConfig==    null) {
-            return;
-        }
         int begin =0;
         List<Integer> eventPool=new ArrayList<>();
         MountainEventManager.instance().list().forEach(eventConfig -> {
@@ -152,6 +147,13 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             int nodeId = keys.get(i);
             mapData.get(nodeId).setNodeType(MountainNodeType.Easy.getType());
         }
+        MountainBlockConfig mountainBlockConfigEasy = MountainBlockManager.instance().get(MountainNodeType.Easy.getType());
+        if(mountainBlockConfigEasy ==  null) {
+            return ;
+        }
+        keys.forEach(nodeId -> {
+            radomMonster(mountainBlockConfigEasy,nodeId);
+        });
     }
 
     void genNodeType(List<Integer> keys,MountainNodeType type, List<Integer> eventPool)
@@ -165,7 +167,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         int num =mountainBlockConfig.createNum[index];
 
         for(int i=0;i<num;i++) {
-            int nodeId = keys.get(i);
+            int nodeId = keys.get(0);
+            keys.removeFirst();
             mapData.get(nodeId).setNodeType(type.getType());
             if(type==MountainNodeType.Event
             || type==MountainNodeType.Hp)
@@ -190,8 +193,8 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                     });
                 }
             }
-
         }
+
     }
     public void radomBuffId(MountainMapNodeData nodeData, List<Integer> buffIdLis) {
         List<Integer> buffIdList=new ArrayList<>();
@@ -416,6 +419,12 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
 
     @Override
     public int checkCustom(int id, int subId, long... args) {
+        if (!checkCanFinihsh(subId)) {
+            return ErrorMsgEnum. pre_condition_check_error.ID;
+        }
+        if(mountainMapData.getHp()<=0) {
+            return ErrorMsgEnum. pre_condition_check_error.ID;
+        }
         return 0;
     }
 
@@ -429,12 +438,22 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         if (request.getWin()) {
              int nodeId= request.getDaShengNodeId();
+             mountainMapData.setHp(request.getHpPercent());
              finishNode(nodeId);
             return ResultObject.success();
         } else { // 失败了，最终结算
-
+            mountainMapData.setHp(0);
+            gameOver();
             return ResultObject.success();
         }
+    }
+    void  gameOver()
+    {
+           // 转化积分
+           long delNum=  player.getGoodsModule(SHOP_COIN).getCount(SHOP_COIN);
+           PlayerHelper.delResources(player, SHOP_COIN, delNum, OpType.MountainRefresh);
+           addScore((int)delNum);
+          //
     }
     void addScore(int score) {
         mountainMapData.setScore(mountainMapData.getScore() + score);
@@ -475,6 +494,19 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.get(lastrank) , player.getPlayerId(),  0);
             mountainMapData.setRankId(newrank);
        }
+    }
+    void radomMonster( MountainBlockConfig mountainBlockConfigBoss,int nodeId)
+    {
+        mapData.get(nodeId).getMonsterIds().clear();
+        for (int[] ints : mountainBlockConfigBoss.blockRandom) {
+            int type = ints[0];
+            int num = ints[1];
+            List<MountainMonsterConfig> monsterId = MountainMonsterManager.instance().getTypeList(type);
+            List<MountainMonsterConfig> subList = Rnd.randomSubList(monsterId, num);
+            subList.forEach(monsterConfig -> {
+                mapData.get(nodeId).getMonsterIds().add(monsterConfig.monsterId);
+            });
+        }
     }
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
