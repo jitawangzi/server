@@ -14,8 +14,9 @@ public class ShopItemBuyRequest_15000003Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemBuyRequest_15000003.newBuilder() ; 
 		
-		builder.setShopId(18);
-		builder.setItemId(1801);
+		builder.setShopId(21);
+		builder.setItemId(2101);
+		builder.setCount(55) ; 
 		
 		return builder.build() ; 
 	}

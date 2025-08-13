@@ -40,6 +40,9 @@ public class CountingModule extends BasePlayerModule {
     	for (ConditionTypeEnum type : ConditionTypeEnum.values()) {
 			if (type.countType == 2) {
 				AbstractCondition cachedConditionClassInstance = ClassManager.getInstance().getCachedConditionClassInstance(type.ID);
+				if (cachedConditionClassInstance == null) {
+					throw new IllegalArgumentException("ConditionTypeEnum " + type + " does not have a corresponding class instance.");
+				}
 				EventTypeEnum[] eventTypes = cachedConditionClassInstance.getEventTypes(); 
 				Collections.addAll(eventTypeList, eventTypes) ; 
 			}
