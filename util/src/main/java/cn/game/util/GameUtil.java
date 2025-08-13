@@ -180,6 +180,26 @@ public class GameUtil {
 		}
 		return ret;
 	}
+	/** 
+	 * 给数量做倍数
+	 * @param array 0 类型  1：id 2：数量
+	 * @param multiple 倍数
+	 * @return
+	 */
+	public static int[] arrayMultiple3(int[] array, int multiple) {
+		if (multiple <= 1) {
+			return array;
+		}
+		int[] ret = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			if (i % 3 == 0 || i % 3 == 1) {
+				ret[i] = array[i];
+			} else {
+				ret[i] = array[i] * multiple;
+			}
+		}
+		return ret;
+	}
 
 	/** 
 	 * 给数量做倍数

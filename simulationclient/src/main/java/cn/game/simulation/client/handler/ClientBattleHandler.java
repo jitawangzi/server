@@ -571,10 +571,6 @@ public class ClientBattleHandler extends BaseHandler {
         BattleMountainMapResetResponse_13000546 resp = (BattleMountainMapResetResponse_13000546) message;
         List<MountainMapNodeData> mapdataList = resp.getMapdataList();
         int curNodeId = resp.getCurNodeId();
-        int score = resp.getScore();
-        int hp = resp.getHp();
-        int refreshNum = resp.getRefreshNum();
-        List<Integer> buffBagList = resp.getBuffBagList();
         Client client = (Client) netClient;
     }
 
@@ -615,7 +611,6 @@ public class ClientBattleHandler extends BaseHandler {
 
     private void mountainBuffBag(NetClient netClient, Object message) {
         BattleMountainBuffBagResponse_1300053c resp = (BattleMountainBuffBagResponse_1300053c) message;
-        List<Integer> buffBagList = resp.getBuffBagList();
         Client client = (Client) netClient;
     }
 }

@@ -383,7 +383,7 @@ public class ShopHandler extends GameBaseHandler {
 		int shopId = req.getShopId();
 		int itemId = req.getItemId();
 		int count = req.getCount(); 
-		if (count == 0) {
+		if (count <= 0) {
 			count = 1; 
 		}
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
@@ -430,9 +430,8 @@ public class ShopHandler extends GameBaseHandler {
 			}
 			return true;
 		};
-
 		
-		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId,GameUtil.arrayMultiple(shopItemConfig.PurchaseParameter, count) ,shopId);
+		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId,GameUtil.arrayMultiple3(shopItemConfig.PurchaseParameter, count) ,shopId);
 		pay.onComplete(t -> {
 			if (t.result()) {
 				addItemAction.get();
