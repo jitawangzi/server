@@ -1079,15 +1079,18 @@ public class BattleHandler extends GameBaseHandler {
                 battleModule.setQuickPatrolCount(quickPatrolCount + 1);
             }
         }
-        // 巡逻时间
-        int minute = 0;
-        int hours = 0;
+        PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
+
         if (isFast) {
-            minute = GlobalConst.QuickPatrolDuration / 60;
-            minute *= multiple; 
-            hours = minute / 60;
+        	for (int i = 0; i < multiple; i++) {
+        		List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.SweepRandomID, OpType.Patrol); 
+        		resp.addAllRewards(reward); 
+			}
         } else {
             // 最大巡逻时间
+            // 巡逻时间
+            int minute = 0;
+            int hours = 0;
             int maxSeconds = GlobalConst.MaximumPatrolDuration;
             int welfareValue = player.getWelfareValue(WelfareTypeEnum.TravelTime);
             if (welfareValue > 0) {
@@ -1099,18 +1102,17 @@ public class BattleHandler extends GameBaseHandler {
             }
             minute = seconds / 60;
             hours = minute / 60;
+            int exp = BattleHelper.calcPatrolExpAdd(player, minute, true);
+            int gold = BattleHelper.calcPatrolGoldAdd(player, minute, true);
+            PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
+            PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);
+            for (int i = 0; i < hours; i++) {
+            	List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID, OpType.Patrol);
+            	resp.addAllRewards(reward);
+            }
+            resp.setExp(exp);
+            resp.setGold(gold);
         }
-        PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
-        int exp = BattleHelper.calcPatrolExpAdd(player, minute, true);
-        int gold = BattleHelper.calcPatrolGoldAdd(player, minute, true);
-        PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
-        PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);
-        for (int i = 0; i < hours; i++) {
-            List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID, OpType.Patrol);
-            resp.addAllRewards(reward);
-        }
-        resp.setExp(exp);
-        resp.setGold(gold);
         if (!isFast) {
             battleModule.setPatrolRewardTime();
         }
