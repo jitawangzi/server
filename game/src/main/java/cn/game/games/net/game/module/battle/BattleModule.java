@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class BattleModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart };
+			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart, EventTypeEnum.BattleEnd  };
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
@@ -126,6 +126,9 @@ public class BattleModule extends BasePlayerModule  {
 
 	/** 领取过章奖励的  battleId */
 	private List<Integer> battleChapterRewards = new ArrayList<>();
+	
+	/** 玩法类型--> 连续失败次数记录 */
+	private IntMapWrapper consecutiveFailures = new IntMapWrapper();
 
 	/** 
 	 * 
@@ -554,6 +557,16 @@ public class BattleModule extends BasePlayerModule  {
 			this.adRogueCountPerBattle = 0;
 			break;
 		}
+		case BattleEnd: {
+			BattleConfig battleConfig = BattleManager.instance().get(event.get(0)); 
+			boolean isWin = event.getBoolParameter(2); 
+			if (!isWin) {
+				consecutiveFailures.add(battleConfig.BattleType) ; 
+			}else {
+				consecutiveFailures.remove(battleConfig.BattleType) ; 
+			}
+			break;
+		}
 		case GetItem: {
 			int itemId = event.getParameter(0);
 			int itemCount = event.getParameter(1);
@@ -749,5 +762,15 @@ public class BattleModule extends BasePlayerModule  {
     public Map<Long, EquiptowerHelp> getHelpData() {
         return helpData;
     }
-
+    /** 
+     * 获取某类型战斗连续失败次数
+     * @param type
+     * @return
+     */
+    public int getConsecutiveFailures(int type) {
+    	if (type == 0) {
+			return consecutiveFailures.sum(); 
+		}
+    	return consecutiveFailures.getValue(type);
+    }
 }
