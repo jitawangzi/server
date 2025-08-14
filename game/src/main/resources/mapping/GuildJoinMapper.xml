@@ -86,7 +86,7 @@
     -->
     SELECT * FROM t_guild_join
     <where>
-      player_id > #{lastId}
+      player_id &gt; #{lastId}
     </where>
      ORDER BY player_id ASC
     LIMIT #{limit}
@@ -156,7 +156,7 @@
     -->
     SELECT player_id FROM t_guild_join
     <where>
-      player_id > #{lastId}
+      player_id &gt; #{lastId}
     </where>
      ORDER BY player_id ASC
     LIMIT ${limit - 1}, 1

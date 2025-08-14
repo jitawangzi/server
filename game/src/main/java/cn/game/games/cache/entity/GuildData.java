@@ -6,17 +6,17 @@ import java.io.Serializable;
 public class GuildData implements Serializable, DbEntity {
 
 	/**
-	 * 公会id
+	 * 宗门id
 	 * @mbg.generated
 	 */
 	private long id;
 	/**
-	 * 公会名称
+	 * 宗门名称
 	 * @mbg.generated
 	 */
 	private String name;
 	/**
-	 * 公会创建时间
+	 * 宗门创建时间
 	 * @mbg.generated
 	 */
 	private String createTime;
@@ -26,7 +26,7 @@ public class GuildData implements Serializable, DbEntity {
 	 */
 	private byte lv;
 	/**
-	 * 公会图标
+	 * 宗门图标
 	 * @mbg.generated
 	 */
 	private int icon;
@@ -46,7 +46,7 @@ public class GuildData implements Serializable, DbEntity {
 	 */
 	private int exp;
 	/**
-	 * 该公会属于哪个逻辑服务器id
+	 * 该宗门属于哪个逻辑服务器id
 	 * @mbg.generated
 	 */
 	private String serverId;

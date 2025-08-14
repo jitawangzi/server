@@ -9,7 +9,7 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	private int id;
+	private long id;
 	/**
 	 * 创建时间
 	 * @mbg.generated
@@ -93,14 +93,14 @@ public class GmMail implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
