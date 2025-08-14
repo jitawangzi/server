@@ -120,6 +120,9 @@ public class CountingModule extends BasePlayerModule {
 			}
 			break;
 		}
+		case ChapterWin: {
+			break;
+		}
 		default:
 			throw new IllegalArgumentException("not implemented event type: " + event.getType());
 		}
