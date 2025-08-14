@@ -1120,17 +1120,15 @@ public class PlayerHelper {
 
 		if (type.countType == 2) {
 			switch (type) {
-			case EarnHeroCumulation :
-			case FunAllFailTimes:
-				// 从通用计数中获取
-				return player.getCountingModule().getCount(condition);
-			// 其他特殊的保存位置
+			// 特殊的保存位置
 			case FunContinueFailTimes:{
 				return player.getBattleModule().getConsecutiveFailures(extParam.length==0?0 : extParam[0]); 
 			}
 			default:
-				throw new IllegalArgumentException(" not suport condition with countType 2 :  " + type);
+				// 默认从通用计数中获取
+				return player.getCountingModule().getCount(condition);
 			}
+		
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：
