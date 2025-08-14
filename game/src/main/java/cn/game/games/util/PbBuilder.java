@@ -20,6 +20,7 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.UnionManager;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.mail.MailRankInfo;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestChallenge;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -32,6 +33,7 @@ import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
 import cn.game.protocol.protobuf.BaseMsg.GoodsInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GmMsg.ForbidAccountInfo;
+import cn.game.protocol.protobuf.MailMsg;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.QuestMsg.QuestChallengeGroupInfo;
@@ -41,6 +43,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.UnionMsg;
 import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
 
 public class PbBuilder {
@@ -143,7 +146,19 @@ public class PbBuilder {
 
 		List<GoodsInfo> collect = mail.getAttachmentList().stream().map(PbBuilder::buildGoodsInfo).collect(toList());
 		builder.addAllAttachments(collect);
+		if (mail.getType() == 3) {
+			List<MailRankInfo> mailRankInfos = JsonUtil.parseObjectWithType(mail.getContent());
+			mailRankInfos.forEach(mailRankInfo ->
+			{
+				builder.addRanks(MailMsg.MailRankInfo.newBuilder()
+						.setFigure(mailRankInfo.getFigure())
+						.setName(mailRankInfo.getName())
+						.setRankId(mailRankInfo.getRankId())
+						.setPlayerId(String.valueOf(mailRankInfo.getPlayerId()))
+						.build());
+			});
 
+		}
 		return builder.build();
 	}
 

@@ -3,10 +3,23 @@ package cn.game.games.net.game.helper;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.IdUtil;
+import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.module.mail.MailRankInfo;
+import cn.game.games.net.game.module.rank.RankEntry;
+import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.GameUtil;
+import cn.game.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +32,6 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.gm.GmHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.MailConfig;
@@ -294,6 +306,66 @@ public class MailHelper {
 
 	public static void clearGlobalMail() {
 		globalMailList.clear();
+	}
+
+    public static void sendDashengXunShanMail()
+	{
+
+		String serverIds="";
+		long start=DateUtil.currentTimeMillis();
+		long end = DateUtil.addWeekBeginTimer(1);
+		byte mailType=3;
+		String serverId="server4";
+		List<RankEntry> rankEntries=RankService.getInstance().getPage(serverId, RankType.DaShengLeiTaiSeason, 1, 5);
+		List<Long> playerIds = new ArrayList<>();
+		List<MailRankInfo> playerRank = new ArrayList<>();
+		rankEntries.forEach(rankEntry -> {
+			playerIds.add(rankEntry.getPlayerId());
+		});
+		List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance()
+				.multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(playerIds));
+		for (int i = 0; i < simplePlayers.size(); i++) {
+			RankEntry rankEntry = rankEntries.get(i);
+			SimplePlayer simplePlayer=simplePlayers.get(i);
+			playerRank.add(new MailRankInfo(simplePlayer.getName(), rankEntry.getRank(), simplePlayer.figure, String.valueOf(rankEntry.getPlayerId())));
+		}
+		String content =JsonUtil.toJsonStringWithType(playerRank);
+		List<MailRankInfo> playerRankaaa  = JsonUtil.parseObjectWithType( content);
+
+		addGlobalGmMail( content, serverIds, start, end , mailType);
+
+	}
+	/**
+	 * 添加全服邮件  用于功能添加全服邮件
+	 * 目的是消息通知  全服通知
+	 * 特点为 玩家不可见 无各类信息 无等级限制  无需审批   content 根据功能自定义 解析
+	 */
+	public static void addGlobalGmMail( String content,String serverIds,
+	                          long sendStartTime, long sendEndTime,byte mailType ) {
+		if(mailType<=1)
+		{
+			throw  new RuntimeException("邮件类型错误");
+		}
+		GmMail gmMail = new GmMail();
+		gmMail.setId(IdUtil.getId());
+		gmMail.setTitle("");
+		gmMail.setContext(content);
+		gmMail.setCreateTime(new Date());
+		gmMail.setSendName("");
+		// 全服邮件
+		gmMail.setServerids(serverIds);
+		gmMail.setSendStartTimer(DateUtil.getTimeByPattern(new Date(sendStartTime ), DateUtil.pattern_en));
+		gmMail.setSendEndTimer(DateUtil.getTimeByPattern(new Date(sendEndTime ), DateUtil.pattern_en));
+		gmMail.setMinLevel(0);
+		gmMail.setMaxLevel(999);
+		gmMail.setOptFlag((byte) 1);
+		gmMail.setTimeCheckType((byte) 0);
+		gmMail.setMailopttype(mailType);
+		gmMail.insert().onSuccess(r -> {
+			addGlobalMail(gmMail);
+			// 通知其他节点 添加新的全服邮件
+			VxHolder.broadcastRemoteServer(ServerType.Game, ServerMsg.NotifyAddGlobalGmMailRequest_7d000060.newBuilder().setAddGmMailId(gmMail.getId()).build());
+		});
 	}
 
 }

@@ -9,9 +9,13 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.game.module.mail.MailRankInfo;
+import cn.game.games.net.game.module.mail.MailType;
 import cn.game.protocol.generated.config.DaShengExtraPointsConfig;
 import cn.game.protocol.generated.config.DaShengNPCConfig;
 import cn.game.protocol.generated.manager.*;
+import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.util.*;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
@@ -32,11 +36,6 @@ import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.RankType;
-import cn.game.util.BinarySearchUtil;
-import cn.game.util.DateUtil;
-import cn.game.util.LockUtil;
-import cn.game.util.LuaScriptUtil;
-import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
 /**
@@ -632,12 +631,25 @@ public class RankService {
 		reward(serverIds, rankId);
 		if (rankConfig.ResetRank) {
 			log.info("removeRank, rankId:{}", rankId);
-			removeRank(rankType);
 			if (rankType == RankType.DaShengLeiTaiSeason) {
+				long start=DateUtil.currentTimeMillis();
+				long end = DateUtil.addWeekBeginTimer(1);
 				for (String serverId : serverIds) {
-					// 准备NPC数据
-					setNpcToRank(serverId,rankType);
+					List<MailRankInfo> playerRank = new ArrayList<>();
+					CompletionStage<List<BaseMsg.PlayerRankInfo>> rankPagePlayerInfos = RankHelper.getRankPagePlayerInfos(serverId, RankType.DaShengLeiTaiSeason, 1, 5);
+					rankPagePlayerInfos.thenAccept(r -> {
+						r.forEach(p -> {
+							playerRank.add(new MailRankInfo(p.getPlayer().getName(), p.getRank(), p.getPlayer().getFigure(), p.getPlayer().getId()));
+						});
+						String content = JsonUtil.toJsonStringWithType(playerRank);
+						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
+						removeRank(rankType);
+						// 准备NPC数据
+						setNpcToRank(serverId, rankType);
+					});
 				}
+			}else {
+				removeRank(rankType);
 			}
 		}else
 		{

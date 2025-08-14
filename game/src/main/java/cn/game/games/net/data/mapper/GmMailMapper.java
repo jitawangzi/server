@@ -69,7 +69,9 @@ public interface GmMailMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") int id, @Param("params") java.util.Map<String, Object> params);
+
 	List<GmMail> selectGlobalMailList();
+
 	List<GmMail> selectGmMailList(
 			@Param("startTimer")Date startTimer,
 			@Param("endTimer")Date endTimer,

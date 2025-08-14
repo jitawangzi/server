@@ -83,7 +83,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
         mountainMapData.setScore(0);
         mountainMapData.setScoreReward(new HashMap<>());
         mountainMapData.setHp(100);
-        mountainMapData.setScoreMax(100);
+        mountainMapData.setScoreMax(0);
         mountainMapData.setCurNodeId(0);
         mountainMapData.setBuffBag(new HashMap<>());
         // 获取下周一凌晨的时间戳（毫秒）
