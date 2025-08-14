@@ -8,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.UseMatiarialToday)
 public class UseMatiarialToday extends AbstractCumulativeCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.HeroBreak };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.CostItem };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -21,6 +21,6 @@ public class UseMatiarialToday extends AbstractCumulativeCondition {
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
-		return true;
+		return event.get(0) == getRequireId();
 	}
 }

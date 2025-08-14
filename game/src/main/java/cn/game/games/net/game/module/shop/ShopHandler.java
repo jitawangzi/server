@@ -5,9 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
@@ -78,369 +76,351 @@ import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.IntMapWrapper;
 import io.vertx.core.Future;
+import cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyRequest_15000061;
+import cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyResponse_15000062;
 
 @Component
 public class ShopHandler extends GameBaseHandler {
 
-	@Override
-	protected int getModule() {
-		return 0x15;
-	}
+    @Override
+    protected int getModule() {
+        return 0x15;
+    }
 
-	@Override
-	protected void inititialize() {
+    @Override
+    protected void inititialize() {
+        putInvoker(PbProtocol.ShopItemListRequest_15000001, this::shopItemList);
+        putInvoker(PbProtocol.ShopItemBuyRequest_15000003, this::buyShopItem);
+        putInvoker(PbProtocol.MonthCardBuyRequest_15000010, this::buyMonthCard);
+        putInvoker(PbProtocol.MonthCardBuyRewardRequest_15000012, this::monthCardBuyReward);
+        putInvoker(PbProtocol.MonthCardDayRewardRequest_15000014, this::monthCardDayReward);
+        putInvoker(PbProtocol.ShopChapterPacksBuyRequest_15000020, this::buyChapterPacks);
+        putInvoker(PbProtocol.ShopRechargeRequest_15000022, this::recharge);
+        putInvoker(PbProtocol.MonthCardDoubleBonusRequest_15000016, this::doubleBonus);
+        putInvoker(PbProtocol.ShopFundPassBuyRequest_15000030, this::fundPassBuy);
+        putInvoker(PbProtocol.ShopFundPassRewardRequest_15000032, this::fundPassReward);
+        putInvoker(PbProtocol.ShopHeishiRefreshRequest_15000005, this::heishiRefresh);
+        putInvoker(PbProtocol.ShopBoxOpenRequest_15000040, this::openBox);
+        //		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
+        putInvoker(PbProtocol.GetXianShiLiBaoInfoRequest_15000050, this::XianShiLiBaoInfo);
+        putInvoker(PbProtocol.BuyXianShiLiBaoRequest_15000052, this::BuyXianShiLiBao);
+        putInvoker(PbProtocol.LimitedTimeGiftBuyRequest_15000061, this::limitedTimeGiftBuy);
+    }
 
-		putInvoker(PbProtocol.ShopItemListRequest_15000001, this::shopItemList);
-		putInvoker(PbProtocol.ShopItemBuyRequest_15000003, this::buyShopItem);
-		putInvoker(PbProtocol.MonthCardBuyRequest_15000010, this::buyMonthCard);
-		putInvoker(PbProtocol.MonthCardBuyRewardRequest_15000012, this::monthCardBuyReward);
-		putInvoker(PbProtocol.MonthCardDayRewardRequest_15000014, this::monthCardDayReward);
-		putInvoker(PbProtocol.ShopChapterPacksBuyRequest_15000020, this::buyChapterPacks);
-		putInvoker(PbProtocol.ShopRechargeRequest_15000022, this::recharge);
-		putInvoker(PbProtocol.MonthCardDoubleBonusRequest_15000016, this::doubleBonus);
-		putInvoker(PbProtocol.ShopFundPassBuyRequest_15000030, this::fundPassBuy);
-		putInvoker(PbProtocol.ShopFundPassRewardRequest_15000032, this::fundPassReward);
-		putInvoker(PbProtocol.ShopHeishiRefreshRequest_15000005, this::heishiRefresh);
-		putInvoker(PbProtocol.ShopBoxOpenRequest_15000040, this::openBox);
-//		putInvoker(PbProtocol.AdvertiseWatchFinishRequest_15000030, this::advertise);
+    private void BuyXianShiLiBao(NetClient client, Object message) {
+        ShopMsg.BuyXianShiLiBaoRequest_15000052 req = (ShopMsg.BuyXianShiLiBaoRequest_15000052) message;
+        ShopMsg.BuyXianShiLiBaoResponse_15000053.Builder resp = ShopMsg.BuyXianShiLiBaoResponse_15000053.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+        ActivityXianShiLiBaoConfig config = ActivityXianShiLiBaoManager.instance().getNullable(req.getId());
+        resp.setId(resp.getId());
+        if (config == null) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
+            return;
+        }
+        if (!xianShiLiBaoModule.getGroupMap().containsKey(config.Group)) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_not_found.getId());
+            return;
+        }
+        //前置礼包未购买
+        if (config.Type == 2 && config.PacksID != 0 && !xianShiLiBaoModule.getBuyIds().contains(config.PacksID)) {
+            //"总类型 1：限时礼包 2：链路礼包"
+            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+            return;
+        }
+        long failTimer = xianShiLiBaoModule.getGroupMap().get(config.Group);
+        if (System.currentTimeMillis() >= failTimer) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_time_is_fail.getId());
+            return;
+        }
+        int buyNum = (int) xianShiLiBaoModule.getBuyIds().stream().filter(id -> id == req.getId()).count();
+        if (buyNum >= config.PurchasesNum) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_num_is_max.getId());
+            return;
+        }
+        player.pay(PayType.XianShiLiBao, req.getId(), config.Price).onSuccess(handleSuccess -> {
+            if (handleSuccess) {
+                resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
+                resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
+            }
+            client.sendProtocol(resp);
+        }).onFailure(e -> {
+            e.printStackTrace();
+            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+        });
+    }
 
-		putInvoker(PbProtocol.GetXianShiLiBaoInfoRequest_15000050, this::XianShiLiBaoInfo);
-		putInvoker(PbProtocol.BuyXianShiLiBaoRequest_15000052, this::BuyXianShiLiBao);
-		
-	}
+    private void XianShiLiBaoInfo(NetClient client, Object message) {
+        ShopMsg.GetXianShiLiBaoInfoRequest_15000050 req = (ShopMsg.GetXianShiLiBaoInfoRequest_15000050) message;
+        ShopMsg.GetXianShiLiBaoInfoResponse_15000051.Builder resp = ShopMsg.GetXianShiLiBaoInfoResponse_15000051.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+        long now = System.currentTimeMillis();
+        xianShiLiBaoModule.getGroupMap().forEach((group, failTimer) -> {
+            if (now >= failTimer) {
+                return;
+            }
+            List<ActivityXianShiLiBaoConfig> groupList = xianShiLiBaoModule.getGroupConfigList(group);
+            List<Integer> groupIds = new ArrayList<>();
+            groupList.forEach(config -> {
+                groupIds.add(config.ID);
+            });
+            if (xianShiLiBaoModule.getBuyIds().containsAll(groupIds)) {
+                return;
+            }
+            resp.addInfos(xianShiLiBaoModule.buildXianShiLiBao(group));
+        });
+        client.sendProtocol(resp.build());
+    }
 
-	private void BuyXianShiLiBao(NetClient client, Object message) {
-		ShopMsg.BuyXianShiLiBaoRequest_15000052 req = (ShopMsg.BuyXianShiLiBaoRequest_15000052) message;
-		ShopMsg.BuyXianShiLiBaoResponse_15000053.Builder resp = ShopMsg.BuyXianShiLiBaoResponse_15000053.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
-		ActivityXianShiLiBaoConfig config = ActivityXianShiLiBaoManager.instance().getNullable(req.getId());
-		resp.setId(resp.getId());
-		if (config == null){
-			client.sendProtocol(resp.build(), ErrorMsgEnum.config_data_not_found.getId());
-			return;
-		}
-		if (!xianShiLiBaoModule.getGroupMap().containsKey(config.Group)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_not_found.getId());
-			return;
-		}
-		//前置礼包未购买
-		if (config.Type == 2 && config.PacksID != 0 && !xianShiLiBaoModule.getBuyIds().contains(config.PacksID)){ //"总类型 1：限时礼包 2：链路礼包"
-			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
-			return;
-		}
-		long failTimer = xianShiLiBaoModule.getGroupMap().get(config.Group);
-		if (System.currentTimeMillis() >= failTimer){
-			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_time_is_fail.getId());
-			return;
-		}
-		int buyNum = (int) xianShiLiBaoModule.getBuyIds().stream().filter(id -> id == req.getId()).count();
-		if (buyNum >= config.PurchasesNum) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_num_is_max.getId());
-			return;
-		}
-		player.pay(PayType.XianShiLiBao, req.getId(),config.Price).
-		onSuccess(handleSuccess -> {
-			if (handleSuccess){
-				resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
-				resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
-			}
-			client.sendProtocol(resp);
-		}).onFailure(e -> {
-					e.printStackTrace();
-					client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
-				});
-	}
+    private void openBox(NetClient client, Object message) {
+        ShopBoxOpenRequest_15000040 req = (ShopBoxOpenRequest_15000040) message;
+        ShopBoxOpenResponse_15000041.Builder resp = ShopBoxOpenResponse_15000041.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ShopModule shopModule = player.getShopModule();
+        boolean watchAds = req.getWatchAds();
+        if (watchAds) {
+            if (shopModule.getFreeOpenBoxCount() >= GlobalConst.BoxAdvertNum) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+                return;
+            }
+            if (DateUtil.currentTimeSeconds() - shopModule.getLastFreeOpenBoxTime() < GlobalConst.BoxAdvertTime * 60 * 60) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.cd_time_error.getId());
+                return;
+            }
+            shopModule.setLastFreeOpenBoxTime(DateUtil.currentTimeSeconds());
+            shopModule.setFreeOpenBoxCount(shopModule.getFreeOpenBoxCount() + 1);
+            player.handleEvent(EventTypeEnum.WatchAds);
+        } else {
+            PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
+        }
+        int[][] boxRandomId = GlobalConst.BoxRandomId;
+        int idIndex = 0;
+        BattleModule battleModule = player.getBattleModule();
+        int mainBattleHighest = battleModule.getMainBattleHighest();
+        int chapter = 0;
+        List<HCBattleConfig> battleTypeList = HCBattleManager.instance().getBattleTypeList(11);
+        for (HCBattleConfig battleConfig : battleTypeList) {
+            if (battleConfig.preBattle == mainBattleHighest) {
+                chapter = battleConfig.Chapter;
+                break;
+            }
+        }
+        for (int i = 0; i < boxRandomId.length; i++) {
+            if (chapter > boxRandomId[i][0]) {
+                idIndex = i + 1;
+            }
+        }
+        if (idIndex >= boxRandomId.length - 1) {
+            idIndex = boxRandomId.length - 1;
+        }
+        List<RewardInfo> reward = PlayerHelper.addReward(player, boxRandomId[idIndex][1], OpType.BoxOpen);
+        resp.addAllRewards(reward);
+        client.sendProtocol(resp.build());
+    }
 
-	private void XianShiLiBaoInfo(NetClient client, Object message) {
-		ShopMsg.GetXianShiLiBaoInfoRequest_15000050 req = (ShopMsg.GetXianShiLiBaoInfoRequest_15000050) message;
-		ShopMsg.GetXianShiLiBaoInfoResponse_15000051.Builder resp = ShopMsg.GetXianShiLiBaoInfoResponse_15000051.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+    private void heishiRefresh(NetClient client, Object message) {
+        ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
+        ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
+        int shopId = req.getShopId();
+        ShopConfig shopConfig = ShopManager.instance().get(shopId);
+        if (shopConfig.Type != 2) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
+            return;
+        }
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.Shop)) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        ShopModule shopModule = player.getShopModule();
+        IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
+        int heishiRefreshTimes = heishiRefreshTimesMap.getValue(shopId);
+        int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
+        int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
+        freeFreshMaxTimes += welfareValue;
+        int heishiPayTimes = heishiRefreshTimes - freeFreshMaxTimes;
+        if (heishiRefreshTimes < freeFreshMaxTimes) {
+            //			player.handleEvent(EventTypeEnum.WatchAds);
+        } else {
+            int maxPayTimes = 0;
+            maxPayTimes += player.getWelfareValue(WelfareTypeEnum.VIPPaymentFrequency);
+            if (heishiPayTimes >= maxPayTimes) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
+                return;
+            }
+            int payCost = GlobalConst.HeishiPayfrseh[heishiPayTimes >= GlobalConst.HeishiPayfrseh.length - 1 ? GlobalConst.HeishiPayfrseh.length - 1 : heishiPayTimes];
+            PlayerHelper.delResources(player, Asset.diamond.ID, payCost, OpType.HeishiFresh);
+        }
+        heishiRefreshTimesMap.add(shopId);
+        //		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
+        shopModule.refreshHeishiItems(shopId);
+        List<ShopItem> shopItems = shopModule.getShopItems(shopId);
+        for (ShopItem shopItem : shopItems) {
+            resp.addItems(shopItem.toProto());
+        }
+        client.sendProtocol(resp.build());
+    }
 
-		XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
-		long now = System.currentTimeMillis();
-		xianShiLiBaoModule.getGroupMap().forEach((group,failTimer) ->{
-			if (now >= failTimer){
-				return;
-			}
-			List<ActivityXianShiLiBaoConfig> groupList = xianShiLiBaoModule.getGroupConfigList(group);
-			List<Integer> groupIds = new ArrayList<>();
-			groupList.forEach(config -> {
-				groupIds.add(config.ID);
-			});
-			if (xianShiLiBaoModule.getBuyIds().containsAll(groupIds)){
-				return;
-			}
-			resp.addInfos(xianShiLiBaoModule.buildXianShiLiBao(group));
-		});
-		client.sendProtocol(resp.build());
-	}
+    private void fundPassBuy(NetClient client, Object message) {
+        ShopFundPassBuyRequest_15000030 req = (ShopFundPassBuyRequest_15000030) message;
+        ShopFundPassBuyResponse_15000031.Builder resp = ShopFundPassBuyResponse_15000031.newBuilder();
+        int id = req.getId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.Passport)) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        ShopModule shopModule = player.getShopModule();
+        Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
+        if (fundPassRewardsMap.containsKey(id)) {
+            client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+            return;
+        }
+        FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
+        Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                fundPassRewardsMap.put(id, new ArrayList<Integer>());
+                client.sendProtocol(resp.build());
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+    }
 
-	private void openBox(NetClient client, Object message) {
-		ShopBoxOpenRequest_15000040 req = (ShopBoxOpenRequest_15000040) message;
-		ShopBoxOpenResponse_15000041.Builder resp = ShopBoxOpenResponse_15000041.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		ShopModule shopModule = player.getShopModule();
-		boolean watchAds = req.getWatchAds();
-		if (watchAds) {
-			if (shopModule.getFreeOpenBoxCount() >= GlobalConst.BoxAdvertNum) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
-				return;
-			}
-			if (DateUtil.currentTimeSeconds() - shopModule.getLastFreeOpenBoxTime() < GlobalConst.BoxAdvertTime * 60 * 60) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.cd_time_error.getId());
-				return;
-			}
-			shopModule.setLastFreeOpenBoxTime(DateUtil.currentTimeSeconds());
-			shopModule.setFreeOpenBoxCount(shopModule.getFreeOpenBoxCount() + 1);
-			player.handleEvent(EventTypeEnum.WatchAds);
-		} else {
-			PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
-		}
-		int[][] boxRandomId = GlobalConst.BoxRandomId;
-		int idIndex = 0;
+    private void fundPassReward(NetClient client, Object message) {
+        ShopFundPassRewardRequest_15000032 req = (ShopFundPassRewardRequest_15000032) message;
+        ShopFundPassRewardResponse_15000033.Builder resp = ShopFundPassRewardResponse_15000033.newBuilder();
+        List<Integer> idList = req.getIdList();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.Passport)) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        ShopModule shopModule = player.getShopModule();
+        Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
+        for (int id : idList) {
+            FundPassRewardsConfig fundPassRewardsConfig = FundPassRewardsManager.instance().get(id);
+            if (!fundPassRewardsMap.containsKey(fundPassRewardsConfig.Index)) {
+                client.sendProtocol(resp, ErrorMsgEnum.fundpass_not_buy.getId());
+                return;
+            }
+            List<Integer> list = fundPassRewardsMap.get(fundPassRewardsConfig.Index);
+            if (list.contains(id)) {
+                client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+                return;
+            }
+            FundPassConfig fundPassConfig = FundPassManager.instance().get(fundPassRewardsConfig.Index);
+            if (fundPassRewardsConfig.LvCondition > 0 && player.getPlayerModule().getExpLevelMap().getValue(fundPassConfig.ExpType) < fundPassRewardsConfig.LvCondition) {
+                client.sendProtocol(resp, ErrorMsgEnum.level_not_enough.getId());
+                return;
+            }
+            boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
+            if (!checkCondition) {
+                client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+                return;
+            }
+            list.add(id);
+            resp.addAllRewards(PlayerHelper.addResources(player, fundPassRewardsConfig.Reward, OpType.FundPass));
+        }
+        client.sendProtocol(resp.build());
+    }
 
-		BattleModule battleModule = player.getBattleModule();
-		int mainBattleHighest = battleModule.getMainBattleHighest();
+    private void doubleBonus(NetClient client, Object message) {
+        MonthCardDoubleBonusRequest_15000016 req = (MonthCardDoubleBonusRequest_15000016) message;
+        MonthCardDoubleBonusResponse_15000017.Builder resp = MonthCardDoubleBonusResponse_15000017.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+        if (monthCardModule.isDoubleBonus()) {
+            client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+            return;
+        }
+        if (!monthCardModule.canDoubleBonus()) {
+            client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+            return;
+        }
+        monthCardModule.setDoubleBonus(true);
+        resp.addAllRewards(PlayerHelper.addResources(player, GlobalConst.DoubleBonus, OpType.MonthCardDoubleBonus));
+        client.sendProtocol(resp.build());
+    }
 
-		int chapter = 0;
-		List<HCBattleConfig> battleTypeList = HCBattleManager.instance().getBattleTypeList(11);
-		for (HCBattleConfig battleConfig : battleTypeList) {
-			if (battleConfig.preBattle == mainBattleHighest) {
-				chapter = battleConfig.Chapter;
-				break;
-			}
-		}
-		for (int i = 0; i < boxRandomId.length; i++) {
-			if (chapter > boxRandomId[i][0]) {
-				idIndex = i + 1;
-			}
-		}
-		if (idIndex >= boxRandomId.length - 1) {
-			idIndex = boxRandomId.length - 1;
-		}
-		List<RewardInfo> reward = PlayerHelper.addReward(player, boxRandomId[idIndex][1], OpType.BoxOpen);
-		resp.addAllRewards(reward);
-		client.sendProtocol(resp.build());
-	}
-	private void heishiRefresh(NetClient client, Object message) {
-		ShopHeishiRefreshRequest_15000005 req = (ShopHeishiRefreshRequest_15000005) message;
-		ShopHeishiRefreshResponse_15000006.Builder resp = ShopHeishiRefreshResponse_15000006.newBuilder();
-		int shopId = req.getShopId();
-		ShopConfig shopConfig = ShopManager.instance().get(shopId);
-		if (shopConfig.Type != 2) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
-			return;
-		}
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.Shop)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		ShopModule shopModule = player.getShopModule();
-		IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
-		int heishiRefreshTimes = heishiRefreshTimesMap.getValue(shopId);
-		
-		int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
-		int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
-		freeFreshMaxTimes += welfareValue;
-		
-		int heishiPayTimes = heishiRefreshTimes - freeFreshMaxTimes;
-		if (heishiRefreshTimes < freeFreshMaxTimes) {
-//			player.handleEvent(EventTypeEnum.WatchAds);
-		}else {
-			int maxPayTimes = 0;
-			maxPayTimes += player.getWelfareValue(WelfareTypeEnum.VIPPaymentFrequency);
+    private void recharge(NetClient client, Object message) {
+        ShopRechargeRequest_15000022 req = (ShopRechargeRequest_15000022) message;
+        ShopRechargeResponse_15000023.Builder resp = ShopRechargeResponse_15000023.newBuilder();
+        int id = req.getId();
+        RechargeConfig rechargeConfig = RechargeManager.instance().get(id);
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
+                resp.addAllRewards(resources);
+                client.sendProtocol(resp.build());
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+    }
 
-			if (heishiPayTimes >= maxPayTimes) {
-				client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.getId());
-				return;
-			}
-			int payCost = GlobalConst.HeishiPayfrseh[heishiPayTimes >= GlobalConst.HeishiPayfrseh.length - 1
-					? GlobalConst.HeishiPayfrseh.length - 1
-					: heishiPayTimes];
-			PlayerHelper.delResources(player, Asset.diamond.ID, payCost, OpType.HeishiFresh);
-		}
-		heishiRefreshTimesMap.add(shopId);
-//		shopModule.setHeishiRefreshTimes(heishiRefreshTimes + 1);
-
-		shopModule.refreshHeishiItems(shopId);
-
-		List<ShopItem> shopItems = shopModule.getShopItems(shopId);
-		for (ShopItem shopItem : shopItems) {
-			resp.addItems(shopItem.toProto());
-		}
-		client.sendProtocol(resp.build());
-	}
-	private void fundPassBuy(NetClient client, Object message) {
-		ShopFundPassBuyRequest_15000030 req = (ShopFundPassBuyRequest_15000030) message;
-		ShopFundPassBuyResponse_15000031.Builder resp = ShopFundPassBuyResponse_15000031.newBuilder();
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.Passport)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		ShopModule shopModule = player.getShopModule();
-		Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
-		if (fundPassRewardsMap.containsKey(id)) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
-		Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price);
-
-		pay.onComplete(t -> {
-			if (t.result()) {
-				fundPassRewardsMap.put(id, new ArrayList<Integer>());
-				client.sendProtocol(resp.build());
-			} else {
-				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-			}
-		});
-	}
-	private void fundPassReward(NetClient client, Object message) {
-		ShopFundPassRewardRequest_15000032 req = (ShopFundPassRewardRequest_15000032) message;
-		ShopFundPassRewardResponse_15000033.Builder resp = ShopFundPassRewardResponse_15000033.newBuilder();
-		List<Integer> idList = req.getIdList();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.Passport)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		ShopModule shopModule = player.getShopModule();
-		Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
-		for (int id : idList) {
-			FundPassRewardsConfig fundPassRewardsConfig = FundPassRewardsManager.instance().get(id);
-			if (!fundPassRewardsMap.containsKey(fundPassRewardsConfig.Index)) {
-				client.sendProtocol(resp, ErrorMsgEnum.fundpass_not_buy.getId());
-				return;
-			}
-			List<Integer> list = fundPassRewardsMap.get(fundPassRewardsConfig.Index);
-			if (list.contains(id)) {
-				client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-				return;
-			}
-			FundPassConfig fundPassConfig = FundPassManager.instance().get(fundPassRewardsConfig.Index); 
-			
-			if (fundPassRewardsConfig.LvCondition > 0
-					&& player.getPlayerModule().getExpLevelMap().getValue(fundPassConfig.ExpType) < fundPassRewardsConfig.LvCondition) {
-				client.sendProtocol(resp, ErrorMsgEnum.level_not_enough.getId());
-				return;
-			}
-			boolean checkCondition = PlayerHelper.checkCondition(player, fundPassRewardsConfig.Condition);
-			if (!checkCondition) {
-				client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-				return;
-			}
-			list.add(id);
-			resp.addAllRewards(PlayerHelper.addResources(player, fundPassRewardsConfig.Reward, OpType.FundPass));
-		}
-		client.sendProtocol(resp.build());
-	}
-
-	private void doubleBonus(NetClient client, Object message) {
-		MonthCardDoubleBonusRequest_15000016 req = (MonthCardDoubleBonusRequest_15000016) message;
-		MonthCardDoubleBonusResponse_15000017.Builder resp = MonthCardDoubleBonusResponse_15000017.newBuilder();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		if (monthCardModule.isDoubleBonus()) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		if (!monthCardModule.canDoubleBonus()) {
-			client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
-			return;
-		}
-		monthCardModule.setDoubleBonus(true);
-
-		resp.addAllRewards(PlayerHelper.addResources(player, GlobalConst.DoubleBonus, OpType.MonthCardDoubleBonus));
-
-		client.sendProtocol(resp.build());
-	}
-
-	private void recharge(NetClient client, Object message) {
-		ShopRechargeRequest_15000022 req = (ShopRechargeRequest_15000022) message;
-		ShopRechargeResponse_15000023.Builder resp = ShopRechargeResponse_15000023.newBuilder();
-		int id = req.getId();
-		RechargeConfig rechargeConfig = RechargeManager.instance().get(id);
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
-		pay.onComplete(t -> {
-			if (t.result()) {
-				List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
-				resp.addAllRewards(resources);
-				client.sendProtocol(resp.build());
-			} else {
-				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-			}
-		});
-	}
-
-	private void buyShopItem(NetClient client, Object message) {
-		ShopItemBuyRequest_15000003 req = (ShopItemBuyRequest_15000003) message;
-		ShopItemBuyResponse_15000004.Builder resp = ShopItemBuyResponse_15000004.newBuilder();
-		int shopId = req.getShopId();
-		int itemId = req.getItemId();
-		int count = req.getCount(); 
-		if (count <= 0) {
-			count = 1; 
-		}
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		ShopModule shopModule = player.getShopModule();
-		ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
-		if (shopItem == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
-			return;
-		}
-
-		ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
-		if (shopItemConfig.UnlockCondition > 0) {
-			if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
-				client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-				return ; 
-			}
-		}
-		//公会不存在
-		if (shopId == 17 && player.getGuildId() == 0){
-			client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
-			return;
-		}
-		if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes()+ count > shopItemConfig.ShopItemQuota) {
-			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
-			return;
-		}
-
-		
-		final int[][] itemsAdd = GameUtil.arrayMultiple(shopItemConfig.Item, count);
-		final int countTemp = count ; 
-		Supplier<Boolean> addItemAction = () -> {
-			List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
-//			if (shopItemConfig.PurchaseCnt > 0) {
-				shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + countTemp);
-//				shopItem.update();
-//			}
-			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
-			resp.addAllRewards(resources);
-			client.sendProtocol(resp);
-			GameLogger.shoptrade(player, shopId, itemId);
-
-			if (shopId == 12 || shopId == 13 || shopId == 14) {
-//				GameLogger.acti
-			}
-			return true;
-		};
-		
-		Future<Boolean> pay = player.pay(PayType.ShopItem, itemId,GameUtil.arrayMultiple3(shopItemConfig.PurchaseParameter, count) ,shopId);
-		pay.onComplete(t -> {
-			if (t.result()) {
-				addItemAction.get();
-			} else {
-				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-			}
-		});
-
-		/*ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
+    private void buyShopItem(NetClient client, Object message) {
+        ShopItemBuyRequest_15000003 req = (ShopItemBuyRequest_15000003) message;
+        ShopItemBuyResponse_15000004.Builder resp = ShopItemBuyResponse_15000004.newBuilder();
+        int shopId = req.getShopId();
+        int itemId = req.getItemId();
+        int count = req.getCount();
+        if (count <= 0) {
+            count = 1;
+        }
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ShopModule shopModule = player.getShopModule();
+        ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
+        if (shopItem == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
+            return;
+        }
+        ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
+        if (shopItemConfig.UnlockCondition > 0) {
+            if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
+                client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+                return;
+            }
+        }
+        //公会不存在
+        if (shopId == 17 && player.getGuildId() == 0) {
+            client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
+            return;
+        }
+        if (shopItemConfig.ShopItemQuota > 0 && shopItem.getItemBuyTimes() + count > shopItemConfig.ShopItemQuota) {
+            client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
+            return;
+        }
+        final int[][] itemsAdd = GameUtil.arrayMultiple(shopItemConfig.Item, count);
+        final int countTemp = count;
+        Supplier<Boolean> addItemAction = () -> {
+            List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
+            //			if (shopItemConfig.PurchaseCnt > 0) {
+            shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + countTemp);
+            //				shopItem.update();
+            //			}
+            player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
+            resp.addAllRewards(resources);
+            client.sendProtocol(resp);
+            GameLogger.shoptrade(player, shopId, itemId);
+            if (shopId == 12 || shopId == 13 || shopId == 14) {
+                //				GameLogger.acti
+            }
+            return true;
+        };
+        Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, GameUtil.arrayMultiple3(shopItemConfig.PurchaseParameter, count), shopId);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                addItemAction.get();
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+        /*ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
 		if (shopItemConfig.PurchaseCnt > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.PurchaseCnt) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
 			return;
@@ -478,145 +458,133 @@ public class ShopHandler extends GameBaseHandler {
 				}
 			}) ;
 		}*/
-	}
+    }
 
-	private void shopItemList(NetClient client, Object message) {
-		ShopItemListRequest_15000001 req = (ShopItemListRequest_15000001) message;
-		ShopItemListResponse_15000002.Builder resp = ShopItemListResponse_15000002.newBuilder();
-		int shop = req.getShopId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		ShopModule shopModule = player.getShopModule();
-		Collection<ShopItem> shopItems = shopModule.getShopItems(shop);
-		for (ShopItem shopItem : shopItems) {
-			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
-			if (shopItemConfig.UnlockCondition > 0) {
-				if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
-					continue; 
-				}
-			}
-			resp.addItems(shopItem.toProto());
-		}
-		client.sendProtocol(resp.build());
-	}
+    private void shopItemList(NetClient client, Object message) {
+        ShopItemListRequest_15000001 req = (ShopItemListRequest_15000001) message;
+        ShopItemListResponse_15000002.Builder resp = ShopItemListResponse_15000002.newBuilder();
+        int shop = req.getShopId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ShopModule shopModule = player.getShopModule();
+        Collection<ShopItem> shopItems = shopModule.getShopItems(shop);
+        for (ShopItem shopItem : shopItems) {
+            ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
+            if (shopItemConfig.UnlockCondition > 0) {
+                if (!PlayerHelper.checkCondition(player, shopItemConfig.UnlockCondition)) {
+                    continue;
+                }
+            }
+            resp.addItems(shopItem.toProto());
+        }
+        client.sendProtocol(resp.build());
+    }
 
-	private void buyMonthCard(NetClient client, Object message) {
-		MonthCardBuyRequest_15000010 req = (MonthCardBuyRequest_15000010) message;
-		MonthCardBuyResponse_15000011.Builder resp = MonthCardBuyResponse_15000011.newBuilder();
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		MonthCard monthCard = monthCardModule.getMonthCard(id);
-		if (monthCard != null) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_repeated.getId());
-			return;
-		}
-		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id); 
-		int[] cost = monthCardConfig.Price;
-		
-		Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost);
-		pay.onComplete(t -> {
-			if (t.result()) {
-				MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
-				resp.setMonthCard(newMonthCard.toProto());
-				List<RewardInfo> resources = PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
-				resp.addAllRewards(resources);
+    private void buyMonthCard(NetClient client, Object message) {
+        MonthCardBuyRequest_15000010 req = (MonthCardBuyRequest_15000010) message;
+        MonthCardBuyResponse_15000011.Builder resp = MonthCardBuyResponse_15000011.newBuilder();
+        int id = req.getId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+        MonthCard monthCard = monthCardModule.getMonthCard(id);
+        if (monthCard != null) {
+            client.sendProtocol(resp, ErrorMsgEnum.month_card_repeated.getId());
+            return;
+        }
+        MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
+        int[] cost = monthCardConfig.Price;
+        Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
+                resp.setMonthCard(newMonthCard.toProto());
+                List<RewardInfo> resources = PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
+                resp.addAllRewards(resources);
+                monthCardModule.sendRewardMail(true);
+                client.sendProtocol(resp.build());
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+    }
 
-				monthCardModule.sendRewardMail(true);
+    private void monthCardBuyReward(NetClient client, Object message) {
+        MonthCardBuyRewardRequest_15000012 req = (MonthCardBuyRewardRequest_15000012) message;
+        MonthCardBuyRewardResponse_15000013.Builder resp = MonthCardBuyRewardResponse_15000013.newBuilder();
+        int id = req.getId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+        MonthCard monthCard = monthCardModule.getMonthCard(id);
+        if (monthCard == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.month_card_not_exist.getId());
+            return;
+        }
+        if (monthCard.getIsBuyRewards()) {
+            client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+            return;
+        }
+        MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
+        PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
+        monthCard.setIsBuyRewards(true);
+        client.sendProtocol(resp.build());
+    }
 
-				client.sendProtocol(resp.build());
-			}else {
-				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
-			}
-		}) ;
-	}
+    @Deprecated
+    private void monthCardDayReward(NetClient client, Object message) {
+        // 直接发邮件了
+        MonthCardDayRewardRequest_15000014 req = (MonthCardDayRewardRequest_15000014) message;
+        MonthCardDayRewardResponse_15000015.Builder resp = MonthCardDayRewardResponse_15000015.newBuilder();
+        int id = req.getId();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+        MonthCard monthCard = monthCardModule.getMonthCard(id);
+        if (monthCard == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.month_card_not_exist.getId());
+            return;
+        }
+        if (monthCard.getIsDayRewards()) {
+            client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+            return;
+        }
+        MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
+        PlayerHelper.addResources(player, monthCardConfig.DailyRewards, OpType.MonthCardDay);
+        monthCard.setIsDayRewards(true);
+        client.sendProtocol(resp.build());
+    }
 
-	private void monthCardBuyReward(NetClient client, Object message) {
+    private void buyChapterPacks(NetClient client, Object message) {
+        ShopChapterPacksBuyRequest_15000020 req = (ShopChapterPacksBuyRequest_15000020) message;
+        ShopChapterPacksBuyResponse_15000021.Builder resp = ShopChapterPacksBuyResponse_15000021.newBuilder();
+        int id = req.getId();
+        ChapterPacksConfig chapterPacksConfig = ChapterPacksManager.instance().get(id);
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (!player.isFuncOpen(InitialUI.ChapterGift)) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
+            return;
+        }
+        if (!PlayerHelper.checkCondition(player, chapterPacksConfig.Condition)) {
+            client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+            return;
+        }
+        PlayerModule playerModule = player.getPlayerModule();
+        boolean hasId = playerModule.hasId(IdConstant.CHAPTER_PACK, id);
+        if (hasId) {
+            client.sendProtocol(resp, ErrorMsgEnum.shop_gift_repeated.getId());
+            return;
+        }
+        Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                playerModule.addId(IdConstant.CHAPTER_PACK, id);
+                List<RewardInfo> resources = PlayerHelper.addResources(player, chapterPacksConfig.Item, OpType.ChapterGift);
+                resp.addAllRewards(resources);
+                client.sendProtocol(resp.build());
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+    }
 
-		MonthCardBuyRewardRequest_15000012 req = (MonthCardBuyRewardRequest_15000012) message;
-		MonthCardBuyRewardResponse_15000013.Builder resp = MonthCardBuyRewardResponse_15000013.newBuilder();
-
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		MonthCard monthCard = monthCardModule.getMonthCard(id);
-		if (monthCard == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_not_exist.getId());
-			return;
-		}
-		if (monthCard.getIsBuyRewards()) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
-
-		monthCard.setIsBuyRewards(true);
-
-		client.sendProtocol(resp.build());
-
-	}
-
-	@Deprecated
-	private void monthCardDayReward(NetClient client, Object message) {
-		// 直接发邮件了
-		MonthCardDayRewardRequest_15000014 req = (MonthCardDayRewardRequest_15000014) message;
-		MonthCardDayRewardResponse_15000015.Builder resp = MonthCardDayRewardResponse_15000015.newBuilder();
-
-		int id = req.getId();
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
-		MonthCard monthCard = monthCardModule.getMonthCard(id);
-		if (monthCard == null) {
-			client.sendProtocol(resp, ErrorMsgEnum.month_card_not_exist.getId());
-			return;
-		}
-		if (monthCard.getIsDayRewards()) {
-			client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-			return;
-		}
-		MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
-		PlayerHelper.addResources(player, monthCardConfig.DailyRewards, OpType.MonthCardDay);
-
-		monthCard.setIsDayRewards(true);
-
-		client.sendProtocol(resp.build());
-
-	}
-
-	private void buyChapterPacks(NetClient client, Object message) {
-		ShopChapterPacksBuyRequest_15000020 req = (ShopChapterPacksBuyRequest_15000020) message;
-		ShopChapterPacksBuyResponse_15000021.Builder resp = ShopChapterPacksBuyResponse_15000021.newBuilder();
-		int id = req.getId();
-		ChapterPacksConfig chapterPacksConfig = ChapterPacksManager.instance().get(id);
-		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (!player.isFuncOpen(InitialUI.ChapterGift)) {
-			client.sendProtocol(resp.build(), ErrorMsgEnum.func_not_open.getId());
-			return;
-		}
-		if (!PlayerHelper.checkCondition(player, chapterPacksConfig.Condition)) {
-			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
-			return;
-		}
-		PlayerModule playerModule = player.getPlayerModule();
-		boolean hasId = playerModule.hasId(IdConstant.CHAPTER_PACK, id);
-		if (hasId) {
-			client.sendProtocol(resp, ErrorMsgEnum.shop_gift_repeated.getId());
-			return;
-		}
-		Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter);
-		pay.onComplete(t -> {
-			if (t.result()) {
-				playerModule.addId(IdConstant.CHAPTER_PACK, id);
-				List<RewardInfo> resources = PlayerHelper.addResources(player, chapterPacksConfig.Item, OpType.ChapterGift);
-				resp.addAllRewards(resources);
-				client.sendProtocol(resp.build());
-			}else {
-				client.sendProtocol(resp,ErrorMsgEnum.unknown.getId());
-			}
-		}) ;
-	}
-
-	/*	private void advertise(NetClient client, Object message) {
+    /*	private void advertise(NetClient client, Object message) {
 			AdvertiseWatchFinishRequest_15000030 req = (AdvertiseWatchFinishRequest_15000030) message;
 			AdvertiseWatchFinishResponse_15000031.Builder resp = AdvertiseWatchFinishResponse_15000031.newBuilder();
 			Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
@@ -627,5 +595,12 @@ public class ShopHandler extends GameBaseHandler {
 			}
 			client.sendProtocol(resp.build());
 		}*/
+    private void limitedTimeGiftBuy(NetClient client, Object message) {
+        LimitedTimeGiftBuyRequest_15000061 req = (LimitedTimeGiftBuyRequest_15000061) message;
+        int id = req.getId();
+        LimitedTimeGiftBuyResponse_15000062 defaultInstance = LimitedTimeGiftBuyResponse_15000062.getDefaultInstance();
+        LimitedTimeGiftBuyResponse_15000062.Builder resp = LimitedTimeGiftBuyResponse_15000062.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
+    }
 }
-

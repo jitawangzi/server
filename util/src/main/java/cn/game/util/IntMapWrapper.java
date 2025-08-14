@@ -28,6 +28,10 @@ public class IntMapWrapper {
 		return map.remove(id) != null;
 	}
 
+	public Integer remove(int id) {
+		return map.remove(id);
+	}
+	
 	public int add(int id, int value) {
 		if (value == 0) {
 			return 0;
@@ -66,6 +70,11 @@ public class IntMapWrapper {
 		return del(id, value, false);
 	}
 
+	// 获取所有值的和
+	public int sum() {
+		return map.values().stream().mapToInt(Integer::intValue).sum();
+	}
+	
 	/** 
 	 * 
 	 * @param id
@@ -92,10 +101,6 @@ public class IntMapWrapper {
 	 */
 	public void reduceAllValues(int value) {
 		map.replaceAll((k, v) -> v - value < 0 ? 0 : v - value);
-	}
-
-	public Integer remove(int id) {
-		return map.remove(id);
 	}
 
 	@Override

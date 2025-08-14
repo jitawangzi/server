@@ -67,11 +67,19 @@ public abstract class AbstractCondition implements Condition {
 		return this.finishCount;
 	}
 
+	/** 
+	 * 默认的检查方法，检查当前计数是否大于等于需求数量，
+	 * 如果需要小于的判断方法，需要自行覆盖
+	 * @return
+	 */
+	protected boolean checkAchieve() {
+		return getFinishCount() >= getRequireCount() ; 
+	}
 	@Override
 	public boolean isAchieve() {
 		if (achieve)
 			return true;
-		achieve = getFinishCount() >= getRequireCount();
+		achieve = checkAchieve() ;
 		if (achieve) {
 			finishAction();
 		}
