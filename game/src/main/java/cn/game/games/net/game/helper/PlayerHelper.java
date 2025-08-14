@@ -1104,7 +1104,7 @@ public class PlayerHelper {
 	 * @param condition 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
-	public static int getConditionCount(Player player, int condition) {
+	public static long getConditionCount(Player player, int condition) {
 		if (condition == 0) {
 			return 0;
 		}
@@ -1119,17 +1119,23 @@ public class PlayerHelper {
 		int[] extParam = conditionConfig.extParam;
 
 		if (type.countType == 2) {
-			// 累计计数带有额外参数的：
-			if (type == ConditionTypeEnum.EarnHeroCumulation) {
+			switch (type) {
+			case EarnHeroCumulation :
+			case FunAllFailTimes:
+				// 从通用计数中获取
 				return player.getCountingModule().getCount(condition);
+			// 其他特殊的保存位置
+			case FunContinueFailTimes:
+				
+			default:
+				throw new IllegalArgumentException(" not suport condition with countType 2 :  " + type);
 			}
-			// 累计计数不带额外参数直接获取的
-			return player.getCountingModule().getCount(condition);
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：
 			return switch (type) {
 			case PlayerLevel -> player.getLevel();
+			case RemainMatiarialNow -> player.getCurrencyModule().get(id).getCount();
 			case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp);
 			case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId());
 			case ChapterFinish -> {
