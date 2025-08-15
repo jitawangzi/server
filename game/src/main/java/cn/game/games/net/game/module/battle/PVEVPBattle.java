@@ -303,36 +303,13 @@ public class PVEVPBattle extends XiYouBattleHandler {
         }
         rankIds.add(Rnd.get(myscore + 1, end));
         return rankIds;
-
     }
 
-    public void fillMainShowRank(List<Integer> rankIds) {
-        RankService rankService = RankService.getInstance();
-        rankIds.forEach(rankId -> {
-            var rankEntry = rankService.getRankEntry(player.getServerId(), RankType.DaDaoZhengFengSeason, rankId);
-            setData(rankEntry);
-        });
-    }
-
-    private void sendBattlePVEVPChallengeResponse_13000553() {
-
-        BattleMsg.BattlePVEVPChallengeResponse_13000553.Builder resp = BattleMsg.BattlePVEVPChallengeResponse_13000553.newBuilder();
-        mainShowRank.forEach((k, v) -> {
-            BaseMsg.PlayerRankInfo.Builder rb = BaseMsg.PlayerRankInfo.newBuilder();
-            rb.setRank(v.getRankEntry().getRank());
-            rb.setPlayer(v.getPlayer().toSimplePlayerInfo());
-            long score = v.getRankEntry().getScore();
-            rb.setScore((score < 0 ? 0 : score) + "");
-            resp.addChallengePlayers(rb);
-        });
-        refreshFlag = false;
-        player.getGameClient().sendProtocol(resp.build());
-    }
 
 
     public CompletionStage<Void> fillMainShowRankAsync(List<Integer> rankIds) {
         if (rankIds == null || rankIds.isEmpty()) {
-            return CompletableFuture.completedStage(null);
+            return CompletableFuture.failedStage(null);
         }
 
         RankService rankService = RankService.getInstance();
@@ -342,13 +319,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             CompletionStage <RankEntry> rankEntry = rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId);
             updateTasks.add(rankEntry.thenAccept(this::setData));
         });
-//        List<CompletionStage<Void>> updateTasks = rankIds.stream()
-//                .map(rankId ->
-//                {var rankEntry =rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId
-//                })
-//                .thenAccept(this::setData))
-//                .toList();
-//
+
 //        // 等待所有任务完成
         return CompletableFuture.allOf(updateTasks.toArray(new CompletableFuture[0]));
     }
@@ -396,57 +367,50 @@ public class PVEVPBattle extends XiYouBattleHandler {
         mainShowRank.put(rankEntry.getRank(), playerRank);
     }
 
-    public void getRadomPlayer(int type) {
-
-        if(refreshFlag) {
-            return;
-        }
+    public   CompletionStage<Map<Integer, PlayerRank>>  getRadomPlayer(int type) {
         refreshFlag = true;
+        mainShowRank.clear();
         if (type == 1) {
             // 请求
             myRank = RankService.getInstance().getRankEntry(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId());
-            CompletionStage<Void> dataLoadingStage;
             if (myRank.getScore() == 0) {
                 // 新玩家，获取排行榜末尾玩家
-                myRank= new RankEntry(RankType.DaShengLeiTaiSeason.ID, player.getPlayerId(), 1000);
-                dataLoadingStage = RankService.getInstance()
+                myRank = new RankEntry(RankType.DaShengLeiTaiSeason.ID, player.getPlayerId(), 1000);
+                return RankService.getInstance()
                         .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
-                        .thenAccept(rankEntries -> {
-                            mainShowRank.clear();
+                        .thenCompose(rankEntries -> {
+
                             rankEntries.forEach(this::setData);
+                            return CompletableFuture.supplyAsync(() -> mainShowRank);
                         });
+
             } else {
                 // 已有排名的玩家，获取随机对手
                 List<Integer> targetRankIds;
                 // 生成新的随机排名ID
                 targetRankIds = radomPlayer(myRank.getRank());
-                dataLoadingStage = fillMainShowRankAsync(targetRankIds);
+                return fillMainShowRankAsync(targetRankIds)
+                        .thenCompose(rankEntries -> {
+                            return CompletableFuture.supplyAsync(() -> mainShowRank);
+                        });
             }
-            // 数据加载完成后发送响应
-            dataLoadingStage.thenRun(this::sendBattlePVEVPChallengeResponse_13000553).exceptionally(player::handleFailFunction);
         } else {
             // 刷新 - 生成新的随机对手
-            if(refreshTime>=DateUtil.currentTimeSeconds()) {
-                return;
+            if (refreshTime >= DateUtil.currentTimeSeconds()) {
+                return CompletableFuture.failedStage(new Exception("刷新时间未到"));
             }
-            refreshTime=DateUtil.currentTimeSeconds()+2;
+            refreshTime = DateUtil.currentTimeSeconds() + 2;
             if (myRank != null) {
                 List<Integer> ids = radomPlayer(myRank.getRank());
-//                List<Integer> res = new ArrayList<>();
-//                mainShowRank.clear();
-//                for (int i = 0; i < ids.size(); i++) {
-//                    int id = ids.get(i);
-//                    if (cachePlayerRankMap.containsKey(id)) {
-//                        mainShowRank.put(id, cachePlayerRankMap.get(id));
-//                    } else {
-//                        res.add(id);
-//                    }
-//                }
-                fillMainShowRankAsync(ids)
-                        .thenRun(this::sendBattlePVEVPChallengeResponse_13000553).exceptionally(player::handleFailFunction);
+                return  fillMainShowRankAsync(ids)
+                        .thenCompose(rankEntries -> {
+                            return CompletableFuture.supplyAsync(() -> mainShowRank);
+                        });
             }
+            return CompletableFuture.failedStage(null);
         }
     }
+
 
     public void  buyCount()
     {

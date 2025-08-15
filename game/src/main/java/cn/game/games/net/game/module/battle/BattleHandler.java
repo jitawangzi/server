@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import cn.game.games.cache.entity.Base;
 import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.protocol.protobuf.BattleMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Chapter;
@@ -1818,8 +1819,21 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
-        pvevpBattle.getRadomPlayer(req.getType());
-        // client.sendProtocol(resp.build());
+        BattleMsg.BattlePVEVPChallengeResponse_13000553.Builder resp = BattleMsg.BattlePVEVPChallengeResponse_13000553.newBuilder();
+
+        var dataLoadingStage =pvevpBattle.getRadomPlayer(req.getType());
+        dataLoadingStage.thenAccept(r -> {
+                r.forEach((k, v) -> {
+                BaseMsg.PlayerRankInfo.Builder rb = BaseMsg.PlayerRankInfo.newBuilder();
+                rb.setRank(v.getRankEntry().getRank());
+                rb.setPlayer(v.getPlayer().toSimplePlayerInfo());
+                long score = v.getRankEntry().getScore();
+                rb.setScore((score < 0 ? 0 : score) + "");
+                resp.addChallengePlayers(rb);
+
+            } );
+            client.sendProtocol(resp.build());})
+        .exceptionally(player::handleFailFunction);
     }
 
     private void buyTicket(NetClient client, Object message) {
