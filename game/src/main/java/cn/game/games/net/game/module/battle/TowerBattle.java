@@ -230,6 +230,19 @@ public class TowerBattle extends XiYouBattleHandler {
         return DungeonTypeEnum.GemTower.getId();
     }
 
+    public boolean towerBattleComplete(int id) {
+        BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+        if(battleConfig==null) {
+          return false;
+        }
+        if (battleConfig.BattleType < DungeonTypeEnum.GemTower.getId() || battleConfig.BattleType > DungeonTypeEnum.GemTowerPoison.getId()) {
+            return false;
+        }
+        if(curFloor.get(battleConfig.BattleType)==-1) {
+            return true;
+        }
+        return id >curFloor.get(battleConfig.BattleType);
+    }
 
     public int getRadomBuff() {
         return radomBuff;
