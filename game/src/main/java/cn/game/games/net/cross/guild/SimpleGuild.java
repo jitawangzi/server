@@ -29,6 +29,7 @@ public class SimpleGuild {
     int isAutoJoin;
     /**申请的玩家id集合*/
     List<Long> applyPidList = new ArrayList<>();
+    private String declaration; 
 
 
     public GuildMsg.GuildSimpleInfo toProto() {
@@ -40,6 +41,7 @@ public class SimpleGuild {
         builder.setLevel(lv);
         builder.setIsAutoJoin(isAutoJoin);
         builder.setMemberNum(num);
+        builder.setDeclaration(declaration); 
         return builder.build();
     }
 
@@ -107,4 +109,15 @@ public class SimpleGuild {
     public void setApplyPidList(List<Long> applyPidList) {
         this.applyPidList = applyPidList;
     }
+
+
+	public String getDeclaration() {
+		return declaration;
+	}
+
+
+	public void setDeclaration(String declaration) {
+		this.declaration = declaration;
+	}
+    
 }
