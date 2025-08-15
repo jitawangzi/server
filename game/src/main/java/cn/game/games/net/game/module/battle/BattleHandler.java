@@ -1366,13 +1366,13 @@ public class BattleHandler extends GameBaseHandler {
             return;
         }
         BattleConfig battleConfig = BattleManager.instance().get(attackingId);
-        player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         IBattleHandler battleHandler = battleModule.getBattle(attackingType);
         ResultObject<List<RewardInfo>> result = battleHandler.battleEnd(req, resp);
         if (result.getErrorCode() > 0) {
             client.sendProtocol(resp, result.getErrorCode());
             return;
         }
+        player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         List<RewardInfo> allRewards = new ArrayList<>();
         if (result.getValue() != null) {
             allRewards.addAll(result.getValue());

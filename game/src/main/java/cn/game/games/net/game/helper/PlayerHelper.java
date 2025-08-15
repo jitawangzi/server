@@ -393,7 +393,7 @@ public class PlayerHelper {
 		ConsumeConfig consumeConfig = ConsumeManager.instance().get(consumeId);
 		delResources(player, consumeConfig.cost, consumeType);
 	}
-	
+
 	/** 
 	 * 通过消耗表的id，来扣除玩家的物品
 	 * @param player
@@ -402,7 +402,7 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
-	public static void delResourcesWithConsume(Player player, int consumeId,int multiple, OpType consumeType) {
+	public static void delResourcesWithConsume(Player player, int consumeId, int multiple, OpType consumeType) {
 		if (consumeId == 0) {
 			return;
 		}
@@ -694,7 +694,7 @@ public class PlayerHelper {
 		for (BasePlayerModule basePlayerModule : allModule) {
 			basePlayerModule.onLogin();
 		}
-
+		player.setIslogining(false);
 		GameLogger.login(player);
 		GameLogger.rolelogin(player);
 		GameLogger.login_wxxcx(player);
@@ -1121,14 +1121,14 @@ public class PlayerHelper {
 		if (type.countType == 2) {
 			switch (type) {
 			// 特殊的保存位置
-			case FunContinueFailTimes:{
-				return player.getBattleModule().getConsecutiveFailures(extParam.length==0?0 : extParam[0]); 
+			case FunContinueFailTimes: {
+				return player.getBattleModule().getConsecutiveFailures(extParam.length == 0 ? 0 : extParam[0]);
 			}
 			default:
 				// 默认从通用计数中获取
 				return player.getCountingModule().getCount(condition);
 			}
-		
+
 		}
 		if (type.countType == 1) {
 			// 直接根据当前数据获取的：
@@ -1155,19 +1155,19 @@ public class PlayerHelper {
 			}
 			case LingShanLevel -> {
 				BattleModule module = player.getModule(BattleModule.class);
-				LingShanWenChanBattle battle = module.getBattle(DungeonTypeEnum.LingShanWenChan); 
-				yield battle == null ? 0 : battle.getLastCompleteFloor();
+				LingShanWenChanBattle battle = module.getBattle(DungeonTypeEnum.LingShanWenChan);
+				yield battle == null ? 0 : battle.getLastCompleteFloor() >= extParam[0] ? 1 : 0;
 			}
 			case DaShengPoints -> {
 				BattleModule module = player.getModule(BattleModule.class);
-				PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle); 
-				yield battle != null ? (int) battle.getMyRank().getScore():0;
+				PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle);
+				yield battle != null ? (int) battle.getMyRank().getScore() : 0;
 			}
 			case LongYuanLevel -> {
 				// 龙渊密藏-中间塔达到层数
 				BattleModule module = player.getModule(BattleModule.class);
-				TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower); 
-				yield battle == null ? 0 : battle.getCurFloor().getOrDefault(DungeonTypeEnum.GemTower.getId(), 0);
+				TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
+				yield battle == null ? 0 : battle.getCurFloor().get(DungeonTypeEnum.GemTower.getId()) - 1 >= extParam[0] ? 1 : 0;
 			}
 			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
 			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);
@@ -1727,7 +1727,7 @@ public class PlayerHelper {
 				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 				return Future.failedFuture("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 			}
-			return ServerContext.getInstance().getProcessor().process(modify.getPlayerId(), () -> function.apply(modify),null);
+			return ServerContext.getInstance().getProcessor().process(modify.getPlayerId(), () -> function.apply(modify), null);
 		} else {
 			return modifyPlayerOffline(function, modify);
 		}

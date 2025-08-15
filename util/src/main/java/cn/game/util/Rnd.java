@@ -455,7 +455,7 @@ public final class Rnd {
 	}
 
 	/**
-	 * 按权重随机出指定数量的不重复的元素索引
+	 * 按权重随机出指定数量的不重复的元素
 	 * 
 	 * @param list
 	 * @param count

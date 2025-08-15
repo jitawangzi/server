@@ -134,6 +134,8 @@ public class Player {
 	private volatile boolean isActive = true;
 	/** 是否正在退出 */
 	private volatile boolean islogouting;
+	/** 是否正在登陆 */
+	private volatile boolean islogining = true;
 	/** 玩家基本数据 */
 	private PlayerData data;
 	private Account account;
@@ -760,6 +762,14 @@ public class Player {
 		this.gameClient = gameClient;
 	}
 
+	public boolean isIslogining() {
+		return islogining;
+	}
+
+	public void setIslogining(boolean islogining) {
+		this.islogining = islogining;
+	}
+
 	public Account getAccount() {
 		return account == null ? getPlayerModule().getAccount() : account;
 	}
@@ -807,6 +817,7 @@ public class Player {
 	public InviteModule getInviteModule() {
 		return getModule(InviteModule.class);
 	}
+	
 
 	public void addWechatOfflineNotifyTask() {
 		log.info(String.format("开始启动离线微信推送消息任务 pid:%s", playerId));

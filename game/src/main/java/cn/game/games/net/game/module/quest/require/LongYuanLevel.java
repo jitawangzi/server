@@ -26,7 +26,7 @@ public class LongYuanLevel extends AbstractCumulativeCondition {
 	public boolean checkEventParam(PlayerEvent event) {
 		int id = event.getIntParameter(0);
 		BattleConfig battleConfig = BattleManager.instance().get(id);
-		if (battleConfig.BattleType == DungeonTypeEnum.LingShanWenChan.getId()) {
+		if (battleConfig.BattleType == DungeonTypeEnum.GemTower.getId()) {
 			boolean win = event.getBoolParameter(2);
 			return win; 
 		}
