@@ -201,6 +201,7 @@ public class Guild {
 		simpleGuild.setNum(module.menMemberMap.size());
 		simpleGuild.setIsAutoJoin(getModule().setting.getAutoJoin());
 		simpleGuild.getApplyPidList().addAll(module.applyList);
+		simpleGuild.setDeclaration(data.getNotice());
 		return simpleGuild;
 	}
 
@@ -224,7 +225,7 @@ public class Guild {
 
 		// 封装 GuildSetting
 		GuildMsg.GuildSettingProto.Builder settingProto = module.setting.toProto();
-		settingProto.setNotification(data.getNotification());
+		settingProto.setNotice(data.getNotification());
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);
