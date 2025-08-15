@@ -26,6 +26,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -40,6 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class PVEVPBattle extends XiYouBattleHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(PVEVPBattle.class);
     /**
      * 界面上显示的那4个人
      *
@@ -287,10 +290,16 @@ public class PVEVPBattle extends XiYouBattleHandler {
         if (before >= myscore - 3) {
             before = myscore - 3;
         }
+        if(before<=1) {
+            before=1;
+        }
         rankIds.addAll(Rnd.generateRandomNumbers(before, myscore - 1, 3));
         int end = (int) (myscore * GlobalConst.DaShengRankingRatio[1]/ 10000.0f);
         if (end <= myscore + 1) {
             end = myscore + 1;
+        }
+        if (end >1000) {
+            end = 1000;
         }
         rankIds.add(Rnd.get(myscore + 1, end));
         return rankIds;
@@ -413,10 +422,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 targetRankIds = radomPlayer(myRank.getRank());
                 dataLoadingStage = fillMainShowRankAsync(targetRankIds);
             }
-
             // 数据加载完成后发送响应
-            dataLoadingStage
-                    .thenRun(this::sendBattlePVEVPChallengeResponse_13000553);
+            dataLoadingStage.thenRun(this::sendBattlePVEVPChallengeResponse_13000553).exceptionally(player::handleFailFunction);
         } else {
             // 刷新 - 生成新的随机对手
             if(refreshTime>=DateUtil.currentTimeSeconds()) {
@@ -436,7 +443,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //                    }
 //                }
                 fillMainShowRankAsync(ids)
-                        .thenRun(this::sendBattlePVEVPChallengeResponse_13000553);
+                        .thenRun(this::sendBattlePVEVPChallengeResponse_13000553).exceptionally(player::handleFailFunction);
             }
         }
     }
