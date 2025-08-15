@@ -56,7 +56,7 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private String attachment;
 	/**
-	 * 全服邮件 时间校验方式 0 登录时间 1 注册时间
+	 * 全服邮件 时间校验方式 0 登录时间 1 注册时间 2 不检查
 	 * @mbg.generated
 	 */
 	private byte timeCheckType;

@@ -157,7 +157,6 @@ public class PbBuilder {
 						.setPlayerId(String.valueOf(mailRankInfo.getPlayerId()))
 						.build());
 			});
-
 		}
 		return builder.build();
 	}

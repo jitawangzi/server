@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import cn.game.games.net.game.module.mail.MailType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -310,7 +311,7 @@ public class GmHandler extends GameBaseHandler {
                                 "系统管理员",
                                 gmMail.getTitle(),
                                 gmMail.getContext(),
-                                MailHelper.SYSTEM,
+                                MailType.System.getValue(),
                                 attachment,
                                 true);
                           }

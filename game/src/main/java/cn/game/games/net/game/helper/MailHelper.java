@@ -50,12 +50,6 @@ public class MailHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(MailHelper.class);
 
-	/** 邮件类型， 公告邮件*/
-	public static final byte NOTICE = 1;
-	/** 邮件类型，系统自动发的邮件 */
-	public static final byte SYSTEM = 2;
-	/***GM 邮件的id*/
-	public static final int GM_MAIL_ID = 18;
 	/** 全服邮件 */
 	static List<GmMail> globalMailList = new CopyOnWriteArrayList<>();
 
@@ -199,12 +193,12 @@ public class MailHelper {
 			}
 		}
 		globalMailList.add(gmMail);
-		globalMailList.sort(Comparator.comparingInt(GmMail::getId));
+		globalMailList.sort(Comparator.comparingLong(GmMail::getId));
 		List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
-					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE,
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),gmMail.getMailopttype(),
 							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("addGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
@@ -216,7 +210,7 @@ public class MailHelper {
 		});
 	}
 
-	public static void addGlobalMail(int mailId) {
+	public static void addGlobalMail(long mailId) {
 		DAO.execute(GmMailMapper.class, MapperConstant.selectByPrimaryKey, mailId).onSuccess(r -> {
 			if (r != null) {
 				GmMail gmMail = (GmMail) r;
@@ -230,7 +224,7 @@ public class MailHelper {
 			try {
 				if (canAddMail(player, gmMail)) {
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
-					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(), MailHelper.NOTICE,
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),  gmMail.getMailopttype(),
 							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("onLoginAddGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
@@ -287,7 +281,7 @@ public class MailHelper {
 				if (!list.isEmpty()) {
 					globalMailList.clear();
 					globalMailList.addAll(list);
-					globalMailList.sort(Comparator.comparingInt(GmMail::getId));
+					globalMailList.sort(Comparator.comparingLong(GmMail::getId));
 				}
 			}
 		}).onFailure(rs -> {
@@ -308,33 +302,6 @@ public class MailHelper {
 		globalMailList.clear();
 	}
 
-    public static void sendDashengXunShanMail()
-	{
-
-		String serverIds="";
-		long start=DateUtil.currentTimeMillis();
-		long end = DateUtil.addWeekBeginTimer(1);
-		byte mailType=3;
-		String serverId="server4";
-		List<RankEntry> rankEntries=RankService.getInstance().getPage(serverId, RankType.DaShengLeiTaiSeason, 1, 5);
-		List<Long> playerIds = new ArrayList<>();
-		List<MailRankInfo> playerRank = new ArrayList<>();
-		rankEntries.forEach(rankEntry -> {
-			playerIds.add(rankEntry.getPlayerId());
-		});
-		List<SimplePlayer> simplePlayers = RedisLocalCache.getInstance()
-				.multiGet(CacheType.PLAYER_SIMPLE, GameUtil.transformToStringArray(playerIds));
-		for (int i = 0; i < simplePlayers.size(); i++) {
-			RankEntry rankEntry = rankEntries.get(i);
-			SimplePlayer simplePlayer=simplePlayers.get(i);
-			playerRank.add(new MailRankInfo(simplePlayer.getName(), rankEntry.getRank(), simplePlayer.figure, String.valueOf(rankEntry.getPlayerId())));
-		}
-		String content =JsonUtil.toJsonStringWithType(playerRank);
-		List<MailRankInfo> playerRankaaa  = JsonUtil.parseObjectWithType( content);
-
-		addGlobalGmMail( content, serverIds, start, end , mailType);
-
-	}
 	/**
 	 * 添加全服邮件  用于功能添加全服邮件
 	 * 目的是消息通知  全服通知
@@ -359,7 +326,7 @@ public class MailHelper {
 		gmMail.setMinLevel(0);
 		gmMail.setMaxLevel(999);
 		gmMail.setOptFlag((byte) 1);
-		gmMail.setTimeCheckType((byte) 0);
+		gmMail.setTimeCheckType((byte) 2);
 		gmMail.setMailopttype(mailType);
 		gmMail.insert().onSuccess(r -> {
 			addGlobalMail(gmMail);

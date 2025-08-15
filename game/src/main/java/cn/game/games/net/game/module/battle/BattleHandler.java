@@ -1655,8 +1655,8 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         DaShengXunShanBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.MountainBattle);
         var mapData = towerBattle.getMountainMapData();
-        resp.setCurNodeId(mapData.getCurNodeId());
         resp.setScore(mapData.getScore());
+        resp.setCurNodeId(mapData.getCurNodeId());
         resp.setScoreMax(mapData.getScoreMax());
         resp.setHp(mapData.getHp());
         resp.setRefreshNum(mapData.getRefreshNum());
