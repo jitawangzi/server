@@ -230,8 +230,7 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
                     if (buffList.size() < shoptnum) {
                         shoptnum = buffList.size();
                     }
-                    Collections.shuffle(buffList);
-                    buffList.subList(0, shoptnum).forEach(buffConfig -> {
+                    Rnd.randomSubList(buffList, shoptnum).forEach(buffConfig -> {
                         mapData.get(nodeId).getShopId().add(buffConfig.ID);
                     });
                 }
