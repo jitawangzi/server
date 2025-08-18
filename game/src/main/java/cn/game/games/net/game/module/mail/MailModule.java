@@ -77,6 +77,10 @@ public class MailModule extends BasePlayerModule  {
 	}
 
 	public boolean delete(long id) {
+		Mail mail = get(id);
+		if(mail!=null&&mail.getType()==MailType.DASHENG_XUN_SHAN.getValue()) {
+			return true;
+		}
 		Mail remove = this.mails.remove(id); 
 		if (remove!= null) {
 			if (remove == notice) {
