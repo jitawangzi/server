@@ -143,9 +143,10 @@ public class PbBuilder {
 		builder.setTitle(mail.getTitle());
 		builder.setType(mail.getType());
 		builder.setId(mailId);
-
-		List<GoodsInfo> collect = mail.getAttachmentList().stream().map(PbBuilder::buildGoodsInfo).collect(toList());
-		builder.addAllAttachments(collect);
+        if( mail.getAttachmentList()!=null) {
+			List<GoodsInfo> collect = mail.getAttachmentList().stream().map(PbBuilder::buildGoodsInfo).collect(toList());
+			builder.addAllAttachments(collect);
+		}
 		if (mail.getType() == 3) {
 			List<MailRankInfo> mailRankInfos = JsonUtil.parseObjectWithType(mail.getContent());
 			mailRankInfos.forEach(mailRankInfo ->

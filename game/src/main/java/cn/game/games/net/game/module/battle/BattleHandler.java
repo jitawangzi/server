@@ -1554,7 +1554,11 @@ public class BattleHandler extends GameBaseHandler {
         BattleEquipTowerDataResponse_13000527.Builder resp = BattleEquipTowerDataResponse_13000527.newBuilder();
         resp.setTicketCount(towerBattle.getTicketCount());
         resp.setNextTicketTime(towerBattle.getNextGetTicketTime());
-        resp.setCurFloor(towerBattle.getCurFloor());
+            towerBattle.getFloorData().forEach(
+                    (k, v) ->
+                            resp.putFloorData(k, v)
+            );
+
         client.sendProtocol(resp.build());
     }
 
@@ -1797,7 +1801,9 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         pvevpBattle.getBattleRecordFromRedis();
-        pvevpBattle.recordDataList.forEach(v -> {
+       // 获取一个反向的新列表而不修改原列表
+        List<PVEVPRecordData> reversedList = new ArrayList<>(pvevpBattle.recordDataList.reversed());
+        reversedList.forEach(v -> {
             BaseMsg.PVEVPRecordData.Builder builder = BaseMsg.PVEVPRecordData.newBuilder();
             builder.setResult(v.result);
             builder.setName(v.name);

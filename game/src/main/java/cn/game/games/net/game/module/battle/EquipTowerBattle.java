@@ -68,10 +68,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
      * 剩余门票奖励次数
      */
     private int ticketCount;
-    /**
-     * 当前层数
-     */
-    private int curFloor;
+
     /**
      * 下次门票刷新时间戳
      */
@@ -79,15 +76,19 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     private transient long cacheHelpPlayerId;
     //
     transient final int MAXFLOOR = 10;
-
+    private Map<Integer, Boolean> floorData = new HashMap<>();
     public EquipTowerBattle() {
     }
 
     public void initEquipBattle() {
-        curFloor = 1;
+
         helpRewardMap.clear();
         ticketCount = GlobalConst.TicketRefreshMax;
         nextGetTicketTime = DateUtil.currentTimeSeconds();
+        floorData.clear();
+         EquipTowerManager.instance().list().forEach(equipTowerConfig -> {
+             floorData.put(equipTowerConfig.ID,false);
+        });
     }
 
     @Override
@@ -128,10 +129,16 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         helpRewardMap.clear();
         ticketCount = GlobalConst.TicketRefreshMax;
     }
-
+    boolean isPass(int floor)
+    {
+        if (!floorData.containsKey( floor)) {
+            return false;
+        }
+        return floorData.get(floor);
+    }
 
     public void getHelpPlayerInfo(int floor) {
-        if (floor > curFloor) {
+        if (!isPass(floor)) {
             return;
         }
         String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(floor);
@@ -232,17 +239,16 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
         int floor = id % 10;
-        if (floor > curFloor) {
+        if (!isPass(floor)) {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
+
         BattleModule battleModule= player.getBattleModule();
         int unlock =EquipTowerManager.instance().get(floor).mainBattleId ;
         if(!battleModule.isBattlePass( unlock))
         {
             return ErrorMsgEnum.BattleLevel_pre.ID;
         }
-
-
         if (args.length > 0) {
             long helpPlayerId = args[0];
             if(helpPlayerId>0)
@@ -273,33 +279,21 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     @Override
     public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
-        BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
-        List<RewardInfo> allRewards = new ArrayList<>();
-        OpType opType = OpType.EquipTowerFinish;
+
+        int battlefloor = battleModule.getAttackingId() % 10;
+        boolean newRecord = !isPass(battlefloor);
         if (request.getWin()) {
-            int battlefloor = battleModule.getAttackingId() % 10;
-            boolean newRecord = battlefloor == curFloor;
             if (cacheHelpPlayerId > 0) {
                 addHelpRewards(cacheHelpPlayerId, battlefloor);
                 cacheHelpPlayerId = 0;
             }
             if (newRecord) {
-                curFloor++;
-                if (MAXFLOOR < curFloor) {
-                    curFloor = MAXFLOOR;
-                }
+                floorData.put(battlefloor, true);
                 String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(battlefloor);
                 RedisUtil.getRedis().getSet(rediskey).add(player.getPlayerId());
             }
             return ResultObject.success();
         } else { // 失败了，最终结算
-            boolean newRecord = battleModule.getAttackingId() == curFloor;
-            if (newRecord) {
-                curFloor++;
-                if (MAXFLOOR <= curFloor) {
-                    curFloor = MAXFLOOR;
-                }
-            }
             return ResultObject.success();
         }
     }
@@ -328,10 +322,6 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         return simplePlayerMap;
     }
 
-    public int getCurFloor() {
-        return curFloor;
-    }
-
     public int getTicketCount() {
         return ticketCount;
     }
@@ -347,13 +337,11 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     public Map<Integer, String> getBattleRecord() {
         return battleRecord;
     }
-
     public void setBattleRecord(Map<Integer, String> battleRecord) {
         this.battleRecord = battleRecord;
     }
 
-
-
-
-
+    public Map<Integer, Boolean> getFloorData() {
+        return floorData;
+    }
 }
