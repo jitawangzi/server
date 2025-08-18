@@ -138,9 +138,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     }
 
     public void getHelpPlayerInfo(int floor) {
-        if (!isPass(floor)) {
-            return;
-        }
+
         String rediskey = CacheType.EQUIP_TOWER_FLOOR_ID.key(floor);
         Set<Object> future = RedisUtil.getRedis().getSet(rediskey).random(11);
         List<Long> players = new ArrayList<>();
@@ -239,10 +237,6 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             return ErrorMsgEnum.pre_condition_check_error.ID;
         }
         int floor = id % 10;
-        if (!isPass(floor)) {
-            return ErrorMsgEnum.pre_condition_check_error.ID;
-        }
-
         BattleModule battleModule= player.getBattleModule();
         int unlock =EquipTowerManager.instance().get(floor).mainBattleId ;
         if(!battleModule.isBattlePass( unlock))
