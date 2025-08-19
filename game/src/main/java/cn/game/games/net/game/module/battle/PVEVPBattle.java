@@ -257,7 +257,16 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
-        return ResultObject.success();
+        OpType opType = OpType.PVEVPBattleQuickEnd;
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        BattleConfig battleConfig = BattleManager.instance().get(id);
+
+        if (ticketCount <= 0) {
+            return ResultObject.fail(ErrorMsgEnum.PVEVP_No_Ticket.getId());
+        }
+        ticketCount--;
+        List<RewardInfo> allRewards = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
+        return ResultObject.success(allRewards);
     }
 
     @Override
