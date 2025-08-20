@@ -409,6 +409,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 return CompletableFuture.failedStage(new Exception("刷新时间未到"));
             }
             refreshTime = DateUtil.currentTimeSeconds() + 2;
+            myRank = RankService.getInstance().getRankEntry(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId());
             if (myRank != null) {
                 List<Integer> ids = radomPlayer(myRank.getRank());
                 return  fillMainShowRankAsync(ids)

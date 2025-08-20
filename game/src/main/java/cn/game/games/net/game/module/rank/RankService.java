@@ -614,7 +614,7 @@ public class RankService {
 	 * 结算排行榜
 	 * @param rankId
 	 */
-	private void reward(int rankId) {
+	public void reward(int rankId) {
 		log.info("pre rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
 
 		RankConfig rankConfig = RankManager.instance().get(rankId);
@@ -644,6 +644,7 @@ public class RankService {
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
 						removeRank(rankType);
+						removeRank(RankType.DaShengLeiTaiDay);
 						// 准备NPC数据
 						setNpcToRank(serverId, rankType);
 					});
@@ -695,17 +696,15 @@ public class RankService {
 			npcScores.put((long)config.ID, (long) config.Integral);
 		}
 		var key = RankService.getInstance().getKey(serverId, rankType);
-		if (!RedisLocalCache.getInstance().exists(key)) {
-			// 异步批量设置
-			batchSetScoreAsync(serverId, rankType, npcScores)
-					.whenComplete((result, throwable) -> {
-						if (throwable != null) {
-							log.error("NPC批量初始化失败: serverId={}, rankType={}", serverId, rankType, throwable);
-						} else {
-							log.info("NPC批量初始化成功: serverId={}, rankType={}, count={}", serverId, rankType, npcScores.size());
-						}
-					});
-		}
+		// 异步批量设置
+		batchSetScoreAsync(serverId, rankType, npcScores)
+				.whenComplete((result, throwable) -> {
+					if (throwable != null) {
+						log.error("NPC批量初始化失败: serverId={}, rankType={}", serverId, rankType, throwable);
+					} else {
+						log.info("NPC批量初始化成功: serverId={}, rankType={}, count={}", serverId, rankType, npcScores.size());
+					}
+				});
 	}
 	/**
 	 * 批量设置玩家分数
