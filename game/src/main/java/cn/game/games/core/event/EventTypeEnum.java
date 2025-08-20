@@ -149,6 +149,7 @@ public enum EventTypeEnum {
 	GuildBargain(303, "公会砍价"),
 	/** 加入某个公会，参数 ：1 公会id，2公会名字， 3  是否是第一次加入公会  */
 	GuildJoin(304, "加入某个公会"),
+	/**公会捐献  参数：捐献id  */
 	GuildDonate(305, "公会捐献"),
 	;
 	private int id;

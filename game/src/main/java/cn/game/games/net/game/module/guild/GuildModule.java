@@ -19,10 +19,12 @@ import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.protocol.protobuf.PlayerMsg;
+import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 
 public class GuildModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.LoginFinish };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
+			EventTypeEnum.GuildDonate };
 	/** 上一个公会的id */
 	private long lastId;
 	/** 公会反复加入次数 * */
@@ -84,9 +86,10 @@ public class GuildModule extends BasePlayerModule {
 	protected Class<?>[] defaultDbMapperClass() {
 		return new Class<?>[] { GuildJoinMapper.class };
 	};
+
 	@Override
 	protected String[] defaultSelectMethodName() {
-		return new String[] {MapperConstant.selectByPrimaryKey}; 
+		return new String[] { MapperConstant.selectByPrimaryKey };
 	}
 
 	@Override
@@ -116,14 +119,16 @@ public class GuildModule extends BasePlayerModule {
 			if (player.getGuildId() > 0) {
 				int id = event.get(0);
 				int count = event.get(1);
-				if (id == Asset.GuildExp.ID || id == Asset.GuildPoint.ID) {
+				if (id == Asset.GuildExp.ID || id == Asset.GuildPoint.ID || id == Asset.GuildContribute.ID) {
 					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
 					guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
-				} else if (id == Asset.GuildContribute.ID) {
-
 				}
 			}
 			;
+		}
+		case GuildDonate -> {
+			GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+			guildProxy.donate(player.getGuildId(), playerId, event.get(0));
 		}
 		}
 	}
@@ -212,6 +217,13 @@ public class GuildModule extends BasePlayerModule {
 		lastId = guildId;
 		applyJoinList.clear();
 		inited = true;
+		
+		if (guildJoin == null) {
+			guildJoin = new GuildJoin(); 
+			guildJoin.setPlayerId(playerId);
+			guildJoin.setGuildId(guildId);
+			guildJoin.setCreateTime(DateUtil.currentTimeMillis());
+		}
 		player.handleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
 	}
 

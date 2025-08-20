@@ -255,3 +255,4 @@
 307,GinsengTreeEnergyRequest_39000021,0x39000021,,,,,人参果树领取体力果实
 308,BattleMountainBuffBagRequest_1300053b,0x1300053b,,,,,请求buff背包列表
 309,LimitedTimeGiftBuyRequest_15000061,0x15000061,,,,,购买限时礼包
+310,GuildRankListRequest_40000081,0x40000081,,,,,请求工会排行榜数据

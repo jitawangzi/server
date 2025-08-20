@@ -42,6 +42,8 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 	private int livenessLowDay; 
 	/** 公会砍价 */
 	GuildBargain bargain;
+	/** 创始人名字 */
+	private String creatorName; 
 
 	/*** 公会 申请列表 */
 	List<Long> applyList = new ArrayList<>();
@@ -87,10 +89,12 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 		}
 	}
 
-	public void init(long guildId) {
+	public void init(long guildId,int joinType,String creatorName) {
+		this.guildId = guildId;
+		this.creatorName = creatorName;
 		optLog = new GuildOptLog();
 		setting = new GuildSetting();
-		setting.setAutoJoin(2);
+		setting.setAutoJoin(joinType);
 
 		bargain = new GuildBargain();
 		bargain.setGuildId(guildId);
@@ -172,6 +176,15 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 
 	public long getGuildId() {
 		return guildId;
+	}
+	
+
+	public String getCreatorName() {
+		return creatorName;
+	}
+
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
 	}
 
 	@Override

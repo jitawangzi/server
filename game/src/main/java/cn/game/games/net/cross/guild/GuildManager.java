@@ -176,7 +176,7 @@ public class GuildManager {
 	 * @param createPlayerId 门主pid
 	 * @return 新的公会
 	 */
-	public Future<Guild> createGuild(long createPlayerId,String name,String notice,String declaration,int icon) {
+	public Future<Guild> createGuild(long createPlayerId,String name,String notice,String declaration,int icon,int joinType) {
 		Promise<Guild> promise = Promise.promise();
 		try {
 			long newGuildId = GuildHelper.createGuildId();
@@ -188,7 +188,7 @@ public class GuildManager {
 			// 创建公会
 			Guild guildInfo = new Guild();
 			// 公会初始化
-			guildInfo.init(name,notice,declaration,icon,newGuildId, createPlayerId);
+			guildInfo.init(name,notice,declaration,icon,joinType, newGuildId, createPlayerId);
 			guildInfo.updateModuleData();
 			DAO.insert(guildInfo.getData()).onSuccess(res -> {
 				if (res != null) {

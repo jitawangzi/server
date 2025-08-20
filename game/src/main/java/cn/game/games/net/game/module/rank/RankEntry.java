@@ -8,18 +8,19 @@ package cn.game.games.net.game.module.rank;
 public class RankEntry {
 
 	private final int rank;
-	private final long playerId;
+	/** 参与排行的对象id，例如玩家id，工会id等 */
+	private final long id;
 	private final long score;
 
 
-	public RankEntry(int rank, long playerId, long score) {
+	public RankEntry(int rank, long id, long score) {
 		this.rank = rank;
-		this.playerId = playerId;
+		this.id = id;
 		this.score = score;
 	}
 
-	public long getPlayerId() {
-		return playerId;
+	public long getId() {
+		return id;
 	}
 
 	public long getScore() {
@@ -32,6 +33,6 @@ public class RankEntry {
 
 	@Override
 	public String toString() {
-		return "RankEntry [rank=" + rank + ", playerId=" + playerId + ", score=" + score + "]";
+		return "RankEntry [rank=" + rank + ", id=" + id + ", score=" + score + "]";
 	}
 }

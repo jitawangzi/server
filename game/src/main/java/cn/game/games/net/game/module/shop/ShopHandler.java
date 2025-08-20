@@ -19,6 +19,8 @@ import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayType;
+import cn.game.games.net.game.module.shop.limitedtimegift.LimitedTimeGiftData;
+import cn.game.games.net.game.module.shop.limitedtimegift.LimitedTimeGiftModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
 import cn.game.protocol.generated.config.ActivityXianShiLiBaoConfig;
@@ -27,6 +29,7 @@ import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.FundPassRewardsConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HCBattleConfig;
+import cn.game.protocol.generated.config.LimitedTimeGiftConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopConfig;
@@ -39,6 +42,7 @@ import cn.game.protocol.generated.manager.ChapterPacksManager;
 import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.FundPassRewardsManager;
 import cn.game.protocol.generated.manager.HCBattleManager;
+import cn.game.protocol.generated.manager.LimitedTimeGiftManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
@@ -601,6 +605,15 @@ public class ShopHandler extends GameBaseHandler {
         LimitedTimeGiftBuyResponse_15000062 defaultInstance = LimitedTimeGiftBuyResponse_15000062.getDefaultInstance();
         LimitedTimeGiftBuyResponse_15000062.Builder resp = LimitedTimeGiftBuyResponse_15000062.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        
+        LimitedTimeGiftConfig limitedTimeGiftConfig = LimitedTimeGiftManager.instance().get(id); 
+        LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class); 
+        LimitedTimeGiftData limitedTimeGifts = module.getLimitedTimeGifts(limitedTimeGiftConfig.Group); 
+//        if (li) {
+//			
+//		}
+        
+        
         client.sendProtocol(resp.build());
     }
 }

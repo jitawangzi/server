@@ -30,6 +30,7 @@ public class SimpleGuild {
     /**申请的玩家id集合*/
     List<Long> applyPidList = new ArrayList<>();
     private String declaration; 
+    private String creatorName; // 创建者名称
 
 
     public GuildMsg.GuildSimpleInfo toProto() {
@@ -42,6 +43,7 @@ public class SimpleGuild {
         builder.setIsAutoJoin(isAutoJoin);
         builder.setMemberNum(num);
         builder.setDeclaration(declaration); 
+        builder.setCreatorName(creatorName); 
         return builder.build();
     }
 
@@ -119,5 +121,11 @@ public class SimpleGuild {
 	public void setDeclaration(String declaration) {
 		this.declaration = declaration;
 	}
+
+
+	public void setCreatorName(String creatorName) {
+		this.creatorName = creatorName;
+	}
+	
     
 }

@@ -30,6 +30,7 @@ import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
@@ -513,7 +514,7 @@ public class RankService {
 	 */
 	public CompletionStage<List<PlayerRank>> convertToPlayerRankEntries(CompletionStage<List<RankEntry>> entryAsync) {
 		CompletionStage<List<PlayerRank>> playerRankAsync = entryAsync.thenCompose(rankEntries -> {
-			String[] playerIds = rankEntries.stream().map(RankEntry::getPlayerId).map(String::valueOf).toArray(String[]::new);
+			String[] playerIds = rankEntries.stream().map(RankEntry::getId).map(String::valueOf).toArray(String[]::new);
 			Future<List<SimplePlayer>> ret = RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, playerIds);
 			return ret.toCompletionStage().thenApply(simplePlayers -> {
 				List<PlayerRank> retList = new ArrayList<>();
@@ -527,14 +528,39 @@ public class RankService {
 		});
 		return playerRankAsync;
 	}
+	public CompletionStage<List<GuildRank>> convertToGuildRankEntries(CompletionStage<List<RankEntry>> entryAsync) {
+		CompletionStage<List<GuildRank>> rankAsync = entryAsync.thenCompose(rankEntries -> {
+			String[] ids = rankEntries.stream().map(RankEntry::getId).map(String::valueOf).toArray(String[]::new);
+			Future<List<SimpleGuild>> ret = RedisLocalCache.getInstance().multiGetAsync(CacheType.ZONG_MEN_SIMPLE_DATA, ids);
+			return ret.toCompletionStage().thenApply(simpleGuilds -> {
+				List<GuildRank> retList = new ArrayList<>();
+				for (int i = 0; i < rankEntries.size(); i++) {
+					RankEntry rankEntry = rankEntries.get(i);
+					SimpleGuild simpleGuild = simpleGuilds.get(i);
+					retList.add(new GuildRank(rankEntry, simpleGuild));
+				}
+				return retList;
+			});
+		});
+		return rankAsync;
+	}
 	public CompletionStage<PlayerRank> convertToPlayerRankEntry(CompletionStage<RankEntry> entryAsync) {
 		CompletionStage<PlayerRank> playerRankAsync = entryAsync.thenCompose(rankEntry -> {
-			Future<SimplePlayer> ret = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(rankEntry.getPlayerId()));
+			Future<SimplePlayer> ret = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(rankEntry.getId()));
 			return ret.toCompletionStage().thenApply(simplePlayer -> {
 				return new PlayerRank(rankEntry, simplePlayer); 
 			});
 		});
 		return playerRankAsync;
+	}
+	public CompletionStage<GuildRank> convertToGuildRankEntry(CompletionStage<RankEntry> entryAsync) {
+		CompletionStage<GuildRank> rankAsync = entryAsync.thenCompose(rankEntry -> {
+			Future<SimpleGuild> ret = RedisLocalCache.getInstance().getAsync(CacheType.ZONG_MEN_SIMPLE_DATA.key(rankEntry.getId()));
+			return ret.toCompletionStage().thenApply(simpleGuild -> {
+				return new GuildRank(rankEntry, simpleGuild); 
+			});
+		});
+		return rankAsync;
 	}
 
 	/**
@@ -745,15 +771,15 @@ public class RankService {
 				BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
 					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
 							r -> r.RewardStage);
-					if (PlayerHelper.isRobot(rankEntry.getPlayerId())) {
+					if (PlayerHelper.isRobot(rankEntry.getId())) {
 						return CompletableFuture.completedFuture(null) ; 
 					}
 					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
-					return MailHelper.sendMail(rankEntry.getPlayerId(), rankConfig.RewardMailId, goods, false).onSuccess(v -> {
+					return MailHelper.sendMail(rankEntry.getId(), rankConfig.RewardMailId, goods, false).onSuccess(v -> {
 						totalProcessCount.incrementAndGet();
 					}).onFailure(e -> {
 						log.error("serverId[{}]rankId[{}] playerId[{}]rank[{}] rank reward mail error", serverId, rankId,
-								rankEntry.getPlayerId(), rankEntry.getRank(), e);
+								rankEntry.getId(), rankEntry.getRank(), e);
 					}).toCompletionStage().toCompletableFuture();
 				}, true).onFailure(e -> {
 					log.error("processBatchAsync rank reward error serverId[{}]rankId[{}] exception[{}]", serverId, rankId, e);

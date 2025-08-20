@@ -418,6 +418,9 @@ public class Player {
 		int goodsType = ItemHelper.getGoodsType(id);
 		return this.goodsModules.get(goodsType);
 	}
+	public Collection<GoodsModule<? extends Item>> getAllGoodsModule() {
+		return this.goodsModules.values();
+	}
 
 	public PlayerInfo toProto() {
 		PlayerInfo.Builder builder = PlayerInfo.newBuilder();

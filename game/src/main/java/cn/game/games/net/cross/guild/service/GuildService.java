@@ -56,14 +56,9 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		throw new LogicException(errorMsgEnum.ID);
 	}
 
-	/**
-	 * 创建公会
-	 * @param request 创建公会请求
-	 * @return 新公会信息
-	 */
 	@Override
-	public Future<GuildServiceInfo> createGuild(long createPlayerId,String name,String 	notice,String declaration,int icon) {
-		return GuildManager.getInstance().createGuild(createPlayerId,name,notice,declaration,icon).map(r -> {
+	public Future<GuildServiceInfo> createGuild(long createPlayerId, String name, String notice, String declaration, int icon,int joinType) {
+		return GuildManager.getInstance().createGuild(createPlayerId,name,notice,declaration,icon,joinType).map(r -> {
 			return r.toProto();
 		});
 	}
@@ -367,31 +362,6 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	/**
-	 * 领取公会活跃度奖励
-	 * @param guildId 公会ID
-	 * @param playerId 玩家ID
-	 * @param indexList 奖励索引列表
-	 * @return 是否成功
-	 */
-	@Override
-	public void receiveActiveReward(long guildId, long playerId, List<Integer> indexList) {
-		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
-		if (guildInfo == null) {
-			fail(ErrorMsgEnum.zong_men_not_exist);
-		}
-		GuildMember member = guildInfo.getMember(playerId);
-		if (member == null) {
-			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
-		}
-		for (int index : indexList) {
-			if (member.getRewardLivenessIndexList().contains(index)) {
-				fail(ErrorMsgEnum.zong_men_active_reward_already_get);
-			}
-		}
-		member.getRewardLivenessIndexList().addAll(indexList);
-	}
-
-	/**
 	 * 公会砍价
 	 * @param guildId 公会ID
 	 * @param playerId 玩家ID
@@ -439,5 +409,15 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		int bargainTotalNum = bargain.getBargainTotalNum();
 		int price = guildBargainConfig.Price[1] - bargainTotalNum;
 		return new int[] {guildBargainConfig.ID,price};
+	}
+
+	@Override
+	public Future<?> donate(long guildId, long playerId, int donateType) {
+		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		GuildMember member = guild.getMember(playerId); 
+		if (member != null) {
+			member.setTotalDonateCount(member.getTotalDonateCount() + 1);
+		}
+		return Future.succeededFuture();
 	}
 }

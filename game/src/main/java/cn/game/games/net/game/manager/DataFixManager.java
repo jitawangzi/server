@@ -177,7 +177,7 @@ public class DataFixManager {
 						}
 						for (RankEntry rankEntry : rankEntries) {
 							// 放到目标排行榜
-							RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getPlayerId(), rankEntry.getScore());
+							RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getId(), rankEntry.getScore());
 						}
 					}
 					RankService.getInstance().removeRankAsync(rankType, srouceServerId);

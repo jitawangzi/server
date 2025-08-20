@@ -4,23 +4,25 @@ import java.util.List;
 
 import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.guild.Guild;
-import cn.game.games.net.cross.guild.dto.MemberAuthRequest;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
-import cn.game.protocol.protobuf.GuildMsg;
-import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
+import cn.game.games.net.cross.guild.dto.MemberAuthRequest;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import io.vertx.core.Future;
 
 public interface GuildServiceInterface extends RemoteCrossServerInterface {
 
-	/**
-	 * 创建公会
-	 * @param request 创建公会请求
-	 * @param createPlayerId 创建玩家ID
+	/** 
+	 * 创建工会
+	 * @param createPlayerId  创建人id
+	 * @param name	公会名
+	 * @param notice
+	 * @param declaration
+	 * @param icon
+	 * @param joinType 加入类型 1 快速加入、2 需要验证加入、3 不可加入；
 	 * @return 新公会信息
 	 */
-	Future<GuildServiceInfo> createGuild(long createPlayerId, String name, String notice, String declaration, int icon);
+	Future<GuildServiceInfo> createGuild(long createPlayerId, String name, String notice, String declaration, int icon,int joinType);
 
 	/**
 	 * 获取公会信息
@@ -111,16 +113,8 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param value
 	 * @return
 	 */
+	@Deprecated
 	Future<?> addMemberContribute(long guildId, long playerId, int value);
-
-	/**
-	 * 领取公会活跃度奖励
-	 * @param guildId 公会ID
-	 * @param playerId 玩家ID
-	 * @param indexList 奖励索引列表
-	 * @return 是否成功
-	 */
-	void receiveActiveReward(long guildId, long playerId, List<Integer> indexList);
 
 	/**
 	 * 公会砍价
@@ -143,5 +137,8 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @return 成功加入的公会，如果为null，表示没有能加入的公会
 	 */
 	GuildServiceInfo randomJoin(long playerId);
+	
+	Future<?> donate(long guildId, long playerId, int donateType);
+	
 
 }

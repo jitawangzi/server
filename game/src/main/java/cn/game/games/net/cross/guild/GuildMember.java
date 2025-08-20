@@ -30,7 +30,12 @@ public class GuildMember implements GuildConstants.GuildEventHandler {
 	int weekContribution;
 	/**职位 */
 	public int position;
+	
+	/** 累计捐献次数 */
+	private int totalDonateCount; 
+	
 	/** 领取过的公会活跃度奖励  */
+	@Deprecated
 	List<Integer> rewardLivenessIndexList = new ArrayList<>();
 
 	public GuildMember() {
@@ -86,6 +91,15 @@ public class GuildMember implements GuildConstants.GuildEventHandler {
 	public int getWeekContribution() {
 		return weekContribution;
 	}
+	
+
+	public int getTotalDonateCount() {
+		return totalDonateCount;
+	}
+
+	public void setTotalDonateCount(int totalDonateCount) {
+		this.totalDonateCount = totalDonateCount;
+	}
 
 	public void addcontribution(int contribution) {
 		this.contribution += contribution;
@@ -106,7 +120,9 @@ public class GuildMember implements GuildConstants.GuildEventHandler {
 		builder.setJoinTime((int) (joinTime / 1000L));
 		builder.setPosition(position);
 		builder.setTodayContribute(contribution);
+		builder.setWeekContribute(weekContribution);
 		builder.setTotalContribute(totalContribution);
+		builder.setTotalDonateCount(totalDonateCount); 
 		SimplePlayer simplePlayer = PlayerHelper.getSimplePlayer(playerId); 
 		builder.setSimplePlayer(simplePlayer.toSimplePlayerInfo());
 		

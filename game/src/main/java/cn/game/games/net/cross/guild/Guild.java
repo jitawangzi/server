@@ -60,7 +60,7 @@ public class Guild {
 		module.registerAllModuleEventHandler();
 	}
 
-	public void init(String name,String notice,String declaration,int icon, long newGuildId, long createPlayerId) {
+	public void init(String name,String notice,String declaration,int icon,int joinType, long newGuildId, long createPlayerId) {
 		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId);
 
 		module = new GuildModuleData();
@@ -79,7 +79,7 @@ public class Guild {
 
 		// 初始化各个模块
 		module = new GuildModuleData();
-		module.init(newGuildId);
+		module.init(newGuildId,joinType,creator.getName());
 		module.afterInit(this);
 		module.registerAllModuleEventHandler();
 
@@ -202,6 +202,7 @@ public class Guild {
 		simpleGuild.setIsAutoJoin(getModule().setting.getAutoJoin());
 		simpleGuild.getApplyPidList().addAll(module.applyList);
 		simpleGuild.setDeclaration(data.getNotice());
+		simpleGuild.setCreatorName(module.getCreatorName());
 		return simpleGuild;
 	}
 
@@ -338,7 +339,12 @@ public class Guild {
 			module.setLiveness(module.liveness + num);
 		} else if (id == Asset.GuildExp.ID) {// 公会经验
 			addExp(num);
-		} else {
+		}  else if (id == Asset.GuildContribute.ID) {// 个人贡献
+			GuildMember member = getMember(playerId); 
+			if (member != null) {
+				member.addcontribution(num);
+			}
+		}else {
 			throw new IllegalArgumentException("不支持的公会资产类型: " + id);
 		}
 	}

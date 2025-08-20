@@ -527,7 +527,6 @@ public class ClientBattleHandler extends BaseHandler {
         BattleEquipTowerDataResponse_13000527 resp = (BattleEquipTowerDataResponse_13000527) message;
         int ticketCount = resp.getTicketCount();
         long nextTicketTime = resp.getNextTicketTime();
-        int curFloor = resp.getCurFloor();
         Client client = (Client) netClient;
     }
 

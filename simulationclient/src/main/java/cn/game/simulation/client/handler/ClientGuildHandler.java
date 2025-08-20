@@ -1,14 +1,15 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
 import cn.game.protocol.protobuf.GuildMsg.GuildBargainBuyResponse_40000063;
 import cn.game.protocol.protobuf.GuildMsg.GuildBargainResponse_40000061;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptResponse_40000071;
@@ -22,26 +23,29 @@ import cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerResponse_4000007d;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyProto;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyRewardResponse_40000073;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyTargetRefreshResponse_40000075;
-import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
-import cn.game.protocol.protobuf.GuildMsg.GuildLogProto;
-import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
-import cn.game.protocol.protobuf.GuildMsg.GuildQuickJoinResponse_40000066;
-import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
-import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
 import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDissolveResponse_40000012;
+import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
 import cn.game.protocol.protobuf.GuildMsg.GuildFindResponse_40000004;
 import cn.game.protocol.protobuf.GuildMsg.GuildInfoResponse_40000022;
-import cn.game.protocol.protobuf.GuildMsg.GuildListResponse_40000002;
-import cn.game.protocol.protobuf.GuildMsg.GuildLogResponse_40000026;
-import cn.game.protocol.protobuf.GuildMsg.GuildQuitResponse_40000018;
-import cn.game.protocol.protobuf.GuildMsg.GuildMemberPositionSetResponse_40000016;
-import cn.game.protocol.protobuf.GuildMsg.GuildSettingResponse_40000014;
-import cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthResponse_40000042;
-import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.GuildMsg.GuildQuitPush_40000024;
 import cn.game.protocol.protobuf.GuildMsg.GuildJoinPush_40000044;
+import cn.game.protocol.protobuf.GuildMsg.GuildListResponse_40000002;
+import cn.game.protocol.protobuf.GuildMsg.GuildLogProto;
+import cn.game.protocol.protobuf.GuildMsg.GuildLogResponse_40000026;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthResponse_40000042;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberPositionSetResponse_40000016;
+import cn.game.protocol.protobuf.GuildMsg.GuildQuickJoinResponse_40000066;
+import cn.game.protocol.protobuf.GuildMsg.GuildQuitPush_40000024;
+import cn.game.protocol.protobuf.GuildMsg.GuildQuitResponse_40000018;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankListResponse_40000082;
+import cn.game.protocol.protobuf.GuildMsg.GuildSettingResponse_40000014;
+import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.simulation.client.Client;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -82,6 +86,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildDonateResponse_40000068, this::donate);
         putInvoker(PbProtocol.GuildQuitPush_40000024, this::quitPush);
         putInvoker(PbProtocol.GuildJoinPush_40000044, this::joinPush);
+        putInvoker(PbProtocol.GuildRankListResponse_40000082, this::rankList);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -240,6 +245,12 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildJoinPush_40000044 resp = (GuildJoinPush_40000044) message;
         List<Integer> targetPidsList = resp.getTargetPidsList();
         GuildSimpleInfo guild = resp.getGuild();
+        Client client = (Client) netClient;
+    }
+
+    private void rankList(NetClient netClient, Object message) {
+        GuildRankListResponse_40000082 resp = (GuildRankListResponse_40000082) message;
+        GuildRankList rankList = resp.getRankList();
         Client client = (Client) netClient;
     }
 }

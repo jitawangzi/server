@@ -135,7 +135,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //            return ErrorMsgEnum.PVEVP_Season_Over.getId();
 //        }
         inBattleRank = mainShowRank.get(subId);
-        inBattleRankPlayerId=inBattleRank.getRankEntry().getPlayerId();
+        inBattleRankPlayerId=inBattleRank.getRankEntry().getId();
         ticketCount--;
         return 0;
     }
@@ -148,7 +148,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     @Override
     public ResultObject<List<RewardInfo>> battleEnd(BattleFieldEndRequest_13000003 request,  BattleMsg.BattleFieldEndResponse_13000004.Builder response) {
         BattleModule battleModule = player.getModule(BattleModule.class);
-        String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRank.getRankEntry().getPlayerId());
+        String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRank.getRankEntry().getId());
         String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
         boolean isRobot = inBattleRank.getPlayer().getId()<10000;
         if (request.getWin()) {
@@ -164,15 +164,15 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), myRank.getScore());
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(), myRank.getScore());
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getPlayerId(), targetDelScore);
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getPlayerId(), targetDelScore);
+            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getId(), targetDelScore);
+            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getId(), targetDelScore);
 
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), (int) myAddScore, true,rediskeyMy,1);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), (int) myAddScore, true,rediskeyMy,1);
             } else {
                 createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
-                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), myAddScore, true,rediskeyMy);
+                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), myAddScore, true,rediskeyMy);
             }
             resetCache();
             response.addParams((int)(myScore+myAddScore)   );
@@ -183,10 +183,10 @@ public class PVEVPBattle extends XiYouBattleHandler {
         } else { // 失败了，最终结算
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy,1);
+                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), 0, false,rediskeyMy,1);
             } else {
                 createBattleRecord_Target(0,true,rediskeyTarget);
-                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getPlayerId()), 0, false,rediskeyMy);
+                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), 0, false,rediskeyMy);
             }
             inBattleRank = null;
             inBattleRankPlayerId = 0L;
@@ -371,7 +371,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         return basescore;
     }
     private void setData(RankEntry rankEntry) {
-        var simplePlayer = PlayerHelper.getSimplePlayer(rankEntry.getPlayerId());
+        var simplePlayer = PlayerHelper.getSimplePlayer(rankEntry.getId());
         var playerRank = new PlayerRank(rankEntry, simplePlayer);
         mainShowRank.put(rankEntry.getRank(), playerRank);
     }

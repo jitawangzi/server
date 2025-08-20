@@ -17,7 +17,6 @@ import cn.game.games.cache.entity.PlayerIds;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.data.mapper.PlayerIdsMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;

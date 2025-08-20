@@ -180,7 +180,7 @@ public class TestHelper {
 			for (RankType rankType : RankType.values()) {
 				RankEntry rankEntry = RankService.getInstance().getRankEntry(serverId, rankType, playerId);
 				if (rankEntry.getScore() > 0) {
-					RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getPlayerId(), rankEntry.getScore());
+					RankService.getInstance().setScoreAsync(targetServer, rankType, rankEntry.getId(), rankEntry.getScore());
 					RankService.getInstance().removeRankAsync(rankType, serverId, playerId);
 				}
 			}
