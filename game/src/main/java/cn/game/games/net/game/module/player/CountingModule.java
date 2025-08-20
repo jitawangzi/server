@@ -217,8 +217,13 @@ public class CountingModule extends BasePlayerModule {
 		return map.getValue(conditionType);
 	}
 	
+	/**
+	 * 这里提升计数模块的事件处理优先级：
+	 * 比如对于充值事件，需要先处理，增加累计充值数量。 
+	 * 而之后的具体某个充值任务，可能会读取累计充值数量，所以需要有先后顺序
+	 */
 	@Override
 	public int processOrder() {
-		return 100;
+		return EVENT_PROCESS_ORDER_HIGH;
 	}
 }

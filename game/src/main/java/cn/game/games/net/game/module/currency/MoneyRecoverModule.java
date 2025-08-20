@@ -230,7 +230,7 @@ public class MoneyRecoverModule extends BasePlayerModule {
 
 	@Override
 	protected int getInitOrder() {
-		return Integer.MAX_VALUE;
+		return INIT_PRIORITY_LOW;
 	}
 
 	@Override

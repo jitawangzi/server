@@ -60,7 +60,7 @@ public class IntMapWrapper {
 	public IntMapWrapper addAll(int[][] attr) {
 		for (int i = 0; i < attr.length; i++) {
 			for (int j = 0; j < attr[i].length; j++) {
-				this.add(attr[i][0], attr[i][0]);
+				this.add(attr[i][0], attr[i][1]);
 			}
 		}
 		return this;

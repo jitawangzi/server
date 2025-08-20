@@ -12,7 +12,10 @@ import java.util.Comparator;
 public interface EventProcessor<E> {
 	@SuppressWarnings("rawtypes")
 	public static final Comparator<EventProcessor> ORDER_COMPARATOR = Comparator.comparingInt(EventProcessor::processOrder);
-
+    int EVENT_PROCESS_ORDER_HIGH = 100;
+    int EVENT_PROCESS_ORDER_MEDIUM = 10_000;
+    int EVENT_PROCESS_ORDER_LOW = Integer.MAX_VALUE;
+    
 	void handleEvent(E event);
 
 	/** 
@@ -21,7 +24,7 @@ public interface EventProcessor<E> {
 	 * @return
 	 */
 	default int processOrder() {
-		return 10000;
+		return EVENT_PROCESS_ORDER_MEDIUM;
 	}
 
 }

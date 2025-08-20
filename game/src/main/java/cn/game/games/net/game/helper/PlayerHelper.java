@@ -644,6 +644,8 @@ public class PlayerHelper {
 	public static void initNewPlayerData(Player player) {
 		Long playerId = player.getData().getPlayerId();
 		log.info("首次初始化角色playerId={}", playerId);
+		player.handleEvent(EventTypeEnum.PLAYER_INIT);
+
 		// 对模块数据初始化顺序有要求的，其他模块需要的， 一些基础数据尽量放到这里初始化。
 		player.getPlayerModule().initLevel();
 
@@ -651,7 +653,6 @@ public class PlayerHelper {
 			player.getCurrencyModule().setMaxCurrency();
 		}
 
-		// 对于事件的处理是没有顺序的
 		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
 
 		GameLogger.rolebuild(player);

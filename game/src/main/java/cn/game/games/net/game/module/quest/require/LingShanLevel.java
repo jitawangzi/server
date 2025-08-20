@@ -11,7 +11,7 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.LingShanLevel)
 public class LingShanLevel extends AbstractCumulativeCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BattleEnd };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.BattleEnd ,EventTypeEnum.LingShanSkipFloor};
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -22,12 +22,16 @@ public class LingShanLevel extends AbstractCumulativeCondition {
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
-		int id = event.getIntParameter(0);
-		BattleConfig battleConfig = BattleManager.instance().get(id);
-		if (battleConfig.BattleType == DungeonTypeEnum.LingShanWenChan.getId()) {
+		if (event.getType() == EventTypeEnum.BattleEnd) {
+			int id = event.getIntParameter(0);
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+			if (battleConfig.BattleType == DungeonTypeEnum.LingShanWenChan.getId()) {
 //			int subId = event.getIntParameter(1);
-			boolean win = event.getBoolParameter(2);
-			return win; 
+				boolean win = event.getBoolParameter(2);
+				return win; 
+			}
+		}else if (event.getType() == EventTypeEnum.LingShanSkipFloor) {
+			return true; 
 		}
 		return false;
 	}

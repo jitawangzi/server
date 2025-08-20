@@ -5,6 +5,7 @@ import java.util.List;
 
 import cn.game.core.exception.LogicException;
 import cn.game.games.core.ResultObject;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -121,6 +122,9 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			throw new LogicException(ErrorMsgEnum.pre_condition_check_error.getId());
 		}
 		lastCompleteFloor = floor; // 记录最后通关的层数
+		
+		player.handleEvent(EventTypeEnum.LingShanSkipFloor,floor);
+		
 		return end(floor,true); // 直接结算
 	}
 

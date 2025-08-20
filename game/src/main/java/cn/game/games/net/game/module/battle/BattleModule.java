@@ -146,6 +146,7 @@ public class BattleModule extends BasePlayerModule  {
 		if (type == DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId()){
 			player.getOfflineBattleModule().joinPlay();
 		}
+		player.handleEvent(EventTypeEnum.LineupUpdate,type);
 
 	}
 

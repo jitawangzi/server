@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.develop.hero;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.protocol.generated.config.DayCardConfig;
@@ -24,6 +27,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.manager.DayCardManager;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -35,8 +39,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			EventTypeEnum.Hero, EventTypeEnum.HeroQuality };
 
 	/** 当前使用的英雄id */
+	@Deprecated
 	private long heroUid;
 	/** 上阵的英雄列表 */
+	@Deprecated
 	private Map<Long, Integer> battleHeros = new HashMap<Long, Integer>();
 
 	/** 免费日租卡英雄id */
@@ -74,12 +80,13 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		case PLAYER_CREATE: {
 			Collection<Hero> list = list();
 			// 初始英雄全上阵
-			int pos = 1;
-			for (Hero hero : list) {
-//				hero.setBattle(true);
-//				battleHeros.add(hero.getId());
-				battleHeros.put(hero.getId(), pos++);
-			}
+			BattleModule battleModule = player.getBattleModule();
+			List<String> collect = list.stream().map(hero -> hero.getId() + "").collect(toList());
+			battleModule.updateLineup(DungeonTypeEnum.BattleChapter.getId(), 0, collect);
+//			int pos = 1;
+//			for (Hero hero : list) {
+//				battleHeros.put(hero.getId(), pos++);
+//			}
 			break;
 		}
 		case NewDay: {

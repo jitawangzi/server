@@ -93,4 +93,8 @@ public class FuncModule extends BasePlayerModule {
 		}
 
 	}
+	@Override
+	public int processOrder() {
+		return EVENT_PROCESS_ORDER_LOW;
+	}
 }
