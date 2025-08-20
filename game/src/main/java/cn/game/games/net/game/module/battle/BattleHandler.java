@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import cn.game.games.cache.entity.Base;
+import cn.game.games.core.SimplePlayer;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BattleMsg;
 import org.springframework.stereotype.Component;
@@ -1830,7 +1831,7 @@ public class BattleHandler extends GameBaseHandler {
         var dataLoadingStage =pvevpBattle.getRadomPlayer(req.getType());
         dataLoadingStage.thenAccept(r -> {
                 r.forEach((k, v) -> {
-                BaseMsg.PlayerRankInfo.Builder rb = BaseMsg.PlayerRankInfo.newBuilder();
+                PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
                 rb.setRank(v.getRankEntry().getRank());
                 rb.setPlayer(v.getPlayer().toSimplePlayerInfo());
                 long score = v.getRankEntry().getScore();
@@ -1838,6 +1839,12 @@ public class BattleHandler extends GameBaseHandler {
                 resp.addChallengePlayers(rb);
 
             } );
+            PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
+            rb.setRank(pvevpBattle.getMyRank().getRank());
+            rb.setPlayer(new SimplePlayer(player).toSimplePlayerInfo());
+            long score = pvevpBattle.getMyRank().getScore();
+            rb.setScore((score < 0 ? 0 : score) + "");
+            resp.setMyRankInfo(rb);
             client.sendProtocol(resp.build());})
         .exceptionally(player::handleFailFunction);
     }
