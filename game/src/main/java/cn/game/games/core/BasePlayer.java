@@ -25,7 +25,7 @@ public class BasePlayer implements Serializable {
 		this.name = player.getData().getName();
 		this.level = player.getLevel();
 		this.serverId = player.getServerId();
-		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
+		this.serverName = VirtualServerManager.instance().get(this.serverId).name;
 	}
 
 	public long getId() {

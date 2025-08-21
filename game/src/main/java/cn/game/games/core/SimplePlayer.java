@@ -120,7 +120,7 @@ public class SimplePlayer implements Serializable {
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
-		this.serverName = VirtualServerManager.instance().get(this.serverId).ServerName;
+		this.serverName = VirtualServerManager.instance().get(this.serverId).name;
 		this.tdLevel = player.getDevelopModule().getHeavenlyDaoLevel();
 		this.figure = player.getModule(FigureModule.class).getFigure();
 		//存储 大道争锋阵容

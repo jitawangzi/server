@@ -440,7 +440,7 @@ public class Player {
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
 		builder.setOfflineTime(getData().getOfflineTime() + "");
 		builder.setServerId(getData().getServerId());
-		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
+		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).name);
 		return builder.build();
 	}
 
@@ -651,7 +651,7 @@ public class Player {
 		builder.setHead(getData().getHead());
 		builder.setHeadFrame(getData().getHeadFrame());
 		builder.setServerId(getData().getServerId());
-		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).ServerName);
+		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).name);
 		builder.setTiandaoLevel(getDevelopModule().getHeavenlyDaoLevel());
 		builder.setCombatEffectiveness(getAttrModule().getPower());
 

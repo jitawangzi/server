@@ -154,7 +154,6 @@ public class JsonUtil {
 		}
 	}
 
-
 	public static JsonObject parserJson(String jsonStr) throws Exception {
 		return gson.fromJson(jsonStr, JsonObject.class);
 	}
@@ -278,5 +277,9 @@ public class JsonUtil {
 				throws IOException, JacksonException {
 			return deserialize(p, ctxt);
 		}
+	}
+
+	public static ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 }
