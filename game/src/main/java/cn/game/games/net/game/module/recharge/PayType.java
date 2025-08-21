@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.event.EventTypeEnum;
@@ -14,6 +15,7 @@ import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.shop.ShopModule;
+import cn.game.games.net.game.module.shop.limitedtimegift.LimitedTimeGiftModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
 import cn.game.games.net.game.module.vip.VipModule;
@@ -34,6 +36,9 @@ import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.log.LoggerType;
+import io.vertx.core.Future;
 
 public enum PayType {
 	/** 首次充值 */
@@ -145,7 +150,7 @@ public enum PayType {
 			ActivityXianShiLiBaoConfig activityXianShiLiBaoConfig = ActivityXianShiLiBaoManager.instance().get(id);
 			XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
 			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
-			return false;
+			return true;
 		}
 	},
 	/**每日优惠礼包购买*/
@@ -158,7 +163,19 @@ public enum PayType {
 //			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
 			return false;
 		}
-	}
+	},
+	/**限时礼包购买*/
+	LimitedTimeGift(11) {
+		public boolean offlinePay(Player player, PayItem payItem) {
+			int id = payItem.getPayId();
+			LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class);
+			Future<List<RewardInfo>> buy = module.buy(id,false);
+			buy.onFailure(err -> {
+				LoggerType.Stdout.logger.error("玩家"+player.getPlayerId()+"离线充值购买限时礼包失败", err);
+			});
+			return AsyncUtils.await(buy)!=null; 
+		}
+	},
 	;
 
 
@@ -178,7 +195,7 @@ public enum PayType {
 	 * @param payItem 补单的信息
 	 */
 	public boolean offlinePay(Player player, PayItem payItem){
-		System.err.println(String.format("%s 玩家离线充值 未定义 pid:%d",payItem.getPayType(),player.getPlayerId()));
+		LoggerType.Stdout.logger.error("%s 玩家离线充值 未定义 pid:%d",payItem.getPayType(),player.getPlayerId());
 		return false;
 	}
 

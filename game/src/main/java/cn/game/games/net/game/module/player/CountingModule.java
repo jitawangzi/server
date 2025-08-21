@@ -10,10 +10,12 @@ import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -81,8 +83,13 @@ public class CountingModule extends BasePlayerModule {
 			break;
 		}
 		case BattleEnd: {
+			int battleId =  event.getIntParameter(0); 
+			BattleConfig battleConfig = BattleManager.instance().get(battleId); 
 			addCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
 			addCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
+			if (!event.getBoolParameter(2)) {
+				addCount(ConditionTypeEnum.FunAllFailTimes,1,battleConfig.BattleType);
+			}
 			break;
 		}
 		case HeroBreak: {
@@ -103,6 +110,7 @@ public class CountingModule extends BasePlayerModule {
 			if (id == Asset.diamond.ID) {
 				addCount(ConditionTypeEnum.ConsumesDiamonds, count);
 			}
+			addCount(ConditionTypeEnum.UseMatiarialToday, count);
 			break;
 		}
 		case Patrol: {

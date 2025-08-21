@@ -355,7 +355,10 @@ public class ServerHandler extends GameBaseHandler {
 						client.sendProtocol(resp.build());
 						return null;
 					}
-					payItem.getPayType().offlinePay(offlinePlayer,payItem);
+					boolean offlinePay = payItem.getPayType().offlinePay(offlinePlayer,payItem);
+					if (offlinePay) {
+						log.warn("PayItem offlinePay fail : " + payItem);
+					}
 					payItem.finish();
 					offlinePlayer.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
 					GameLogger.recharge(offlinePlayer, payItem);

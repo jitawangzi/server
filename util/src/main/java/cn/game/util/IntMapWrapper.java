@@ -14,14 +14,13 @@ public class IntMapWrapper {
 	public void setValue(int id, int value) {
 		map.put(id, value);
 	}
+
 	public int getValue(int id) {
-		Integer value = map.get(id);
-		return value == null ? 0 : value;
+		return map.getOrDefault(id, 0);
 	}
 
 	public boolean hasValue(int id) {
-		Integer value = map.get(id);
-		return value != null;
+		return map.containsKey(id);
 	}
 
 	public boolean removeValue(int id) {
@@ -31,7 +30,7 @@ public class IntMapWrapper {
 	public Integer remove(int id) {
 		return map.remove(id);
 	}
-	
+
 	public int add(int id, int value) {
 		if (value == 0) {
 			return 0;
@@ -74,7 +73,7 @@ public class IntMapWrapper {
 	public int sum() {
 		return map.values().stream().mapToInt(Integer::intValue).sum();
 	}
-	
+
 	/** 
 	 * 
 	 * @param id

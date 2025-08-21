@@ -32,7 +32,9 @@ public class ConditionContainer {
 	private ConditionContainer create(long playerId, List<Integer> conditions, boolean or, Consumer<Condition> condChangeActions,
 			Consumer<Condition> condAchieveActions, Consumer<Condition> achieveAction) {
 		achieveWrapAction = r -> {
-			condAchieveActions.accept(r);
+			if (condAchieveActions!=null) {
+				condAchieveActions.accept(r);
+			}
 			checkFinish(r);
 		};
 
@@ -47,7 +49,9 @@ public class ConditionContainer {
 			Consumer<Condition> condAchieveActions, Consumer<Condition> achieveAction, String dbString) {
 
 		achieveWrapAction = r -> {
-			condAchieveActions.accept(r);
+			if (condAchieveActions!=null) {
+				condAchieveActions.accept(r);
+			}
 			checkFinish(r);
 		};
 		if (ServerContext.getInstance().isSinglePlayerTable()) {

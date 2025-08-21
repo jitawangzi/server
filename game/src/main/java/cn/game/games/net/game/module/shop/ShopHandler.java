@@ -602,18 +602,15 @@ public class ShopHandler extends GameBaseHandler {
     private void limitedTimeGiftBuy(NetClient client, Object message) {
         LimitedTimeGiftBuyRequest_15000061 req = (LimitedTimeGiftBuyRequest_15000061) message;
         int id = req.getId();
-        LimitedTimeGiftBuyResponse_15000062 defaultInstance = LimitedTimeGiftBuyResponse_15000062.getDefaultInstance();
         LimitedTimeGiftBuyResponse_15000062.Builder resp = LimitedTimeGiftBuyResponse_15000062.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         
-        LimitedTimeGiftConfig limitedTimeGiftConfig = LimitedTimeGiftManager.instance().get(id); 
         LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class); 
-        LimitedTimeGiftData limitedTimeGifts = module.getLimitedTimeGifts(limitedTimeGiftConfig.Group); 
-//        if (li) {
-//			
-//		}
-        
-        
-        client.sendProtocol(resp.build());
+        Future<List<RewardInfo>> buy = module.buy(id, true); 
+        buy.map(r -> {
+        	resp.addAllRewards(r);
+        	client.sendProtocol(resp.build());
+        	return null; 
+		}).onFailure(player::handleFail); 
     }
 }
