@@ -231,23 +231,25 @@ public class GinsengTreeHandler extends GameBaseHandler {
                 }
             }
         }
-        RSGRewardConfig rsgRewardConfig = null;
         List<RSGRewardConfig> list = RSGRewardManager.instance().list();
-        if (fetterMap.isEmpty()) {
-            rsgRewardConfig = Rnd.randomElement(list);
-        } else {
-            int index = Rnd.randomIndex(list, e -> {
-                int weigetAdd = 0;
-                if (!fetterMap.isEmpty()) {
-                    weigetAdd = fetterMap.getOrDefault(e.ID, 0);
-                }
-                return e.RewardWeight + weigetAdd;
-            });
-            rsgRewardConfig = list.get(index);
-        }
-        //        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
-        List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
-        resp.addAllRewards(resources);
+        int rewardCount = Rnd.randomInRange(GlobalConst.RSGTreeRewardNum); 
+        for (int i = 0; i < rewardCount; i++) {
+        	RSGRewardConfig rsgRewardConfig = null;
+        	if (fetterMap.isEmpty()) {
+        		rsgRewardConfig = Rnd.randomElement(list);
+        	} else {
+        		int index = Rnd.randomIndex(list, e -> {
+        			int weigetAdd = 0;
+        			if (!fetterMap.isEmpty()) {
+        				weigetAdd = fetterMap.getOrDefault(e.ID, 0);
+        			}
+        			return e.RewardWeight + weigetAdd;
+        		});
+        		rsgRewardConfig = list.get(index);
+        	}
+        	List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
+        	resp.addAllRewards(resources);
+		}
         module.startFruitTask();
         client.sendProtocol(resp.build());
     }
