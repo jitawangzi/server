@@ -509,6 +509,8 @@ public class BattleModule extends BasePlayerModule  {
 		case NewWeek: {
 			PVEVPBattle p=getBattle(DungeonTypeEnum.PVEVPBattle);
 			p.newWeek();
+			DaShengXunShanBattle d=getBattle(DungeonTypeEnum.MountainBattle);
+			d.newWeek();
 			break;
 		}
 		case SystemTimeChange: {

@@ -42,7 +42,9 @@ public class DaShengXunShanBattle extends XiYouBattleHandler {
     void newDay() {
         // reset();
     }
-
+    public void newWeek() {
+        initMountainData();
+    }
 
     @Override
     public int checkCustom(int id, int subId, long... args) {
