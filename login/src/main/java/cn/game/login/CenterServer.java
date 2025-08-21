@@ -10,6 +10,7 @@ import cn.game.login.net.clientpacket.vertx.wechat.IOSPayOrderProcessor;
 import cn.game.util.Config;
 import cn.game.util.MailUtil;
 import cn.game.util.ServerType;
+import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.log.Log4j2ApolloLoader;
@@ -47,6 +48,10 @@ public class CenterServer {
 //		springApolloLoader.init();
 
 		VxHolder.init();
+		
+		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
+		springApolloLoader.init();
+		
 		DeploymentOptions options = new DeploymentOptions();
 		options.setInstances(4);
 		VxHolder.deployVerticleSync(CenterRestServer.class, options);

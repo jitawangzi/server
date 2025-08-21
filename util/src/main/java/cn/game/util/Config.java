@@ -180,7 +180,7 @@ public final class Config {
 			wechat_secret = initialProp.getProperty("wechat_secret", "");
 			center_server_url = initialProp.getProperty("center_server_url", "");
 			wechat_midas_offerId = initialProp.getProperty("wechat_midas_offerId", "");
-			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", ""));
+			wechat_midas_env = Byte.parseByte(initialProp.getProperty("wechat_midas_env", "1"));
 			wechat_midas_AppKey = initialProp.getProperty("wechat_midas_AppKey", "");
 			wechat_pay_callback_url = initialProp.getProperty("wechat_pay_callback_url", "");
 			wechat_pay_page_url = initialProp.getProperty("wechat_pay_page_url", "");
