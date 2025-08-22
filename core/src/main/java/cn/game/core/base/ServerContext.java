@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.ConfigService;
 import com.sun.tools.attach.VirtualMachine;
 
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
 import cn.game.core.event.AbstractEvent;
 import cn.game.core.event.EventBus;
@@ -24,9 +25,21 @@ import cn.game.core.event.EventDispatcher;
 import cn.game.core.event.EventHandler;
 import cn.game.core.event.EventProcessor;
 import cn.game.core.event.EventRegistry;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
+import cn.game.core.zookeeper.IdExtractor;
+import cn.game.core.zookeeper.KeyAdapter;
+import cn.game.core.zookeeper.NodeChangeType;
+import cn.game.core.zookeeper.PathPolicy;
+import cn.game.core.zookeeper.ZkBackedCache;
+import cn.game.core.zookeeper.ZkBackedCacheFactory;
+import cn.game.core.zookeeper.ZkCacheRegistry;
+import cn.game.core.zookeeper.ZkCacheType;
+import cn.game.core.zookeeper.codec.ActiveServerNode;
+import cn.game.core.zookeeper.codec.JsonValueCodec;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.util.Config;
 import cn.game.util.LockUtil;
 import cn.game.util.MailUtil;
@@ -56,6 +69,10 @@ public class ServerContext {
 	private RpcClient rpcClient = new VertxRpcClient();
 
 	private EventBus<?, ? extends AbstractEvent<?>> eventBus;
+	
+	private ZkCacheRegistry<ZkCacheType> zkCacheRegistry; 
+	
+	private ValidServerService validGameService; 
 
 	private ServerContext() {
 	};
@@ -103,6 +120,23 @@ public class ServerContext {
 		initHotUpdate();
 		startLeaderTask();
 		waitOtherNodeStartup();
+		initZkCacheRegistry();
+		initValidServerService();
+	}
+
+	private void initValidServerService() {
+		validGameService = new ValidServerService(zkCacheRegistry.get(ZkCacheType.VIRTUAL_SERVER_LIST), null);
+		validGameService.addOpenListener(s -> {
+			fireEvent(ServerEventTypeEnum.VirtualServerOpen, s.ID); 
+		});
+		validGameService.initFromSnapshot();
+	}
+
+	private void initZkCacheRegistry() throws Exception {
+		ZkBackedCache<String, VirtualServerView> virtualServerCache = ZkBackedCacheFactory.createVirtualServerCache();
+		this.zkCacheRegistry = new ZkCacheRegistry<>(ZkCacheType.class);
+		zkCacheRegistry.register(ZkCacheType.VIRTUAL_SERVER_LIST, virtualServerCache);
+		zkCacheRegistry.startAllAndWarmup();
 	}
 
 	/** 
@@ -162,6 +196,9 @@ public class ServerContext {
 				e.printStackTrace();
 				log.error("leaderLatch close error", e);
 			}
+		}
+		if (zkCacheRegistry!= null) {
+			zkCacheRegistry.close();
 		}
 	}
 
@@ -319,6 +356,14 @@ public class ServerContext {
 
 	public void setEventBus(EventBus<?, ? extends AbstractEvent<?>> eventBus) {
 		this.eventBus = eventBus;
+	}
+
+	public ZkCacheRegistry<ZkCacheType> getZkCacheRegistry() {
+		return zkCacheRegistry;
+	}
+
+	public ValidServerService getValidGameService() {
+		return validGameService;
 	}
 
 	@SuppressWarnings("unchecked")

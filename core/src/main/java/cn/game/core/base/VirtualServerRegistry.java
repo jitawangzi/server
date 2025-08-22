@@ -497,7 +497,8 @@ public class VirtualServerRegistry implements Closeable {
 
 		@Override
 		public String toString() {
-			return JsonUtil.toJsonString(this);
+		    return String.format("VirtualServerView{ID='%s', name='%s', playerMaxCount=%d, seq=%d, openTime=%s}",
+		        ID, name, playerMaxCount, seq, openTime);
 		}
 	}
 }

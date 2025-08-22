@@ -31,8 +31,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LinuxTimeShift {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class LinuxTimeShift {
+private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.class);
     private static final Path STATE_DIR = Paths.get("/var/lib/java-time-shift");
     private static final Path STATE_FILE = STATE_DIR.resolve("state.properties");
     private static final DateTimeFormatter DT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -144,7 +147,9 @@ public class LinuxTimeShift {
 
         if ("help".equalsIgnoreCase(first) || "--help".equalsIgnoreCase(first) || "-h".equalsIgnoreCase(first)
                 || "status".equalsIgnoreCase(first) || "restore".equalsIgnoreCase(first)) {
-            throw new IllegalArgumentException("预估不支持命令：" + first);
+//            throw new IllegalArgumentException("预估不支持命令：" + first);
+        	LOGGER.error("预估不支持命令：" + first);
+        	return null; 
         }
 
         if ("set".equalsIgnoreCase(first)) {

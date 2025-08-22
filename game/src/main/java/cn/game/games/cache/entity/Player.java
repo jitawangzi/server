@@ -461,7 +461,7 @@ public class Player {
 		BattleModule battleModule = getBattleModule();
 
 		builder.setCurBattleId(battleModule.getFightMainBattleId());
-		builder.setPower(getAttrModule().getPower());
+		builder.setPower((int)getAttrModule().getPower());
 
 		return builder.build();
 	}
@@ -653,7 +653,7 @@ public class Player {
 		builder.setServerId(getData().getServerId());
 		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).name);
 		builder.setTiandaoLevel(getDevelopModule().getHeavenlyDaoLevel());
-		builder.setCombatEffectiveness(getAttrModule().getPower());
+		builder.setCombatEffectiveness((int)getAttrModule().getPower());
 
 		return builder.build();
 

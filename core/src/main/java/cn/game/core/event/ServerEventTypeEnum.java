@@ -17,6 +17,8 @@ public enum ServerEventTypeEnum {
 	/** 跨月 */
 	NewMonth(111, "跨月"),
 	
+	/**  参数： VirtualServer id： server1、server2等等 */
+	VirtualServerOpen(200, "某服务器到达开服时间，开启服务器"),
 	/**  参数： 活动id */
 	ActivityOpenTime(300, "某活动到达开启时间"),
 	/**  参数： 活动id */

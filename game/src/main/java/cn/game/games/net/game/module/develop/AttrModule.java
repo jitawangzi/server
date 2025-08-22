@@ -1,13 +1,11 @@
 package cn.game.games.net.game.module.develop;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import cn.game.games.net.cross.guild.GuildHelper;
-import cn.game.games.net.game.module.guild.GuildHandler;
-import cn.game.protocol.protobuf.GuildMsg;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
@@ -22,6 +20,7 @@ import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.util.FloatMapWrapper;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.reflect.ClassHelper;
 
@@ -33,23 +32,23 @@ import cn.game.util.reflect.ClassHelper;
 @JsonIgnoreType
 public class AttrModule extends BasePlayerModule {
 
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginFinish };
+	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LoginFinish };
 	/** 武将属性 */
 	@JsonIgnore
-	private Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
+	private Map<Long, FloatMapWrapper> heroAttrs = new HashMap<Long, FloatMapWrapper>();
 	/** 作用所有上阵的武将，也称为外围属性 */
 	@JsonIgnore
 	private Map<AttrCalcType, PlayerAttrCalc> playerAttrCalcMap = new HashMap<AttrCalcType, PlayerAttrCalc>();
 
 	/** 战斗力 */
-	private int power;
+	private long power;
 
 	/** 
 	 * 计算所有属性，给客户端战斗时使用。
 	 */
 	public void calcAllAttr() {
 	
-		calcHeroAttr();
+//		calcHeroAttr();
 
 		playerAttrCalcMap.forEach((k, v) -> {
 			v.reCalcAttr();
@@ -68,22 +67,27 @@ public class AttrModule extends BasePlayerModule {
 	public PlayerBattleAttrs buildBattleAttrs() {
 		cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs.Builder builder = PlayerBattleAttrs.newBuilder();
 
-		for (Entry<Long, IntMapWrapper> entry : heroAttrs.entrySet()) {
-			builder.addHeroAttrs(HeroAttr.newBuilder().setHeroUid(entry.getKey().toString()).putAllHeroAttrs(entry.getValue().getMap()));
+		for (Entry<Long, FloatMapWrapper> entry : heroAttrs.entrySet()) {
+			Map<Integer, Float> map = entry.getValue().getMap(); 
+			Map<Integer, Integer> mapIntMap = new HashMap<>();
+			map.forEach((k, v) -> mapIntMap.put(k, v.intValue()));
+			builder.addHeroAttrs(HeroAttr.newBuilder().setHeroUid(entry.getKey().toString()).putAllHeroAttrs(mapIntMap));
 		}
 
-		IntMapWrapper playerMap = getPlayerAttrMap();
-
-		builder.putAllPlayerAttrs(playerMap.getMap());
+		FloatMapWrapper playerMap = getPlayerAttrMap();
+		IntMapWrapper intMapWrapper = new IntMapWrapper(); 
+		playerMap.getMap().forEach((k, v) -> intMapWrapper.add(k, v.intValue()));
+		
+		builder.putAllPlayerAttrs(intMapWrapper.getMap());
 
 		return builder.build();
 	}
 
-	public IntMapWrapper getPlayerAttrMap() {
-		IntMapWrapper playerMap = new IntMapWrapper();
+	public FloatMapWrapper getPlayerAttrMap() {
+		FloatMapWrapper playerMap = new FloatMapWrapper();
 //		playerMap.addAll(swordAttr.getMap());
 //		playerMap.addAll(alchemyAttr.getMap());
-
+		calcAllAttr();
 		playerAttrCalcMap.forEach((k, v) -> {
 			playerMap.addAll(v.getAttrMap().getMap());
 		});
@@ -107,14 +111,24 @@ public class AttrModule extends BasePlayerModule {
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return events;
 	}
 
 	@Override
 	public void handleEvent(PlayerEvent event) {
-		// TODO Auto-generated method stub
-
+		switch (event.getType()) {
+		case PLAYER_CREATE: {
+			initPlayerAttrMapInstance(); 
+			calcPower();
+			break;
+		}
+//		case LoginFinish: {
+//			calcAllAttr();
+//			break;
+//		}
+		default:
+			break;
+		}
 	}
 
 	@Override
@@ -122,9 +136,21 @@ public class AttrModule extends BasePlayerModule {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public int processOrder() {
+		return EVENT_PROCESS_ORDER_LOW;
+	}
 
 	@Override
 	public void initFromDbAfter() {
+		initPlayerAttrMapInstance();
+	}
+
+	private void initPlayerAttrMapInstance() {
+		if (!playerAttrCalcMap.isEmpty()) {
+			return ; 
+		}
 		Set<Class<?>> allModuleClass = ClassHelper.findSubclasses("cn.game.games", PlayerAttrCalc.class);
 		for (Class<?> class1 : allModuleClass) {
 			try {
@@ -143,19 +169,32 @@ public class AttrModule extends BasePlayerModule {
 		return INIT_PRIORITY_LOW;
 	}
 
-	public int getPower() {
+	public long getPower() {
 		return power;
 	}
-
-	public void setPower(int power) {
-		this.power = power;
-	}
-
 	public Map<AttrCalcType, PlayerAttrCalc> getPlayerAttrCalcMap() {
 		return playerAttrCalcMap;
 	}
 
-	public Map<Long, IntMapWrapper> getHeroAttrs() {
+	public Map<Long, FloatMapWrapper> getHeroAttrs() {
 		return heroAttrs;
 	}
+	
+	/** 
+	 * 主角攻击力=攻击力之和*（1+攻击力加成之和）
+
+1.装备：6件装备的基础属性攻击力、附加属性中的攻击力、强化攻击力
+2.宝石：镶嵌在装备上的宝石中，带有攻击力的部分
+3.图鉴：图鉴增加的攻击属性
+	 */
+	public long calcPower() {
+		FloatMapWrapper playerAttrMap = getPlayerAttrMap(); 
+		float baseAttack = playerAttrMap.getValue(4);
+		float attackAdd = playerAttrMap.getValue(5);
+		long allCombat = (long) (baseAttack * (1 + attackAdd/10000f));
+
+		this.power = allCombat;
+		return allCombat; 
+	}
+	
 }
