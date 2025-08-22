@@ -11,7 +11,7 @@ import java.util.*;
  * 运维/工具侧的一次性写入辅助：
  * - initOnce：仅当 basePath 无任何子节点时，批量创建
  * - initMissing：仅创建缺失节点（半幂等）
- * - upsertAll：批量 upsert
+ * - upsertAll：批量 upsert（使用 Replace 语义写入；如需合并写，请改用业务侧循环 upsert）
  *
  * 为简化：不做并发版本控制，不处理强原子性失败回滚等高级特性。
  */
@@ -92,7 +92,7 @@ public class ZkInitializer<K, T> {
         for (T v : values) {
             String sk = toStringKey(v);
             String path = pathPolicy.pathForId(sk);
-            byte[] data = codec.encode(v);
+            byte[] data = codec.encode(v); // 注意：此处不做合并，直接覆盖
             if (client.checkExists().forPath(path) == null) {
                 tx = tx.create().forPath(path, data).and();
             } else {

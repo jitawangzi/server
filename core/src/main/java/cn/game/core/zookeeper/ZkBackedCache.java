@@ -1,5 +1,9 @@
 package cn.game.core.zookeeper;
 
+import cn.game.core.zookeeper.merge.MergePolicy;
+import cn.game.core.zookeeper.merge.MapMergePolicy;
+import cn.game.core.zookeeper.merge.ReplacePolicy;
+import cn.game.core.zookeeper.merge.SetUnionPolicy;
 import cn.game.util.ZkHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
@@ -14,12 +18,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 通用的“ZK 驱动的本地只读缓存”，带强类型值 T、外部键类型 K：
+ * 通用的“ZK 驱动的本地缓存”，带强类型值 T、外部键类型 K：
  * - 内部统一用字符串键做存储与路径拼接，外部通过 KeyAdapter<K> 进行键转换。
- * - 启动：warmup() 先全量加载快照，再 start() 注册监听，实时更新。
- * - 提供只读 API：getByKey、getAll、containsKey、size。
- * - 支持变更监听：先更新本地缓存，再回调监听。
- * - 提供基础写入辅助（非并发、无版本控制）：createMissing、upsert、deleteByKey。
+ * - 生命周期：warmup() 先全量加载，start() 注册监听；或 startAndWarmup()。
+ * - 只读 API：getByKey、getAll、containsKey、size。
+ * - 监听：addListener，事件为后置回调。
+ * - 写入辅助：createMissing、upsert、deleteByKey；upsert 支持 MergePolicy。
+ *
+ * 合并策略（优先级）：
+ * 1) 显式传入的 mergePolicy（最高优先级）
+ * 2) 默认策略推断：
+ *    - 若 T 实现 Set -> SetUnionPolicy
+ *    - 若 T 实现 Map -> MapMergePolicy（新值覆盖旧值）
+ *    - 其他类型 -> ReplacePolicy
  */
 public class ZkBackedCache<K, T> implements Closeable {
 
@@ -28,6 +39,7 @@ public class ZkBackedCache<K, T> implements Closeable {
     private final ValueCodec<T> codec;
     private final IdExtractor<T> idExtractor; // 返回业务侧键（K 或其可表示形式）
     private final KeyAdapter<K> keyAdapter;
+    private final MergePolicy<T> mergePolicyOpt; // 可能为空，表示使用默认推断策略
 
     // 内部存储：字符串键 -> 值
     private final Map<String, T> cache = new ConcurrentHashMap<>();
@@ -43,6 +55,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         this.codec = Objects.requireNonNull(b.codec, "codec");
         this.idExtractor = Objects.requireNonNull(b.idExtractor, "idExtractor");
         this.keyAdapter = Objects.requireNonNull(b.keyAdapter, "keyAdapter");
+        this.mergePolicyOpt = b.mergePolicy;
     }
 
     // ============ 生命周期 ============
@@ -158,7 +171,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         listeners.remove(listener);
     }
 
-    // ============ 基础写入辅助（无并发版本控制） ============
+    // ============ 写入辅助（支持合并策略） ============
 
     /**
      * 仅创建缺失节点；已存在则跳过。
@@ -175,12 +188,13 @@ public class ZkBackedCache<K, T> implements Closeable {
             String path = pathPolicy.pathForId(stringKey);
             if (exists(path)) continue;
             try {
+                T merged = applyMerge(null, v);
                 client.create().creatingParentsIfNeeded()
                         .withMode(CreateMode.PERSISTENT)
-                        .forPath(path, codec.encode(v));
-                cache.put(stringKey, v);
+                        .forPath(path, selectPolicy().encodeForWrite(merged, codec));
+                cache.put(stringKey, merged);
                 created.add(stringKey);
-                fire(ChangeType.NODE_CREATED, stringKey, v);
+                fire(ChangeType.NODE_CREATED, stringKey, merged);
             } catch (KeeperException.NodeExistsException ignore) {
             }
         }
@@ -188,7 +202,7 @@ public class ZkBackedCache<K, T> implements Closeable {
     }
 
     /**
-     * 简单 upsert：存在则 setData，不存在则 create。
+     * upsert：存在则 setData（可能合并），不存在则 create。
      */
     public void upsert(T value) throws Exception {
         Objects.requireNonNull(value, "value");
@@ -196,15 +210,19 @@ public class ZkBackedCache<K, T> implements Closeable {
         @SuppressWarnings("unchecked")
         String stringKey = keyAdapter.toStringKey((K) idObj);
         String path = pathPolicy.pathForId(stringKey);
-        byte[] data = codec.encode(value);
+
+        T current = cache.get(stringKey);
+        T merged = applyMerge(current, value);
+        byte[] data = selectPolicy().encodeForWrite(merged, codec);
+
         if (exists(path)) {
             client.setData().forPath(path, data);
-            cache.put(stringKey, value);
-            fire(ChangeType.NODE_CHANGED, stringKey, value);
+            cache.put(stringKey, merged);
+            fire(ChangeType.NODE_CHANGED, stringKey, merged);
         } else {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, data);
-            cache.put(stringKey, value);
-            fire(ChangeType.NODE_CREATED, stringKey, value);
+            cache.put(stringKey, merged);
+            fire(ChangeType.NODE_CREATED, stringKey, merged);
         }
     }
 
@@ -243,15 +261,20 @@ public class ZkBackedCache<K, T> implements Closeable {
     }
 
     private void handleCreateOrChange(String path, byte[] data, ChangeType type) {
-        T value = safeDecode(data);
-        if (value == null) return;
-        Object idObj = idExtractor.getId(value);
+        T incoming = safeDecode(data);
+        if (incoming == null) return;
+
+        Object idObj = idExtractor.getId(incoming);
         if (idObj == null) return;
         @SuppressWarnings("unchecked")
         String stringKey = keyAdapter.toStringKey((K) idObj);
         if (stringKey == null) return;
-        cache.put(stringKey, value);
-        fire(type, stringKey, value);
+
+        // 监听回调的值来自 ZK 的完整新值；若你期望在内存中做“增量合并”，也可应用策略
+        T old = cache.get(stringKey);
+        T merged = applyMerge(old, incoming);
+        cache.put(stringKey, merged);
+        fire(type, stringKey, merged);
     }
 
     private T safeDecode(byte[] data) {
@@ -267,11 +290,83 @@ public class ZkBackedCache<K, T> implements Closeable {
     private void fire(ChangeType type, String stringKey, T value) {
         for (CacheChangeListener<T> l : listeners) {
             try {
-                // 对外回调 key 使用最贴近业务的类型：这里回调 String（更通用）
                 l.onChange(type, stringKey, value);
             } catch (Throwable ignore) {
             }
         }
+    }
+
+    private T applyMerge(T oldValue, T newValue) {
+        return selectPolicy().merge(oldValue, newValue);
+    }
+
+    private MergePolicy<T> selectPolicy() {
+        if (mergePolicyOpt != null) return mergePolicyOpt;
+        // 默认策略推断
+        // 小心类型擦除：我们用运行时对象判断
+        // 尽量不对 cache 中的旧值做 instanceof 判断（可能为 null），改从 newValue 或泛型习惯入手。
+        return new MergePolicy<T>() {
+            private MergePolicy<T> delegate;
+
+            private MergePolicy<T> ensure() {
+                if (delegate != null) return delegate;
+                delegate = inferDefaultPolicy();
+                return delegate;
+            }
+
+            @Override
+            public T merge(T oldValue, T newValue) {
+                return ensure().merge(oldValue, newValue);
+            }
+
+            @Override
+            public byte[] encodeForWrite(T merged, ValueCodec<T> codec) {
+                return ensure().encodeForWrite(merged, codec);
+            }
+        };
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private MergePolicy<T> inferDefaultPolicy() {
+        // 尝试通过缓存中已有值或空集合创建判断
+        // 优先：若缓存中已有任意值可判断类型
+        T any = null;
+        for (T v : cache.values()) { any = v; if (any != null) break; }
+
+        if (any instanceof Set) {
+            return (MergePolicy<T>) new SetUnionPolicy<>();
+        }
+        if (any instanceof Map) {
+            return (MergePolicy<T>) new MapMergePolicy<>();
+        }
+        // 若缓存还空，根据“预期值类型”也许无法判断。我们按保守策略：
+        // 在实际 merge 调用时，若 newValue 是集合或映射，再做一次判断。
+        return new MergePolicy<T>() {
+            private MergePolicy<T> delegate;
+
+            @Override
+            public T merge(T oldValue, T newValue) {
+                if (delegate == null) {
+                    if (newValue instanceof Set) {
+                        delegate = (MergePolicy<T>) new SetUnionPolicy<>();
+                    } else if (newValue instanceof Map) {
+                        delegate = (MergePolicy<T>) new MapMergePolicy<>();
+                    } else {
+                        delegate = new ReplacePolicy<>();
+                    }
+                }
+                return delegate.merge(oldValue, newValue);
+            }
+
+            @Override
+            public byte[] encodeForWrite(T merged, ValueCodec<T> codec) {
+                if (delegate == null) {
+                    // 合并时已确定；这里兜底
+                    return codec.encode(merged);
+                }
+                return delegate.encodeForWrite(merged, codec);
+            }
+        };
     }
 
     // ============ Builder ============
@@ -286,6 +381,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         private ValueCodec<T> codec;
         private IdExtractor<T> idExtractor;
         private KeyAdapter<K> keyAdapter;
+        private MergePolicy<T> mergePolicy; // 可选，显式策略优先
 
         private Builder() {}
 
@@ -311,6 +407,11 @@ public class ZkBackedCache<K, T> implements Closeable {
 
         public Builder<K, T> keyAdapter(KeyAdapter<K> keyAdapter) {
             this.keyAdapter = keyAdapter;
+            return this;
+        }
+
+        public Builder<K, T> mergePolicy(MergePolicy<T> mergePolicy) {
+            this.mergePolicy = mergePolicy;
             return this;
         }
 

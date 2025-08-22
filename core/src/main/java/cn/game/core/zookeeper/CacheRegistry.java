@@ -11,6 +11,7 @@ import java.util.Objects;
  * - 统一启动与预热：startAllAndWarmup()
  * - 统一关闭：close()
  */
+@Deprecated
 public class CacheRegistry implements Closeable {
 
     private final Map<ZkCacheType, ZkBackedCache<?, ?>> caches = new LinkedHashMap<>();

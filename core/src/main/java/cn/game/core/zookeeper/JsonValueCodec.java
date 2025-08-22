@@ -4,7 +4,7 @@ import cn.game.util.JsonUtil;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 使用 JsonUtil 的 JSON 编解码器。
+ * 使用 JsonUtil 的 JSON 编解码器（适用于纯 JSON 的节点值）。
  * 需保证 JsonUtil 提供：
  *  - static String toJsonString(Object o)
  *  - static <T> T parseObject(String json, Class<T> type)

@@ -1,11 +1,10 @@
 package cn.game.core.zookeeper.examples;
 
 /**
- * 示例：定义两个配置类型，键类型分别为 String 与 long。
+ * 示例：普通业务模型
  */
 public class ExampleModels {
 
-    // String 键
     public static class VirtualServerView {
         public String ID;
         public String name;
@@ -23,7 +22,6 @@ public class ExampleModels {
         }
     }
 
-    // long 键
     public static class PlayerInfo {
         public long id;
         public String nickname;
