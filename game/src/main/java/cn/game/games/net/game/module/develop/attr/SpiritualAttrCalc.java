@@ -18,24 +18,25 @@ public class SpiritualAttrCalc extends PlayerAttrCalc {
 
 	@Override
 	public void calcAttr() {
+		/*
 		DevelopModule developModule = player.getDevelopModule();
 		QianKunMirrorInfo.Builder builder = developModule.getQiankunMirrorBuilder();
 		builder.getSpiritualList().forEach(spiritual -> {
-			for (AttrGrowInfo attrGrowInfo : spiritual.getAttsList()) {
-				float value = (spiritual.getLevel() - 1) * attrGrowInfo.getGrowValue() + attrGrowInfo.getStartValue();
-				SpiritualQualityConfig spiritualQualityConfig = SpiritualQualityManager.instance().get(spiritual.getQuality()); 
-				value *= (spiritualQualityConfig.SpiritQualityaAffixPlus / 10000f);
-				attrMap.add(attrGrowInfo.getId(), (int) value);
-			}
+		for (AttrGrowInfo attrGrowInfo : spiritual.getAttsList()) {
+		float value = (spiritual.getLevel() - 1) * attrGrowInfo.getGrowValue() + attrGrowInfo.getStartValue();
+		SpiritualQualityConfig spiritualQualityConfig = SpiritualQualityManager.instance().get(spiritual.getQuality()); 
+		value *= (spiritualQualityConfig.SpiritQualityaAffixPlus / 10000f);
+		attrMap.add(attrGrowInfo.getId(), (int) value);
+		}
 		});
 		builder.getSpiritualRootIdsList().forEach(root -> {
-			SpiritualRootConfig spiritualRootConfig = SpiritualRootManager.instance().get(root);
-			while (spiritualRootConfig != null) {
-				attrMap.add(spiritualRootConfig.AttrPurple);
-				spiritualRootConfig = SpiritualRootManager.instance().getNullable(spiritualRootConfig.preID);
-			}
+		SpiritualRootConfig spiritualRootConfig = SpiritualRootManager.instance().get(root);
+		while (spiritualRootConfig != null) {
+		attrMap.add(spiritualRootConfig.AttrPurple);
+		spiritualRootConfig = SpiritualRootManager.instance().getNullable(spiritualRootConfig.preID);
+		}
 		});
-	}
+		*/}
 	@Override
 	public InitialUI getFunction() {
 		return InitialUI.QiankunMirror;

@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.protocol.generated.enume.InitialUI;
-import cn.game.util.IntMapWrapper;
+import cn.game.util.FloatMapWrapper;
 
 public abstract class PlayerAttrCalc {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerAttrCalc.class);
 
 	protected Player player;
-	protected IntMapWrapper attrMap = new IntMapWrapper();
+	protected FloatMapWrapper attrMap = new FloatMapWrapper();
 
 	public PlayerAttrCalc() {
 
@@ -36,7 +36,7 @@ public abstract class PlayerAttrCalc {
 
 	public abstract AttrCalcType getAttrCalcType();
 
-	public IntMapWrapper getAttrMap() {
+	public FloatMapWrapper getAttrMap() {
 		return attrMap;
 	}
 

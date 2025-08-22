@@ -37,7 +37,6 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.core.GoodsModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
@@ -103,11 +102,12 @@ import cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteResponse_6f000045;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutRequest_6f000042;
 import cn.game.protocol.protobuf.TestMsg.TestPlayerLogoutResponse_6f000043;
 import cn.game.protocol.protobuf.TestMsg.TestRunRequest_6f000020;
-import cn.game.util.LinuxTimeShift;
-import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
+import cn.game.util.FloatMapWrapper;
 import cn.game.util.IntMapWrapper;
+import cn.game.util.LinuxTimeShift;
+import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
@@ -363,19 +363,23 @@ public class TestHandler extends GameBaseHandler {
             	String[] timeArgs=  new String[] { params.getStringParameter(1) }; 
             	LocalDateTime now = LocalDateTime.now(); 
             	PreviewResult previewPlannedTime = LinuxTimeShift.previewPlannedTime(timeArgs); 
-            	if (previewPlannedTime.crossedDay) {
-            		PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-            			p.getData().setOfflineTime(DateUtil.currentTimeMillis());
-					});
+            	if (previewPlannedTime!=null) {
+            		if (previewPlannedTime.crossedDay) {
+            			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+            				p.getData().setOfflineTime(DateUtil.currentTimeMillis());
+            			});
+            		}
 				}
             	LinuxTimeShift.main(timeArgs); 
             	
             	LocalDateTime nowDateTime = LocalDateTime.now();
-            	if (previewPlannedTime.crossedDay) {
-					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-						PlayerHelper.refresh(player);
-					});
-				}
+            	if (previewPlannedTime!=null) {
+            		if (previewPlannedTime.crossedDay) {
+            			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+            				PlayerHelper.refresh(player);
+            			});
+            		}
+            	}
 				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
 					player.handleEvent(EventTypeEnum.SystemTimeChange);
 				});
@@ -637,7 +641,7 @@ public class TestHandler extends GameBaseHandler {
 
     private void testcalcPower(Player player) {
         // 神将属性
-        Map<Long, IntMapWrapper> heroAttrs = new HashMap<Long, IntMapWrapper>();
+        Map<Long, FloatMapWrapper> heroAttrs = new HashMap<Long, FloatMapWrapper>();
         HeroModule heroModule = player.getHeroModule();
         AttrModule attrModule = player.getAttrModule();
         Collection<Hero> list = heroModule.getBattleHeroList();
@@ -689,7 +693,7 @@ public class TestHandler extends GameBaseHandler {
             HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
             System.out.println("hero id : " + hero.getConfigId() + " name : " + heroConfig.name + " level : " + hero.getLevel());
             System.out.println("基本属性： " + BattleHelper.makeHeroAttr(hero));
-            IntMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
+            FloatMapWrapper heroAttr = BattleHelper.makeHeroAttr(hero);
             float heroCombat = BattleHelper.calcCombat(heroAttr);
             System.out.println("单英雄不算外围战力： " + heroCombat);
             System.out.println();

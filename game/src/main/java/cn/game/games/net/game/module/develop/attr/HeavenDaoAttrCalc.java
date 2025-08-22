@@ -12,14 +12,14 @@ public class HeavenDaoAttrCalc extends PlayerAttrCalc {
 	@Override
 	public void calcAttr() {
 
-		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
-		if (heavenlyDaoLevel == 0) {
-			return;
-		}
-		HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
-		for (int[] att : heavenlyDaoConfig.Attribute) {
-			attrMap.add(att);
-		}
+		/*		int heavenlyDaoLevel = player.getDevelopModule().getHeavenlyDaoLevel();
+				if (heavenlyDaoLevel == 0) {
+					return;
+				}
+				HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
+				for (int[] att : heavenlyDaoConfig.Attribute) {
+					attrMap.add(att);
+				}*/
 	}
 
 	@Override

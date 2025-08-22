@@ -1,22 +1,34 @@
 package cn.game.core.zookeeper;
 
-import cn.game.core.zookeeper.merge.MergePolicy;
-import cn.game.core.zookeeper.codec.ValueCodec;
-import cn.game.core.zookeeper.merge.MapMergePolicy;
-import cn.game.core.zookeeper.merge.ReplacePolicy;
-import cn.game.core.zookeeper.merge.SetUnionPolicy;
-import cn.game.util.ZkHelper;
+import java.io.Closeable;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.CuratorCache;
 import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import cn.game.core.zookeeper.codec.ValueCodec;
+import cn.game.core.zookeeper.merge.MapMergePolicy;
+import cn.game.core.zookeeper.merge.MergePolicy;
+import cn.game.core.zookeeper.merge.ReplacePolicy;
+import cn.game.core.zookeeper.merge.SetUnionPolicy;
+import cn.game.util.ZkHelper;
 
 /**
  * 通用的“ZK 驱动的本地缓存”，带强类型值 T、外部键类型 K：
@@ -35,6 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ZkBackedCache<K, T> implements Closeable {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ZkBackedCache.class);
 	private final CuratorFramework client;
 	private final PathPolicy pathPolicy;
 	private final ValueCodec<T> codec;
@@ -269,6 +282,8 @@ public class ZkBackedCache<K, T> implements Closeable {
 	}
 
 	private void handleCreateOrChange(String path, byte[] data, NodeChangeType type) {
+		LOGGER.info("create/change path={}, dataPreview={}", path, data == null ? null : new String(data, StandardCharsets.UTF_8));
+		
 		T incoming = safeDecode(data);
 		if (incoming == null)
 			return;
@@ -294,7 +309,7 @@ public class ZkBackedCache<K, T> implements Closeable {
 		try {
 			return codec.decode(data);
 		} catch (RuntimeException ex) {
-			// 可在此处接入日志系统
+			LOGGER.error("Failed to decode data: {}", new String(data), ex);
 			return null;
 		}
 	}

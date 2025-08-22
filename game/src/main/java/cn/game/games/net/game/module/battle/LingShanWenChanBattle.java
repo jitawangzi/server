@@ -57,7 +57,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	@Override
 	public int checkCustom(int id, int subId,long ... args) {
 		LingShanConfig floorConfig = getFloorConfig(subId, id);
-		int power = player.getAttrModule().getPower();
+		long power = player.getAttrModule().getPower();
 		int floorInConfig = getFloorInConfig(subId, floorConfig);
 
 		boolean ok = floorConfig != null && (subId == lastCompleteFloor + 1);
@@ -72,7 +72,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	@Override
 	public int quickEndCheck(int id, int subId,long ... args) {
 		LingShanConfig floorConfig = getFloorConfig(subId, id);
-		int power = player.getAttrModule().getPower();
+		long power = player.getAttrModule().getPower();
 		int floorInConfig = getFloorInConfig(subId, floorConfig);
 
 		boolean ok = floorConfig != null && (subId == lastCompleteFloor);
@@ -111,7 +111,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public List<RewardInfo> skipFloor(int floor) {
 		LingShanConfig floorConfig = getFloorConfig(floor); // 校验数据
 
-		int power = player.getAttrModule().getPower();
+		long power = player.getAttrModule().getPower();
 		// TODO 
 		power = 50000 ;// 临时测试用
 		int floorInConfig = getFloorInConfig(floor, floorConfig);

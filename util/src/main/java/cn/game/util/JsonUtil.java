@@ -76,6 +76,7 @@ public class JsonUtil {
 	    // 注册 JavaTimeModule，并自定义格式
 	    JavaTimeModule javaTimeModule = new JavaTimeModule();
 	    javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DateUtil.pattern_en)));
+	    javaTimeModule.addDeserializer(LocalDateTime.class, new com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DateUtil.pattern_en)));
 	    mapper.registerModule(javaTimeModule);
 	    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		

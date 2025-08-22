@@ -28,6 +28,7 @@ import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.PatrolManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
+import cn.game.util.FloatMapWrapper;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
@@ -268,12 +269,12 @@ public class BattleHelper {
 	 * @param attrMap
 	 * @return
 	 */
-	public static float calcCombat(IntMapWrapper attrMap) {
+	public static float calcCombat(FloatMapWrapper attrMap) {
 
 		float combat = 0;
-		Iterator<Entry<Integer, Integer>> iterator = attrMap.getMap().entrySet().iterator();
+		Iterator<Entry<Integer, Float>> iterator = attrMap.getMap().entrySet().iterator();
 		while (iterator.hasNext()) {
-			Map.Entry<java.lang.Integer, java.lang.Integer> entry = (Map.Entry<java.lang.Integer, java.lang.Integer>) iterator.next();
+			Map.Entry<java.lang.Integer, java.lang.Float> entry = (Map.Entry<java.lang.Integer, java.lang.Float>) iterator.next();
 
 			AttrEffectConfigConfig attrEffectConfigConfig = AttrEffectConfigManager.instance().get(entry.getKey());
 			float combatEffectiveness = attrEffectConfigConfig.CombatEffectiveness / 10000f;
@@ -304,8 +305,8 @@ public class BattleHelper {
 		return heroAttrMap;
 	}
 
-	public static IntMapWrapper makeHeroAttr(Hero hero) {
-		IntMapWrapper heroAttrMap = new IntMapWrapper();
+	public static FloatMapWrapper makeHeroAttr(Hero hero) {
+		FloatMapWrapper heroAttrMap = new FloatMapWrapper();
 
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 		// 初始属性

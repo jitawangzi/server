@@ -10,6 +10,8 @@ public enum AttrCalcType {
 	Pet,
 	Secretscript,
 	HeroSkin,
+	Equip,
+	Gem,
 	NONE,
 
 	;

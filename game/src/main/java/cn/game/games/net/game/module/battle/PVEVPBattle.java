@@ -199,7 +199,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         var recordData = new PVEVPRecordData(iswin ? 1 : 0,
                 player.getPlayerName(),
                 player.getData().getLevel(),
-                player.getAttrModule().getPower(),
+                (int)player.getAttrModule().getPower(),
                 (int)change,
                 player.getData().getHead(),
                 player.getData().getHeadFrame(),
