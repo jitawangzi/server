@@ -79,13 +79,35 @@ public class ZkBackedCache<K, T> implements Closeable {
 			ensureRoot();
 			this.curatorCache = CuratorCache.build(client, pathPolicy.basePath());
 			CuratorCacheListener l = CuratorCacheListener.builder()
-					.forCreates(cd -> handleCreateOrChange(cd.getPath(), cd.getData(), NodeChangeType.NODE_CREATED))
-					.forChanges((od, nd) -> {
-						if (nd != null)
-							handleCreateOrChange(nd.getPath(), nd.getData(), NodeChangeType.NODE_CHANGED);
+					// 仅处理 basePath 的“直接子节点”创建事件；忽略 basePath 自身及更深层级
+					.forCreates(cd -> {
+						String p = cd.getPath();
+						if (!isDirectChild(p)) {
+							LOGGER.debug("skip create (not direct child): path={}, data={}", p,
+									cd.getData() == null ? null : new String(cd.getData(), StandardCharsets.UTF_8));
+							return;
+						}
+						handleCreateOrChange(p, cd.getData(), NodeChangeType.NODE_CREATED);
 					})
+					// 仅处理 basePath 的“直接子节点”变更事件
+					.forChanges((od, nd) -> {
+						if (nd != null) {
+							String p = nd.getPath();
+							if (!isDirectChild(p)) {
+								LOGGER.debug("skip change (not direct child): path={}", p);
+								return;
+							}
+							handleCreateOrChange(p, nd.getData(), NodeChangeType.NODE_CHANGED);
+						}
+					})
+					// 仅处理 basePath 的“直接子节点”删除事件
 					.forDeletes(cd -> {
-						String stringKey = pathPolicy.idFromPath(cd.getPath());
+						String p = cd.getPath();
+						if (!isDirectChild(p)) {
+							LOGGER.debug("skip delete (not direct child): path={}", p);
+							return;
+						}
+						String stringKey = pathPolicy.idFromPath(p);
 						if (stringKey != null) {
 							cache.remove(stringKey);
 							fire(NodeChangeType.NODE_DELETED, stringKey, null);
@@ -282,8 +304,11 @@ public class ZkBackedCache<K, T> implements Closeable {
 	}
 
 	private void handleCreateOrChange(String path, byte[] data, NodeChangeType type) {
-		LOGGER.info("create/change path={}, dataPreview={}", path, data == null ? null : new String(data, StandardCharsets.UTF_8));
-		
+		// 只关心 basePath 的“直接子节点”。额外兜底过滤，避免误处理 basePath 或更深层节点。
+		if (!isDirectChild(path)) {
+			return;
+		}
+
 		T incoming = safeDecode(data);
 		if (incoming == null)
 			return;
@@ -309,7 +334,12 @@ public class ZkBackedCache<K, T> implements Closeable {
 		try {
 			return codec.decode(data);
 		} catch (RuntimeException ex) {
-			LOGGER.error("Failed to decode data: {}", new String(data), ex);
+			// 打印内容预览便于排查
+			try {
+				LOGGER.error("Failed to decode data: {}", new String(data, StandardCharsets.UTF_8), ex);
+			} catch (Throwable ignore) {
+				LOGGER.error("Failed to decode data: <non-text bytes>", ex);
+			}
 			return null;
 		}
 	}
@@ -402,6 +432,39 @@ public class ZkBackedCache<K, T> implements Closeable {
 		};
 	}
 
+	// ============ 仅监听“直接子节点”的辅助方法 ============
+
+	/**
+	 * 仅当 path 形如 basePath + "/" + child（且 child 中不再包含 "/"）时返回 true。
+	 * 用于限制监听范围到“一层子节点”。
+	 */
+	private boolean isDirectChild(String path) {
+		if (path == null)
+			return false;
+		String bp = pathPolicy.basePath();
+		if (bp == null || bp.isEmpty())
+			return false;
+
+		// 规范化：去掉 basePath 尾部的 "/"
+		if (bp.length() > 1 && bp.endsWith("/")) {
+			bp = bp.substring(0, bp.length() - 1);
+		}
+		if (!path.startsWith(bp)) {
+			return false;
+		}
+		if (path.length() == bp.length()) {
+			// path == basePath -> 不是子节点
+			return false;
+		}
+		if (path.charAt(bp.length()) != '/') {
+			// 例如 bp=/a/b 但 path=/a/bb...（前缀碰撞）
+			return false;
+		}
+		// remain 形如 child 或 child/xxx
+		String remain = path.substring(bp.length() + 1);
+		return remain.length() > 0 && !remain.contains("/");
+	}
+
 	// ============ Builder ============
 
 	public static <K, T> Builder<K, T> builder(Class<K> keyType, Class<T> valueType) {
@@ -475,7 +538,7 @@ public class ZkBackedCache<K, T> implements Closeable {
 
 		public ZkBackedCache<K, T> build() {
 			if (this.client == null) {
-				// 默认复用 ZkHelper.curator（若你的项目有该单例）
+				// 默认复用 ZkHelper.curator
 				this.client = ZkHelper.curator;
 			}
 			if (this.keyAdapter == null) {
