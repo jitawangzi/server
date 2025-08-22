@@ -190,9 +190,7 @@ public class TowerBattle extends XiYouBattleHandler {
         // 23-27 ->14-18
         RankType rankType = RankType.get(battelType - 9);
         RankConfig rankConfig = RankManager.instance().get(rankType.ID);
-        if (BattleHelper.isComplete(battleId, rankConfig.Request)) {
-            RankService.getInstance().setScoreAsync(player.getServerId(), rankType, player.getPlayerId(), battleId);
-        }
+        RankService.getInstance().setScoreAsync(player.getServerId(), rankType, player.getPlayerId(), battleId);
     }
 
     @Override
