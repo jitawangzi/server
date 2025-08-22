@@ -2,6 +2,7 @@ package cn.game.games.net.game.module.battle;
 
 import cn.game.games.core.ResultObject;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.BattleConfig;
@@ -178,7 +179,7 @@ public class TowerBattle extends XiYouBattleHandler {
                 curFloor.put(battleConfig.BattleType, -1);
             }
             floorCount--;
-            return ResultObject.success();
+            return ResultObject.success(allRewards);
         } else { // 失败了，最终结算
 
             return ResultObject.success();
