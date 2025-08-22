@@ -1,4 +1,4 @@
-package cn.game.core.zookeeper.examples;
+package cn.game.core.zookeeper.codec;
 
 /**
  * Vert.x 活跃节点映射到的业务模型（仅包含你关心的元数据）。

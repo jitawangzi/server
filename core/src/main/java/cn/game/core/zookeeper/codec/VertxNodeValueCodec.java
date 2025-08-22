@@ -1,6 +1,5 @@
-package cn.game.core.zookeeper.examples;
+package cn.game.core.zookeeper.codec;
 
-import cn.game.core.zookeeper.ValueCodec;
 import cn.game.util.JsonUtil;
 
 import java.nio.charset.StandardCharsets;

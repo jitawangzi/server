@@ -1,4 +1,4 @@
-package cn.game.core.zookeeper;
+package cn.game.core.zookeeper.codec;
 
 import cn.game.util.JsonUtil;
 import java.nio.charset.StandardCharsets;

@@ -6,6 +6,6 @@ package cn.game.core.zookeeper;
  */
 @FunctionalInterface
 public interface CacheChangeListener<T> {
-    void onChange(ChangeType type, Object key, T newValue);
+    void onChange(NodeChangeType type, Object key, T newValue);
 }
 

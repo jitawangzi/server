@@ -1,6 +1,7 @@
 package cn.game.core.zookeeper;
 
 import cn.game.core.zookeeper.merge.MergePolicy;
+import cn.game.core.zookeeper.codec.ValueCodec;
 import cn.game.core.zookeeper.merge.MapMergePolicy;
 import cn.game.core.zookeeper.merge.ReplacePolicy;
 import cn.game.core.zookeeper.merge.SetUnionPolicy;
@@ -65,15 +66,15 @@ public class ZkBackedCache<K, T> implements Closeable {
             ensureRoot();
             this.curatorCache = CuratorCache.build(client, pathPolicy.basePath());
             CuratorCacheListener l = CuratorCacheListener.builder()
-                    .forCreates(cd -> handleCreateOrChange(cd.getPath(), cd.getData(), ChangeType.NODE_CREATED))
+                    .forCreates(cd -> handleCreateOrChange(cd.getPath(), cd.getData(), NodeChangeType.NODE_CREATED))
                     .forChanges((od, nd) -> {
-                        if (nd != null) handleCreateOrChange(nd.getPath(), nd.getData(), ChangeType.NODE_CHANGED);
+                        if (nd != null) handleCreateOrChange(nd.getPath(), nd.getData(), NodeChangeType.NODE_CHANGED);
                     })
                     .forDeletes(cd -> {
                         String stringKey = pathPolicy.idFromPath(cd.getPath());
                         if (stringKey != null) {
                             cache.remove(stringKey);
-                            fire(ChangeType.NODE_DELETED, stringKey, null);
+                            fire(NodeChangeType.NODE_DELETED, stringKey, null);
                         }
                     })
                     .build();
@@ -194,7 +195,7 @@ public class ZkBackedCache<K, T> implements Closeable {
                         .forPath(path, selectPolicy().encodeForWrite(merged, codec));
                 cache.put(stringKey, merged);
                 created.add(stringKey);
-                fire(ChangeType.NODE_CREATED, stringKey, merged);
+                fire(NodeChangeType.NODE_CREATED, stringKey, merged);
             } catch (KeeperException.NodeExistsException ignore) {
             }
         }
@@ -218,11 +219,11 @@ public class ZkBackedCache<K, T> implements Closeable {
         if (exists(path)) {
             client.setData().forPath(path, data);
             cache.put(stringKey, merged);
-            fire(ChangeType.NODE_CHANGED, stringKey, merged);
+            fire(NodeChangeType.NODE_CHANGED, stringKey, merged);
         } else {
             client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, data);
             cache.put(stringKey, merged);
-            fire(ChangeType.NODE_CREATED, stringKey, merged);
+            fire(NodeChangeType.NODE_CREATED, stringKey, merged);
         }
     }
 
@@ -237,7 +238,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         try {
             client.delete().forPath(path);
             cache.remove(stringKey);
-            fire(ChangeType.NODE_DELETED, stringKey, null);
+            fire(NodeChangeType.NODE_DELETED, stringKey, null);
             return true;
         } catch (KeeperException.NoNodeException e) {
             return false;
@@ -260,7 +261,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         return client.checkExists().forPath(path) != null;
     }
 
-    private void handleCreateOrChange(String path, byte[] data, ChangeType type) {
+    private void handleCreateOrChange(String path, byte[] data, NodeChangeType type) {
         T incoming = safeDecode(data);
         if (incoming == null) return;
 
@@ -287,7 +288,7 @@ public class ZkBackedCache<K, T> implements Closeable {
         }
     }
 
-    private void fire(ChangeType type, String stringKey, T value) {
+    private void fire(NodeChangeType type, String stringKey, T value) {
         for (CacheChangeListener<T> l : listeners) {
             try {
                 l.onChange(type, stringKey, value);

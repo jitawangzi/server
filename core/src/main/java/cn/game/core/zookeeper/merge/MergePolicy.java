@@ -1,6 +1,6 @@
 package cn.game.core.zookeeper.merge;
 
-import cn.game.core.zookeeper.ValueCodec;
+import cn.game.core.zookeeper.codec.ValueCodec;
 
 /**
  * 定义“新值如何与旧值合并”的策略。

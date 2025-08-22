@@ -9,15 +9,15 @@ import java.util.Objects;
  * 使用枚举键的 CacheRegistry，类型安全、IDE 友好。
  * E 必须是枚举类型。
  */
-public class CacheRegistryEnum<E extends Enum<E>> implements Closeable {
+public class ZkCacheRegistry<E extends Enum<E>> implements Closeable {
 
     private final Map<E, ZkBackedCache<?, ?>> caches;
 
-    public CacheRegistryEnum(Class<E> enumType) {
+    public ZkCacheRegistry(Class<E> enumType) {
         this.caches = new EnumMap<>(Objects.requireNonNull(enumType, "enumType"));
     }
 
-    public CacheRegistryEnum<E> register(E key, ZkBackedCache<?, ?> cache) {
+    public ZkCacheRegistry<E> register(E key, ZkBackedCache<?, ?> cache) {
         Objects.requireNonNull(key, "key");
         Objects.requireNonNull(cache, "cache");
         caches.put(key, cache);

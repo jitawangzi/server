@@ -5,6 +5,8 @@ import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 
+import cn.game.core.zookeeper.codec.ValueCodec;
+
 import java.util.*;
 
 /**
@@ -15,7 +17,7 @@ import java.util.*;
  *
  * 为简化：不做并发版本控制，不处理强原子性失败回滚等高级特性。
  */
-public class ZkInitializer<K, T> {
+public class ZkToolInitializer<K, T> {
 
     private final CuratorFramework client;
     private final PathPolicy pathPolicy;
@@ -23,7 +25,7 @@ public class ZkInitializer<K, T> {
     private final IdExtractor<T> idExtractor;
     private final KeyAdapter<K> keyAdapter;
 
-    public ZkInitializer(CuratorFramework client,
+    public ZkToolInitializer(CuratorFramework client,
                          PathPolicy pathPolicy,
                          ValueCodec<T> codec,
                          IdExtractor<T> idExtractor,
