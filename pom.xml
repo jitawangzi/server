@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<skipTests>true</skipTests>
-		
+
 		<!-- 第三方依赖版本 -->
 		<vertx.version>5.0.0</vertx.version>
 		<spring.version>5.3.32</spring.version>
@@ -31,10 +31,10 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
-				 <configuration>
-<!--				 指定jdk21版本-->
-				    <release>21</release>
-				  </configuration>  
+				<configuration>
+					<!--				 指定jdk21版本-->
+					<release>21</release>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -68,10 +68,10 @@
 			</plugin>
 
 			<!-- 这个也用不到了，直接打全量包就行， 也先不启用这个插件，容易提示出错 -->
-<!--				<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-dependency-plugin</artifactId>-->
-<!--				</plugin>-->
+			<!--				<plugin>-->
+			<!--				<groupId>org.apache.maven.plugins</groupId>-->
+			<!--				<artifactId>maven-dependency-plugin</artifactId>-->
+			<!--				</plugin>-->
 		</plugins>
 
 		<pluginManagement>
@@ -132,105 +132,112 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
-	 <!-- 依赖管理（仅定义版本，不实际引入依赖） -->
-  <dependencyManagement>
-    <dependencies>
-      <!-- 内部模块依赖 -->
-      <dependency>
-        <groupId>cn.game</groupId>
-        <artifactId>util</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>cn.game</groupId>
-        <artifactId>protocol</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>cn.game</groupId>
-        <artifactId>core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>cn.game</groupId>
-        <artifactId>game</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>cn.game</groupId>
-        <artifactId>login</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
-      <!-- 第三方依赖 -->
-          <!-- 显式覆盖特定组件 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>2.23.1</version>
-			<exclusions>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.23.1</version>
-		</dependency>
+	<!-- 依赖管理（仅定义版本，不实际引入依赖） -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- 内部模块依赖 -->
+			<dependency>
+				<groupId>cn.game</groupId>
+				<artifactId>util</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.game</groupId>
+				<artifactId>protocol</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.game</groupId>
+				<artifactId>core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.game</groupId>
+				<artifactId>game</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.game</groupId>
+				<artifactId>login</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.23.1</version>
-		</dependency>
-          
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.18.4</version>
-    </dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-guava</artifactId>
-			<version>2.18.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.18.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>2.18.4</version>
-		</dependency>
-      <!-- 不指定netty的版本，跟随vertx，假如升级了vertx则会自动升级netty -->
-<!--      		<dependency>-->
-<!--			<groupId>io.netty</groupId>-->
-<!--			<artifactId>netty-all</artifactId>-->
-<!--			<version>4.1.119.Final</version>-->
-<!--		</dependency>-->
-      
-       <!-- vert.x 官方 BOM -->
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-dependencies</artifactId>
-        <version>${vertx.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-    </dependency>
-          <!-- Spring Framework 官方 BOM -->
-	    <dependency>
-	      <groupId>org.springframework</groupId>
-	      <artifactId>spring-framework-bom</artifactId>
-	      <version>${spring.version}</version> 
-	      <type>pom</type>
-	      <scope>import</scope>
-	    </dependency>
-    </dependencies>
-  </dependencyManagement>
+			<!-- 第三方依赖 -->
+			<!-- 显式覆盖特定组件 -->
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>2.23.1</version>
+				<exclusions>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>2.23.1</version>
+			</dependency>
 
-  <!-- 所有子模块共享的依赖 -->
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>2.23.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.18.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-guava</artifactId>
+				<version>2.18.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.18.4</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>2.18.4</version>
+			</dependency>
+			<!--
+			https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>2.18.4</version>
+			</dependency>
+			<!-- 不指定netty的版本，跟随vertx，假如升级了vertx则会自动升级netty -->
+			<!--      		<dependency>-->
+			<!--			<groupId>io.netty</groupId>-->
+			<!--			<artifactId>netty-all</artifactId>-->
+			<!--			<version>4.1.119.Final</version>-->
+			<!--		</dependency>-->
+
+			<!-- vert.x 官方 BOM -->
+			<dependency>
+				<groupId>io.vertx</groupId>
+				<artifactId>vertx-dependencies</artifactId>
+				<version>${vertx.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Spring Framework 官方 BOM -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>${spring.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- 所有子模块共享的依赖 -->
 	<dependencies>
 		<!--
 		https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
@@ -259,11 +266,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-			<dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version>
-			</dependency>
+		</dependency>
 
 		<!-- 将log4j的API桥接到slf4j -->
 		<dependency>
@@ -333,21 +340,21 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
 		<dependency>
-		    <groupId>net.bytebuddy</groupId>
-		    <artifactId>byte-buddy</artifactId>
-		    <version>1.17.6</version>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.17.6</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
-<!--		<dependency>-->
-<!--		    <groupId>org.apache.commons</groupId>-->
-<!--		    <artifactId>commons-pool2</artifactId>-->
-<!--		    <version>2.12.1</version>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--		    <groupId>org.apache.commons</groupId>-->
+		<!--		    <artifactId>commons-pool2</artifactId>-->
+		<!--		    <version>2.12.1</version>-->
+		<!--		</dependency>-->
 
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.16.1</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.16.1</version>
 		</dependency>
 
 		<!--
@@ -381,8 +388,6 @@
 		</dependency>
 
 
-		
-
 		<!-- 日志相关，用logback作为日志框架 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -406,7 +411,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			</dependency>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
 		<!-- 将java.util.logging桥接到slf4j -->
@@ -435,11 +440,12 @@
 			<artifactId>ognl</artifactId>
 			<version>3.3.2</version>
 		</dependency>
-	<!-- https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
+		<!--
+		https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine -->
 		<dependency>
-		    <groupId>com.github.ben-manes.caffeine</groupId>
-		    <artifactId>caffeine</artifactId>
-		    <version>3.1.8</version>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
+			<version>3.1.8</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -585,17 +591,17 @@
 			<groupId>org.apache.curator</groupId>
 			<artifactId>curator-framework</artifactId>
 			<version>5.8.0</version>
-<!--			<exclusions>-->
-<!--				<exclusion>-->
-<!--					<groupId>org.apache.zookeeper</groupId>-->
-<!--					<artifactId>zookeeper</artifactId>-->
-<!--				</exclusion>-->
-<!--			</exclusions>-->
+			<!--			<exclusions>-->
+			<!--				<exclusion>-->
+			<!--					<groupId>org.apache.zookeeper</groupId>-->
+			<!--					<artifactId>zookeeper</artifactId>-->
+			<!--				</exclusion>-->
+			<!--			</exclusions>-->
 		</dependency>
 		<dependency>
-   			<groupId>org.apache.curator</groupId>
-    		<artifactId>curator-recipes</artifactId>
-   			<version>5.8.0</version>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>5.8.0</version>
 		</dependency>
 
 		<!-- <dependency> -->
@@ -608,15 +614,15 @@
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-service-proxy</artifactId>
 		</dependency>
-<!--	暂时也先保留dropwizard方式-->
-<!--		<dependency>-->
-<!--			<groupId>io.vertx</groupId>-->
-<!--			<artifactId>vertx-dropwizard-metrics</artifactId>-->
-<!--		</dependency>-->
-<dependency>
-    <groupId>io.vertx</groupId>
-    <artifactId>vertx-micrometer-metrics</artifactId>
-</dependency>
+		<!--	暂时也先保留dropwizard方式-->
+		<!--		<dependency>-->
+		<!--			<groupId>io.vertx</groupId>-->
+		<!--			<artifactId>vertx-dropwizard-metrics</artifactId>-->
+		<!--		</dependency>-->
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-micrometer-metrics</artifactId>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
 		<dependency>
@@ -762,7 +768,7 @@
 			<artifactId>jackson-datatype-protobuf</artifactId>
 			<version>0.9.15</version>
 		</dependency>
-		
+
 		<!--
 		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
@@ -847,19 +853,19 @@
 			<version>4.4</version>
 		</dependency>
 
-<!-- micrometer核心监控 -->
-<dependency>
-    <groupId>io.micrometer</groupId>
-    <artifactId>micrometer-core</artifactId>
-    <version>1.12.5</version>
-</dependency>
+		<!-- micrometer核心监控 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+			<version>1.12.5</version>
+		</dependency>
 
-<!-- JMX 支持 -->
-<dependency>
-    <groupId>io.micrometer</groupId>
-    <artifactId>micrometer-registry-jmx</artifactId>
-    <version>1.12.5</version>
-</dependency>
+		<!-- JMX 支持 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-jmx</artifactId>
+			<version>1.12.5</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient -->
 		<dependency>
 			<groupId>io.prometheus</groupId>
@@ -868,16 +874,16 @@
 		</dependency>
 		<!-- Prometheus 支持（可选） -->
 		<dependency>
-		    <groupId>io.micrometer</groupId>
-		    <artifactId>micrometer-registry-prometheus</artifactId>
-		    <version>1.14.8</version>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<version>1.14.8</version>
 		</dependency>
-		
-<!--		系统层监控-->
+
+		<!--		系统层监控-->
 		<dependency>
-	    <groupId>com.github.oshi</groupId>
-	    <artifactId>oshi-core</artifactId>
-	    <version>6.8.0</version>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>6.8.0</version>
 		</dependency>
 
 		<dependency>
@@ -952,12 +958,17 @@
 			<version>1.11.0</version>
 		</dependency>
 		
+		<dependency>
+		<groupId>com.fasterxml.jackson.datatype</groupId>
+		<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
 		<!--异步代码测试库 -->
 		<dependency>
-		  <groupId>org.awaitility</groupId>
-		  <artifactId>awaitility</artifactId>
-		  <version>4.2.0</version>
-		  <scope>test</scope>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

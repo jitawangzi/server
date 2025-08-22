@@ -3,13 +3,11 @@ package cn.game.games.net.game;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -18,26 +16,21 @@ import java.util.stream.Stream;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import cn.game.core.cache.RedisLocalCache;
-import cn.game.protocol.generated.enume.RankType;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
-import org.apache.poi.ss.formula.functions.Rank;
 import org.redisson.api.RKeys;
 import org.redisson.api.RLock;
 
 import com.ctrip.framework.apollo.ConfigService;
 import com.google.common.io.Files;
-import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
-import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
@@ -57,6 +50,8 @@ import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
+import cn.game.core.zookeeper.ZkBackedCacheFactory;
+import cn.game.core.zookeeper.ZkToolInitializer;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
@@ -66,8 +61,6 @@ import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
 import cn.game.games.net.cross.remote.CrossServerInterface;
-import cn.game.games.net.cross.guild.service.GuildService;
-import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
@@ -81,12 +74,13 @@ import cn.game.games.net.game.manager.PressureTestManager;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
+import cn.game.protocol.generated.config.VirtualServerConfig;
 import cn.game.protocol.generated.helper.ManagerHelper;
+import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.JsonUtil;
-import cn.game.util.KryoUtils;
 import cn.game.util.LockUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
@@ -212,28 +206,12 @@ public class GameServer implements GameServerMBean {
 
 		GameIdManagerInitializer.initialize();
 		RankService.getInstance().setNpcToRank();
-//		Long playerId = (Long) dataGameServerInterfaceSync.exec(PlayerExtMapper.class,
-//				"selectMaxId", null);
-//		this.dbMaxPlayerId = new AtomicLong(playerId == null ? minPlayerId : playerId);
+		initLeaderTask(); 
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
 				(System.currentTimeMillis() - start) / 1000));
 		System.err.println("Game Server startup complete");
-
-		// 在创建代理前添加
-//		Method[] methods = GuildService.class.getDeclaredMethods();
-//		System.out.println("类方法数量: " + methods.length);
-//		for (Method method : methods) {
-//			System.out.println("方法: " + method.getName() + ", 参数: " + Arrays.toString(method.getParameterTypes()));
-//		}
-//		for (Method m : GuildService.class.getDeclaredMethods()) {
-//			System.out.println(m.toString() + " synthetic=" + m.isSynthetic() + " bridge=" + m.isBridge());
-//		}
-
-//		GuildService guildProxy = getGuildProxy(1);
-//		guildProxy.setMemberPosition(start, start, start, 0);
-//		System.out.println("Game Server startup complete, guildProxy setMemberPosition complete");
 	}
 
 	/** 
@@ -528,6 +506,26 @@ public class GameServer implements GameServerMBean {
 //	public void requestDataServer(Message message, RequestCallback callback) {
 //		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
 //	}
+	
+	
+	private void initLeaderTask() throws Exception {
+		if (!ServerContext.getInstance().isLeader()) {
+			return;
+		}
+		initZkVirtualServer();
+	}
+
+	private void initZkVirtualServer() throws Exception {
+		ZkToolInitializer<String,VirtualServerView> zkToolInitializer = new ZkToolInitializer<String, VirtualServerView>(ZkBackedCacheFactory.createVirtualServerBuilder());
+		Collection<VirtualServerConfig> list = VirtualServerManager.instance().list(); 
+		List<VirtualServerView> views = new ArrayList<>();
+		for (VirtualServerConfig config : list) {
+			VirtualServerView view = new VirtualServerView(config.ID, config.name, config.playerMaxCount,
+					config.seq,config.openTime);
+			views.add(view);
+		}
+		zkToolInitializer.initOnce(views); 
+	}
 
 	// 初始化负载管理器
 	private void initLoadManager() throws Exception {

@@ -5,6 +5,9 @@ package cn.game.core.zookeeper;
  * 典型规则：/basePath/{id}
  */
 public interface PathPolicy {
+	
+	public static final String DEFAULT_VIRTUAL_SERVER_PATH = "/server/login/game/virtual-servers";
+	
     String basePath();
     String pathForId(String id);
     String idFromPath(String path);

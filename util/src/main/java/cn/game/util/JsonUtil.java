@@ -1,6 +1,8 @@
 package cn.game.util;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.BitSet;
 
 import org.apache.commons.collections.keyvalue.MultiKey;
@@ -28,6 +30,8 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -69,6 +73,12 @@ public class JsonUtil {
 		mapper.registerModule(module);
 		mapper.registerModule(new GuavaModule()); // 注册 Guava 模块
 		mapper.registerModule(new com.hubspot.jackson.datatype.protobuf.ProtobufModule()); // 注册 Guava 模块
+	    // 注册 JavaTimeModule，并自定义格式
+	    JavaTimeModule javaTimeModule = new JavaTimeModule();
+	    javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DateUtil.pattern_en)));
+	    mapper.registerModule(javaTimeModule);
+	    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		
 		mapper.setVisibility(objectMapper.getSerializationConfig()
 				.getDefaultVisibilityChecker()
 				.withFieldVisibility(JsonAutoDetect.Visibility.ANY)
