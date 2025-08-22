@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.player;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,22 +37,22 @@ public class CountingModule extends BasePlayerModule {
 	private Map<Integer, IntMapWrapper> cumulativeCountMap = new HashMap<Integer, IntMapWrapper>();
 	/** 刷新类型：  带额外参数的类型->数量 */
 	private Map<Integer, StringMapWrapper> cumulativeCountExtMap = new HashMap<Integer, StringMapWrapper>();
-	
-    private static EventTypeEnum[] initEventTypes() {
-    	List<EventTypeEnum> eventTypeList = new java.util.ArrayList<>();
-    	for (ConditionTypeEnum type : ConditionTypeEnum.values()) {
+
+	private static EventTypeEnum[] initEventTypes() {
+		List<EventTypeEnum> eventTypeList = new java.util.ArrayList<>();
+		for (ConditionTypeEnum type : ConditionTypeEnum.values()) {
 			if (type.countType == 2) {
 				AbstractCondition cachedConditionClassInstance = ClassManager.getInstance().getCachedConditionClassInstance(type.ID);
 				if (cachedConditionClassInstance == null) {
 					throw new IllegalArgumentException("ConditionTypeEnum " + type + " does not have a corresponding class instance.");
 				}
-				EventTypeEnum[] eventTypes = cachedConditionClassInstance.getEventTypes(); 
-				Collections.addAll(eventTypeList, eventTypes) ; 
+				EventTypeEnum[] eventTypes = cachedConditionClassInstance.getEventTypes();
+				Collections.addAll(eventTypeList, eventTypes);
 			}
 		}
-    	return eventTypeList.toArray(new EventTypeEnum[0]);
-    }
-    
+		return eventTypeList.toArray(new EventTypeEnum[0]);
+	}
+
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
@@ -61,7 +62,7 @@ public class CountingModule extends BasePlayerModule {
 		}
 		case NewDay: {
 			reset(1);
-			
+
 			addCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}
@@ -83,12 +84,12 @@ public class CountingModule extends BasePlayerModule {
 			break;
 		}
 		case BattleEnd: {
-			int battleId =  event.getIntParameter(0); 
-			BattleConfig battleConfig = BattleManager.instance().get(battleId); 
+			int battleId = event.getIntParameter(0);
+			BattleConfig battleConfig = BattleManager.instance().get(battleId);
 			addCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
 			addCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
 			if (!event.getBoolParameter(2)) {
-				addCount(ConditionTypeEnum.FunAllFailTimes,1,battleConfig.BattleType);
+				addCountByExtParam(ConditionTypeEnum.FunAllFailTimes,battleConfig.BattleType);
 			}
 			break;
 		}
@@ -137,15 +138,49 @@ public class CountingModule extends BasePlayerModule {
 	}
 
 	/** 
+	 * 如果需要记录带额外参数的计数，但是不知道哪些额外参数需要记录
+	 * 可以用这个方法，会从condition表中获取实际需要记录的参数类型，并进行记录
+	 * @param conditionTypeEnum
+	 * @param count
+	 * @param extParam
+	 */
+	private void addCountByExtParam(ConditionTypeEnum conditionTypeEnum,int count, int... extParam) {
+		List<ConditionConfig> typeList = ConditionManager.instance().getTypeList(conditionTypeEnum.ID);
+		boolean isExtParam = extParam != null && extParam.length > 0;
+		boolean isExtParamMatch = false;
+		boolean isCommonParamMatch = false;
+
+		for (ConditionConfig conditionConfig : typeList) {
+			if (isExtParam) {
+				if (!isExtParamMatch) {
+					// 有额外参数的情况
+					if (Arrays.equals(conditionConfig.extParam, extParam)) {
+						addCount(conditionTypeEnum, count, extParam);
+					}
+				}
+				isExtParamMatch = true;
+			} else {
+				if (!isCommonParamMatch) {
+					addCount(conditionTypeEnum,count);
+				}
+				isCommonParamMatch = true;
+			}
+			if (isCommonParamMatch && isExtParamMatch) {
+				break;
+			}
+		}
+	}
+
+	/** 
 	 * 按照天、周、月来重置计数
 	 * @param type
 	 */
 	private void reset(int type) {
-		IntMapWrapper intMapWrapper = cumulativeCountMap.get(type); 
+		IntMapWrapper intMapWrapper = cumulativeCountMap.get(type);
 		if (intMapWrapper != null) {
 			intMapWrapper.clear();
 		}
-		StringMapWrapper stringMapWrapper = cumulativeCountExtMap.get(type); 
+		StringMapWrapper stringMapWrapper = cumulativeCountExtMap.get(type);
 		if (stringMapWrapper != null) {
 			stringMapWrapper.clear();
 		}
@@ -158,9 +193,9 @@ public class CountingModule extends BasePlayerModule {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-		
+
 	}
-	
+
 	/** 
 	 * 增加某个条件类型对应的计数,默认增加1次
 	 * @param type
@@ -170,6 +205,7 @@ public class CountingModule extends BasePlayerModule {
 			v.add(type.ID, 1);
 		});
 	}
+
 	/** 
 	 * 增加某个条件类型对应的计数
 	 * @param type
@@ -203,15 +239,15 @@ public class CountingModule extends BasePlayerModule {
 	 * @return
 	 */
 	public int getCount(int condition) {
-		ConditionConfig conditionConfig = ConditionManager.instance().get(condition); 
+		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
 		if (conditionConfig.extParam.length == 0) {
 			IntMapWrapper map = cumulativeCountMap.computeIfAbsent(conditionConfig.resetType, r -> new IntMapWrapper());
 			return map.getValue(conditionConfig.type);
 		}
-		StringMapWrapper map = cumulativeCountExtMap.computeIfAbsent(conditionConfig.resetType,r -> new StringMapWrapper()); 
+		StringMapWrapper map = cumulativeCountExtMap.computeIfAbsent(conditionConfig.resetType, r -> new StringMapWrapper());
 		return map.getValue(conditionConfig.type, conditionConfig.extParam);
 	}
-	
+
 	/** 
 	 * 获取某个累计的计数，不重置的计数，一般很少用到
 	 * @param conditionType
@@ -220,11 +256,12 @@ public class CountingModule extends BasePlayerModule {
 	public int getCumulativeCount(ConditionTypeEnum conditionType) {
 		return getCumulativeCount(conditionType.ID);
 	}
+
 	public int getCumulativeCount(int conditionType) {
 		IntMapWrapper map = cumulativeCountMap.computeIfAbsent(0, r -> new IntMapWrapper());
 		return map.getValue(conditionType);
 	}
-	
+
 	/**
 	 * 这里提升计数模块的事件处理优先级：
 	 * 比如对于充值事件，需要先处理，增加累计充值数量。 
