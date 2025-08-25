@@ -493,6 +493,16 @@ public final class DateUtil {
 		// 3. 再转回Date
 		return Date.from(instant);
 	}
+	public Date changeDateByPeriod2(Date date, int period, int periodPass) {
+		if (periodPass == 0) {
+			return date;
+		}
+		if (date == null) {
+			return null;
+		}
+		date = new Date(date.getTime() + period * periodPass * 1000L);
+		return date;
+	}
 
 	/**
 	 * @param args

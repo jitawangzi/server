@@ -1,10 +1,21 @@
 package cn.game.games.net.game.module.activity;
 
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
+import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
+import cn.game.core.task.SchedulerService;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.cache.entity.Activity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.util.DateUtil;
 
 public class GlobalActivityManager extends AbstractActivityManager {
 	@Override
@@ -14,10 +25,27 @@ public class GlobalActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
+		if (!config.isMultiplayer || config.disable) {
+			return false;
+		}
 		if (config.openType == 0) {
 			return isInOpenTime(config.ID);
 		}
-		return config.isMultiplayer && !config.disable;
+		if (config.openType == 10) {
+			if (StringUtils.isEmpty(serverId)) {
+				return false;
+			}
+			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+
+			VirtualServerView virtualServerView = validServers.get(serverId);
+			if (virtualServerView != null && virtualServerView.openTime != null
+					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) >= config.openParam) {
+				return true;
+			}
+		}
+		//
+		return false;
 	}
 
 	@Override
@@ -29,7 +57,9 @@ public class GlobalActivityManager extends AbstractActivityManager {
 
 	@Override
 	public void runDestroyTask(int id, long remaining) {
-		// TODO
+		SchedulerService.getInstance().scheduleTask(() -> {
+			destroy(id, true);
+		}, remaining, TimeUnit.MILLISECONDS);
 	}
 
 	@Override

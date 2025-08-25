@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -89,13 +90,13 @@ public class ValidServerService implements AutoCloseable {
 	/**
 	 * 查询所有“有效服务器”（开服时间 <= now）。
 	 */
-	public List<VirtualServerView> getValidServers() {
+	public Map<String, VirtualServerView> getValidServers() {
 		LocalDateTime now = nowLocal();
 		return cache.getAll()
 				.stream()
 				.filter(Objects::nonNull)
 				.filter(s -> isValidOpenTime(s.openTime) && !s.openTime.isAfter(now))
-				.collect(Collectors.toList());
+				.collect(Collectors.toMap(VirtualServerView::getID, s -> s, (a, b) -> a, LinkedHashMap::new));
 	}
 
 	

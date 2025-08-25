@@ -32,7 +32,9 @@ public abstract class AbstractActivityManager {
 
 	/** 进行中的活动，同id只能有一个活动 */
 	protected Map<Integer, ActivityBase> activities = new ConcurrentHashMap<>();
-
+	/** 活动属于哪一个服，为空表示全服的 */
+	protected String serverId; 
+	
 	public ActivityBase get(int id) {
 		return activities.get(id);
 	}
@@ -211,7 +213,7 @@ public abstract class AbstractActivityManager {
 		// 判断按活动时间开启的活动
 		ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
 		if (activityConfig.openType == 0) {
-			return isInOpenTime(activity.getId());
+			return !isInOpenTime(activity.getId());
 		}
 		// 非时间开启的活动
 		long endTime = activity.calcEndTime();
@@ -229,7 +231,7 @@ public abstract class AbstractActivityManager {
 	 */
 	protected boolean isInOpenTime(int id) {
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		return !showList.contains(id);
+		return showList.contains(id);
 	}
 
 	public Map<Integer, ActivityInfo> getShowState() {
@@ -319,6 +321,14 @@ public abstract class AbstractActivityManager {
 	protected abstract boolean canOpen(ActivityConfig config);
 
 	protected abstract boolean shouldRefresh(ActivityConfig config);
+
+	public String getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
+	}
 
 	// 钩子方法，允许子类在活动生命周期的关键点进行干预
 	protected void afterLoad() {

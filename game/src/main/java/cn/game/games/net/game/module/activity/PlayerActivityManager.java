@@ -26,13 +26,10 @@ public class PlayerActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
-		if (config.disable) {
+		if (config.disable || config.isMultiplayer) {
 			return false;
 		}
 		if (config.resetType == 0 && disposableIds.contains(config.ID)) {
-			return false;
-		}
-		if (config.isMultiplayer) {
 			return false;
 		}
 		if (config.openType == 0) {

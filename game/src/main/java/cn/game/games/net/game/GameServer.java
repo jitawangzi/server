@@ -65,6 +65,7 @@ import cn.game.games.core.collector.PlayerConcurrencyCollector;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
+import cn.game.games.net.common.module.activity.GameActivityService;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -189,11 +190,12 @@ public class GameServer implements GameServerMBean {
 
 		// ******************** 业务逻辑启动 **************************
 		ManagerHelper.init();
-
-		ActivityStateManager.getInstance().start();
-//		ActivityStateManager.getInstance().initGlobal();
 		PlayerManager.getInstance().init2();
 		ClassManager.getInstance().init();
+		
+		ActivityStateManager.getInstance().start();
+		GameActivityService.getInstance(); 
+//		ActivityStateManager.getInstance().initGlobal();
 		PressureTestManager.getInstance().init();
 		BIHelper.start();
 		checkPlayerJsonStruct();
