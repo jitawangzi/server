@@ -109,7 +109,11 @@ public class WatchServiceManager implements Runnable {
 							int index = fileName.lastIndexOf(".");
 							ResourceListener resourceListener = this.resources.get(fileName.substring(0, index));
 							if (resourceListener != null) {
-								resourceListener.load();
+								if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+									resourceListener.reload();
+								}else {
+									resourceListener.load();
+								}
 							} else {
 								log.warn("配置文件[{}]没有对应的解析器", fileName);
 							}
