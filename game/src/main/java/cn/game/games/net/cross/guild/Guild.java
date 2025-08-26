@@ -14,6 +14,7 @@ import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.cache.entity.GuildData;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.rank.RankService;
@@ -366,6 +367,7 @@ public class Guild {
 			boolean joinGuild = joinGuild(targetPid, GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 			if (joinGuild) {
 				joinPidList.add(targetPid);
+				MailHelper.sendPromptMail(targetPid,"恭喜加入："+getName()); 
 			}
 		}
 		// 通知被加入的玩家 加入公会

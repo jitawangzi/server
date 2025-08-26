@@ -46,6 +46,7 @@ public class ActivityStateManager {
 	public static ActivityStateManager getInstance() {
 		return instance;
 	}
+
 	public void start() {
 		Date nowDate = new Date();
 		for (ActivityConfig activityConfig : ActivityManager.instance().list()) {
@@ -71,14 +72,18 @@ public class ActivityStateManager {
 				int period = activityConfig.period;
 				int periodPass = getPeriodPass(id);
 				for (Date vt : activityConfig.viewTime) {
-					if (vt == null) continue;
+					if (vt == null)
+						continue;
 					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
 					if (nowDate.before(viewDate)) {
 						long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, viewDate);
 						if (period > 0) {
-							SchedulerService.getInstance().scheduleAtFixedRate(() -> setState(id, ActivityState.VIEW_VALUE), howLong, period, TimeUnit.MILLISECONDS);
+							SchedulerService.getInstance()
+									.scheduleAtFixedRate(() -> setState(id, ActivityState.VIEW_VALUE), howLong, period,
+											TimeUnit.MILLISECONDS);
 						} else {
-							SchedulerService.getInstance().scheduleTask(() -> setState(id, ActivityState.VIEW_VALUE), howLong, TimeUnit.MILLISECONDS);
+							SchedulerService.getInstance()
+									.scheduleTask(() -> setState(id, ActivityState.VIEW_VALUE), howLong, TimeUnit.MILLISECONDS);
 						}
 					}
 				}
@@ -93,7 +98,8 @@ public class ActivityStateManager {
 				shouldBeView = true;
 			} else {
 				for (Date vt : activityConfig.viewTime) {
-					if (vt == null) continue;
+					if (vt == null)
+						continue;
 					int period = activityConfig.period;
 					int periodPass = getPeriodPass(id);
 					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
@@ -156,9 +162,10 @@ public class ActivityStateManager {
 						if (nowDate.before(startDate)) {// 活动尚未开启
 							long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, startDate);
 							if (period > 0) {
-								SchedulerService.getInstance().scheduleAtFixedRate(new StartTask(id), howLong, period, TimeUnit.MILLISECONDS);
+								SchedulerService.getInstance()
+										.scheduleAtFixedRate(new StartTask(id), howLong, period, TimeUnit.MILLISECONDS);
 							} else {
-								SchedulerService.getInstance().scheduleTask(new StartTask(id), howLong, TimeUnit.MILLISECONDS); 
+								SchedulerService.getInstance().scheduleTask(new StartTask(id), howLong, TimeUnit.MILLISECONDS);
 							}
 						}
 					}
@@ -173,7 +180,7 @@ public class ActivityStateManager {
 							if (period > 0) {
 								SchedulerService.getInstance().scheduleAtFixedRate(new EndTask(id), howLong, period, TimeUnit.MILLISECONDS);
 							} else {
-								SchedulerService.getInstance().scheduleTask(new EndTask(id), howLong, TimeUnit.MILLISECONDS); 
+								SchedulerService.getInstance().scheduleTask(new EndTask(id), howLong, TimeUnit.MILLISECONDS);
 							}
 						}
 					}
@@ -186,9 +193,10 @@ public class ActivityStateManager {
 						if (nowDate.before(date)) {
 							long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, date);
 							if (period > 0) {
-								SchedulerService.getInstance().scheduleAtFixedRate(new DestroyTask(id), howLong, period, TimeUnit.MILLISECONDS);
+								SchedulerService.getInstance()
+										.scheduleAtFixedRate(new DestroyTask(id), howLong, period, TimeUnit.MILLISECONDS);
 							} else {
-								SchedulerService.getInstance().scheduleTask(new DestroyTask(id), howLong, TimeUnit.MILLISECONDS); 
+								SchedulerService.getInstance().scheduleTask(new DestroyTask(id), howLong, TimeUnit.MILLISECONDS);
 							}
 						}
 					}
@@ -256,7 +264,8 @@ public class ActivityStateManager {
 			boolean visible = false;
 			if (activityConfig.viewTime != null && !activityConfig.viewTime.isEmpty()) {
 				for (Date vt : activityConfig.viewTime) {
-					if (vt == null) continue;
+					if (vt == null)
+						continue;
 					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
 					if (!nowDate.before(viewDate)) { // now >= viewDate
 						visible = true;
@@ -283,6 +292,7 @@ public class ActivityStateManager {
 		}
 		return null;
 	}
+
 	/**
 	 * 当前时间距离活动配置的开始时间，过了多少个活动周期
 	 * 
@@ -295,12 +305,14 @@ public class ActivityStateManager {
 		long nowTimeMillis = System.currentTimeMillis();
 		int periodPass = 0;
 		int periodSec = activityConfig.period;
-		if (periodSec <= 0) return 0;
+		if (periodSec <= 0)
+			return 0;
 		long periodMs = periodSec * 1000L;
 
 		for (int i = 0; i < activityConfig.startTime.size(); i++) {
 			Date date = activityConfig.startTime.get(i);
-			if (date == null) continue;
+			if (date == null)
+				continue;
 			long diff = nowTimeMillis - date.getTime();
 			if (diff > periodMs) {
 				int tmp = (int) (diff / periodMs);
@@ -546,20 +558,21 @@ public class ActivityStateManager {
 	/* ===================== 下面是 Cron 优先的辅助方法 ===================== */
 
 	private boolean hasAnyCron(ActivityConfig cfg) {
-		return (cfg.startCron != null && !cfg.startCron.isEmpty())
-				|| (cfg.endCron != null && !cfg.endCron.isEmpty())
-				|| (cfg.destroyCron != null && !cfg.destroyCron.isEmpty())
-				|| (cfg.viewCron != null && !cfg.viewCron.isEmpty());
+		return (cfg.startCron != null && !cfg.startCron.isEmpty()) || (cfg.endCron != null && !cfg.endCron.isEmpty())
+				|| (cfg.destroyCron != null && !cfg.destroyCron.isEmpty()) || (cfg.viewCron != null && !cfg.viewCron.isEmpty());
 	}
 
 	private void scheduleNextByCron(int id, List<CronExpression> crons, Runnable task) {
-		if (crons == null || crons.isEmpty()) return;
+		if (crons == null || crons.isEmpty())
+			return;
 		Date now = new Date();
 		Date next = nextByCrons(crons, now);
-		if (next == null) return;
+		if (next == null)
+			return;
 
 		long delay = next.getTime() - now.getTime();
-		if (delay < 0) delay = 0; // 容错
+		if (delay < 0)
+			delay = 0; // 容错
 
 		SchedulerService.getInstance().scheduleTask(() -> {
 			try {
@@ -632,11 +645,13 @@ public class ActivityStateManager {
 	}
 
 	private Date lastFireBefore(List<CronExpression> crons, Date now) {
-		if (crons == null || crons.isEmpty()) return null;
+		if (crons == null || crons.isEmpty())
+			return null;
 		// 通过回退窗口寻找上一触发点（近似实现）
 		long windowMs = TimeUnit.DAYS.toMillis(370);
 		Date from = new Date(now.getTime() - windowMs);
-		if (from.after(now)) return null;
+		if (from.after(now))
+			return null;
 
 		Date candidate = null;
 		for (CronExpression ce : crons) {
@@ -647,7 +662,8 @@ public class ActivityStateManager {
 				while (d != null && d.before(now)) {
 					last = d;
 					d = ce.getNextValidTimeAfter(d);
-					if (d != null && d.equals(last)) break;
+					if (d != null && d.equals(last))
+						break;
 				}
 				if (last != null && (candidate == null || last.after(candidate))) {
 					candidate = last;
@@ -659,32 +675,52 @@ public class ActivityStateManager {
 		return candidate;
 	}
 
-	/* ===================== 兼容老字段的相对时长计算与统一调度 ===================== */
+	/** 
+	 * 还有多少毫秒到达活动结束时间
+	* type==2（秒）：直接 endDuration 秒
+	* type==1（天）：按自然日结算——从 startMillis 所在当天的24:00作为第一天的结束点，
+	                 若 endDuration>1，再顺延到后续天的0点。
+	 * @param cfg
+	 * @param startMillis
+	 * @return
+	 */
+	public long getEffectiveEndDurationMs(ActivityConfig cfg, long startMillis) {
+		if (cfg.endDuration <= 0)
+			return 0L;
 
-	private long getEffectiveEndDurationMs(ActivityConfig cfg) {
-		if (cfg.endDuration > 0) {
-			return (cfg.endDurationType == 1)
-					? TimeUnit.DAYS.toMillis(cfg.endDuration)
-					: TimeUnit.SECONDS.toMillis(cfg.endDuration);
+		if (cfg.endDurationType == 2) { // 秒
+			return TimeUnit.SECONDS.toMillis(cfg.endDuration);
+		} else { // 天：自然日结算
+			long targetZero = DateUtil.nextDayStartTime(startMillis, cfg.endDuration);
+			return Math.max(0L, targetZero - startMillis);
 		}
-		return 0L;
 	}
 
-	private long getEffectiveDestroyDurationMs(ActivityConfig cfg) {
-		if (cfg.destroyDuration > 0) {
-			return (cfg.destroyDurationType == 1)
-					? TimeUnit.DAYS.toMillis(cfg.destroyDuration)
-					: TimeUnit.SECONDS.toMillis(cfg.destroyDuration);
+	/** 
+	 * 还有多少毫秒到达活动销毁时间
+	 * @param cfg
+	 * @param startMillis
+	 * @return
+	 */
+	public long getEffectiveDestroyDurationMs(ActivityConfig cfg, long startMillis) {
+		if (cfg.destroyDuration <= 0)
+			return 0L;
+
+		if (cfg.destroyDurationType == 2) { // 秒
+			return TimeUnit.SECONDS.toMillis(cfg.destroyDuration);
+		} else { // 天：自然日结算
+			long targetZero = DateUtil.nextDayStartTime(startMillis, cfg.destroyDuration);
+			return Math.max(0L, targetZero - startMillis);
 		}
-		return 0L;
 	}
 
 	private void scheduleRelativeEndAndDestroy(ActivityConfig cfg, int id) {
-		long endDelayMs = getEffectiveEndDurationMs(cfg);
+		long timeMillis = System.currentTimeMillis();
+		long endDelayMs = getEffectiveEndDurationMs(cfg, timeMillis);
 		if (endDelayMs > 0) {
 			SchedulerService.getInstance().scheduleTask(new EndTask(id), endDelayMs, TimeUnit.MILLISECONDS);
 		}
-		long destroyDelayMs = getEffectiveDestroyDurationMs(cfg);
+		long destroyDelayMs = getEffectiveDestroyDurationMs(cfg, timeMillis);
 		if (destroyDelayMs > 0) {
 			SchedulerService.getInstance().scheduleTask(new DestroyTask(id), destroyDelayMs, TimeUnit.MILLISECONDS);
 		}

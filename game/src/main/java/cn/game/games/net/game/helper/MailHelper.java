@@ -130,6 +130,15 @@ public class MailHelper {
 	public static Future<Object> sendMailFromPlayer(long receiverId, String sender, String title, String content) {
 		return sendMail(receiverId, 0, null, sender, title, content, 3, null, true);
 	}
+	/** 
+	 * 给玩家发提示类的邮件，3类型，不显示，只做特殊用途
+	 * @param receiverId
+	 * @param content
+	 * @return
+	 */
+	public static Future<Object> sendPromptMail(long receiverId,String content) {
+		return sendMail(receiverId, 0, null, "", "", content, 3, null, true);
+	}
 
 	@Deprecated
 	public static void sendMail2(long receiverId, String sender, String title, String content, byte type,
