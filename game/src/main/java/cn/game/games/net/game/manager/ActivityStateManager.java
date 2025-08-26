@@ -676,12 +676,6 @@ public class ActivityStateManager {
 					? TimeUnit.DAYS.toMillis(cfg.destroyDuration)
 					: TimeUnit.SECONDS.toMillis(cfg.destroyDuration);
 		}
-		// 兼容老字段：若 destroyDuration 未配置则走旧 duration
-		if (cfg.destroyDuration <= 0 && cfg.duration > 0) {
-			return (cfg.durationType == 1)
-					? TimeUnit.DAYS.toMillis(cfg.duration)
-					: TimeUnit.SECONDS.toMillis(cfg.duration);
-		}
 		return 0L;
 	}
 

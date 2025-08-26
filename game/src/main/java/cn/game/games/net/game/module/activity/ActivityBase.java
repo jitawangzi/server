@@ -206,14 +206,14 @@ public abstract class ActivityBase{
 	public long calcEndTime() {
 		long endTime = 0 ; 
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.durationType > 0) {
+		if (activityConfig.endDurationType > 0) {
 			if (startTime == 0) { // 还没开始，默认返回0
 				return endTime;
 			}
-			if (activityConfig.durationType == 1) {
-				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.duration);
-			} else if (activityConfig.durationType == 2) {
-				endTime = startTime + activityConfig.duration * 1000;
+			if (activityConfig.endDurationType == 1) {
+				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.endDuration);
+			} else if (activityConfig.endDurationType == 2) {
+				endTime = startTime + activityConfig.endDuration * 1000;
 			}
 		} else {
 			endTime = ActivityStateManager.getInstance().getEndTime(id);
