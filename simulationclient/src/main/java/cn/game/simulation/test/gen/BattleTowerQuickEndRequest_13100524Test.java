@@ -20,10 +20,9 @@ public class BattleTowerQuickEndRequest_13100524Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.newBuilder() ; 
-		
-		
-		
+		cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.newBuilder() ;
+		builder.setBattleId(230001);
+		builder.setQuickCount(1);
 		return builder.build() ; 
 	}
 	

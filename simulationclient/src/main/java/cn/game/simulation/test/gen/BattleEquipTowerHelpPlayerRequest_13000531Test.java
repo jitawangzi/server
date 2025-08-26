@@ -20,10 +20,8 @@ public class BattleEquipTowerHelpPlayerRequest_13000531Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.newBuilder() ; 
-		
-		
-		
+		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.newBuilder() ;
+		builder.setFloor(1);
 		return builder.build() ; 
 	}
 	
@@ -31,5 +29,4 @@ public class BattleEquipTowerHelpPlayerRequest_13000531Test extends ServerTest{
 	    BattleEquipTowerHelpPlayerRequest_13000531Test instance = new BattleEquipTowerHelpPlayerRequest_13000531Test();
 	    instance.start();
 	}
-
 }
