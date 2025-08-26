@@ -9,15 +9,21 @@ import org.apache.commons.lang3.StringUtils;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.task.SchedulerService;
+import cn.game.core.util.IdUtil;
 import cn.game.core.zookeeper.server.ValidServerService;
-import cn.game.games.cache.entity.Activity;
+import cn.game.games.cache.entity.GlobalActivity;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.util.DateUtil;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
 
 public class GlobalActivityManager extends AbstractActivityManager {
+	
+	public static final String GLOBAL_SERVER_ID = "serverAll"; // 全局服ID
+	
 	@Override
 	protected Object getOwner() {
 		return null; // 全局活动没有特定所有者
@@ -73,17 +79,14 @@ public class GlobalActivityManager extends AbstractActivityManager {
 		insert(activity);
 	}
 
-	public void insert(ActivityBase activity) {
-		Activity insert = new Activity();
-		insert.setId(activity.getId());
-		Object owner = getOwner();
-		if (owner != null && owner instanceof Player) {
-			insert.setPlayerId(((Player) owner).getPlayerId());
-		} else {
-			insert.setPlayerId(0L);
-		}
-		insert.setStat((byte) 0);
+	public Future<@Nullable Object> insert(ActivityBase activity) {
+		GlobalActivity insert = new GlobalActivity();
+		insert.setId(IdUtil.getId());
+		insert.setConfigId(activity.getId());
+		insert.setState((byte) activity.getState());
+		insert.setServerId(StringUtils.isEmpty(serverId)? GLOBAL_SERVER_ID : serverId);
+		insert.setCreateTime(System.currentTimeMillis());
 		insert.setParams(activity.toSaveString());
-		DAO.insert(insert);
+		return insert.insert() ; 
 	}
 }

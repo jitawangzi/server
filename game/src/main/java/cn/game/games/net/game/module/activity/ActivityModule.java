@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.data.mapper.ActivityMapper;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityManager;

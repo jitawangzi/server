@@ -78,6 +78,7 @@ public class DAO {
 	 * @param arg
 	 */
 	public static Object executeSync(Class<?> mapper, String method, Object... args) {
+		
 		return invoke(mapper, method, args);
 	}
 

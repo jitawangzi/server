@@ -20,6 +20,7 @@ import cn.game.protocol.generated.manager.ActivityManager;
 /**    
  * Game服务器混服的活动管理器，保存所有服务器的活动状态
  * 注意这里只是保存活动状态，并且这些活动本身不存储活动数据。 
+ * 也就是所有的Game进程都有相同的一份数据
  * 2025年8月22日 18:28:40
  * @author SYQ
  */

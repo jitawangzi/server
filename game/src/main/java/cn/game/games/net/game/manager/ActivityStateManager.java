@@ -440,7 +440,6 @@ public class ActivityStateManager {
 
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
-
 					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
 						// 关闭活动
 						ActivityModule activityModule = player.getActivityModule();

@@ -12,9 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.entity.Activity;
+import cn.game.games.cache.entity.GlobalActivity;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.data.mapper.ActivityMapper;
+import cn.game.games.net.data.mapper.GlobalActivityMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
@@ -263,12 +263,12 @@ public abstract class AbstractActivityManager {
 	 * @param id
 	 */
 	public void load(int id) {
-		Object activity = DAO.executeSync(ActivityMapper.class, MapperConstant.selectByPrimaryKey, new Object[] { 0L, id });
+		Object activity = DAO.executeSync(GlobalActivityMapper.class, MapperConstant.selectByPrimaryKey, new Object[] { 0L, id });
 		if (activity == null) {
 			return;
 		}
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((Activity) activity).getParams(), null);
+		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GlobalActivity) activity).getParams(), null);
 
 		ActivityBase existing = activities.putIfAbsent(id, newActivity);
 		if (existing != null) {
@@ -276,10 +276,6 @@ public abstract class AbstractActivityManager {
 			return;
 		}
 		afterLoad();
-	}
-
-	public void delete(int id) {
-		DAO.execute(ActivityMapper.class, MapperConstant.deleteByPrimaryKey, new Object[] { 0L, id });
 	}
 
 	@Deprecated
@@ -291,15 +287,15 @@ public abstract class AbstractActivityManager {
 			if (saveString == null) { // 这个活动不需要保存到数据库
 				continue;
 			}
-			Activity activity = new Activity();
+			GlobalActivity activity = new GlobalActivity();
 			activity.setId(activityBase.getId());
 			Object owner = getOwner();
 			if (owner != null && owner instanceof Player) {
-				activity.setPlayerId(((Player) owner).getPlayerId());
+//				activity.setPlayerId(((Player) owner).getPlayerId());
 			} else {
-				activity.setPlayerId(0L);
+//				activity.setPlayerId(0L);
 			}
-			activity.setStat((byte) activityBase.getState());
+			activity.setState((byte) activityBase.getState());
 			activity.setParams(saveString);
 
 			DAO.update(activity);
