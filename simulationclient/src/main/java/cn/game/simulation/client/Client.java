@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLException;
 
+import cn.game.protocol.protobuf.BaseMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -193,7 +194,8 @@ public class Client extends AbstractNetClient {
 	public GuildPersonalInfo guildPersonalInfo;
 	
 	public List<Integer> guildIds = new ArrayList<>();
-
+	// 踏碎凌霄 助战奖励信息
+	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);

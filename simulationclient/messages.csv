@@ -1,258 +1,256 @@
-ï»¿åºå·,åè®®å,åè®®å·,æ¨¡å—,åŠŸèƒ½ç»„,ç»„é¡ºåº,æƒé‡,æè¿°
-1,ActivityBaoLiInfoRequest_11000061,0x11000061,æ´»åŠ¨,1000,,,æ¯æ—¥è±¹åˆ©ä¿¡æ¯è¯·æ±‚
-2,ActivityFirstChargeBuyRequest_11000010,0x11000010,æ´»åŠ¨,1000,,1,è´­ä¹°é¦–å†²ç¤¼åŒ…ï¼Œåªèƒ½è´­ä¹°æœ‰å”®ä»·çš„ç¤¼åŒ…ã€‚
-3,ActivityFirstChargeRequest_11000007,0x11000007,æ´»åŠ¨,1000,,,æŸ¥çœ‹é¦–å†²æ´»åŠ¨æ•°æ®
-4,ActivityFirstChargeRewardRequest_11000012,0x11000012,æ´»åŠ¨,1000,,,é¢†å–é¦–å†²ç¤¼åŒ…å¥–åŠ±
-5,ActivityJQBInfoRequest_11000081,0x11000081,æ´»åŠ¨,1000,,1,é‡‘é’±è±¹çˆ†çˆ†ä¿¡æ¯è¯·æ±‚
-6,ActivityLeiChongInfoRequest_11000051,0x11000051,æ´»åŠ¨,1000,,,ç´¯å……è±ªç¤¼ä¿¡æ¯è¯·æ±‚
-7,ActivityListRequest_11000001,0x11000001,æ´»åŠ¨,1000,,,æŸ¥çœ‹æœ‰å“ªäº›æ˜¾ç¤ºçš„æ´»åŠ¨
-8,ActivityQingShenInfoRequest_11000071,0x11000071,æ´»åŠ¨,1000,,,é£äº‘èšä¹‰ä¿¡æ¯è¯·æ±‚
-9,ActivityRedPointRequest_11000003,0x11000003,æ´»åŠ¨,1000,1,,æŸ¥çœ‹æŸä¸ªæ´»åŠ¨ï¼Œæ˜¯å¦æœ‰çº¢ç‚¹
-10,ActivitySevenDaysCarnivalRequest_11000020,0x11000020,æ´»åŠ¨,1000,,,ä¸ƒæ—¥ç‹‚æ¬¢
-11,ActivitySevenDaysSigninInfoRequest_11000024,0x11000024,æ´»åŠ¨,1000,,,"ä¸ƒæ—¥ç­¾åˆ°,æŸ¥çœ‹ä¸ƒæ—¥ç­¾åˆ°æ•°æ®"
-12,ActivitySevenDaysSigninRequest_11000026,0x11000026,æ´»åŠ¨,1000,,33,"ä¸ƒæ—¥ç­¾åˆ°,ç­¾åˆ°é¢†å¥– è¯·æ±‚"
-13,ActivityTaskRewardRequest_11000041,0x11000041,æ´»åŠ¨,1000,,,æ´»åŠ¨ä»»åŠ¡å¥–åŠ±é¢†å– è¯·æ±‚
-14,BattlePatrolRewardRequest_13000044,0x13000044,PVP,2100,,,é¢†å–å·¡é€»å¥–åŠ±
-15,BattleBuyPvPTimeRequest_13000121,0x13000121,PVP,2100,3,1,è´­ä¹°æŒ‘æˆ˜åˆ¸ è¯·æ±‚
-16,BattlePvPEndRequest_13000115,0x13000115,PVP,2100,5,,ç»“ç®—æˆ˜æ–—è¯·æ±‚
-17,BattlePvPInfoRequest_13000117,0x13000117,PVP,2100,1,,è·å–å¤§é“äº‰é”‹ä¿¡æ¯ è¯·æ±‚
-18,BattlePvPStartRequest_13000113,0x13000113,PVP,2100,4,,å¼€å§‹æˆ˜æ–—è¯·æ±‚
-19,BattlePvPTargetListRequest_13000111,0x13000111,PVP,2100,2,,ç›®æ ‡åˆ—è¡¨åˆ·æ–° è¯·æ±‚
-20,BattleDaoHeartRequest_13000055,0x13000055,PVE,2200,,,æŸ¥çœ‹é“å¿ƒç£¨ç º å¿ƒé­”è¯•ç‚¼æ•°æ®
-21,BattleDaoHeartSweepBatchRequest_13000062,0x13000062,PVE,2200,,,ä¸€é”®æ‰«è¡é“å¿ƒç£¨ç º å¿ƒé­”è¯•ç‚¼å…³å¡
-22,BattleDaoHeartSweepRequest_13000060,0x13000060,PVE,2200,,3,æ‰«è¡é“å¿ƒç£¨ç º å¿ƒé­”è¯•ç‚¼å…³å¡
-23,BattleDaoHeartSweepRequest_13000064,0x13000064,PVE,2200,,,æŸ¥çœ‹é“å¿ƒç£¨ç º å¿ƒé­”è¯•ç‚¼é€šå…³å¥–åŠ±é¢†å–æƒ…å†µ
-24,BattleDaoHeartSweepRequest_13000066,0x13000066,PVE,2200,,,é¢†å–é“å¿ƒç£¨ç º å¿ƒé­”è¯•ç‚¼å…³å¡é€šå…³å¥–åŠ±
-25,BattleDayChallengeReceiveActivePointRequest_13000070,0x13000070,PVE,2250,,,é¢†å–æ¯æ—¥æŒ‘æˆ˜æ´»è·ƒç§¯åˆ†å¥–åŠ±
-26,BattleFieldStartRequest_13000001,0x13000001,PVE,2300,1,,å¼€å§‹å…³å¡æˆ˜æ–—è¯·æ±‚
-27,BattleFieldEndRequest_13000003,0x13000003,PVE,2300,2,,ç»“æŸå…³å¡æˆ˜æ–—è¯·æ±‚
-28,BattleFieldQuickEndRequest_13000005,0x13000005,PVE,2350,,,"å…³å¡å¿«é€Ÿæˆ˜æ–—è¯·æ±‚,ä¹Ÿå¯ä»¥å½“æ‰«è¡æ¥ä½¿ç”¨"
-29,BattleLineupRequest_13000048,0x13000048,PVE,2400,,,ä¿å­˜é˜µå®¹
-30,BattleLostDayRewardRequest_13000203,0x13000203,PVE,2450,,,é¢†å–å¤±è½çœŸç»å†å²æœ€é«˜å…³å¡å¥–åŠ±
-31,BattleLostInfoRequest_13000201,0x13000201,PVE,2450,,,è¯·æ±‚å¤±è½çœŸç»æ•°æ®
-32,BattleNightmareRealmBuffUpdateRequest_13000082,0x13000082,PVE,2500,2,,æ¢¦é­‡ç§˜å¢ƒæ›´æ–°buff
-33,BattleNightmareRealmQuickRequest_13000084,0x13000084,PVE,2500,3,,æ¢¦é­‡ç§˜å¢ƒå¿«é€Ÿæˆ˜æ–—
-34,BattleNightmareRealmRequest_13000080,0x13000080,PVE,2500,1,,è¯·æ±‚æ¢¦é­‡ç§˜å¢ƒæ•°æ®
-35,BattleReliveRequest_13000010,0x13000010,PVE,2550,,,å¤æ´»
-36,BattleRewardRequest_13000022,0x13000022,PVE,2560,,,"é¢†å–æˆ˜å½¹  é¦–æ¬¡èƒœåˆ©å¥–åŠ±	é¦–æ¬¡åŠè¡€èƒœåˆ©å¥–åŠ±	é¦–æ¬¡æ— æŸèƒœåˆ©å¥–åŠ±,å¯ä»¥ä¸€æ¬¡é¢†å¤šä¸ªæˆ˜å½¹çš„ã€‚"
-37,BattleRougeRefreshRequest_13000052,0x13000052,PVE,2570,,,"è‚‰é¸½åˆ·æ–°,æ¯å¤©å‰3æ¬¡å…è´¹ï¼Œç¬¬å››æ¬¡çœ‹å¹¿å‘Šã€‚"
-38,BattleShareRequest_13000007,0x13000007,PVE,2580,,,çœ‹å¹¿å‘Šå¹¶åˆ†äº«ä¹‹åé¢å¤–è·å¾—xxå€å¥–åŠ±
-39,BattleSpiritualChangeBattleRequest_13000098,0x13000098,çµé­„ä¹‹æˆ˜,2600,,,æå‡æˆ–è€…é™ä½éš¾åº¦
-40,BattleSpiritualGetPointRequest_13000096,0x13000096,çµé­„ä¹‹æˆ˜,2600,,,è¡¥æ»¡ç§¯åˆ†ã€‚
-41,BattleSpiritualGetTimesRequest_13000094,0x13000094,çµé­„ä¹‹æˆ˜,2600,,,çœ‹å¹¿å‘Šè·å–çµé­„ä¹‹æˆ˜æŒ‘æˆ˜æ¬¡æ•°
-42,BattleSpiritualInfoRequest_13000090,0x13000090,çµé­„ä¹‹æˆ˜,2600,1,,è¯·æ±‚çµé­„ä¹‹æˆ˜æ•°æ®
-43,BattleSpiritualReceiveActivePointRequest_13000092,0x13000092,çµé­„ä¹‹æˆ˜,2600,,,é¢†å–çµé­„ä¹‹æˆ˜æ´»è·ƒç§¯åˆ†å¥–åŠ±
-44,BattleStaminaRequest_13000050,0x13000050,PVE,2650,,,é¢†å–ä½“åŠ›
-45,BattleSweepRequest_13000024,0x13000024,PVE,2660,,,å…³å¡æ‰«è¡
-46,BattleWorldBossBuyTimesRequest_13000303,0x13000303,ä¸–ç•Œboss,2700,,,è´­ä¹°ä¸–ç•ŒbossæŒ‘æˆ˜æ¬¡æ•°
-47,BattleWorldBossInfoRequest_13000301,0x13000301,ä¸–ç•Œboss,2700,1,,è¯·æ±‚ä¸–ç•Œbossæ•°æ®
-48,BattleWorldRewardRequest_13000305,0x13000305,ä¸–ç•Œboss,2700,,,é¢†å–ä¸–ç•Œbossä¼¤å®³å®ç®±å¥–åŠ±
-49,ChatRequest_31000001,0x31000001,èŠå¤©,2999,,,è¯·æ±‚èŠå¤©
-50,DevelopHeavenlyDaoLvUpRequest_25000010,0x25000010,ä¿®ç‚¼,3000,,,å¤©é“ä¿®ä¸ºæ™‹å‡ï¼Œæå‡ç­‰çº§ã€‚
-51,DevelopPotentialBreakRequest_25000003,0x25000003,ä¿®ç‚¼,3100,,,æ½œåŠ›ä¿®ç‚¼ï¼Œçªç ´
-52,DevelopPotentialLvUpRequest_25000001,0x25000001,ä¿®ç‚¼,3100,,,æ½œåŠ›ä¿®ç‚¼ï¼Œå‡çº§
-53,DevelopRescueLvUpRequest_25000007,0x25000007,ä¿®ç‚¼,3100,,,å¼ºæ´ä¿®ç‚¼ï¼Œå‡çº§
-54,DrawListRequest_37000001,0x37000001,æŠ½å¡,3150,,,è¯·æ±‚å¡æ± ç•Œé¢æ•°æ®
-55,DrawRequest_37000003,0x37000003,æŠ½å¡,3160,,,è¯·æ±‚æŠ½å¡
-56,FairyFriendFightRequest_27000003,0x27000003,ä»™å‹,3200,1,,ä»™å‹ åˆ‡ç£‹
-57,FairyFriendFightRewardRequest_27000005,0x27000005,ä»™å‹,3200,2,,é¢†å–ä»™å‹åˆ‡ç£‹å¥–åŠ±
-58,FairyFriendGiftRequest_27000001,0x27000001,ä»™å‹,3200,3,,ä»™å‹ é€ç¤¼
-59,FairyFriendTravelRequest_27000007,0x27000007,ä»™å‹,3200,4,,ä»™å‹å¯»ç¼˜ã€æ¸¸å†
-60,FriendApplicationRequest_30000007,0x30000007,å¥½å‹,3300,5,,"å¤„ç†å¥½å‹ç”³è¯·,åŒ…å«æ‰¹é‡å¤„ç†"
-61,FriendApplyListRequest_30000053,0x30000053,å¥½å‹,3300,4,,è¯·æ±‚å¥½å‹ç”³è¯·åˆ—è¡¨
-62,FriendApplyRequest_30000005,0x30000005,å¥½å‹,3300,6,,"ç”³è¯·æˆä¸ºå¯¹æ–¹å¥½å‹,æ”¯æŒæ‰¹é‡"
-63,FriendBlackListRequest_30000051,0x30000051,å¥½å‹,3300,3,,è¯·æ±‚é»‘åå•åˆ—è¡¨
-64,FriendBlackRequest_30000010,0x30000010,å¥½å‹,3300,,,å°†å¥½å‹åŠ å…¥åˆ°é»‘åå•
-65,FriendDeleteRequest_30000009,0x30000009,å¥½å‹,3300,,,"åˆ é™¤å¥½å‹,ä»é»‘åå•é‡Œç§»é™¤ä¹Ÿç”¨è¿™ä¸ªåè®®"
-66,FriendGiftReceiveRequest_30000014,0x30000014,å¥½å‹,3300,,,é¢†å–å¥½å‹èµ é€çš„å‹æƒ…ç‚¹ï¼ŒåŒ…å«ä¸€é”®é¢†å–ï¼Œæ³¨æ„äººæ•°ä¸è¦é¢†å¤šäº†ï¼Œè¶…è¿‡æ¯æ—¥æ¬¡æ•°é™åˆ¶ã€‚
-67,FriendGiftRequest_30000012,0x30000012,å¥½å‹,3300,,,èµ é€å¥½å‹å‹æƒ…ç‚¹ï¼Œæ³¨æ„äººæ•°ä¸è¦å‘å¤šäº†ï¼Œè¶…è¿‡æ¯æ—¥æ¬¡æ•°é™åˆ¶ã€‚
-68,FriendListRequest_30000001,0x30000001,å¥½å‹,3300,2,,è¯·æ±‚å¥½å‹åˆ—è¡¨
-69,FriendRecommendRequest_30000003,0x30000003,å¥½å‹,3300,1,,æœç´¢ç¬¦åˆæ¡ä»¶çš„æ¨èå¥½å‹
-70,HeroBattleDismissRequest_16000009,0x16000009,è‹±é›„,3400,,,è‹±é›„ä¸‹é˜µ
-71,HeroBattleRequest_16000005,0x16000005,è‹±é›„,3400,,,è‹±é›„ä¸Šé˜µ
-72,HeroBattleUpLevelBatchRequest_16000025,0x16000025,è‹±é›„,3400,,,æ‰¹é‡å‡çº§ä¸Šé˜µçš„è‹±é›„ï¼ŒæŒ‰ç…§å“è´¨å’Œæ˜Ÿçº§çš„é¡ºåº
-73,HeroConflateRequest_16000003,0x16000003,è‹±é›„,3400,,,"è‹±é›„åˆæˆ,ä¹Ÿå°±æ˜¯å‡æ˜Ÿï¼Œçªç ´ã€‚å½“å‰å“è´¨ä¸‹å¯ä»¥å‡æ˜Ÿï¼Œæ˜Ÿçº§å‡æ»¡ä¹‹åè¿›è¡Œçªç ´ï¼Œæ”¹å˜å“è´¨ã€‚"
-74,HeroFreeDayRentChooseRequest_16000032,0x16000032,è‹±é›„,3400,,,é€‰æ‹©æŸä¸ªè‹±é›„æ—¥ç§Ÿå¡ã€‚
-75,HeroFreeDayRentRequest_16000030,0x16000030,è‹±é›„,3400,,,è¯·æ±‚å…è´¹è‹±é›„æ—¥ç§Ÿå¡ï¼Œè¿™ä¸ªåªæœ‰åœ¨åŠŸèƒ½å¼€å¯çš„æ—¶å€™è¯·æ±‚ä¸€ä¸‹ï¼Œä¸èƒ½é‡å¤è¯·æ±‚
-76,HeroIllustrationsListRequest_16000040,0x16000040,è‹±é›„,3400,,,æŸ¥çœ‹å›¾é‰´æ•°æ®
-77,HeroIllustrationsRewardRequest_16000042,0x16000042,è‹±é›„,3400,,,ä¸€é”®é¢†å–è‹±é›„çš„å›¾é‰´å¥–åŠ±
-78,HeroLevelResetRequest_16000007,0x16000007,è‹±é›„,3400,,,"è‹±é›„ç­‰çº§é‡ç½®,è¿”è¿˜å‡çº§ææ–™"
-79,HeroQualityResetRequest_16000011,0x16000011,è‹±é›„,3400,,,è‹±é›„å“è´¨é‡ç½®
-80,HeroUpLevelBatchRequest_16000023,0x16000023,è‹±é›„,3400,,,æ‰¹é‡è‹±é›„å‡çº§ï¼Œèƒ½å‡çº§å“ªä¸ªå‡çº§å“ªä¸ª
-81,HeroUpLevelMaxRequest_16000021,0x16000021,è‹±é›„,3400,,,"è‹±é›„ä¸€é”®å‡çº§,è‡ªåŠ¨å‡çº§åˆ°æœ€é«˜çº§ã€‚"
-82,HeroUpLevelRequest_16000001,0x16000001,è‹±é›„,3400,,,è‹±é›„å‡çº§
-83,ItemUseRequest_0b000003,0x0b000003,é“å…·,3450,,,ä½¿ç”¨é“å…·
-84,MailDeleteRequest_12000007,0x12000007,é‚®ä»¶,3500,4,,åˆ é™¤é‚®ä»¶
-85,MailListRequest_12000001,0x12000001,é‚®ä»¶,3500,1,,è¯·æ±‚é‚®ä»¶åˆ—è¡¨ã€‚
-86,MailReceiveRequest_12000005,0x12000005,é‚®ä»¶,3500,3,,é¢†å–é‚®ä»¶å¥–åŠ±
-87,MailSeeRequest_12000003,0x12000003,é‚®ä»¶,3500,2,,æŸ¥çœ‹æœªè¯»é‚®ä»¶
-88,MonthCardBuyRequest_15000010,0x15000010,æœˆå¡,3550,1,,è´­ä¹°æœˆå¡
-89,MonthCardBuyRewardRequest_15000012,0x15000012,æœˆå¡,3550,2,,é¢†å–æœˆå¡è´­ä¹°å¥–åŠ±ï¼Œæ¯ä¸ªæœˆå¡åªèƒ½é¢†å–ä¸€æ¬¡
-90,MonthCardDayRewardRequest_15000014,0x15000014,æœˆå¡,3550,3,,é¢†å–æœˆå¡æ¯æ—¥å¥–åŠ±
-91,MonthCardDoubleBonusRequest_15000016,0x15000016,æœˆå¡,3550,4,,é¢†å–åŒæœˆå¡ä¸€æ¬¡æ€§å¥–åŠ±
-92,NoticeRequest_01000050,0x01000050,å…¬å‘Š,3580,,,è¯·æ±‚å…¬å‘Šæ•°æ®
-93,PetBattleRequest_19000011,0x19000011,å® ç‰©,3600,,,å® ç‰©ä¸Šé˜µ
-94,PetBondsActivateRequest_19000013,0x19000013,å® ç‰©,3600,,,æ¿€æ´»å® ç‰©ç¾ç»Š
-95,PetBondsUpLevelRequest_19000015,0x19000015,å® ç‰©,3600,,,å‡çº§å® ç‰©ç¾ç»Š
-96,PetBreakUpRequest_19000005,0x19000005,å® ç‰©,3600,,,å® ç‰©çªç ´
-97,PetCompositeRequest_19000001,0x19000001,å® ç‰©,3600,,,ç¢ç‰‡åˆæˆå® ç‰©
-98,PetRefineRequest_19000007,0x19000007,å® ç‰©,3600,,,å® ç‰©æ´—ç»ƒ
-99,PetRefineSaveRequest_19000009,0x19000009,å® ç‰©,3600,,,å®é™…ä¿å­˜ä¸Šä¸€æ¬¡åˆ·æ–°å‡ºæ¥çš„æŠ€èƒ½
-100,PetUpLevelRequest_19000003,0x19000003,å® ç‰©,3600,,,å® ç‰©å‡çº§
-101,PlayerAssetDataRequest_01000200,0x01000200,ç©å®¶,4000,,,è¯·æ±‚ç©å®¶èµ„äº§ï¼Œæµ‹è¯•ä½¿ç”¨ï¼Œä¸€èˆ¬ç”¨æ¥æ¯”å¯¹å‰åç«¯èµ„æºï¼Œæ£€æŸ¥èµ„æºä¸åŒæ­¥çš„æ“ä½œã€‚
-102,PlayerCloudBoxRequest_01000042,0x01000042,ç©å®¶,4050,,,é¢†å–å°äº‘å®ç®±å¥–åŠ±
-103,PlayerGuideRequest_01000060,0x01000060,ç©å®¶,4060,,,ä¿å­˜æ–°æ‰‹å¼•å¯¼æ­¥éª¤
-104,PlayerGenderRequest_01000017,0x01000017,ç©å®¶,4100,,,ä¿®æ”¹æ€§åˆ«
-105,PlayerHeadFrameRequest_01000015,0x01000015,ç©å®¶,4100,,,ä¿®æ”¹å¤´åƒæ¡†
-106,PlayerHeadRequest_01000013,0x01000013,ç©å®¶,4100,,,ä¿®æ”¹å¤´åƒ
-107,PlayerNameRequest_01000011,0x01000011,ç©å®¶,4100,,,ä¿®æ”¹åå­—
-108,PlayerImageRequest_01000019,0x01000019,ç©å®¶,4100,,,ä¿®æ”¹å½¢è±¡
-109,PlayerHeartbeatRequest_01000005,0x01000005,ç©å®¶,4150,,,å¿ƒè·³
-110,PlayerLoginRequest_01000001,0x01000001,ç©å®¶,4200,,0,ç™»é™†
-111,PlayerLogoutRequest_01000003,0x01000003,ç©å®¶,4200,,0,é€€å‡ºç™»é™†
-112,PlayerQuestionnaireRequest_01000300,0x01000300,ç©å®¶,4250,1,,è¯·æ±‚ç©å®¶çš„è°ƒæŸ¥é—®å·æ•°æ®
-113,PlayerQuestionnaireRewardRequest_01000302,0x01000302,ç©å®¶,4250,2,,é¢†å–é—®å·å¥–åŠ±
-114,PlayerReconnecRequest_01000065,0x01000065,ç©å®¶,4300,,,æ–­çº¿é‡è¿ï¼Œå’Œæ‰‹æœºç«¯é€šç”¨
-115,PlayerRedPointRequest_01000075,0x01000075,ç©å®¶,4350,,,è¯·æ±‚çº¢ç‚¹ï¼Œåˆ¤æ–­æ‰€æœ‰åŠŸèƒ½çº¢ç‚¹çš„çŠ¶æ€ã€‚
-116,PlayerSearchRequest_0100000b,0x0100000b,ç©å®¶,4400,,,æœç´¢ç©å®¶
-117,PlayerShowRequest_01000039,0x01000039,ç©å®¶,4450,,,è·å–ä¸€ä¸ªç©å®¶çš„å±•ç¤ºæ•°æ®
-118,QianKunMirrorReplaceRequest_25000022,0x25000022,ä¹¾å¤é•œ,4500,2,,æ›¿æ¢æˆ–è€…ä¸¢å¼ƒçµé­„
-119,QianKunMirrorReversalRequest_25000020,0x25000020,ä¹¾å¤é•œ,4500,1,,ä¹¾å¤é€†è½¬è¯·æ±‚
-120,QianKunMirrorSpiritualRootUnlockRequest_25000024,0x25000024,ä¹¾å¤é•œ,4550,,,ç‚¹äº® è§£é” çµæ ¹æ·¬ç‚¼
-121,QuestListAllRequest_20000051,0x20000051,ä»»åŠ¡,5000,1,,è¯·æ±‚æ‰€æœ‰ä»»åŠ¡æ•°æ®ï¼Œä¸€èˆ¬åœ¨ä»»åŠ¡åŠŸèƒ½å¼€å¯çš„æ—¶å€™è¯·æ±‚ä¸€ä¸‹ã€‚
-122,QuestListRequest_20000001,0x20000001,ä»»åŠ¡,5000,2,,"æŸ¥çœ‹æŸç±»ä»»åŠ¡æ•°æ®,ä¸€èˆ¬åœ¨ä»»åŠ¡åŠŸèƒ½å¼€å¯æ—¶ï¼Œå®¢æˆ·ç«¯è¯·æ±‚ä¸€ä¸‹ã€‚"
-123,QuestReceiveActivePointRequest_20000008,0x20000008,ä»»åŠ¡,5000,3,,é¢†å–ä»»åŠ¡æ´»è·ƒç§¯åˆ†å¥–åŠ±
-124,QuestReceiveRequest_20000004,0x20000004,ä»»åŠ¡,5000,4,,é¢†å–ä»»åŠ¡å¥–åŠ±
-125,RankListRequest_35000001,0x35000001,æ’è¡Œæ¦œ,5050,,,è¯·æ±‚æ’è¡Œæ¦œæ•°æ®
-126,SecretscriptBreakUpRequest_38000005,0x38000005,ç¥é€š,5100,,,ç¥é€šçªç ´ï¼Œåˆæˆæ–°ç¥é€šä¹Ÿç”¨è¿™ä¸ª
-127,SecretscriptFusionPvPRequest_38000011,0x38000011,ç¥é€š,5100,,,ç¥é€šèæ±‡ PVP
-128,SecretscriptFusionRequest_38000007,0x38000007,ç¥é€š,5100,,,ç¥é€šèæ±‡
-129,SecretscriptUpLevelRequest_38000003,0x38000003,ç¥é€š,5100,,,ç¥é€šå‡çº§
-130,ShopBoxOpenRequest_15000040,0x15000040,å•†åº—,5200,,,==================================å¼€å®ç®±===============================
-131,ShopChapterPacksBuyRequest_15000020,0x15000020,å•†åº—,5200,,,è´­ä¹°ç« èŠ‚ç¤¼åŒ…
-132,ShopFundPassBuyRequest_15000030,0x15000030,å•†åº—,5200,,,è´­ä¹°é€šè¡Œè¯
-133,ShopFundPassRewardRequest_15000032,0x15000032,å•†åº—,5200,,,é¢†å–é€šè¡Œè¯å¥–åŠ±
-134,ShopHeishiRefreshRequest_15000005,0x15000005,å•†åº—,5200,,,æ‰‹åŠ¨åˆ·æ–°é»‘å¸‚è¯·æ±‚
-135,ShopItemBuyRequest_15000003,0x15000003,å•†åº—,5200,,,è´­ä¹°å•†å“
-136,ShopItemListRequest_15000001,0x15000001,å•†åº—,5200,1,,æŸ¥çœ‹å•†åº—é‡Œé¢çš„å•†å“åˆ—è¡¨
-137,ShopRechargeRequest_15000022,0x15000022,å•†åº—,5200,,,å……å€¼
-138,buyVipGiftRequest_34000005,0x34000005,VIP,5300,,,è´­ä¹°ä¸€æ¬¡æ€§ç¤¼åŒ…å¥–åŠ±è¯·æ±‚
-139,getVipInfoRequest_34000001,0x34000001,VIP,5300,,,è·å–VIP ä¿¡æ¯ è¯·æ±‚
-140,rewardFreeVipGiftRequest_34000003,0x34000003,VIP,5300,,,é¢†å–æ¯æ—¥å…è´¹å¥–åŠ±è¯·æ±‚
-141,GmAccountForbidListRequest_77000003,0x77000003,,,,,è¯·æ±‚å°å·åˆ—è¡¨
-142,GmAccountForbidRequest_77000005,0x77000005,,,,,è¯·æ±‚å°å·
-143,GmAccountUnblockRequest_77000007,0x77000007,,,,,è¯·æ±‚è§£å°
-144,GmMailCheckRequest_77000044,0x77000044,,,,,å®¡æ ¸é‚®ä»¶
-145,GmMailDeleteRequest_77000046,0x77000046,,,,,åˆ é™¤é‚®ä»¶
-146,GmMailListRequest_77000042,0x77000042,,,,,æŸ¥çœ‹é‚®ä»¶åˆ—è¡¨
-147,GmMailPlayerSendRequest_77000040,0x77000040,,,,,gmç»™æŒ‡å®šç©å®¶å‘é‚®ä»¶ å·²åºŸå¼ƒ
-148,GmMailServerSendRequest_77000048,0x77000048,,,,,gmç»™æŒ‡å®šæœåŠ¡å™¨å‘é‚®ä»¶
-149,GmNoticeAddRequest_77000060,0x77000060,,,,,å¢åŠ å…¬å‘Š
-150,GmNoticeDeleteRequest_77000064,0x77000064,,,,,åˆ é™¤å…¬å‘Š
-151,GmNoticeListRequest_77000066,0x77000066,,,,,æŸ¥çœ‹å…¬å‘Šåˆ—è¡¨
-152,GmNoticeUpdateRequest_77000062,0x77000062,,,,,æ›´æ–°å…¬å‘Š
-153,GmOperationRequest_77000071,0x77000071,,,,,è¯·æ±‚gmæ“ä½œè®°å½•åˆ—è¡¨
-154,GmOrderReimburseRequest_77000027,0x77000027,,,,,è¡¥å•
-155,GmOrderRequest_77000025,0x77000025,,,,,"æŸ¥è¯¢è®¢å•,å“ªä¸ªå‚æ•°æœ‰å€¼ç”¨å“ªä¸ªæŸ¥ï¼Œå¦‚æœéƒ½æ²¡æœ‰å€¼"
-156,GmPlayerLogoutRequest_77000009,0x77000009,,,,,è¯·æ±‚è¸¢ä¸‹çº¿
-157,GmPlayerRequest_77000021,0x77000021,,,,,æŸ¥çœ‹æŸç©å®¶æ•°æ®ï¼Œä¼˜å…ˆidï¼Œå¦‚æœidæ²¡æœ‰é€šè¿‡nameæŸ¥è¯¢ã€‚
-158,GmServerOpRequest_77000030,0x77000030,,,,,æ“ä½œæœåŠ¡å™¨é‡å¯ç­‰
-159,GmServerStatusRequest_77000032,0x77000032,,,,,æ”¹å˜æœåŠ¡å™¨çŠ¶æ€
-160,GmShutdownServerRequest_77000001,0x77000001,,,,,å…³é—­æœåŠ¡å™¨
-161,DrawHeroWishRequest_37000005,0x37000005,,,,,é€‰æ‹©å¿ƒæ„¿çº¢å¡
-162,HeroFragmentComposeRequest_16000050,0x16000050,,,,,ä½¿ç”¨è‹±é›„ç¢ç‰‡åˆæˆè‹±é›„
-163,HeroDisassembleRequest_16000052,0x16000052,,,,,è‹±é›„åˆ†è§£æˆç¢ç‰‡
-164,BuyXianShiLiBaoRequest_15000052,0x15000052,,,,,è´­ä¹°é™æ—¶ç¤¼åŒ…
-165,GetXianShiLiBaoInfoRequest_15000050,0x15000050,,,,,è·å–ç°æ—¶ç¤¼åŒ…æ•°æ®
-166,BattleChapterRewardRequest_13000222,0x13000222,,,,,é¢†å–å…³å¡ç« èŠ‚å¥–åŠ±
-167,ItemSellRequest_0b000007,0x0b000007,,,,,å‡ºå”®é“å…·
-168,ActivityWestLuckyBuyRequest_11000095,0x11000095,,,,,è´­ä¹°è½¬ç›˜é“å…·
-169,ActivityWestLuckyDrawRequest_11000093,0x11000093,,,,,æŠ½å–è½¬ç›˜
-170,ActivityWestLuckyInfoRequest_11000091,0x11000091,,,,,è½¬ç›˜ä¿¡æ¯
-171,PlayerPatrolInfoRequest_01000070,0x01000070,,,,,è¯·æ±‚å·¡é€»æ•°æ®ï¼Œä¸€èˆ¬æ˜¯åœ¨åŠŸèƒ½åˆšå¼€å¯æ—¶è¯·æ±‚ã€‚
-172,InviteTaskListRequest_20000041,0x20000041,,,,,é‚€è¯·ä»»åŠ¡è¯·æ±‚
-173,RewardInviteTaskRequest_20000043,0x20000043,,,,,é¢†å–é‚€è¯·ä»»åŠ¡å¥–åŠ±
-174,BattleRogueAdvertiseRequest_13000010,0x13000010,,,,,æˆ˜æ–—ä¸­çœ‹å¹¿å‘Šé€‰å–è‚‰é¸½æŠ€èƒ½
-175,BattleRogueAdvertiseRequest_13000012,0x13000012,,,,,æˆ˜æ–—ä¸­çœ‹å¹¿å‘Šé€‰å–è‚‰é¸½æŠ€èƒ½
-176,HeroIllustrationsLevelRewardRequest_16000044,0x16000044,,,,,é¢†å–å›¾é‰´ç­‰çº§å¥–åŠ±ï¼Œåªèƒ½ä¸€çº§ä¸€çº§é¢†
-177,PlayerFuncOpenRewardRequest_01000305,0x01000305,,,,,é¢†å–åŠŸèƒ½å¼€å¯çš„å¥–åŠ±
-178,PlayerLevelUpRequest_01000055,0x01000055,,,,,æ‰‹åŠ¨å‡çº§è¯·æ±‚
-179,HeroSkinRequest_16000060,0x16000060,,,,,è‹±é›„æ¢çš®è‚¤
-180,GmPlayerRenameRequest_77000050,0x77000050,,,,,gmæ”¹å
-181,GmPlayerDeleteRequest_77000052,0x77000052,,,,,gmåˆ é™¤æŸä¸ªç©å®¶æ•°æ®
-182,GmPlayerTDLevelRequest_77000054,0x77000054,,,,,gmè®¾ç½®å¤©é“ä¿®ä¸ºç­‰çº§
-183,WechatSettingRequest_01100601,0x01100601,,,,,å¾®ä¿¡è®¾ç½®ç›¸å…³
-220,ActivityDayGiftBuyRequest_11000102,0x11000102,,,,,è´­ä¹°æ¯æ—¥ç‰¹æƒ ç¤¼åŒ…
-221,ActivityDayGiftPackageBuyRequest_11000106,0x11000106,,,,,æ‰“åŒ…è´­ä¹°æ¯æ—¥ç‰¹æƒ ç¤¼åŒ…
-222,ActivityDayGiftRequest_11000100,0x11000100,,,,,æŸ¥çœ‹æ¯æ—¥ç‰¹æƒ ç¤¼åŒ…æ•°æ®
-223,ActivityDayGiftRewardRequest_11000104,0x11000104,,,,,é¢†å–æ¯æ—¥ç‰¹æƒ ç¤¼åŒ…å¥–åŠ±
-224,DrawHeroInfoRequest_37000011,0x37000011,,,,,è¯·æ±‚è‹±é›„æ‹›å‹Ÿæ•°æ®
-225,DrawHeroRecruitRequest_37000015,0x37000015,,,,,æ–°ç¥å°†æ‹›å‹Ÿ
-226,DrawHeroRefreshRequest_37000013,0x37000013,,,,,æ–°ç¥å°†æ‹›å‹Ÿåˆ·æ–°ï¼ŒèŠ±è´¹å…ƒå®
-227,GinsengTreeBugRequest_39000005,0x39000005,,,,,äººå‚æœæ ‘æ‰‹åŠ¨é™¤è™«
-228,GinsengTreeFertilizationRequest_39000011,0x39000011,,,,,äººå‚æœæ ‘æ–½è‚¥
-229,GinsengTreeHarvestRequest_39000013,0x39000013,,,,,æ”¶è·äººå‚æœæ ‘æœå®
-230,GinsengTreeInfoRequest_39000001,0x39000001,,,,,è¯·æ±‚äººå‚æœæ ‘æ•°æ®
-231,GinsengTreeInsecticidesRequest_39000007,0x39000007,,,,,äººå‚æœæ ‘è´­ä¹°æ€è™«å‰‚é™¤è™«
-232,GinsengTreeWateringRequest_39000003,0x39000003,,,,,äººå‚æœæ ‘æµ‡æ°´
-233,GinsengTreeHangUpRequest_39000015,0x39000015,,,,,é¢†å–äººå‚æœæ ‘æŒ‚æœºå¥–åŠ±
-234,GinsengTreeHeroRequest_39000017,0x39000017,,,,,äººå‚æœæ ‘è‹±é›„ä¸Šé˜µ
-235,BattleLineupChooseRequest_13000031,0x13000031,,,,,é€‰æ‹©å½“å‰ä½¿ç”¨çš„é˜µå®¹
-237,BattleXiangYaoChuMoRequest_13000501,0x13000501,,,,,è¯·æ±‚é™å¦–é™¤é­”æ•°æ®
-238,PlayerFigureRequest_01000021,0x01000021,,,,,ä¿®æ”¹å½¢è±¡
-239,BattleLingShanBuyTimesRequest_13000513,0x13000513,,,,,è¯·æ±‚è´­ä¹°çµå±±é—®ç¦…æ¬¡æ•°
-240,BattleLingShanRequest_13000511,0x13000511,,,,,è¯·æ±‚çµå±±é—®ç¦…æ•°æ®
-241,BattleLingShanRewardRequest_13000515,0x13000515,,,,,é¢†å–çµå±±é—®ç¦…å±‚æ•°å®ç®±å¥–åŠ±
-242,BattleLingShanReward2Request_13000517,0x13000517,,,,,é¢†å–çµå±±é—®ç¦…å±‚æ•°å®ç®±å¥–åŠ±
-243,EquipDecomposeRequest_09000005,0x09000005,,,,,è£…å¤‡åˆ†è§£
-244,EquipPartStrengthRequest_09000007,0x09000007,,,,,è£…å¤‡éƒ¨ä½å¼ºåŒ–
-245,EquipTeardownRequest_09000003,0x09000003,,,,,è£…å¤‡å¸ä¸‹
-246,EquipWearRequest_09000001,0x09000001,,,,,è£…å¤‡ ç©¿æˆ´ æ›¿æ¢
-247,GemComposeRequest_10000007,0x10000007,,,,,å®çŸ³åˆæˆ ä¸€é”®åˆæˆ
-248,GemLockRequest_10000005,0x10000005,,,,,å®çŸ³é”å®š
-249,GemTeardownRequest_10000003,0x10000003,,,,,å®çŸ³å¸ä¸‹
-250,GemWearRequest_10000001,0x10000001,,,,,å®çŸ³é•¶åµŒ æ›¿æ¢
-251,DefenceLevelUpRequest_25000031,0x25000031,,,,,é˜²çº¿å‡çº§
-252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,é˜²çº¿çš®è‚¤å‡æ˜Ÿ
-253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,é˜²çº¿çš®è‚¤æ›´æ¢
-255,BattleTowerDataRequest_13000521,0x13000521,,,,,å¡”æ•°æ®è¯·æ±‚
-256,BattleTowerQuickEndRequest_13100524,0x13100524,,,,,æ‰«è¡
-257,BattleEquipTowerDataRequest_13000526,0x13000526,,,,,è£…å¤‡å¡”æ•°æ®è¯·æ±‚
-258,BattleEquipTowerGetTicketRequest_13000533,0x13000533,,,,,é¢†å–è£…å¤‡å¡”é—¨ç¥¨
-259,BattleEquipTowerHelpPlayerRequest_13000531,0x13000531,,,,,åŠ©æˆ˜ç©å®¶åˆ—è¡¨ç‚¹å‡»åˆ·æ–°
-260,BattleEquipTowerGetHelpRewardRequest_13000535,0x13000535,,,,,é¢†å–åŠ©æˆ˜å¥–åŠ±è¯·æ±‚
-261,BattleEquipTowerGetHelpRewardRequest_13000537,0x13000537,,,,,æŸ¥çœ‹åŠ©æˆ˜æƒ…å†µè¯·æ±‚
-262,BattleEquipTowerGetHelpInfoRequest_13000537,0x13000537,,,,,æŸ¥çœ‹åŠ©æˆ˜æƒ…å†µè¯·æ±‚
-263,BattleEquipTowerFindHelpRewardRequest_13000537,0x13000537,,,,,æŸ¥çœ‹åŠ©æˆ˜å¥–åŠ±æƒ…å†µè¯·æ±‚
-264,BattleLingShanEndRequest_13000519,0x13000519,,,,,ç»“æŸçµå±±é—®ç¦…
-265,BattleLingShanFloorSkipRequest_13000517,0x13000517,,,,,çµå±±é—®ç¦…è·³å…³
-266,BattleMountainDataRequest_13000539,0x13000539,,,,,å·¡å±±æ•°æ®è¯·æ±‚
-267,BattleMountainFinishNodeRequest_13000541,0x13000541,,,,,å®ŒæˆèŠ‚ç‚¹è¯·æ±‚
-268,BattleMountainGetRewardRequest_13000543,0x13000543,,,,,å®Œæˆè¿›åº¦å¥–åŠ±è¯·æ±‚
-269,BattleMountainMapResetRequest_13000545,0x13000545,,,,,é‡ç½®
-270,BattleMountainNextFloorRequest_13000547,0x13000547,,,,,ä¸‹ä¸€å±‚
-271,BattlePVEVPChallengeRequest_13000552,0x13000552,,,,,å¤§åœ£æ“‚å°æŒ‘æˆ˜æ•°æ®
-272,BattlePVEVPDataRequest_13000549,0x13000549,,,,,å¤§åœ£æ“‚å°æ•°æ®è¯·æ±‚
-273,BattlePVEVPRecordRequest_13000550,0x13000550,,,,,å¤§åœ£æ“‚å°æˆ˜æ–—è®°å½•æ•°æ®
-275,BattleBuyTicketRequest_13000554,0x13000554,,,,,å¤§åœ£æ“‚å°è´­ä¹°æ¬¡æ•°æ•°æ®è¯·æ±‚
-276,BattleRescueSkillIdRequest_13000057,0x13000057,,,,,æˆ˜æ–—é€‰æ‹©å¼ºæ´æŠ€èƒ½id
-291,BattleEquipTowerRecordRequest_13000528,0x13000528,,,,,æŸ¥çœ‹æˆ˜æ–—è®°å½•ä¸Šä¼ è¯·æ±‚
-292,GuildApplyJoinRequest_40000007,0x40000007,,6000,7,,ç”³è¯·åŠ å…¥å…¬ä¼š
-293,GuildBargainBuyRequest_40000062,0x40000062,,6000,17,,è´­ä¹°å…¬ä¼šç ä»·ç‰©å“
-294,GuildBargainRequest_40000060,0x40000060,,6000,15,,å…¬ä¼šç ä»·
-295,GuildCreateRequest_40000005,0x40000005,,6000,5,,åˆ›å»ºå…¬ä¼š
-296,GuildDissolveRequest_40000011,0x40000011,,6000,29,,è§£æ•£å…¬ä¼š
-297,GuildDonateRequest_40000067,0x40000067,,6000,19,,å…¬ä¼šæçŒ®
-298,GuildFindRequest_40000003,0x40000003,,6000,3,,æŸ¥æ‰¾å…¬ä¼š
-299,GuildInfoRequest_40000021,0x40000021,,6000,11,,è·å–å…¬ä¼šä¿¡æ¯
-300,GuildListRequest_40000001,0x40000001,,6000,1,,å…¬ä¼šåˆ—è¡¨
-301,GuildLogRequest_40000025,0x40000025,,6000,13,,å…¬ä¼šæ—¥å¿—è¯·æ±‚
-302,GuildMemberAuthRequest_40000041,0x40000041,,6000,21,,"å…¬ä¼šæˆå‘˜æƒé™ç®¡ç†,åŒæ„ç”³è¯·ï¼Œè¸¢äººç­‰ã€‚"
-303,GuildMemberPositionSetRequest_40000015,0x40000015,,6000,23,,å…¬ä¼šèŒä½æ›´æ”¹
-304,GuildQuickJoinRequest_40000065,0x40000065,,6000,9,,å¿«é€Ÿä¸€é”®åŠ å…¥å…¬ä¼š
-305,GuildQuitRequest_40000017,0x40000017,,6000,27,,é€€å‡ºå…¬ä¼š
-306,GuildSettingRequest_40000013,0x40000013,,6000,25,,å…¬ä¼šè®¾ç½®ç›¸å…³ æœ‰å€¼ åˆ™æ›¿æ¢ï¼Œæ²¡æœ‰å€¼ åˆ™ä¸ä¿®æ”¹
-307,GinsengTreeEnergyRequest_39000021,0x39000021,,,,,äººå‚æœæ ‘é¢†å–ä½“åŠ›æœå®
-308,BattleMountainBuffBagRequest_1300053b,0x1300053b,,,,,è¯·æ±‚buffèƒŒåŒ…åˆ—è¡¨
-309,LimitedTimeGiftBuyRequest_15000061,0x15000061,,,,,è´­ä¹°é™æ—¶ç¤¼åŒ…
-310,GuildRankListRequest_40000081,0x40000081,,,,,è¯·æ±‚å·¥ä¼šæ’è¡Œæ¦œæ•°æ®
+ĞòºÅ,Ğ­ÒéÃû,Ğ­ÒéºÅ,Ä£¿é,¹¦ÄÜ×é,×éË³Ğò,È¨ÖØ,ÃèÊö
+1,ActivityBaoLiInfoRequest_11000061,0x11000061,»î¶¯,1000,,,Ã¿ÈÕ±ªÀûĞÅÏ¢ÇëÇó
+2,ActivityFirstChargeBuyRequest_11000010,0x11000010,»î¶¯,1000,,1,¹ºÂòÊ×³åÀñ°ü£¬Ö»ÄÜ¹ºÂòÓĞÊÛ¼ÛµÄÀñ°ü¡£
+3,ActivityFirstChargeRequest_11000007,0x11000007,»î¶¯,1000,,,²é¿´Ê×³å»î¶¯Êı¾İ
+4,ActivityFirstChargeRewardRequest_11000012,0x11000012,»î¶¯,1000,,,ÁìÈ¡Ê×³åÀñ°ü½±Àø
+5,ActivityJQBInfoRequest_11000081,0x11000081,»î¶¯,1000,,1,½ğÇ®±ª±¬±¬ĞÅÏ¢ÇëÇó
+6,ActivityLeiChongInfoRequest_11000051,0x11000051,»î¶¯,1000,,,ÀÛ³äºÀÀñĞÅÏ¢ÇëÇó
+7,ActivityListRequest_11000001,0x11000001,»î¶¯,1000,,,²é¿´ÓĞÄÄĞ©ÏÔÊ¾µÄ»î¶¯
+8,ActivityQingShenInfoRequest_11000071,0x11000071,»î¶¯,1000,,,·çÔÆ¾ÛÒåĞÅÏ¢ÇëÇó
+9,ActivityRedPointRequest_11000003,0x11000003,»î¶¯,1000,1,,²é¿´Ä³¸ö»î¶¯£¬ÊÇ·ñÓĞºìµã
+10,ActivitySevenDaysCarnivalRequest_11000020,0x11000020,»î¶¯,1000,,,ÆßÈÕ¿ñ»¶
+11,ActivitySevenDaysSigninInfoRequest_11000024,0x11000024,»î¶¯,1000,,,"ÆßÈÕÇ©µ½,²é¿´ÆßÈÕÇ©µ½Êı¾İ"
+12,ActivitySevenDaysSigninRequest_11000026,0x11000026,»î¶¯,1000,,33,"ÆßÈÕÇ©µ½,Ç©µ½Áì½± ÇëÇó"
+13,ActivityTaskRewardRequest_11000041,0x11000041,»î¶¯,1000,,,»î¶¯ÈÎÎñ½±ÀøÁìÈ¡ ÇëÇó
+14,BattlePatrolRewardRequest_13000044,0x13000044,PVP,2100,,,ÁìÈ¡Ñ²Âß½±Àø
+15,BattleBuyPvPTimeRequest_13000121,0x13000121,PVP,2100,3,1,¹ºÂòÌôÕ½È¯ ÇëÇó
+16,BattlePvPEndRequest_13000115,0x13000115,PVP,2100,5,,½áËãÕ½¶·ÇëÇó
+17,BattlePvPInfoRequest_13000117,0x13000117,PVP,2100,1,,»ñÈ¡´óµÀÕù·æĞÅÏ¢ ÇëÇó
+18,BattlePvPStartRequest_13000113,0x13000113,PVP,2100,4,,¿ªÊ¼Õ½¶·ÇëÇó
+19,BattlePvPTargetListRequest_13000111,0x13000111,PVP,2100,2,,Ä¿±êÁĞ±íË¢ĞÂ ÇëÇó
+20,BattleDaoHeartRequest_13000055,0x13000055,PVE,2200,,,²é¿´µÀĞÄÄ¥íÂ ĞÄÄ§ÊÔÁ¶Êı¾İ
+21,BattleDaoHeartSweepBatchRequest_13000062,0x13000062,PVE,2200,,,Ò»¼üÉ¨µ´µÀĞÄÄ¥íÂ ĞÄÄ§ÊÔÁ¶¹Ø¿¨
+22,BattleDaoHeartSweepRequest_13000060,0x13000060,PVE,2200,,3,É¨µ´µÀĞÄÄ¥íÂ ĞÄÄ§ÊÔÁ¶¹Ø¿¨
+23,BattleDaoHeartSweepRequest_13000064,0x13000064,PVE,2200,,,²é¿´µÀĞÄÄ¥íÂ ĞÄÄ§ÊÔÁ¶Í¨¹Ø½±ÀøÁìÈ¡Çé¿ö
+24,BattleDaoHeartSweepRequest_13000066,0x13000066,PVE,2200,,,ÁìÈ¡µÀĞÄÄ¥íÂ ĞÄÄ§ÊÔÁ¶¹Ø¿¨Í¨¹Ø½±Àø
+25,BattleDayChallengeReceiveActivePointRequest_13000070,0x13000070,PVE,2250,,,ÁìÈ¡Ã¿ÈÕÌôÕ½»îÔ¾»ı·Ö½±Àø
+26,BattleFieldStartRequest_13000001,0x13000001,PVE,2300,1,,¿ªÊ¼¹Ø¿¨Õ½¶·ÇëÇó
+27,BattleFieldEndRequest_13000003,0x13000003,PVE,2300,2,,½áÊø¹Ø¿¨Õ½¶·ÇëÇó
+28,BattleFieldQuickEndRequest_13000005,0x13000005,PVE,2350,,,"¹Ø¿¨¿ìËÙÕ½¶·ÇëÇó,Ò²¿ÉÒÔµ±É¨µ´À´Ê¹ÓÃ"
+29,BattleLineupRequest_13000048,0x13000048,PVE,2400,,,±£´æÕóÈİ
+30,BattleLostDayRewardRequest_13000203,0x13000203,PVE,2450,,,ÁìÈ¡Ê§ÂäÕæ¾­ÀúÊ·×î¸ß¹Ø¿¨½±Àø
+31,BattleLostInfoRequest_13000201,0x13000201,PVE,2450,,,ÇëÇóÊ§ÂäÕæ¾­Êı¾İ
+32,BattleNightmareRealmBuffUpdateRequest_13000082,0x13000082,PVE,2500,2,,ÃÎ÷ÊÃØ¾³¸üĞÂbuff
+33,BattleNightmareRealmQuickRequest_13000084,0x13000084,PVE,2500,3,,ÃÎ÷ÊÃØ¾³¿ìËÙÕ½¶·
+34,BattleNightmareRealmRequest_13000080,0x13000080,PVE,2500,1,,ÇëÇóÃÎ÷ÊÃØ¾³Êı¾İ
+35,BattleReliveRequest_13000010,0x13000010,PVE,2550,,,¸´»î
+36,BattleRewardRequest_13000022,0x13000022,PVE,2560,,,"ÁìÈ¡Õ½ÒÛ  Ê×´ÎÊ¤Àû½±Àø	Ê×´Î°ëÑªÊ¤Àû½±Àø	Ê×´ÎÎŞËğÊ¤Àû½±Àø,¿ÉÒÔÒ»´ÎÁì¶à¸öÕ½ÒÛµÄ¡£"
+37,BattleRougeRefreshRequest_13000052,0x13000052,PVE,2570,,,"Èâ¸ëË¢ĞÂ,Ã¿ÌìÇ°3´ÎÃâ·Ñ£¬µÚËÄ´Î¿´¹ã¸æ¡£"
+38,BattleShareRequest_13000007,0x13000007,PVE,2580,,,¿´¹ã¸æ²¢·ÖÏíÖ®ºó¶îÍâ»ñµÃxx±¶½±Àø
+39,BattleSpiritualChangeBattleRequest_13000098,0x13000098,ÁéÆÇÖ®Õ½,2600,,,ÌáÉı»òÕß½µµÍÄÑ¶È
+40,BattleSpiritualGetPointRequest_13000096,0x13000096,ÁéÆÇÖ®Õ½,2600,,,²¹Âú»ı·Ö¡£
+41,BattleSpiritualGetTimesRequest_13000094,0x13000094,ÁéÆÇÖ®Õ½,2600,,,¿´¹ã¸æ»ñÈ¡ÁéÆÇÖ®Õ½ÌôÕ½´ÎÊı
+42,BattleSpiritualInfoRequest_13000090,0x13000090,ÁéÆÇÖ®Õ½,2600,1,,ÇëÇóÁéÆÇÖ®Õ½Êı¾İ
+43,BattleSpiritualReceiveActivePointRequest_13000092,0x13000092,ÁéÆÇÖ®Õ½,2600,,,ÁìÈ¡ÁéÆÇÖ®Õ½»îÔ¾»ı·Ö½±Àø
+44,BattleStaminaRequest_13000050,0x13000050,PVE,2650,,,ÁìÈ¡ÌåÁ¦
+45,BattleSweepRequest_13000024,0x13000024,PVE,2660,,,¹Ø¿¨É¨µ´
+46,BattleWorldBossBuyTimesRequest_13000303,0x13000303,ÊÀ½çboss,2700,,,¹ºÂòÊÀ½çbossÌôÕ½´ÎÊı
+47,BattleWorldBossInfoRequest_13000301,0x13000301,ÊÀ½çboss,2700,1,,ÇëÇóÊÀ½çbossÊı¾İ
+48,BattleWorldRewardRequest_13000305,0x13000305,ÊÀ½çboss,2700,,,ÁìÈ¡ÊÀ½çbossÉËº¦±¦Ïä½±Àø
+49,ChatRequest_31000001,0x31000001,ÁÄÌì,2999,,,ÇëÇóÁÄÌì
+50,DevelopHeavenlyDaoLvUpRequest_25000010,0x25000010,ĞŞÁ¶,3000,,,ÌìµÀĞŞÎª½úÉı£¬ÌáÉıµÈ¼¶¡£
+51,DevelopPotentialBreakRequest_25000003,0x25000003,ĞŞÁ¶,3100,,,Ç±Á¦ĞŞÁ¶£¬Í»ÆÆ
+52,DevelopPotentialLvUpRequest_25000001,0x25000001,ĞŞÁ¶,3100,,,Ç±Á¦ĞŞÁ¶£¬Éı¼¶
+53,DevelopRescueLvUpRequest_25000007,0x25000007,ĞŞÁ¶,3100,,,Ç¿Ô®ĞŞÁ¶£¬Éı¼¶
+54,DrawListRequest_37000001,0x37000001,³é¿¨,3150,,,ÇëÇó¿¨³Ø½çÃæÊı¾İ
+55,DrawRequest_37000003,0x37000003,³é¿¨,3160,,,ÇëÇó³é¿¨
+56,FairyFriendFightRequest_27000003,0x27000003,ÏÉÓÑ,3200,1,,ÏÉÓÑ ÇĞ´è
+57,FairyFriendFightRewardRequest_27000005,0x27000005,ÏÉÓÑ,3200,2,,ÁìÈ¡ÏÉÓÑÇĞ´è½±Àø
+58,FairyFriendGiftRequest_27000001,0x27000001,ÏÉÓÑ,3200,3,,ÏÉÓÑ ËÍÀñ
+59,FairyFriendTravelRequest_27000007,0x27000007,ÏÉÓÑ,3200,4,,ÏÉÓÑÑ°Ôµ¡¢ÓÎÀú
+60,FriendApplicationRequest_30000007,0x30000007,ºÃÓÑ,3300,5,,"´¦ÀíºÃÓÑÉêÇë,°üº¬ÅúÁ¿´¦Àí"
+61,FriendApplyListRequest_30000053,0x30000053,ºÃÓÑ,3300,4,,ÇëÇóºÃÓÑÉêÇëÁĞ±í
+62,FriendApplyRequest_30000005,0x30000005,ºÃÓÑ,3300,6,,"ÉêÇë³ÉÎª¶Ô·½ºÃÓÑ,Ö§³ÖÅúÁ¿"
+63,FriendBlackListRequest_30000051,0x30000051,ºÃÓÑ,3300,3,,ÇëÇóºÚÃûµ¥ÁĞ±í
+64,FriendBlackRequest_30000010,0x30000010,ºÃÓÑ,3300,,,½«ºÃÓÑ¼ÓÈëµ½ºÚÃûµ¥
+65,FriendDeleteRequest_30000009,0x30000009,ºÃÓÑ,3300,,,"É¾³ıºÃÓÑ,´ÓºÚÃûµ¥ÀïÒÆ³ıÒ²ÓÃÕâ¸öĞ­Òé"
+66,FriendGiftReceiveRequest_30000014,0x30000014,ºÃÓÑ,3300,,,ÁìÈ¡ºÃÓÑÔùËÍµÄÓÑÇéµã£¬°üº¬Ò»¼üÁìÈ¡£¬×¢ÒâÈËÊı²»ÒªÁì¶àÁË£¬³¬¹ıÃ¿ÈÕ´ÎÊıÏŞÖÆ¡£
+67,FriendGiftRequest_30000012,0x30000012,ºÃÓÑ,3300,,,ÔùËÍºÃÓÑÓÑÇéµã£¬×¢ÒâÈËÊı²»Òª·¢¶àÁË£¬³¬¹ıÃ¿ÈÕ´ÎÊıÏŞÖÆ¡£
+68,FriendListRequest_30000001,0x30000001,ºÃÓÑ,3300,2,,ÇëÇóºÃÓÑÁĞ±í
+69,FriendRecommendRequest_30000003,0x30000003,ºÃÓÑ,3300,1,,ËÑË÷·ûºÏÌõ¼şµÄÍÆ¼öºÃÓÑ
+70,HeroBattleDismissRequest_16000009,0x16000009,Ó¢ĞÛ,3400,,,Ó¢ĞÛÏÂÕó
+71,HeroBattleRequest_16000005,0x16000005,Ó¢ĞÛ,3400,,,Ó¢ĞÛÉÏÕó
+72,HeroBattleUpLevelBatchRequest_16000025,0x16000025,Ó¢ĞÛ,3400,,,ÅúÁ¿Éı¼¶ÉÏÕóµÄÓ¢ĞÛ£¬°´ÕÕÆ·ÖÊºÍĞÇ¼¶µÄË³Ğò
+73,HeroConflateRequest_16000003,0x16000003,Ó¢ĞÛ,3400,,,"Ó¢ĞÛºÏ³É,Ò²¾ÍÊÇÉıĞÇ£¬Í»ÆÆ¡£µ±Ç°Æ·ÖÊÏÂ¿ÉÒÔÉıĞÇ£¬ĞÇ¼¶ÉıÂúÖ®ºó½øĞĞÍ»ÆÆ£¬¸Ä±äÆ·ÖÊ¡£"
+74,HeroFreeDayRentChooseRequest_16000032,0x16000032,Ó¢ĞÛ,3400,,,Ñ¡ÔñÄ³¸öÓ¢ĞÛÈÕ×â¿¨¡£
+75,HeroFreeDayRentRequest_16000030,0x16000030,Ó¢ĞÛ,3400,,,ÇëÇóÃâ·ÑÓ¢ĞÛÈÕ×â¿¨£¬Õâ¸öÖ»ÓĞÔÚ¹¦ÄÜ¿ªÆôµÄÊ±ºòÇëÇóÒ»ÏÂ£¬²»ÄÜÖØ¸´ÇëÇó
+76,HeroIllustrationsListRequest_16000040,0x16000040,Ó¢ĞÛ,3400,,,²é¿´Í¼¼øÊı¾İ
+77,HeroIllustrationsRewardRequest_16000042,0x16000042,Ó¢ĞÛ,3400,,,Ò»¼üÁìÈ¡Ó¢ĞÛµÄÍ¼¼ø½±Àø
+78,HeroLevelResetRequest_16000007,0x16000007,Ó¢ĞÛ,3400,,,"Ó¢ĞÛµÈ¼¶ÖØÖÃ,·µ»¹Éı¼¶²ÄÁÏ"
+79,HeroQualityResetRequest_16000011,0x16000011,Ó¢ĞÛ,3400,,,Ó¢ĞÛÆ·ÖÊÖØÖÃ
+80,HeroUpLevelBatchRequest_16000023,0x16000023,Ó¢ĞÛ,3400,,,ÅúÁ¿Ó¢ĞÛÉı¼¶£¬ÄÜÉı¼¶ÄÄ¸öÉı¼¶ÄÄ¸ö
+81,HeroUpLevelMaxRequest_16000021,0x16000021,Ó¢ĞÛ,3400,,,"Ó¢ĞÛÒ»¼üÉı¼¶,×Ô¶¯Éı¼¶µ½×î¸ß¼¶¡£"
+82,HeroUpLevelRequest_16000001,0x16000001,Ó¢ĞÛ,3400,,,Ó¢ĞÛÉı¼¶
+83,ItemUseRequest_0b000003,0x0b000003,µÀ¾ß,3450,,,Ê¹ÓÃµÀ¾ß
+84,MailDeleteRequest_12000007,0x12000007,ÓÊ¼ş,3500,4,,É¾³ıÓÊ¼ş
+85,MailListRequest_12000001,0x12000001,ÓÊ¼ş,3500,1,,ÇëÇóÓÊ¼şÁĞ±í¡£
+86,MailReceiveRequest_12000005,0x12000005,ÓÊ¼ş,3500,3,,ÁìÈ¡ÓÊ¼ş½±Àø
+87,MailSeeRequest_12000003,0x12000003,ÓÊ¼ş,3500,2,,²é¿´Î´¶ÁÓÊ¼ş
+88,MonthCardBuyRequest_15000010,0x15000010,ÔÂ¿¨,3550,1,,¹ºÂòÔÂ¿¨
+89,MonthCardBuyRewardRequest_15000012,0x15000012,ÔÂ¿¨,3550,2,,ÁìÈ¡ÔÂ¿¨¹ºÂò½±Àø£¬Ã¿¸öÔÂ¿¨Ö»ÄÜÁìÈ¡Ò»´Î
+90,MonthCardDayRewardRequest_15000014,0x15000014,ÔÂ¿¨,3550,3,,ÁìÈ¡ÔÂ¿¨Ã¿ÈÕ½±Àø
+91,MonthCardDoubleBonusRequest_15000016,0x15000016,ÔÂ¿¨,3550,4,,ÁìÈ¡Ë«ÔÂ¿¨Ò»´ÎĞÔ½±Àø
+92,NoticeRequest_01000050,0x01000050,¹«¸æ,3580,,,ÇëÇó¹«¸æÊı¾İ
+93,PetBattleRequest_19000011,0x19000011,³èÎï,3600,,,³èÎïÉÏÕó
+94,PetBondsActivateRequest_19000013,0x19000013,³èÎï,3600,,,¼¤»î³èÎïî¿°í
+95,PetBondsUpLevelRequest_19000015,0x19000015,³èÎï,3600,,,Éı¼¶³èÎïî¿°í
+96,PetBreakUpRequest_19000005,0x19000005,³èÎï,3600,,,³èÎïÍ»ÆÆ
+97,PetCompositeRequest_19000001,0x19000001,³èÎï,3600,,,ËéÆ¬ºÏ³É³èÎï
+98,PetRefineRequest_19000007,0x19000007,³èÎï,3600,,,³èÎïÏ´Á·
+99,PetRefineSaveRequest_19000009,0x19000009,³èÎï,3600,,,Êµ¼Ê±£´æÉÏÒ»´ÎË¢ĞÂ³öÀ´µÄ¼¼ÄÜ
+100,PetUpLevelRequest_19000003,0x19000003,³èÎï,3600,,,³èÎïÉı¼¶
+101,PlayerAssetDataRequest_01000200,0x01000200,Íæ¼Ò,4000,,,ÇëÇóÍæ¼Ò×Ê²ú£¬²âÊÔÊ¹ÓÃ£¬Ò»°ãÓÃÀ´±È¶ÔÇ°ºó¶Ë×ÊÔ´£¬¼ì²é×ÊÔ´²»Í¬²½µÄ²Ù×÷¡£
+102,PlayerCloudBoxRequest_01000042,0x01000042,Íæ¼Ò,4050,,,ÁìÈ¡Ğ¡ÔÆ±¦Ïä½±Àø
+103,PlayerGuideRequest_01000060,0x01000060,Íæ¼Ò,4060,,,±£´æĞÂÊÖÒıµ¼²½Öè
+104,PlayerGenderRequest_01000017,0x01000017,Íæ¼Ò,4100,,,ĞŞ¸ÄĞÔ±ğ
+105,PlayerHeadFrameRequest_01000015,0x01000015,Íæ¼Ò,4100,,,ĞŞ¸ÄÍ·Ïñ¿ò
+106,PlayerHeadRequest_01000013,0x01000013,Íæ¼Ò,4100,,,ĞŞ¸ÄÍ·Ïñ
+107,PlayerNameRequest_01000011,0x01000011,Íæ¼Ò,4100,,,ĞŞ¸ÄÃû×Ö
+108,PlayerImageRequest_01000019,0x01000019,Íæ¼Ò,4100,,,ĞŞ¸ÄĞÎÏó
+109,PlayerHeartbeatRequest_01000005,0x01000005,Íæ¼Ò,4150,,,ĞÄÌø
+110,PlayerLoginRequest_01000001,0x01000001,Íæ¼Ò,4200,,0,µÇÂ½
+111,PlayerLogoutRequest_01000003,0x01000003,Íæ¼Ò,4200,,0,ÍË³öµÇÂ½
+112,PlayerQuestionnaireRequest_01000300,0x01000300,Íæ¼Ò,4250,1,,ÇëÇóÍæ¼ÒµÄµ÷²éÎÊ¾íÊı¾İ
+113,PlayerQuestionnaireRewardRequest_01000302,0x01000302,Íæ¼Ò,4250,2,,ÁìÈ¡ÎÊ¾í½±Àø
+114,PlayerReconnecRequest_01000065,0x01000065,Íæ¼Ò,4300,,,¶ÏÏßÖØÁ¬£¬ºÍÊÖ»ú¶ËÍ¨ÓÃ
+115,PlayerRedPointRequest_01000075,0x01000075,Íæ¼Ò,4350,,,ÇëÇóºìµã£¬ÅĞ¶ÏËùÓĞ¹¦ÄÜºìµãµÄ×´Ì¬¡£
+116,PlayerSearchRequest_0100000b,0x0100000b,Íæ¼Ò,4400,,,ËÑË÷Íæ¼Ò
+117,PlayerShowRequest_01000039,0x01000039,Íæ¼Ò,4450,,,»ñÈ¡Ò»¸öÍæ¼ÒµÄÕ¹Ê¾Êı¾İ
+118,QianKunMirrorReplaceRequest_25000022,0x25000022,Ç¬À¤¾µ,4500,2,,Ìæ»»»òÕß¶ªÆúÁéÆÇ
+119,QianKunMirrorReversalRequest_25000020,0x25000020,Ç¬À¤¾µ,4500,1,,Ç¬À¤Äæ×ªÇëÇó
+120,QianKunMirrorSpiritualRootUnlockRequest_25000024,0x25000024,Ç¬À¤¾µ,4550,,,µãÁÁ ½âËø Áé¸ù´ãÁ¶
+121,QuestListAllRequest_20000051,0x20000051,ÈÎÎñ,5000,1,,ÇëÇóËùÓĞÈÎÎñÊı¾İ£¬Ò»°ãÔÚÈÎÎñ¹¦ÄÜ¿ªÆôµÄÊ±ºòÇëÇóÒ»ÏÂ¡£
+122,QuestListRequest_20000001,0x20000001,ÈÎÎñ,5000,2,,"²é¿´Ä³ÀàÈÎÎñÊı¾İ,Ò»°ãÔÚÈÎÎñ¹¦ÄÜ¿ªÆôÊ±£¬¿Í»§¶ËÇëÇóÒ»ÏÂ¡£"
+123,QuestReceiveActivePointRequest_20000008,0x20000008,ÈÎÎñ,5000,3,,ÁìÈ¡ÈÎÎñ»îÔ¾»ı·Ö½±Àø
+124,QuestReceiveRequest_20000004,0x20000004,ÈÎÎñ,5000,4,,ÁìÈ¡ÈÎÎñ½±Àø
+125,RankListRequest_35000001,0x35000001,ÅÅĞĞ°ñ,5050,,,ÇëÇóÅÅĞĞ°ñÊı¾İ
+126,SecretscriptBreakUpRequest_38000005,0x38000005,ÉñÍ¨,5100,,,ÉñÍ¨Í»ÆÆ£¬ºÏ³ÉĞÂÉñÍ¨Ò²ÓÃÕâ¸ö
+127,SecretscriptFusionPvPRequest_38000011,0x38000011,ÉñÍ¨,5100,,,ÉñÍ¨ÈÚ»ã PVP
+128,SecretscriptFusionRequest_38000007,0x38000007,ÉñÍ¨,5100,,,ÉñÍ¨ÈÚ»ã
+129,SecretscriptUpLevelRequest_38000003,0x38000003,ÉñÍ¨,5100,,,ÉñÍ¨Éı¼¶
+130,ShopBoxOpenRequest_15000040,0x15000040,ÉÌµê,5200,,,==================================¿ª±¦Ïä===============================
+131,ShopChapterPacksBuyRequest_15000020,0x15000020,ÉÌµê,5200,,,¹ºÂòÕÂ½ÚÀñ°ü
+132,ShopFundPassBuyRequest_15000030,0x15000030,ÉÌµê,5200,,,¹ºÂòÍ¨ĞĞÖ¤
+133,ShopFundPassRewardRequest_15000032,0x15000032,ÉÌµê,5200,,,ÁìÈ¡Í¨ĞĞÖ¤½±Àø
+134,ShopHeishiRefreshRequest_15000005,0x15000005,ÉÌµê,5200,,,ÊÖ¶¯Ë¢ĞÂºÚÊĞÇëÇó
+135,ShopItemBuyRequest_15000003,0x15000003,ÉÌµê,5200,,,¹ºÂòÉÌÆ·
+136,ShopItemListRequest_15000001,0x15000001,ÉÌµê,5200,1,,²é¿´ÉÌµêÀïÃæµÄÉÌÆ·ÁĞ±í
+137,ShopRechargeRequest_15000022,0x15000022,ÉÌµê,5200,,,³äÖµ
+138,buyVipGiftRequest_34000005,0x34000005,VIP,5300,,,¹ºÂòÒ»´ÎĞÔÀñ°ü½±ÀøÇëÇó
+139,getVipInfoRequest_34000001,0x34000001,VIP,5300,,,»ñÈ¡VIP ĞÅÏ¢ ÇëÇó
+140,rewardFreeVipGiftRequest_34000003,0x34000003,VIP,5300,,,ÁìÈ¡Ã¿ÈÕÃâ·Ñ½±ÀøÇëÇó
+141,GmAccountForbidListRequest_77000003,0x77000003,,,,,ÇëÇó·âºÅÁĞ±í
+142,GmAccountForbidRequest_77000005,0x77000005,,,,,ÇëÇó·âºÅ
+143,GmAccountUnblockRequest_77000007,0x77000007,,,,,ÇëÇó½â·â
+144,GmMailCheckRequest_77000044,0x77000044,,,,,ÉóºËÓÊ¼ş
+145,GmMailDeleteRequest_77000046,0x77000046,,,,,É¾³ıÓÊ¼ş
+146,GmMailListRequest_77000042,0x77000042,,,,,²é¿´ÓÊ¼şÁĞ±í
+147,GmMailPlayerSendRequest_77000040,0x77000040,,,,,gm¸øÖ¸¶¨Íæ¼Ò·¢ÓÊ¼ş ÒÑ·ÏÆú
+148,GmMailServerSendRequest_77000048,0x77000048,,,,,gm¸øÖ¸¶¨·şÎñÆ÷·¢ÓÊ¼ş
+149,GmNoticeAddRequest_77000060,0x77000060,,,,,Ôö¼Ó¹«¸æ
+150,GmNoticeDeleteRequest_77000064,0x77000064,,,,,É¾³ı¹«¸æ
+151,GmNoticeListRequest_77000066,0x77000066,,,,,²é¿´¹«¸æÁĞ±í
+152,GmNoticeUpdateRequest_77000062,0x77000062,,,,,¸üĞÂ¹«¸æ
+153,GmOperationRequest_77000071,0x77000071,,,,,ÇëÇógm²Ù×÷¼ÇÂ¼ÁĞ±í
+154,GmOrderReimburseRequest_77000027,0x77000027,,,,,²¹µ¥
+155,GmOrderRequest_77000025,0x77000025,,,,,"²éÑ¯¶©µ¥,ÄÄ¸ö²ÎÊıÓĞÖµÓÃÄÄ¸ö²é£¬Èç¹û¶¼Ã»ÓĞÖµ"
+156,GmPlayerLogoutRequest_77000009,0x77000009,,,,,ÇëÇóÌßÏÂÏß
+157,GmPlayerRequest_77000021,0x77000021,,,,,²é¿´Ä³Íæ¼ÒÊı¾İ£¬ÓÅÏÈid£¬Èç¹ûidÃ»ÓĞÍ¨¹ıname²éÑ¯¡£
+158,GmServerOpRequest_77000030,0x77000030,,,,,²Ù×÷·şÎñÆ÷ÖØÆôµÈ
+159,GmServerStatusRequest_77000032,0x77000032,,,,,¸Ä±ä·şÎñÆ÷×´Ì¬
+160,GmShutdownServerRequest_77000001,0x77000001,,,,,¹Ø±Õ·şÎñÆ÷
+161,DrawHeroWishRequest_37000005,0x37000005,,,,,Ñ¡ÔñĞÄÔ¸ºì¿¨
+162,HeroFragmentComposeRequest_16000050,0x16000050,,,,,Ê¹ÓÃÓ¢ĞÛËéÆ¬ºÏ³ÉÓ¢ĞÛ
+163,HeroDisassembleRequest_16000052,0x16000052,,,,,Ó¢ĞÛ·Ö½â³ÉËéÆ¬
+164,BuyXianShiLiBaoRequest_15000052,0x15000052,,,,,¹ºÂòÏŞÊ±Àñ°ü
+165,GetXianShiLiBaoInfoRequest_15000050,0x15000050,,,,,»ñÈ¡ÏÖÊ±Àñ°üÊı¾İ
+166,BattleChapterRewardRequest_13000222,0x13000222,,,,,ÁìÈ¡¹Ø¿¨ÕÂ½Ú½±Àø
+167,ItemSellRequest_0b000007,0x0b000007,,,,,³öÊÛµÀ¾ß
+168,ActivityWestLuckyBuyRequest_11000095,0x11000095,,,,,¹ºÂò×ªÅÌµÀ¾ß
+169,ActivityWestLuckyDrawRequest_11000093,0x11000093,,,,,³éÈ¡×ªÅÌ
+170,ActivityWestLuckyInfoRequest_11000091,0x11000091,,,,,×ªÅÌĞÅÏ¢
+171,PlayerPatrolInfoRequest_01000070,0x01000070,,,,,ÇëÇóÑ²ÂßÊı¾İ£¬Ò»°ãÊÇÔÚ¹¦ÄÜ¸Õ¿ªÆôÊ±ÇëÇó¡£
+172,InviteTaskListRequest_20000041,0x20000041,,,,,ÑûÇëÈÎÎñÇëÇó
+173,RewardInviteTaskRequest_20000043,0x20000043,,,,,ÁìÈ¡ÑûÇëÈÎÎñ½±Àø
+174,BattleRogueAdvertiseRequest_13000010,0x13000010,,,,,Õ½¶·ÖĞ¿´¹ã¸æÑ¡È¡Èâ¸ë¼¼ÄÜ
+175,BattleRogueAdvertiseRequest_13000012,0x13000012,,,,,Õ½¶·ÖĞ¿´¹ã¸æÑ¡È¡Èâ¸ë¼¼ÄÜ
+176,HeroIllustrationsLevelRewardRequest_16000044,0x16000044,,,,,ÁìÈ¡Í¼¼øµÈ¼¶½±Àø£¬Ö»ÄÜÒ»¼¶Ò»¼¶Áì
+177,PlayerFuncOpenRewardRequest_01000305,0x01000305,,,,,ÁìÈ¡¹¦ÄÜ¿ªÆôµÄ½±Àø
+178,PlayerLevelUpRequest_01000055,0x01000055,,,,,ÊÖ¶¯Éı¼¶ÇëÇó
+179,HeroSkinRequest_16000060,0x16000060,,,,,Ó¢ĞÛ»»Æ¤·ô
+180,GmPlayerRenameRequest_77000050,0x77000050,,,,,gm¸ÄÃû
+181,GmPlayerDeleteRequest_77000052,0x77000052,,,,,gmÉ¾³ıÄ³¸öÍæ¼ÒÊı¾İ
+182,GmPlayerTDLevelRequest_77000054,0x77000054,,,,,gmÉèÖÃÌìµÀĞŞÎªµÈ¼¶
+183,WechatSettingRequest_01100601,0x01100601,,,,,Î¢ĞÅÉèÖÃÏà¹Ø
+220,ActivityDayGiftBuyRequest_11000102,0x11000102,,,,,¹ºÂòÃ¿ÈÕÌØ»İÀñ°ü
+221,ActivityDayGiftPackageBuyRequest_11000106,0x11000106,,,,,´ò°ü¹ºÂòÃ¿ÈÕÌØ»İÀñ°ü
+222,ActivityDayGiftRequest_11000100,0x11000100,,,,,²é¿´Ã¿ÈÕÌØ»İÀñ°üÊı¾İ
+223,ActivityDayGiftRewardRequest_11000104,0x11000104,,,,,ÁìÈ¡Ã¿ÈÕÌØ»İÀñ°ü½±Àø
+224,DrawHeroInfoRequest_37000011,0x37000011,,,,,ÇëÇóÓ¢ĞÛÕĞÄ¼Êı¾İ
+225,DrawHeroRecruitRequest_37000015,0x37000015,,,,,ĞÂÉñ½«ÕĞÄ¼
+226,DrawHeroRefreshRequest_37000013,0x37000013,,,,,ĞÂÉñ½«ÕĞÄ¼Ë¢ĞÂ£¬»¨·ÑÔª±¦
+227,GinsengTreeBugRequest_39000005,0x39000005,,,,,ÈË²Î¹ûÊ÷ÊÖ¶¯³ı³æ
+228,GinsengTreeFertilizationRequest_39000011,0x39000011,,,,,ÈË²Î¹ûÊ÷Ê©·Ê
+229,GinsengTreeHarvestRequest_39000013,0x39000013,,,,,ÊÕ»ñÈË²Î¹ûÊ÷¹ûÊµ
+230,GinsengTreeInfoRequest_39000001,0x39000001,,,,,ÇëÇóÈË²Î¹ûÊ÷Êı¾İ
+231,GinsengTreeInsecticidesRequest_39000007,0x39000007,,,,,ÈË²Î¹ûÊ÷¹ºÂòÉ±³æ¼Á³ı³æ
+232,GinsengTreeWateringRequest_39000003,0x39000003,,,,,ÈË²Î¹ûÊ÷½½Ë®
+233,GinsengTreeHangUpRequest_39000015,0x39000015,,,,,ÁìÈ¡ÈË²Î¹ûÊ÷¹Ò»ú½±Àø
+234,GinsengTreeHeroRequest_39000017,0x39000017,,,,,ÈË²Î¹ûÊ÷Ó¢ĞÛÉÏÕó
+235,BattleLineupChooseRequest_13000031,0x13000031,,,,,Ñ¡Ôñµ±Ç°Ê¹ÓÃµÄÕóÈİ
+237,BattleXiangYaoChuMoRequest_13000501,0x13000501,,,,,ÇëÇó½µÑı³ıÄ§Êı¾İ
+238,PlayerFigureRequest_01000021,0x01000021,,,,,ĞŞ¸ÄĞÎÏó
+239,BattleLingShanBuyTimesRequest_13000513,0x13000513,,,,,ÇëÇó¹ºÂòÁéÉ½ÎÊìø´ÎÊı
+240,BattleLingShanRequest_13000511,0x13000511,,,,,ÇëÇóÁéÉ½ÎÊìøÊı¾İ
+241,BattleLingShanRewardRequest_13000515,0x13000515,,,,,ÁìÈ¡ÁéÉ½ÎÊìø²ãÊı±¦Ïä½±Àø
+242,BattleLingShanReward2Request_13000517,0x13000517,,,,,ÁìÈ¡ÁéÉ½ÎÊìø²ãÊı±¦Ïä½±Àø
+243,EquipDecomposeRequest_09000005,0x09000005,,,,,×°±¸·Ö½â
+244,EquipPartStrengthRequest_09000007,0x09000007,,,,,×°±¸²¿Î»Ç¿»¯
+245,EquipTeardownRequest_09000003,0x09000003,,,,,×°±¸Ğ¶ÏÂ
+246,EquipWearRequest_09000001,0x09000001,,,,,×°±¸ ´©´÷ Ìæ»»
+247,GemComposeRequest_10000007,0x10000007,,,,,±¦Ê¯ºÏ³É Ò»¼üºÏ³É
+248,GemLockRequest_10000005,0x10000005,,,,,±¦Ê¯Ëø¶¨
+249,GemTeardownRequest_10000003,0x10000003,,,,,±¦Ê¯Ğ¶ÏÂ
+250,GemWearRequest_10000001,0x10000001,,,,,±¦Ê¯ÏâÇ¶ Ìæ»»
+251,DefenceLevelUpRequest_25000031,0x25000031,,,,,·ÀÏßÉı¼¶
+252,DefenceSkinStarUpRequest_25000033,0x25000033,,,,,·ÀÏßÆ¤·ôÉıĞÇ
+253,DefenceSkinChangeRequest_25000035,0x25000035,,,,,·ÀÏßÆ¤·ô¸ü»»
+255,BattleTowerDataRequest_13000521,0x13000521,,8000,1,,ËşÊı¾İÇëÇó
+256,BattleTowerQuickEndRequest_13100524,0x13100524,,8000,,,É¨µ´
+257,BattleEquipTowerDataRequest_13000526,0x13000526,,8010,1,,×°±¸ËşÊı¾İÇëÇó
+258,BattleEquipTowerGetTicketRequest_13000533,0x13000533,,8010,,,ÁìÈ¡×°±¸ËşÃÅÆ±
+259,BattleEquipTowerHelpPlayerRequest_13000531,0x13000531,,8010,,,ÖúÕ½Íæ¼ÒÁĞ±íµã»÷Ë¢ĞÂ
+260,BattleEquipTowerGetHelpRewardRequest_13000535,0x13000535,,8010,,,ÁìÈ¡ÖúÕ½½±ÀøÇëÇó
+263,BattleEquipTowerFindHelpRewardRequest_13000537,0x13000537,,8010,,,²é¿´ÖúÕ½½±ÀøÇé¿öÇëÇó
+264,BattleLingShanEndRequest_13000519,0x13000519,,,,,½áÊøÁéÉ½ÎÊìø
+265,BattleLingShanFloorSkipRequest_13000517,0x13000517,,,,,ÁéÉ½ÎÊìøÌø¹Ø
+266,BattleMountainDataRequest_13000539,0x13000539,,8020,1,,Ñ²É½Êı¾İÇëÇó
+267,BattleMountainFinishNodeRequest_13000541,0x13000541,,8020,,,Íê³É½ÚµãÇëÇó
+268,BattleMountainGetRewardRequest_13000543,0x13000543,,8020,,,Íê³É½ø¶È½±ÀøÇëÇó
+269,BattleMountainMapResetRequest_13000545,0x13000545,,8020,,,ÖØÖÃ
+270,BattleMountainNextFloorRequest_13000547,0x13000547,,8020,,,ÏÂÒ»²ã
+271,BattlePVEVPChallengeRequest_13000552,0x13000552,,8030,,,´óÊ¥ÀŞÌ¨ÌôÕ½Êı¾İ
+272,BattlePVEVPDataRequest_13000549,0x13000549,,8030,1,,´óÊ¥ÀŞÌ¨Êı¾İÇëÇó
+273,BattlePVEVPRecordRequest_13000550,0x13000550,,8030,,,´óÊ¥ÀŞÌ¨Õ½¶·¼ÇÂ¼Êı¾İ
+275,BattleBuyTicketRequest_13000554,0x13000554,,8030,,,´óÊ¥ÀŞÌ¨¹ºÂò´ÎÊıÊı¾İÇëÇó
+276,BattleRescueSkillIdRequest_13000057,0x13000057,,8030,,,Õ½¶·Ñ¡ÔñÇ¿Ô®¼¼ÄÜid
+291,BattleEquipTowerRecordRequest_13000528,0x13000528,,8010,,,²é¿´Õ½¶·¼ÇÂ¼ÉÏ´«ÇëÇó
+292,GuildApplyJoinRequest_40000007,0x40000007,,6000,7,,ÉêÇë¼ÓÈë¹«»á
+293,GuildBargainBuyRequest_40000062,0x40000062,,6000,17,,¹ºÂò¹«»á¿³¼ÛÎïÆ·
+294,GuildBargainRequest_40000060,0x40000060,,6000,15,,¹«»á¿³¼Û
+295,GuildCreateRequest_40000005,0x40000005,,6000,5,,´´½¨¹«»á
+296,GuildDissolveRequest_40000011,0x40000011,,6000,29,,½âÉ¢¹«»á
+297,GuildDonateRequest_40000067,0x40000067,,6000,19,,¹«»á¾èÏ×
+298,GuildFindRequest_40000003,0x40000003,,6000,3,,²éÕÒ¹«»á
+299,GuildInfoRequest_40000021,0x40000021,,6000,11,,»ñÈ¡¹«»áĞÅÏ¢
+300,GuildListRequest_40000001,0x40000001,,6000,1,,¹«»áÁĞ±í
+301,GuildLogRequest_40000025,0x40000025,,6000,13,,¹«»áÈÕÖ¾ÇëÇó
+302,GuildMemberAuthRequest_40000041,0x40000041,,6000,21,,"¹«»á³ÉÔ±È¨ÏŞ¹ÜÀí,Í¬ÒâÉêÇë£¬ÌßÈËµÈ¡£"
+303,GuildMemberPositionSetRequest_40000015,0x40000015,,6000,23,,¹«»áÖ°Î»¸ü¸Ä
+304,GuildQuickJoinRequest_40000065,0x40000065,,6000,9,,¿ìËÙÒ»¼ü¼ÓÈë¹«»á
+305,GuildQuitRequest_40000017,0x40000017,,6000,27,,ÍË³ö¹«»á
+306,GuildSettingRequest_40000013,0x40000013,,6000,25,,¹«»áÉèÖÃÏà¹Ø ÓĞÖµ ÔòÌæ»»£¬Ã»ÓĞÖµ Ôò²»ĞŞ¸Ä
+307,GinsengTreeEnergyRequest_39000021,0x39000021,,,,,ÈË²Î¹ûÊ÷ÁìÈ¡ÌåÁ¦¹ûÊµ
+308,BattleMountainBuffBagRequest_1300053b,0x1300053b,,,,,ÇëÇóbuff±³°üÁĞ±í
+309,LimitedTimeGiftBuyRequest_15000061,0x15000061,,,,,¹ºÂòÏŞÊ±Àñ°ü
+310,GuildRankListRequest_40000081,0x40000081,,,,,ÇëÇó¹¤»áÅÅĞĞ°ñÊı¾İ

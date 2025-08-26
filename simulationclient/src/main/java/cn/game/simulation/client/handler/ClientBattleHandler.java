@@ -521,6 +521,8 @@ public class ClientBattleHandler extends BaseHandler {
         BattleEquipTowerFindHelpRewardResponse_13000538 resp = (BattleEquipTowerFindHelpRewardResponse_13000538) message;
         List<EquipTowerHelpRewardInfo> helpRewardList = resp.getHelpRewardList();
         Client client = (Client) netClient;
+        client.helpRewardList.clear();
+        client.helpRewardList=helpRewardList;
     }
 
     private void equipTowerData(NetClient netClient, Object message) {
