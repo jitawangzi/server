@@ -153,6 +153,9 @@ public class ShopModule extends BasePlayerModule {
 			shopItemsMap.removeAll(shopId);
 			Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
 			for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
+				if (rechargeStoreConfig.Type != shopId) {
+					continue;
+				}
 				shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
 			}
 			break;
