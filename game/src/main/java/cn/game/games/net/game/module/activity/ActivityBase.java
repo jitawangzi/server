@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
+import cn.game.core.event.AbstractEvent;
+import cn.game.core.event.EventHandler;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.quest.Quest;
@@ -31,7 +32,7 @@ import io.vertx.core.Future;
  * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
-public abstract class ActivityBase implements PlayerEventHandler {
+public abstract class ActivityBase{
 	protected final static  transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
 
 
@@ -63,12 +64,12 @@ public abstract class ActivityBase implements PlayerEventHandler {
 		return null;
 	}
 
-	// 新增获取活动参与者列表方法
+	// 获取活动参与者列表方法
 	public List<Long> getParticipants() {
 		return new ArrayList<>();
 	}
 
-	// 新增判断玩家是否可以参与活动
+	// 判断玩家是否可以参与活动
 	public boolean canJoin(long playerId) {
 		return true; // 默认都可以参加
 	}
@@ -97,15 +98,16 @@ public abstract class ActivityBase implements PlayerEventHandler {
         return Future.succeededFuture(receive(id));
 	}
 
-
 	/**
 	 * 是否能够领取活动奖励
 	 * @param ids 要领取的id集合
 	 * @return 错误码
 	 */
+	@Deprecated
 	public  int canReceive(List<Integer> ids){
 		return ErrorMsgEnum.ok.ID;
 	};
+	@Deprecated
 	public  int canReceive(List<Integer> ids,List<Integer> rewardIdList, Player player){
 		int failSize = 0;
 		int errCode = 0;
@@ -204,14 +206,14 @@ public abstract class ActivityBase implements PlayerEventHandler {
 	public long calcEndTime() {
 		long endTime = 0 ; 
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.durationType > 0) {
+		if (activityConfig.endDurationType > 0) {
 			if (startTime == 0) { // 还没开始，默认返回0
 				return endTime;
 			}
-			if (activityConfig.durationType == 1) {
-				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.duration);
-			} else if (activityConfig.durationType == 2) {
-				endTime = startTime + activityConfig.duration * 1000;
+			if (activityConfig.endDurationType == 1) {
+				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.endDuration);
+			} else if (activityConfig.endDurationType == 2) {
+				endTime = startTime + activityConfig.endDuration * 1000;
 			}
 		} else {
 			endTime = ActivityStateManager.getInstance().getEndTime(id);
@@ -222,5 +224,6 @@ public abstract class ActivityBase implements PlayerEventHandler {
 	/**
 	 * 检测活动是否能够刷新 且刷新
 	 */
+	@Deprecated
 	public  void checkRefreshActivity(){};
 }

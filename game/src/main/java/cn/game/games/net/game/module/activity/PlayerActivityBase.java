@@ -6,7 +6,9 @@ import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.protocol.generated.config.ActivityConfig;
@@ -21,7 +23,7 @@ import cn.game.util.ServerType;
  * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
-public abstract class PlayerActivityBase extends ActivityBase {
+public abstract class PlayerActivityBase extends ActivityBase implements PlayerEventHandler {
 	@JsonIgnore
 	protected transient Player player;
 

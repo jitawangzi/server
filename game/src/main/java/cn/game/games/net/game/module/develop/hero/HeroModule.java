@@ -205,7 +205,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			this.heroUid = hero.getId();
 		}
 		HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId()); 
-		hero.setStar(1);
+//		hero.setStar(1);
 		hero.setLevel(1);
 		hero.setQuality(heroConfig.InitialQuality);
 		hero.setSkin(heroConfig.HeroSkinID);
