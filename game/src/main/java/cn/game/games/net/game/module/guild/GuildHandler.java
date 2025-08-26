@@ -81,66 +81,7 @@ public class GuildHandler extends GameBaseHandler {
 
     static Logger log = LoggerFactory.getLogger(GuildHandler.class);
 
-    public static Future<GuildCallbackMsg> sendMsgToGuildServer(long guildId, Player player, Message req, String... params) {
-        // 封装公会请求
-        GuildMsgPush_41000045.Builder serverReq = GuildMsgPush_41000045.newBuilder();
-        // 设置请求参数
-        // 公会ids
-        serverReq.setGuildId(guildId);
-        // 玩家id
-        serverReq.setPlayerId(player.getPlayerId());
-        // 请求消息
-        serverReq.setData(req.toByteString());
-        // TODO 上下文设置 后续日志记录
-        if (params != null && params.length > 0) {
-            for (String param : params) {
-                serverReq.addParams(param);
-            }
-        }
-        int reqMsgId = PbProtocol.getInstance().getMsgId(req.getClass().getSimpleName());
-        serverReq.setMsgId(reqMsgId);
-        // 回包id
-        final int responseMsgId = reqMsgId + 1;
-        Promise<GuildCallbackMsg> future = Promise.promise();
-        // 异步RPC请求
-        Future<GuildMsgResponse_41000046> rpcFuture;
-        if (player.getGuildId() == 0) {
-            // 公会不存在 创建公会 随机找一个节点
-            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
-        } else {
-            rpcFuture = VxHolder.requestRemoteServer(GuildHelper.getServerIdByGuildId(player.getGuildId()), serverReq.build());
-        }
-        //            rpcFuture = VxHolder.requestRemoteServer("LY_ZONG_MEN", serverReq.build());
-        log.info(String.format("sendMsgToGuildServer pid:%d, msgId:%d, guildId:%d, req:%s", player.getPlayerId(), reqMsgId, guildId, req));
-        // 请求成功
-        // 请求成功
-        rpcFuture.onSuccess(result -> {
-            if (result != null) {
-                log.info(String.format("sendMsgToGuildServerCallBack msgId:%d %s, errorCode:%d, pid:%d ", result.getMsgId(), req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
-                GuildMsgResponse_41000046 serverResponse = (GuildMsgResponse_41000046) result;
-                if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
-                    Message response = PbProtocol.getInstance().parseFrom(responseMsgId, serverResponse.getData().toByteArray());
-                    log.info(String.format("response:%s", response));
-                    // 异步请求成功 封装 proto 信息和错误码 回调
-                    future.complete(new GuildCallbackMsg(serverResponse.getErrorCode(), response));
-                } else {
-                    // 异步请求失败 封装 错误码 回调
-                    future.complete(new GuildCallbackMsg(serverResponse.getErrorCode(), null));
-                }
-            } else {
-                future.complete(new GuildCallbackMsg(ErrorMsgEnum.unknown.ID, null));
-            }
-        }).onFailure(err -> {
-            future.complete(new GuildCallbackMsg(ErrorMsgEnum.unknown.ID, null));
-            err.printStackTrace();
-        });
-        return future.future();
-    }
-
-    public static Future<GuildCallbackMsg> sendMsgToGuildServer(Player player, Message req, String... params) {
-        return sendMsgToGuildServer(player.getGuildId(), player, req, params);
-    }
-
+    
     @Override
     protected void inititialize() {
         putInvoker(PbProtocol.GuildListRequest_40000001, this::guildList);
@@ -741,4 +682,64 @@ public class GuildHandler extends GameBaseHandler {
 			client.sendProtocol(resp.build());
 		}).exceptionally(player::handleFailFunction);
     }
+    public static Future<GuildCallbackMsg> sendMsgToGuildServer(long guildId, Player player, Message req, String... params) {
+        // 封装公会请求
+        GuildMsgPush_41000045.Builder serverReq = GuildMsgPush_41000045.newBuilder();
+        // 设置请求参数
+        // 公会ids
+        serverReq.setGuildId(guildId);
+        // 玩家id
+        serverReq.setPlayerId(player.getPlayerId());
+        // 请求消息
+        serverReq.setData(req.toByteString());
+        // TODO 上下文设置 后续日志记录
+        if (params != null && params.length > 0) {
+            for (String param : params) {
+                serverReq.addParams(param);
+            }
+        }
+        int reqMsgId = PbProtocol.getInstance().getMsgId(req.getClass().getSimpleName());
+        serverReq.setMsgId(reqMsgId);
+        // 回包id
+        final int responseMsgId = reqMsgId + 1;
+        Promise<GuildCallbackMsg> future = Promise.promise();
+        // 异步RPC请求
+        Future<GuildMsgResponse_41000046> rpcFuture;
+        if (player.getGuildId() == 0) {
+            // 公会不存在 创建公会 随机找一个节点
+            rpcFuture = VxHolder.requestRemoteServer(ServerType.Cross, serverReq.build());
+        } else {
+            rpcFuture = VxHolder.requestRemoteServer(GuildHelper.getServerIdByGuildId(player.getGuildId()), serverReq.build());
+        }
+        //            rpcFuture = VxHolder.requestRemoteServer("LY_ZONG_MEN", serverReq.build());
+        log.info(String.format("sendMsgToGuildServer pid:%d, msgId:%d, guildId:%d, req:%s", player.getPlayerId(), reqMsgId, guildId, req));
+        // 请求成功
+        // 请求成功
+        rpcFuture.onSuccess(result -> {
+            if (result != null) {
+                log.info(String.format("sendMsgToGuildServerCallBack msgId:%d %s, errorCode:%d, pid:%d ", result.getMsgId(), req.getClass().getSimpleName(), result.getErrorCode(), result.getPlayerId()));
+                GuildMsgResponse_41000046 serverResponse = (GuildMsgResponse_41000046) result;
+                if (serverResponse.getErrorCode() == ErrorMsgEnum.ok.ID) {
+                    Message response = PbProtocol.getInstance().parseFrom(responseMsgId, serverResponse.getData().toByteArray());
+                    log.info(String.format("response:%s", response));
+                    // 异步请求成功 封装 proto 信息和错误码 回调
+                    future.complete(new GuildCallbackMsg(serverResponse.getErrorCode(), response));
+                } else {
+                    // 异步请求失败 封装 错误码 回调
+                    future.complete(new GuildCallbackMsg(serverResponse.getErrorCode(), null));
+                }
+            } else {
+                future.complete(new GuildCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+            }
+        }).onFailure(err -> {
+            future.complete(new GuildCallbackMsg(ErrorMsgEnum.unknown.ID, null));
+            err.printStackTrace();
+        });
+        return future.future();
+    }
+
+    public static Future<GuildCallbackMsg> sendMsgToGuildServer(Player player, Message req, String... params) {
+        return sendMsgToGuildServer(player.getGuildId(), player, req, params);
+    }
+
 }

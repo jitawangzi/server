@@ -12,9 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.games.cache.entity.GlobalActivity;
+import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.data.mapper.GlobalActivityMapper;
+import cn.game.games.net.data.mapper.GameActivityMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
@@ -29,11 +29,12 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 public abstract class AbstractActivityManager {
 	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
+	public static final String GLOBAL_SERVER_ID = "serverAll"; // 全局服ID
 
 	/** 进行中的活动，同id只能有一个活动 */
 	protected Map<Integer, ActivityBase> activities = new ConcurrentHashMap<>();
-	/** 活动属于哪一个服，为空表示全服的 */
-	protected String serverId; 
+	/** 活动属于哪一个服 */
+	protected String serverId = GLOBAL_SERVER_ID; 
 	
 	public ActivityBase get(int id) {
 		return activities.get(id);
@@ -257,27 +258,6 @@ public abstract class AbstractActivityManager {
 		// 尚未开始的
 		return ActivityStateManager.getInstance().buildActivityInfo(id);
 	}
-
-	/** 
-	 * 从数据库中加载活动
-	 * @param id
-	 */
-	public void load(int id) {
-		Object activity = DAO.executeSync(GlobalActivityMapper.class, MapperConstant.selectByPrimaryKey, new Object[] { 0L, id });
-		if (activity == null) {
-			return;
-		}
-		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GlobalActivity) activity).getParams(), null);
-
-		ActivityBase existing = activities.putIfAbsent(id, newActivity);
-		if (existing != null) {
-			log.warn("重复加载活动:{}", id);
-			return;
-		}
-		afterLoad();
-	}
-
 	@Deprecated
 	public void updateAll() {
 
@@ -287,7 +267,7 @@ public abstract class AbstractActivityManager {
 			if (saveString == null) { // 这个活动不需要保存到数据库
 				continue;
 			}
-			GlobalActivity activity = new GlobalActivity();
+			GameActivity activity = new GameActivity();
 			activity.setId(activityBase.getId());
 			Object owner = getOwner();
 			if (owner != null && owner instanceof Player) {

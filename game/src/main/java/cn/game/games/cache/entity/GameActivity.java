@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import cn.game.games.cache.base.DbEntity;
 
-public class GlobalActivity implements Serializable, DbEntity {
+public class GameActivity implements Serializable, DbEntity {
 
 	/**
 	 * 唯一id
@@ -129,7 +129,7 @@ public class GlobalActivity implements Serializable, DbEntity {
 	 */
 	@Override
 	public Class<?> getMapperClass() {
-		return cn.game.games.net.data.mapper.GlobalActivityMapper.class;
+		return cn.game.games.net.data.mapper.GameActivityMapper.class;
 	}
 
 	/**

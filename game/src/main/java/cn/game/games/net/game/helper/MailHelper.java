@@ -137,7 +137,7 @@ public class MailHelper {
 	 * @return
 	 */
 	public static Future<Object> sendPromptMail(long receiverId,String content) {
-		return sendMail(receiverId, 0, null, "", "", content, 3, null, true);
+		return sendMail(receiverId, 0, null, "", "", content, 4, null, true);
 	}
 
 	@Deprecated

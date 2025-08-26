@@ -200,6 +200,11 @@ public class GuildModule extends BasePlayerModule {
 			return;
 		}
 		lastId = 0;
+
+		if (guildJoin != null) {
+			guildJoin.delete(); 
+			guildJoin = null;
+		}
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
 	}
 

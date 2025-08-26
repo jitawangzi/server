@@ -38,6 +38,8 @@ public abstract class ActivityBase{
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
+	protected long uid;
+
 	/** 配置表id */
 	protected int id;
 	/** 活动状态 */

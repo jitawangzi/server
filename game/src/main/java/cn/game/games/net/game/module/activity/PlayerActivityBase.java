@@ -36,7 +36,7 @@ public abstract class PlayerActivityBase extends ActivityBase implements PlayerE
 	public void init(int id, Object owner, boolean isNew) {
 		this.player = (Player) owner;
 		player.registerEventHandler(this);
-		super.init(id, null, isNew);
+		super.init(id, owner, isNew);
 	}
 
 	/** 

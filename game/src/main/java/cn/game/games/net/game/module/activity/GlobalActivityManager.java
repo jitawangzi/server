@@ -11,18 +11,17 @@ import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.IdUtil;
 import cn.game.core.zookeeper.server.ValidServerService;
-import cn.game.games.cache.entity.GlobalActivity;
-import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
+import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
 public class GlobalActivityManager extends AbstractActivityManager {
-	
-	public static final String GLOBAL_SERVER_ID = "serverAll"; // 全局服ID
 	
 	@Override
 	protected Object getOwner() {
@@ -38,7 +37,7 @@ public class GlobalActivityManager extends AbstractActivityManager {
 			return isInOpenTime(config.ID);
 		}
 		if (config.openType == 10) {
-			if (StringUtils.isEmpty(serverId)) {
+			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
 				return false;
 			}
 			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
@@ -56,9 +55,7 @@ public class GlobalActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected void afterActivityDestroy(ActivityBase activity) {
-		if (activity instanceof MultiPlayerActivityBase) {
-			MultiPlayerActivityBase multiActivity = (MultiPlayerActivityBase) activity;
-		}
+		delete(activity); 
 	}
 
 	@Override
@@ -78,15 +75,23 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	protected void afterActivityOpen(ActivityBase activity) {
 		insert(activity);
 	}
-
 	public Future<@Nullable Object> insert(ActivityBase activity) {
-		GlobalActivity insert = new GlobalActivity();
+		GameActivity insert = new GameActivity();
 		insert.setId(IdUtil.getId());
+		if (activity.uid == 0) {
+			activity.uid = insert.getId();
+		}
 		insert.setConfigId(activity.getId());
 		insert.setState((byte) activity.getState());
-		insert.setServerId(StringUtils.isEmpty(serverId)? GLOBAL_SERVER_ID : serverId);
+		insert.setServerId(serverId);
 		insert.setCreateTime(System.currentTimeMillis());
 		insert.setParams(activity.toSaveString());
 		return insert.insert() ; 
 	}
+	public Future<@Nullable Object> delete(ActivityBase activity) {
+		GameActivity delete = new GameActivity();
+		delete.setId(activity.getId());
+		return delete.delete() ; 
+	}
+
 }
