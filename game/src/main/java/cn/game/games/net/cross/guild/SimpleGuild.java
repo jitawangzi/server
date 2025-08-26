@@ -31,6 +31,7 @@ public class SimpleGuild {
     List<Long> applyPidList = new ArrayList<>();
     private String declaration; 
     private String creatorName; // 创建者名称
+    private String masterName; // 会长名称
 
 
     public GuildMsg.GuildSimpleInfo toProto() {
@@ -44,6 +45,7 @@ public class SimpleGuild {
         builder.setMemberNum(num);
         builder.setDeclaration(declaration); 
         builder.setCreatorName(creatorName); 
+        builder.setMasterName(masterName); 
         return builder.build();
     }
 
@@ -126,6 +128,12 @@ public class SimpleGuild {
 	public void setCreatorName(String creatorName) {
 		this.creatorName = creatorName;
 	}
+
+
+	public void setMasterName(String masterName) {
+		this.masterName = masterName;
+	}
+	
 	
     
 }

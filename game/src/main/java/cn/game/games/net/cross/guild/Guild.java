@@ -204,6 +204,7 @@ public class Guild {
 		simpleGuild.getApplyPidList().addAll(module.applyList);
 		simpleGuild.setDeclaration(data.getNotice());
 		simpleGuild.setCreatorName(module.getCreatorName());
+		simpleGuild.setMasterName(module.getMasterMember().getName());
 		return simpleGuild;
 	}
 
