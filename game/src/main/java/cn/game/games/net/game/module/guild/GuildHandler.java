@@ -740,7 +740,5 @@ public class GuildHandler extends GameBaseHandler {
 			resp.setRankList(r); 
 			client.sendProtocol(resp.build());
 		}).exceptionally(player::handleFailFunction);
-        
-        client.sendProtocol(resp.build());
     }
 }
