@@ -289,8 +289,8 @@ public class DataFixManager {
 	 */
 	private boolean isFixExecuted(String fixName) {
 		DataFixLogMapper bean = SpringContextLoader.getContext().getBean(DataFixLogMapper.class);
-		List<DataFixLog> selectByFixName = bean.selectByFixName(fixName);
-		return !selectByFixName.isEmpty();
+		DataFixLog selectByFixName = bean.selectByFixName(fixName);
+		return selectByFixName != null;
 	}
 
 	/** 

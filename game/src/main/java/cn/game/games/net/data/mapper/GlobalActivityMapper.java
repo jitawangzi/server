@@ -34,7 +34,7 @@ public interface GlobalActivityMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<GlobalActivity> selectByTGlobalActivityServerIdIDX(@Param("serverId") String serverId, @Param("configId") int configId);
+	GlobalActivity selectByTGlobalActivityServerIdIDX(@Param("serverId") String serverId, @Param("configId") int configId);
 
 	/**
 	 * @mbg.generated

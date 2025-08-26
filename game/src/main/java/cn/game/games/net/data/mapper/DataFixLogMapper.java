@@ -34,7 +34,7 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<DataFixLog> selectByFixName(@Param("fixName") String fixName);
+	DataFixLog selectByFixName(@Param("fixName") String fixName);
 
 	/**
 	 * @mbg.generated
