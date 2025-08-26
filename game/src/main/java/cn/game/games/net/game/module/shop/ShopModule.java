@@ -150,6 +150,7 @@ public class ShopModule extends BasePlayerModule {
 		case 3:
 		case 4: {
 			// 刷新金币、钻石商店
+			shopItemsMap.removeAll(shopId);
 			Collection<RechargeStoreConfig> rechargeStore = RechargeStoreManager.instance().list();
 			for (RechargeStoreConfig rechargeStoreConfig : rechargeStore) {
 				shopItemsMap.put(rechargeStoreConfig.Type, new ShopItem(rechargeStoreConfig.Item));
