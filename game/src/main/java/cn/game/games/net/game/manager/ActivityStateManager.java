@@ -56,7 +56,7 @@ public class ActivityStateManager {
 
 			// 判断是否“根据时间开启可见”
 			boolean hasViewCron = activityConfig.viewCron != null && !activityConfig.viewCron.isEmpty();
-			boolean hasViewTimes = activityConfig.viewTimes != null && !activityConfig.viewTimes.isEmpty();
+			boolean hasViewTimes = activityConfig.viewTime != null && !activityConfig.viewTime.isEmpty();
 
 			// 如果既没有 viewTimes 也没有 viewCron，认为“非时间可见”，按原逻辑跳过 view 的时间调度
 			if (!hasViewCron && !hasViewTimes) {
@@ -70,7 +70,7 @@ public class ActivityStateManager {
 				// 多个 viewTimes，逐个挂任务（支持 period 滚动）
 				int period = activityConfig.period;
 				int periodPass = getPeriodPass(id);
-				for (Date vt : activityConfig.viewTimes) {
+				for (Date vt : activityConfig.viewTime) {
 					if (vt == null) continue;
 					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
 					if (nowDate.before(viewDate)) {
@@ -92,7 +92,7 @@ public class ActivityStateManager {
 				// 如果你需要更严谨的“上一次 view 触发点”判断，可复用 lastFireBefore(viewCron, nowDate)。
 				shouldBeView = true;
 			} else {
-				for (Date vt : activityConfig.viewTimes) {
+				for (Date vt : activityConfig.viewTime) {
 					if (vt == null) continue;
 					int period = activityConfig.period;
 					int periodPass = getPeriodPass(id);
@@ -254,8 +254,8 @@ public class ActivityStateManager {
 			// VIEW 判断：若配置了任一 viewTimes 且当前时间已达其中任一（考虑 period），则 VIEW；
 			// 若未配置 viewTimes（但可能配置了 viewCron，已在 cron 路径处理），这里按“可见”处理以兼容旧逻辑。
 			boolean visible = false;
-			if (activityConfig.viewTimes != null && !activityConfig.viewTimes.isEmpty()) {
-				for (Date vt : activityConfig.viewTimes) {
+			if (activityConfig.viewTime != null && !activityConfig.viewTime.isEmpty()) {
+				for (Date vt : activityConfig.viewTime) {
 					if (vt == null) continue;
 					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
 					if (!nowDate.before(viewDate)) { // now >= viewDate
