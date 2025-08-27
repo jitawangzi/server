@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.google.protobuf.Message;
 
-import cn.game.core.event.AbstractEvent;
-import cn.game.core.event.EventHandler;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
@@ -39,6 +37,8 @@ public abstract class ActivityBase{
 	/** 只序列化字段，不调用get()序列化 */
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
+
+	protected long uid;
 
 	/** 配置表id */
 	protected int id;
@@ -210,6 +210,7 @@ public abstract class ActivityBase{
 			if (startTime == 0) { // 还没开始，默认返回0
 				return endTime;
 			}
+			// 计算结束时间
 			if (activityConfig.endDurationType == 1) {
 				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.endDuration);
 			} else if (activityConfig.endDurationType == 2) {

@@ -9,17 +9,24 @@ import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.event.EventHandler;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.zookeeper.server.ValidServerService;
+import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
+import cn.game.games.net.data.mapper.GameActivityMapper;
+import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.module.activity.ActivityBase;
+import cn.game.games.net.game.module.activity.ActivityFactory;
 import cn.game.games.net.game.module.activity.ActivityHelper;
 import cn.game.games.net.game.module.activity.GameGlobalActivityManager;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
+import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 
 /**    
  * Game服务器混服的活动管理器，保存所有服务器的活动状态
  * 注意这里只是保存活动状态，并且这些活动本身不存储活动数据。 
+ * 也就是所有的Game进程都有相同的一份数据
  * 2025年8月22日 18:28:40
  * @author SYQ
  */
@@ -126,4 +133,23 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 	public AbstractActivityManager getServerActivityManager(String serverId) {
         return serverActivitysMap.get(serverId);
 	}
+	
+	/** 
+	 * 从数据库中加载活动
+	 * @param id
+	 */
+	public void loadAll() {
+		List<GameActivity> allActivity = DAO.executeSync(GameActivityMapper.class, MapperConstant.selectAll);
+		
+//		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+//		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GameActivity) activity).getParams(), null);
+//
+//		ActivityBase existing = activities.putIfAbsent(id, newActivity);
+//		if (existing != null) {
+//			log.warn("重复加载活动:{}", id);
+//			return;
+//		}
+//		afterLoad();
+	}
+	
 }

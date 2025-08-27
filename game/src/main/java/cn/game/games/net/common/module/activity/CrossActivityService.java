@@ -33,7 +33,7 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 			Collection<ActivityConfig> list = ActivityManager.instance().list();
 			for (ActivityConfig activityConfig : list) {
 				if (activityConfig.isMultiplayer) {
-					sharedActivityManager.load(activityConfig.ID);
+//					sharedActivityManager.load(activityConfig.ID);
 				}
 			}
 			sharedActivityManager.checkAndOpenActivitys(null);

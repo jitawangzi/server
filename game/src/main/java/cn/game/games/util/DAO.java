@@ -77,7 +77,8 @@ public class DAO {
 	 * @param method
 	 * @param arg
 	 */
-	public static Object executeSync(Class<?> mapper, String method, Object... args) {
+	public static <T> T executeSync(Class<?> mapper, String method, Object... args) {
+		
 		return invoke(mapper, method, args);
 	}
 
@@ -120,7 +121,7 @@ public class DAO {
 		return VxHolder.executeBlockingWithTimeout(blockingCode);
 	}
 
-	public static Object invoke(Class<?> mapperClass, String method, Object... args) {
+	public static <T> T invoke(Class<?> mapperClass, String method, Object... args) {
 		if (log.isDebugEnabled()) {
 			log.debug("execute db operation: mapperClass[{}]method[{}]args[{}]", mapperClass.getSimpleName(), method,
 					JSON.toJSONString(args));
@@ -128,6 +129,6 @@ public class DAO {
 		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
 		Method method2 = MapperConstant.getMethod(mapperClass, method);
 		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
-		return result;
+		return (T)result;
 	}
 }

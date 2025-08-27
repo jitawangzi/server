@@ -68,6 +68,7 @@ import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.PVEVPBattle;
 import cn.game.games.net.game.module.battle.TowerBattle;
+import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.develop.gem.GemModule;
@@ -679,8 +680,8 @@ public class PlayerHelper {
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
 			saveClientCache(player.getPlayerId());
-			RankModule rankModule = player.getModule(RankModule.class);
-			rankModule.updateHeroCombatRank();
+			AttrModule attrModule = player.getAttrModule();
+			attrModule.calcPower(); 
 			PlayerHelper.saveSimplePlayerToRedis(player);
 		});
 		// 上线后生成自己的简单信息

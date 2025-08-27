@@ -1,6 +1,11 @@
 package cn.game.games.net.game.module.activity;
 
+import cn.game.games.cache.entity.GameActivity;
+import cn.game.games.net.data.mapper.GameActivityMapper;
+import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.manager.ActivityManager;
 
 /**    
  * Game中的全体活动，只是控制活动开启、关闭等，不保存活动数据
@@ -18,5 +23,26 @@ public class GameGlobalActivityManager extends GlobalActivityManager{
 	@Override
 	protected void afterActivityOpen(ActivityBase activity) {
 	}
+	
+
+	/** 
+	 * 从数据库中加载活动
+	 * @param id
+	 */
+//	public void loadAll(String serverId) {
+//		Object activity = DAO.executeSync(GameActivityMapper.class, MapperConstant.selectByPrimaryKey, new Object[] { 0L, id });
+//		if (activity == null) {
+//			return;
+//		}
+//		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+//		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GameActivity) activity).getParams(), null);
+//
+//		ActivityBase existing = activities.putIfAbsent(id, newActivity);
+//		if (existing != null) {
+//			log.warn("重复加载活动:{}", id);
+//			return;
+//		}
+//		afterLoad();
+//	}
 	
 }

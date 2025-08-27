@@ -279,9 +279,11 @@ public class ActivityHandler extends GameBaseHandler {
 				playerState.put(activityInfo.getId(), activityInfo);
 			}
 		}
-		for (ActivityInfo activityInfo : serverActivityShowState.values()) {
-			if (!playerState.containsKey(activityInfo.getId())) {
-				playerState.put(activityInfo.getId(), activityInfo);
+		if (serverActivityShowState!=null) {
+			for (ActivityInfo activityInfo : serverActivityShowState.values()) {
+				if (!playerState.containsKey(activityInfo.getId())) {
+					playerState.put(activityInfo.getId(), activityInfo);
+				}
 			}
 		}
 		resp.addAllActivitys(playerState.values());

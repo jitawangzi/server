@@ -155,7 +155,10 @@ public class SimplePlayer implements Serializable {
 		this.assetsMap.putAll(player.getCurrencyModule().getCurrencyMap().getMap());
 		this.equipPartShows = EquipPartShow.toEquipPartShowList(player);
 		EquipTowerBattle equipTowerBattle=player.getBattleModule().getBattle(DungeonTypeEnum.EquipTower);
-		this.equipBattleRecord =equipTowerBattle.getBattleRecord();
+		if(equipTowerBattle!=null) {
+			this.equipBattleRecord =equipTowerBattle.getBattleRecord();
+		}
+		
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
