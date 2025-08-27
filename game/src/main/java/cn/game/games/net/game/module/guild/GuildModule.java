@@ -23,7 +23,7 @@ import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 
 public class GuildModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
+	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE,EventTypeEnum.GetItem, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
 			EventTypeEnum.GuildDonate };
 	/** 上一个公会的id */
 	private long lastId;
@@ -115,6 +115,7 @@ public class GuildModule extends BasePlayerModule {
 			donateMap.clear();
 			// 砍价重置为1次
 			player.getCurrencyModule().setCount(Asset.GuildBargain.ID, 1);
+			player.getCurrencyModule().setCount(Asset.GuildQuestPoint.ID, 0);
 			bargainCount = 0;
 			isBargainBuy = false;
 		}
