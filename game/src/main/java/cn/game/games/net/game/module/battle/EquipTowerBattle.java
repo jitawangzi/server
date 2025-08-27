@@ -259,9 +259,9 @@ public class EquipTowerBattle extends XiYouBattleHandler {
                 cacheHelpPlayerId = helpPlayerId;
             }
         }
-
-
-        PlayerHelper.delResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerStart);
+        for (int[] ints : GlobalConst.BattleConsume) {
+            PlayerHelper.delResources(player, ints[0], ints[1], OpType.EquipTowerStart);
+        }
         return 0;
     }
 
