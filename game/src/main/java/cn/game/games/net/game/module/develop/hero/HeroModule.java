@@ -81,8 +81,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			Collection<Hero> list = list();
 			// 初始英雄全上阵
 			BattleModule battleModule = player.getBattleModule();
-			List<String> collect = list.stream().map(hero -> hero.getId() + "").collect(toList());
+			List<String> collect = list.stream().map(hero -> hero.getId() + "").limit(8).collect(toList());
 			battleModule.updateLineup(DungeonTypeEnum.BattleChapter.getId(), 0, collect);
+			battleModule.updateLineup(DungeonTypeEnum.BattleChapter.getId(), 1, collect);
+			battleModule.updateLineup(DungeonTypeEnum.BattleChapter.getId(), 2, collect);
 //			int pos = 1;
 //			for (Hero hero : list) {
 //				battleHeros.put(hero.getId(), pos++);

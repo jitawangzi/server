@@ -115,6 +115,7 @@ public class GuildModule extends BasePlayerModule {
 			donateMap.clear();
 			// 砍价重置为1次
 			player.getCurrencyModule().setCount(Asset.GuildBargain.ID, 1);
+			player.getCurrencyModule().setCount(Asset.GuildQuestPoint.ID, 0);
 			bargainCount = 0;
 			isBargainBuy = false;
 		}
