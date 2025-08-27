@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.guild;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,9 +22,11 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBasicConfig;
+import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBasicManager;
+import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildSharedInfo;
@@ -368,7 +371,7 @@ public class Guild {
 			boolean joinGuild = joinGuild(targetPid, GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 			if (joinGuild) {
 				joinPidList.add(targetPid);
-				MailHelper.sendPromptMail(targetPid,"恭喜加入："+getName()); 
+				MailHelper.sendPromptMail(targetPid,4,"恭喜加入："+getName()); 
 			}
 		}
 		// 通知被加入的玩家 加入公会
@@ -461,6 +464,9 @@ public class Guild {
 
 	public void zongZhuTransfer(GuildMember zongZhu, GuildMember targetZongZhu) {
 		zongZhu.setPosition(GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
+		String promt = "您的职位变更为" + "<color=#FB4141>{0}</color>" ; 
+		GuildPermissionsConfig guildPermissionsConfig = GuildPermissionsManager.instance().get(zongZhu.getPosition()); 
+		MailHelper.sendPromptMail(targetZongZhu.getPlayerId(),5,MessageFormat.format(promt, guildPermissionsConfig.Name)) ; 
 		handleEvent(GuildConstants.GuildEvenType.ZONG_MEN_POSITION_CHANGE, zongZhu.playerId,
 				GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU, zongZhu.position);
 		int targetOldPosition = targetZongZhu.position;

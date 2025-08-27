@@ -143,6 +143,10 @@ public class CurrencyModule extends GoodsModule<Currency> {
 							.build());
 			return;
 		}
+		if (id == Asset.GuildExp.ID) {
+            // 仙会经验在CrossServer增加		
+			return;
+		}
 
 		long curExp = currencyMap.getValue(id) + count;
 
