@@ -9,20 +9,19 @@ import cn.game.util.JsonUtil;
 
 public class ActivityFactory {
 
-	public static ActivityBase initActivityBase(ActivityConfig config, String saveString, Player player) {
+	public static ActivityBase createActivityBase(ActivityConfig config, String saveString) {
 
 		ActivityBase activityBase;
 		if (!StringUtils.isEmpty(saveString)) {
 			activityBase = JsonUtil.parseObjectWithType(saveString);
-//			activityBase = JSON.parseObject(saveString, ClassManager.getInstance().getActivityClass(config.type));
 		} else {
-			activityBase = createActivity(config.type);
+			activityBase = createActivityBase(config.type);
 		}
-		activityBase.init(config.ID, player, false);
+//		activityBase.init(config.ID, owner, false);
 		return activityBase;
 	}
 
-	public static ActivityBase createActivity(int type) {
+	public static ActivityBase createActivityBase(int type) {
 		return ClassManager.getInstance().createActivityClassInstance(type);
 	}
 

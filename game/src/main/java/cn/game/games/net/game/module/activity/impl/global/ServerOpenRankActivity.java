@@ -1,20 +1,30 @@
 package cn.game.games.net.game.module.activity.impl.global;
 
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import com.google.protobuf.Message;
+import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.cache.CacheType;
 import cn.game.core.event.ServerEventTypeEnum;
-import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.event.server.ServerEvent;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.GameActivityBase;
+import cn.game.games.net.game.module.rank.RankHelper;
+import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
+import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.LuaScriptUtil.CopyResult;
 
 @ActivityType(type = ActivityTypeEnum.ServerOpenRank)
 public class ServerOpenRankActivity extends GameActivityBase {
-	private static final ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] { ServerEventTypeEnum.PlayerEvent };
+	private static final ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] { ServerEventTypeEnum.NewDay };
 
 	@Override
 	public ServerEventTypeEnum[] getEventTypes() {
@@ -23,17 +33,25 @@ public class ServerOpenRankActivity extends GameActivityBase {
 
 	@Override
 	public void handleEvent(ServerEvent event) {
-		if (event.getType() == ServerEventTypeEnum.PlayerEvent) {
-			PlayerEvent playerEvent = event.getParameter(0); 
-			switch (playerEvent.getType()) {
-			
-			case BattleEnd:
-				
-				break;
-			default:
-				break;
+
+		switch (event.getType()) {
+		case NewDay:
+			if (ServerContext.getInstance().isLeader() == false) {
+				return;
 			}
+			// 复制前一天的排行榜
+			ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(ServerHelper.getServerOpenDay(serverId) -1); 
+			if (activityServerOpenRankConfig != null) {
+				RankType rankType = RankType.get(activityServerOpenRankConfig.RankID); 
+				String sourceKey = RankService.getInstance().getKey(serverId, rankType); 
+				String targetKey = sourceKey + "ServerOpen";
+				RankHelper.copyRank(serverId, rankType, targetKey, activityServerOpenRankConfig.PlayerCount); 
+			}
+			break;
+		default:
+			break;
 		}
+	
 	}
 
 	@Override

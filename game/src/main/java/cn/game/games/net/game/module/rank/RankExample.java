@@ -56,7 +56,7 @@ public class RankExample {
 		// 查询某页排名
 		int page = 1;
 		int pageSize = 5;
-		List<RankEntry> entrys = rankService.getPage(serverId, RankType.Battle, page, pageSize);
+		List<RankEntry> entrys = rankService.getPage(serverId, RankType.Battle.name(), page, pageSize);
 		System.out.println("ranks in page :" + page + " pageSize:" + pageSize);
 		entrys.forEach(System.out::println);
 

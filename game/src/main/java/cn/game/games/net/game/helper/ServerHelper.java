@@ -1,19 +1,24 @@
 package cn.game.games.net.game.helper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.remote.GameServerInterface;
+import cn.game.util.DateUtil;
 import cn.game.util.ServerType;
 import cn.game.util.reflect.ClassHelper;
 
@@ -81,5 +86,20 @@ public class ServerHelper {
 	 */
 	public static GameServerInterface getPlayerProxy(long playerId) {
 		return ServerHelper.getRemoteInterfaceProxy(ServerType.Game, GameServerInterface.class, DistributedObjectType.PLAYER, playerId);
+	}
+	
+	/** 
+	 * 开服第几天了
+	 * @param serverId
+	 * @return 最小从1开始
+	 */
+	public static int getServerOpenDay(String serverId) {
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService(); 
+		Map<String, VirtualServerView> validServers = validGameService.getValidServers(); 
+		VirtualServerView virtualServerView = validServers.get(serverId); 
+		if (virtualServerView == null || virtualServerView.openTime == null) {
+			return 0;
+		}
+		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()); 
 	}
 }

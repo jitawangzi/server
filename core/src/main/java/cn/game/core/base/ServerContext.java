@@ -5,6 +5,7 @@ import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
@@ -29,16 +30,10 @@ import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RpcClient;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
-import cn.game.core.zookeeper.IdExtractor;
-import cn.game.core.zookeeper.KeyAdapter;
-import cn.game.core.zookeeper.NodeChangeType;
-import cn.game.core.zookeeper.PathPolicy;
 import cn.game.core.zookeeper.ZkBackedCache;
 import cn.game.core.zookeeper.ZkBackedCacheFactory;
 import cn.game.core.zookeeper.ZkCacheRegistry;
 import cn.game.core.zookeeper.ZkCacheType;
-import cn.game.core.zookeeper.codec.ActiveServerNode;
-import cn.game.core.zookeeper.codec.JsonValueCodec;
 import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.util.Config;
 import cn.game.util.LockUtil;
@@ -286,6 +281,7 @@ public class ServerContext {
 		});
 		try {
 			leaderLatch.start();
+			leaderLatch.await(30,TimeUnit.SECONDS); 
 			log.info("LeaderLatch started successfully");
 		} catch (Exception e) {
 			log.error("Failed to start LeaderLatch", e);

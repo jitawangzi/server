@@ -15,13 +15,13 @@ import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.net.data.mapper.GameActivityMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.module.activity.ActivityBase;
-import cn.game.games.net.game.module.activity.ActivityFactory;
 import cn.game.games.net.game.module.activity.ActivityHelper;
 import cn.game.games.net.game.module.activity.GameGlobalActivityManager;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.util.JsonUtil;
 
 /**    
  * Game服务器混服的活动管理器，保存所有服务器的活动状态
@@ -35,9 +35,9 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 			ServerEventTypeEnum.ActivityShutDownTime, ServerEventTypeEnum.ActivityDestoryTime };
 
 	/** 各个服的不同活动  */
-	private Map<String, AbstractActivityManager> serverActivitysMap ; 
+	private Map<String, AbstractActivityManager> serverActivitysMap = new ConcurrentHashMap<String, AbstractActivityManager>() ; 
 	/** 所有服都一样的活动 */
-	private AbstractActivityManager sharedActivityManager ; 
+	private AbstractActivityManager sharedActivityManager = defaultGlobalActivityManager() ; 
 	
 	private static class SingletonHolder {
 		private static final GameActivityService instance = new GameActivityService();
@@ -53,12 +53,7 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 		return new GameGlobalActivityManager();
 	}
 	public GameActivityService init() {
-		if (sharedActivityManager == null) {
-			sharedActivityManager = initActivityManager();
-		}
-		if (serverActivitysMap == null) {
-			serverActivitysMap = initActivityManagerByServerOpenTime();
-		}
+		loadAll(); 
 		ServerEventBus.getInstance().register(this);
 		return this;
 	}
@@ -75,27 +70,19 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 	 * 初始化按开服时间开启的活动
 	 * @return
 	 */
-	private Map<String, AbstractActivityManager> initActivityManagerByServerOpenTime() {
-		Map<String, AbstractActivityManager> retMap  = new ConcurrentHashMap<String, AbstractActivityManager>();
-		ValidServerService validGameService = ServerContext.getInstance().getValidGameService(); 
-		Map<String, VirtualServerView> validServers = validGameService.getValidServers(); 
-		
-		validServers.forEach((k, v) -> {
-			GlobalActivityManager defaultGlobalActivityManager = defaultGlobalActivityManager(); 
-			defaultGlobalActivityManager.setServerId(k); 
-			retMap.put(k, defaultGlobalActivityManager);
-		});
+	private void initActivityManagerByServer(String serverId) {
+		AbstractActivityManager abstractActivityManager = serverActivitysMap.get(serverId); 
+		if (abstractActivityManager != null) {
+			return;
+		}
+		GlobalActivityManager defaultGlobalActivityManager = defaultGlobalActivityManager(); 
+		defaultGlobalActivityManager.setServerId(serverId); 
+		serverActivitysMap.put(serverId, defaultGlobalActivityManager);
 		
 		List<ActivityConfig> collect = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_SERVER_OPEN_DAY);
-		
-		retMap.forEach((k, v) -> {
-			for (ActivityConfig activityConfig : collect) {
-				if (v.canOpen(activityConfig)) {
-					v.open(activityConfig.ID, null, false);
-				}
-			}
-		});
-		return retMap; 
+		for (ActivityConfig activityConfig : collect) {
+			defaultGlobalActivityManager.open(activityConfig.ID, null, false);
+		}
 	}
 
 	@Override
@@ -107,7 +94,7 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 	public void handleEvent(ServerEvent event) {
         switch (event.getType()) {
         case VirtualServerOpen:{
-        	this.serverActivitysMap = initActivityManagerByServerOpenTime();
+        	initActivityManagerByServer(event.getStringParameter(0));
         	break;
         }
         case ActivityOpenTime:{
@@ -139,17 +126,41 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 	 * @param id
 	 */
 	public void loadAll() {
-		List<GameActivity> allActivity = DAO.executeSync(GameActivityMapper.class, MapperConstant.selectAll);
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService(); 
+		Map<String, VirtualServerView> validServers = validGameService.getValidServers(); 
 		
-//		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-//		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GameActivity) activity).getParams(), null);
-//
-//		ActivityBase existing = activities.putIfAbsent(id, newActivity);
-//		if (existing != null) {
-//			log.warn("重复加载活动:{}", id);
-//			return;
-//		}
-//		afterLoad();
+		validServers.forEach((k, v) -> {
+			GlobalActivityManager defaultGlobalActivityManager = defaultGlobalActivityManager(); 
+			defaultGlobalActivityManager.setServerId(k); 
+			serverActivitysMap.put(k, defaultGlobalActivityManager);
+		});
+		List<GameActivity> allActivity = DAO.executeSync(GameActivityMapper.class, MapperConstant.selectAll);
+		// 先初始化存在的活动，排除已经过期的
+		for (GameActivity gameActivity : allActivity) {
+			ActivityBase activity = JsonUtil.parseObjectWithType(gameActivity.getParams());
+			ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId()); 
+			if (gameActivity.getServerId().equals(AbstractActivityManager.GLOBAL_SERVER_ID)) {
+				if (sharedActivityManager.canOpen(activityConfig)) {
+					sharedActivityManager.initFromDb(activityConfig, gameActivity.getParams(), null);
+				}
+			}else {
+				AbstractActivityManager abstractActivityManager = serverActivitysMap.get(gameActivity.getServerId());
+				if (abstractActivityManager.canOpen(activityConfig)) {
+					abstractActivityManager.initFromDb(activityConfig, gameActivity.getParams(), null);
+				}
+			}
+		}
+		// 检查新的能开启的活动
+		sharedActivityManager.checkAndOpenActivitys(null);
+		
+		List<ActivityConfig> collect = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_SERVER_OPEN_DAY);
+		serverActivitysMap.forEach((k, v) -> {
+			for (ActivityConfig activityConfig : collect) {
+				if (v.canOpen(activityConfig)) {
+					v.open(activityConfig.ID, null, false);
+				}
+			}
+		});
 	}
 	
 }

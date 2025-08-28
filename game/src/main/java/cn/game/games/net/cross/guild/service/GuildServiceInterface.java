@@ -1,7 +1,5 @@
 package cn.game.games.net.cross.guild.service;
 
-import java.util.List;
-
 import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.guild.Guild;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;

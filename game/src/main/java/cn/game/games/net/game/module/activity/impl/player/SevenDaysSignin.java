@@ -136,7 +136,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 	}
 
 	@Override
-	public void destroy() {
+	public void afterDestroy() {
 		List<Goods> drops = new ArrayList<>();
     	getSevenDaysSigninConfigList(id).forEach(
             config -> {

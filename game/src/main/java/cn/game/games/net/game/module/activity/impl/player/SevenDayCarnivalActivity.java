@@ -53,8 +53,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 	}
 
 	@Override
-	public void startUp() {
-		super.startUp();
+	public void afterStart() {
 		for (int i = 1; i <= 7; i++) {
 			openDay(i);
 		}
@@ -62,7 +61,7 @@ public class SevenDayCarnivalActivity extends PlayerActivityBase {
 	}
 
 	@Override
-	public void destroy() {
+	public void afterDestroy() {
 		// 移除七日任务
 		QuestModule questModule = player.getQuestModule();
 		for (Integer day : initDays) {

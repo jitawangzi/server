@@ -35,8 +35,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 	List<Integer> rewardTaskIds = new ArrayList<>();
 
 	@Override
-	public void startUp() {
-		super.startUp();
+	public void afterStart() {
 		moreRechargeNum = 0;
 		refreshActivityData();
 	}
@@ -128,7 +127,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 	}
 
 	@Override
-	public void shutDown() {
+	public void afterShutDown() {
 		QuestModule questModule = player.getQuestModule();
 		getActivityLeiChongConfigList().forEach(activityLeiChongConfig -> {
 			questModule.remove(activityLeiChongConfig.taskID);

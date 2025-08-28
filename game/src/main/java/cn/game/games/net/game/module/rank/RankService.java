@@ -3,19 +3,16 @@ package cn.game.games.net.game.module.rank;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import cn.game.games.net.game.module.mail.MailRankInfo;
-import cn.game.games.net.game.module.mail.MailType;
-import cn.game.protocol.generated.config.DaShengExtraPointsConfig;
-import cn.game.protocol.generated.config.DaShengNPCConfig;
-import cn.game.protocol.generated.manager.*;
-import cn.game.protocol.protobuf.BaseMsg;
-import cn.game.util.*;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.client.codec.LongCodec;
@@ -34,9 +31,23 @@ import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.mail.MailRankInfo;
+import cn.game.games.net.game.module.mail.MailType;
+import cn.game.protocol.generated.config.DaShengNPCConfig;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.config.RankRewardConfig;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.DaShengNPCManager;
+import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.RankRewardManager;
+import cn.game.protocol.generated.manager.VirtualServerManager;
+import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.util.BinarySearchUtil;
+import cn.game.util.DateUtil;
+import cn.game.util.JsonUtil;
+import cn.game.util.LockUtil;
+import cn.game.util.LuaScriptUtil;
+import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
 /**
@@ -284,8 +295,8 @@ public class RankService {
 	 * @param pageSize 每页大小
 	 * @return 指定页面的玩家排行信息列表
 	 */
-	public List<RankEntry> getPage(String serverId, RankType type, int page, int pageSize) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+	public List<RankEntry> getPage(String serverId, String rankKey, int page, int pageSize) {
+		RScoredSortedSet<Long> rank = getRankSet(rankKey);
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize - 1;
 		Collection<ScoredEntry<Long>> players = rank.entryRangeReversed(start, end);
@@ -306,8 +317,10 @@ public class RankService {
 	}
 
 	private RScoredSortedSet<Long> getRankSet(String serverId, RankType type) {
-		String key = getKey(serverId, type);
-		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(key, LongCodec.INSTANCE);
+		return getRankSet(getKey(serverId, type));
+	}
+	private RScoredSortedSet<Long> getRankSet(String rankKey) {
+		RScoredSortedSet<Long> rank = RedisUtil.getRedis().getScoredSortedSet(rankKey, LongCodec.INSTANCE);
 		return rank;
 	}
 
@@ -321,7 +334,10 @@ public class RankService {
 	 * @return 异步操作的Future，包含指定页面的玩家RankEntry集合
 	 */
 	public CompletionStage<List<RankEntry>> getPageAsync(String serverId, RankType type, int page, int pageSize) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return getPageAsync(getKey(serverId, type), page, pageSize);
+	}
+	public CompletionStage<List<RankEntry>> getPageAsync(String rankKey, int page, int pageSize) {
+		RScoredSortedSet<Long> rank = getRankSet(rankKey);
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize - 1;
 		return rank.entryRangeReversedAsync(start, end).thenApply(players -> convertToRankEntries(players, page, pageSize));
@@ -350,7 +366,10 @@ public class RankService {
 	 * @return 异步操作的Future，包含玩家的排名
 	 */
 	public CompletionStage<Integer> getRankAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return getRankAsync(getKey(serverId, type), playerId); 
+	}
+	public CompletionStage<Integer> getRankAsync(String rankKey, long playerId) {
+		RScoredSortedSet<Long> rank = getRankSet(rankKey);
 		return rank.revRankAsync(playerId).thenApply(r -> r != null ? r + 1 : -1);
 	}
 
@@ -362,7 +381,10 @@ public class RankService {
 	 * @return
 	 */
 	public CompletionStage<Long> getScoreAsync(String serverId, RankType type, long playerId) {
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+		return getScoreAsync(getKey(serverId, type), playerId); 
+	}
+	public CompletionStage<Long> getScoreAsync(String rankKey, long playerId) {
+		RScoredSortedSet<Long> rank = getRankSet(rankKey);
 		return rank.getScoreAsync(playerId).thenApply(score -> score == null ? 0 : (long) score.doubleValue());
 	}
 
@@ -387,8 +409,11 @@ public class RankService {
 	 * @return
 	 */
 	public CompletionStage<RankEntry> getRankEntryAsync(String serverId, RankType type, long playerId) {
-		CompletionStage<Long> scoreAsync = getScoreAsync(serverId, type, playerId);
-		CompletionStage<Integer> rankAsync = getRankAsync(serverId, type, playerId);
+		return getRankEntryAsync(getKey(serverId, type), playerId); 
+	}
+	public CompletionStage<RankEntry> getRankEntryAsync(String rankKey, long playerId) {
+		CompletionStage<Long> scoreAsync = getScoreAsync(rankKey, playerId);
+		CompletionStage<Integer> rankAsync = getRankAsync(rankKey, playerId);
 		return scoreAsync.thenCombine(rankAsync, (score, rank) -> new RankEntry(rank, playerId, score));
 	}
 
@@ -763,7 +788,7 @@ public class RankService {
 				OffsetBatchQuery<RankEntry> batchQuery = (offset, limit) -> {
 					// 将offset转换为page，注意offset从0开始，page从1开始
 					int page = (offset / limit) + 1;
-					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, page, limit);
+					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType.name(), page, limit);
 					totalQueryCount.addAndGet(entrys.size());
 					return entrys;
 				};

@@ -147,8 +147,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 
 	@Override
-	public void startUp() {
-		super.startUp();
+	public void afterStart() {
 		rewardIdList.clear();
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityMeiRiBaoLiConfig -> {
@@ -158,7 +157,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	}
 
 	@Override
-	public void shutDown() {
+	public void afterShutDown() {
 		// 未领取的活动 邮件发送
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityMeiRiBaoLiConfig -> {
@@ -173,11 +172,5 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 			//活动结束  删除活动相关的任务
 			questModule.remove(activityMeiRiBaoLiConfig.taskID);
 		});
-	}
-
-	@Override
-	public void destroy() {
-		shutDown();
-		super.destroy();
 	}
 }

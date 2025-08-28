@@ -3,12 +3,14 @@ package cn.game.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import org.redisson.api.RScript;
 import org.redisson.client.codec.Codec;
 import org.redisson.client.codec.LongCodec;
+import org.redisson.client.codec.StringCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +32,7 @@ public class LuaScriptUtil {
 		ADD_LIST_WITH_FIFO_LIMIT("add_list_with_fifo_limit.lua", "向列表添加元素，如果超过大小限制则移除最老的元素", true),
 		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
 		TRY_SET_WITH_EXPECT("try_set_with_expect.lua", "条件设置键值对并指定过期时间，仅当键不存在或当前值与预期值相同时才设置", true),
-
-		;
+		ZSET_COPY_TOPN("zset_copy_topN.lua", "将源ZSET的前N名复制到目标ZSET，默认不清空目标", true),;
 
 		private final String filename;
 		private final String description;
@@ -108,6 +109,7 @@ public class LuaScriptUtil {
 		}
 		return rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
 	}
+
 	public static <T> T executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
 		if (script.useSha1) {
@@ -126,11 +128,11 @@ public class LuaScriptUtil {
 	public static CompletionStage<Double> updateScoreIfGreater(String key, long member, double newScore) {
 		return executeLuaScriptAsync(LuaScript.UPDATE_SET_SCORE_IF_GREATER, LongCodec.INSTANCE, List.of(key), member, newScore)
 				.thenApply(result -> {
-			if (result instanceof Number) {
-				return ((Number) result).doubleValue();
-			}
-			throw new IllegalStateException("Unexpected result type: " + result.getClass());
-		});
+					if (result instanceof Number) {
+						return ((Number) result).doubleValue();
+					}
+					throw new IllegalStateException("Unexpected result type: " + result.getClass());
+				});
 	}
 
 	/**
@@ -155,6 +157,7 @@ public class LuaScriptUtil {
 	public static CompletionStage<Long> updateHashConditional(String key, long expectedValue, long addValue) {
 		return executeLuaScriptAsync(LuaScript.UPDATE_HASH_CONDITIONAL, LongCodec.INSTANCE, List.of(key), expectedValue, addValue);
 	}
+
 	/**
 	 * 设置某个key的值，只有当key不存在，或者值等于预期值时设置  并指定过期时间
 	 * @param key Redis键
@@ -163,8 +166,8 @@ public class LuaScriptUtil {
 	 * @return true表示设置成功，false表示失败（被其他值占用）
 	 */
 	public static boolean trySetWithExpect(String key, String value, int expireSeconds) {
-	    Long result = executeLuaScript(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds);
-	    return result != null && result == 1;
+		Long result = executeLuaScript(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds);
+		return result != null && result == 1;
 	}
 
 	/**
@@ -175,13 +178,75 @@ public class LuaScriptUtil {
 	 * @return CompletionStage<Boolean>
 	 */
 	public static CompletionStage<Boolean> trySetWithExpectAsync(String key, String value, int expireSeconds) {
-	    return executeLuaScriptAsync(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds)
-	            .thenApply(result -> {
-	                if (result instanceof Number) {
-	                    return ((Number) result).longValue() == 1;
-	                }
-	                return false;
-	            });
+		return executeLuaScriptAsync(LuaScript.TRY_SET_WITH_EXPECT, null, List.of(key), value, expireSeconds).thenApply(result -> {
+			if (result instanceof Number) {
+				return ((Number) result).longValue() == 1;
+			}
+			return false;
+		});
+	}
+
+	/**
+	 * 将源ZSET的前 topN 名复制到目标ZSET（异步）
+	 * @param sourceKey 源ZSET
+	 * @param destKey   目标ZSET
+	 * @param topN      前N名(>0)
+	 * @param clearDest 是否清空目标(默认清空，传 null 则走默认 1)
+	 * @param expireSeconds 目标key过期秒数(<=0 不设置)
+	 * @return CompletionStage<CopyResult> 复制结果
+	 */
+	public static CompletionStage<CopyResult> copyZSetTopNAsync(String sourceKey, String destKey, int topN, Boolean clearDest,
+			int expireSeconds) {
+		int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
+		return executeLuaScriptAsync(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), topN, clear,
+				expireSeconds).thenApply(LuaScriptUtil::parseCopyResult);
+	}
+
+	/**
+	 * 将源ZSET的前 topN 名复制到目标ZSET（同步）
+	 */
+	public static CopyResult copyZSetTopN(String sourceKey, String destKey, int topN, Boolean clearDest, int expireSeconds) {
+		int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
+		Object ret = executeLuaScript(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), topN, clear,
+				expireSeconds);
+		return parseCopyResult(ret);
+	}
+
+	/**
+	 * 解析 {copiedCount, totalSourceSize} 返回
+	 */
+	@SuppressWarnings("unchecked")
+	private static CopyResult parseCopyResult(Object ret) {
+		if (ret == null) {
+			throw new IllegalStateException("Null result from zset_copy_topN");
+		}
+		if (ret instanceof List) {
+			List<Object> list = (List<Object>) ret;
+			if (list.size() >= 2 && list.get(0) instanceof Number && list.get(1) instanceof Number) {
+				long copied = ((Number) list.get(0)).longValue();
+				long total = ((Number) list.get(1)).longValue();
+				return new CopyResult(copied, total);
+			}
+		}
+		throw new IllegalStateException("Unexpected result structure: " + ret);
+	}
+
+	/**
+	 * 复制结果
+	 */
+	public static class CopyResult {
+		public final long copiedCount;
+		public final long totalSourceSize;
+
+		public CopyResult(long copiedCount, long totalSourceSize) {
+			this.copiedCount = copiedCount;
+			this.totalSourceSize = totalSourceSize;
+		}
+
+		@Override
+		public String toString() {
+			return "CopyResult{copiedCount=" + copiedCount + ", totalSourceSize=" + totalSourceSize + '}';
+		}
 	}
 
 }

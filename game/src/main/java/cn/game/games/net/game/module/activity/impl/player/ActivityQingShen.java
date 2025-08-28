@@ -84,8 +84,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	@Override
-	public void startUp() {
-		super.startUp();
+	public void afterStart() {
 		round = 0;
 		refreshActivity();
 		initActivityTask();
@@ -151,7 +150,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	@Override
-	public void shutDown() {
+	public void afterShutDown() {
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityQingShenConfig -> {
 			if (!rewardIdList.contains(activityQingShenConfig.taskID)){
