@@ -163,4 +163,8 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 		});
 	}
 	
+	public void close() {
+		ServerEventBus.getInstance().unregister(this);
+	}
+	
 }

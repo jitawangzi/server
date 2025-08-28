@@ -28,6 +28,7 @@ import cn.game.games.net.game.module.chat.ChatHelper;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.GuaiWuTuJianConfig;
 import cn.game.protocol.generated.config.HeroBandBookConfig;
 import cn.game.protocol.generated.config.HeroBreakConfig;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -36,6 +37,7 @@ import cn.game.protocol.generated.config.HeroSkinConfig;
 import cn.game.protocol.generated.config.MarqueeConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.GuaiWuTuJianManager;
 import cn.game.protocol.generated.manager.HeroBandBookManager;
 import cn.game.protocol.generated.manager.HeroBreakManager;
 import cn.game.protocol.generated.manager.HeroLvManager;
@@ -968,8 +970,8 @@ public class HeroHandler extends GameBaseHandler {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
 			return;
 		}
-		// TODO 奖励
-		List<RewardInfo> resources = PlayerHelper.addResources(player, new int[] {}, OpType.llustrationsMonsterReward); 
+		GuaiWuTuJianConfig guaiWuTuJianConfig = GuaiWuTuJianManager.instance().get(id); 
+		List<RewardInfo> resources = PlayerHelper.addResources(player, guaiWuTuJianConfig.Award, OpType.llustrationsMonsterReward); 
 		illustrationsMonsterRewardMap.put(id, true);
 		resp.addAllReward(resources);
 		client.sendProtocol(resp.build());
