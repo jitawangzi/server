@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.activity;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class ActivityModule extends BasePlayerModule {
 	protected void initAfter() {
 		if (playerActivityManager == null) {
 			playerActivityManager = new PlayerActivityManager();
+			playerActivityManager.setServerId(player.getServerId());
 		}
 		if (playerActivityManager.getPlayer() == null) {
 			playerActivityManager.setPlayer(player);
@@ -68,8 +70,15 @@ public class ActivityModule extends BasePlayerModule {
 	@Override
 	public void initFromDbAfter() {
 		// 这里注意一个活动，多开启时间的
-		for (ActivityBase activityBase : playerActivityManager.list()) {
-			activityBase.init(activityBase.getId(), player, false);
+		Iterator<ActivityBase> iterator = playerActivityManager.list().iterator(); 
+		while (iterator.hasNext()) {
+			ActivityBase activityBase = (ActivityBase) iterator.next();
+			ActivityConfig config = ActivityManager.instance().get(activityBase.getId());
+			if (playerActivityManager.canOpen(config)) {
+				activityBase.init(activityBase.getId(), player, false);
+			}else {
+				iterator.remove(); 
+			}
 		}
 		if (disposableIds.isEmpty()) {// 兼容老数据
 			for (ActivityBase activityBase : activities.values()) {
@@ -130,8 +139,9 @@ public class ActivityModule extends BasePlayerModule {
 		playerActivityManager.open(id, player, notify);
 	}
 
-	public ActivityBase get(int id) {
-		return playerActivityManager.get(id);
+	@SuppressWarnings("unchecked")
+	public <T extends ActivityBase> T get(int id) {
+		return (T) playerActivityManager.get(id);
 	}
 
 	/** 

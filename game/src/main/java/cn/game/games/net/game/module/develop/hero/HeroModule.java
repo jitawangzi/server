@@ -67,6 +67,10 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	private Map<Integer, QualityStarObj> illustrationsHeroStars = new HashMap<Integer, QualityStarObj>();
 	/** 领取过图鉴等级奖励的等级 */
 	private int illustrationRewardLevel;
+	
+	/** key: 解锁了哪些怪物 value：解锁的怪物是否领取了奖励 */
+	private Map<Integer, Boolean> illustrationsMonsterRewardMap = new HashMap<Integer, Boolean>();
+
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -240,6 +244,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 			builder.addFreeDayRentHeros(uid.toString());
 		}
 		builder.setFreeDayRentHeroUid(freeDayHeroUid + "");
+		builder.putAllIllustrationsMonsterReward(illustrationsMonsterRewardMap); 
 	}
 
 	public long getHeroId() {
@@ -311,6 +316,11 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 	public void setIllustrationRewardLevel(int illustrationRewardLevel) {
 		this.illustrationRewardLevel = illustrationRewardLevel;
 	}
+	
+	public Map<Integer, Boolean> getIllustrationsMonsterRewardMap() {
+		return illustrationsMonsterRewardMap;
+	}
+
 	@Override
 	public void checkConfig(int id) {
 		HeroManager.instance().get(id);

@@ -13,10 +13,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
-import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
-import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
@@ -30,29 +27,12 @@ public class GlobalActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
-		if (!config.isMultiplayer || config.disable) {
+		if (!config.isMultiplayer) {
 			return false;
 		}
-		if (config.openType == 0) {
-			return isInOpenTime(config.ID);
-		}
-		if (config.openType == 10) {
-			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
-				return false;
-			}
-			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
-
-			VirtualServerView virtualServerView = validServers.get(serverId);
-			if (virtualServerView != null && virtualServerView.openTime != null
-					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) >= config.openParam) {
-				return true;
-			}
-		}
-		//
-		return false;
+		return super.canOpen(config); 
 	}
-
+	
 	@Override
 	protected void afterActivityDestroy(ActivityBase activity) {
 		delete(activity); 
@@ -64,10 +44,15 @@ public class GlobalActivityManager extends AbstractActivityManager {
 			destroy(id, true);
 		}, remaining, TimeUnit.MILLISECONDS);
 	}
+	@Override
+	public void runEndTask(int id, long remaining) {
+		SchedulerService.getInstance().scheduleTask(() -> {
+			shutdown(id);
+		}, remaining, TimeUnit.MILLISECONDS);
+	}
 
 	@Override
 	protected boolean shouldRefresh(ActivityConfig config) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

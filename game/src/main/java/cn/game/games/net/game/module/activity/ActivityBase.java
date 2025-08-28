@@ -48,6 +48,7 @@ public abstract class ActivityBase{
 	/** 活动实际开始/参加时间 */
 	protected long startTime;
 	protected long endTime;
+	protected String serverId;
 
 	/** 
 	 * 当前活动是否有红点显示
@@ -132,24 +133,38 @@ public abstract class ActivityBase{
 	};
 
 	/** 活动开始，可以参加活动 */
-	public void startUp() {
+	private void startUp() {
 //		player.getActivityModule().syncActivityState(id);
 		this.state = ActivityState.START_VALUE;
 		this.startTime = System.currentTimeMillis();
 		this.endTime = calcEndTime();
+		afterStart();
 	}
-
 	/** 活动结束,可能还保留，领取活动奖励等 */
 	public void shutDown() {
-//		syncActivityState(id);
 		this.state = ActivityState.CLOSE_VALUE;
 		unregisterEvent();
+		afterShutDown();
 	}
 
 	/** 彻底销毁活动，不再展示，删除活动数据 */
 	public void destroy() {
+		this.state = ActivityState.NONE_VALUE;
 		unregisterEvent();
+		afterDestroy();
 	};
+	/** 
+	 * 活动开始后的一些自定义行为
+	 */
+	protected void afterStart() {
+		
+	}
+	protected void afterShutDown() {
+		
+	}
+	protected void afterDestroy() {
+		
+	}
 
 	/** 
 	 * 
@@ -175,7 +190,6 @@ public abstract class ActivityBase{
 	 * @return 存储用字符串
 	 */
 	public String toSaveString() {
-//		return JSON.toJSONString(this, serializeConfig);
 		return JsonUtil.toJsonStringWithType(this);
 	}
 
@@ -198,7 +212,13 @@ public abstract class ActivityBase{
 	public long getEndTime() {
 		return endTime;
 	}
-
+	
+	public String getServerId() {
+		return serverId;
+	}
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
+	}
 	/** 
 	 * 获取活动的结束时间
 	 * @return
@@ -217,6 +237,7 @@ public abstract class ActivityBase{
 				endTime = startTime + activityConfig.endDuration * 1000;
 			}
 		} else {
+			// 按时间开启的活动
 			endTime = ActivityStateManager.getInstance().getEndTime(id);
 		}
 		return endTime;

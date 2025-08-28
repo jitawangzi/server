@@ -1,5 +1,6 @@
 package cn.game.games.net.common.module.activity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,16 +10,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.net.data.mapper.GameActivityMapper;
-import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityFactory;
+import cn.game.games.net.game.module.activity.ActivityHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -26,6 +30,7 @@ import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 public abstract class AbstractActivityManager {
 	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
@@ -36,8 +41,8 @@ public abstract class AbstractActivityManager {
 	/** 活动属于哪一个服 */
 	protected String serverId = GLOBAL_SERVER_ID; 
 	
-	public ActivityBase get(int id) {
-		return activities.get(id);
+	public <T extends ActivityBase> T get(int id) {
+		return (T) activities.get(id);
 	}
 
 	public Collection<ActivityBase> list() {
@@ -52,14 +57,26 @@ public abstract class AbstractActivityManager {
 			}
 			ActivityBase activityBase = createActivity(activityConfig);
 			if (activityBase != null) {
-				beforeActivityOpen(activityBase);
-				activities.put(activityConfig.ID, activityBase);
-				activityBase.init(activityConfig.ID, owner, true);
-				if (notify) {
-					activityBase.syncActivityInfo();
+				activityBase.setServerId(serverId);
+				ActivityBase old = activities.putIfAbsent(activityConfig.ID, activityBase); 
+				if (old == null) {
+					beforeActivityOpen(activityBase);
+					activityBase.init(activityConfig.ID, owner, true);
+					if (notify) {
+						activityBase.syncActivityInfo();
+					}
+					afterActivityOpen(activityBase);
 				}
-				afterActivityOpen(activityBase);
 			}
+		}
+	}
+	public void initFromDb(ActivityConfig config, String saveString,Object owner) {
+		ActivityBase activityBase = ActivityFactory.createActivityBase(config,saveString); 
+		int id = activityBase.getId();
+		ActivityBase oldValue = activities.putIfAbsent(id, activityBase);
+		if (oldValue == null) {
+			activityBase.init(id, owner, false);
+			afterLoad();
 		}
 	}
 
@@ -118,7 +135,7 @@ public abstract class AbstractActivityManager {
 		long nowTime = System.currentTimeMillis();
 		for (ActivityBase activityBase : activities.values()) {
 			int cid = activityBase.getId();
-			long endTime = activityBase.calcEndTime();
+			long endTime = activityBase.getEndTime();
 			if (endTime > 0) {
 				long remaining = endTime - nowTime;
 				if (remaining > 0) {
@@ -141,6 +158,7 @@ public abstract class AbstractActivityManager {
 	}
 
 	protected abstract void runDestroyTask(int id, long remaining);
+	protected abstract void runEndTask(int id, long remaining);
 
 	// 定时刷新
 	protected void refreshByType(int resetType) {
@@ -201,7 +219,7 @@ public abstract class AbstractActivityManager {
 	}
 
 	protected ActivityBase createActivity(ActivityConfig config) {
-		return ActivityFactory.createActivity(config.type);
+		return ActivityFactory.createActivityBase(config.type);
 
 	}
 
@@ -217,7 +235,7 @@ public abstract class AbstractActivityManager {
 			return !isInOpenTime(activity.getId());
 		}
 		// 非时间开启的活动
-		long endTime = activity.calcEndTime();
+		long endTime = activity.getEndTime();
 		if (endTime > 0) {
 			return System.currentTimeMillis() >= endTime;
 		}
@@ -233,6 +251,9 @@ public abstract class AbstractActivityManager {
 	protected boolean isInOpenTime(int id) {
 		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
 		return showList.contains(id);
+	}
+	public boolean canOpenExt(ActivityConfig activityConfig) {
+		return false;
 	}
 
 	public Map<Integer, ActivityInfo> getShowState() {
@@ -294,7 +315,34 @@ public abstract class AbstractActivityManager {
 	 */
 	protected abstract Object getOwner();
 
-	protected abstract boolean canOpen(ActivityConfig config);
+	/** 
+	 * 检查某个活动是否可以开启
+	 * @param config
+	 * @return
+	 */
+	protected boolean canOpen(ActivityConfig config) {
+		if (config.disable) {
+			return false;
+		}
+		if (config.openType == 0) {
+			return isInOpenTime(config.ID);
+		}
+		if (config.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+
+			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
+				return false;
+			}
+			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+
+			VirtualServerView virtualServerView = validServers.get(serverId);
+			if (virtualServerView != null && virtualServerView.openTime != null
+					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) >= config.openParam) {
+				return true;
+			}
+		}
+		return canOpenExt(config);
+	}
 
 	protected abstract boolean shouldRefresh(ActivityConfig config);
 
@@ -327,4 +375,6 @@ public abstract class AbstractActivityManager {
 
 	protected void afterActivityDestroy(ActivityBase activity) {
 	}
+
+
 }

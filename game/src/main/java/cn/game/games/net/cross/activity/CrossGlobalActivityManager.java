@@ -30,13 +30,13 @@ public class CrossGlobalActivityManager extends GlobalActivityManager {
 			return;
 		}
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		ActivityBase newActivity = ActivityFactory.initActivityBase(activityConfig, ((GameActivity) activity).getParams(), null);
-
-		ActivityBase existing = activities.putIfAbsent(id, newActivity);
-		if (existing != null) {
-			log.warn("重复加载活动:{}", id);
-			return;
-		}
+//		ActivityBase newActivity = ActivityFactory.createActivityBase(activityConfig, ((GameActivity) activity).getParams(), null);
+//		initFromDb(newActivity);
+//		ActivityBase existing = activities.putIfAbsent(id, newActivity);
+//		if (existing != null) {
+//			log.warn("重复加载活动:{}", id);
+//			return;
+//		}
 		afterLoad();
 	}
 

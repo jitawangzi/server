@@ -26,19 +26,17 @@ public class PlayerActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
-		if (config.disable || config.isMultiplayer) {
+		if (config.isMultiplayer) {
 			return false;
 		}
 		if (config.resetType == 0 && disposableIds.contains(config.ID)) {
 			return false;
 		}
-		if (config.openType == 0) {
-			return isInOpenTime(config.ID);
-		}
-		return canOpenNonTimeOpeningActivity(config);
+		return super.canOpen(config);
 	}
 
-	private boolean canOpenNonTimeOpeningActivity(ActivityConfig activityConfig) {
+	@Override
+	public boolean canOpenExt(ActivityConfig activityConfig) {
 		if (activityConfig.openType == 0) {
 			return false;
 		}
@@ -72,6 +70,12 @@ public class PlayerActivityManager extends AbstractActivityManager {
 	public void runDestroyTask(int id, long remaining) {
 		player.setTimerTask(remaining, r -> {
 			destroy(id, true);
+		});
+	}
+	@Override
+	public void runEndTask(int id, long remaining) {
+		player.setTimerTask(remaining, r -> {
+			shutdown(id);
 		});
 	}
 	@Override

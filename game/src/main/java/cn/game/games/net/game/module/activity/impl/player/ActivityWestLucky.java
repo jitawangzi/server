@@ -174,7 +174,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
     }
 
     @Override
-    public void destroy() {
+    public void afterDestroy() {
         //销毁身上的抽奖卷
         long num = player.getItemModule().getCount(getDrawItemId());
         if (num > 0){

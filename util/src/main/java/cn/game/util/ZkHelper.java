@@ -1,5 +1,7 @@
 package cn.game.util;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -26,7 +28,7 @@ public class ZkHelper {
 		}
 	}
 
-	private static void init(JsonObject conf) {
+	private static void init(JsonObject conf) throws InterruptedException {
 
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(
 				conf.getJsonObject("retry", new JsonObject()).getInteger("initialSleepTime", 1000),
@@ -59,9 +61,10 @@ public class ZkHelper {
 				throw new IllegalArgumentException("CuratorFramework init failed ");
 			}
 		}
+		curator.blockUntilConnected(30, TimeUnit.SECONDS);  
 	}
 
-	private static void init() {
+	private static void init() throws InterruptedException {
 		if (inited) {
 			return;
 		}

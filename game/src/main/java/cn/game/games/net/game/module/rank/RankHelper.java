@@ -4,25 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.game.games.cache.entity.Player;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.BaseMsg.PlayerRankInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
 import cn.game.protocol.protobuf.RankMsg.RankInfo;
+import cn.game.util.LuaScriptUtil;
+import cn.game.util.LuaScriptUtil.CopyResult;
 
 public class RankHelper {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(RankHelper.class);
+	
 	public static CompletionStage<RankInfo> getRankInfo(Player player, RankType rankType, int page, int pageSize) {
+		String key = RankService.getInstance().getKey(player.getServerId(), rankType); 
+		return getRankInfo(player, key, page, pageSize);
+	}
+	public static CompletionStage<RankInfo> getRankInfo(Player player, String rankKey, int page, int pageSize) {
 		String serverId = player.getServerId();
 //		RankModule rankModule = player.getModule(RankModule.class);
 		long playerId = player.getPlayerId();
-
-		CompletionStage<RankEntry> myRankEntryAsync = RankService.getInstance().getRankEntryAsync(serverId, rankType, playerId);
+		
+		CompletionStage<RankEntry> myRankEntryAsync = RankService.getInstance().getRankEntryAsync(rankKey, playerId);
 		CompletionStage<PlayerRank> myPlayerRankAsync = RankService.getInstance().convertToPlayerRankEntry(myRankEntryAsync);
-		CompletionStage<List<RankEntry>> rankEntryAsync = RankService.getInstance().getPageAsync(serverId, rankType, page, pageSize);
+		CompletionStage<List<RankEntry>> rankEntryAsync = RankService.getInstance().getPageAsync(rankKey, page, pageSize);
 		CompletionStage<List<PlayerRank>> playerRankAsync = RankService.getInstance().convertToPlayerRankEntries(rankEntryAsync);
-
+		
 		return myPlayerRankAsync.thenCombine(playerRankAsync, (myPlayerRank, rankEntries) -> {
 			RankInfo.Builder rankInfo = RankInfo.newBuilder();
 			for (PlayerRank playerRank : rankEntries) {
@@ -36,7 +46,11 @@ public class RankHelper {
 	public static PlayerRankInfo toRankInfo(PlayerRank entry) {
 		PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
 		rb.setRank(entry.getRankEntry().getRank());
-		rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
+		if (entry.getPlayer() == null) {
+			LOGGER.warn("排行榜玩家信息为空, rankEntry={}", entry.getRankEntry());
+		}else {
+			rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
+		}
 		long score = entry.getRankEntry().getScore();
 		rb.setScore((score < 0 ? 0 : score) + "");
 		return rb.build();
@@ -90,5 +104,12 @@ public class RankHelper {
 		long score = entry.getRankEntry().getScore();
 		builder.setScore((score < 0 ? 0 : score) + "");
 		return builder.build();
+	}
+	public static CompletionStage<CopyResult> copyRank(String serverId, RankType rankType,String targetRankKey,int topN) {
+		String sourceKey = RankService.getInstance().getKey(serverId, rankType); 
+		return LuaScriptUtil.copyZSetTopNAsync(sourceKey, targetRankKey, topN, null, 0).exceptionally(ex -> {
+			LOGGER.error("复制排行榜失败，serverId={}, rankType={}, targetRankKey={}, topN={}, error={}", serverId, rankType, targetRankKey, topN, ex.getMessage());
+			return null;
+		});
 	}
 }

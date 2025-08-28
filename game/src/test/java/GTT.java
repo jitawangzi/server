@@ -7,6 +7,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.util.IdWorker;
 import cn.game.util.Rnd;
 
@@ -15,21 +16,8 @@ public class GTT {
 	public static long firstTime = System.currentTimeMillis();
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(System.currentTimeMillis());
-		int c1 = 0, c2 = 0;
-		IdWorker idWorker = new IdWorker(1, 0);
-		for (int i = 0; i < 10; i++) {
-			long nextId = idWorker.nextId();
-			if (nextId % 2 == 0) {
-				c1++;
-			} else {
-				c2++;
-			}
-			Thread.currentThread().sleep(1000);
-			System.out.println(nextId);
-		}
-		System.out.println(c1);
-		System.out.println(c2);
+		System.out.println(RankType.BaiGuJing.Name);
+		System.out.println(RankType.BaiGuJing.name());
 	}
 
 	public static void test(Integer c) {
