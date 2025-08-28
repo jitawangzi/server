@@ -281,7 +281,7 @@ public class ServerContext {
 		});
 		try {
 			leaderLatch.start();
-			leaderLatch.await(30,TimeUnit.SECONDS); 
+//			leaderLatch.await(30,TimeUnit.SECONDS); 
 			log.info("LeaderLatch started successfully");
 		} catch (Exception e) {
 			log.error("Failed to start LeaderLatch", e);
