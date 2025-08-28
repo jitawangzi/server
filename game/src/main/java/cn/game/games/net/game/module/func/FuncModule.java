@@ -67,7 +67,7 @@ public class FuncModule extends BasePlayerModule {
 		refreshFuncOpen(1);
 	}
 	void setFuncOpen(InitialUI type) {
-		if(funcOpenMap.get( type)== false) {
+		if(funcOpenMap.containsKey( type) && funcOpenMap.get( type)== false) {
 			funcOpenMap.put( type, true);
 			player.handleEvent(EventTypeEnum.FuncOpen, type);
 		}
@@ -93,6 +93,16 @@ public class FuncModule extends BasePlayerModule {
 		}
 
 	}
+
+	public void gmUnlockFunc(byte type) {
+		if (type > 0) {
+			setFuncOpen(InitialUI.get(type));
+		} else {
+			funcOpenMap.forEach((k, v) -> setFuncOpen(k)
+			);
+		}
+	}
+
 	@Override
 	public int processOrder() {
 		return EVENT_PROCESS_ORDER_LOW;

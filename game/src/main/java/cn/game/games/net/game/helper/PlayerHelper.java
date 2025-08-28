@@ -650,11 +650,13 @@ public class PlayerHelper {
 		// 对模块数据初始化顺序有要求的，其他模块需要的， 一些基础数据尽量放到这里初始化。
 		player.getPlayerModule().initLevel();
 
+		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
+
 		if (ServerContext.getInstance().getRunMode().isPressure()) {
 			player.getCurrencyModule().setMaxCurrency();
 		}
 
-		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
+
 
 		GameLogger.rolebuild(player);
 	}

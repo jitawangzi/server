@@ -203,7 +203,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
             for (int i = 0; i < helpIds.size(); i++) {
                 getHelpRewardOne(allReward, floors.get(i), helpIds.get(i));
             }
-        } else {
+        } else if (helpIds.size() == 1){
             int floor = floors.get(0);
             long helpId = helpIds.get(0);
             getHelpRewardOne(allReward, floor, helpId);

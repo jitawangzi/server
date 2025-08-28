@@ -213,6 +213,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 			}
 		}
 
+		player.getFuncModule().gmUnlockFunc((byte)0);
 		// 在给些道具。
 		ItemModule itemModule = player.getItemModule();
 		Collection<ItemConfig> list = ItemManager.instance().list();
