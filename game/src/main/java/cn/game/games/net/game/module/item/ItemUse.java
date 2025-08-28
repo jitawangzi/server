@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.item;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.game.games.cache.entity.Player;
@@ -34,6 +35,12 @@ public enum ItemUse implements IndexedEnum {
 				retInfos.addAll(resources);
 			}
 			return retInfos;
+		}
+	},
+	ShouCaoKa(13) {
+		@Override
+		public List<RewardInfo> use(Player player, int id, int num, int param) {
+			return Collections.EMPTY_LIST;
 		}
 	};
 

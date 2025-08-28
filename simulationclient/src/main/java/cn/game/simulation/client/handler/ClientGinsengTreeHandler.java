@@ -17,6 +17,7 @@ import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHangUpResponse_39000016;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHeroResponse_39000018;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeEnergyResponse_39000022;
+import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHandCardResponse_39000026;
 
 @Component
 public class ClientGinsengTreeHandler extends BaseHandler {
@@ -37,6 +38,7 @@ public class ClientGinsengTreeHandler extends BaseHandler {
         putInvoker(PbProtocol.GinsengTreeHangUpResponse_39000016, this::hangUp);
         putInvoker(PbProtocol.GinsengTreeHeroResponse_39000018, this::hero);
         putInvoker(PbProtocol.GinsengTreeEnergyResponse_39000022, this::energy);
+        putInvoker(PbProtocol.GinsengTreeHandCardResponse_39000026, this::handCard);
     }
 
     private void info(NetClient netClient, Object message) {
@@ -90,6 +92,11 @@ public class ClientGinsengTreeHandler extends BaseHandler {
     private void energy(NetClient netClient, Object message) {
         GinsengTreeEnergyResponse_39000022 resp = (GinsengTreeEnergyResponse_39000022) message;
         List<RewardInfo> rewardsList = resp.getRewardsList();
+        Client client = (Client) netClient;
+    }
+
+    private void handCard(NetClient netClient, Object message) {
+        GinsengTreeHandCardResponse_39000026 resp = (GinsengTreeHandCardResponse_39000026) message;
         Client client = (Client) netClient;
     }
 }

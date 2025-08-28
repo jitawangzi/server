@@ -49,6 +49,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 	/** 挂机的随机奖励部分，key 道具或资源id，value 数量 */
 	private IntMapWrapper hangUpRandomRewardMap = new IntMapWrapper();
 	private List<Integer> heroIdList = new ArrayList<>();
+	
+	/** 选择手操卡id */
+	private List<Integer> handCardList = new ArrayList<>();
+
 
 	/** 下一次产生果实的时间 */
 	private int nextFruitTime;
@@ -234,7 +238,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-
+		builder.addAllHandCardIds(handCardList); 
 	}
 
 	public IntMapWrapper getFruitMap() {
@@ -306,6 +310,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	public List<Integer> getHeroIdList() {
 		return heroIdList;
+	}
+
+	public List<Integer> getHandCardList() {
+		return handCardList;
 	}
 
 }

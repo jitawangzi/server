@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.handler.GameBaseHandler;
@@ -66,6 +67,9 @@ public class ItemHandler extends GameBaseHandler {
 			}
 			PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
 			ItemUse itemUse = ItemUse.valueOf(item.ItemType);
+			if (itemUse == null) {
+				throw new LogicException(1, "item  use not implement: " + item.ItemType);
+			}
 			List<RewardInfo> rewards = itemUse.use(player, id, count, param);
 			resp.addAllReward(rewards);
 		}
