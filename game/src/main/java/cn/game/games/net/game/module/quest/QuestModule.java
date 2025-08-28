@@ -93,9 +93,9 @@ public class QuestModule extends BasePlayerModule {
 	}
 
 	public void refreshQuest(QuestTypeEnum type) {
-		if (!player.isFuncOpen(InitialUI.Task)) {
-			return;
-		}
+		refreshQuest(type, false);
+	}
+	public void refreshQuest(QuestTypeEnum type,boolean notify) {
 		Map<Integer, Quest> values = quests.get(type.ID);
 		List<QuestConfig> missionList = QuestManager.instance().getTypeList(type.ID);
 		if (missionList == null) {
@@ -105,7 +105,7 @@ public class QuestModule extends BasePlayerModule {
 			if (checkOpen(missionConfig)) {
 				Quest quest = values.get(missionConfig.ID);
 				if (quest == null) {
-					open(missionConfig.ID, false);
+					open(missionConfig.ID, notify);
 				} else {
 					quest.clear();
 					update(quest);

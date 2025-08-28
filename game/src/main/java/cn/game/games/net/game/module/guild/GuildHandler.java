@@ -59,6 +59,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildBountyRewardRequest_40000072;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyRewardResponse_40000073;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyTargetRefreshRequest_40000074;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyTargetRefreshResponse_40000075;
+import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
@@ -422,11 +423,17 @@ public class GuildHandler extends GameBaseHandler {
     private void createGuild(NetClient client, Object o) {
         GuildMsg.GuildCreateRequest_40000005 req = (GuildMsg.GuildCreateRequest_40000005) o;
         GuildMsg.GuildCreateResponse_40000006.Builder res = GuildMsg.GuildCreateResponse_40000006.newBuilder();
+        GuildCreateResponse_40000006 defaultInstance = GuildCreateResponse_40000006.getDefaultInstance(); 
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
+        if (player.getVipLevel() < GlobalConst.GuildCreationVIP) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID); 
+            return ; 
+		}
+        
         long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
         if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
@@ -500,7 +507,9 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
         GuildShowInfo guildShowInfo = serviceInterface.getGuildShowInfo(guildId);
-        res.setGuild(guildShowInfo);
+        if (guildShowInfo != null) {
+        	res.setGuild(guildShowInfo);
+		}
         client.sendProtocol(res.build());
     }
 

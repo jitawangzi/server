@@ -82,7 +82,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	public GuildShowInfo getGuildShowInfo(long guildId) {
 		Guild guild = GuildManager.getInstance().getGuild(guildId);
 		if (guild == null) {
-			fail(ErrorMsgEnum.zong_men_not_exist);
+			return null; 
 		}
 		return guild.toShowProto();
 	}

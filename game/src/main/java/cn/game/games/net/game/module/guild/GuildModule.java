@@ -140,7 +140,7 @@ public class GuildModule extends BasePlayerModule {
 
 	public void initGuildTask() {
 		QuestModule questModule = player.getQuestModule();
-		questModule.refreshQuest(QuestTypeEnum.Guild);
+		questModule.refreshQuest(QuestTypeEnum.Guild,true);
 	}
 
 	private void checkGuild() {
@@ -200,7 +200,7 @@ public class GuildModule extends BasePlayerModule {
 		if (lastId == 0) {
 			return;
 		}
-		lastId = 0;
+//		lastId = 0;
 
 		if (guildJoin != null) {
 			guildJoin.delete(); 
