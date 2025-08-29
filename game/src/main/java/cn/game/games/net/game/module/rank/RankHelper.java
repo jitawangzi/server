@@ -105,10 +105,11 @@ public class RankHelper {
 		builder.setScore((score < 0 ? 0 : score) + "");
 		return builder.build();
 	}
-	public static CompletionStage<CopyResult> copyRank(String serverId, RankType rankType,String targetRankKey,int topN) {
-		String sourceKey = RankService.getInstance().getKey(serverId, rankType); 
-		return LuaScriptUtil.copyZSetTopNAsync(sourceKey, targetRankKey, topN, null, 0).exceptionally(ex -> {
-			LOGGER.error("复制排行榜失败，serverId={}, rankType={}, targetRankKey={}, topN={}, error={}", serverId, rankType, targetRankKey, topN, ex.getMessage());
+	public static CompletionStage<CopyResult> copyRank(String serverId, RankType sourceRankType,RankType targetRankType,int topN) {
+		String sourceKey = RankService.getInstance().getKey(serverId, sourceRankType); 
+		String targetKey = RankService.getInstance().getKey(serverId, targetRankType); 
+		return LuaScriptUtil.copyZSetTopNAsync(sourceKey, targetKey, topN, null, 0).exceptionally(ex -> {
+			LOGGER.error("复制排行榜失败，serverId={}, sourceRankType={}, targetRankType={}, topN={}, error={}", serverId, sourceRankType, targetRankType, topN, ex.getMessage());
 			return null;
 		});
 	}

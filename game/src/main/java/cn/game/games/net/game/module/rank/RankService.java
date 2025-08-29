@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,12 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.redisson.Redisson;
+import org.redisson.api.BatchResult;
+import org.redisson.api.RBatch;
 import org.redisson.api.RFuture;
 import org.redisson.api.RScoredSortedSet;
+import org.redisson.api.RScoredSortedSetAsync;
 import org.redisson.client.codec.LongCodec;
 import org.redisson.client.protocol.ScoredEntry;
 import org.slf4j.Logger;
@@ -179,6 +184,71 @@ public class RankService {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addScoreAsync(playerId, score);
 	}
+	
+	/**
+	 * 批量增加或减少一组玩家的排行榜分数 (同步)
+	 * <p>
+	 * 将所有玩家的分数更新命令打包，一次性发送给Redis执行。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerIds 玩家ID集合
+	 * @param score 要增加或减少的分数 (正数为增加，负数为减少)
+	 */
+	public void batchUpdateScore(String serverId, RankType type, Collection<Long> playerIds, long score) {
+	    if (playerIds == null || playerIds.isEmpty()) {
+	        return;
+	    }
+	    String rankKey = getKey(serverId, type);
+	    
+	    // 1. 从Redisson客户端创建RBatch实例
+	    RBatch batch = RedisUtil.getRedis().createBatch();
+	    
+	    // 2. 从batch实例中获取异步的ScoredSortedSet
+	    // 在批处理模式下，所有命令都使用其异步接口
+	    RScoredSortedSetAsync<Long> rankSet = batch.getScoredSortedSet(rankKey, LongCodec.INSTANCE);
+
+	    // 3. 将所有更新分数的命令添加到batch中
+	    for (Long playerId : playerIds) {
+	        // 这里调用的是异步方法，但它不会立即执行，而是被添加到批处理队列中
+	        rankSet.addScoreAsync(playerId, score);
+	    }
+	    // 4. 同步执行批处理中的所有命令
+	    // Redisson会将队列中的所有命令一次性发送到Redis
+	    batch.execute();
+	}
+
+	/**
+	 * 异步批量增加或减少一组玩家的排行榜分数
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param playerIds 玩家ID集合
+	 * @param score 要增加或减少的分数 (正数为增加，负数为减少)
+	 * @return 返回一个RFuture，当批量操作完成时，可以通过它获取结果
+	 */
+	public RFuture<BatchResult<?>> batchUpdateScoreAsync(String serverId, RankType type, Collection<Long> playerIds, long score) {
+	    // 1. 创建 RBatch 实例
+	    RBatch batch = RedisUtil.getRedis().createBatch();
+
+	    // 2. 检查 playerIds 是否为空
+	    if (playerIds == null || playerIds.isEmpty()) {
+	        // 如果没有玩家ID，直接执行这个空的batch。
+	        // 这会立即返回一个已完成的RFuture，其结果是一个空的BatchResult。
+	        // 这是在旧版本中返回一个“已完成的Future”的最佳实践。
+	        return batch.executeAsync();
+	    }
+	    
+	    // 3. 如果playerIds不为空，则添加命令
+	    String rankKey = getKey(serverId, type);
+	    RScoredSortedSetAsync<Long> rankSet = batch.getScoredSortedSet(rankKey, LongCodec.INSTANCE);
+
+	    for (Long playerId : playerIds) {
+	        rankSet.addScoreAsync(playerId, score);
+	    }
+	    // 4. 异步执行批处理
+	    return batch.executeAsync();
+	}
 
 	/**
 	 * 获取排行榜前N名的玩家信息。
@@ -205,6 +275,61 @@ public class RankService {
 	public CompletionStage<List<RankEntry>> getTopNAsync(String serverId, RankType type, int n) {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.entryRangeReversedAsync(0, n - 1).thenApply(entrys -> convertToRankEntries(entrys, 1, n));
+	}
+	
+	/**
+	 * 将 Redisson 返回的 entries 转换为 RankEntry，名次从 startRank 开始递增。
+	 */
+	public List<RankEntry> convertToRankEntriesByStartRank(Collection<ScoredEntry<Long>> entries, int startRank) {
+	    int rank = Math.max(1, startRank);
+	    List<RankEntry> result = new ArrayList<>(entries.size());
+	    for (ScoredEntry<Long> e : entries) {
+	        result.add(new RankEntry(rank++, e.getValue(), (long) e.getScore().doubleValue()));
+	    }
+	    return result;
+	}
+
+	/**
+	 * 获取排行榜指定名次区间的玩家信息（包含端点），按名次从高到低。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param startRank 起始名次（1-based，>=1）
+	 * @param endRank 结束名次（1-based，>= startRank）
+	 * @return 指定区间的排行信息列表
+	 */
+	public List<RankEntry> getRange(String serverId, RankType type, int startRank, int endRank) {
+	    if (startRank < 1 || endRank < startRank) {
+	        return Collections.emptyList();
+	    }
+	    RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+
+	    int fromIndex = startRank - 1; // 0-based
+	    int toIndex = endRank - 1;     // 0-based
+
+	    Collection<ScoredEntry<Long>> entries = rank.entryRangeReversed(fromIndex, toIndex);
+	    return convertToRankEntriesByStartRank(entries, startRank);
+	}
+	/**
+	 * 异步获取排行榜指定名次区间的玩家信息（包含端点），按名次从高到低。
+	 *
+	 * @param serverId 服务器ID
+	 * @param type 排行榜类型
+	 * @param startRank 起始名次（1-based，>=1）
+	 * @param endRank 结束名次（1-based，>= startRank）
+	 * @return 异步操作的Future，包含指定区间的RankEntry集合
+	 */
+	public CompletionStage<List<RankEntry>> getRangeAsync(String serverId, RankType type, int startRank, int endRank) {
+	    if (startRank < 1 || endRank < startRank) {
+	        return CompletableFuture.completedFuture(Collections.emptyList());
+	    }
+	    RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+
+	    int fromIndex = startRank - 1;
+	    int toIndex = endRank - 1;
+
+	    return rank.entryRangeReversedAsync(fromIndex, toIndex)
+	               .thenApply(entries -> convertToRankEntriesByStartRank(entries, startRank));
 	}
 	/**
 	 * 同步获取指定排名的玩家信息。
@@ -295,8 +420,8 @@ public class RankService {
 	 * @param pageSize 每页大小
 	 * @return 指定页面的玩家排行信息列表
 	 */
-	public List<RankEntry> getPage(String serverId, String rankKey, int page, int pageSize) {
-		RScoredSortedSet<Long> rank = getRankSet(rankKey);
+	public List<RankEntry> getPage(String serverId, RankType rankType, int page, int pageSize) {
+		RScoredSortedSet<Long> rank = getRankSet(serverId,rankType);
 		int start = (page - 1) * pageSize;
 		int end = start + pageSize - 1;
 		Collection<ScoredEntry<Long>> players = rank.entryRangeReversed(start, end);
@@ -670,7 +795,7 @@ public class RankService {
 
 		RankConfig rankConfig = RankManager.instance().get(rankId);
 		List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
-		if (rewardList == null) {
+		if (rewardList.isEmpty()) {
 			return;
 		}
 		RankType rankType = RankType.get(rankId);
@@ -788,7 +913,7 @@ public class RankService {
 				OffsetBatchQuery<RankEntry> batchQuery = (offset, limit) -> {
 					// 将offset转换为page，注意offset从0开始，page从1开始
 					int page = (offset / limit) + 1;
-					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType.name(), page, limit);
+					List<RankEntry> entrys = RankService.getInstance().getPage(serverId, rankType, page, limit);
 					totalQueryCount.addAndGet(entrys.size());
 					return entrys;
 				};
@@ -814,6 +939,28 @@ public class RankService {
 			}
 		}
 
+	}
+	public void serverOpenActivityReward(String[] serverIds, int... rankIds) {
+		log.info("start serverOpenActivity rank reward,rankIds[{}]serverIds[{}] server[{}]", rankIds, serverIds, ServerContext.getInstance().getServerId());
+		long start = System.currentTimeMillis(); 
+		for (int rankId : rankIds) {
+			List<RankRewardConfig> rewardList = RankRewardManager.instance().getTypeList(rankId);
+			RankConfig rankConfig = RankManager.instance().get(rankId);
+			RankType rankType = RankType.get(rankId);
+			for (String serverId : serverIds) {
+				for (RankRewardConfig rewardConfig : rewardList) {
+					List<RankEntry> range = getRange(serverId, rankType, rewardConfig.RewardStageMin, rewardConfig.RewardStage); 
+					for (RankEntry rankEntry : range) {
+						List<Goods> goods = PlayerHelper.randomReward(rewardConfig.Reward);
+						MailHelper.sendMail(rankEntry.getId(), rankConfig.RewardMailId, goods, true); 
+					}
+					List<Long> collect = range.stream().map(RankEntry::getId).collect(toList()); 
+					// 增加总榜积分
+					batchUpdateScore(serverId, RankType.TotalServerOpenActivity, collect, rewardConfig.SpecialReward);
+				}
+				log.info("serverOpenActivity serverId[{}]rankId[{}] reward completed, use time[{}] ms", serverId, rankId,(System.currentTimeMillis() - start));
+			}
+		}
 	}
 
 	private void initRewardTask(int rankId) {

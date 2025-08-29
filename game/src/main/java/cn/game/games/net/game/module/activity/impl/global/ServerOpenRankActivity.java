@@ -1,13 +1,10 @@
 package cn.game.games.net.game.module.activity.impl.global;
 
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 import com.google.protobuf.Message;
-import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
 
 import cn.game.core.base.ServerContext;
-import cn.game.core.cache.CacheType;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.net.game.helper.ServerHelper;
@@ -20,7 +17,6 @@ import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
-import cn.game.util.LuaScriptUtil.CopyResult;
 
 @ActivityType(type = ActivityTypeEnum.ServerOpenRank)
 public class ServerOpenRankActivity extends GameActivityBase {
@@ -42,10 +38,11 @@ public class ServerOpenRankActivity extends GameActivityBase {
 			// 复制前一天的排行榜
 			ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(ServerHelper.getServerOpenDay(serverId) -1); 
 			if (activityServerOpenRankConfig != null) {
-				RankType rankType = RankType.get(activityServerOpenRankConfig.RankID); 
-				String sourceKey = RankService.getInstance().getKey(serverId, rankType); 
-				String targetKey = sourceKey + "ServerOpen";
-				RankHelper.copyRank(serverId, rankType, targetKey, activityServerOpenRankConfig.PlayerCount); 
+				RankType sourceRankType = RankType.get(activityServerOpenRankConfig.RankID); 
+				RankType targetRankType = RankType.get(activityServerOpenRankConfig.RewardRankId); 
+				RankHelper.copyRank(serverId, sourceRankType, targetRankType, activityServerOpenRankConfig.PlayerCount); 
+				// 结算前一天的排行榜奖励
+				RankService.getInstance().serverOpenActivityReward(new String[] {serverId}, activityServerOpenRankConfig.RewardRankId);
 			}
 			break;
 		default:

@@ -171,7 +171,7 @@ public class DataFixManager {
 			for (RankType rankType : RankType.values()) {
 				for (String srouceServerId : sourceServers) {
 					for (int page = 1;; page++) {
-						List<RankEntry> rankEntries = RankService.getInstance().getPage(srouceServerId, rankType.name(), page, 50);
+						List<RankEntry> rankEntries = RankService.getInstance().getPage(srouceServerId, rankType, page, 50);
 						if (rankEntries.isEmpty()) {
 							break;
 						}
