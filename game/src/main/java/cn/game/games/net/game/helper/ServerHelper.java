@@ -1,5 +1,7 @@
 package cn.game.games.net.game.helper;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,5 +103,10 @@ public class ServerHelper {
 			return 0;
 		}
 		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
+	}
+	
+	public static String[] getServerIds() {
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+		return validGameService.getValidServers().values().stream().map(r -> r.ID).collect(toList()).toArray(new String[] {});
 	}
 }

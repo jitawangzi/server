@@ -31,10 +31,12 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.BatchQueryUtil;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.mail.MailRankInfo;
 import cn.game.games.net.game.module.mail.MailType;
@@ -78,14 +80,6 @@ public class RankService {
 		return INSTANCE;
 	}
 
-	private String[] getServerIds() {
-		return VirtualServerManager.instance()
-				.list()
-				.stream()
-				.map(r -> r.ID)
-				.collect(toList())
-				.toArray(new String[] {});
-	}
 	/**
 	 * 根据服务器ID和排行榜类型生成Redis键。
 	 *
@@ -562,7 +556,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public void removeRank(RankType type) {
-		String[] serverIds = getServerIds();
+		String[] serverIds = ServerHelper.getServerIds();
 		for (int i = 0; i < serverIds.length; i++) {
 			String serverId = serverIds[i];
 			String key = getKey(serverId, type);
@@ -577,7 +571,7 @@ public class RankService {
 	 * @return 异步操作的Future
 	 */
 	public CompletableFuture<Void> removeRankAsync(RankType type) {
-		String[] serverIds = getServerIds();
+		String[] serverIds = ServerHelper.getServerIds();
 		CompletableFuture<Boolean>[] futures = new CompletableFuture[serverIds.length];
 		for (int i = 0; i < futures.length; i++) {
 			String serverId = serverIds[i];
@@ -803,7 +797,7 @@ public class RankService {
 		if (!lock) {
 			return;
 		}
-		String[] serverIds = getServerIds();
+		String[] serverIds = ServerHelper.getServerIds();
 		reward(serverIds, rankId);
 		if (rankConfig.ResetRank) {
 			log.info("removeRank, rankId:{}", rankId);
@@ -844,7 +838,7 @@ public class RankService {
 		for (DaShengNPCConfig config : list2) {
 			npcScores.put((long)config.ID, (long) config.Integral);
 		}
-		String[] serverIds = getServerIds();
+		String[] serverIds = ServerHelper.getServerIds();
 		RankType[] rankTypes = {RankType.DaShengLeiTaiDay, RankType.DaShengLeiTaiSeason};
 		for (String serverId : serverIds) {
 			for (RankType rankType : rankTypes) {
