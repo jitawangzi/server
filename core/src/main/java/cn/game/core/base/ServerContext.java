@@ -375,6 +375,12 @@ public class ServerContext {
 		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
 		registration.register(eventType, processor);
 	}
+	@SuppressWarnings("unchecked")
+	public <T, E extends AbstractEvent<T>> void unregisterEventHandler(EventHandler<T, E> handler) {
+		// 强制类型转换
+		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
+		registration.unregister(handler);
+	}
 
 	public <T, E extends AbstractEvent<T>> void fireEvent(T eventType, Object... params) {
 		@SuppressWarnings("unchecked")

@@ -8,6 +8,8 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -37,5 +39,7 @@ public class NewDayJob implements Job
 				gameClient.sendProtocol(PlayerResetPush_01100016.getDefaultInstance());
 			});
 		}
+		
+		ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
 	}
 }

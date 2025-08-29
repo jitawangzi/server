@@ -12,13 +12,8 @@ public class GameGlobalActivityManager extends GlobalActivityManager{
 	
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
-		return super.canOpen(config) && !config.isCross;
+		return !config.isCross && super.canOpen(config);
 	}
-	
-	@Override
-	protected void afterActivityOpen(ActivityBase activity) {
-	}
-	
 
 	/** 
 	 * 从数据库中加载活动

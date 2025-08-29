@@ -94,7 +94,7 @@ public class RankService {
 	 * @return Redis键
 	 */
 	public String getKey(String serverId, RankType type) {
-		return CacheType.SET_RANK.key(serverId, type.name());
+		return CacheType.SET_RANK.key("{" + serverId + "}", type.name());
 	}
 
 	/**

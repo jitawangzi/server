@@ -354,6 +354,11 @@ public class TestHandler extends GameBaseHandler {
                     PlayerHelper.refreshDay(player);
                     break;
                 }
+            case "gamenewday":
+            {
+				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
+            	break;
+            }
             case "time":
             {
             	if (ServerContext.getInstance().getRunMode().isProduction()) {
@@ -560,6 +565,8 @@ public class TestHandler extends GameBaseHandler {
     }
 
     protected void test(NetClient client, Object message) {
+    	ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay, null);
+
         TestRunRequest_6f000020 req = (TestRunRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);

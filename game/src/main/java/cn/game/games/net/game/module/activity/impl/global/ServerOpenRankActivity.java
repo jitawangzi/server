@@ -28,27 +28,42 @@ public class ServerOpenRankActivity extends GameActivityBase {
 	}
 
 	@Override
+	protected void afterStart() {
+		refresh();
+	}
+
+	@Override
 	public void handleEvent(ServerEvent event) {
 
 		switch (event.getType()) {
 		case NewDay:
-			if (ServerContext.getInstance().isLeader() == false) {
-				return;
-			}
-			// 复制前一天的排行榜
-			ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(ServerHelper.getServerOpenDay(serverId) -1); 
-			if (activityServerOpenRankConfig != null) {
-				RankType sourceRankType = RankType.get(activityServerOpenRankConfig.RankID); 
-				RankType targetRankType = RankType.get(activityServerOpenRankConfig.RewardRankId); 
-				RankHelper.copyRank(serverId, sourceRankType, targetRankType, activityServerOpenRankConfig.PlayerCount); 
-				// 结算前一天的排行榜奖励
-				RankService.getInstance().serverOpenActivityReward(new String[] {serverId}, activityServerOpenRankConfig.RewardRankId);
-			}
+			refresh();
 			break;
 		default:
 			break;
 		}
-	
+
+	}
+
+	private void refresh() {
+		if (ServerContext.getInstance().isLeader() == true) {
+			return;
+		}
+		// 复制前一天的排行榜
+		int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
+		ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay);
+		if (activityServerOpenRankConfig != null) {
+			RankType sourceRankType = RankType.get(activityServerOpenRankConfig.RankID);
+			RankType targetRankType = RankType.get(activityServerOpenRankConfig.RewardRankId);
+			RankHelper.copyRank(serverId, sourceRankType, targetRankType, activityServerOpenRankConfig.PlayerCount);
+			// 结算前一天的排行榜奖励
+			RankService.getInstance().serverOpenActivityReward(new String[] { serverId }, activityServerOpenRankConfig.RewardRankId);
+		} else {
+			if (serverOpenDay - 1 == ActivityServerOpenRankManager.instance().list().size()) {
+				// 结算总榜
+				RankService.getInstance().reward(new String[] { serverId }, RankType.TotalServerOpenActivity.ID);
+			}
+		}
 	}
 
 	@Override
@@ -57,16 +72,11 @@ public class ServerOpenRankActivity extends GameActivityBase {
 		return null;
 	}
 
-	@Override
-	public void unregisterEvent() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void syncActivityInfo() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -74,6 +84,5 @@ public class ServerOpenRankActivity extends GameActivityBase {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

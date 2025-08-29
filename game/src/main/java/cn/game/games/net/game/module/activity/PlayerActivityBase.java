@@ -6,7 +6,6 @@ import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.protocol.object.ObjectProtocol;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
-import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.core.event.server.ServerEvent;
@@ -35,7 +34,6 @@ public abstract class PlayerActivityBase extends ActivityBase implements PlayerE
 	@Override
 	public void init(int id, Object owner, boolean isNew) {
 		this.player = (Player) owner;
-		player.registerEventHandler(this);
 		super.init(id, owner, isNew);
 	}
 
@@ -60,6 +58,10 @@ public abstract class PlayerActivityBase extends ActivityBase implements PlayerE
 		}
 	}
 
+	@Override
+	public void registerEvent() {
+		player.getPlayerEventBus().register(this);
+	}
 	@Override
 	public void unregisterEvent() {
 		player.getPlayerEventBus().unregister(this);

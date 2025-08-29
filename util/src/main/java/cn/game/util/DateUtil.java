@@ -340,7 +340,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 计算两个日期之间的天数差
+	 * 计算两个日期之间的天数差,同一天返回0
 	 * @param date1 第一个日期
 	 * @param date2 第二个日期
 	 * @return 相差的天数
@@ -350,7 +350,7 @@ public final class DateUtil {
 	}
 
 	/** 
-	 * 计算两个日期之间的时间差
+	 * 计算两个日期之间的时间差,同一天返回0
 	 * @param date1
 	 * @param date2
 	 * @param unit 时间单位

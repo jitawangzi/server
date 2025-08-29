@@ -31,12 +31,6 @@ public class DaShengLeiTaiActivity extends GameActivityBase {
 	}
 
 	@Override
-	public void unregisterEvent() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void syncActivityInfo() {
 		// TODO Auto-generated method stub
 		

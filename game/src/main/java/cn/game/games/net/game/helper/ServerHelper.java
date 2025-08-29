@@ -100,6 +100,6 @@ public class ServerHelper {
 		if (virtualServerView == null || virtualServerView.openTime == null) {
 			return 0;
 		}
-		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()); 
+		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
 	}
 }

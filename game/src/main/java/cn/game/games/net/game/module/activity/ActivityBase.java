@@ -59,6 +59,7 @@ public abstract class ActivityBase{
 	}
 	public abstract Message buildActivityShowInfo();
 
+	public abstract void registerEvent();
 	public abstract void unregisterEvent();
 
 	public Message buildActivityShowInfo(int id) {
@@ -177,8 +178,8 @@ public abstract class ActivityBase{
 
 	public void init(int id, Object owner, boolean isNew) {
 
-//		ActivityStateManager.getInstance().registerEventHandler(events, this);
 		this.id = id;
+		registerEvent(); 
 		if (isNew) {
 			startUp();
 		}

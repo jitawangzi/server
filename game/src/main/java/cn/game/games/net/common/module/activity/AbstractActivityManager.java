@@ -337,7 +337,7 @@ public abstract class AbstractActivityManager {
 
 			VirtualServerView virtualServerView = validServers.get(serverId);
 			if (virtualServerView != null && virtualServerView.openTime != null
-					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) >= config.openParam) {
+					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1 >= config.openParam) {
 				return true;
 			}
 		}

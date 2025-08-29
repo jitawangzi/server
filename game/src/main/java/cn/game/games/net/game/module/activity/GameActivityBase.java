@@ -13,10 +13,13 @@ import cn.game.games.core.event.server.ServerEventHandler;
  * @author SYQ
  */
 public abstract class GameActivityBase extends ActivityBase implements ServerEventHandler {
-
+	
 	@Override
-	public void init(int id, Object owner, boolean isNew) {
+	public void registerEvent() {
 		ServerContext.getInstance().registerEventHandler(this);
-		super.init(id, owner, isNew);
+	}
+	@Override
+	public void unregisterEvent() {
+		ServerContext.getInstance().unregisterEventHandler(this);
 	}
 }

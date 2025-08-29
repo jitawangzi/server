@@ -34,7 +34,7 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 	private ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] {ServerEventTypeEnum.VirtualServerOpen, ServerEventTypeEnum.ActivityOpenTime,
 			ServerEventTypeEnum.ActivityShutDownTime, ServerEventTypeEnum.ActivityDestoryTime };
 
-	/** 各个服的不同活动  */
+	/** 各个服的不同活动,例如开服时间不同  */
 	private Map<String, AbstractActivityManager> serverActivitysMap = new ConcurrentHashMap<String, AbstractActivityManager>() ; 
 	/** 所有服都一样的活动 */
 	private AbstractActivityManager sharedActivityManager = defaultGlobalActivityManager() ; 
@@ -137,8 +137,7 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 		List<GameActivity> allActivity = DAO.executeSync(GameActivityMapper.class, MapperConstant.selectAll);
 		// 先初始化存在的活动，排除已经过期的
 		for (GameActivity gameActivity : allActivity) {
-			ActivityBase activity = JsonUtil.parseObjectWithType(gameActivity.getParams());
-			ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId()); 
+			ActivityConfig activityConfig = ActivityManager.instance().get(gameActivity.getConfigId()); 
 			if (gameActivity.getServerId().equals(AbstractActivityManager.GLOBAL_SERVER_ID)) {
 				if (sharedActivityManager.canOpen(activityConfig)) {
 					sharedActivityManager.initFromDb(activityConfig, gameActivity.getParams(), null);

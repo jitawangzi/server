@@ -3,6 +3,8 @@ package cn.game.games.net.game.jobs;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.games.net.game.manager.GameClientManager;
 
 /**    
@@ -19,6 +21,14 @@ public class ScheduleJob {
 	@Scheduled(cron = "30 * * * * ?")
 	public void onlineCheck() {
 		GameClientManager.getInstance().checkClient();
+	}
+	@Scheduled(cron = "5 0 0 ? * MON")
+	public void newWeek() {
+		ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewWeek);
+	}
+	@Scheduled(cron = "5 0 0 1 * ?")
+	public void newMonth() {
+		ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewMonth);
 	}
 
 //	@Scheduled(cron = "1 0 0 * * ?")
