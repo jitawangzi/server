@@ -74,6 +74,17 @@ public class GameUtil {
 		}
 		return false;
 	}
+	public static boolean containsAll(List<Integer> list, int[] array) {
+		if (list == null || list.isEmpty() || array == null || array.length == 0) {
+			return false;
+		}
+		for (int i : array) {
+			if (!list.contains(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/** 
 	 * 给数量做加成

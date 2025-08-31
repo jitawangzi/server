@@ -1,7 +1,15 @@
 package cn.game.games.net.game.module.ginseng;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import cn.game.protocol.generated.config.RSGFetterConfig;
+import cn.game.protocol.generated.config.RSGRewardConfig;
+import cn.game.protocol.generated.manager.RSGFetterManager;
+import cn.game.protocol.generated.manager.RSGRewardManager;
+import cn.game.util.Rnd;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -207,12 +215,37 @@ public class GinsengTreeHandler extends BaseHandler {
             return;
         }
         map.remove(pos);
-		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
-		List<RewardInfo> resources = PlayerHelper.addResources(player, rsgTreeLvConfig.RewardTree, OpType.GinsengTreeHarvest);
-		resp.addAllRewards(resources);
 
-		module.startFruitTask();
-		// TODO 羁绊奖励
+        List<Integer> heroIdList = module.getHeroIdList();
+        Map<Integer, Integer> fetterMap = new HashMap<>();
+        if (!heroIdList.isEmpty()){
+            List<RSGFetterConfig> list = RSGFetterManager.instance().list();
+            for (RSGFetterConfig rsgFetterConfig : list) {
+                if (GameUtil.containsAll(heroIdList, rsgFetterConfig.HeroList)) {
+                    fetterMap.put(rsgFetterConfig.RSGRewardID, rsgFetterConfig.AddRewardWeight);
+                }
+            }
+        }
+        RSGRewardConfig rsgRewardConfig = null;
+        List<RSGRewardConfig> list = RSGRewardManager.instance().list();
+        if (fetterMap.isEmpty()){
+            rsgRewardConfig = Rnd.randomOne(list);
+        }else {
+            int index =  Rnd.randomIndex(list,e -> {
+                int weigetAdd = 0 ;
+                if (!fetterMap.isEmpty()){
+                    weigetAdd = fetterMap.getOrDefault(e.ID, 0);
+                }
+                return e.RewardWeight + weigetAdd;
+            });
+            rsgRewardConfig = list.get(index);
+        }
+
+//        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
+        List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
+        resp.addAllRewards(resources);
+
+        module.startFruitTask();
         client.sendProtocol(resp.build());
     }
 

@@ -1,13 +1,7 @@
 package cn.game.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
@@ -651,7 +645,7 @@ public final class Rnd {
 	 */
 	public static int random21(int[] value) {
 		if (value.length == 0 || value.length > 2) {
-			throw new IllegalArgumentException("范围随机数据配置错误： " + value);
+			throw new IllegalArgumentException("范围随机数据配置错误： " + Arrays.toString(value));
 		}
 		if (value.length == 1 || value[0]==value[1]) {
 			return value[0] ; 

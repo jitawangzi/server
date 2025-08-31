@@ -88,8 +88,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 
 	@Override
 	public void onLogin() {
-		startFruitTask();
-		startBugTask();
+		if (player.isFuncOpen(InitialUI.RSGTree)){
+			startFruitTask();
+			startBugTask();
+		}
 	}
 
 	public void startFruitTask() {
@@ -98,13 +100,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (level == 0) {
 			return;
 		}
-		int[][] refreshTime = new int[][] { { 10, 10 }, { 20, 30 }, { 20, 30 }, { 20, 30 }, { 20, 30 }, { 20, 30 } };
 		// 根据当前果实数，计算刷新果实的时间
-		int fruitCount = fruitMap.size();
-		int[] is = refreshTime[fruitCount];
+		int remaningSeconds = calcRemaningSeconds();
 		// 剩余刷新秒数
 		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
-		int remaningSeconds = Rnd.random21(is);
 		int nextFruitTime = DateUtil.currentTimeSeconds() + remaningSeconds;
 		boolean changeTimer = false;
 		if (this.nextFruitTime > 0) {
@@ -119,14 +118,29 @@ public class GinsengTreeModule extends BasePlayerModule {
 			this.nextFruitTime = nextFruitTime;
 			changeTimer = true;
 		}
-		if (changeTimer) {
-			fruitTimer = player.setTimerTask(remaningSeconds * 1000, r -> {
-				newFruit(rsgTreeLvConfig);
-			});
+		if (changeTimer || fruitTimer == 0) {
+			int delay = this.nextFruitTime - DateUtil.currentTimeSeconds();
+			if (delay <= 0) {
+				newFruit(rsgTreeLvConfig,this.nextFruitTime);
+				this.nextFruitTime += calcRemaningSeconds();
+				startFruitTask();
+			}else {
+				fruitTimer = player.setTimerTask(delay * 1000L, r -> {
+					newFruit(rsgTreeLvConfig,DateUtil.currentTimeSeconds());
+					this.fruitTimer = 0 ;
+					this.nextFruitTime = 0;
+					startFruitTask();
+				});
+			}
 		}
 	}
 
-	private void newFruit(RSGTreeLvConfig rsgTreeLvConfig) {
+	private int calcRemaningSeconds(){
+		int fruitCount = fruitMap.size();
+		int[] apearTime	= GlobalConst.RSGTreeFruitApearTime[fruitCount];
+		return Rnd.random21(apearTime);
+	}
+	private void newFruit(RSGTreeLvConfig rsgTreeLvConfig,int createTime) {
 		if (fruitMap.size() >= rsgTreeLvConfig.Num) {
 			return;
 		}
@@ -134,7 +148,8 @@ public class GinsengTreeModule extends BasePlayerModule {
 			if (!fruitMap.hasValue(i)) {
 				// 如果没有果实，则添加一个果实
 //				if (Rnd.hit(rsgTreeLvConfig.RefreshWeight)) {
-				fruitMap.add(i, DateUtil.currentTimeSeconds() + rsgTreeLvConfig.MellowTime);
+				fruitMap.add(i, createTime + rsgTreeLvConfig.MellowTime);
+				break;
 //				}
 			}
 		}
@@ -166,7 +181,11 @@ public class GinsengTreeModule extends BasePlayerModule {
 		builder.setLevel(player.getLevel(Asset.RSGTreeExp));
 		builder.setExp((int) player.getCurrencyModule().get(Asset.RSGTreeExp));
 		builder.setBugs(bugs);
-		builder.setHangUpSeconds(DateUtil.currentTimeSeconds() - hangUpStartTime);
+		int hangUpSeconds =  DateUtil.currentTimeSeconds() - hangUpStartTime;
+		if (hangUpSeconds>= GlobalConst.RSGTreeAwardMaxTime) {
+			hangUpSeconds = GlobalConst.RSGTreeAwardMaxTime;
+		}
+		builder.setHangUpSeconds(hangUpSeconds);
 		builder.setInsecticidesEndRemainingSeconds(
 				insecticidesEndTime - DateUtil.currentTimeSeconds() > 0 ? insecticidesEndTime - DateUtil.currentTimeSeconds() : 0);
 		builder.setInsecticidesTimes(insecticidesTimes);
@@ -185,7 +204,11 @@ public class GinsengTreeModule extends BasePlayerModule {
 	}
 	// 计算挂机奖励
 	public int calcHangUpReward() {
-		int minutes =  (DateUtil.currentTimeSeconds() - hangUpRewardCalcTime)/60 ; 
+		int hangUpSeconds =  DateUtil.currentTimeSeconds() - hangUpRewardCalcTime;
+		if (hangUpSeconds>= GlobalConst.RSGTreeAwardMaxTime) {
+			hangUpSeconds = GlobalConst.RSGTreeAwardMaxTime;
+		}
+		int minutes =  hangUpSeconds/60 ;
 		if (minutes <= 0) {
 			return 0;
 		}
