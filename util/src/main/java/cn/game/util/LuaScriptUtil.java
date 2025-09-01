@@ -3,11 +3,17 @@ package cn.game.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.redisson.api.RBatch;
+import org.redisson.api.RFuture;
 import org.redisson.api.RScript;
+import org.redisson.api.RScriptAsync;
+import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.Codec;
 import org.redisson.client.codec.LongCodec;
 import org.redisson.client.codec.StringCodec;
@@ -95,6 +101,7 @@ public class LuaScriptUtil {
 	/**
 	 * 异步执行 Lua 脚本
 	 *
+	 * 遇到 NOSCRIPT 时自动加载脚本，集群主从切换、节点重启时更为健壮。 
 	 * @param script 要执行的脚本
 	 * @param codec Redis 编解码器
 	 * @param keys Redis 键列表
@@ -103,19 +110,166 @@ public class LuaScriptUtil {
 	 * @return 脚本执行结果
 	 */
 	public static <T> CompletionStage<T> executeLuaScriptAsync(LuaScript script, Codec codec, List<Object> keys, Object... values) {
-		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
-		if (script.useSha1) {
-			return rScript.evalShaAsync(RScript.Mode.READ_WRITE, script.sha1, RScript.ReturnType.VALUE, keys, values);
+		final RScript rScript = (codec == null) ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
+
+		// 如果不使用 sha1，直接 eval（不建议生产中频繁使用，会传送脚本内容）
+		if (!script.useSha1) {
+			CompletableFuture<T> cf = new CompletableFuture<>();
+			rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values)
+					.whenComplete((val, ex) -> {
+						if (ex != null) {
+							cf.completeExceptionally(ex);
+						} else {
+							@SuppressWarnings("unchecked")
+							T casted = (T) val;
+							cf.complete(casted);
+						}
+					});
+			return cf;
 		}
-		return rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
+		// 使用 EVALSHA，若遇到 NOSCRIPT 则自动 LOAD 并重试一次
+		CompletableFuture<T> result = new CompletableFuture<>();
+
+		rScript.evalShaAsync(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE, keys, values).whenComplete((val, ex) -> {
+			if (ex == null) {
+				@SuppressWarnings("unchecked")
+				T casted = (T) val;
+				result.complete(casted);
+				return;
+			}
+
+			// 非 NOSCRIPT，直接失败
+			if (!isNoScript(ex)) {
+				result.completeExceptionally(ex);
+				return;
+			}
+
+			// NOSCRIPT：reload 脚本并重试一次
+			rScript.scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+				if (loadEx != null) {
+					result.completeExceptionally(loadEx);
+					return;
+				}
+
+				// 更新脚本 sha1（线程安全地写回枚举字段）
+				updateScriptSha(script, newSha);
+
+				rScript.evalShaAsync(RScript.Mode.READ_WRITE, newSha, RScript.ReturnType.VALUE, keys, values).whenComplete((val2, ex2) -> {
+					if (ex2 != null) {
+						result.completeExceptionally(ex2);
+					} else {
+						@SuppressWarnings("unchecked")
+						T casted2 = (T) val2;
+						result.complete(casted2);
+					}
+				});
+			});
+		});
+
+		return result;
+	}
+
+	/* 辅助方法：判断是否为 NOSCRIPT 错误 */
+	private static boolean isNoScript(Throwable t) {
+		if (t == null)
+			return false;
+		String msg = t.getMessage();
+		if (msg == null && t.getCause() != null) {
+			msg = t.getCause().getMessage();
+		}
+		return msg != null && msg.toUpperCase().contains("NOSCRIPT");
+	}
+
+	/* 辅助方法：更新 LuaScript 枚举实例中的 sha1 字段 */
+	private static synchronized void updateScriptSha(LuaScript script, String newSha) {
+		try {
+			java.lang.reflect.Field f = LuaScript.class.getDeclaredField("sha1");
+			f.setAccessible(true);
+			f.set(script, newSha);
+		} catch (Exception e) {
+			// 记录日志或抛出运行时异常，视你项目需要
+			logger.warn("Failed to update script sha1 for {}: {}", script.getFilename(), e.toString());
+		}
 	}
 
 	public static <T> T executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
-		if (script.useSha1) {
-			return rScript.evalSha(RScript.Mode.READ_WRITE, script.sha1, RScript.ReturnType.VALUE, keys, values);
+		if (!script.useSha1) {
+			return rScript.eval(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
 		}
-		return rScript.eval(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
+		try {
+			return rScript.evalSha(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE, keys, values);
+		} catch (Exception ex) {
+			if (isNoScript(ex)) {
+				String newSha = rScript.scriptLoad(script.getContent());
+				updateScriptSha(script, newSha);
+				return rScript.evalSha(RScript.Mode.READ_WRITE, newSha, RScript.ReturnType.VALUE, keys, values);
+			}
+			throw ex;
+		}
+	}
+
+	// 批量：每个调用对应一组 keys 和 values，返回每个调用的结果 Object 列表（由调用方再做类型映射）
+	public static CompletionStage<List<Object>> executeLuaScriptBatchAsync(LuaScript script, Codec codec, List<List<Object>> batchedKeys,
+			List<Object[]> batchedValues) {
+		RBatch batch = RedisUtil.getRedis().createBatch();
+		RScriptAsync batchScript = (codec == null) ? batch.getScript() : batch.getScript(codec);
+
+		List<RFuture<Object>> futures = new ArrayList<>(batchedKeys.size());
+		if (script.useSha1) {
+			for (int i = 0; i < batchedKeys.size(); i++) {
+				futures.add(batchScript.evalShaAsync(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE,
+						batchedKeys.get(i), batchedValues.get(i)));
+			}
+		} else {
+			for (int i = 0; i < batchedKeys.size(); i++) {
+				futures.add(batchScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE,
+						batchedKeys.get(i), batchedValues.get(i)));
+			}
+		}
+
+		CompletableFuture<List<Object>> result = new CompletableFuture<>();
+		batch.executeAsync().whenComplete((batchRes, batchEx) -> {
+			if (batchEx != null) {
+				if (script.useSha1 && isNoScript(batchEx)) {
+					// reload + retry once
+					RedissonClient c2 = clientProvider();
+					RScript rScript = (codec == null) ? c2.getScript() : c2.getScript(codec);
+					rScript.scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+						if (loadEx != null) {
+							result.completeExceptionally(loadEx);
+							return;
+						}
+						updateScriptSha(script, newSha);
+						// 重建 batch 再执行一次
+						executeLuaScriptBatchAsync(script, codec, batchedKeys, batchedValues).whenComplete((v2, ex2) -> {
+							if (ex2 != null)
+								result.completeExceptionally(ex2);
+							else
+								result.complete(v2);
+						});
+					});
+				} else {
+					result.completeExceptionally(batchEx);
+				}
+				return;
+			}
+			try {
+				List<Object> out = new ArrayList<>(futures.size());
+				for (RFuture<Object> f : futures) {
+					out.add(f.getNow());
+				}
+				result.complete(out);
+			} catch (Throwable t) {
+				result.completeExceptionally(t);
+			}
+		});
+
+		return result;
+	}
+
+	private static RedissonClient clientProvider() {
+		return RedisUtil.getRedis();
 	}
 
 	/** 

@@ -14,14 +14,12 @@ import cn.game.games.core.event.server.ServerEvent;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.net.data.mapper.GameActivityMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityHelper;
 import cn.game.games.net.game.module.activity.GameGlobalActivityManager;
 import cn.game.games.net.game.module.activity.GlobalActivityManager;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.util.JsonUtil;
 
 /**    
  * Game服务器混服的活动管理器，保存所有服务器的活动状态

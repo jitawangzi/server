@@ -33,6 +33,7 @@ import cn.game.core.base.ServerList;
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
@@ -434,6 +435,10 @@ public class GameServer implements GameServerMBean {
 			GameClientManager.getInstance().storeAllPlayers();
 			stopWatch.split();
 			LoggerType.Stdout.logger.info("Game Server storeAllPlayers complete, use time {} ms", stopWatch.getSplitTime());
+			// 这里也先清除下所有id
+			IdCache.clearAllCurrentServerId();
+			
+			// 关闭系统服务
 			SpringContextLoader.getContext().close();
 			quartzInitializer.destroyed();
 
