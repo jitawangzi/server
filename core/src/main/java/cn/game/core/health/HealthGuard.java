@@ -13,9 +13,6 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.game.util.RedisUtil;
-import cn.game.util.ZkHelper;
-
 public class HealthGuard {
 	private static final Logger LOGGER = LoggerFactory.getLogger(HealthGuard.class);
 	

@@ -22,7 +22,7 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.IdUtil;
-import cn.game.games.net.cross.activity.CrossActivityService;
+import cn.game.games.net.common.module.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.guild.GuildManager;
@@ -84,7 +84,7 @@ public class CrossServer {
 		});
 		// 初始化业务数据
 		CrossActivityService crossActivityService = new CrossActivityService();
-		crossActivityService.init();
+//		crossActivityService.init();
 
 		GameIdManagerInitializer.initialize();
 		

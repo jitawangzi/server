@@ -231,8 +231,21 @@ public abstract class AbstractActivityManager {
 	protected boolean shouldExpire(ActivityBase activity) {
 		// 判断按活动时间开启的活动
 		ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
-		if (activityConfig.openType == 0) {
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_DATE) {
 			return !isInOpenTime(activity.getId());
+		}
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
+				return false;
+			}
+			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+
+			VirtualServerView virtualServerView = validServers.get(serverId);
+			if (virtualServerView != null && virtualServerView.openTime != null
+					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1 >= activityConfig.openParam) {
+				return true;
+			}
 		}
 		// 非时间开启的活动
 		long endTime = activity.getEndTime();

@@ -45,7 +45,7 @@ public abstract class ActivityBase{
 	/** 活动状态 */
 	protected int state;
 
-	/** 活动实际开始/参加时间 */
+	/** 活动实际开始/参加时间,而不是配置的活动开启时间 */
 	protected long startTime;
 	protected long endTime;
 	protected String serverId;
