@@ -544,9 +544,10 @@ public class HeroHandler extends GameBaseHandler {
 			if (maxLevel >= heroMaxLevel || upLevelMax > 0 && maxLevel >= upLevelMax) {
 				break;
 			}
-			costArray = HeroHelper.calcLvCost(costArray, hero.getConfigId(), hero.getLevel());
+			costArray = HeroHelper.calcLvCost(costArray, hero.getConfigId(), level);
 			if (!PlayerHelper.isEnough(player, costArray)) {
-				continue;
+				costArray = HeroHelper.calcLvCostLastLv(costArray, hero.getConfigId(), level);
+				break;
 			}
 			HeroLvConfig nextHeroLvConfig = HeroLvManager.instance().getNullable(level + 1);
 			if (nextHeroLvConfig == null) {

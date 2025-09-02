@@ -377,6 +377,43 @@ public class GameUtil {
 	    }
 	    return finalRet;
 	}
+	
+	/**
+	 * 合并两个数组：对相同id进行数量减少，最少减到0；不生成负数条目；
+	 * 若某条数量为0，保留该条。
+	 * 输入要求：result 与 sub 按 id 升序且 id 唯一。
+	 * @param result 已有数据
+	 * @param sub    要减少的数据（不可变类型）
+	 * @return 合并后的数组（按id升序）
+	 */
+	public static int[][] mergeSubtractFloorZeroKeepZero(int[][] result, int[][] sub) {
+	    if (sub == null || sub.length == 0) return result;
+	    if (result == null || result.length == 0) {
+	        // result为空，且不允许负数，不生成sub-only条目
+	        return new int[0][2];
+	    }
+
+	    int m = result.length, n = sub.length;
+	    int i = 0, j = 0;
+
+	    // 不需要扩容：因为不新增id（sub-only忽略），长度至多不变
+	    // 可原地更新 result，再返回 result 即可。
+	    while (i < m && j < n) {
+	        int idR = result[i][0];
+	        int idS = sub[j][0];
+	        if (idR == idS) {
+	            int after = result[i][1] - sub[j][1];
+	            result[i][1] = after > 0 ? after : 0; // 夹到0
+	            i++; j++;
+	        } else if (idR < idS) {
+	            i++;
+	        } else {
+	            // sub-only，忽略（不能生成负数条目）
+	            j++;
+	        }
+	    }
+	    return result;
+	}
 
 	public static int[] transformIdAndCount(List<Integer> idList, List<Integer> countList) {
 		if (idList == null || countList == null) {

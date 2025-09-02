@@ -193,4 +193,20 @@ public class HeroHelper {
         }
         return costArray;
 	}
+	public static int[][] calcLvCostLastLv(int[][] costArray,int configId, int lv){
+		if (costArray == null) {
+			costArray = new int[][] {};
+		}
+		HeroLvConfig heroLvConfig = HeroLvManager.instance().get(lv); 
+		
+		costArray = GameUtil.mergeSubtractFloorZeroKeepZero(costArray, heroLvConfig.LvConsumeMoney) ; 
+		if (heroLvConfig.LvConsumeItem2 > 0) {
+			costArray = GameUtil.mergeSubtractFloorZeroKeepZero(costArray, new int[][] {{213001,heroLvConfig.LvConsumeItem2}}) ; 
+		}
+		if (heroLvConfig.LvConsumeFragment > 0) {
+			HeroConfig heroConfig = HeroManager.instance().get(configId); 
+			costArray = GameUtil.mergeSubtractFloorZeroKeepZero(costArray, new int[][] {{heroConfig.Fragment,heroLvConfig.LvConsumeFragment}}) ; 
+		}
+		return costArray;
+	}
 }
