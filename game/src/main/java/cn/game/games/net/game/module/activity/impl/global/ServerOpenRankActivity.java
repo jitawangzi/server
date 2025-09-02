@@ -51,7 +51,7 @@ public class ServerOpenRankActivity extends GameActivityBase {
 		}
 		// 复制前一天的排行榜
 		int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
-		ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay);
+		ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay -1);
 		if (activityServerOpenRankConfig != null) {
 			RankType sourceRankType = RankType.get(activityServerOpenRankConfig.RankID);
 			RankType targetRankType = RankType.get(activityServerOpenRankConfig.RewardRankId);
