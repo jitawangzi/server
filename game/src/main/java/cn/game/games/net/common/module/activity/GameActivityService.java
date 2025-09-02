@@ -102,7 +102,7 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
         }
 		case ActivityShutDownTime: {
         	int id = event.getIntParameter(0); 
-            sharedActivityManager.end(id);
+            sharedActivityManager.end(id,true);
             break;
 		}
 		case ActivityDestoryTime: {
@@ -138,12 +138,12 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 			ActivityConfig activityConfig = ActivityManager.instance().get(gameActivity.getConfigId()); 
 			if (gameActivity.getServerId().equals(AbstractActivityManager.GLOBAL_SERVER_ID)) {
 				if (sharedActivityManager.canOpen(activityConfig)) {
-					sharedActivityManager.initFromDb(activityConfig, gameActivity.getParams(), null);
+					sharedActivityManager.checkAndInitFromDb(activityConfig, gameActivity.getParams(), null);
 				}
 			}else {
 				AbstractActivityManager abstractActivityManager = serverActivitysMap.get(gameActivity.getServerId());
 				if (abstractActivityManager.canOpen(activityConfig)) {
-					abstractActivityManager.initFromDb(activityConfig, gameActivity.getParams(), null);
+					abstractActivityManager.checkAndInitFromDb(activityConfig, gameActivity.getParams(), null);
 				}
 			}
 		}

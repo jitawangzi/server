@@ -110,8 +110,8 @@ public class ActivityModule extends BasePlayerModule {
 	 * 关闭活动，依然保留活动数据
 	 * @param id
 	 */
-	public void shutdown(int id) {
-		playerActivityManager.end(id);
+	public void end(int id) {
+		playerActivityManager.end(id,true);
 	}
 	/** 
 	 * 彻底销毁活动，删除数据， 不再展示。 

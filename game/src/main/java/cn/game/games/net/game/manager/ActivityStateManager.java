@@ -482,7 +482,7 @@ public class ActivityStateManager {
 					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
 						// 关闭活动
 						ActivityModule activityModule = player.getActivityModule();
-						activityModule.shutdown(id);
+						activityModule.end(id);
 					});
 				}
 			} else {

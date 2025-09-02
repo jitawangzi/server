@@ -39,7 +39,7 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	@Override
 	public void runDelayEndTask(int id, long remaining) {
 		SchedulerService.getInstance().scheduleTask(() -> {
-			end(id);
+			end(id,true);
 		}, remaining, TimeUnit.MILLISECONDS);
 	}
 

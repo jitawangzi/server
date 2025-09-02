@@ -79,14 +79,24 @@ public abstract class AbstractActivityManager {
 			afterLoad();
 		}
 	}
-
-	public void end(int id) {
-		ActivityBase activityBase = activities.get(id);
-		if (activityBase != null) {
-			beforeActivityEnd(activityBase);
-			activityBase.end();
-			activityBase.syncActivityInfo();
-			afterActivityEnd(activityBase);
+	public void checkAndInitFromDb(ActivityConfig config, String saveString,Object owner) {
+		ActivityBase activityBase = ActivityFactory.createActivityBase(config,saveString); 
+		int expireState = expireState(activityBase); 
+		if (expireState == 0) {
+			int id = activityBase.getId();
+			ActivityBase oldValue = activities.putIfAbsent(id, activityBase);
+			if (oldValue == null) {
+				activityBase.init(id, owner, false);
+				afterLoad();
+			}
+		}else if (expireState == 1) {
+			if (activityBase.getState() != ActivityState.CLOSE_VALUE) {
+				activityBase.end();
+			}
+		}else if (expireState == 2) {
+			if (activityBase.getState() != ActivityState.NONE_VALUE) {
+				activityBase.destroy();;
+			}
 		}
 	}
 

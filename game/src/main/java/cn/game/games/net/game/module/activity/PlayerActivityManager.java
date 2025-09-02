@@ -75,7 +75,7 @@ public class PlayerActivityManager extends AbstractActivityManager {
 	@Override
 	public void runDelayEndTask(int id, long remaining) {
 		player.setTimerTask(remaining, r -> {
-			end(id);
+			end(id,true);
 		});
 	}
 	@Override
