@@ -11,6 +11,7 @@ import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -57,11 +58,11 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 		if (isDayReward) {
 			player.fail(ErrorMsgEnum.repeat_request);
 		}
-		ActivityServerOpenRankConfig nullable = ActivityServerOpenRankManager.instance().getNullable(ServerHelper.getServerOpenDay(player.getServerId())); 
-		if (nullable == null) {
-			player.fail(ErrorMsgEnum.request_parameter_error);
-		}
-		List<RewardInfo> resources = PlayerHelper.addResources(player, nullable.Reward, OpType.ServerOpenRankDayReward); 
+//		ActivityServerOpenRankConfig nullable = ActivityServerOpenRankManager.instance().getNullable(ServerHelper.getServerOpenDay(player.getServerId())); 
+//		if (nullable == null) {
+//			player.fail(ErrorMsgEnum.request_parameter_error);
+//		}
+		List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.SevenDayActivityReward, OpType.ServerOpenRankDayReward); 
 		isDayReward = true; 
 		return resources;
 	}
