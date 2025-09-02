@@ -388,6 +388,45 @@ public class ActivityStateManager {
 		long endTime = getEndTime(id);
 		return (int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000);
 	}
+	/** 
+	 * 获取本期活动的销毁时间(按照时间开启的活动)
+	 * @param id
+	 * @return
+	 */
+	public Date getDestroyDate(int id) {
+		ActivityConfig cfg = ActivityManager.instance().get(id);
+		
+		// Cron 优先
+		if (hasAnyCron(cfg) && cfg.destroyCron != null && !cfg.destroyCron.isEmpty()) {
+			return nextByCrons(cfg.destroyCron, new Date());
+		}
+		
+		Pair<Integer, ActivityState> activity = getActivityState(id);
+		if (activity == null) {
+			return null;
+		}
+		if (cfg.destroyTime.isEmpty()) {
+			return null;
+		}
+		Date endDate = cfg.destroyTime.get(activity.first);
+		endDate = DateUtil.changeDateByPeriod(endDate, cfg.period, getPeriodPass(id));
+		return endDate;
+	}
+	
+	public long getDestroyTime(int id) {
+		Date endDate = getDestroyDate(id);
+		return endDate == null ? 0 : endDate.getTime();
+	}
+	
+	/** 
+	 * 距离活动销毁还有多少秒
+	 * @param id
+	 * @return
+	 */
+	public int getDestroyTimeRemaining(int id) {
+		long endTime = getDestroyTime(id);
+		return (int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000);
+	}
 
 	class StartTask implements Runnable {
 

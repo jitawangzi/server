@@ -11,6 +11,7 @@ import com.google.protobuf.Message;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
@@ -48,6 +49,7 @@ public abstract class ActivityBase{
 	/** 活动实际开始/参加时间,而不是配置的活动开启时间 */
 	protected long startTime;
 	protected long endTime;
+	protected long destroyTime;
 	protected String serverId;
 
 	/** 
@@ -139,6 +141,7 @@ public abstract class ActivityBase{
 		this.state = ActivityState.START_VALUE;
 		this.startTime = System.currentTimeMillis();
 		this.endTime = calcEndTime();
+		this.destroyTime = calcDestroyTime();
 		afterStart();
 	}
 	/** 活动结束,可能还保留，领取活动奖励等 */
@@ -214,6 +217,9 @@ public abstract class ActivityBase{
 		return endTime;
 	}
 	
+	public long getDestroyTime() {
+		return destroyTime;
+	}
 	public String getServerId() {
 		return serverId;
 	}
@@ -231,6 +237,17 @@ public abstract class ActivityBase{
 			if (startTime == 0) { // 还没开始，默认返回0
 				return endTime;
 			}
+			if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+				// 按开服时间开启的活动
+				String serverId = getServerId();
+				if (serverId == null || serverId.isEmpty()) {
+					log.error("按开服时间开启的活动，必须指定服务器id");
+					return endTime;
+				}
+				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
+				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.endDuration - serverOpenDay);
+				return endTime; 
+			}
 			// 计算结束时间
 			if (activityConfig.endDurationType == 1) {
 				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.endDuration);
@@ -240,6 +257,36 @@ public abstract class ActivityBase{
 		} else {
 			// 按时间开启的活动
 			endTime = ActivityStateManager.getInstance().getEndTime(id);
+		}
+		return endTime;
+	}
+	public long calcDestroyTime() {
+		long endTime = 0 ; 
+		ActivityConfig activityConfig = ActivityManager.instance().get(id);
+		if (activityConfig.destroyDurationType > 0) {
+			if (startTime == 0) { // 还没开始，默认返回0
+				return endTime;
+			}
+			if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+				// 按开服时间开启的活动
+				String serverId = getServerId();
+				if (serverId == null || serverId.isEmpty()) {
+					log.error("按开服时间开启的活动，必须指定服务器id");
+					return endTime;
+				}
+				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
+				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.destroyDuration - serverOpenDay);
+				return endTime; 
+			}
+			// 计算结束时间
+			if (activityConfig.destroyDurationType == 1) {
+				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.destroyDuration);
+			} else if (activityConfig.destroyDurationType == 2) {
+				endTime = startTime + activityConfig.destroyDuration * 1000;
+			}
+		} else {
+			// 按时间开启的活动
+			endTime = ActivityStateManager.getInstance().getDestroyTime(id);
 		}
 		return endTime;
 	}

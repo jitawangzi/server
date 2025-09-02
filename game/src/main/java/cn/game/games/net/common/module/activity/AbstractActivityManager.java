@@ -94,36 +94,45 @@ public abstract class AbstractActivityManager {
 		ActivityBase activityBase = activities.remove(id);
 		if (activityBase != null) {
 			beforeActivityDestroy(activityBase);
+			activityBase.setState(ActivityState.NONE_VALUE);
 			if (notify) {
-				activityBase.setState(ActivityState.NONE_VALUE);
 				activityBase.syncActivityInfo();
 			}
 			activityBase.destroy();
 			afterActivityDestroy(activityBase);
 		}
 	}
-
-	// 活动状态检查
-	public void checkExpired() {
-		List<Integer> deleteIds = new ArrayList<>();
-
-		for (ActivityBase activityBase : activities.values()) {
-			int cid = activityBase.getId();
-			if (shouldExpire(activityBase)) {
-				deleteIds.add(cid);
+	public void end(int id, boolean notify) {
+		ActivityBase activityBase = activities.remove(id);
+		if (activityBase != null) {
+			beforeActivityShutdown(activityBase);
+			if (notify) {
+				activityBase.setState(ActivityState.CLOSE_VALUE);
+				activityBase.syncActivityInfo();
 			}
-		}
-		for (Integer id : deleteIds) {
-			destroy(id, false);
+			activityBase.shutDown();
+			afterActivityShutdown(activityBase);
 		}
 	}
 
-	public void checkExpired(int id) {
-		ActivityBase activityBase = activities.get(id);
-		if (activityBase == null) {
-			return;
+	// 活动状态检查
+	public void checkExpired() {
+		List<Integer> endIds = new ArrayList<>();
+		List<Integer> destoryIds = new ArrayList<>();
+
+		for (ActivityBase activityBase : activities.values()) {
+			int cid = activityBase.getId();
+			int expireState = expireState(activityBase); 
+			if (expireState == 1) {
+				endIds.add(cid);
+			}else if (expireState == 2) {
+				destoryIds.add(cid);
+			}
 		}
-		if (shouldExpire(activityBase)) {
+		for (Integer id : endIds) {
+			end(id, false);
+		}
+		for (Integer id : endIds) {
 			destroy(id, false);
 		}
 	}
@@ -136,6 +145,19 @@ public abstract class AbstractActivityManager {
 		for (ActivityBase activityBase : activities.values()) {
 			int cid = activityBase.getId();
 			long endTime = activityBase.getEndTime();
+			if (endTime > 0) {
+				long remaining = endTime - nowTime;
+				if (remaining > 0) {
+					runEndTask(cid, remaining);
+				}
+			}
+		}
+	}
+	public void destroyTimeTask() {
+		long nowTime = System.currentTimeMillis();
+		for (ActivityBase activityBase : activities.values()) {
+			int cid = activityBase.getId();
+			long endTime = activityBase.getDestroyTime();
 			if (endTime > 0) {
 				long remaining = endTime - nowTime;
 				if (remaining > 0) {
@@ -224,36 +246,47 @@ public abstract class AbstractActivityManager {
 	}
 
 	/** 
-	 * 判断一个已经开启的活动，是否过期了
+	 * 判断一个已经开启的活动的状态
 	 * @param activity
-	 * @return
+	 * @return  0 还在活动中，不过期；  1 活动已经结束 ；  2 活动已经销毁
 	 */
-	protected boolean shouldExpire(ActivityBase activity) {
+	protected int expireState(ActivityBase activity) {
 		// 判断按活动时间开启的活动
 		ActivityConfig activityConfig = ActivityManager.instance().get(activity.getId());
-		if (activityConfig.openType == ActivityHelper.OPENTYPE_DATE) {
-			return !isInOpenTime(activity.getId());
-		}
-		if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
-			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
-				return false;
-			}
-			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
-
-			VirtualServerView virtualServerView = validServers.get(serverId);
-			if (virtualServerView != null && virtualServerView.openTime != null
-					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1 >= activityConfig.openParam) {
-				return true;
-			}
-		}
-		// 非时间开启的活动
+//		if (activityConfig.openType == ActivityHelper.OPENTYPE_DATE) {
+//			boolean ret =  !isInOpenTime(activity.getId());
+//		}
+//		if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+//			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
+//				return false;
+//			}
+//			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+//			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+//
+//			VirtualServerView virtualServerView = validServers.get(serverId);
+//			if (virtualServerView != null && virtualServerView.openTime != null
+//					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1 >= activityConfig.openParam) {
+//				return true;
+//			}
+//		}
+		
+		
+		long now = System.currentTimeMillis(); 
+		int state = 0 ; 
 		long endTime = activity.getEndTime();
+		long destroyTime = activity.getDestroyTime();
 		if (endTime > 0) {
-			return System.currentTimeMillis() >= endTime;
+			if (now > endTime) {
+				state = 1; // 活动已经结束
+			}
+		}
+		if (destroyTime > 0) {
+			if (now > destroyTime) {
+				state = 2; // 活动应该销毁了
+			}
 		}
 		// 没有结束时间的
-		return false;
+		return 0;
 	}
 
 	/** 

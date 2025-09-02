@@ -70,36 +70,33 @@ public class ActivityModule extends BasePlayerModule {
 	@Override
 	public void initFromDbAfter() {
 		// 这里注意一个活动，多开启时间的
-		Iterator<ActivityBase> iterator = playerActivityManager.list().iterator(); 
-		while (iterator.hasNext()) {
-			ActivityBase activityBase = (ActivityBase) iterator.next();
-			ActivityConfig config = ActivityManager.instance().get(activityBase.getId());
-			if (playerActivityManager.canOpen(config)) {
-				activityBase.init(activityBase.getId(), player, false);
-			}else {
-				iterator.remove(); 
-			}
-		}
-		if (disposableIds.isEmpty()) {// 兼容老数据
-			for (ActivityBase activityBase : activities.values()) {
-				ActivityConfig activityConfig = ActivityManager.instance().getNullable(activityBase.getId());
-				if (activityConfig == null) {
-					continue;
-				}
-				if (activityConfig.resetType == 0) {
-					disposableIds.add(activityBase.getId());
-				}
-			}
-		}
+		checkExpired(); 
+//		if (disposableIds.isEmpty()) {// 兼容老数据
+//			for (ActivityBase activityBase : activities.values()) {
+//				ActivityConfig activityConfig = ActivityManager.instance().getNullable(activityBase.getId());
+//				if (activityConfig == null) {
+//					continue;
+//				}
+//				if (activityConfig.resetType == 0) {
+//					disposableIds.add(activityBase.getId());
+//				}
+//			}
+//		}
 //		checkExpired();
 	};
 
 
 	@Override
 	public void onLogin() {
+		Iterator<ActivityBase> iterator = playerActivityManager.list().iterator(); 
+		while (iterator.hasNext()) {
+			ActivityBase activityBase = (ActivityBase) iterator.next();
+			activityBase.init(activityBase.getId(), player, false);
+		}
 		// 可能符合开启条件的新任务。
 		playerActivityManager.checkAndOpenActivitys(player);
 		playerActivityManager.endTimeTask();
+		playerActivityManager.destroyTimeTask();
 	}
 
 	/** 
