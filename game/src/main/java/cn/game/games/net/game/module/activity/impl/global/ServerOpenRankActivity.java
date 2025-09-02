@@ -55,7 +55,9 @@ public class ServerOpenRankActivity extends GameActivityBase {
 		if (activityServerOpenRankConfig != null) {
 			RankType sourceRankType = RankType.get(activityServerOpenRankConfig.RankID);
 			RankType targetRankType = RankType.get(activityServerOpenRankConfig.RewardRankId);
-			RankHelper.copyRank(serverId, sourceRankType, targetRankType, activityServerOpenRankConfig.PlayerCount);
+			if (targetRankType != RankType.DaShengLeiTaiServerOpenActivity) {
+				RankHelper.copyRank(serverId, sourceRankType, targetRankType, activityServerOpenRankConfig.PlayerCount);
+			}
 			// 结算前一天的排行榜奖励
 			RankService.getInstance().serverOpenActivityReward(new String[] { serverId }, activityServerOpenRankConfig.RewardRankId);
 		} else {

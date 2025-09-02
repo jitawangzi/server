@@ -10,9 +10,11 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
+import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -21,7 +23,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @ActivityType(type = ActivityTypeEnum.ServerOpenRankPlayer)
 public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
-	private static final EventTypeEnum[] eventTypes = new EventTypeEnum[] {  };
+	private static final EventTypeEnum[] eventTypes = new EventTypeEnum[] { EventTypeEnum.DaShengPointsAdd };
 
 	private boolean isDayReward ; 
 	
@@ -40,7 +42,17 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 	public void handleEvent(PlayerEvent event) {
 
 		switch (event.getType()) {
-		
+		case DaShengPointsAdd:
+			// 大圣积分变化，可能会影响排名
+			int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
+			ActivityServerOpenRankConfig config = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay); 
+			if (config != null && config.RankID == RankType.DaShengLeiTaiServerOpenActivity.ID) {
+				int score =  event.get(0) + event.get(1) ; 
+	            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiServerOpenActivity, player.getPlayerId(), score);
+			}
+			break;
+		default:
+			break;
 		}
 	
 	}
