@@ -80,13 +80,13 @@ public abstract class AbstractActivityManager {
 		}
 	}
 
-	public void shutdown(int id) {
+	public void end(int id) {
 		ActivityBase activityBase = activities.get(id);
 		if (activityBase != null) {
-			beforeActivityShutdown(activityBase);
-			activityBase.shutDown();
+			beforeActivityEnd(activityBase);
+			activityBase.end();
 			activityBase.syncActivityInfo();
-			afterActivityShutdown(activityBase);
+			afterActivityEnd(activityBase);
 		}
 	}
 
@@ -94,8 +94,8 @@ public abstract class AbstractActivityManager {
 		ActivityBase activityBase = activities.remove(id);
 		if (activityBase != null) {
 			beforeActivityDestroy(activityBase);
-			activityBase.setState(ActivityState.NONE_VALUE);
 			if (notify) {
+				activityBase.setState(ActivityState.NONE_VALUE);
 				activityBase.syncActivityInfo();
 			}
 			activityBase.destroy();
@@ -103,15 +103,15 @@ public abstract class AbstractActivityManager {
 		}
 	}
 	public void end(int id, boolean notify) {
-		ActivityBase activityBase = activities.remove(id);
+		ActivityBase activityBase = activities.get(id);
 		if (activityBase != null) {
-			beforeActivityShutdown(activityBase);
+			beforeActivityEnd(activityBase);
 			if (notify) {
 				activityBase.setState(ActivityState.CLOSE_VALUE);
 				activityBase.syncActivityInfo();
 			}
-			activityBase.shutDown();
-			afterActivityShutdown(activityBase);
+			activityBase.end();
+			afterActivityEnd(activityBase);
 		}
 	}
 
@@ -148,7 +148,7 @@ public abstract class AbstractActivityManager {
 			if (endTime > 0) {
 				long remaining = endTime - nowTime;
 				if (remaining > 0) {
-					runEndTask(cid, remaining);
+					runDelayEndTask(cid, remaining);
 				}
 			}
 		}
@@ -161,7 +161,7 @@ public abstract class AbstractActivityManager {
 			if (endTime > 0) {
 				long remaining = endTime - nowTime;
 				if (remaining > 0) {
-					runDestroyTask(cid, remaining);
+					runDelayDestroyTask(cid, remaining);
 				}
 			}
 		}
@@ -179,8 +179,8 @@ public abstract class AbstractActivityManager {
 		}
 	}
 
-	protected abstract void runDestroyTask(int id, long remaining);
-	protected abstract void runEndTask(int id, long remaining);
+	protected abstract void runDelayDestroyTask(int id, long remaining);
+	protected abstract void runDelayEndTask(int id, long remaining);
 
 	// 定时刷新
 	protected void refreshByType(int resetType) {
@@ -269,8 +269,6 @@ public abstract class AbstractActivityManager {
 //				return true;
 //			}
 //		}
-		
-		
 		long now = System.currentTimeMillis(); 
 		int state = 0 ; 
 		long endTime = activity.getEndTime();
@@ -285,8 +283,8 @@ public abstract class AbstractActivityManager {
 				state = 2; // 活动应该销毁了
 			}
 		}
-		// 没有结束时间的
-		return 0;
+		// 没结束，或者没有结束时间
+		return state;
 	}
 
 	/** 
@@ -410,10 +408,10 @@ public abstract class AbstractActivityManager {
 	protected void afterActivityOpen(ActivityBase activity) {
 	}
 
-	protected void beforeActivityShutdown(ActivityBase activity) {
+	protected void beforeActivityEnd(ActivityBase activity) {
 	}
 
-	protected void afterActivityShutdown(ActivityBase activity) {
+	protected void afterActivityEnd(ActivityBase activity) {
 	}
 
 	protected void beforeActivityDestroy(ActivityBase activity) {

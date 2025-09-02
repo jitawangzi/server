@@ -145,10 +145,10 @@ public abstract class ActivityBase{
 		afterStart();
 	}
 	/** 活动结束,可能还保留，领取活动奖励等 */
-	public void shutDown() {
+	public void end() {
 		this.state = ActivityState.CLOSE_VALUE;
 		unregisterEvent();
-		afterShutDown();
+		afterEnd();
 	}
 
 	/** 彻底销毁活动，不再展示，删除活动数据 */
@@ -163,7 +163,7 @@ public abstract class ActivityBase{
 	protected void afterStart() {
 		
 	}
-	protected void afterShutDown() {
+	protected void afterEnd() {
 		
 	}
 	protected void afterDestroy() {

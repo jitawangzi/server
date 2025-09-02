@@ -111,7 +111,7 @@ public class ActivityModule extends BasePlayerModule {
 	 * @param id
 	 */
 	public void shutdown(int id) {
-		playerActivityManager.shutdown(id);
+		playerActivityManager.end(id);
 	}
 	/** 
 	 * 彻底销毁活动，删除数据， 不再展示。 
@@ -166,7 +166,7 @@ public class ActivityModule extends BasePlayerModule {
 			break;
 		}
 		case NewDay: {
-			checkExpired();
+//			checkExpired();
 			refreshByType(1);
 			playerActivityManager.newDay();
 			checkResetCycleActivity();

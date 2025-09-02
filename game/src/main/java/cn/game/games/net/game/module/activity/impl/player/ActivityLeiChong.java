@@ -127,7 +127,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 	}
 
 	@Override
-	public void afterShutDown() {
+	public void afterEnd() {
 		QuestModule questModule = player.getQuestModule();
 		getActivityLeiChongConfigList().forEach(activityLeiChongConfig -> {
 			questModule.remove(activityLeiChongConfig.taskID);

@@ -56,7 +56,7 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
         }
 		case ActivityShutDownTime: {
         	int id = event.getIntParameter(0); 
-            sharedActivityManager.shutdown(id);
+            sharedActivityManager.end(id);
             break;
 		}
 		case ActivityDestoryTime: {

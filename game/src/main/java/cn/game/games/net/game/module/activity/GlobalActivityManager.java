@@ -31,15 +31,15 @@ public class GlobalActivityManager extends AbstractActivityManager {
 	}
 
 	@Override
-	public void runDestroyTask(int id, long remaining) {
+	public void runDelayDestroyTask(int id, long remaining) {
 		SchedulerService.getInstance().scheduleTask(() -> {
 			destroy(id, true);
 		}, remaining, TimeUnit.MILLISECONDS);
 	}
 	@Override
-	public void runEndTask(int id, long remaining) {
+	public void runDelayEndTask(int id, long remaining) {
 		SchedulerService.getInstance().scheduleTask(() -> {
-			shutdown(id);
+			end(id);
 		}, remaining, TimeUnit.MILLISECONDS);
 	}
 

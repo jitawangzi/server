@@ -157,7 +157,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	}
 
 	@Override
-	public void afterShutDown() {
+	public void afterEnd() {
 		// 未领取的活动 邮件发送
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityMeiRiBaoLiConfig -> {

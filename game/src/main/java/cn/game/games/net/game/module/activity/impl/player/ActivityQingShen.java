@@ -150,7 +150,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 	}
 
 	@Override
-	public void afterShutDown() {
+	public void afterEnd() {
 		QuestModule questModule = player.getQuestModule();
 		getConfigList().forEach(activityQingShenConfig -> {
 			if (!rewardIdList.contains(activityQingShenConfig.taskID)){

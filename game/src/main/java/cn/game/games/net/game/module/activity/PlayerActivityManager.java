@@ -67,15 +67,15 @@ public class PlayerActivityManager extends AbstractActivityManager {
 	}
 
 	@Override
-	public void runDestroyTask(int id, long remaining) {
+	public void runDelayDestroyTask(int id, long remaining) {
 		player.setTimerTask(remaining, r -> {
 			destroy(id, true);
 		});
 	}
 	@Override
-	public void runEndTask(int id, long remaining) {
+	public void runDelayEndTask(int id, long remaining) {
 		player.setTimerTask(remaining, r -> {
-			shutdown(id);
+			end(id);
 		});
 	}
 	@Override
