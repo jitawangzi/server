@@ -64,7 +64,9 @@ public abstract class PlayerActivityBase extends ActivityBase implements PlayerE
 	}
 	@Override
 	public void unregisterEvent() {
-		player.getPlayerEventBus().unregister(this);
+		if (player != null) {
+			player.getPlayerEventBus().unregister(this);
+		}
 	}
 	@Override
 	public void handleEvent(PlayerEvent event) {

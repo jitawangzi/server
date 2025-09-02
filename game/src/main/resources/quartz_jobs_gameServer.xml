@@ -35,7 +35,7 @@
 				<description>每日0点</description>
 				<job-name>Job-StoreStaminaJob</job-name>
 				<job-group>job-group1</job-group>
-				<cron-expression>0 0 6,12,18,22 * * ?</cron-expression>
+				<cron-expression>0 0 6,12,18,21 * * ?</cron-expression>
 			</cron>
 		</trigger>
 	</job>

@@ -1,27 +1,39 @@
 package cn.game.games.net.game.module.battle;
 
+import static java.util.stream.Collectors.toList;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.EquiptowerHelp;
-import cn.game.games.cache.entity.Mail;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
-import cn.game.games.net.data.mapper.MailMapper;
-import cn.game.games.net.data.mapper.UnionMapper;
 import cn.game.games.net.game.constant.MapperConstant;
-import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.MailManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.protobuf.BattleMsg.BattleLineupInfo;
 import cn.game.protocol.protobuf.BattleMsg.DayChallengeInfo;
@@ -31,18 +43,6 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
-
-import com.alibaba.excel.util.DateUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.Map.Entry;
-
-import static java.util.stream.Collectors.toList;
 
 /**    
  * 战役、章
