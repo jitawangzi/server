@@ -1632,6 +1632,14 @@ public class PlayerHelper {
 		Future<SimplePlayer> simplePlayer = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		return simplePlayer.map(SimplePlayer::getServerId);
 	}
+	public static String getServerId(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player != null) {
+			return player.getServerId();
+		}
+		SimplePlayer simplePlayer = getSimplePlayer(playerId);
+		return simplePlayer.getServerId();
+	}
 
 	/** 
 	 * 从数据库中载入所有玩家数据，逐个执行修正逻辑，发生异常继续处理，不中断。 

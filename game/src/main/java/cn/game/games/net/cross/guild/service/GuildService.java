@@ -19,6 +19,7 @@ import cn.game.games.net.cross.guild.GuildManager;
 import cn.game.games.net.cross.guild.GuildMember;
 import cn.game.games.net.cross.guild.GuildSetting;
 import cn.game.games.net.cross.guild.dto.MemberAuthRequest;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
@@ -385,9 +386,10 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 
 	@Override
 	public GuildServiceInfo randomJoin(long playerId) {
+		String serverId = PlayerHelper.getServerId(playerId); 
 		Collection<Guild> allGuild = GuildManager.getInstance().getAllGuild(); 
 		for (Guild guild : allGuild) {
-            if (guild.canAutoJoin()) {
+            if (guild.getData().getServerId().equals(serverId) && guild.canAutoJoin()) {
                 return ServerContext.getInstance().getProcessor().process(guild.getId(), () -> {
                 	if (guild.isFull()) {
                 		return null ; 
