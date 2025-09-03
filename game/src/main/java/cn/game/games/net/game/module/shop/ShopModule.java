@@ -193,6 +193,7 @@ public class ShopModule extends BasePlayerModule {
 		}
 		case 18: {
 			// 刷新人参果树商店
+//			refreshGinsengTreeItems(shopId);
 			refreshGinsengTreeItems(shopId);
 			break;
 		}
@@ -321,23 +322,6 @@ public class ShopModule extends BasePlayerModule {
 			}
 		}
 	}
-
-	/** 
-	 * 人参果树升级时，解锁新增的商店物品
-	 */
-	private void addGinsengTreeItems(int shop) {
-		int level = player.getLevel(Asset.RSGTreeExp);
-		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
-		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
-			if (level == rsgTreeShopConfig.Condition) {
-				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
-				if (shopItemConfig != null) {
-					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
-				}
-			}
-		}
-	}
-
 	public void refreshGemTowerItems(int shop) {
 		// 刷新爬塔商店
 		shopItemsMap.removeAll(shop);
@@ -475,12 +459,7 @@ public class ShopModule extends BasePlayerModule {
 				for (ShopConfig shopConfig : shopConfigListByType) {
 					refreshGemTowerItems_LevelUp(shopConfig.ID);
 				}
-			} else if (exp == Asset.RSGTreeExp.ID) {
-				List<ShopConfig> shopConfigListByType = getShopConfigListByType(18);
-				for (ShopConfig shopConfig : shopConfigListByType) {
-					addGinsengTreeItems(shopConfig.ID);
-				}
-			}
+			} 
 			break;
 		}
 		case CostItem: {
