@@ -118,7 +118,8 @@ public class SimplePlayer implements Serializable {
 		this.lastLoginTimer = player.getLastLoginTimer();
 		this.createTimer =  player.getCreateTimer();
 		this.battleId = player.getBattleModule().getMainBattleHighest();
-		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
+		
+		this.heros = new ArrayList<>(player.getBattleModule().getDefaultLineupHeroes());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
 		this.serverName = ServerHelper.getServerName(this.serverId);
@@ -478,10 +479,6 @@ public class SimplePlayer implements Serializable {
 
 	public void setBattleId(int battleId) {
 		this.battleId = battleId;
-	}
-
-	public void setHeros(List<Hero> heros) {
-		this.heros = heros;
 	}
 
 	public void setBattleAttrs(byte[] battleAttrs) {

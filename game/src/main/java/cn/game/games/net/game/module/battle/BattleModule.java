@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.game.games.cache.entity.BattleLevel;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.EquiptowerHelp;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
@@ -28,6 +29,7 @@ import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -775,5 +777,18 @@ public class BattleModule extends BasePlayerModule  {
 			return consecutiveFailures.sum(); 
 		}
     	return consecutiveFailures.getValue(type);
+    }
+    public List<Hero> getDefaultLineupHeroes() {
+    	Map<Integer, List<String>> map = this.lineupMaps.get(DungeonTypeEnum.BattleChapter.getId()); 
+    	Integer orDefault = lineupChooseMaps.getOrDefault(DungeonTypeEnum.BattleChapter.getId(), 0); 
+    	List<String> list = map.get(orDefault);
+    	HeroModule heroModule = player.getHeroModule(); 
+    	List<Hero> heros = new ArrayList<>();
+    	
+    	for (String uid : list) {
+    		Hero hero = heroModule.get(Long.parseLong(uid)); 
+    		heros.add(hero);
+    	}
+    	return heros;
     }
 }
