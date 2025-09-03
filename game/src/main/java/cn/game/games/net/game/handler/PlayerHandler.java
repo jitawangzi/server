@@ -35,6 +35,7 @@ import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
@@ -1096,25 +1097,7 @@ public class PlayerHandler extends GameBaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-//		String openTime = GameServerStatus.getInstance().getServerInfo().getServerOpenTime();
-		long timeMillis = System.currentTimeMillis();
-		String[] serverAllocationTimes = GameServerStatus.getInstance().getServerInfo().getServerAllocationTimes();
-		int day = 0;
-		if (serverAllocationTimes != null && serverAllocationTimes.length > 0) {
-			day = serverAllocationTimes.length;
-			for (int i = 0; i < serverAllocationTimes.length; i++) {
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-				LocalDateTime dateTime = LocalDateTime.parse(serverAllocationTimes[i], formatter);
-				long epochMilli = DateUtil.toEpochMilli(dateTime);
-				if (timeMillis <= epochMilli) {
-					day = i;
-					break;
-				}
-			}
-		}
-		day++;
-		playerData.setServerId("server" + day);
-
+		playerData.setServerId(ServerHelper.getServerIdLatest());
 		playerData.setPlayerId(id);
 		playerData.setUid(uid);
 		playerData.setGender(isMan);

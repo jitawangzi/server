@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.zookeeper.server.ValidServerService;
+import cn.game.games.core.cache.GameCacheService;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.DateUtil;
@@ -96,8 +98,7 @@ public class ServerHelper {
 	 * @return 最小从1开始
 	 */
 	public static int getServerOpenDay(String serverId) {
-		ValidServerService validGameService = ServerContext.getInstance().getValidGameService(); 
-		Map<String, VirtualServerView> validServers = validGameService.getValidServers(); 
+		Map<String, VirtualServerView> validServers = getServerOpenMap(); 
 		VirtualServerView virtualServerView = validServers.get(serverId); 
 		if (virtualServerView == null || virtualServerView.openTime == null) {
 			return 0;
@@ -105,18 +106,20 @@ public class ServerHelper {
 		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
 	}
 	
-	public static String[] getServerIds() {
-		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-		return validGameService.getValidServers().values().stream().map(r -> r.ID).collect(toList()).toArray(new String[] {});
+	public static Map<String, VirtualServerView> getServerOpenMap() {
+		return GameCacheService.getInstance().getOpenServerMap(); 
 	}
-	public static String getNewServerId() {
-		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-		Map<String, VirtualServerView> validServers = validGameService.getValidServers(); 
-		return "";
+	public static String[] getServerIds() {
+		return getServerOpenMap().values().stream().map(r -> r.ID).collect(toList()).toArray(new String[] {});
+	}
+	public static String getServerIdLatest() {
+		VirtualServerView openServerLatest = GameCacheService.getInstance().getOpenServerLatest(); 
+		Objects.requireNonNull(openServerLatest, "没有开启的服务器");
+		return openServerLatest.ID;
 	}
 	public static String getServerName(String serverId) {
-		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-		VirtualServerView virtualServerView = validGameService.getValidServers().get(serverId); 
-		return virtualServerView == null ? "" : virtualServerView.name;
+		VirtualServerView virtualServerView = getServerOpenMap().get(serverId); 
+		Objects.requireNonNull(virtualServerView, "无效的serverId=" + serverId);
+		return virtualServerView.name;
 	}
 }

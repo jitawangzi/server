@@ -4,9 +4,12 @@ public enum CacheDataType {
 	// 玩家相关数据 - 短TTL，保证更高的新鲜度
 	PLAYER_GUILD_LEVEL("player_guild_level", 15, 50_000, CacheBackend.REMOTE, true),
 
-	// 公会相关数据 - 中等TTL
+	// 公会相关数据(示例) - 中等TTL
 	GUILD_MEMBERS("guild_members", 180, 50_000, CacheBackend.REMOTE, false),
 
+	//已经开启的Game服务器列表
+	SERVER_OPEN_LIST("server_open_list", 10, 1024, CacheBackend.OTHER, false),
+	SERVER_OPEN_LATEST("server_open_latest", 5, 1, CacheBackend.OTHER, false),
 	// 服务器级别数据(示例) - 较长TTL
 	RANKING_DATA("ranking", 600, 20_000, CacheBackend.REDIS, false),
 
@@ -50,6 +53,8 @@ public enum CacheDataType {
 	public enum CacheBackend {
 		REDIS,
 		REMOTE,   // 跨服/远端服务
-		MIXED     // 既可能来自 Redis，也可能来自其他服务（可据业务自定义）
+		MIXED ,    // 既可能来自 Redis，也可能来自其他服务（可据业务自定义）
+		OTHER,   // 
+		;
 	}
 }

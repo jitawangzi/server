@@ -500,5 +500,22 @@ public class VirtualServerRegistry implements Closeable {
 		    return String.format("VirtualServerView{ID='%s', name='%s', playerMaxCount=%d, seq=%d, openTime=%s}",
 		        ID, name, playerMaxCount, seq, openTime);
 		}
+
+		public String getName() {
+			return name;
+		}
+
+		public Integer getPlayerMaxCount() {
+			return playerMaxCount;
+		}
+
+		public Integer getSeq() {
+			return seq;
+		}
+
+		public LocalDateTime getOpenTime() {
+			return openTime;
+		}
+		
 	}
 }

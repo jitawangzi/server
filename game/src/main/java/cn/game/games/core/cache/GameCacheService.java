@@ -1,5 +1,7 @@
 package cn.game.games.core.cache;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheDataType;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.SimpleCacheManager;
@@ -39,16 +41,28 @@ public class GameCacheService {
 	}
 
 	private void registerLoaders() {
-		// 1) 玩家工会等级：远端服务
+		// 玩家工会等级：远端服务
 		cache.registerLoader(CacheDataType.PLAYER_GUILD_LEVEL,
 				(key) -> CompletableFuture.supplyAsync(() -> fetchPlayerGuildLevel(Long.parseLong(key))), null // 可在将来增加跨服批量 RPC
 		);
 
-		// 2) 公会成员列表：远端服务（示例）
-		cache.registerLoader(CacheDataType.GUILD_MEMBERS,
-				(key) -> CompletableFuture.supplyAsync(() -> fetchGuildMembersFromRemote(Long.parseLong(key))), null);
+		cache.registerLoader(CacheDataType.SERVER_OPEN_LIST,
+				(key) -> CompletableFuture.supplyAsync(() -> ServerContext.getInstance().getValidGameService().getValidServers()), null);
+		cache.registerLoader(CacheDataType.SERVER_OPEN_LATEST,
+				(key) -> CompletableFuture.supplyAsync(() -> {
+					VirtualServerView retServerView= null; 
+					Map<String, VirtualServerView> validServers = ServerContext.getInstance().getValidGameService().getValidServers(); 
+					if (validServers != null && validServers.size() > 0) {
+						List<VirtualServerView> list = validServers.values()
+								.stream()
+								.sorted((a, b) -> b.getOpenTime().compareTo(a.getOpenTime()))
+								.collect(Collectors.toList());
+						retServerView = list.get(0);
+					}
+					return retServerView;
+				}), null);
 
-		// 3) 排行榜数据：存于 Redis（这里覆盖默认，演示 RBatch 批量）
+		//排行榜数据：存于 Redis（这里覆盖默认，演示 RBatch 批量）
 		cache.registerLoader(CacheDataType.RANKING_DATA, (key) -> CompletableFuture.supplyAsync(() -> RedisUtil.get(key)), (keys) -> {
 			var redisson = RedisUtil.getRedis();
 			RBatch batch = redisson.createBatch();
@@ -89,6 +103,12 @@ public class GameCacheService {
 
 	// ========================= 服务器级别数据（排行/Redis） =========================
 
+	public Map<String, VirtualServerView> getOpenServerMap() {
+		return cache.get(CacheDataType.SERVER_OPEN_LIST, CacheDataType.SERVER_OPEN_LIST.name());
+	}
+	public VirtualServerView getOpenServerLatest() {
+		return cache.get(CacheDataType.SERVER_OPEN_LATEST, CacheDataType.SERVER_OPEN_LATEST.name());
+	}
 	public Object getRankingData(RankType rankingType) {
 		String redisKey = rankingType.Name;
 		return cache.get(CacheDataType.RANKING_DATA, redisKey, RedisUtil::get);

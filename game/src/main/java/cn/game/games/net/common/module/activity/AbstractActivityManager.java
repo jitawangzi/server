@@ -19,6 +19,7 @@ import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityFactory;
@@ -386,8 +387,7 @@ public abstract class AbstractActivityManager {
 			if (serverId.equals(GLOBAL_SERVER_ID) || StringUtils.isEmpty(serverId)) {
 				return false;
 			}
-			ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+			Map<String, VirtualServerView> validServers = ServerHelper.getServerOpenMap();
 
 			VirtualServerView virtualServerView = validServers.get(serverId);
 			if (virtualServerView != null && virtualServerView.openTime != null
