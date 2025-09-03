@@ -210,10 +210,12 @@ public class GuildModule extends BasePlayerModule {
 	}
 
 	public void join(long guildId) {
-		if (guildId == lastId) {
-			return;
+		if (guildJoin != null) {
+			return ; // 已经有公会了
 		}
-
+//		if (guildId == lastId) {
+//			return;
+//		}
 		boolean isFirstJoin = true;
 		// 之前有加入过公会，不是第一次加入
 		if (lastId > 0) {
