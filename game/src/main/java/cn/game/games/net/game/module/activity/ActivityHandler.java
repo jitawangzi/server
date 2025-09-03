@@ -603,15 +603,23 @@ public class ActivityHandler extends GameBaseHandler {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
 			return;
 		}
-		RankType rankType = RankType.get(type); 
-		String sourceKey = RankService.getInstance().getKey(player.getServerId(), rankType); 
-		String targetKey = sourceKey + "ServerOpen";
 		int serverOpenDay = ServerHelper.getServerOpenDay(player.getServerId()); 
-		ActivityServerOpenRankConfig activityServerOpenRankConfig = ActivityServerOpenRankManager.instance().get(serverOpenDay); 
-		if (activityServerOpenRankConfig.RankID == type) {
-			targetKey = sourceKey ; 
+		ActivityServerOpenRankConfig curConfig = ActivityServerOpenRankManager.instance().get(serverOpenDay); 
+		ActivityServerOpenRankConfig targetConfig = null;
+		Collection<ActivityServerOpenRankConfig> list = ActivityServerOpenRankManager.instance().list(); 
+		for (ActivityServerOpenRankConfig activityServerOpenRankConfig2 : list) {
+			if (activityServerOpenRankConfig2.RankID == type) {
+				targetConfig = activityServerOpenRankConfig2 ;
+				break; 
+			}
 		}
-		CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, targetKey, page, pageSize);
+		RankType rankType = null; 
+		if (curConfig == targetConfig) {
+			rankType =RankType.get(targetConfig.RankID);
+		}else {
+			rankType =RankType.get(targetConfig.RankID);
+		}
+		CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
 		rankInfo.thenAccept(r -> {
 			resp.setRankInfo(r);
 			client.sendProtocol(resp.build());

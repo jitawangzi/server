@@ -23,8 +23,8 @@ public class RankHelper {
 		String key = RankService.getInstance().getKey(player.getServerId(), rankType); 
 		return getRankInfo(player, key, page, pageSize);
 	}
-	public static CompletionStage<RankInfo> getRankInfo(Player player, String rankKey, int page, int pageSize) {
-		String serverId = player.getServerId();
+	private static CompletionStage<RankInfo> getRankInfo(Player player, String rankKey, int page, int pageSize) {
+//		String serverId = player.getServerId();
 //		RankModule rankModule = player.getModule(RankModule.class);
 		long playerId = player.getPlayerId();
 		
