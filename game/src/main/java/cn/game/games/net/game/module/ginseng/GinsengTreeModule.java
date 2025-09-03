@@ -210,7 +210,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 			return PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave,
 					OpType.GinsengTreeBug);
 		}else {
-			if (bugAppearTimeList.size() < GlobalConst.RSGTreeBugMax) {
+			if (!isMaxBugs()) {
 				bugAppearTimeList.add(apperTime); 
 				lastBugAppearTime = apperTime;
 			}
