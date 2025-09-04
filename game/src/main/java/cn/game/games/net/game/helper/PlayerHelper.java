@@ -1138,6 +1138,7 @@ public class PlayerHelper {
 			// 直接根据当前数据获取的：
 			return switch (type) {
 			case PlayerLevel -> player.getLevel();
+			case VIPLevel -> player.getVipLevel();
 			case RemainMatiarialNow -> player.getCurrencyModule().get(id).getCount();
 			case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp);
 			case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId());
