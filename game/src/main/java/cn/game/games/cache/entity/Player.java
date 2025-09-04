@@ -25,11 +25,13 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.cache.GameCacheService;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.event.PlayerEventBus;
 import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
@@ -85,6 +87,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg;
@@ -911,6 +914,16 @@ public class Player {
 
 	public long getGuildId() {
 		return getGuildModule().getGuildId(); 
+	}
+	public String getGuildName() {
+		long guildId = getGuildModule().getGuildId(); 
+		if (guildId > 0) {
+			GuildSimpleInfo guildSimpleInfo = GameCacheService.getInstance().getGuildSimpleInfo(guildId); 
+			if (guildSimpleInfo != null) {
+				return guildSimpleInfo.getName();
+			}
+		}
+		return "";
 	}
 
 	public String getPlayerName() {

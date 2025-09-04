@@ -11,6 +11,7 @@ import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 import org.redisson.api.RBatch;
@@ -42,8 +43,8 @@ public class GameCacheService {
 
 	private void registerLoaders() {
 		// 玩家工会等级：远端服务
-		cache.registerLoader(CacheDataType.PLAYER_GUILD_LEVEL,
-				(key) -> CompletableFuture.supplyAsync(() -> fetchPlayerGuildLevel(Long.parseLong(key))), null // 可在将来增加跨服批量 RPC
+		cache.registerLoader(CacheDataType.GUILD_SIMPLE_INFO,
+				(key) -> CompletableFuture.supplyAsync(() -> fetchGuildSimpleInfo(Long.parseLong(key))), null // 可在将来增加跨服批量 RPC
 		);
 
 		cache.registerLoader(CacheDataType.SERVER_OPEN_LIST,
@@ -88,21 +89,23 @@ public class GameCacheService {
 			return 0;
 		}
 		String key = String.valueOf(playerId);
-		Integer lvl = cache.get(CacheDataType.PLAYER_GUILD_LEVEL, key, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
-		return lvl == null ? 0 : lvl;
+		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key, k -> fetchGuildSimpleInfo(Long.parseLong(k)));
+		return guildSimpleInfo == null ? 0 : guildSimpleInfo.getLevel();
 	}
 
-	public Future<Integer> getPlayerGuildLevelAsync(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (player == null || player.getGuildId() <= 0) {
-			return Future.succeededFuture(0);
-		}
-		String key = String.valueOf(playerId);
-		return cache.getAsync(CacheDataType.PLAYER_GUILD_LEVEL, key, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
-	}
 
 	// ========================= 服务器级别数据（排行/Redis） =========================
 
+	public GuildSimpleInfo getGuildSimpleInfo(long guildId) {
+		if (guildId<=0) {
+			return null ; 
+		}
+		String key = String.valueOf(guildId);
+		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key, k -> fetchGuildSimpleInfo(Long.parseLong(k)));
+		return guildSimpleInfo;
+	}
+
+	
 	public Map<String, VirtualServerView> getOpenServerMap() {
 		return cache.get(CacheDataType.SERVER_OPEN_LIST, CacheDataType.SERVER_OPEN_LIST.name());
 	}
@@ -218,11 +221,6 @@ public class GameCacheService {
 		return multiGetRedisAsync(list);
 	}
 
-	public Future<List<Integer>> multiGetPlayerGuildLevelAsync(List<Long> playerIds) {
-		List<String> keys = playerIds.stream().map(String::valueOf).collect(Collectors.toList());
-		return cache.multiGetAsync(CacheDataType.PLAYER_GUILD_LEVEL, keys, null, k -> fetchPlayerGuildLevel(Long.parseLong(k)));
-	}
-
 	// ========================= 缓存失效事件 =========================
 
 	public void onPlayerDataUpdated(long playerId, CacheDataType... dataTypes) {
@@ -252,17 +250,16 @@ public class GameCacheService {
 
 	// ========================= 具体加载逻辑 =========================
 
-	private Integer fetchPlayerGuildLevel(long playerId) {
-		Player p = PlayerManager.getInstance().getPlayer(playerId);
-		if (p == null || p.getGuildId() <= 0) {
-			return 0;
+	private GuildSimpleInfo fetchGuildSimpleInfo(long guildId) {
+		if (guildId <= 0) {
+			return null;
 		}
-		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(p.getGuildId());
-		GuildShowInfo info = guildProxy.getGuildShowInfo(p.getGuildId());
+		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
+		GuildShowInfo info = guildProxy.getGuildShowInfo(guildId);
 		if (info == null || !info.hasSimpleInfo()) {
-			return 0;
+			return null;
 		}
-		return info.getSimpleInfo().getLevel();
+		return info.getSimpleInfo();
 	}
 
 	private List<Long> fetchGuildMembersFromRemote(long guildId) {

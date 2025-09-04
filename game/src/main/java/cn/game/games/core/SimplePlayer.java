@@ -160,7 +160,7 @@ public class SimplePlayer implements Serializable {
 		if(equipTowerBattle!=null) {
 			this.equipBattleRecord =equipTowerBattle.getBattleRecord();
 		}
-		
+		this.unionName = player.getGuildName(); 
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -300,11 +300,6 @@ public class SimplePlayer implements Serializable {
 	public String getUnionName() {
 
 		return unionName;
-	}
-
-	public void setUnionName(String unionName) {
-
-		this.unionName = unionName;
 	}
 
 	public long getUnionId() {
