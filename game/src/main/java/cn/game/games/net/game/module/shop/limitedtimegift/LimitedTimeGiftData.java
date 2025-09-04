@@ -13,7 +13,7 @@ public class LimitedTimeGiftData {
 		LimitedTimeGiftInfo.Builder builder = LimitedTimeGiftInfo.newBuilder();
 		builder.setId(id);
 		builder.setBuyCount(buyCount);
-		builder.setRemainingSurvivalSeconds((int) (expireTime - DateUtil.currentTimeMillis())/1000); 
+		builder.setEndTime((int) (expireTime/1000)); 
 		return builder.build();
 	}
 	public int getId() {
