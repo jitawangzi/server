@@ -11,14 +11,8 @@ import cn.game.util.ZkHelper;
  *
  * <p>便捷入口：组合 Curator（ZK） + Redisson（Redis）以构建“选主 + 租约”的通用执行框架。</p>
  *
- * <p>示例：</p>
- * <pre>
- *   LeaderFramework framework = LeaderFramework.newDefault("/app/leader/global");
- *   framework.registerTask(new MyLeaderTask());
- *   framework.start();
- *   // 服务停止
- *   framework.stop();
- * </pre>
+ * <p>本版本支持 LeaderStateListener，业务可以通过监听器订阅“领导权/租约”变化事件，
+ * 结合你已有的 HealthGuard 健康状态来做“状态驱动”的执行决策。</p>
  */
 public class LeaderFramework {
 
@@ -72,12 +66,26 @@ public class LeaderFramework {
     }
 
     /**
-     * 注册一个 Leader 任务
+     * 注册一个 Leader 任务（可选；如果你改为事件驱动模型，也可以不注册任务）
      *
      * @param task 任务实现
      */
     public void registerTask(LeaderTask task) {
         manager.registerTask(task);
+    }
+
+    /**
+     * 订阅领导权/租约状态变化
+     */
+    public void addLeaderStateListener(LeaderStateListener listener) {
+        manager.addLeaderStateListener(listener);
+    }
+
+    /**
+     * 取消订阅领导权/租约状态变化
+     */
+    public void removeLeaderStateListener(LeaderStateListener listener) {
+        manager.removeLeaderStateListener(listener);
     }
 
     /**
@@ -98,5 +106,4 @@ public class LeaderFramework {
         log.info("[LeaderFramework] stopped.");
     }
 }
-
 
