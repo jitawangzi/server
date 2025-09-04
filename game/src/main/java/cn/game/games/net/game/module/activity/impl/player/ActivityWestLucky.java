@@ -69,8 +69,8 @@ public class ActivityWestLucky extends PlayerActivityBase {
         return res.build();
     }
 
-    public int getDrawItemId(){
-        return getConfigList().stream().findAny().get().ConsumeItemID;
+    public int[] getDrawItemId(){
+        return getConfigList().stream().findAny().get().PurchaseParameter;
 
     }
 
@@ -176,10 +176,13 @@ public class ActivityWestLucky extends PlayerActivityBase {
     @Override
     public void afterDestroy() {
         //销毁身上的抽奖卷
-        long num = player.getItemModule().getCount(getDrawItemId());
-        if (num > 0){
-            PlayerHelper.delResources(player,getDrawItemId(),num, OpType.ZhuanPanClearItem);
-        }
+    	int[] drawItemId = getDrawItemId(); 
+		if (drawItemId.length == 3 && drawItemId[0] == 1) { // 1=货币
+			long num = player.getItemModule().getCount(drawItemId[1]);
+			if (num > 0){
+				PlayerHelper.delResources(player,drawItemId[1],num, OpType.ZhuanPanClearItem);
+			}
+		}
     }
 
     //转盘格子抽奖信息

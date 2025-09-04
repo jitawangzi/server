@@ -665,7 +665,7 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.ID);
             return;
         }
-        player.pay(guildDonateConfig.Price);
+        player.pay(guildDonateConfig.Price,OpType.GuildDonate);
         List<RewardInfo> resources = PlayerHelper.addResources(player, guildDonateConfig.Reward, OpType.GuildDonate);
         resp.addAllRewards(resources);
         donateMap.add(id);

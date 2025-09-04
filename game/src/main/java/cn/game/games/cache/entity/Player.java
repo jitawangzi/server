@@ -567,7 +567,7 @@ public class Player {
 	 * @param cost
 	 * @return
 	 */
-	public void pay(int[] cost) {
+	public void pay(int[] cost,OpType opType) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return;
 		}

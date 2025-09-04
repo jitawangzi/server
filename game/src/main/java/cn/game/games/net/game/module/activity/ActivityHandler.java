@@ -84,6 +84,7 @@ import cn.game.protocol.protobuf.RankMsg.RankInfo;
 import cn.game.protocol.protobuf.RankMsg.RankListResponse_35000002;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRequest_11000200;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankResponse_11000201;
@@ -471,11 +472,11 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        if (!PlayerHelper.isEnough(player, activityWestLucky.getDrawItemId(), drawNum)) {
-            client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
-            return;
-        }
-        PlayerHelper.delResources(player, activityWestLucky.getDrawItemId(), drawNum, OpType.ZhuanPanDraw);
+        int[] cost = activityWestLucky.getDrawItemId(); 
+        if (drawNum > 1) {
+			cost = GameUtil.arrayMultiple(cost, drawNum); 
+		}
+        player.pay(cost, OpType.ZhuanPanDraw);
         GameLogger.activity(player, activityId, 0);
         for (int i = 0; i < drawNum; i++) {
             activityWestLucky.addDrawNum();
