@@ -245,7 +245,7 @@ public abstract class ActivityBase{
 					return endTime;
 				}
 				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
-				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.endDuration - serverOpenDay);
+				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.endDuration - serverOpenDay + 1);
 				return endTime; 
 			}
 			// 计算结束时间
@@ -275,7 +275,7 @@ public abstract class ActivityBase{
 					return endTime;
 				}
 				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
-				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.destroyDuration - serverOpenDay);
+				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.destroyDuration - serverOpenDay + 1);
 				return endTime; 
 			}
 			// 计算结束时间
