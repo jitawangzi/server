@@ -194,6 +194,8 @@ public class GameServer implements GameServerMBean {
 		PlayerManager.getInstance().init2();
 		ClassManager.getInstance().init();
 		
+		GameIdManagerInitializer.initialize();
+		
 		ActivityStateManager.getInstance().start();
 		GameActivityService.getInstance(); 
 //		ActivityStateManager.getInstance().initGlobal();
@@ -212,7 +214,6 @@ public class GameServer implements GameServerMBean {
 
 		DataFixManager.getInstance().init();
 
-		GameIdManagerInitializer.initialize();
 		RankService.getInstance().setNpcToRank();
 		initLeaderTask(); 
 //		log.info("max player id :" + dbMaxPlayerId);
@@ -240,7 +241,6 @@ public class GameServer implements GameServerMBean {
 				found = true;
 			}
 			if (!found) {
-
 				Function<Player, Boolean> function = player -> {
 					PlayerHelper.saveSimplePlayerToRedisSync(player);
 					// 初始化名字，名字--id

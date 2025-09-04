@@ -40,6 +40,9 @@ public class ActivityWestLucky extends PlayerActivityBase {
     Map<Integer,Integer> buyIdMap = new HashMap<>();
     /**抽中的格子信息*/
     Map<Integer,WestLuckyCellData> drawMap = new HashMap<>();
+    private List<Integer> rewardIndexList = new ArrayList<>();
+    
+    private int todayCount ; // 今日抽奖次数
 
     @Override
     public EventTypeEnum[] getEventTypes() {
@@ -53,6 +56,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
                 //清空刷新购买次数
                 List<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list().stream().filter(c -> c.Refresh == 1 && c.NumberPeriods == id).toList();;
                 list.forEach(c -> buyIdMap.remove(c.ID));
+                todayCount = 0;
                 break;
         }
     }
@@ -65,6 +69,9 @@ public class ActivityWestLucky extends PlayerActivityBase {
         });
         res.setActivityId(id)
                 .setOutDrawNum(totalNum)
+                .setTodayCount(todayCount)
+                .setTotalCount(totalNum)
+                .addAllRewardIndex(rewardIndexList)
                 .putAllBuyMap(buyIdMap);
         return res.build();
     }
@@ -163,6 +170,7 @@ public class ActivityWestLucky extends PlayerActivityBase {
 
     public void addDrawNum(){
         this.totalNum++;
+        this.todayCount++;
     }
 
     public int getTotalNum() {
@@ -173,7 +181,11 @@ public class ActivityWestLucky extends PlayerActivityBase {
         return buyIdMap;
     }
 
-    @Override
+    public List<Integer> getRewardIndexList() {
+		return rewardIndexList;
+	}
+
+	@Override
     public void afterDestroy() {
         //销毁身上的抽奖卷
     	int[] drawItemId = getDrawItemId(); 

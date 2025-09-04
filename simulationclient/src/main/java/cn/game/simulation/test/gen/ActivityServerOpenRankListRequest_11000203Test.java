@@ -12,7 +12,7 @@ public class ActivityServerOpenRankListRequest_11000203Test extends ServerTest{
 	@Override
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.newBuilder() ; 
-		builder.setType(2); 
+		builder.setType(105); 
 		builder.setPage(1); 
 		builder.setPageSize(20);
 		

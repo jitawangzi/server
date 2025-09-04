@@ -9,11 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 import org.springframework.stereotype.Component;
-
 import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.log.GameLogger;
@@ -42,13 +39,16 @@ import cn.game.protocol.generated.config.ActivityMeiRiTeHuiConfig;
 import cn.game.protocol.generated.config.ActivityQingShenConfig;
 import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
+import cn.game.protocol.generated.config.ActivityWestLuckyProgressConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
 import cn.game.protocol.generated.config.FirstChargeConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.SevenDaysSigninConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.generated.manager.ActivityMeiRiTeHuiManager;
 import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
+import cn.game.protocol.generated.manager.ActivityWestLuckyProgressManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyTurntableManager;
 import cn.game.protocol.generated.manager.FirstChargeManager;
 import cn.game.protocol.generated.manager.SevenDaysSigninManager;
@@ -94,6 +94,8 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_1
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListResponse_11000204;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardResponse_11000206;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097;
+import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardResponse_11000098;
 
 /**
  * 活动处理器
@@ -129,6 +131,7 @@ public class ActivityHandler extends GameBaseHandler {
         putInvoker(PbProtocol.ActivityServerOpenRankRequest_11000200, this::serverOpenRank);
         putInvoker(PbProtocol.ActivityServerOpenRankListRequest_11000203, this::serverOpenRankList);
         putInvoker(PbProtocol.ActivityServerOpenRankRewardRequest_11000205, this::serverOpenRankReward);
+        putInvoker(PbProtocol.ActivityWestLuckyCountRewardRequest_11000097, this::westLuckyCountReward);
     }
 
     private void empty(NetClient client, Object message) {
@@ -472,10 +475,14 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        int[] cost = activityWestLucky.getDrawItemId(); 
-        if (drawNum > 1) {
-			cost = GameUtil.arrayMultiple(cost, drawNum); 
+        if (activityWestLucky.getTotalNum() + drawNum > GlobalConst.ActivityWestLuckyDayCount) {
+            client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+            return;
 		}
+        int[] cost = activityWestLucky.getDrawItemId();
+        if (drawNum > 1) {
+            cost = GameUtil.arrayMultiple(cost, drawNum);
+        }
         player.pay(cost, OpType.ZhuanPanDraw);
         GameLogger.activity(player, activityId, 0);
         for (int i = 0; i < drawNum; i++) {
@@ -600,31 +607,35 @@ public class ActivityHandler extends GameBaseHandler {
         ActivityServerOpenRankListResponse_11000204 defaultInstance = ActivityServerOpenRankListResponse_11000204.getDefaultInstance();
         ActivityServerOpenRankListResponse_11000204.Builder resp = ActivityServerOpenRankListResponse_11000204.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-		if (pageSize > 100) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
-			return;
+        if (pageSize > 100) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+            return;
+        }
+        int serverOpenDay = ServerHelper.getServerOpenDay(player.getServerId());
+        ActivityServerOpenRankConfig curConfig = ActivityServerOpenRankManager.instance().get(serverOpenDay);
+        ActivityServerOpenRankConfig targetConfig = null;
+        Collection<ActivityServerOpenRankConfig> list = ActivityServerOpenRankManager.instance().list();
+        for (ActivityServerOpenRankConfig activityServerOpenRankConfig2 : list) {
+            if (activityServerOpenRankConfig2.RankID == type) {
+                targetConfig = activityServerOpenRankConfig2;
+                break;
+            }
+        }
+        
+        RankType rankType = null;
+        if (curConfig == targetConfig) {
+            rankType = RankType.get(targetConfig.RankID);
+        } else {
+            rankType = RankType.get(targetConfig.RankID);
+        }
+        if (type == RankType.TotalServerOpenActivity.ID) {
+        	rankType = RankType.TotalServerOpenActivity;
 		}
-		int serverOpenDay = ServerHelper.getServerOpenDay(player.getServerId()); 
-		ActivityServerOpenRankConfig curConfig = ActivityServerOpenRankManager.instance().get(serverOpenDay); 
-		ActivityServerOpenRankConfig targetConfig = null;
-		Collection<ActivityServerOpenRankConfig> list = ActivityServerOpenRankManager.instance().list(); 
-		for (ActivityServerOpenRankConfig activityServerOpenRankConfig2 : list) {
-			if (activityServerOpenRankConfig2.RankID == type) {
-				targetConfig = activityServerOpenRankConfig2 ;
-				break; 
-			}
-		}
-		RankType rankType = null; 
-		if (curConfig == targetConfig) {
-			rankType =RankType.get(targetConfig.RankID);
-		}else {
-			rankType =RankType.get(targetConfig.RankID);
-		}
-		CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
-		rankInfo.thenAccept(r -> {
-			resp.setRankInfo(r);
-			client.sendProtocol(resp.build());
-		}).exceptionally(player::handleFailFunction);
+        CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
+        rankInfo.thenAccept(r -> {
+            resp.setRankInfo(r);
+            client.sendProtocol(resp.build());
+        }).exceptionally(player::handleFailFunction);
     }
 
     private void serverOpenRankReward(NetClient client, Object message) {
@@ -638,8 +649,44 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        List<RewardInfo> receive = activity.receive(0); 
-        resp.addAllRewards(receive); 
+        List<RewardInfo> receive = activity.receive(0);
+        resp.addAllRewards(receive);
+        client.sendProtocol(resp.build());
+    }
+
+    private void westLuckyCountReward(NetClient client, Object message) {
+        ActivityWestLuckyCountRewardRequest_11000097 req = (ActivityWestLuckyCountRewardRequest_11000097) message;
+        List<Integer> rewardIndexList = req.getRewardIndexList();
+        int activityId = req.getActivityId(); 
+        ActivityWestLuckyCountRewardResponse_11000098 defaultInstance = ActivityWestLuckyCountRewardResponse_11000098.getDefaultInstance();
+        ActivityWestLuckyCountRewardResponse_11000098.Builder resp = ActivityWestLuckyCountRewardResponse_11000098.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        
+        ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
+        if (activityWestLucky == null) {
+            client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        List<Integer> rewardIndexList2 = activityWestLucky.getRewardIndexList(); 
+        for (Integer integer : rewardIndexList) {
+			if (rewardIndexList2.contains(integer)) {
+				client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+				return;
+			}
+		}
+        ActivityWestLuckyProgressConfig activityWestLuckyProgressConfig = ActivityWestLuckyProgressManager.instance().get(activityId); 
+        int totalNum = activityWestLucky.getTotalNum(); 
+        for (Integer integer : rewardIndexList) {
+        	if (activityWestLuckyProgressConfig.count[integer] > totalNum) {
+        		client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+        		return;
+        	}
+		}
+        for (int i = 0; i < rewardIndexList.size(); i++) {
+        	List<RewardInfo> resources = PlayerHelper.addResources(player, activityWestLuckyProgressConfig.reward[i], OpType.ZhuanPanCountReward);
+        	resp.addAllReward(resources); 
+		}
+        rewardIndexList2.addAll(rewardIndexList); 
         client.sendProtocol(resp.build());
     }
 }
