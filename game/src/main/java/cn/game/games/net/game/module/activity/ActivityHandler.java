@@ -623,14 +623,15 @@ public class ActivityHandler extends GameBaseHandler {
         }
         
         RankType rankType = null;
-        if (curConfig == targetConfig) {
-            rankType = RankType.get(targetConfig.RankID);
-        } else {
-            rankType = RankType.get(targetConfig.RankID);
-        }
         if (type == RankType.TotalServerOpenActivity.ID) {
         	rankType = RankType.TotalServerOpenActivity;
-		}
+        }else {
+        	if (curConfig == targetConfig) {
+        		rankType = RankType.get(targetConfig.RankID);
+        	} else {
+        		rankType = RankType.get(targetConfig.RankID);
+        	}
+        }
         CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
         rankInfo.thenAccept(r -> {
             resp.setRankInfo(r);
