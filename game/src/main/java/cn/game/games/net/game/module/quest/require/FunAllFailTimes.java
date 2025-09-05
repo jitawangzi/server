@@ -24,6 +24,6 @@ public class FunAllFailTimes extends AbstractCumulativeCondition {
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
 		BattleConfig battleConfig = BattleManager.instance().get(event.get(0));
-		return !event.getBoolParameter(1) &&  getParam() > 0 && getParam() == battleConfig.BattleType;
+		return !event.getBoolParameter(2) && getParam() == 0 || getParam() > 0 && getParam() == battleConfig.BattleType;
 	}
 }
