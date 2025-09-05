@@ -2,6 +2,9 @@ package cn.game.games.net.game.module.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
+import java.util.function.LongFunction;
+import java.util.function.ToIntFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +34,8 @@ import io.vertx.core.Future;
  * 2021年6月9日 下午12:15:20
  * @author SYQ
  */
-public abstract class ActivityBase{
-	protected final static  transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
-
+public abstract class ActivityBase {
+	protected final static transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
 
 	/** 只序列化字段，不调用get()序列化 */
 	private static transient final boolean fieldBased = true;
@@ -59,9 +61,11 @@ public abstract class ActivityBase{
 	public boolean hasRed() {
 		return false;
 	}
+
 	public abstract Message buildActivityShowInfo();
 
 	public abstract void registerEvent();
+
 	public abstract void unregisterEvent();
 
 	public Message buildActivityShowInfo(int id) {
@@ -77,6 +81,7 @@ public abstract class ActivityBase{
 	public boolean canJoin(long playerId) {
 		return true; // 默认都可以参加
 	}
+
 	public ActivityInfo buildActivityInfo() {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
@@ -98,8 +103,8 @@ public abstract class ActivityBase{
 	public abstract List<RewardInfo> receive(int id);
 
 	@Deprecated
-	public   Future<List<RewardInfo>> asyncReceive(int id){
-        return Future.succeededFuture(receive(id));
+	public Future<List<RewardInfo>> asyncReceive(int id) {
+		return Future.succeededFuture(receive(id));
 	}
 
 	/**
@@ -108,28 +113,29 @@ public abstract class ActivityBase{
 	 * @return 错误码
 	 */
 	@Deprecated
-	public  int canReceive(List<Integer> ids){
+	public int canReceive(List<Integer> ids) {
 		return ErrorMsgEnum.ok.ID;
 	};
+
 	@Deprecated
-	public  int canReceive(List<Integer> ids,List<Integer> rewardIdList, Player player){
+	public int canReceive(List<Integer> ids, List<Integer> rewardIdList, Player player) {
 		int failSize = 0;
 		int errCode = 0;
 		QuestModule questModule = player.getQuestModule();
-		for (int taskId :ids ) {
-			if (rewardIdList.contains(taskId)){
+		for (int taskId : ids) {
+			if (rewardIdList.contains(taskId)) {
 				failSize++;
 				errCode = ErrorMsgEnum.activity_lei_chong_has_reward.ID;
 				continue;
 			}
 			Quest quest = questModule.get(taskId);
-			if (quest.getState() != QuestHelper.CAN_GIVEWARD){
+			if (quest.getState() != QuestHelper.CAN_GIVEWARD) {
 				failSize++;
 				errCode = ErrorMsgEnum.activity_task_not_finish.ID;
 				continue;
 			}
 		}
-		if (failSize == ids.size()){
+		if (failSize == ids.size()) {
 			return errCode;
 		}
 		return ErrorMsgEnum.ok.ID;
@@ -144,6 +150,7 @@ public abstract class ActivityBase{
 		this.destroyTime = calcDestroyTime();
 		afterStart();
 	}
+
 	/** 活动结束,可能还保留，领取活动奖励等 */
 	public void end() {
 		this.state = ActivityState.CLOSE_VALUE;
@@ -157,17 +164,20 @@ public abstract class ActivityBase{
 		unregisterEvent();
 		afterDestroy();
 	};
+
 	/** 
 	 * 活动开始后的一些自定义行为
 	 */
 	protected void afterStart() {
-		
+
 	}
+
 	protected void afterEnd() {
-		
+
 	}
+
 	protected void afterDestroy() {
-		
+
 	}
 
 	/** 
@@ -182,7 +192,7 @@ public abstract class ActivityBase{
 	public void init(int id, Object owner, boolean isNew) {
 
 		this.id = id;
-		registerEvent(); 
+		registerEvent();
 		if (isNew) {
 			startUp();
 		}
@@ -216,84 +226,75 @@ public abstract class ActivityBase{
 	public long getEndTime() {
 		return endTime;
 	}
-	
+
 	public long getDestroyTime() {
 		return destroyTime;
 	}
+
 	public String getServerId() {
 		return serverId;
 	}
+
 	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
-	/** 
-	 * 获取活动的结束时间
-	 * @return
+
+	/**
+	 * 计算通用的结束/销毁时间
+	 * @param durationType 获取时长类型的函数引用（如 cfg -> cfg.endDurationType）
+	 * @param duration 获取时长值的函数引用（如 cfg -> cfg.endDuration）
+	 * @param fallback 兜底获取时间的函数引用（如 id -> ActivityStateManager.getInstance().getEndTime(id)）
 	 */
-	public long calcEndTime() {
-		long endTime = 0 ; 
+	private long calcTime(ToIntFunction<ActivityConfig> durationType, ToIntFunction<ActivityConfig> duration, IntFunction<Long> fallback) {
+		long result = 0;
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.endDurationType > 0) {
+		int dType = durationType.applyAsInt(activityConfig);
+
+		if (dType > 0) {
 			if (startTime == 0) { // 还没开始，默认返回0
-				return endTime;
+				return result;
 			}
 			if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
 				// 按开服时间开启的活动
 				String serverId = getServerId();
 				if (serverId == null || serverId.isEmpty()) {
 					log.error("按开服时间开启的活动，必须指定服务器id");
-					return endTime;
+					return result;
 				}
-				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
-				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.endDuration - serverOpenDay + 1);
-				return endTime; 
+				int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
+				int d = duration.applyAsInt(activityConfig);
+				return DateUtil.nextDayStartTime(System.currentTimeMillis(), d - serverOpenDay + 1);
 			}
 			// 计算结束时间
-			if (activityConfig.endDurationType == 1) {
-				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.endDuration);
-			} else if (activityConfig.endDurationType == 2) {
-				endTime = startTime + activityConfig.endDuration * 1000;
+			int d = duration.applyAsInt(activityConfig);
+			if (dType == 1) {
+				return DateUtil.nextDayStartTime(startTime, d);
+			} else if (dType == 2) {
+				return startTime + d * 1000L;
+			} else {
+				// 未知类型，按0返回或可记录告警
+				return result;
 			}
 		} else {
-			// 按时间开启的活动
-			endTime = ActivityStateManager.getInstance().getEndTime(id);
+			// 按时间开启的活动，走兜底
+			return fallback.apply(id);
 		}
-		return endTime;
 	}
+
+	public long calcEndTime() {
+		return calcTime(cfg -> cfg.endDurationType, cfg -> cfg.endDuration,
+				activityId -> ActivityStateManager.getInstance().getEndTime(activityId));
+	}
+
 	public long calcDestroyTime() {
-		long endTime = 0 ; 
-		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		if (activityConfig.destroyDurationType > 0) {
-			if (startTime == 0) { // 还没开始，默认返回0
-				return endTime;
-			}
-			if (activityConfig.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
-				// 按开服时间开启的活动
-				String serverId = getServerId();
-				if (serverId == null || serverId.isEmpty()) {
-					log.error("按开服时间开启的活动，必须指定服务器id");
-					return endTime;
-				}
-				int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
-				endTime = DateUtil.nextDayStartTime(System.currentTimeMillis(), activityConfig.destroyDuration - serverOpenDay + 1);
-				return endTime; 
-			}
-			// 计算结束时间
-			if (activityConfig.destroyDurationType == 1) {
-				endTime = DateUtil.nextDayStartTime(startTime, activityConfig.destroyDuration);
-			} else if (activityConfig.destroyDurationType == 2) {
-				endTime = startTime + activityConfig.destroyDuration * 1000;
-			}
-		} else {
-			// 按时间开启的活动
-			endTime = ActivityStateManager.getInstance().getDestroyTime(id);
-		}
-		return endTime;
+		return calcTime(cfg -> cfg.destroyDurationType, cfg -> cfg.destroyDuration,
+				activityId -> ActivityStateManager.getInstance().getDestroyTime(activityId));
 	}
 
 	/**
 	 * 检测活动是否能够刷新 且刷新
 	 */
 	@Deprecated
-	public  void checkRefreshActivity(){};
+	public void checkRefreshActivity() {
+	};
 }

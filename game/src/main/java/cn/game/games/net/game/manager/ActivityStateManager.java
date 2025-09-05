@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
@@ -349,29 +350,61 @@ public class ActivityStateManager {
 		return startDate;
 	}
 
-	/** 
-	 * 获取本期活动的结束时间(按照时间开启的活动)
-	 * @param id
-	 * @return
+	/**
+	 * 通用：获取本期活动的某类时间（结束/销毁），仅针对“按时间开启的活动”
+	 * - 优先按 Cron（List<CronExpression>）
+	 * - 否则按活动期次从时间列表中取，并按周期偏移
+	 *
+	 * @param id 活动ID
+	 * @param cronExtractor 提取对应的 Cron 列表（如 cfg -> cfg.endCronList 或 cfg -> cfg.destroyCronList）
+	 * @param timesExtractor 提取对应的时间列表（如 cfg -> cfg.endTime 或 cfg -> cfg.destroyTime）
+	 * @return 目标时间，若无法确定则返回 null
 	 */
-	public Date getEndDate(int id) {
+	private Date getDateByTimeMode(int id, Function<ActivityConfig, List<CronExpression>> cronExtractor,
+			Function<ActivityConfig, List<Date>> timesExtractor) {
 		ActivityConfig cfg = ActivityManager.instance().get(id);
+		if (cfg == null)
+			return null;
 
-		// Cron 优先
-		if (hasAnyCron(cfg) && cfg.endCron != null && !cfg.endCron.isEmpty()) {
-			return nextByCrons(cfg.endCron, new Date());
+		// Cron 优先：仅依据对应字段是否为空来判断，避免被其他空字段影响
+		List<CronExpression> crons = cronExtractor.apply(cfg);
+		if (crons != null && !crons.isEmpty()) {
+			return nextByCrons(crons, new Date());
 		}
 
+		// 无 Cron，按时间列表计算
 		Pair<Integer, ActivityState> activity = getActivityState(id);
-		if (activity == null) {
+		if (activity == null)
+			return null;
+
+		List<Date> times = timesExtractor.apply(cfg);
+		if (times == null || times.isEmpty())
+			return null;
+
+		int index = activity.first;
+		if (index < 0 || index >= times.size()) {
+			 log.warn("Activity {} time index out of bounds: idx={}, size={}", id, index,times.size());
+			// times.size());
 			return null;
 		}
-		if (cfg.endTime.isEmpty()) {
+
+		Date base = times.get(index);
+		if (base == null)
 			return null;
-		}
-		Date endDate = cfg.endTime.get(activity.first);
-		endDate = DateUtil.changeDateByPeriod(endDate, cfg.period, getPeriodPass(id));
-		return endDate;
+
+		return DateUtil.changeDateByPeriod(base, cfg.period, getPeriodPass(id));
+	}
+
+	public Date getEndDate(int id) {
+		return getDateByTimeMode(id, cfg -> cfg.endCron, // List<CronExpression>
+				cfg -> cfg.endTime 
+		);
+	}
+
+	public Date getDestroyDate(int id) {
+		return getDateByTimeMode(id, cfg -> cfg.destroyCron, // List<CronExpression>
+				cfg -> cfg.destroyTime 
+		);
 	}
 
 	public long getEndTime(int id) {
@@ -388,36 +421,12 @@ public class ActivityStateManager {
 		long endTime = getEndTime(id);
 		return (int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000);
 	}
-	/** 
-	 * 获取本期活动的销毁时间(按照时间开启的活动)
-	 * @param id
-	 * @return
-	 */
-	public Date getDestroyDate(int id) {
-		ActivityConfig cfg = ActivityManager.instance().get(id);
-		
-		// Cron 优先
-		if (hasAnyCron(cfg) && cfg.destroyCron != null && !cfg.destroyCron.isEmpty()) {
-			return nextByCrons(cfg.destroyCron, new Date());
-		}
-		
-		Pair<Integer, ActivityState> activity = getActivityState(id);
-		if (activity == null) {
-			return null;
-		}
-		if (cfg.destroyTime.isEmpty()) {
-			return null;
-		}
-		Date endDate = cfg.destroyTime.get(activity.first);
-		endDate = DateUtil.changeDateByPeriod(endDate, cfg.period, getPeriodPass(id));
-		return endDate;
-	}
-	
+
 	public long getDestroyTime(int id) {
 		Date endDate = getDestroyDate(id);
 		return endDate == null ? 0 : endDate.getTime();
 	}
-	
+
 	/** 
 	 * 距离活动销毁还有多少秒
 	 * @param id

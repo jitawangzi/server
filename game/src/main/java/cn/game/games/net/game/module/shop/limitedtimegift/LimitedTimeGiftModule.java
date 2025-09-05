@@ -112,7 +112,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 
 	}
 
-	private void refreshLimitedTimeGiftCheck(boolean notify) {
+	private void refreshLimitedTimeGiftCheck() {
 		Map<Integer, List<LimitedTimeGiftConfig>> map = LimitedTimeGiftManager.instance().getGroups();
 		map.forEach((k, list) -> {
 			boolean isGroupActive = false;
@@ -198,13 +198,13 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 		case LevelUp:
 			int exp = event.getIntParameter(0);
 			if (exp == Asset.playerExp.ID) {
-				refreshLimitedTimeGiftCheck(true);
+				refreshLimitedTimeGiftCheck();
 			}
 			break;
 		case FuncOpen:
 			InitialUI func = event.getParameter(0);
 			if (func == InitialUI.XianShiLiBao) {
-				refreshLimitedTimeGiftCheck(player.isIslogining() ? false : true);
+				refreshLimitedTimeGiftCheck();
 			}
 			break;
 		default:
@@ -214,6 +214,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 
 	@Override
 	public void onLogin() {
+		refreshLimitedTimeGiftCheck(); 
 		long now = DateUtil.currentTimeMillis();
 
 		Iterator<Entry<Integer, LimitedTimeGiftData>> iterator = limitedTimeGifts.entrySet().iterator();
