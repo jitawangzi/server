@@ -330,7 +330,9 @@ public class PlayerModule extends BasePlayerModule {
 				// 给等级奖励
 				UserUpgradeConfig userUpgradeConfig = UserUpgradeManager.instance().get(level);
 				List<RewardInfo> reward = PlayerHelper.addResources(player, userUpgradeConfig.LvReward, OpType.PlayerLevelUp);
-				player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
+				if (!reward.isEmpty()) {
+					player.getGameClient().sendProtocol(RewardMsg.RewardPush_55000501.newBuilder().addAllRewards(reward));
+				}
 			}
 			break;
 		}
