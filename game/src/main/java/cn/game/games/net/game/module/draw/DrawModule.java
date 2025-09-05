@@ -37,7 +37,7 @@ import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class DrawModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
 	/** 当前第几档必送神将,key：GiftCardConfig 表id */
 	@Deprecated
 	private IntMapWrapper giftIndex = new IntMapWrapper();
@@ -82,6 +82,10 @@ public class DrawModule extends BasePlayerModule {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 
+		case PLAYER_CREATE: {
+			heroRecruit.initHeros();
+			break;
+		}
 		case NewDay: {
 			freeDrawCount.clear();
 			break;

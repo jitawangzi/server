@@ -43,8 +43,18 @@ public class HeroRecruit {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
+	/** 
+	 * 不需要刷新的情况
+	 * @return
+	 */
+	public boolean notRefresh() {
+		return heroRefreshTime == 0 ; 
+	}
 
 	public boolean checkRefresh() {
+		if (notRefresh()) {
+			return false;
+		}
 		int t = GlobalConst.GachaRefreshTime - (DateUtil.currentTimeSeconds() - this.getHeroRefreshTime());
 		return t <= 0;
 	}
@@ -82,6 +92,18 @@ public class HeroRecruit {
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
 	}
+	public void initHeros() {
+		if (!itemIdList.isEmpty()) {
+			return ; 
+		}
+		int[][] gachaFirstTime = GlobalConst.GachaFirstTime;
+		for (int i = 0; i < gachaFirstTime.length; i++) {
+			int itemId = gachaFirstTime[i][0];
+			int itemCount = gachaFirstTime[i][1];
+			itemIdList.add(itemId);
+			itemCountList.add(itemCount);
+		}
+	}
 
 	public DrawHeroInfo buildDrawHeroInfo() {
 		DrawHeroInfo.Builder resp = DrawHeroInfo.newBuilder();
@@ -90,8 +112,12 @@ public class HeroRecruit {
 		resp.addAllRecruitedPos(recruitedPosList);
 
 		resp.setCanMultiple(recruitCount > 15);
-		int t = GlobalConst.GachaRefreshTime - (DateUtil.currentTimeSeconds() - this.getHeroRefreshTime());
-		resp.setFreeRefreshRemaningSeconds(t > 0 ? t : 0);
+		if (notRefresh()) {
+			resp.setFreeRefreshRemaningSeconds(-1);
+		}else {
+			int t = GlobalConst.GachaRefreshTime - (DateUtil.currentTimeSeconds() - this.getHeroRefreshTime());
+			resp.setFreeRefreshRemaningSeconds(t > 0 ? t : 0);
+		}
 
 		GuaranteeModule guaranteeModule = player.getGuaranteeModule();
 		Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
@@ -128,10 +154,6 @@ public class HeroRecruit {
 
 	public int getHeroRefreshTime() {
 		return heroRefreshTime;
-	}
-
-	public void setHeroRefreshTime(int heroRefreshTime) {
-		this.heroRefreshTime = heroRefreshTime;
 	}
 
 	public int getRecruitCount() {

@@ -238,11 +238,14 @@ public class DrawHandler extends GameBaseHandler {
 		HeroRecruit heroRecruit = drawModule.getHeroRecruit();
 		List<Integer> recruitedPosList = heroRecruit.getRecruitedPosList();
 
-		List<Integer> allPos = Lists.newArrayList(0, 1, 2);
-		allPos.removeAll(recruitedPosList);
-
-		int pos = Rnd.randomElement(allPos);
-
+		int pos = 0; 
+		if (heroRecruit.notRefresh()) {
+			pos = 1; 
+		}else {
+			List<Integer> allPos = Lists.newArrayList(0, 1, 2);
+			allPos.removeAll(recruitedPosList);
+			pos = Rnd.randomElement(allPos);
+		}
 //		if (recruitedPosList.contains(pos)) {
 //			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
 //			return;
