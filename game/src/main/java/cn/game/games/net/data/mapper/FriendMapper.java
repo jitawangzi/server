@@ -40,6 +40,11 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<Friend> selectAll();
 
 	/**

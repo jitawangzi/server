@@ -39,6 +39,11 @@ public interface EquiptowerHelpMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<EquiptowerHelp> selectAll();
 
 	/**

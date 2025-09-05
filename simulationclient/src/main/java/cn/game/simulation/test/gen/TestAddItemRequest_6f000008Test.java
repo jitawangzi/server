@@ -13,7 +13,7 @@ public class TestAddItemRequest_6f000008Test extends ServerTest{
 		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.newBuilder() ; 
 //		builder.setId(Asset.playerExp.ID);
 //		builder.setId(214001);
-		builder.setId(1);
+		builder.setId(80);
 //		builder.setCount(Integer.MAX_VALUE / 2);
 //		builder.setCount(0);
 //		

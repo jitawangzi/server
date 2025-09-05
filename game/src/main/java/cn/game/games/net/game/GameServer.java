@@ -256,6 +256,7 @@ public class GameServer implements GameServerMBean {
 			lock.unlock();
 		}
 	}
+	
 	/** 
 	 * 初始化1000个机器人，给某些玩法使用
 	 */

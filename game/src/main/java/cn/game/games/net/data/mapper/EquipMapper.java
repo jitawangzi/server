@@ -41,6 +41,11 @@ public interface EquipMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<Equip> selectAll();
 
 	/**

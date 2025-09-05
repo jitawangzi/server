@@ -37,7 +37,6 @@ import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
-import cn.game.games.cache.entity.Equip;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -48,10 +47,12 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.core.push.PushService;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.cross.guild.GuildHelper;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
+import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.data.mapper.FriendApplicationMapper;
 import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.data.mapper.GuildJoinMapper;
 import cn.game.games.net.data.mapper.InviteMapper;
 import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -64,25 +65,19 @@ import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.IBattleHandler;
 import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.PVEVPBattle;
 import cn.game.games.net.game.module.battle.TowerBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
-import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.develop.gem.GemModule;
-import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
-import cn.game.games.net.game.module.rank.RankModule;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.ConsumeConfig;
-import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.ExpConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
@@ -94,7 +89,6 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.ConsumeManager;
-import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.FundPassUpgradeManager;
 import cn.game.protocol.generated.manager.HeroBandBookManager;
@@ -133,9 +127,7 @@ import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.reflect.MethodUtil;
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Promise;
-import io.vertx.core.internal.ContextInternal;
 import io.vertx.core.json.JsonObject;
 
 public class PlayerHelper {
@@ -656,8 +648,6 @@ public class PlayerHelper {
 			player.getCurrencyModule().setMaxCurrency();
 		}
 
-
-
 		GameLogger.rolebuild(player);
 	}
 
@@ -683,7 +673,7 @@ public class PlayerHelper {
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
 			saveClientCache(player.getPlayerId());
 			AttrModule attrModule = player.getAttrModule();
-			attrModule.calcPower(); 
+			attrModule.calcPower();
 			PlayerHelper.saveSimplePlayerToRedis(player);
 		});
 		// 上线后生成自己的简单信息
@@ -1633,6 +1623,7 @@ public class PlayerHelper {
 		Future<SimplePlayer> simplePlayer = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
 		return simplePlayer.map(SimplePlayer::getServerId);
 	}
+
 	public static String getServerId(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {
@@ -1849,6 +1840,8 @@ public class PlayerHelper {
 		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
 		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
 		tasks.add(new DbTask(MailMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(EquiptowerHelpMapper.class, MapperConstant.deleteByPlayerId, playerId));
+		tasks.add(new DbTask(GuildJoinMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
 
 		DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).toCompletionStage().thenCompose(r -> {
 			PlayerData playerData = (PlayerData) r;
@@ -1857,6 +1850,11 @@ public class PlayerHelper {
 			// 排行榜
 			for (RankType rankType : RankType.values()) {
 				RankService.getInstance().removeRankAsync(rankType, playerData.getServerId(), playerData.getPlayerId());
+			}
+			long unionId = playerData.getUnionId();
+			if (unionId > 0) {
+				GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(unionId);
+				guildProxy.quitGuild(unionId, playerId, playerData.getName());
 			}
 			// 简要数据
 			String key = CacheType.PLAYER_SIMPLE.key(playerId);

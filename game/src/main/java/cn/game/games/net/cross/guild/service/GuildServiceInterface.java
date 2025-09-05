@@ -138,5 +138,4 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	
 	Future<?> donate(long guildId, long playerId, int donateType);
 	
-
 }

@@ -39,6 +39,11 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByFixName(@Param("fixName") String fixName);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<DataFixLog> selectAll();
 
 	/**

@@ -21,6 +21,7 @@
 		<!-- 使用的插件 -->
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="org.mybatis.generator.plugins.SelectByIndexPlugin" />
+		<plugin type="org.mybatis.generator.plugins.DeleteByIndexPlugin" />
 		<plugin type="org.mybatis.generator.plugins.SelectAllPlugin" />
     	<plugin type="org.mybatis.generator.plugins.GetBatchOffsetPlugin" />
     	<plugin type="org.mybatis.generator.plugins.GetBatchCursorPlugin" />

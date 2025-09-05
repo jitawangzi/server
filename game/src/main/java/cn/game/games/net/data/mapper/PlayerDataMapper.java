@@ -44,6 +44,11 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByUid(@Param("uid") long uid);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<PlayerData> selectAll();
 
 	/**

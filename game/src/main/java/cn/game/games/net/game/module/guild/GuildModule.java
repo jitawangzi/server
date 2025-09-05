@@ -205,6 +205,7 @@ public class GuildModule extends BasePlayerModule {
 		if (guildJoin != null) {
 			guildJoin.delete(); 
 			guildJoin = null;
+			player.getData().setUnionId(0);
 		}
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
 	}
@@ -235,6 +236,7 @@ public class GuildModule extends BasePlayerModule {
 			guildJoin.setPlayerId(playerId);
 			guildJoin.setGuildId(guildId);
 			guildJoin.setCreateTime(DateUtil.currentTimeMillis());
+			player.getData().setUnionId(guildId);
 		}
 		player.handleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
 	}

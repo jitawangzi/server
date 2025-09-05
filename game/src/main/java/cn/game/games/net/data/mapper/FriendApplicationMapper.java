@@ -46,6 +46,16 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByApplyid(@Param("applyPlayerId") long applyPlayerId);
+
+	/**
+	 * @mbg.generated
+	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<FriendApplication> selectAll();
 
 	/**

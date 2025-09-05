@@ -41,6 +41,11 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<Mail> selectAll();
 
 	/**

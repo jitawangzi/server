@@ -104,6 +104,9 @@ public abstract class AbstractActivityManager {
 	public void destroy(int id, boolean notify) {
 		ActivityBase activityBase = activities.remove(id);
 		if (activityBase != null) {
+			if (activityBase.getState() == ActivityState.NONE_VALUE) {
+				return;
+			}
 			beforeActivityDestroy(activityBase);
 			if (notify) {
 				activityBase.setState(ActivityState.NONE_VALUE);
@@ -116,6 +119,9 @@ public abstract class AbstractActivityManager {
 	public void end(int id, boolean notify) {
 		ActivityBase activityBase = activities.get(id);
 		if (activityBase != null) {
+			if (activityBase.getState() == ActivityState.CLOSE_VALUE) {
+				return;
+			}
 			beforeActivityEnd(activityBase);
 			if (notify) {
 				activityBase.setState(ActivityState.CLOSE_VALUE);

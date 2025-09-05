@@ -39,6 +39,11 @@ public interface OfflineActionMapper {
 	/**
 	 * @mbg.generated
 	 */
+	int deleteByPlayerId(@Param("playerId") long playerId);
+
+	/**
+	 * @mbg.generated
+	 */
 	List<OfflineAction> selectAll();
 
 	/**

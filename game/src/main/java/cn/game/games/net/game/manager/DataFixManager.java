@@ -13,8 +13,13 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.base.ServerContext;
+import cn.game.core.db.GenericDataLoader;
 import cn.game.games.cache.entity.DataFixLog;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.PlayerData;
+import cn.game.games.net.cross.CrossServer;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -304,13 +309,64 @@ public class DataFixManager {
 		log.setExecutedAt(new Date());
 		bean.insert(log);
 	}
-}
+
+	/** 
+	 * 仅测试删除失效玩家使用
+	 */
+	public void deleteInactivePlayers() {
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
+			return ; 
+		}
+		int totalFailed = 0;
+
+		try {
+			Function<Player, Boolean> function = player -> {
+				PlayerHelper.saveSimplePlayerToRedisSync(player);
+				// 初始化名字，名字--id
+				PlayerNameManager.getInstance().addExistingUsername(player.getData().getName());
+				PlayerNameManager.getInstance().saveName2IdSync(player.getData().getName(), player.getData().getPlayerId());
+				return false;
+			};
+			PlayerDataMapper bean = SpringContextLoader.getContext().getBean(PlayerDataMapper.class);
+			long lastId = 0;
+			bean.getLastIdOfBatch(lastId, 100);
+			while (true) {
+				List<PlayerData> playerDatas = bean.getBatchCursor(lastId, 100);
+				if (playerDatas.isEmpty()) {
+					break;
+				}
+				for (PlayerData playerData : playerDatas) {
+					if (PlayerManager.getInstance().isOnline(playerData.getPlayerId())) {
+						continue;
+					}
+					try {
+						Player player = new Player(playerData);
+						player.setOnline(false);
+						function.apply(player);
+					} catch (Exception e) {
+						totalFailed ++ ;
+						log.error("refreshSimplePlayers error for playerId: " + playerData.getPlayerId() +  e.getMessage());
+						if (e.getMessage() != null && e.getMessage().contains("json 反序列化异常")) {
+							PlayerHelper.deletePlayerData(playerData.getPlayerId());
+						}
+					}
+
+				}
+				lastId = playerDatas.get(playerDatas.size() - 1).getPlayerId();
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+		}
+		System.err.println("总失败数: " + totalFailed);
+	}
 
 //自定义注解，用于标记修正方法
-@Retention(RetentionPolicy.RUNTIME) // 注解在运行时可用
-@Target(ElementType.METHOD) // 仅可用于方法
-@interface DataFix {
-	String description() default ""; // 修正方法的描述
+	@Retention(RetentionPolicy.RUNTIME) // 注解在运行时可用
+	@Target(ElementType.METHOD) // 仅可用于方法
+	@interface DataFix {
+		String description() default ""; // 修正方法的描述
 
-	boolean deprecated() default false; // 是否标记为废弃, 默认为否,如果执行过了，可以手动标记为true
+		boolean deprecated() default false; // 是否标记为废弃, 默认为否,如果执行过了，可以手动标记为true
+	}
 }
