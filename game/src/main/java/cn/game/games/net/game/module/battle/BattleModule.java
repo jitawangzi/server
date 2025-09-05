@@ -791,4 +791,8 @@ public class BattleModule extends BasePlayerModule  {
     	}
     	return heros;
     }
+	@Override
+	public int processOrder() {
+		return EVENT_PROCESS_ORDER_HIGH;
+	}
 }

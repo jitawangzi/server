@@ -142,7 +142,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 				PbProtocol.GuildQuitPush_40000024);
 		
 		// 给成员发邮件
-		Guild guild = GuildManager.getInstance().getGuild(playerId); 
+		Guild guild = GuildManager.getInstance().getGuild(guildId); 
 		int mailId = quitType ==0 ? 0 :  quitType == 1 ? 25 : 26;
 		if (mailId > 0) {
 			MailHelper.sendMail(playerId, mailId,true,guild.getName()); 
