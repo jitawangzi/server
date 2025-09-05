@@ -66,7 +66,7 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 			if (battleConfig.preBattle == lastCompleteBattleId) { // 第一次通关
 				List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.XiangYaoChuMo);
 				lastCompleteBattleId = battleConfig.ID;
-				RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.XiangYaoFuMo, player.getPlayerId(), battleModule.getAttackingId());
+				RankService.getInstance().setScoreAsync(player.getServerId(), RankType.XiangYaoFuMo, player.getPlayerId(), battleModule.getAttackingId());
 				return ResultObject.success(reward);
 			}
 		}
