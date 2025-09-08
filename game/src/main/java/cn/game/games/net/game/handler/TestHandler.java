@@ -222,6 +222,10 @@ public class TestHandler extends GameBaseHandler {
                     if (p1 == 0) {
                         throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
                     }
+                    if (p1 < 1000) {
+						List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.BattleChapter.getId()); 
+						p1 = battleTypeList.get(p1 - 1).ID;
+					}
                     BattleModule battleModule = player.getBattleModule();
                     battleModule.setMainBattleHighest(p1);
                     BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
