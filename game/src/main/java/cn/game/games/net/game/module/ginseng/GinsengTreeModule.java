@@ -1,6 +1,8 @@
 package cn.game.games.net.game.module.ginseng;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,29 +10,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RSGTreeLvConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.RSGTreeLvManager;
+import cn.game.protocol.manual.GoodsTypeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.GinsengTreeMsg;
 import cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class GinsengTreeModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.FuncOpen };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.FuncOpen ,EventTypeEnum. CostItem};
 
 	/** 果实数据： key: 实际有果实的位置，从0开始;  value: 实际成熟时间 */
 	private IntMapWrapper fruitMap = new IntMapWrapper();
-
-	/** 有几条虫子 */
-	private int bugs;
-
 	/** 每天杀虫剂购买/使用 次数 */
 	private int insecticidesTimes;
 
@@ -57,6 +61,13 @@ public class GinsengTreeModule extends BasePlayerModule {
 	/** 下一次产生果实的时间 */
 	private int nextFruitTime;
 
+	/** 有几条虫子 */
+	@Deprecated
+	private int bugs;
+	private long lastBugAppearTime;
+	private List<Long> bugAppearTimeList = new ArrayList<>();
+	private int deadBugCount;
+
 	@JsonIgnore
 	private long fruitTimer;
 
@@ -72,6 +83,15 @@ public class GinsengTreeModule extends BasePlayerModule {
 		case NewDay: {
 			waterTimes = 0;
 			insecticidesTimes = 0;
+			break;
+		}
+		case CostItem: {
+			int itemId = event.get(0); 
+			if (ItemHelper.getGoodsType(itemId) == GoodsTypeEnum.Item.getId()) {
+				if (handCardList.contains(itemId) && !player.getGoodsModule(itemId).has(itemId)) {
+					handCardList.remove((Integer) itemId);
+				}
+			}
 			break;
 		}
 		case FuncOpen: {
@@ -93,6 +113,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 	@Override
 	public void onLogin() {
 		if (player.isFuncOpen(InitialUI.RSGTree)){
+			calcOfflineBugs(); 
 			startFruitTask();
 			startBugTask();
 		}
@@ -166,25 +187,61 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (level == 0) {
 			return;
 		}
-
 		player.setPeriodicTask(GlobalConst.RSGTreeRefreshInterval * 1000, r -> {
-			if (bugs >= GlobalConst.RSGTreeBugMax) {
+			if (isMaxBugs()) {
 				return;
 			}
-			if ( getInsecticidesEndTime()  > DateUtil.currentTimeSeconds()) {
-				return;
+			List<RewardInfo> reward = addBug(DateUtil.currentTimeMillis()); 
+			if (reward.isEmpty()) {
+				return ; 
 			}
-			if (Rnd.hit(GlobalConst.RSGTreeRefreshWeight)) {
-				bugs++;
-			}
+			cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501.Builder allRewards = RewardPush_55000501.newBuilder()
+					.addAllRewards(reward);
+			player.getGameClient().sendProtocol(allRewards.build());
 		});
+	}
+	
+	public List<RewardInfo> addBug(long apperTime) {
+		
+		if (!Rnd.hit(GlobalConst.RSGTreeRefreshWeight)) {
+			return Collections.EMPTY_LIST;
+		}
+		if (getInsecticidesEndTime() > 0 && apperTime < getInsecticidesEndTime()) {
+			return PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave,
+					OpType.GinsengTreeBug);
+		}else {
+			if (bugAppearTimeList.size() < GlobalConst.RSGTreeBugMax) {
+				bugAppearTimeList.add(apperTime); 
+				lastBugAppearTime = apperTime;
+			}
+		}
+		return Collections.EMPTY_LIST; 
+	}
+	private boolean isMaxBugs() {
+		return bugAppearTimeList.size() >= GlobalConst.RSGTreeBugMax; 
+	}
+	private void calcOfflineBugs() {
+		if (isMaxBugs()) {
+			return;
+		}
+		long now = DateUtil.currentTimeMillis();
+		if (lastBugAppearTime == 0) {
+			lastBugAppearTime = player.getData().getOfflineTime(); 
+		}
+		long seconds = (now - lastBugAppearTime) / 1000;
+		int newBugs = (int) (seconds / GlobalConst.RSGTreeRefreshInterval);
+		if (newBugs > 0) {
+			for (int i = 1; i <= newBugs; i++) {
+				addBug(lastBugAppearTime + i * GlobalConst.RSGTreeRefreshInterval * 1000);
+			}
+		}
 	}
 
 	public GinsengTreeInfo buildGinsengTreeInfo() {
 		cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeInfo.Builder builder = GinsengTreeMsg.GinsengTreeInfo.newBuilder();
 		builder.setLevel(player.getLevel(Asset.RSGTreeExp));
 		builder.setExp((int) player.getCurrencyModule().get(Asset.RSGTreeExp));
-		builder.setBugs(bugs);
+		builder.setBugs(bugAppearTimeList.size());
 		int hangUpSeconds =  DateUtil.currentTimeSeconds() - hangUpStartTime;
 		if (hangUpSeconds>= GlobalConst.RSGTreeAwardMaxTime) {
 			hangUpSeconds = GlobalConst.RSGTreeAwardMaxTime;
@@ -250,15 +307,39 @@ public class GinsengTreeModule extends BasePlayerModule {
 	}
 
 	public int getBugs() {
-		return bugs;
+		return bugAppearTimeList.size();
 	}
 
-	public void setBugs(int bugs) {
-		this.bugs = bugs;
+	public void removeBug() {
+		if (bugAppearTimeList.size()> 0) {
+			Long appearTime = bugAppearTimeList.remove(0); 
+			if (appearTime != null && DateUtil.diff(appearTime, ChronoUnit.HOURS) >= GlobalConst.RSGTreeBugLiveTime ) {
+				deadBugCount++;
+			}
+		}
 	}
-
+	public void clearBugs() {
+		this.bugAppearTimeList.clear(); 
+		this.deadBugCount = 0 ; 
+	}
+	
+	public int getRewardReduceBugCount() {
+		int ret = 0 ; 
+		for (Long t : bugAppearTimeList) {
+			if (DateUtil.diff(t, ChronoUnit.HOURS) >= GlobalConst.RSGTreeBugLiveTime) {
+				ret++;
+			}
+		}
+        return deadBugCount + ret ;
+    }
+	
+	
 	public int getInsecticidesTimes() {
 		return insecticidesTimes;
+	}
+
+	public long getLastBugAppearTime() {
+		return lastBugAppearTime;
 	}
 
 	public void setInsecticidesTimes(int insecticidesTimes) {

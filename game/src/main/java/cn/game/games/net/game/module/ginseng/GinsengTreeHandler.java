@@ -143,7 +143,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.player_check_error.ID);
             return;
         }
-        module.setBugs(bugs - 1);
+        module.removeBug();
         List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave, OpType.GinsengTreeBug);
         resp.addAllRewards(resources);
         client.sendProtocol(resp.build());
@@ -168,7 +168,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
         int[] cost = GameUtil.arrayMultiple(GlobalConst.RSGTreeInsecticidePrice, count);
         PlayerHelper.delResources(player, cost, OpType.GinsengTreeInsecticidesBug);
         module.setInsecticidesTimes(insecticidesTimes + count);
-        module.setBugs(0);
+        module.clearBugs();
         int insecticidesEndTime = module.getInsecticidesEndTime() == 0 ? DateUtil.currentTimeSeconds() : module.getInsecticidesEndTime();
         module.setInsecticidesEndTime(insecticidesEndTime + GlobalConst.RSGTreeInsecticideTime * count);
         resp.setTreeInfo(module.buildGinsengTreeInfo());
@@ -228,7 +228,11 @@ public class GinsengTreeHandler extends GameBaseHandler {
         List<Integer> heroIdList = module.getHeroIdList();
         // 基础奖励
         RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
-        int[][] baseReward = GameUtil.arrayAddition(rsgTreeLvConfig.Reward, heroIdList.size() * 100);
+        int[][] baseReward = GameUtil.arrayZoomBy10k(rsgTreeLvConfig.Reward, heroIdList.size() * 100);
+        int rewardReduceBugCount = module.getRewardReduceBugCount(); 
+        if (rewardReduceBugCount > 0) {
+            baseReward = GameUtil.arrayZoomBy10k(baseReward, -rewardReduceBugCount * GlobalConst.RSGTreeBugRewardReduce);
+		}
         List<RewardInfo> baseRewardList = PlayerHelper.addResources(player, baseReward, OpType.GinsengTreeHarvest);
         resp.addAllRewards(baseRewardList);
         // 手操卡加成的默认奖励
@@ -260,6 +264,9 @@ public class GinsengTreeHandler extends GameBaseHandler {
             List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
             resp.addAllRewards(resources);
         }
+        if (map.getMap().isEmpty()) {
+			module.clearBugs(); 
+		}
         module.startFruitTask();
         client.sendProtocol(resp.build());
     }

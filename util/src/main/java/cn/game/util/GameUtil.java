@@ -19,10 +19,11 @@ import com.google.common.collect.Lists;
  */
 public class GameUtil {
 	private static final int[] EMPTY_INT_ARRAY = new int[] {};
-	
+
 	public static List<Long> transform(List<Integer> list) {
 		return Lists.transform(list, r -> Long.valueOf(r));
 	}
+
 	public static int[] transformList(List<Integer> list) {
 		int[] ret = new int[list.size()];
 		for (int i = 0; i < list.size(); i++) {
@@ -30,6 +31,7 @@ public class GameUtil {
 		}
 		return ret;
 	}
+
 	public static List<Long> transform(int[] array) {
 		List<Long> list = new ArrayList<>(array.length);
 		for (int i = 0; i < array.length; i++) {
@@ -37,6 +39,7 @@ public class GameUtil {
 		}
 		return list;
 	}
+
 	public static String[] transformToStringArray(List<Long> list) {
 		String[] ret = new String[list.size()];
 		for (int i = 0; i < list.size(); i++) {
@@ -44,7 +47,7 @@ public class GameUtil {
 		}
 		return ret;
 	}
-	
+
 	public static List<Integer> transform1(int[] array) {
 		List<Integer> list = new ArrayList<>(array.length);
 		for (int i = 0; i < array.length; i++) {
@@ -52,7 +55,7 @@ public class GameUtil {
 		}
 		return list;
 	}
-	
+
 	public static long[] transformArray(int[] array) {
 		long[] ret = new long[array.length];
 
@@ -61,7 +64,7 @@ public class GameUtil {
 		}
 		return ret;
 	}
-	
+
 	/** 是否包含 */
 	public static boolean contains(int[] array, int o) {
 		for (int i : array) {
@@ -81,6 +84,7 @@ public class GameUtil {
 		}
 		return false;
 	}
+
 	public static boolean containsAll(List<Integer> list, int[] array) {
 		if (list == null || list.isEmpty() || array == null || array.length == 0) {
 			return false;
@@ -114,28 +118,40 @@ public class GameUtil {
 		return ret;
 	}
 
-	/** 
-	 * 给数量做加成
-	 * @param array 0：id 1：数量
-	 * @param addition
-	 * @return
+	/**
+	 * 按万分比对数量进行缩放（正数=增加，负数=减少）
+	 * @param array 二维数组：每行 [id, 数量, id, 数量, ...]
+	 * @param rate 万分比，正数增加，负数减少，例如 500 表示 +5%，-250 表示 -2.5%
+	 * @return 新数组（不会修改入参）
 	 */
-	public static int[][] arrayAddition(int[][] array, int addition) {
-		if (addition <= 0) {
+	public static int[][] arrayZoomBy10k(int[][] array, int rate) {
+		if (array == null || array.length == 0)
 			return array;
-		}
-		int[][] ret = new int[array.length][array[0].length];
-		for (int i = 0; i < array.length; i++) {
+		if (array[0] == null || array[0].length == 0)
+			return array;
+
+		int rows = array.length;
+		int cols = array[0].length;
+		int[][] ret = new int[rows][cols];
+
+		final float factor = 1f + rate / 10000f;
+
+		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < array[i].length; j++) {
-				if (j % 2 == 0) {
-					ret[i][j] = array[i][j];
+				if ((j & 1) == 0) {
+					ret[i][j] = array[i][j]; 
 				} else {
-					ret[i][j] = (int) (array[i][j] * (1 + addition / 10000f));
+					// 计算时用 double 提高精度，最后再截断/四舍五入
+					double scaled = array[i][j] * (double) factor;
+					// 数量不能为负，去掉小数部分
+					long rounded =  (long) Math.max(0,scaled);
+					ret[i][j] = (int) rounded;
 				}
 			}
 		}
 		return ret;
 	}
+
 	/** 
 	 * 给数量做增加
 	 * @param array 0：id 1：数量
@@ -143,7 +159,7 @@ public class GameUtil {
 	 * @param multiple
 	 * @return
 	 */
-	public static int[][] arrayAddition(int[][] array, int[] addition,int multiple) {
+	public static int[][] arrayAddition(int[][] array, int[] addition, int multiple) {
 		if (addition == null || addition.length == 0 || multiple <= 0) {
 			return array;
 		}
@@ -180,6 +196,7 @@ public class GameUtil {
 		}
 		return ret;
 	}
+
 	/** 
 	 * 给数量做倍数
 	 * @param array 0 类型  1：id 2：数量
@@ -223,8 +240,7 @@ public class GameUtil {
 		}
 		return ret;
 	}
-	
-	
+
 	/** 
 	 * 合并两个数组，result中相同id的数量加上add中的数量
 	 * 需要确保id的顺序是一致的,例如： 
@@ -242,48 +258,49 @@ public class GameUtil {
 	 * @return
 	 */
 	public static int[][] fastMergeAddPrefix(int[][] result, int[][] add) {
-	    if (add == null || add.length == 0) return result;
-	    if (result == null || result.length == 0) {
-	        // 返回add的深拷贝
-	        int[][] ret = new int[add.length][2];
-	        for (int i = 0; i < add.length; i++) {
-	            ret[i][0] = add[i][0];
-	            ret[i][1] = add[i][1];
-	        }
-	        return ret;
-	    }
+		if (add == null || add.length == 0)
+			return result;
+		if (result == null || result.length == 0) {
+			// 返回add的深拷贝
+			int[][] ret = new int[add.length][2];
+			for (int i = 0; i < add.length; i++) {
+				ret[i][0] = add[i][0];
+				ret[i][1] = add[i][1];
+			}
+			return ret;
+		}
 
-	    int m = result.length, n = add.length;
+		int m = result.length, n = add.length;
 
-	    // result更长或等长，则直接原地合并前n项
-	    if (m >= n) {
-	        for (int i = 0; i < n; i++) {
-	            if (result[i][0] != add[i][0]) {
-	                throw new IllegalArgumentException("ID mismatch at index " + i);
-	            }
-	            result[i][1] += add[i][1];
-	        }
-	        return result;
-	    }
+		// result更长或等长，则直接原地合并前n项
+		if (m >= n) {
+			for (int i = 0; i < n; i++) {
+				if (result[i][0] != add[i][0]) {
+					throw new IllegalArgumentException("ID mismatch at index " + i);
+				}
+				result[i][1] += add[i][1];
+			}
+			return result;
+		}
 
-	    // add更长，需分配新空间，合并前m项，其余部分拷贝add
-	    int[][] ret = new int[n][2];
-	    // 合并前m项
-	    for (int i = 0; i < m; i++) {
-	        if (result[i][0] != add[i][0]) {
-	            throw new IllegalArgumentException("ID mismatch at index " + i);
-	        }
-	        ret[i][0] = result[i][0];
-	        ret[i][1] = result[i][1] + add[i][1];
-	    }
-	    // 拷贝add剩余部分
-	    for (int i = m; i < n; i++) {
-	        ret[i][0] = add[i][0];
-	        ret[i][1] = add[i][1];
-	    }
-	    return ret;
+		// add更长，需分配新空间，合并前m项，其余部分拷贝add
+		int[][] ret = new int[n][2];
+		// 合并前m项
+		for (int i = 0; i < m; i++) {
+			if (result[i][0] != add[i][0]) {
+				throw new IllegalArgumentException("ID mismatch at index " + i);
+			}
+			ret[i][0] = result[i][0];
+			ret[i][1] = result[i][1] + add[i][1];
+		}
+		// 拷贝add剩余部分
+		for (int i = m; i < n; i++) {
+			ret[i][0] = add[i][0];
+			ret[i][1] = add[i][1];
+		}
+		return ret;
 	}
-	
+
 	/** 
 	 * 合并两个数组，result中相同id的数量加上add中的数量
 	 * @param result 结果
@@ -291,93 +308,102 @@ public class GameUtil {
 	 * @return
 	 */
 	public static int[][] mergeAdd(int[][] result, int[][] add) {
-	    if (add == null || add.length == 0) return result;
-	    if (result == null || result.length == 0) {
-	        // 返回add的深拷贝
-	        int[][] ret = new int[add.length][2];
-	        for (int i = 0; i < add.length; i++) {
-	            ret[i][0] = add[i][0];
-	            ret[i][1] = add[i][1];
-	        }
-	        return ret;
-	    }
+		if (add == null || add.length == 0)
+			return result;
+		if (result == null || result.length == 0) {
+			// 返回add的深拷贝
+			int[][] ret = new int[add.length][2];
+			for (int i = 0; i < add.length; i++) {
+				ret[i][0] = add[i][0];
+				ret[i][1] = add[i][1];
+			}
+			return ret;
+		}
 
-	    int m = result.length, n = add.length;
-	    int i = 0, j = 0;
+		int m = result.length, n = add.length;
+		int i = 0, j = 0;
 
-	    // 先判断是否需要扩容
-	    boolean needExpand = false;
-	    while (i < m && j < n) {
-	        if (result[i][0] == add[j][0]) {
-	            i++; j++;
-	        } else if (result[i][0] < add[j][0]) {
-	            i++;
-	        } else {
-	            // add中有result没有的id，且还没遍历完result
-	            needExpand = true;
-	            break;
-	        }
-	    }
-	    // 如果add有剩余，也说明有新增的id
-	    if (j < n) needExpand = true;
+		// 先判断是否需要扩容
+		boolean needExpand = false;
+		while (i < m && j < n) {
+			if (result[i][0] == add[j][0]) {
+				i++;
+				j++;
+			} else if (result[i][0] < add[j][0]) {
+				i++;
+			} else {
+				// add中有result没有的id，且还没遍历完result
+				needExpand = true;
+				break;
+			}
+		}
+		// 如果add有剩余，也说明有新增的id
+		if (j < n)
+			needExpand = true;
 
-	    if (!needExpand) {
-	        // 直接原地合并
-	        i = 0; j = 0;
-	        while (i < m && j < n) {
-	            if (result[i][0] == add[j][0]) {
-	                result[i][1] += add[j][1];
-	                i++; j++;
-	            } else if (result[i][0] < add[j][0]) {
-	                i++;
-	            } else {
-	                // 理论不会到达
-	                j++;
-	            }
-	        }
-	        return result;
-	    }
+		if (!needExpand) {
+			// 直接原地合并
+			i = 0;
+			j = 0;
+			while (i < m && j < n) {
+				if (result[i][0] == add[j][0]) {
+					result[i][1] += add[j][1];
+					i++;
+					j++;
+				} else if (result[i][0] < add[j][0]) {
+					i++;
+				} else {
+					// 理论不会到达
+					j++;
+				}
+			}
+			return result;
+		}
 
-	    // 扩容合并
-	    int[][] ret = new int[m + n][2];
-	    i = 0; j = 0;
-	    int k = 0;
-	    while (i < m && j < n) {
-	        if (result[i][0] == add[j][0]) {
-	            ret[k][0] = result[i][0];
-	            ret[k][1] = result[i][1] + add[j][1];
-	            i++; j++;
-	        } else if (result[i][0] < add[j][0]) {
-	            ret[k][0] = result[i][0];
-	            ret[k][1] = result[i][1];
-	            i++;
-	        } else {
-	            ret[k][0] = add[j][0];
-	            ret[k][1] = add[j][1];
-	            j++;
-	        }
-	        k++;
-	    }
-	    // 剩余部分
-	    while (i < m) {
-	        ret[k][0] = result[i][0];
-	        ret[k][1] = result[i][1];
-	        i++; k++;
-	    }
-	    while (j < n) {
-	        ret[k][0] = add[j][0];
-	        ret[k][1] = add[j][1];
-	        j++; k++;
-	    }
-	    // 截取有效长度
-	    int[][] finalRet = new int[k][2];
-	    for (int t = 0; t < k; t++) {
-	        finalRet[t][0] = ret[t][0];
-	        finalRet[t][1] = ret[t][1];
-	    }
-	    return finalRet;
+		// 扩容合并
+		int[][] ret = new int[m + n][2];
+		i = 0;
+		j = 0;
+		int k = 0;
+		while (i < m && j < n) {
+			if (result[i][0] == add[j][0]) {
+				ret[k][0] = result[i][0];
+				ret[k][1] = result[i][1] + add[j][1];
+				i++;
+				j++;
+			} else if (result[i][0] < add[j][0]) {
+				ret[k][0] = result[i][0];
+				ret[k][1] = result[i][1];
+				i++;
+			} else {
+				ret[k][0] = add[j][0];
+				ret[k][1] = add[j][1];
+				j++;
+			}
+			k++;
+		}
+		// 剩余部分
+		while (i < m) {
+			ret[k][0] = result[i][0];
+			ret[k][1] = result[i][1];
+			i++;
+			k++;
+		}
+		while (j < n) {
+			ret[k][0] = add[j][0];
+			ret[k][1] = add[j][1];
+			j++;
+			k++;
+		}
+		// 截取有效长度
+		int[][] finalRet = new int[k][2];
+		for (int t = 0; t < k; t++) {
+			finalRet[t][0] = ret[t][0];
+			finalRet[t][1] = ret[t][1];
+		}
+		return finalRet;
 	}
-	
+
 	/**
 	 * 合并两个数组：对相同id进行数量减少，最少减到0；不生成负数条目；
 	 * 若某条数量为0，保留该条。
@@ -387,32 +413,34 @@ public class GameUtil {
 	 * @return 合并后的数组（按id升序）
 	 */
 	public static int[][] mergeSubtractFloorZeroKeepZero(int[][] result, int[][] sub) {
-	    if (sub == null || sub.length == 0) return result;
-	    if (result == null || result.length == 0) {
-	        // result为空，且不允许负数，不生成sub-only条目
-	        return new int[0][2];
-	    }
+		if (sub == null || sub.length == 0)
+			return result;
+		if (result == null || result.length == 0) {
+			// result为空，且不允许负数，不生成sub-only条目
+			return new int[0][2];
+		}
 
-	    int m = result.length, n = sub.length;
-	    int i = 0, j = 0;
+		int m = result.length, n = sub.length;
+		int i = 0, j = 0;
 
-	    // 不需要扩容：因为不新增id（sub-only忽略），长度至多不变
-	    // 可原地更新 result，再返回 result 即可。
-	    while (i < m && j < n) {
-	        int idR = result[i][0];
-	        int idS = sub[j][0];
-	        if (idR == idS) {
-	            int after = result[i][1] - sub[j][1];
-	            result[i][1] = after > 0 ? after : 0; // 夹到0
-	            i++; j++;
-	        } else if (idR < idS) {
-	            i++;
-	        } else {
-	            // sub-only，忽略（不能生成负数条目）
-	            j++;
-	        }
-	    }
-	    return result;
+		// 不需要扩容：因为不新增id（sub-only忽略），长度至多不变
+		// 可原地更新 result，再返回 result 即可。
+		while (i < m && j < n) {
+			int idR = result[i][0];
+			int idS = sub[j][0];
+			if (idR == idS) {
+				int after = result[i][1] - sub[j][1];
+				result[i][1] = after > 0 ? after : 0; // 夹到0
+				i++;
+				j++;
+			} else if (idR < idS) {
+				i++;
+			} else {
+				// sub-only，忽略（不能生成负数条目）
+				j++;
+			}
+		}
+		return result;
 	}
 
 	public static int[] transformIdAndCount(List<Integer> idList, List<Integer> countList) {
@@ -441,8 +469,7 @@ public class GameUtil {
 		if (StringUtils.isEmpty(version1) || StringUtils.isEmpty(version2)) {
 			return false;
 		}
-		return version1.substring(0, version1.lastIndexOf("."))
-				.equals(version2.substring(0, version2.lastIndexOf(".")));
+		return version1.substring(0, version1.lastIndexOf(".")).equals(version2.substring(0, version2.lastIndexOf(".")));
 	}
 
 	/**
@@ -453,27 +480,28 @@ public class GameUtil {
 	 */
 	public static int[][] subItems(int[][] drops, int[][] items) {
 		int[][] newDrops = new int[drops.length][2];
-		Map<Integer,Integer> dropMaps = new HashMap<>();
+		Map<Integer, Integer> dropMaps = new HashMap<>();
 		for (int i = 0; i < drops.length; i++) {
 			int itemId = drops[i][0];
 			int itemNum = drops[i][1];
-			dropMaps.put(itemId,itemNum);
+			dropMaps.put(itemId, itemNum);
 		}
-		for(int i = 0; i < items.length; i++) {
+		for (int i = 0; i < items.length; i++) {
 			int itemId = items[i][0];
 			int itemNum = items[i][1];
-			if (!dropMaps.containsKey(itemId)){
+			if (!dropMaps.containsKey(itemId)) {
 				continue;
 			}
-			dropMaps.put(itemId,Math.max(0,dropMaps.get(itemId) - itemNum));
+			dropMaps.put(itemId, Math.max(0, dropMaps.get(itemId) - itemNum));
 		}
-		for(int i = 0; i < drops.length; i++) {
+		for (int i = 0; i < drops.length; i++) {
 			int itemId = drops[i][0];
 			newDrops[i][0] = itemId;
-			newDrops[i][1] = dropMaps.getOrDefault(itemId,0);
+			newDrops[i][1] = dropMaps.getOrDefault(itemId, 0);
 		}
 		return newDrops;
 	}
+
 	/**
 	 * 计算输入字符串的 MD5 十六进制结果
 	 *
@@ -493,6 +521,7 @@ public class GameUtil {
 			throw new RuntimeException("MD5 算法不可用", e);
 		}
 	}
+
 	/** 
 	 * 解析server id，使用程序运行时参数或者环境变量设置的server id
 	 * @param args
@@ -534,8 +563,8 @@ public class GameUtil {
 		}
 		return ret;
 	}
-	
-	public static int[] getArrayCost(int[][] array,int count) {
+
+	public static int[] getArrayCost(int[][] array, int count) {
 		return count >= array.length ? array[array.length - 1] : array[count];
 	}
 

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import cn.game.games.cache.entity.Player;
 import cn.game.protocol.generated.manager.VirtualServerManager;
 
+@Deprecated
 public class BasePlayer implements Serializable {
 
 	public long id; // id

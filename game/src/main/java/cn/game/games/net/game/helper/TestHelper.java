@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,8 +165,11 @@ public class TestHelper {
 	 * @param targetServer
 	 */
 	public static void transferServer(long playerId, String targetServer) {
-		VirtualServerManager.instance().get(targetServer);
-
+		String serverName = ServerHelper.getServerName(targetServer); 
+		if (StringUtils.isEmpty(serverName)) {
+			log.warn("transferServer failed, player[{}],targetServer[{}] not found",playerId,targetServer);
+			return ; 
+		}
 		PlayerHelper.modifyPlayer(playerId, player -> {
 			String serverId = player.getData().getServerId();
 			if (player.getData().getServerId().equals(targetServer)) {

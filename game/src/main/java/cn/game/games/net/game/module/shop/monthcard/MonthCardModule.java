@@ -64,7 +64,7 @@ public class MonthCardModule extends BasePlayerModule {
 		if (!sevenDaysSignin.isSignin()) return;
 		SevenDaysSigninConfig config = sevenDaysSignin.getSevenDaysSigninConfig();
 		int addRadio = player.getWelfareValue(WelfareTypeEnum.MonthClock);
-		int[][] drops =  GameUtil.arrayAddition(config.Item, addRadio);
+		int[][] drops =  GameUtil.arrayZoomBy10k(config.Item, addRadio);
 		drops =  GameUtil.subItems(drops, config.Item);
 		List<Goods> dropItems = Goods.valueOf(drops);
 		MailHelper.sendMail(player.getPlayerId(), 20, dropItems, true);

@@ -15,7 +15,7 @@ public class GinsengTreeHarvestRequest_39000013Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestRequest_39000013.Builder builder = cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeHarvestRequest_39000013.newBuilder() ; 
 		
-		builder.setPos(0);
+		builder.setPos(1);
 		
 		return builder.build() ; 
 	}

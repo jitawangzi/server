@@ -91,7 +91,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
 			addRadio = player.getWelfareValue(WelfareTypeEnum.MonthClock);
 		}
 		//月卡加成额外掉落
-		int[][] drops =  GameUtil.arrayAddition(config.Item, addRadio);
+		int[][] drops =  GameUtil.arrayZoomBy10k(config.Item, addRadio);
 		List<RewardInfo> resources = PlayerHelper.addResources(player, drops, OpType.SevenDaysSignin);
 		day++;
 		isSignin = true;

@@ -1135,6 +1135,8 @@ public class PlayerHandler extends GameBaseHandler {
 //		playerData.setImage(Rnd.randomOne(HeadBoxManager.instance().list()).ID);
 		playerData.setRegion(AddressUtil.getCityInfo(client.getIp()));
 		playerData.setLoginDate(DateUtil.getStringDate());
+		// 先设置一个下线时间，避免异常情况没有保存下线时间
+		playerData.setOfflineTime(System.currentTimeMillis());
 		playerData.setVipExpTotal(0);// 废弃待删除
 		playerData.setVipLevel(1); // 废弃待删除
 		playerData.setRefreshDay(DateUtil.getDay());

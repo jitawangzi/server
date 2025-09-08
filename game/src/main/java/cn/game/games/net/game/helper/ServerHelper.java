@@ -109,4 +109,9 @@ public class ServerHelper {
 		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
 		return validGameService.getValidServers().values().stream().map(r -> r.ID).collect(toList()).toArray(new String[] {});
 	}
+	public static String getServerName(String serverId) {
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+		VirtualServerView virtualServerView = validGameService.getValidServers().get(serverId); 
+		return virtualServerView == null ? "" : virtualServerView.name;
+	}
 }

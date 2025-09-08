@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.battle.EquipTowerBattle;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -120,7 +121,7 @@ public class SimplePlayer implements Serializable {
 		this.heros = new ArrayList<>(player.getHeroModule().getBattleHeroList());
 		this.battleAttrs = player.getAttrModule().buildBattleAttrs().toByteArray();
 		this.serverId = player.getServerId();
-		this.serverName = VirtualServerManager.instance().get(this.serverId).name;
+		this.serverName = ServerHelper.getServerName(this.serverId);
 		this.tdLevel = player.getDevelopModule().getHeavenlyDaoLevel();
 		this.figure = player.getModule(FigureModule.class).getFigure();
 		//存储 大道争锋阵容

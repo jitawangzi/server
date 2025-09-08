@@ -32,6 +32,7 @@ import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
@@ -440,7 +441,7 @@ public class Player {
 //		builder.setActionPowerRecoverTime(PlayerHelper.recoverActionPower(this));
 		builder.setOfflineTime(getData().getOfflineTime() + "");
 		builder.setServerId(getData().getServerId());
-		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).name);
+		builder.setServerName(ServerHelper.getServerName(getData().getServerId()));
 		return builder.build();
 	}
 
@@ -651,7 +652,7 @@ public class Player {
 		builder.setHead(getData().getHead());
 		builder.setHeadFrame(getData().getHeadFrame());
 		builder.setServerId(getData().getServerId());
-		builder.setServerName(VirtualServerManager.instance().get(getData().getServerId()).name);
+		builder.setServerName(ServerHelper.getServerName(getData().getServerId()));
 		builder.setTiandaoLevel(getDevelopModule().getHeavenlyDaoLevel());
 		builder.setCombatEffectiveness((int)getAttrModule().getPower());
 
