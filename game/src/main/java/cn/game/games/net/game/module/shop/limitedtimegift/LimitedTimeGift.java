@@ -4,8 +4,6 @@ import java.util.function.Consumer;
 
 import com.google.common.primitives.Ints;
 
-import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.quest.Condition;
 import cn.game.games.net.game.module.quest.ConditionContainer;
 import cn.game.protocol.generated.config.LimitedTimeGiftConfig;

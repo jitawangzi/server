@@ -1,10 +1,14 @@
 package cn.game.games.net.game.module.shop.limitedtimegift;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
@@ -38,7 +42,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 	/** 礼包出现次数  */
 	private IntMapWrapper activeCountMap = new IntMapWrapper();
 	/** 玩家当前等级可能出现的限时礼包，还不能买。 key:组，每组产生一个高档位的礼包 */
-	private transient Map<Integer, LimitedTimeGift> limitedTimeGiftCheck = new HashMap<Integer, LimitedTimeGift>();
+	private transient Multimap<Integer, LimitedTimeGift> limitedTimeGiftCheck = ArrayListMultimap.create();
 
 	/** 
 	 * 增加新的限时礼包
@@ -79,45 +83,11 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 		int activeCount = activeCountMap.getValue(limitedTimeGiftConfig.ID);
 		return limitedTimeGiftConfig.MaxTimes > 0 && activeCount < limitedTimeGiftConfig.MaxTimes;
 	}
-
-	private void initLimitedTimeGiftCheck() {
-		Map<Integer, List<LimitedTimeGiftConfig>> map = LimitedTimeGiftManager.instance().getGroups();
-		map.forEach((k, list) -> {
-			boolean isGroupActive = false;
-			// 倒序遍历list,先找符合的最高档位的
-			for (int i = list.size() - 1; i >= 0; i--) {
-				LimitedTimeGiftConfig limitedTimeGiftConfig = list.get(i);
-				if (limitedTimeGiftConfig.PlayerLevelMin > player.getLevel() || limitedTimeGiftConfig.PlayerLevelMax < player.getLevel()) {
-					// 不符合等级要求
-					continue;
-				}
-				boolean checkActiveCount = checkActiveCount(limitedTimeGiftConfig);
-				if (!checkActiveCount) {
-					continue;
-				}
-				LimitedTimeGift limitedTimeGift = new LimitedTimeGift();
-				limitedTimeGift.setId(limitedTimeGiftConfig.ID);
-				limitedTimeGift.setPlayerId(playerId); 
-
-				limitedTimeGift.initCondition(r -> addLimitedTimeGift(limitedTimeGiftConfig.ID, false));
-
-				limitedTimeGiftCheck.put(limitedTimeGiftConfig.Group, limitedTimeGift);
-				isGroupActive = true;
-				break; // 找到一个就行
-			}
-			if (!isGroupActive) {
-				return; // 没有符合条件的礼包，直接跳出，依靠填表顺序
-			}
-		});
-
-	}
-
 	private void refreshLimitedTimeGiftCheck() {
 		Map<Integer, List<LimitedTimeGiftConfig>> map = LimitedTimeGiftManager.instance().getGroups();
 		map.forEach((k, list) -> {
-			boolean isGroupActive = false;
 			// 倒序遍历list,先找符合的最高档位的
-			for (int i = list.size() - 1; i >= 0; i--) {
+			for (int i = 0; i < list.size(); i++) {
 				LimitedTimeGiftConfig limitedTimeGiftConfig = list.get(i);
 				if (limitedTimeGiftConfig.PlayerLevelMin > player.getLevel() || limitedTimeGiftConfig.PlayerLevelMax < player.getLevel()) {
 					// 不符合等级要求
@@ -127,19 +97,15 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 				if (!checkActiveCount) {
 					continue;
 				}
-				LimitedTimeGift limitedTimeGiftOld = limitedTimeGiftCheck.get(limitedTimeGiftConfig.Group);
+				Collection<LimitedTimeGift> limitedTimeGiftOldCollection = limitedTimeGiftCheck.get(limitedTimeGiftConfig.Group);
 
-				if (limitedTimeGiftOld != null) {
-					LimitedTimeGiftConfig limitedTimeGiftConfigOld = LimitedTimeGiftManager.instance().get(limitedTimeGiftOld.getId());
-					if (limitedTimeGiftOld.getId() == limitedTimeGiftConfig.ID) {
-						continue;
+				if (limitedTimeGiftOldCollection != null && limitedTimeGiftOldCollection.size() > 0) {
+					for (LimitedTimeGift old : limitedTimeGiftOldCollection) {
+						if (old.getId() == limitedTimeGiftConfig.ID) {
+							// 已经存在这个礼包了
+							continue;
+						}
 					}
-					if (limitedTimeGiftConfigOld.GroupLevel >= limitedTimeGiftConfig.GroupLevel) {
-						continue;
-					}
-					// 这个组解锁新档位的礼包了，使用新档位礼包替换老档位礼包
-					limitedTimeGiftOld.unregEvent();
-					limitedTimeGiftCheck.remove(limitedTimeGiftConfigOld.Group);
 				}
 
 				LimitedTimeGift limitedTimeGift = new LimitedTimeGift();
@@ -149,11 +115,6 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 				limitedTimeGift.initCondition(r -> addLimitedTimeGift(limitedTimeGiftConfig.ID, true));
 
 				limitedTimeGiftCheck.put(limitedTimeGiftConfig.Group, limitedTimeGift);
-				isGroupActive = true;
-				break; // 找到一个就行
-			}
-			if (!isGroupActive) {
-				return; // 没有符合条件的礼包，直接跳出，依靠填表顺序
 			}
 		});
 	}

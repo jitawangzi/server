@@ -89,7 +89,8 @@ public class CountingModule extends BasePlayerModule {
 			addCount(ConditionTypeEnum.KillMonsters, event.getIntParameter(3));
 			addCount(ConditionTypeEnum.KillBoss, event.getIntParameter(4));
 			if (!event.getBoolParameter(2)) {
-				addCountByExtParam(ConditionTypeEnum.FunAllFailTimes,battleConfig.BattleType);
+				addCountByExtParam(ConditionTypeEnum.FunAllFailTimes,1,battleConfig.BattleType);
+				addCountByExtParam(ConditionTypeEnum.FunAllFailTimes,1,0);
 			}
 			break;
 		}
