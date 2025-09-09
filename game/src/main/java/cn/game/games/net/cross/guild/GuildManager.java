@@ -181,7 +181,7 @@ public class GuildManager {
 		try {
 			long newGuildId = GuildHelper.createGuildId();
 
-			boolean trySetName = GuildHelper.trySetName(name, createPlayerId); 
+			boolean trySetName = GuildHelper.trySetName(name, newGuildId); 
 			if (!trySetName) {
 				return Future.failedFuture("公会名称已存在，请重新输入名称");
 			}

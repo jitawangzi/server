@@ -118,9 +118,11 @@ public class MailboxProcessor implements Runnable {
 		} finally {
 			long duration = System.nanoTime() - startTime;
 			mailbox.getStats().recordProcessingTime(duration, taskDescription);
-
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Task {} for entity {} processed in {} nanoseconds", taskDescription, mailbox.getEntityId(), duration);
+			}
+			if (duration > 500_000_000) {
+				LOGGER.warn("Task {} for entity {} processed in {} nanoseconds", taskDescription, mailbox.getEntityId(), duration);
 			}
 		}
 		return null; // 任务成功，无需延迟。

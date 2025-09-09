@@ -145,19 +145,9 @@ public class GuildHelper {
 		return GuildHandler.sendMsgToGuildServer(player, req);
 	}
 
-	public static CompletableFuture<Boolean> checkGuildNameRepeat(Player player, String name) {
-		Promise<Boolean> promise = Promise.promise();
-		RedisLocalCache.getInstance().getAsync(CacheType.ZONG_MEN_NAME_ID.key(name)).onSuccess(id -> {
-			if (id != null) {
-				promise.complete(false);
-			} else {
-				promise.complete(true);
-			}
-		}).onFailure(err -> {
-			promise.complete(false);
-			err.printStackTrace();
-		});
-		return promise.future().toCompletionStage().toCompletableFuture();
+	public static boolean checkGuildNameRepeat(String name) {
+		String nameKey = getNameKey(name);
+		return RedisUtil.get(nameKey) != null;
 	}
 
 	public static List<GuildMsg.GuildMemberInfo.Builder> sortMemberList(Collection<GuildMsg.GuildMemberInfo.Builder> values) {
