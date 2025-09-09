@@ -178,7 +178,7 @@ public class GameClientManager {
 	 * 同步持久化所有玩家的数据，一般用在服务器关闭时
 	 */
 	public void storeAllPlayers() {
-		final long perLogoutTimeoutSec = Math.min(30, Config.shutdownWaitTimeSeconds / 10); // 单个玩家登出超时
+		final long perLogoutTimeoutSec = Math.min(10, Config.shutdownWaitTimeSeconds / 10); // 单个玩家登出超时
 		final long overallTimeoutSec = Config.shutdownWaitTimeSeconds; // 总体超时
 
 		// 固定快照，避免并发修改导致 size 与提交数量不一致
@@ -322,7 +322,7 @@ public class GameClientManager {
 				.setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
-		broadcastCrossServers(message, serverIds);
+//		broadcastCrossServers(message, serverIds);
 //		if (!online) {
 //			PlayerManager.getInstance().offline(playerId);
 //		}

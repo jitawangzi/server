@@ -433,7 +433,7 @@ public class GameServer implements GameServerMBean {
 
 			LoggerType.Stdout.logger.info("start storeAllPlayers on shutdown");
 			// 同步存储所有玩家的数据
-			Config.remoteCallTimeOut = Config.shutdownWaitTimeSeconds;
+//			Config.remoteCallTimeOut = Config.shutdownWaitTimeSeconds;
 //			setDataServerSyncDefault();
 			GameClientManager.getInstance().storeAllPlayers();
 			stopWatch.split();

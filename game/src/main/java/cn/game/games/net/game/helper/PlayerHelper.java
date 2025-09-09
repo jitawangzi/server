@@ -1479,6 +1479,151 @@ public class PlayerHelper {
 			return null;
 		});
 	}
+	
+	/**
+	 * 退出，数据存库 —— 增加步骤耗时打印
+	 * @param playerId
+	 * @return
+	 */
+	public static Future<Object> logoutDebug(long playerId) {
+	    final long t0 = System.nanoTime();
+
+	    // 用于收集各阶段耗时与数据
+	    class LogoutTiming {
+	        long tStart = t0;
+
+	        long tGetPlayerEnd;
+	        long tPrepareDataEnd;
+	        long tSaveClientCacheEnd;
+	        long tClearPlayerEnd;
+	        long tWechatNotifyEnd;
+	        long tGameLoggerEnd;
+	        long tDelTagsEnd;
+	        long tDeleteRedisKeyEnd;
+	        long tSaveSimplePlayerEnd;
+	        long tAllDone;
+
+	        Player player;
+	    }
+
+	    LogoutTiming timing = new LogoutTiming();
+
+	    // 步骤1：获取玩家
+	    Player player = PlayerManager.getInstance().getPlayer(playerId);
+	    timing.tGetPlayerEnd = System.nanoTime();
+
+	    if (player == null) {
+	        long done = System.nanoTime();
+	        log.info(String.format(
+	                "logout timing | playerId=%d | getPlayer=%dms | total=%dms | note=player not found",
+	                playerId,
+	                ms(timing.tStart, timing.tGetPlayerEnd),
+	                ms(timing.tStart, done)
+	        ));
+	        return Future.succeededFuture();
+	    }
+
+	    timing.player = player;
+
+	    // 步骤2：本地数据准备（标记离线、累计在线时长）
+	    player.setOnline(false);
+	    PlayerData data = player.getData();
+	    data.setOfflineTime(System.currentTimeMillis());
+	    data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.parseDate(data.getLoginDate()).getTime()) / 1000));
+	    timing.tPrepareDataEnd = System.nanoTime();
+
+	    // 步骤3：保存客户端缓存
+	    return saveClientCache(playerId).onSuccess(r -> {
+	        timing.tSaveClientCacheEnd = System.nanoTime();
+
+	        // 步骤4：清理玩家
+	        clearPlayer(playerId);
+	        timing.tClearPlayerEnd = System.nanoTime();
+
+	        // 步骤5：推送玩家离线微信通知
+	        player.addWechatOfflineNotifyTask();
+	        timing.tWechatNotifyEnd = System.nanoTime();
+
+	        // 步骤6：登出日志
+	        GameLogger.logout(player);
+	        timing.tGameLoggerEnd = System.nanoTime();
+
+	        // 步骤7：删除推送标签
+	        PushService.getInstance().delPlayerTags(playerId);
+	        timing.tDelTagsEnd = System.nanoTime();
+
+	        log.info(String.format(
+	                "logout timing (after saveClientCache block) | playerId=%d | getPlayer=%dms | prepareData=%dms | saveClientCache=%dms | clearPlayer=%dms | wechatNotify=%dms | gameLogger=%dms | delTags=%dms | elapsed=%dms",
+	                playerId,
+	                ms(timing.tStart, timing.tGetPlayerEnd),
+	                ms(timing.tGetPlayerEnd, timing.tPrepareDataEnd),
+	                ms(timing.tPrepareDataEnd, timing.tSaveClientCacheEnd),
+	                ms(timing.tSaveClientCacheEnd, timing.tClearPlayerEnd),
+	                ms(timing.tClearPlayerEnd, timing.tWechatNotifyEnd),
+	                ms(timing.tWechatNotifyEnd, timing.tGameLoggerEnd),
+	                ms(timing.tGameLoggerEnd, timing.tDelTagsEnd),
+	                ms(timing.tStart, timing.tDelTagsEnd)
+	        ));
+	    }).compose(v -> {
+	        // 步骤8：删除 Redis 中的 PLAYER_SERVER_ID
+	        RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
+	        return Future.fromCompletionStage(deleteAsync).onSuccess(x -> {
+	            timing.tDeleteRedisKeyEnd = System.nanoTime();
+	        });
+	    }).compose(v -> {
+	        // 步骤9：保存 SimplePlayer 到 Redis
+	        return PlayerHelper.saveSimplePlayerToRedis(timing.player).onSuccess(x -> {
+	            timing.tSaveSimplePlayerEnd = System.nanoTime();
+
+	            timing.tAllDone = timing.tSaveSimplePlayerEnd;
+	            log.info(String.format(
+	                    "logout timing summary | playerId=%d | getPlayer=%dms | prepareData=%dms | saveClientCache=%dms | clearPlayer=%dms | wechatNotify=%dms | gameLogger=%dms | delTags=%dms | deleteRedisKey=%dms | saveSimplePlayer=%dms | total=%dms",
+	                    playerId,
+	                    ms(timing.tStart, timing.tGetPlayerEnd),
+	                    ms(timing.tGetPlayerEnd, timing.tPrepareDataEnd),
+	                    ms(timing.tPrepareDataEnd, timing.tSaveClientCacheEnd),
+	                    // 注意：clear/wechat/log/delTags 在同一个 onSuccess 里顺序执行
+	                    ms(timing.tSaveClientCacheEnd, timing.tClearPlayerEnd),
+	                    ms(timing.tClearPlayerEnd, timing.tWechatNotifyEnd),
+	                    ms(timing.tWechatNotifyEnd, timing.tGameLoggerEnd),
+	                    ms(timing.tGameLoggerEnd, timing.tDelTagsEnd),
+	                    ms(timing.tDelTagsEnd, timing.tDeleteRedisKeyEnd),
+	                    ms(timing.tDeleteRedisKeyEnd, timing.tSaveSimplePlayerEnd),
+	                    ms(timing.tStart, timing.tAllDone)
+	            ));
+	        });
+	    }).mapEmpty().otherwise(e -> {
+	        long errNow = System.nanoTime();
+	        // 尽可能输出已采集的各阶段耗时
+	        log.error(String.format(
+	                "logout error | playerId=%d | err=%s | getPlayer=%dms | prepareData=%dms | saveClientCache=%dms | clearPlayer=%dms | wechatNotify=%dms | gameLogger=%dms | delTags=%dms | deleteRedisKey=%dms | saveSimplePlayer=%dms | elapsed=%dms",
+	                playerId,
+	                String.valueOf(e),
+	                safeMs(timing.tStart, timing.tGetPlayerEnd),
+	                safeMs(timing.tGetPlayerEnd, timing.tPrepareDataEnd),
+	                safeMs(timing.tPrepareDataEnd, timing.tSaveClientCacheEnd),
+	                safeMs(timing.tSaveClientCacheEnd, timing.tClearPlayerEnd),
+	                safeMs(timing.tClearPlayerEnd, timing.tWechatNotifyEnd),
+	                safeMs(timing.tWechatNotifyEnd, timing.tGameLoggerEnd),
+	                safeMs(timing.tGameLoggerEnd, timing.tDelTagsEnd),
+	                safeMs(timing.tDelTagsEnd, timing.tDeleteRedisKeyEnd),
+	                safeMs(timing.tDeleteRedisKeyEnd, timing.tSaveSimplePlayerEnd),
+	                ms(timing.tStart, errNow)
+	        ), e);
+	        return null;
+	    });
+	}
+
+	// 将纳秒差转换为毫秒
+	private static long ms(long startNano, long endNano) {
+	    return (endNano - startNano) / 1_000_000L;
+	}
+
+	// 容错版本：若某一步尚未记录时间（为0），返回-1 以便日志可读
+	private static long safeMs(long startNano, long endNano) {
+	    if (startNano == 0L || endNano == 0L) return -1L;
+	    return ms(startNano, endNano);
+	}
 
 	/** 
 	 * 清除玩家缓存数据

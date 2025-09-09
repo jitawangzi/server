@@ -28,7 +28,7 @@ public class EventBusMessageInterceptor {
 			Object actualBody = extractMessageBody(message);
 
 			// 记录发送日志
-			logger.info("发送消息到[{}]message[{}]replyAddress[{}]sender[{}]", message.address(), actualBody, message.replyAddress(),
+			logger.info("发送消息到[{}]messageClass[{}]messageBody[{}]replyAddress[{}]sender[{}]", message.address(),actualBody.getClass(), actualBody, message.replyAddress(),
 					extractMessageSender(message));
 
 			// 跟踪需要回复的消息
