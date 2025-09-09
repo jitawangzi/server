@@ -365,7 +365,7 @@ public class GmHandler extends GameBaseHandler {
     GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
     String channel = request.getChannel();
     String name = request.getName();
-    PlayerHelper.seachPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 :  Long.parseLong(request.getPlayerId()) )
+    PlayerHelper.searchPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 :  Long.parseLong(request.getPlayerId()) )
             .onSuccess(result ->{
 				if (result != null) {
 					response.setPlayer(result.toGmPlayerInfo());
@@ -382,69 +382,6 @@ public class GmHandler extends GameBaseHandler {
                     err.getMessage()
                 );
             });
-
-    /*VxHolder.vertx.executeBlocking(
-        f -> {
-          long playerId =
-              StringUtils.isEmpty(request.getPlayerId())
-                  ? 0
-                  : Long.parseLong(request.getPlayerId());
-          if (playerId == 0) {
-            if (name != null) {
-              try {
-                playerId =
-                    PlayerNameManager.getInstance()
-                        .getPlayerId(name)
-                        .toCompletionStage()
-                        .toCompletableFuture()
-                        .get();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-            }
-          }
-
-          if (!PlayerManager.getInstance().isOnline(playerId)) {
-					Future<GameGmPlayerInfoResponse_7d000051> respMessage =
-                VxHolder.requestRemoteServer(
-                    PlayerManager.getInstance().getServerId(playerId),
-                    GameGmPlayerInfoRequest_7d000050.newBuilder().setPlayerId(playerId).build());
-            respMessage
-                .onSuccess(
-                    r -> {
-										response.setPlayer(r.getPlayer());
-                      sendAndRecordOpt(client, request, response.build());
-                    })
-                .onFailure(
-                    err -> {
-                      err.printStackTrace();
-                      sendAndRecordOpt(
-                          client,
-                          request,
-                          response.build(),
-                          ErrorMsgEnum.player_data_not_found  ,
-                          "");
-                    });
-          } else {
-            // 从本服务器载入玩家数据
-            GmHelper.getPlayerInfo(name, playerId)
-                .onSuccess(
-                    r -> {
-                      response.setPlayer(r);
-                      sendAndRecordOpt(client, request, response.build());
-                    })
-                .onFailure(
-                    e -> {
-                      sendAndRecordOpt(
-                          client,
-                          request,
-                          response.build(),
-                          ErrorMsgEnum.player_data_not_found,
-                          "");
-                    });
-          }
-          f.complete(null);
-        });*/
   }
 
   private void sendAndRecordOpt(NetClient client, Message request, Message response,String optMsg) {

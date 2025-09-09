@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.games.cache.entity.EquiptowerHelp;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.module.award.Goods;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
@@ -48,4 +49,7 @@ public interface GameServerInterface extends RemoteGameServerInterface {
 	public Future<?> rename(long playerId, String name);
 
 	public Future<Void> addEquipTowerHelp(long playerId, EquiptowerHelp help);
+	
+	public Future<SimplePlayer> getSimplePlayer(long playerId);
+
 }

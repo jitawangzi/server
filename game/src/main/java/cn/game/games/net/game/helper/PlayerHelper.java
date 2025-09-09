@@ -1760,15 +1760,22 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
-	public static Future<SimplePlayer> seachPlayer(String playerName, long playerId) {
+	public static Future<SimplePlayer> searchPlayer(String playerName, long playerId) {
 		if (playerId > 0) {
-			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
+			return searchPlayer(playerId); 
 		} else if (playerName != null) {
 			return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-				return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(r));
+				return searchPlayer(r);
 			});
 		}
 		return Future.failedFuture("没有传入playerId或者playerName");
+	}
+	public static Future<SimplePlayer> searchPlayer(long playerId) {
+		if (PlayerManager.getInstance().isOnline(playerId)) {
+			GameServerInterface playerProxy = ServerHelper.getPlayerProxy(playerId); 
+			return playerProxy.getSimplePlayer(playerId); 
+		}
+		return PlayerHelper.getSimplePlayerAsync(playerId);
 	}
 
 	/**
@@ -1880,5 +1887,9 @@ public class PlayerHelper {
 	public static SimplePlayer getSimplePlayer(long playerId) {
 		String key = CacheType.PLAYER_SIMPLE.key(playerId);
 		return RedisLocalCache.getInstance().get(key);
+	}
+	public static Future<SimplePlayer> getSimplePlayerAsync(long playerId) {
+		String key = CacheType.PLAYER_SIMPLE.key(playerId);
+		return RedisLocalCache.getInstance().getAsync(key);
 	}
 }

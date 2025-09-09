@@ -1,5 +1,6 @@
 package cn.game.games.core.cache;
 
+import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheDataType;
@@ -13,6 +14,7 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import org.redisson.api.RBatch;
 import org.redisson.api.RFuture;
@@ -252,6 +254,10 @@ public class GameCacheService {
 
 	private GuildSimpleInfo fetchGuildSimpleInfo(long guildId) {
 		if (guildId <= 0) {
+			return null;
+		}
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross); 
+		if (serverSet.isEmpty()) {
 			return null;
 		}
 		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);

@@ -1,37 +1,34 @@
 package cn.game.games.net.game.remote;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import cn.game.games.cache.entity.EquiptowerHelp;
-import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.battle.EquipTowerBattle;
-import cn.game.games.net.game.module.mail.MailModule;
-import cn.game.games.util.DAO;
-import cn.game.protocol.manual.DungeonTypeEnum;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.ServerStatus;
+import cn.game.games.cache.entity.EquiptowerHelp;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GoodsModule;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
+import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.battle.EquipTowerBattle;
+import cn.game.games.net.game.module.mail.MailModule;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
@@ -174,4 +171,12 @@ public class GameServerImpl implements GameServerInterface {
 
 	}
 
+	@Override
+	public Future<SimplePlayer> getSimplePlayer(long playerId) {
+		Player player = PlayerManager.getInstance().getPlayer(playerId); 
+		if (player == null) {
+			return Future.failedFuture(ErrorMsgEnum.player_data_not_found.ID + "");
+		}
+		return Future.succeededFuture(new SimplePlayer(player));
+	}
 }

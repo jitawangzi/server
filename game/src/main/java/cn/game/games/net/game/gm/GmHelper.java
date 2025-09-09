@@ -24,7 +24,7 @@ import io.vertx.core.Promise;
 public class GmHelper {
   public static Future<GmMsg.GmPlayerInfo> getPlayerInfo(String playerName, Long playerId) {
     Promise<GmMsg.GmPlayerInfo> promise = Promise.promise();
-    PlayerHelper.seachPlayer(playerName, playerId)
+    PlayerHelper.searchPlayer(playerName, playerId)
         .onSuccess(
             row -> {
               promise.complete(row.toGmPlayerInfo());

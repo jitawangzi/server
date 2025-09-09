@@ -536,6 +536,12 @@ public class Client extends AbstractNetClient {
 		connectFuture.addListener(f -> {
 			ChannelFuture handshakeFuture = handler.handshakeFuture();
 			handshakeFuture.addListener(f2 -> {
+				if (!f2.isSuccess()) {
+					Throwable cause = f2.cause();
+					logger.warn("WS handshake failed: {}", url, cause);
+					promise.tryFailure(cause);
+					return;
+				}
 				this.channel = connectFuture.channel();
 				Attribute<Client> attr = this.channel.attr(NETTY_CHANNEL_KEY);
 				attr.set(this);

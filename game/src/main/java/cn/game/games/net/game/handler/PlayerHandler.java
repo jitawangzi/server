@@ -287,7 +287,7 @@ public class PlayerHandler extends GameBaseHandler {
 		PlayerSearchResponse_0100000c.Builder resp = PlayerSearchResponse_0100000c.newBuilder();
 		String playerName = request.getPlayerName();
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
-		Future<SimplePlayer> future = PlayerHelper.seachPlayer(playerName, playerId);
+		Future<SimplePlayer> future = PlayerHelper.searchPlayer(playerName, playerId);
 		future.onSuccess(r -> {
 			SimplePlayer simplePlayer = (SimplePlayer) r;
 			if (simplePlayer == null) {
