@@ -408,6 +408,8 @@ public class GameServer implements GameServerMBean {
 		stopWatch.start();
 //		log.info("Game Server starts to shutdown ...");
 		LoggerType.Stdout.logger.info("Game Server starts to shutdown ...");
+		// 关闭模式下，缩短远程调用的超时时间
+		Config.remoteCallTimeOut = 5; 
 		// 通知玩家退出
 		GameClientManager.getInstance().notifyLogoutAllClients();
 		stopWatch.split();
@@ -431,7 +433,7 @@ public class GameServer implements GameServerMBean {
 
 			LoggerType.Stdout.logger.info("start storeAllPlayers on shutdown");
 			// 同步存储所有玩家的数据
-			Config.remoteCallTimeOut = Config.shutdownWaitTime;
+			Config.remoteCallTimeOut = Config.shutdownWaitTimeSeconds;
 //			setDataServerSyncDefault();
 			GameClientManager.getInstance().storeAllPlayers();
 			stopWatch.split();
