@@ -29,8 +29,8 @@ public class EventBusMessageInterceptor {
 			Class<?> bodyClass = (actualBody != null) ? actualBody.getClass() : null;
 
 			// 记录发送日志
-			logger.info("发送消息到[{}]replyAddress[{}]messageClass[{}]messageBody[{}]sender[{}]", message.address(), message.replyAddress(),bodyClass, actualBody,
-					extractMessageSender(message));
+			logger.info("发送消息到[{}]replyAddress[{}]messageClass[{}]messageBody[{}]sender[{}]", message.address(), message.replyAddress(),
+					bodyClass, actualBody, extractMessageSender(message));
 
 			// 跟踪需要回复的消息
 			String replyAddress = message.replyAddress();
@@ -49,7 +49,8 @@ public class EventBusMessageInterceptor {
 			Object actualBody = extractMessageBody(message);
 			Class<?> bodyClass = (actualBody != null) ? actualBody.getClass() : null;
 			// 记录接收日志
-			logger.info("接收消息从[{}]replyAddress[{}]messageClass[{}]messageBody[{}]sender[{}]", message.address(),message.replyAddress(),bodyClass, actualBody, extractMessageSender(message));
+			logger.info("接收消息从[{}]replyAddress[{}]messageClass[{}]messageBody[{}]sender[{}]", message.address(), message.replyAddress(),
+					bodyClass, actualBody, extractMessageSender(message));
 
 			// 处理回复消息
 			String messageAddress = message.address();
