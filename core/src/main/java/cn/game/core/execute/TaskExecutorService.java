@@ -441,7 +441,7 @@ public class TaskExecutorService implements AutoCloseable {
 	@Override
 	public void close() {
 		if (running.compareAndSet(true, false)) {
-			LOGGER.info("Shutting down TaskExecutorService...");
+			LOGGER.info("Shutting down TaskExecutorService..." + Thread.currentThread().getName());
 
 			// 停止邮箱清理任务
 			if (mailboxCleanFuture != null) {
@@ -465,7 +465,7 @@ public class TaskExecutorService implements AutoCloseable {
 				Thread.currentThread().interrupt();
 			}
 
-			LOGGER.info("TaskExecutorService shutdown complete");
+			LOGGER.info("TaskExecutorService shutdown complete " + Thread.currentThread().getName());
 		}
 	}
 

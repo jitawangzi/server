@@ -113,7 +113,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 
 		long power = player.getAttrModule().getPower();
 		// TODO 
-		power = 50000 ;// 临时测试用
+//		power = 50000 ;// 临时测试用
 		int floorInConfig = getFloorInConfig(floor, floorConfig);
 
 		int Capacity = floorConfig.Capacity + floorInConfig * floorConfig.CapacityAdd;
@@ -155,10 +155,11 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		}
 		if (win) {
 			allRewardList.add(getReward(attackingSubId, false));
-		}
-		// 上一关的扫荡奖励
-		if (attackingSubId > 1) {
-			allRewardList.add(getReward(attackingSubId - 1, true));
+		}else {
+			// 上一关的扫荡奖励
+			if (attackingSubId > 1) {
+				allRewardList.add(getReward(attackingSubId - 1, true));
+			}
 		}
 
 		List<RewardInfo> rewards = new ArrayList<>();

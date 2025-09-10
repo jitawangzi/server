@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
-import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.net.protocol.IProtocol;
@@ -44,7 +43,6 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBusOptions;
-import io.vertx.core.eventbus.MessageCodec;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.http.HttpServerOptions;
@@ -57,8 +55,6 @@ import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 import io.vertx.micrometer.VertxJmxMetricsOptions;
 import io.vertx.micrometer.VertxPrometheusOptions;
-import io.vertx.serviceproxy.ServiceException;
-import io.vertx.serviceproxy.ServiceExceptionMessageCodec;
 import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
 
 /**

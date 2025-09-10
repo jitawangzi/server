@@ -37,5 +37,7 @@ public interface Processor {
 	
 	// 执行异步逻辑，返回结果
 	public <T, R> Future<T> process(long objectId, Callable<R> supplier, Function<R, Future<T>> mapper);
+	
+	public default void close() {}; 
 
 }

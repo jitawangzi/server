@@ -84,7 +84,7 @@ public final class Config {
 	public static int remoteCallTimeOutMillisecond = remoteCallTimeOut * 1000;
 
 	/** 服务器关闭时最大等待时间 */
-	public static int shutdownWaitTime = 60 * 10;
+	public static int shutdownWaitTimeSeconds = 60 * 30;
 
 //	public static boolean isTest;
 

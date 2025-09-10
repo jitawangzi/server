@@ -445,10 +445,16 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
             return;
         }
-        if (name == null || name.length() > GlobalConst.GuildName) {
+        if (name == null || name.length() == 0 || name.length() > GlobalConst.GuildName) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_too_long.ID);
             return;
         }
+        // 检查公会名称是否重复
+        boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(name); 
+        if (checkGuildNameRepeat) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
+            return;
+		}
         if (!StringUtils.isEmpty(req.getNotice())) {
             checkStrs.add(req.getNotice());
         }
@@ -462,8 +468,6 @@ public class GuildHandler extends GameBaseHandler {
         for (String str : checkStrs) {
             checkComplatableList.add((CompletableFuture<Boolean>) PlayerHelper.checkContextData(player, str).toCompletionStage());
         }
-        // 检查公会名称是否重复
-        checkComplatableList.add(GuildHelper.checkGuildNameRepeat(player, name));
         CompletableFuture.allOf(checkComplatableList.toArray(new CompletableFuture[0])).thenAcceptAsync(result -> {
             if (checkComplatableList.stream().anyMatch(CompletableFuture::isCompletedExceptionally)) {
                 client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);

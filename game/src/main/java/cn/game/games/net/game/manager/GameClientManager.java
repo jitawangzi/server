@@ -61,7 +61,7 @@ public class GameClientManager {
 		clients.put(gameClient.getSessionId(), gameClient);
 		log.info("addGameClientSession " + gameClient.toDetailString());
 	}
-	
+
 	/** 
 	 * 删除一个GameClient
 	 * @param gameClient
@@ -92,15 +92,16 @@ public class GameClientManager {
 		if (gameClient.getPlayerId() > 0) {
 			players.put(gameClient.getPlayerId(), gameClient);
 			log.info("addGameClientPlayer " + gameClient.toDetailString());
-		}else {
-            log.warn("addGameClientPlayer playerId is 0, gameClient: " + gameClient.toDetailString());
+		} else {
+			log.warn("addGameClientPlayer playerId is 0, gameClient: " + gameClient.toDetailString());
 		}
 	}
 
-	public void addGameClientConnection(String id,GameClient gameClient) {
+	public void addGameClientConnection(String id, GameClient gameClient) {
 		connections.put(id, gameClient);
 		log.info("addGameClientConnection " + gameClient.toDetailString());
 	}
+
 	public GameClient removeGameClientConnection(String id) {
 		log.info("removeGameClientConnection id: " + id);
 		if (id == null) {
@@ -125,7 +126,7 @@ public class GameClientManager {
 		broadcastOnlineToOtherServer(playerId, false, null);
 		return PlayerHelper.logout(playerId);
 	}
-	
+
 	/**
 	 * 玩家退出
 	 * @param playerId
@@ -177,45 +178,82 @@ public class GameClientManager {
 	 * 同步持久化所有玩家的数据，一般用在服务器关闭时
 	 */
 	public void storeAllPlayers() {
+		final long perLogoutTimeoutSec = Math.min(10, Config.shutdownWaitTimeSeconds / 10); // 单个玩家登出超时
+		final long overallTimeoutSec = Config.shutdownWaitTimeSeconds; // 总体超时
 
-		Collection<GameClient> lists = players.values();
+		// 固定快照，避免并发修改导致 size 与提交数量不一致
+		final List<GameClient> snapshot = new ArrayList<>(players.values());
+		final int total = snapshot.size();
+
 		StopWatch watch = new StopWatch();
 		watch.start();
 
-//		List<Future> futures = new ArrayList<>();
-		int onLineCount = lists.size();
-		AtomicInteger finishCount = new AtomicInteger(0);
-		Promise<Object> promise = Promise.promise();
-		Future<Object> future = promise.future();
-		if (onLineCount == 0) {
-			promise.complete();
-		}
-		for (GameClient gameClient : lists) {
-			ServerContext.getInstance().getProcessor().process(gameClient.getPlayerId(), () -> {
-				Future<?> logout = logout(gameClient, LogoutType.ServerClose);
-//				futures.add(logout);
-				logout.onComplete(ar -> {
-					if (ar.succeeded()) {
-					} else {
-						log.error(gameClient.getPlayerId() + " logout fail : ", ar.cause());
-					}
-					finishCount.getAndIncrement();
-					if (finishCount.intValue() == onLineCount) {
-						promise.complete();
-					}
-				});
-			});
-		}
-//		CompositeFuture all = CompositeFuture.join(futures);
-		try {
-			AsyncUtils.await(future, Config.shutdownWaitTime, TimeUnit.SECONDS);
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("storeAllPlayers error,maybe time out ", e);
+		if (total == 0) {
+			log.info("Store GameClient Total Size : [0] usedTime[0]ms, finished=0/0");
+			return;
 		}
 
+		AtomicInteger finished = new AtomicInteger(0);
+		AtomicInteger succeeded = new AtomicInteger(0);
+		AtomicInteger timeouts = new AtomicInteger(0);
+		AtomicInteger failed = new AtomicInteger(0);
+
+		Promise<Void> allDone = Promise.promise();
+
+		// 逐个提交到按 playerId 串行的 Processor，确保玩家内有序
+		for (GameClient gc : snapshot) {
+			long pid = gc.getPlayerId();
+			try {
+				ServerContext.getInstance().getProcessor().process(pid, () -> {
+					// 调用玩家登出逻辑，并为该 Future 增加单次超时
+					Future<?> f = logout(gc, LogoutType.ServerClose).timeout(perLogoutTimeoutSec, TimeUnit.SECONDS);
+
+					f.onComplete(ar -> {
+						int done = finished.incrementAndGet();
+						if (ar.succeeded()) {
+							succeeded.incrementAndGet();
+						} else {
+							if (ar.cause() instanceof java.util.concurrent.TimeoutException) {
+								timeouts.incrementAndGet();
+								log.warn("storeAllPlayers: logout timeout for player {}", pid);
+							} else {
+								failed.incrementAndGet();
+								log.warn("storeAllPlayers: logout failed for player {}", pid, ar.cause());
+							}
+						}
+
+						// 每处理一定数量打印一次进度
+						if (done % 50 == 0 || done == total) {
+							log.info("storeAllPlayers progress {}/{}", done, total);
+						}
+
+						if (done == total && !allDone.future().isComplete()) {
+							allDone.complete();
+						}
+					});
+				});
+			} catch (Throwable t) {
+				// 提交到 Processor 失败，直接计为失败并继续，避免整体卡死
+				int done = finished.incrementAndGet();
+				failed.incrementAndGet();
+				log.warn("storeAllPlayers: schedule logout failed for player {}", pid, t);
+				if (done == total && !allDone.future().isComplete()) {
+					allDone.complete();
+				}
+			}
+		}
+
+		// 等待总体完成，增加总超时，避免个别尾巴导致卡死
+		try {
+			AsyncUtils.await(allDone.future().timeout(overallTimeoutSec, TimeUnit.SECONDS));
+		} catch (Exception e) {
+			// 总体超时或异常，记录当下完成度，继续后续关闭流程
+			log.warn("storeAllPlayers overall wait ended with {}: finished={}/{} (ok={}, timeout={}, fail={})",
+					e.getClass().getSimpleName(), finished.get(), total, succeeded.get(), timeouts.get(), failed.get());
+		}
 		watch.stop();
-		log.info("Store GameClient Total Size : [{}] usedTime[{}]ms", lists.size(), watch.getTime());
+		log.info("Store GameClient Total Size : [{}] usedTime[{}]ms, finished={}/{}, ok={}, timeout={}, fail={}", total, watch.getTime(),
+				finished.get(), total, succeeded.get(), timeouts.get(), failed.get());
 	}
 
 	public void notifyLogoutAllClients() {
@@ -252,7 +290,7 @@ public class GameClientManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * 将消息广播给其他CrossServer服务器
 	 * @param message
@@ -278,10 +316,13 @@ public class GameClientManager {
 	 */
 	public void broadcastOnlineToOtherServer(long playerId, boolean online, List<String> serverIds) {
 
-		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder().setPlayerId(playerId).setOnline(online).setServerId(ServerContext.getInstance().getServerId())
+		GamePlayerOnlinePush_7d000010 message = GamePlayerOnlinePush_7d000010.newBuilder()
+				.setPlayerId(playerId)
+				.setOnline(online)
+				.setServerId(ServerContext.getInstance().getServerId())
 				.build();
 		broadcastGameServers(message, serverIds);
-		broadcastCrossServers(message, serverIds);
+//		broadcastCrossServers(message, serverIds);
 //		if (!online) {
 //			PlayerManager.getInstance().offline(playerId);
 //		}
@@ -300,7 +341,7 @@ public class GameClientManager {
 			gameClient.sendProtocol(message, errorNum);
 		}
 	}
-	
+
 	public boolean isOnline(long playerId) {
 
 		return this.players.get(playerId) != null;

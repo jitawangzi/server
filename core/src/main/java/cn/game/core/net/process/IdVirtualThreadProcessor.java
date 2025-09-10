@@ -6,7 +6,6 @@ import java.util.function.Function;
 import cn.game.core.execute.TaskExecutorService;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.vertx.VxContextRegistry;
 import io.vertx.core.Future;
 
 public class IdVirtualThreadProcessor extends AbstractProcessor {
@@ -52,5 +51,10 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 			return execute.compose(mapper);
 		}
 		return execute.map(r -> (T) r) ; 
+	}
+	
+	@Override
+	public void close() {
+		TaskExecutorService.getInstance().close();
 	}
 }

@@ -93,6 +93,10 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 					// 不符合等级要求
 					continue;
 				}
+				if (limitedTimeGiftConfig.VipMin > player.getVipLevel() || limitedTimeGiftConfig.VipMax < player.getVipLevel()) {
+					// 不符合vip等级要求
+					continue;
+				}
 				boolean checkActiveCount = checkActiveCount(limitedTimeGiftConfig);
 				if (!checkActiveCount) {
 					continue;
@@ -158,7 +162,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 			break;
 		case LevelUp:
 			int exp = event.getIntParameter(0);
-			if (exp == Asset.playerExp.ID) {
+			if (exp == Asset.playerExp.ID || exp == Asset.VIPExp.ID) {
 				refreshLimitedTimeGiftCheck();
 			}
 			break;

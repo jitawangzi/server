@@ -64,10 +64,10 @@ public class ServerContext {
 	private RpcClient rpcClient = new VertxRpcClient();
 
 	private EventBus<?, ? extends AbstractEvent<?>> eventBus;
-	
-	private ZkCacheRegistry<ZkCacheType> zkCacheRegistry; 
-	
-	private ValidServerService validGameService; 
+
+	private ZkCacheRegistry<ZkCacheType> zkCacheRegistry;
+
+	private ValidServerService validGameService;
 
 	private ServerContext() {
 	};
@@ -75,7 +75,7 @@ public class ServerContext {
 	public static ServerContext getInstance() {
 		return instance;
 	}
-	
+
 	public String getServerId() {
 		return serverId;
 	}
@@ -122,7 +122,7 @@ public class ServerContext {
 	private void initValidServerService() {
 		validGameService = new ValidServerService(zkCacheRegistry.get(ZkCacheType.VIRTUAL_SERVER_LIST), null);
 		validGameService.addOpenListener(s -> {
-			fireEvent(ServerEventTypeEnum.VirtualServerOpen, s.ID); 
+			fireEvent(ServerEventTypeEnum.VirtualServerOpen, s.ID);
 		});
 		validGameService.initFromSnapshot();
 	}
@@ -166,7 +166,7 @@ public class ServerContext {
 		}
 
 	}
-	
+
 	public boolean isPressureDev() {
 		return pressureDev;
 	}
@@ -192,8 +192,11 @@ public class ServerContext {
 				log.error("leaderLatch close error", e);
 			}
 		}
-		if (zkCacheRegistry!= null) {
+		if (zkCacheRegistry != null) {
 			zkCacheRegistry.close();
+		}
+		if (processor != null) {
+			processor.close();
 		}
 	}
 
@@ -335,7 +338,7 @@ public class ServerContext {
 				throw new RuntimeException(e);
 			}
 		});
-		
+
 	}
 
 	/** 
@@ -375,6 +378,7 @@ public class ServerContext {
 		EventRegistry<T, E> registration = (EventRegistry<T, E>) eventBus;
 		registration.register(eventType, processor);
 	}
+
 	@SuppressWarnings("unchecked")
 	public <T, E extends AbstractEvent<T>> void unregisterEventHandler(EventHandler<T, E> handler) {
 		// 强制类型转换

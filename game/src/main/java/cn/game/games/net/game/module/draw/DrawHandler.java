@@ -230,7 +230,7 @@ public class DrawHandler extends GameBaseHandler {
 //			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.getId());
 //			return;
 //		}
-		if (multiple < 0 || multiple > 0 && multiple > 3) {
+		if (multiple <= 0 || multiple > 3) {
 			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}

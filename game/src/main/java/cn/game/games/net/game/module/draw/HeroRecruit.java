@@ -111,7 +111,7 @@ public class HeroRecruit {
 		resp.addAllItemCount(itemCountList);
 		resp.addAllRecruitedPos(recruitedPosList);
 
-		resp.setCanMultiple(recruitCount > 15);
+		resp.setCanMultiple(recruitCount >= GlobalConst.GachaTripleTime);
 		if (notRefresh()) {
 			resp.setFreeRefreshRemaningSeconds(-1);
 		}else {
