@@ -57,7 +57,8 @@ public class Guarantee {
 		if (this.count < 0) {
 			this.count = 0 ; 
 		}
-		Set<Integer> allRounds = GuaranteeManager.instance().getTypeRounds().keySet();
+		//  返回的是type 的set
+		Set<Integer> allRounds = GuaranteeManager.instance().getTypeRoundMap(guaranteeConfig.type).keySet();
 		int max = Collections.max(allRounds);
 		int roundToQuary = this.round > max ? max : this.round;
 

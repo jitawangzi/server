@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.battle;
 
 import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -26,6 +27,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
+import io.vertx.core.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -314,23 +316,67 @@ public class PVEVPBattle extends XiYouBattleHandler {
         return rankIds;
     }
 
-
-
     public CompletionStage<Void> fillMainShowRankAsync(List<Integer> rankIds) {
         if (rankIds == null || rankIds.isEmpty()) {
             return CompletableFuture.failedStage(null);
         }
 
         RankService rankService = RankService.getInstance();
-        List<CompletionStage<Void>> updateTasks = new ArrayList<>();
-        // 并行获取所有排名数据
+        List<CompletionStage<RankEntry>> rankEntryStages = new ArrayList<>();
+
+        // 收集所有rankEntry
         rankIds.forEach(rankId -> {
-            CompletionStage <RankEntry> rankEntry = rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId);
-            updateTasks.add(rankEntry.thenAccept(this::setData));
+            CompletionStage<RankEntry> rankEntry = rankService.getRankEntryAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, rankId);
+            rankEntryStages.add(rankEntry);
         });
 
-//        // 等待所有任务完成
-        return CompletableFuture.allOf(updateTasks.toArray(new CompletableFuture[0]));
+        // 等待所有rankEntry获取完成
+        CompletionStage<Void> allRankEntries = CompletableFuture.allOf(rankEntryStages.toArray(new CompletableFuture[0]));
+
+        // 处理成功获取的所有rankEntry
+        CompletionStage<Void> playerRanksStage = allRankEntries.thenCompose(v -> {
+            // 收集所有玩家ID
+            List<Long> playerIds = new ArrayList<>();
+            List<RankEntry> rankEntries = new ArrayList<>();
+
+            // 成功获取rankEntry后的处理
+            rankEntryStages.forEach(stage -> {
+                RankEntry entry = ((CompletableFuture<RankEntry>) stage).join();
+                playerIds.add(entry.getId());
+                rankEntries.add(entry);
+            });
+
+            // 批量获取玩家信息
+            String[] playerIdStrings = playerIds.stream().map(String::valueOf).toArray(String[]::new);
+            Future<List<SimplePlayer>> playerFuture = RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, playerIdStrings);
+
+            // 将Vert.x Future转换为CompletableFuture
+            CompletableFuture<List<SimplePlayer>> completableFuture = new CompletableFuture<>();
+            playerFuture.onComplete(ar -> {
+                if (ar.succeeded()) {
+                    // 成功处理：将结果传递给CompletableFuture
+                    completableFuture.complete(ar.result());
+                } else {
+                    // 失败处理：传递异常
+                    completableFuture.completeExceptionally(ar.cause());
+                }
+            });
+
+            // 成功获取玩家信息后的处理
+            return completableFuture.thenAccept(simplePlayers -> {
+                // 将RankEntry和SimplePlayer组合成PlayerRank对象并放入mainShowRank
+                for (int i = 0; i < rankEntries.size() && i < simplePlayers.size(); i++) {
+                    RankEntry rankEntry = rankEntries.get(i);
+                    SimplePlayer simplePlayer = simplePlayers.get(i);
+                    if (simplePlayer != null) {
+                        PlayerRank playerRank = new PlayerRank(rankEntry, simplePlayer);
+                        mainShowRank.put(rankEntry.getRank(), playerRank);
+                    }
+                }
+            });
+        });
+
+        return playerRanksStage.toCompletableFuture();
     }
 
     private long calScore(long myscore, long diffscore, boolean iswin, boolean isHight) {
@@ -388,7 +434,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 return RankService.getInstance()
                         .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
                         .thenCompose(rankEntries -> {
-
                             rankEntries.forEach(this::setData);
                             return CompletableFuture.supplyAsync(() -> mainShowRank);
                         });
