@@ -463,7 +463,7 @@ public class Guild {
 	}
 
 	public void zongZhuTransfer(GuildMember zongZhu, GuildMember targetZongZhu) {
-		zongZhu.setPosition(GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU);
+		zongZhu.setPosition(GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 		String promt = "您的职位变更为" + "<color=#FB4141>{0}</color>" ; 
 		GuildPermissionsConfig guildPermissionsConfig = GuildPermissionsManager.instance().get(zongZhu.getPosition()); 
 		MailHelper.sendPromptMail(targetZongZhu.getPlayerId(),5,MessageFormat.format(promt, guildPermissionsConfig.Name)) ; 
