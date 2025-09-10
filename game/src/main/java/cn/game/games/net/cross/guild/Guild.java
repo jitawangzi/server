@@ -205,7 +205,7 @@ public class Guild {
 		simpleGuild.setNum(module.menMemberMap.size());
 		simpleGuild.setIsAutoJoin(getModule().setting.getAutoJoin());
 		simpleGuild.getApplyPidList().addAll(module.applyList);
-		simpleGuild.setDeclaration(data.getNotice());
+		simpleGuild.setDeclaration(data.getNotification());
 		simpleGuild.setCreatorName(module.getCreatorName());
 		simpleGuild.setMasterName(module.getMasterMember().getName());
 		return simpleGuild;
@@ -231,7 +231,7 @@ public class Guild {
 
 		// 封装 GuildSetting
 		GuildMsg.GuildSettingProto.Builder settingProto = module.setting.toProto();
-		settingProto.setNotice(data.getNotification());
+		settingProto.setNotice(data.getNotice());
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);

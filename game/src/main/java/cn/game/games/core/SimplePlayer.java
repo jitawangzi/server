@@ -88,19 +88,6 @@ public class SimplePlayer implements Serializable {
 	
 	private List<EquipPartShow> equipPartShows = new ArrayList<EquipPartShow>();
 	private Map<Integer,String> equipBattleRecord = new HashMap<>();
-	@Deprecated
-	public SimplePlayer(long id, String name, int level, int combatEffectiveness, int head, int headFrame, byte gender,
-			String unionName, long offLinetime) {
-		this.id = id;
-		this.name = name;
-		this.level = level;
-		this.combatEffectiveness = combatEffectiveness;
-		this.head = head;
-		this.headFrame = head;
-		this.gender = gender;
-		this.unionName = unionName;
-		this.offlineTime = offLinetime;
-	}
 	/**
 	 * @param player
 	 *            根据在线的player对象，构造实例
