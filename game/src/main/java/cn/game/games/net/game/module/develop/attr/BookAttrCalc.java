@@ -13,9 +13,11 @@ public class BookAttrCalc extends PlayerAttrCalc {
 	}
 	@Override
 	public void calcAttr() {
-//		int level = player.getLevel(Asset.CatalogPoints);
-//		HeroBandBookConfig heroBandBookConfig = HeroBandBookManager.instance().get(level);
-//		attrMap.addAllInt(heroBandBookConfig.AttributeVlalue);
+		int level = player.getLevel(Asset.CatalogPoints);
+		HeroBandBookConfig heroBandBookConfig = HeroBandBookManager.instance().getNullable(level);
+		if (heroBandBookConfig != null) {
+			attrMap.addAllInt(heroBandBookConfig.AttributeVlalue);
+		}
 	}
 
 	@Override
