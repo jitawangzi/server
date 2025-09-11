@@ -178,7 +178,7 @@ public class Player {
 		if (delay <= 0) {
 			ServerContext.getInstance().getProcessor().process(playerId,()-> handler.handle(this), false);
 		} else {
-			long timer = VxHolder.vertx.setPeriodic(delay, r -> {
+			long timer = VxHolder.vertx.setTimer(delay, r -> {
 				ServerContext.getInstance().getProcessor().process(playerId, () -> {
 					handler.handle(this);
 				}, false);

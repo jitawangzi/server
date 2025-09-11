@@ -183,20 +183,19 @@ public class GuildHelper {
 		return CacheType.ZONG_MEN_NAME_ID.key(name);
 	}
 
-	public static  boolean trySetName(String name, long newGuildId) {
+	public static boolean trySetName(String name, long newGuildId) {
 		String nameKey = getNameKey(name);
 		return RedisUtil.trySet(nameKey, newGuildId);
 	}
-	
-	public static  GuildAllInfo buildAllInfo(GuildServiceInfo serviceInfo,long playerId) {
+
+	public static GuildAllInfo buildAllInfo(GuildServiceInfo serviceInfo, long playerId) {
 		GuildAllInfo.Builder builder = GuildAllInfo.newBuilder();
-		builder.setSharedInfo(serviceInfo.getSharedInfo()) ; 
-		builder.setShowInfo(serviceInfo.getShowInfo()) ; 
-		Player player = PlayerManager.getInstance().getPlayer(playerId); 
-		GuildPersonalInfo personalInfo = player.getGuildModule().toPersonalInfo(); 
-		builder.setPersonalInfo(personalInfo); 
-		return builder.build(); 
-		
-		
+		builder.setSharedInfo(serviceInfo.getSharedInfo());
+		builder.setShowInfo(serviceInfo.getShowInfo());
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		GuildPersonalInfo personalInfo = player.getGuildModule().toPersonalInfo();
+		builder.setPersonalInfo(personalInfo);
+		return builder.build();
+
 	}
 }

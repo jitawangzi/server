@@ -44,6 +44,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
+import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.ServerHelper;
@@ -395,10 +396,19 @@ public class TestHandler extends GameBaseHandler {
 				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.SystemTimeChange);
             	if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.WEEKS) > 0) {
     				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewWeek);
+    				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+    					player.handleEvent(EventTypeEnum.NewWeek);
+    				});
 				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.MONTHS) > 0) {
 					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewMonth);
+					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+						player.handleEvent(EventTypeEnum.NewMonth);
+					});
 				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.DAYS) > 0) {
 					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
+					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+						player.handleEvent(EventTypeEnum.NewDay);
+					});
 				}
             	break;
             }
@@ -569,8 +579,7 @@ public class TestHandler extends GameBaseHandler {
     }
 
     protected void test(NetClient client, Object message) {
-    	ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay, null);
-
+//    	ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay, null);
         TestRunRequest_6f000020 req = (TestRunRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
@@ -578,6 +587,7 @@ public class TestHandler extends GameBaseHandler {
         List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
         String playerServerId = IdCache.getPlayerServerId(240201789);
         System.out.println(playerServerId);
+        
         //		RFuture<Object> async = RedisUtil.getAsync(CacheType.PLAYER_SIMPLE.key(240202120));
         //		System.out.println("当前线程：" + Thread.currentThread().getName());
         //		async.onComplete((r, e) -> {

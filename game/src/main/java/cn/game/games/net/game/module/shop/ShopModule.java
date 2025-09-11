@@ -311,14 +311,11 @@ public class ShopModule extends BasePlayerModule {
 			return;
 		}
 		shopItemsMap.removeAll(shop);
-		int level = player.getLevel(Asset.RSGTreeExp);
 		List<RSGTreeShopConfig> list = RSGTreeShopManager.instance().list();
 		for (RSGTreeShopConfig rsgTreeShopConfig : list) {
-			if (level >= rsgTreeShopConfig.Condition) {
-				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
-				if (shopItemConfig != null) {
-					shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
-				}
+			ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(rsgTreeShopConfig.Item);
+			if (shopItemConfig != null) {
+				shopItemsMap.put(shop, new ShopItem(shopItemConfig.ID));
 			}
 		}
 	}

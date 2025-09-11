@@ -336,7 +336,7 @@ public class Mail implements Serializable, DbEntity {
 		mail.setAttachmentList(attachmentList);
 		mail.setContent(content == null ? "" : content);
 		if (contentArguments != null && contentArguments.length > 0) {
-			if (mailConfig != null && StringUtils.isEmpty(mailConfig.Content)) {
+			if (mailConfig != null && !StringUtils.isEmpty(mailConfig.Content)) {
 				mail.setContent(MessageFormat.format(mailConfig.Content, contentArguments));
 			}
 		}

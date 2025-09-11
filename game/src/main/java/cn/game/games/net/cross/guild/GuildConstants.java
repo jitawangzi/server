@@ -1,7 +1,5 @@
 package cn.game.games.net.cross.guild;
 
-import java.util.List;
-
 /**
  * @ClassName GuildConstants
  *

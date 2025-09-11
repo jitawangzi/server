@@ -7,7 +7,10 @@ import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.develop.gem.Gem;
 import cn.game.games.net.game.module.develop.gem.GemModule;
+import cn.game.protocol.generated.config.EntryEffectConfig;
+import cn.game.protocol.generated.enume.EntryEffectEnum;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.generated.manager.EntryEffectManager;
 
 public class GemAttrCalc extends PlayerAttrCalc {
 
@@ -23,7 +26,12 @@ public class GemAttrCalc extends PlayerAttrCalc {
 			Map<Long, Integer> gemPosMap = v.getGemPosMap(); 
 			gemPosMap.forEach((uid, pos) -> {
 				Gem gem = gemModule.get(uid); 
-				attrMap.addAllInt(gem.getGemAttrs()); 
+				for (Integer attr : gem.getAttrList()) {
+					EntryEffectConfig entryEffectConfig = EntryEffectManager.instance().get(attr); 
+					if (entryEffectConfig.type == EntryEffectEnum.AttributeChange.ID) {
+						attrMap.add(entryEffectConfig.idParam, entryEffectConfig.numParam);
+					}
+				}
 			});
 		}); 
 	}

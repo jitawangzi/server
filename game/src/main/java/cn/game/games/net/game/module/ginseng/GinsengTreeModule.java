@@ -151,7 +151,8 @@ public class GinsengTreeModule extends BasePlayerModule {
 				startFruitTask();
 			}else {
 				fruitTimer = player.setTimerTask(delay * 1000L, r -> {
-					newFruit(rsgTreeLvConfig,DateUtil.currentTimeSeconds());
+					RSGTreeLvConfig rsgTreeLvConfigCur = RSGTreeLvManager.instance().get(level);
+					newFruit(rsgTreeLvConfigCur,DateUtil.currentTimeSeconds());
 					this.fruitTimer = 0 ;
 					this.nextFruitTime = 0;
 					startFruitTask();
