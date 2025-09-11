@@ -65,16 +65,16 @@ public class ItemModule extends AbstractItemModule<Item> {
 			count *= exp;
 			return player.getCurrencyModule().add(itemId, count, opType);
 		} else if (itemConfig.ItemType == 7) {
-			// 7类型先不自动开
-//			List<Object> ret = new ArrayList<>();
-//			for (int i = 0; i < count; i++) {
-//				int item = Rnd.randomInt(itemConfig.Para);
-//				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(item);
-//				Object object = goodsModule.add(item, 1, opType);
-//				player.handleEvent(EventTypeEnum.GetItem, item, 1);
-//				ret.add(object);
-//			}
-//			return ret;
+			// 7类型先自动开
+			List<Object> ret = new ArrayList<>();
+			for (int i = 0; i < count; i++) {
+				int item = Rnd.randomInt(itemConfig.Para);
+				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(item);
+				Object object = goodsModule.add(item, 1, opType);
+				player.handleEvent(EventTypeEnum.GetItem, item, 1);
+				ret.add(object);
+			}
+			return ret;
 		} else if (itemConfig.ItemType == 8) {
 			List<Object> ret = new ArrayList<>();
 			for (int i = 0; i < count; i++) {
