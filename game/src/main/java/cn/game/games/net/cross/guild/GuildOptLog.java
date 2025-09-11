@@ -70,7 +70,7 @@ public class GuildOptLog implements GuildConstants.GuildEventHandler {
 		}
 		OptLogData logData = new OptLogData(now, type, paramList);
 		while (optLogDataList.size() >= GlobalConst.GuildLogNum) {
-			optLogDataList.remove(optLogDataList.size() - 1);
+			optLogDataList.remove(0);
 		}
 		optLogDataList.add(logData);
 		List<Long> notifyPids = new ArrayList<>(info.getModule().menMemberMap.keySet());

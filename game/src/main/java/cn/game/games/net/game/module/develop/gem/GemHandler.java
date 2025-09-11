@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.develop.gem;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +19,10 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
+import cn.game.protocol.generated.config.EntryEffectConfig;
 import cn.game.protocol.generated.config.GemConfig;
+import cn.game.protocol.generated.enume.EntryEffectEnum;
+import cn.game.protocol.generated.manager.EntryEffectManager;
 import cn.game.protocol.generated.manager.GemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -73,11 +78,12 @@ public class GemHandler extends GameBaseHandler {
 			return;
 		}
 		// 同属性词条宝石只能上一个
-		Set<Integer> keySet = gem.getGemAttrs().keySet();
+		List<Integer> attrList = gem.getAttrList(); 
+		
 		gemPosMap.forEach((k, v) -> {
 			Gem gemWeared = gemModule.get(k);
-			for (Integer attrId : keySet) {
-				if (gemWeared.getGemAttrs().containsKey(attrId) && v != pos) {
+			for (Integer attrId : attrList) {
+				if (gemWeared.getAttrList().contains(attrId) && v != pos) {
 					player.fail(ErrorMsgEnum.request_parameter_error) ; 
 					return;
 				}

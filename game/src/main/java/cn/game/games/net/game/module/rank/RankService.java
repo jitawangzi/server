@@ -591,12 +591,12 @@ public class RankService {
 	 * 异步从排行榜中移除玩家。
 	 * @param type 排行榜类型
 	 * @param serverId 服务器ID 
-	 * @param playerId 玩家ID
+	 * @param targetId 目标ID
 	 * @return
 	 */
-	public RFuture<Boolean> removeRankAsync(RankType type, String serverId, long playerId) {
+	public RFuture<Boolean> removeRankAsync(RankType type, String serverId, long targetId) {
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		return rank.removeAsync(playerId);
+		return rank.removeAsync(targetId);
 	}
 
 	/**

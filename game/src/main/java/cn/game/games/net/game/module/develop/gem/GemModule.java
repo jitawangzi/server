@@ -34,11 +34,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
 		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);
 		GemAttrConfig config = Rnd.randomElement(posqualityList);
-		if (config.skillId > 0) {
-			instance.setGemSkills(List.of(config.skillId));
-		}else {
-			instance.getGemAttrs().put(config.attrId, Rnd.get(config.attrMin, config.attrMax));
-		}
+		instance.getAttrList().add(config.effectId);
 	}
 
 	@Override

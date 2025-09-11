@@ -288,7 +288,7 @@ public class Guild {
 		// 删除所有玩家
 		module.removeAllMember();
 		// 删除公会排行榜
-		RankService.getInstance().removeRankAsync(RankType.Battle);
+		RankService.getInstance().removeRankAsync(RankType.Guild,data.getServerId(), getId());
 		// 删除公会名称 id 映射
 		delGuildNameIdRedisData();
 		// 删除公会 simple 对象
