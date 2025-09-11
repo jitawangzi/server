@@ -104,6 +104,7 @@ public class FuncModule extends BasePlayerModule {
 			int chapterId = player.getBattleModule().getMainBattleHighest();
 			for (InitialUI initialUI : values) {
 				if (!funcOpenMap.containsKey(initialUI)) {
+					funcOpenMap.put(initialUI, false);
 					if (initialUI.DisplayLevel <= level) {
 						if (initialUI.FuncOpen.length <= 0) {
 							// 单等级解锁
