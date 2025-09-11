@@ -205,7 +205,7 @@ public class Guild {
 		simpleGuild.setNum(module.menMemberMap.size());
 		simpleGuild.setIsAutoJoin(getModule().setting.getAutoJoin());
 		simpleGuild.getApplyPidList().addAll(module.applyList);
-		simpleGuild.setDeclaration(data.getNotice());
+		simpleGuild.setDeclaration(data.getNotification());
 		simpleGuild.setCreatorName(module.getCreatorName());
 		simpleGuild.setMasterName(module.getMasterMember().getName());
 		return simpleGuild;
@@ -231,7 +231,7 @@ public class Guild {
 
 		// 封装 GuildSetting
 		GuildMsg.GuildSettingProto.Builder settingProto = module.setting.toProto();
-		settingProto.setNotice(data.getNotification());
+		settingProto.setNotice(data.getNotice());
 
 		builder.setSetting(settingProto.build());
 		builder.setLiveness(module.liveness);
@@ -463,7 +463,7 @@ public class Guild {
 	}
 
 	public void zongZhuTransfer(GuildMember zongZhu, GuildMember targetZongZhu) {
-		zongZhu.setPosition(GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU);
+		zongZhu.setPosition(GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 		String promt = "您的职位变更为" + "<color=#FB4141>{0}</color>" ; 
 		GuildPermissionsConfig guildPermissionsConfig = GuildPermissionsManager.instance().get(zongZhu.getPosition()); 
 		MailHelper.sendPromptMail(targetZongZhu.getPlayerId(),5,MessageFormat.format(promt, guildPermissionsConfig.Name)) ; 

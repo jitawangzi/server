@@ -3,6 +3,7 @@ package cn.game.games.net.cross;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -21,6 +22,7 @@ import cn.game.core.net.vertx.BusinessLogicVerticle;
 import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
 import cn.game.games.net.common.module.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
@@ -116,6 +118,11 @@ public class CrossServer {
 		IdCache.clearAllCurrentServerId();
 		GuildManager.getInstance().saveAllGuildData(true);
 
+		// 关闭系统服务
+		SpringContextLoader.getContext().close();
+		ServerContext.getInstance().shutdown();
+		AsyncUtils.await(VxHolder.vertx.close(), 300, TimeUnit.SECONDS); // 等待vertx关闭完成
+		
 		stopWatch.stop();
 		LoggerType.Stdout.logger.info("CrossServer shutdown complete, elapsed time: {} ms", stopWatch.getTime());
 		LogManager.shutdown(); // 关闭log4j2日志
