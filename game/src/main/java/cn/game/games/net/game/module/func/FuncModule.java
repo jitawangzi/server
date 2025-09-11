@@ -11,12 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FuncModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LevelUp,EventTypeEnum.LoginSuccess,EventTypeEnum.ChapterWin };
-    Map<InitialUI, Boolean> funcOpenMap=new HashMap<>();
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LevelUp,
+			EventTypeEnum.LoginSuccess, EventTypeEnum.ChapterWin };
+	Map<InitialUI, Boolean> funcOpenMap = new HashMap<>();
+
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
@@ -38,14 +41,14 @@ public class FuncModule extends BasePlayerModule {
 		case LoginSuccess: {
 			loginCheckNewFuncOpen();
 			break;
-		  }
+		}
 		}
 
 	}
 
 	public boolean isFuncOpen(InitialUI type) {
-		if(funcOpenMap.containsKey(type)) {
-           return funcOpenMap.get(type);
+		if (funcOpenMap.containsKey(type)) {
+			return funcOpenMap.get(type);
 		}
 		return true;
 	}
@@ -57,47 +60,47 @@ public class FuncModule extends BasePlayerModule {
 	}
 
 	public void refreshFuncOpen() {
-		int level=player.getLevel();
+		int level = player.getLevel();
 		int chapterId = player.getBattleModule().getMainBattleHighest();
 		funcOpenMap.forEach((k, v) -> {
-			if ( v==false && k.DisplayLevel >= level) {
-				if(k.FuncOpen.length<=0) {
+			if (v == false && k.DisplayLevel <= level) {
+				if (k.FuncOpen.length <= 0) {
 					// 单等级解锁
 					setFuncOpen(k);
-				}else {
+				} else {
 					// 有2级条件 目前只处理主线 其余不管
-					if(k.FuncOpen[0]==9001) {
-						if(k.FuncOpen[1]<=chapterId) {
+					if (k.FuncOpen[0] == 9001) {
+						if (k.FuncOpen[1] <= chapterId) {
 							setFuncOpen(k);
 						}
-					}else{
+					} else {
 						setFuncOpen(k);
 					}
 				}
 			}
 		});
 	}
-	public void initFuncOpenData()
-	{
+
+	public void initFuncOpenData() {
 		InitialUI[] values = InitialUI.values();
 		for (InitialUI initialUI : values) {
-			funcOpenMap.put(initialUI,false);
+			funcOpenMap.put(initialUI, false);
 		}
 		refreshFuncOpen();
 	}
+
 	void setFuncOpen(InitialUI type) {
-		if(funcOpenMap.containsKey( type) && funcOpenMap.get( type)== false) {
-			funcOpenMap.put( type, true);
+		if (funcOpenMap.containsKey(type) && funcOpenMap.get(type) == false) {
+			funcOpenMap.put(type, true);
 			player.handleEvent(EventTypeEnum.FuncOpen, type);
 		}
 	}
-	void loginCheckNewFuncOpen()
-	{
-		if(funcOpenMap.size()<InitialUI.values().length)
-		{
+
+	void loginCheckNewFuncOpen() {
+		if (funcOpenMap.size() < InitialUI.values().length) {
 			// 有新功能
 			InitialUI[] values = InitialUI.values();
-			int level=player.getLevel();
+			int level = player.getLevel();
 			int chapterId = player.getBattleModule().getMainBattleHighest();
 			for (InitialUI initialUI : values) {
 				if (!funcOpenMap.containsKey(initialUI)) {
@@ -130,8 +133,7 @@ public class FuncModule extends BasePlayerModule {
 		if (type > 0) {
 			setFuncOpen(InitialUI.get(type));
 		} else {
-			funcOpenMap.forEach((k, v) -> setFuncOpen(k)
-			);
+			funcOpenMap.forEach((k, v) -> setFuncOpen(k));
 		}
 	}
 
