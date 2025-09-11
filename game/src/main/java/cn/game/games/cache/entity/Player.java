@@ -640,7 +640,7 @@ public class Player {
 		if (type == null) {
 			return true;
 		}
-		return getLevel() >= type.DisplayLevel;
+		return getFuncModule().isFuncOpen(type);
 	}
 
 	public SimplePlayerInfo buildSimplePlayerInfo() {
