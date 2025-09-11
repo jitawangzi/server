@@ -45,6 +45,15 @@ public class Gem extends ItemNoStack implements Serializable, DbEntity {
 	}
 	
 
+	
+	public List<Integer> getEntryEffectList() {
+		return entryEffectList;
+	}
+
+	public void setEntryEffectList(List<Integer> entryEffectList) {
+		this.entryEffectList = entryEffectList;
+	}
+
 	/** 
 	 * 获取增加的属性
 	 * @return

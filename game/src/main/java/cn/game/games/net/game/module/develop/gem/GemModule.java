@@ -34,7 +34,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
 		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);
 		GemAttrConfig config = Rnd.randomElement(posqualityList);
-		instance.getAttrList().add(config.effectId);
+		instance.getEntryEffectList().add(config.effectId);
 	}
 
 	@Override
