@@ -27,7 +27,7 @@ public class FuncModule extends BasePlayerModule {
 			}
 			break;
 		}
-		case HCChapterFirstWin: {
+		case ChapterWin: {
 			refreshFuncOpen();
 			break;
 		}
