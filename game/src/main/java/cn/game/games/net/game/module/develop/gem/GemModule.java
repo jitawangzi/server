@@ -16,7 +16,6 @@ import cn.game.util.Rnd;
 public class GemModule extends AbstractItemNoStackModule<Gem> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
 
-
 	@Override
 	public EventTypeEnum[] getEventTypes() {
 		return events;
@@ -33,7 +32,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		// 随机宝石属性
 		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
 		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);
-		GemAttrConfig config = Rnd.randomElement(posqualityList);
+		GemAttrConfig config = Rnd.randomElement(posqualityList, r -> r.weight);
 		instance.getEntryEffectList().add(config.effectId);
 	}
 
@@ -61,8 +60,8 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 
 	public int getCountGTQuality(int quality) {
 		return (int) list().stream().filter(gem -> {
-			GemConfig config =  GemManager.instance().get(gem.getConfigId());
-			return config.quality >= quality; 
+			GemConfig config = GemManager.instance().get(gem.getConfigId());
+			return config.quality >= quality;
 		}).count();
 	}
 }
