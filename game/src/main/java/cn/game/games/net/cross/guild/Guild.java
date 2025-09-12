@@ -265,6 +265,9 @@ public class Guild {
 		GuildBasicConfig basicConfig = GuildBasicManager.instance().get(getLv());
 		return module.menMemberMap.size() >= basicConfig.NumberMax;
 	}
+	public boolean isApplyFull() {
+		return module.applyList.size() >= GlobalConst.GuildApplicationNum;
+	}
 
 	public boolean hasApply(long playerId) {
 		return module.applyList.contains(playerId);

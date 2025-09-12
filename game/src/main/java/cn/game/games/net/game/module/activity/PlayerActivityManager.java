@@ -55,6 +55,9 @@ public class PlayerActivityManager extends AbstractActivityManager {
 				return true;
 			}
 		}
+		if (activityConfig.openType == ActivityHelper.OPENTYPE_PLAYER_VIP_LEVEL) {
+			return player.getVipLevel() >= activityConfig.openParam ; 
+		}
 		return false;
 	}
 

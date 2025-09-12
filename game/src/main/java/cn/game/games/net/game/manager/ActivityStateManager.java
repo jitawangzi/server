@@ -35,11 +35,12 @@ public class ActivityStateManager {
 
 	private static ActivityStateManager instance = new ActivityStateManager();
 
-	// 当前开启的活动id（2状态）,一般是按时间开启的全体活动
-	private Set<Integer> activeActivitys = new HashSet<>();
-
-	// 1、2、3 状态的活动id ,只是根据时间开启的活动,
-	private Map<Integer, Integer> states = new ConcurrentHashMap<>();
+	/**
+	 * 活动状态 key: state  value: 活动id 集合
+	 * 状态值遵循 ActivityState 的枚举值：
+	 * 0: NONE（不存入映射），1: VIEW, 2: START, 3: CLOSE
+	 */
+	private final Map<Integer, Set<Integer>> activityStates = new ConcurrentHashMap<>();
 
 	// 如需统一时区，可在此处配置；目前使用系统默认
 	private final TimeZone timeZone = TimeZone.getDefault();
@@ -62,56 +63,53 @@ public class ActivityStateManager {
 
 			// 如果既没有 viewTimes 也没有 viewCron，认为“非时间可见”，按原逻辑跳过 view 的时间调度
 			if (!hasViewCron && !hasViewTimes) {
-				continue;
-			}
-
-			// 先处理 view 的定时（优先 cron）
-			if (hasViewCron) {
-				scheduleNextByCron(id, activityConfig.viewCron, () -> setState(id, ActivityState.VIEW_VALUE));
+				// 不创建 VIEW 调度，但后续 start/end/destroy 仍将决定状态
 			} else {
-				// 多个 viewTimes，逐个挂任务（支持 period 滚动）
-				int period = activityConfig.period;
-				int periodPass = getPeriodPass(id);
-				for (Date vt : activityConfig.viewTime) {
-					if (vt == null)
-						continue;
-					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
-					if (nowDate.before(viewDate)) {
-						long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, viewDate);
-						if (period > 0) {
-							SchedulerService.getInstance()
-									.scheduleAtFixedRate(() -> setState(id, ActivityState.VIEW_VALUE), howLong, period,
-											TimeUnit.MILLISECONDS);
-						} else {
-							SchedulerService.getInstance()
-									.scheduleTask(() -> setState(id, ActivityState.VIEW_VALUE), howLong, TimeUnit.MILLISECONDS);
+				// 先处理 view 的定时（优先 cron）
+				if (hasViewCron) {
+					scheduleNextByCron(id, activityConfig.viewCron, () -> setState(id, ActivityState.VIEW_VALUE));
+				} else {
+					// 多个 viewTimes，逐个挂任务（支持 period 滚动）
+					int period = activityConfig.period;
+					int periodPass = getPeriodPass(id);
+					for (Date vt : activityConfig.viewTime) {
+						if (vt == null)
+							continue;
+						Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
+						if (nowDate.before(viewDate)) {
+							long howLong = DateUtil.howLong(TimeUnit.MILLISECONDS, nowDate, viewDate);
+							if (period > 0) {
+								SchedulerService.getInstance()
+										.scheduleAtFixedRate(() -> setState(id, ActivityState.VIEW_VALUE), howLong, period,
+												TimeUnit.MILLISECONDS);
+							} else {
+								SchedulerService.getInstance()
+										.scheduleTask(() -> setState(id, ActivityState.VIEW_VALUE), howLong, TimeUnit.MILLISECONDS);
+							}
 						}
 					}
 				}
-			}
 
-			// 到这里，当前时刻若已过任一可见点，则设为 VIEW
-			boolean shouldBeView = false;
-			if (hasViewCron) {
-				// 使用 cron 估算：若存在“之前的某个可见触发”，则当前可视
-				// 简化：如果 next(viewCron) 在未来，但我们已经是首次循环，仍旧立即置为 VIEW 以保证可见。
-				// 如果你需要更严谨的“上一次 view 触发点”判断，可复用 lastFireBefore(viewCron, nowDate)。
-				shouldBeView = true;
-			} else {
-				for (Date vt : activityConfig.viewTime) {
-					if (vt == null)
-						continue;
-					int period = activityConfig.period;
-					int periodPass = getPeriodPass(id);
-					Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
-					if (!nowDate.before(viewDate)) {
-						shouldBeView = true;
-						break;
+				// 到这里，当前时刻若已过任一可见点，则设为 VIEW
+				boolean shouldBeView = false;
+				if (hasViewCron) {
+					shouldBeView = true;
+				} else {
+					for (Date vt : activityConfig.viewTime) {
+						if (vt == null)
+							continue;
+						int period = activityConfig.period;
+						int periodPass = getPeriodPass(id);
+						Date viewDate = DateUtil.changeDateByPeriod(vt, period, periodPass);
+						if (!nowDate.before(viewDate)) {
+							shouldBeView = true;
+							break;
+						}
 					}
 				}
-			}
-			if (shouldBeView) {
-				setState(id, ActivityState.VIEW_VALUE);
+				if (shouldBeView) {
+					setState(id, ActivityState.VIEW_VALUE);
+				}
 			}
 
 			// 下面逻辑（start/end/destroy 调度与初始化）保持与之前一致
@@ -131,9 +129,6 @@ public class ActivityStateManager {
 				ActivityState initState = computeStateByCron(activityConfig, nowDate);
 				if (initState != null && initState != ActivityState.NONE) {
 					setState(id, initState.getNumber());
-					if (initState == ActivityState.START) {
-						activeActivitys.add(id);
-					}
 				}
 			} else {
 				// 原有逻辑：时间点 + period
@@ -151,7 +146,7 @@ public class ActivityStateManager {
 						}
 					}
 					if (destroy) {
-						setState(id, ActivityState.NONE_VALUE);
+						removeState(id); // NONE
 						continue;
 					}
 				}
@@ -207,16 +202,13 @@ public class ActivityStateManager {
 				if (activityState != null) {
 					ActivityState second = activityState.second;
 					setState(id, second.getNumber());
-					if (second == ActivityState.START) {
-						activeActivitys.add(id);
-					}
 				}
 			}
 		}
 	}
 
 	public boolean isStart(int id) {
-		return activeActivitys.contains(id);
+		return getState(id) == ActivityState.START_VALUE;
 	}
 
 	/**
@@ -383,8 +375,7 @@ public class ActivityStateManager {
 
 		int index = activity.first;
 		if (index < 0 || index >= times.size()) {
-			 log.warn("Activity {} time index out of bounds: idx={}, size={}", id, index,times.size());
-			// times.size());
+			log.warn("Activity {} time index out of bounds: idx={}, size={}", id, index, times.size());
 			return null;
 		}
 
@@ -459,7 +450,7 @@ public class ActivityStateManager {
 					});
 				}
 			} else {
-				activeActivitys.add(id);
+				// START -> 事件
 				ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityOpenTime, id);
 			}
 
@@ -496,7 +487,6 @@ public class ActivityStateManager {
 				}
 			} else {
 				ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityShutDownTime, id);
-				activeActivitys.remove(id);
 			}
 
 		}
@@ -523,42 +513,67 @@ public class ActivityStateManager {
 					});
 				}
 			} else {
-				removeState(id);
+				removeState(id); // NONE
 				ServerEventBus.getInstance().dispatch(ServerEventTypeEnum.ActivityDestoryTime, id);
 			}
 		}
 	}
 
+	/**
+	 * 线程安全地设置活动状态：
+	 * - 从所有状态集合中移除该 id
+	 * - 若新状态为 NONE(0) 则不加入任何集合
+	 * - 否则加入目标状态集合
+	 */
 	public void setState(int id, int state) {
-		this.states.put(id, state);
+		if (state == ActivityState.NONE_VALUE) {
+			removeState(id);
+			return;
+		}
+		// 先从所有已知状态集合中移除
+		removeIdFromAllStates(id);
+
+		// 加入目标状态集合
+		Set<Integer> set = activityStates.computeIfAbsent(state, k -> ConcurrentHashMap.newKeySet());
+		set.add(id);
 	}
 
 	/**
-	 * 获取一个活动的具体状态
-	 * 
-	 * @param id
-	 * @return
+	 * 获取一个活动的具体状态，如果不在任何集合，返回 NONE
 	 */
 	public int getState(int id) {
-		Integer state = this.states.get(id);
-		return state == null ? ActivityState.NONE_VALUE : state;
-	}
-
-	public void removeState(int id) {
-		this.states.remove(id);
+		// 快速检查：只会在有限的状态值中
+		if (containsIdInState(ActivityState.START_VALUE, id)) return ActivityState.START_VALUE;
+		if (containsIdInState(ActivityState.CLOSE_VALUE, id)) return ActivityState.CLOSE_VALUE;
+		if (containsIdInState(ActivityState.VIEW_VALUE, id)) return ActivityState.VIEW_VALUE;
+		return ActivityState.NONE_VALUE;
 	}
 
 	/**
-	 * 客户端能看到的活动id
-	 * 
-	 * @return
+	 * 将活动移出所有状态集合（置为 NONE）
+	 */
+	public void removeState(int id) {
+		removeIdFromAllStates(id);
+	}
+
+	/**
+	 * 客户端能看到的活动id：即所有处于 VIEW/START/CLOSE 的活动
 	 */
 	public Collection<Integer> getShowIds() {
-		return this.states.keySet();
+		Set<Integer> result = new HashSet<>();
+		mergeIdsInto(result, ActivityState.VIEW_VALUE);
+		mergeIdsInto(result, ActivityState.START_VALUE);
+		mergeIdsInto(result, ActivityState.CLOSE_VALUE);
+		return result;
+	}
+
+	public Collection<Integer> getActiveIds() {
+		Set<Integer> result = new HashSet<>();
+		mergeIdsInto(result, ActivityState.START_VALUE);
+		return result;
 	}
 
 	public Collection<ActivityInfo> getShowState() {
-
 		List<ActivityInfo> activityInfos = new ArrayList<>();
 		for (Integer id : getShowIds()) {
 			activityInfos.add(buildActivityInfo(id));
@@ -576,12 +591,13 @@ public class ActivityStateManager {
 	}
 
 	/**
-	 * 开启中的活动id
-	 * 
-	 * @return
+	 * 开启中的活动id（View 、 START）
 	 */
 	public Set<Integer> getOpenIds() {
-		return activeActivitys;
+		Set<Integer> result = new HashSet<>();
+		mergeIdsInto(result, ActivityState.VIEW_VALUE);
+		mergeIdsInto(result, ActivityState.START_VALUE);
+		return result;
 	}
 
 	/** 
@@ -725,7 +741,7 @@ public class ActivityStateManager {
 	/** 
 	 * 还有多少毫秒到达活动结束时间
 	* type==2（秒）：直接 endDuration 秒
-	* type==1（天）：按自然日结算——从 startMillis 所在当天的24:00作为第一天的结束点，
+	* type==1（天）：按自然日结算----从 startMillis 所在当天的24:00作为第一天的结束点，
 	                 若 endDuration>1，再顺延到后续天的0点。
 	 * @param cfg
 	 * @param startMillis
@@ -770,6 +786,39 @@ public class ActivityStateManager {
 		long destroyDelayMs = getEffectiveDestroyDurationMs(cfg, timeMillis);
 		if (destroyDelayMs > 0) {
 			SchedulerService.getInstance().scheduleTask(new DestroyTask(id), destroyDelayMs, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	/* ===================== Map<Integer, Set<Integer>> 工具方法 ===================== */
+
+	private void removeIdFromAllStates(int id) {
+		// 遍历已知的有限状态集合进行移除，避免全表扫描过大成本
+		removeFromStateSet(ActivityState.VIEW_VALUE, id);
+		removeFromStateSet(ActivityState.START_VALUE, id);
+		removeFromStateSet(ActivityState.CLOSE_VALUE, id);
+		// NONE 不存储
+	}
+
+	private void removeFromStateSet(int state, int id) {
+		Set<Integer> set = activityStates.get(state);
+		if (set != null) {
+			set.remove(id);
+			// 可选：如果集合空了，移除键，保持映射紧凑
+			if (set.isEmpty()) {
+				activityStates.remove(state, set);
+			}
+		}
+	}
+
+	private boolean containsIdInState(int state, int id) {
+		Set<Integer> set = activityStates.get(state);
+		return set != null && set.contains(id);
+	}
+
+	private void mergeIdsInto(Set<Integer> target, int state) {
+		Set<Integer> set = activityStates.get(state);
+		if (set != null && !set.isEmpty()) {
+			target.addAll(set);
 		}
 	}
 }

@@ -310,8 +310,8 @@ public abstract class AbstractActivityManager {
 	 * @return
 	 */
 	protected boolean isInOpenTime(int id) {
-		Collection<Integer> showList = ActivityStateManager.getInstance().getShowIds();
-		return showList.contains(id);
+		Collection<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		return openList.contains(id);
 	}
 	public boolean canOpenExt(ActivityConfig activityConfig) {
 		return false;
@@ -396,9 +396,9 @@ public abstract class AbstractActivityManager {
 			Map<String, VirtualServerView> validServers = ServerHelper.getServerOpenMap();
 
 			VirtualServerView virtualServerView = validServers.get(serverId);
-			if (virtualServerView != null && virtualServerView.openTime != null
-					&& DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1 >= config.openParam) {
-				return true;
+			if (virtualServerView != null && virtualServerView.openTime != null) {
+				int days =  DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
+				return days >= config.openParam && days < config.openParam + config.endDuration;
 			}
 		}
 		return canOpenExt(config);

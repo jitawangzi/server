@@ -8,6 +8,8 @@ public class ActivityHelper {
 	public static final int OPENTYPE_PLAYER_CREATE_DAYS = 2;
 	/** 活动开启类型： 玩家到达指定等级 */
 	public static final int OPENTYPE_PLAYER_LEVEL = 3;
+	/** 活动开启类型： 玩家到达指定VIP等级 */
+	public static final int OPENTYPE_PLAYER_VIP_LEVEL = 4;
 	
 	// 按服务器开启的
 	/** 活动开启类型： 开服后xx天 */
