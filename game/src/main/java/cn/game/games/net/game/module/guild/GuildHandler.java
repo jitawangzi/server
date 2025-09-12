@@ -162,7 +162,7 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildModule guildModule = player.getGuildModule();
         long joinTime = guildModule.getJoinTime();
-        if (guildModule.getDisbandCount() > 0 && System.currentTimeMillis() / 1000 - joinTime < GlobalConst.GuildBargainCD) {
+        if (guildModule.getDisbandCount() > 0 && (System.currentTimeMillis() - joinTime)  / 1000 < GlobalConst.GuildBargainCD) {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
@@ -290,7 +290,7 @@ public class GuildHandler extends GameBaseHandler {
             player.getGuildModule().setDisbandCount(player.getGuildModule().getDisbandCount() + 1);
             // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
             if (player.getGuildModule().getDisbandCount() > 1) {
-                player.getGuildModule().setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * DateUtil.HOUR_MILLIS);
+                player.getGuildModule().setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
             }
             client.sendProtocol(result);
             return null;
@@ -383,7 +383,7 @@ public class GuildHandler extends GameBaseHandler {
                 module.setDisbandCount(module.getDisbandCount() + 1);
                 // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
                 if (module.getDisbandCount() > 1) {
-                    module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * DateUtil.HOUR_MILLIS);
+                    module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * 1000);
                 }
                 client.sendProtocol(callBack.response);
             }
