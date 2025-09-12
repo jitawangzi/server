@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -42,12 +43,11 @@ public class EventBusMessageInterceptor {
 				Object actualBody = extractMessageBody(message);
 				Class<?> bodyClass = (actualBody != null) ? actualBody.getClass() : null;
 
-				// 从已存在的 headers 里拿 trace-id（如果在业务 send 时透传），没有就生成一个仅用于日志
-				String traceId = message.headers() != null ? message.headers().get("trace-id") : null;
+				String traceId = message.headers().get(HDR_TRACE_ID); 
 				if (traceId == null) {
 					traceId = java.util.UUID.randomUUID().toString();
+					message.headers().add(HDR_TRACE_ID, traceId);
 				}
-
 				// 由于无法访问 DeliveryOptions，这里用默认/透传的超时值
 				String hdrTimeout = message.headers() != null ? message.headers().get("orig-timeout") : null;
 				long timeout = 30000L; // 默认 30s
@@ -91,7 +91,7 @@ public class EventBusMessageInterceptor {
 				Object actualBody = extractMessageBody(message);
 				Class<?> bodyClass = (actualBody != null) ? actualBody.getClass() : null;
 
-				String traceId = message.headers() != null ? message.headers().get("trace-id") : null;
+				String traceId = message.headers() != null ? message.headers().get(HDR_TRACE_ID) : null;
 				String origTimeout = message.headers() != null ? message.headers().get("orig-timeout") : null;
 				String msgHash = message.headers() != null ? message.headers().get("msg-hash") : null;
 

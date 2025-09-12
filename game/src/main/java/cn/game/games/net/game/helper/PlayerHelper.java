@@ -37,6 +37,7 @@ import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -71,6 +72,7 @@ import cn.game.games.net.game.module.battle.TowerBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.gem.GemModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
@@ -1135,6 +1137,20 @@ public class PlayerHelper {
 			case ChapterFinish -> {
 				BattleModule battleModule = player.getModule(BattleModule.class);
 				yield battleModule.isBattlePass(id) ? 1 : 0;
+			}
+			case HeroIDAndLevel -> {
+				HeroModule heroModule = player.getHeroModule(); 
+				Collection<Hero> byConfigId = heroModule.getByConfigId(id); 
+				int ret = 0; 
+				if (byConfigId != null) {
+					for (Hero hero : byConfigId) {
+						if (hero.getLevel() >= extParam[0] && hero.getLevel() <= extParam[1]) {
+							ret = 1;
+							break;
+						}
+					}
+				}
+				yield ret;
 			}
 			case EquipQualityNum -> {
 				EquipModule module = player.getModule(EquipModule.class);
