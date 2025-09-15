@@ -90,8 +90,8 @@ public class GameCacheService {
 		if (player == null || player.getGuildId() <= 0) {
 			return 0;
 		}
-		String key = String.valueOf(playerId);
-		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key, k -> fetchGuildSimpleInfo(Long.parseLong(k)));
+		String key = String.valueOf(player.getGuildId());
+		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key);
 		return guildSimpleInfo == null ? 0 : guildSimpleInfo.getLevel();
 	}
 
@@ -103,7 +103,7 @@ public class GameCacheService {
 			return null ; 
 		}
 		String key = String.valueOf(guildId);
-		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key, k -> fetchGuildSimpleInfo(Long.parseLong(k)));
+		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key);
 		return guildSimpleInfo;
 	}
 
