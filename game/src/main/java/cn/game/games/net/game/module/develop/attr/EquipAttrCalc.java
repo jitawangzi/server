@@ -26,7 +26,7 @@ public class EquipAttrCalc extends PlayerAttrCalc {
 
 			// 基础属性 + 强化属性
 			attrMap.add(equipConfig.baseAttrId, equipConfig.baseAttrValue + (v.getStrength() - 1) * equipConfig.stepSize); 
-			
+			attrMap.addAllInt(equip.getEquipAttrs()); 
 			for (int i = 0; i < equipConfig.strengthenLevels.length; i++) {
 				if (v.getStrength() >= equipConfig.strengthenLevels[i]) {
 					attrMap.add(equipConfig.strengthenIds[i], equipConfig.strengthenValuess[i]);
