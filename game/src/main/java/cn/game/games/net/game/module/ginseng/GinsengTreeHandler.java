@@ -167,6 +167,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
 //        }
         int[] cost = GameUtil.arrayMultiple(GlobalConst.RSGTreeInsecticidePrice, count);
         PlayerHelper.delResources(player, cost, OpType.GinsengTreeInsecticidesBug);
+        
+        List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave, OpType.GinsengTreeBug);
+        resp.addAllRewards(resources);
+        
         module.setInsecticidesTimes(insecticidesTimes + count);
         module.clearBugs();
         int insecticidesEndTime = module.getInsecticidesEndTime() == 0 ? DateUtil.currentTimeSeconds() : module.getInsecticidesEndTime();
