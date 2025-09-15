@@ -179,12 +179,16 @@ public class HeroHandler extends GameBaseHandler {
 		// }
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		HeroModule heroModule = player.getHeroModule();
-		List<Hero> heros = (List<Hero>) heroModule.getByConfigId(heroId);
+		Collection<Hero> heros = heroModule.getByConfigId(heroId);
 		if (heros.isEmpty()) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.player_data_not_found.getId());
 			return;
 		}
-		Hero hero = heros.get(0);
+		Hero hero = null; 
+		for (Hero h : heros) {
+			hero  = h ; 
+			break ; 
+		}
 		Map<Integer, QualityStarObj> starsMap = heroModule.getIllustrationsHeroStars();
 		QualityStarObj qualityStarObj = starsMap.get(heroId);
 		int maxStar = HeroHelper.getMaxStar(hero.getQuality());

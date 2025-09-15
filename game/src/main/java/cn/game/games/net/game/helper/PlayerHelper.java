@@ -2047,7 +2047,11 @@ public class PlayerHelper {
 
 	public static SimplePlayer getSimplePlayer(long playerId) {
 		String key = CacheType.PLAYER_SIMPLE.key(playerId);
-		return RedisLocalCache.getInstance().get(key);
+		SimplePlayer simplePlayer =  RedisLocalCache.getInstance().get(key);
+		if (simplePlayer == null) {
+			log.warn("getSimplePlayer from redis is null, playerId: " + playerId);
+		}
+		return simplePlayer; 
 	}
 	public static Future<SimplePlayer> getSimplePlayerAsync(long playerId) {
 		String key = CacheType.PLAYER_SIMPLE.key(playerId);
