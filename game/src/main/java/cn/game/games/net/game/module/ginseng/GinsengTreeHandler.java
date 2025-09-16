@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.core.log.GameLogger;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -125,6 +126,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
         // 浇水奖励
         List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeWaterLeave, OpType.GinsengTreeWarter);
         resp.addAllRewards(resources);
+        GameLogger.RSGTreeGrow(player, 1, 1);
         client.sendProtocol(resp.build());
     }
 
@@ -147,6 +149,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
         List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave, OpType.GinsengTreeBug);
         resp.addAllRewards(resources);
         client.sendProtocol(resp.build());
+        GameLogger.RSGTreeGrow(player, 2, 1);
     }
 
     private void insecticides(NetClient client, Object message) {
@@ -179,6 +182,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
 		}
         resp.setTreeInfo(module.buildGinsengTreeInfo());
         client.sendProtocol(resp.build());
+        GameLogger.RSGTreeGrow(player, 3, count);
     }
 
     private void fertilization(NetClient client, Object message) {
@@ -212,6 +216,7 @@ public class GinsengTreeHandler extends GameBaseHandler {
         module.fertilization();
         resp.setTreeInfo(module.buildGinsengTreeInfo());
         client.sendProtocol(resp.build());
+        GameLogger.RSGTreeGrow(player, 4, 1);
     }
 
     private void harvest(NetClient client, Object message) {

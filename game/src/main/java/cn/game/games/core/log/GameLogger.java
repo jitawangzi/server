@@ -1316,93 +1316,78 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.UltimateCardDraw.name(), LoggerType.UltimateCardDraw.version, "C0500"))
+							.buildLogCYPrefix(player, LoggerType.ultimateCardDraw.name(), LoggerType.ultimateCardDraw.version, "C0500"))
 							,jindu, beishu, Id, num};
-			LoggerType.UltimateCardDraw.logger.info(LoggerType.splice(array));
+			LoggerType.ultimateCardDraw.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
 	}
 	/**
 	 * 人参果树培养
-	 * @param player  浇水消耗 肥料获得	肥料使用	杀虫剂购买数量 果树升至等级
+	 * @param player  浇水1 手动 2 杀虫剂3  施肥4	杀虫剂购买数量
 	 */
-	public static void RSGTreeGrow(Player player, int waterCost, int fertilizerGet, int fertilizerCost, int pesticideCost, int level) {
+	public static void RSGTreeGrow(Player player, int type,int num) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.RSGTreeGrow.name(), LoggerType.RSGTreeGrow.version, "C0600"))
-					,waterCost, fertilizerGet, fertilizerCost, pesticideCost, level};
-			LoggerType.RSGTreeGrow.logger.info(LoggerType.splice(array));
+							.buildLogCYPrefix(player, LoggerType.rSGTreeGrow.name(), LoggerType.rSGTreeGrow.version, "C0600"))
+					,type, num};
+			LoggerType.rSGTreeGrow.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
 	}
-	/**
-	 * 人参果奖励
-	 * @param player 捉虫奖励	升级奖励	人参果成熟奖励
-	 */
-	public static void RSGTreeReward(Player player, int bugReward, int upgradeReward, int matureReward) {
-		try {
-			Object[] array = new Object[] {
-					LoggerType
-							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.RSGTreeReward.name(), LoggerType.RSGTreeReward.version, "C0601"))
-					,bugReward, upgradeReward, matureReward};
-			LoggerType.RSGTreeReward.logger.info(LoggerType.splice(array));
-		} catch (Exception e) {
-			SystemLogger.error(e);
-		}
-	}
-	/**
-	 * 人参果商店兑换
-	 * @param player 兑换商品ID
-	 */
-	public static void RSGTreeShopExchange(Player player, int id) {
-		try {
-			Object[] array = new Object[] {
-					LoggerType
-							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.RSGTreeShopExchange.name(), LoggerType.RSGTreeShopExchange.version, "C0602"))
-					,id};
-			LoggerType.RSGTreeShopExchange.logger.info(LoggerType.splice(array));
-		} catch (Exception e) {
-			SystemLogger.error(e);
-		}
-	}
-	/**
-	 * 人参果羁绊卡
-	 * @param player 羁绊卡获得ID	羁绊卡消耗ID
-	 */
-	public static void RSGBondCard(Player player, int getCardId, int useCardId) {
-		try {
-			Object[] array = new Object[] {
-					LoggerType
-							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.RSGBondCard.name(), LoggerType.RSGBondCard.version, "C0603"))
-					,getCardId, useCardId};
-			LoggerType.RSGBondCard.logger.info(LoggerType.splice(array));
-		} catch (Exception e) {
-			SystemLogger.error(e);
-		}
-	}
-	/**
-	 * 五行界
-	 * @param player 升至等级	获得皮肤ID	各ID皮肤升至星数
-	 */
-	public static void DefenceLine(Player player, int level, int skinId, int star1) {
-		try {
-			Object[] array = new Object[] {
-					LoggerType
-							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.DefenceLine.name(), LoggerType.DefenceLine.version, "C0700"))
-					,level, skinId, star1};
-			LoggerType.DefenceLine.logger.info(LoggerType.splice(array));
-		} catch (Exception e) {
-			SystemLogger.error(e);
-		}
-	}
+//	/**
+//	 * 人参果奖励
+//	 * @param player 捉虫奖励	升级奖励	人参果成熟奖励
+//	 */
+//	public static void RSGTreeReward(Player player, int bugReward, int upgradeReward, int matureReward) {
+//		try {
+//			Object[] array = new Object[] {
+//					LoggerType
+//							.splice(GameLogAssistant
+//							.buildLogCYPrefix(player, LoggerType.RSGTreeReward.name(), LoggerType.RSGTreeReward.version, "C0601"))
+//					,bugReward, upgradeReward, matureReward};
+//			LoggerType.RSGTreeReward.logger.info(LoggerType.splice(array));
+//		} catch (Exception e) {
+//			SystemLogger.error(e);
+//		}
+//	}
+//	/**
+//	 * 人参果商店兑换
+//	 * @param player 兑换商品ID
+//	 */
+//	public static void RSGTreeShopExchange(Player player, int id) {
+//		try {
+//			Object[] array = new Object[] {
+//					LoggerType
+//							.splice(GameLogAssistant
+//							.buildLogCYPrefix(player, LoggerType.RSGTreeShopExchange.name(), LoggerType.RSGTreeShopExchange.version, "C0602"))
+//					,id};
+//			LoggerType.RSGTreeShopExchange.logger.info(LoggerType.splice(array));
+//		} catch (Exception e) {
+//			SystemLogger.error(e);
+//		}
+//	}
+//	/**
+//	 * 人参果羁绊卡
+//	 * @param player 羁绊卡获得ID	羁绊卡消耗ID
+//	 */
+//	public static void RSGBondCard(Player player, int getCardId, int useCardId) {
+//		try {
+//			Object[] array = new Object[] {
+//					LoggerType
+//							.splice(GameLogAssistant
+//							.buildLogCYPrefix(player, LoggerType.RSGBondCard.name(), LoggerType.RSGBondCard.version, "C0603"))
+//					,getCardId, useCardId};
+//			LoggerType.RSGBondCard.logger.info(LoggerType.splice(array));
+//		} catch (Exception e) {
+//			SystemLogger.error(e);
+//		}
+//	}
+
 	/**
 	 * 降妖伏魔扫荡
 	 * @param player 升至等级	今日扫荡次数	花费元宝	关卡ID	扫荡奖励
@@ -1412,9 +1397,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.DemonSweep.name(), LoggerType.DemonSweep.version, "C0800"))
+							.buildLogCYPrefix(player, LoggerType.demonSweep.name(), LoggerType.demonSweep.version, "C0800"))
 					,count, battleId, reward};
-			LoggerType.DemonSweep.logger.info(LoggerType.splice(array));
+			LoggerType.demonSweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1428,9 +1413,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.LingShanPurchase.name(), LoggerType.LingShanPurchase.version, "C0901"))
+							.buildLogCYPrefix(player, LoggerType.lingShanPurchase.name(), LoggerType.lingShanPurchase.version, "C0901"))
 					,count, cost};
-			LoggerType.LingShanPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.lingShanPurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1444,9 +1429,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.LingShanSweep.name(), LoggerType.LingShanSweep.version, "C0902"))
+							.buildLogCYPrefix(player, LoggerType.lingShanSweep.name(), LoggerType.lingShanSweep.version, "C0902"))
 					,count, battleId, reward};
-			LoggerType.LingShanSweep.logger.info(LoggerType.splice(array));
+			LoggerType.lingShanSweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1460,9 +1445,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.LingShanProgressReward.name(), LoggerType.LingShanProgressReward.version, "C0903"))
+							.buildLogCYPrefix(player, LoggerType.lingShanProgressReward.name(), LoggerType.lingShanProgressReward.version, "C0903"))
 					,count, battleId, reward};
-			LoggerType.LingShanProgressReward.logger.info(LoggerType.splice(array));
+			LoggerType.lingShanProgressReward.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1478,9 +1463,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.DaShengPurchase.name(), LoggerType.DaShengPurchase.version, "C1000"))
+							.buildLogCYPrefix(player, LoggerType.daShengPurchase.name(), LoggerType.daShengPurchase.version, "C1000"))
 					,count,cost};
-			LoggerType.DaShengPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.daShengPurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1494,9 +1479,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.DaShengChallenge.name(), LoggerType.DaShengChallenge.version, "C1001"))
+							.buildLogCYPrefix(player, LoggerType.daShengChallenge.name(), LoggerType.daShengChallenge.version, "C1001"))
 					,playerId, report};
-			LoggerType.DaShengChallenge.logger.info(LoggerType.splice(array));
+			LoggerType.daShengChallenge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1511,9 +1496,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.HeroBook.name(), LoggerType.HeroBook.version, "C1200"))
+							.buildLogCYPrefix(player, LoggerType.heroBook.name(), LoggerType.heroBook.version, "C1200"))
 					,getScore, totalScore, level, levelRewardId, openId, rewardId};
-			LoggerType.HeroBook.logger.info(LoggerType.splice(array));
+			LoggerType.heroBook.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1522,14 +1507,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会创建
 	 * @param player  仙会ID	仙会名称	仙会旗帜
 	 */
-	public static void GuildCreate(Player player, long guildId, String name, int flag) {
+	public static void guildCreate(Player player, long guildId, String name, int flag) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildCreate.name(), LoggerType.GuildCreate.version, "C1300"))
+							.buildLogCYPrefix(player, LoggerType.guildCreate.name(), LoggerType.guildCreate.version, "C1300"))
 					,guildId, name, flag};
-			LoggerType.GuildCreate.logger.info(LoggerType.splice(array));
+			LoggerType.guildCreate.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1538,14 +1523,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会加入
 	 * @param player  仙会ID	仙会名称	仙会旗帜
 	 */
-	public static void GuildJoin(Player player, long guildId, String name, int flag) {
+	public static void guildJoin(Player player, long guildId, String name, int flag) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildJoin.name(), LoggerType.GuildJoin.version, "C1301"))
+							.buildLogCYPrefix(player, LoggerType.guildJoin.name(), LoggerType.guildJoin.version, "C1301"))
 					,guildId, name, flag};
-			LoggerType.GuildJoin.logger.info(LoggerType.splice(array));
+			LoggerType.guildJoin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1554,14 +1539,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会解散
 	 * @param player  仙会ID	仙会名称
 	 */
-	public static void GuildDisband(Player player, long guildId, String name) {
+	public static void guildDisband(Player player, long guildId, String name) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildDisband.name(), LoggerType.GuildDisband.version, "C1302"))
+							.buildLogCYPrefix(player, LoggerType.guildDisband.name(), LoggerType.guildDisband.version, "C1302"))
 					,guildId, name};
-			LoggerType.GuildDisband.logger.info(LoggerType.splice(array));
+			LoggerType.guildDisband.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1570,14 +1555,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会退出
 	 * @param player  仙会ID	仙会名称
 	 */
-	public static void GuildExit(Player player, long guildId, String name) {
+	public static void guildExit(Player player, long guildId, String name) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildExit.name(), LoggerType.GuildExit.version, "C1303"))
+							.buildLogCYPrefix(player, LoggerType.guildExit.name(), LoggerType.guildExit.version, "C1303"))
 					,guildId, name};
-			LoggerType.GuildExit.logger.info(LoggerType.splice(array));
+			LoggerType.guildExit.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1586,14 +1571,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会信息变化
 	 * @param player  仙会ID	仙会修改名称	仙会修改旗帜
 	 */
-	public static void GuildInfoChange(Player player, long guildId  ,String name, int flag) {
+	public static void guildInfoChange(Player player, long guildId  ,String name, int flag) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildInfoChange.name(), LoggerType.GuildInfoChange.version, "C1304"))
+							.buildLogCYPrefix(player, LoggerType.guildInfoChange.name(), LoggerType.guildInfoChange.version, "C1304"))
 					,guildId, name,flag};
-			LoggerType.GuildInfoChange.logger.info(LoggerType.splice(array));
+			LoggerType.guildInfoChange.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1602,14 +1587,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会成员职位变化
 	 * @param player  成员ID	变更前职位	变更后职位
 	 */
-	public static void GuildMemberPositionChange(Player player, long guildId  ,int beforePosition, int afterPosition) {
+	public static void guildMemberPositionChange(Player player, long guildId  ,int beforePosition, int afterPosition) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildMemberPositionChange.name(), LoggerType.GuildMemberPositionChange.version, "C1305"))
+							.buildLogCYPrefix(player, LoggerType.guildMemberPositionChange.name(), LoggerType.guildMemberPositionChange.version, "C1305"))
 					,guildId, beforePosition,afterPosition};
-			LoggerType.GuildMemberPositionChange.logger.info(LoggerType.splice(array));
+			LoggerType.guildMemberPositionChange.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1618,14 +1603,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会升级
 	 * @param player  获得经验值	升至等级
 	 */
-	public static void GuildUpgrade(Player player, long guildId, int exp, int level) {
+	public static void guildUpgrade(Player player, long guildId, int exp, int level) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildUpgrade.name(), LoggerType.GuildUpgrade.version, "C1306"))
+							.buildLogCYPrefix(player, LoggerType.guildUpgrade.name(), LoggerType.guildUpgrade.version, "C1306"))
 					,guildId, exp, level};
-			LoggerType.GuildUpgrade.logger.info(LoggerType.splice(array));
+			LoggerType.guildUpgrade.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1634,14 +1619,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会商店
 	 * @param player  仙会ID	兑换商品ID
 	 */
-	public static void GuildShop(Player player,  long guildId, int itemId) {
+	public static void guildShop(Player player,  long guildId, int itemId) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildShop.name(), LoggerType.GuildShop.version, "C1307"))
+							.buildLogCYPrefix(player, LoggerType.guildShop.name(), LoggerType.guildShop.version, "C1307"))
 					,guildId,itemId};
-			LoggerType.GuildShop.logger.info(LoggerType.splice(array));
+			LoggerType.guildShop.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1650,14 +1635,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会砍价
 	 * @param player  仙会ID	 兑今日仙会第几次砍价	砍掉金额	砍后价格
 	 */
-	public static void GuildBargain(Player player,  long guildId, int num ,int bargainNum, int bargainPrice) {
+	public static void guildBargain(Player player,  long guildId, int num ,int bargainNum, int bargainPrice) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildBargain.name(), LoggerType.GuildBargain.version, "C1308"))
+							.buildLogCYPrefix(player, LoggerType.guildBargain.name(), LoggerType.guildBargain.version, "C1308"))
 					,guildId, num, bargainNum, bargainPrice};
-			LoggerType.GuildBargain.logger.info(LoggerType.splice(array));
+			LoggerType.guildBargain.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1666,14 +1651,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会砍价购买
 	 * @param player  商品ID	花费元宝
 	 */
-	public static void GuildBargainPurchase(Player player, int itemId, int num) {
+	public static void guildBargainPurchase(Player player, int itemId, int num) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildBargainPurchase.name(), LoggerType.GuildBargainPurchase.version, "C1309"))
+							.buildLogCYPrefix(player, LoggerType.guildBargainPurchase.name(), LoggerType.guildBargainPurchase.version, "C1309"))
 					,itemId, num};
-			LoggerType.GuildBargainPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.guildBargainPurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1687,9 +1672,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildDonate.name(), LoggerType.GuildDonate.version, "C1310"))
+							.buildLogCYPrefix(player, LoggerType.guildDonate.name(), LoggerType.guildDonate.version, "C1310"))
 					,type, num, contribute, playerId};
-			LoggerType.GuildDonate.logger.info(LoggerType.splice(array));
+			LoggerType.guildDonate.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1703,9 +1688,25 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[]{
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.GuildQuest.name(), LoggerType.GuildQuest.version, "C1311"))
+							.buildLogCYPrefix(player, LoggerType.guildQuest.name(), LoggerType.guildQuest.version, "C1311"))
 					, taskId, rewardId, num, rewardNum};
-			LoggerType.GuildQuest.logger.info(LoggerType.splice(array));
+			LoggerType.guildQuest.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 通用等级升级
+	 * @param player 经验ID	等级
+	 */
+	public static void ComonLevelUp(Player player, int expId, int level) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.commonLevelUp.name(), LoggerType.commonLevelUp.version, "C1312"))
+					,expId, level};
+			LoggerType.commonLevelUp.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}

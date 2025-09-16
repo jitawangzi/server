@@ -168,6 +168,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 			if (id == Asset.playerExp.ID) {
 				GameLogger.levelUp(player);
 			}
+			GameLogger.ComonLevelUp(player, id,  levelsMap.getValue(id));
 		}
 		// 不能升了，设置经验为最大
 		if (expConfig != null && curExp > expConfig.experience) {
