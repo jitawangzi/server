@@ -160,6 +160,7 @@ public class LoginServer {
 
 	public void initPlayerMaxId() {
 		String key = CacheType.Player_MAX_ID.key();
+//		key = "Player_MAX_IDPlayer_MAX_ID"; 
 		Integer maxPlayerId = RedisUtil.get(key);
 		if (maxPlayerId == null) {
 			UserMapper userMapper = SpringContextLoader.getContext().getBean(UserMapper.class);

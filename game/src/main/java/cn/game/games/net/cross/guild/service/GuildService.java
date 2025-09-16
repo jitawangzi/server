@@ -88,6 +88,14 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		return guild.toShowProto();
 	}
 	@Override
+	public String getGuildName(long guildId) {
+		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		if (guild == null) {
+			return null; 
+		}
+		return guild.getName();
+	}
+	@Override
 	public GuildServiceInfo getGuildAllInfoForMember(long guildId) {
 		Guild guild = GuildManager.getInstance().getGuild(guildId);
 		if (guild == null) {
@@ -119,7 +127,9 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (guildInfo.hasApply(playerId)) {
 			fail(ErrorMsgEnum.zong_men_apply_exist);
 		}
-
+		if (guildInfo.isApplyFull()) {
+			fail(ErrorMsgEnum.zong_men_apply_max);
+		}
 		// 开启自动加入 则直接加入公会
 		if (guildInfo.isAutoJoin() && !guildInfo.isFull()) {
 			boolean joinGuild = guildInfo.joinGuild(playerId, GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);

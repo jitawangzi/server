@@ -256,6 +256,22 @@ public class GameServer implements GameServerMBean {
 			lock.unlock();
 		}
 	}
+	private void refreshSimplePlayers() {
+		try {
+			Function<Player, Boolean> function = player -> {
+				PlayerHelper.saveSimplePlayerToRedisSync(player);
+				// 初始化名字，名字--id
+				PlayerNameManager.getInstance().addExistingUsername(player.getData().getName());
+				PlayerNameManager.getInstance().saveName2IdSync(player.getData().getName(), player.getData().getPlayerId());
+				return false;
+			};
+			PlayerHelper.loadAndProcessPlayers(function);
+		
+		} catch (Exception e) {
+			throw e;
+		} finally {
+		}
+	}
 	
 	/** 
 	 * 初始化1000个机器人，给某些玩法使用

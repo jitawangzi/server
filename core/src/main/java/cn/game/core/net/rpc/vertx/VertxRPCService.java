@@ -9,6 +9,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.ReplyFailure;
 
@@ -30,8 +31,9 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 	public void handleMessage(Message<Object> message) {
 		Command command = (Command) message.body();
 		long objectId = command.getObjectId();
+	    String traceId = message.headers().get("trace_id");
 		if (log.isDebugEnabled()) {
-			log.debug("Received RPC command: {}, objectId: {},replyAddress: {}", command, objectId, message.replyAddress());
+			log.debug("Received RPC command: {}, objectId: {},replyAddress: {} , traceId: {}", command, objectId, message.replyAddress(),traceId == null ? "null" : traceId);
 		}
 		Command commandFinal = command;
 		processor.process(objectId, () -> {
@@ -50,7 +52,8 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
 					message.fail(ReplyFailure.ERROR.toInt(), errString);
 				} else {
-					message.reply(r.result(), VxHolder.universalOptions);
+				    DeliveryOptions deliveryOptions = traceId == null? VxHolder.universalOptions: new DeliveryOptions(VxHolder.universalOptions).addHeader("trace_id", traceId);
+					message.reply(r.result(), deliveryOptions);
 				}
 			});
 		},true);

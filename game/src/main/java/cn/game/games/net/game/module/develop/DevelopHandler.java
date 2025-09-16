@@ -347,6 +347,7 @@ public class DevelopHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
             return;
         }
+        resp.addAllRewards(PlayerHelper.addResources(player, heavenlyDaoConfig.Reward, OpType.TianDaoLvUp)); 
         developModule.setHeavenlyDaoLevel(heavenlyDaoLevel + 1);
         player.handleEvent(EventTypeEnum.CultivatesImmortals);
         client.sendProtocol(resp.build());

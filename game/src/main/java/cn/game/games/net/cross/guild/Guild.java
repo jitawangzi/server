@@ -265,6 +265,9 @@ public class Guild {
 		GuildBasicConfig basicConfig = GuildBasicManager.instance().get(getLv());
 		return module.menMemberMap.size() >= basicConfig.NumberMax;
 	}
+	public boolean isApplyFull() {
+		return module.applyList.size() >= GlobalConst.GuildApplicationNum;
+	}
 
 	public boolean hasApply(long playerId) {
 		return module.applyList.contains(playerId);
@@ -340,7 +343,7 @@ public class Guild {
 	}
 
 	public void addGuildAsset(long playerId, int id, int num) {
-		if (id == Asset.GuildPoint.ID) {// 公会活跃度
+		if (id == Asset.GuildPoint.ID) {// 公会活跃度，这个目前不会直接增加了
 			module.setLiveness(module.liveness + num);
 		} else if (id == Asset.GuildExp.ID) {// 公会经验
 			addExp(num);
@@ -348,6 +351,8 @@ public class Guild {
 			GuildMember member = getMember(playerId); 
 			if (member != null) {
 				member.addcontribution(num);
+				// 成员加贡献的时候，同时增加公会活跃度
+				module.setLiveness(module.liveness + num);
 			}
 		}else {
 			throw new IllegalArgumentException("不支持的公会资产类型: " + id);

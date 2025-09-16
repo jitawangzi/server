@@ -81,7 +81,7 @@ public class TestHelper {
 			} else if (goodsType == GoodsTypeEnum.Item.getId()) {
 				Collection<ItemConfig> list = ItemManager.instance().list();
 				for (ItemConfig e : list) {
-					rewardItems = PlayerHelper.addResources(player, e.ID, 999, OpType.Test);
+					rewardItems = PlayerHelper.addResources(player, e.ID, 80000, OpType.Test);
 					allRewards.addAll(rewardItems);
                 }
 			} else if (goodsType == GoodsTypeEnum.Hero.getId()) {

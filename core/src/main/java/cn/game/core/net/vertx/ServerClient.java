@@ -3,9 +3,7 @@ package cn.game.core.net.vertx;
 import com.google.protobuf.MessageLite.Builder;
 
 import cn.game.core.net.client.AbstractNetClient;
-import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.protocol.object.ObjectProtocol;
-import cn.game.core.net.protocol.object.ProtobufProtocol;
+import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
 import io.vertx.serviceproxy.HelperUtils;
 import io.vertx.serviceproxy.ServiceException;
@@ -24,14 +22,17 @@ public class ServerClient extends AbstractNetClient {
 	}
 	@Override
 	public void sendProtocol(Object message) {
+	    // 从收到的消息中获取 trace_id (如果存在)
+	    String traceId = this.message.headers().get("trace_id");
+	    DeliveryOptions deliveryOptions = traceId == null? VxHolder.universalOptions: new DeliveryOptions(VxHolder.universalOptions);
 		if (message instanceof Builder) {
 			message = ((Builder) message).build();
 		}
 		if (message instanceof Throwable) {
 			this.message.reply(new ServiceException(500, HelperUtils.generateDebugInfo((Throwable) message).toString()),
-					VxHolder.universalOptions);
+					deliveryOptions);
 		} else {
-			this.message.reply(message, VxHolder.universalOptions);
+			this.message.reply(message, deliveryOptions);
 		}
 	}
 

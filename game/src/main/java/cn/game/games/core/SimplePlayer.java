@@ -13,6 +13,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.cache.GameCacheService;
 import cn.game.games.net.game.module.develop.equip.EquipPartShow;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.games.net.game.module.player.figure.FigureModule;
@@ -47,7 +48,6 @@ public class SimplePlayer implements Serializable {
 	/** 是否是机器人 */
 	public boolean isRobot ; 
 	
-	public String unionName;
 	public long unionId;
 	public long offlineTime;
 	public boolean online = true;
@@ -147,7 +147,6 @@ public class SimplePlayer implements Serializable {
 		if(equipTowerBattle!=null) {
 			this.equipBattleRecord =equipTowerBattle.getBattleRecord();
 		}
-		this.unionName = player.getGuildName(); 
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -221,8 +220,8 @@ public class SimplePlayer implements Serializable {
 
 		PlayerShowInfo.Builder showInfo = PlayerShowInfo.newBuilder();
 		showInfo.setBattleId(battleId);
-		if (unionName != null) {
-			showInfo.setGuild(unionName);
+		if (unionId > 0) {
+			showInfo.setGuild(GameCacheService.getInstance().getGuildName(unionId));
 		}
 		for (Hero hero : heros) {
 			showInfo.addHeros(hero.toHeroInfo());
@@ -282,11 +281,6 @@ public class SimplePlayer implements Serializable {
 	public void setGender(byte gender) {
 
 		this.gender = gender;
-	}
-
-	public String getUnionName() {
-
-		return unionName;
 	}
 
 	public long getUnionId() {

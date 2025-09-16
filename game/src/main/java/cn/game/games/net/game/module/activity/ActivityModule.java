@@ -183,8 +183,14 @@ public class ActivityModule extends BasePlayerModule {
 		case LevelUp: {
 			int type = event.getIntParameter(0);
 			int level = event.getIntParameter(1);
-			if (type == Asset.playerExp.ID) {
-				List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_PLAYER_LEVEL);
+			int openType = 0 ; 
+			if (type == Asset.playerExp.ID ) {
+				openType = ActivityHelper.OPENTYPE_PLAYER_LEVEL;
+			}else if (type == Asset.VIPExp.ID) {
+				openType = ActivityHelper.OPENTYPE_PLAYER_VIP_LEVEL;
+			}
+			if (openType> 0) {
+				List<ActivityConfig> openTypeList = ActivityManager.instance().getOpenTypeList(openType);
 				for (ActivityConfig activityConfig : openTypeList) {
 					if (activityConfig.openParam == level) {
 						open(activityConfig.ID, true);
