@@ -24,6 +24,7 @@ import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.util.Config;
 import cn.game.util.log.DeprecatedLogger;
 import cn.game.util.log.LoggerType;
@@ -282,8 +283,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * @param operatetype 1:升级
 	2:进阶
 	3.升星
-	
-	 * @param opType
+	 * @param
 	 */
 	public static void heroraise(Player player, Hero hero, int operatetype, int addvalue, int endvalue, int beforeCombat, int afterCombat) {
 		try {
@@ -1210,4 +1210,504 @@ public class GameLogger extends DeprecatedLogger {
 //    }
 //
 //
+
+	/**
+	 * 宝石塔每日刷新buff
+	 * @param player  宝石塔类型	宝石塔buff1	宝石塔buff2
+	 */
+	public static void gemtowerbuff(Player player, int buffId) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.gemtowerbuff.name(), LoggerType.gemtowerbuff.version, "C0200"))
+					, buffId};
+			LoggerType.gemtowerbuff.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 宝石塔扫荡
+	 * @param player  宝石塔类型	扫荡层数id	扫荡总次数	已经扫荡次数	剩余扫荡次数
+	 */
+	public static void gemtowersweep(Player player, int towerType,int floor, int sweepTotal, int sweepCount, int sweepCountLeft) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.gemtowersweep.name(), LoggerType.gemtowersweep.version, "C0201"))
+					,towerType,floor, sweepTotal, sweepCount, sweepCountLeft};
+			LoggerType.gemtowersweep.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 装备本助战
+	 * @param player  助战层数	助战玩家id
+	 */
+	public static void equiptowerassist(Player player,int floor,long help) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.equiptowerassist.name(), LoggerType.equiptowerassist.version, "C0301"))
+					, floor ,help};
+			LoggerType.equiptowerassist.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 装备本助战宝箱
+	 * @param player  助战层
+	 */
+	public static void equiptowerassistbox(Player player, int floor) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.equiptowerassistbox.name(), LoggerType.equiptowerassistbox.version, "C0301"))
+					,floor};
+			LoggerType.equiptowerassistbox.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 装备本助战录像
+	 * @param player  挑战关卡id	录像上传类型	录像上传时间
+	 */
+	public static void equiptowerassistvideo(Player player, int battleId, int type, int time) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.equiptowerassistvideo.name(), LoggerType.equiptowerassistvideo.version, "C0301"))
+					,battleId, type, time};
+			LoggerType.equiptowerassistvideo.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 大王来巡山副本闯关
+	 * @param player 结束时层数	结束时关卡	关卡类型	战斗结果	持有buffid	本次战斗时长	杀怪获得积分	剩余商店代币	总计积分	本期最高积分
+	 */
+	public static void patrolmountainend(Player player, int battleId, int type, int time) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.patrolmountainend.name(), LoggerType.patrolmountainend.version, "C0400"))
+					,battleId, type, time};
+			LoggerType.patrolmountainend.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 常规刷新招募
+	 * @param player 招募进度	倍数	获得神将ID	获得碎片数量
+	 */
+	public static void patrolmountainend(Player player, int jindu, int beishu, int Id, int num) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.UltimateCardDraw.name(), LoggerType.UltimateCardDraw.version, "C0500"))
+							,jindu, beishu, Id, num};
+			LoggerType.UltimateCardDraw.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 人参果树培养
+	 * @param player  浇水消耗 肥料获得	肥料使用	杀虫剂购买数量 果树升至等级
+	 */
+	public static void RSGTreeGrow(Player player, int waterCost, int fertilizerGet, int fertilizerCost, int pesticideCost, int level) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.RSGTreeGrow.name(), LoggerType.RSGTreeGrow.version, "C0600"))
+					,waterCost, fertilizerGet, fertilizerCost, pesticideCost, level};
+			LoggerType.RSGTreeGrow.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 人参果奖励
+	 * @param player 捉虫奖励	升级奖励	人参果成熟奖励
+	 */
+	public static void RSGTreeReward(Player player, int bugReward, int upgradeReward, int matureReward) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.RSGTreeReward.name(), LoggerType.RSGTreeReward.version, "C0601"))
+					,bugReward, upgradeReward, matureReward};
+			LoggerType.RSGTreeReward.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 人参果商店兑换
+	 * @param player 兑换商品ID
+	 */
+	public static void RSGTreeShopExchange(Player player, int id) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.RSGTreeShopExchange.name(), LoggerType.RSGTreeShopExchange.version, "C0602"))
+					,id};
+			LoggerType.RSGTreeShopExchange.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 人参果羁绊卡
+	 * @param player 羁绊卡获得ID	羁绊卡消耗ID
+	 */
+	public static void RSGBondCard(Player player, int getCardId, int useCardId) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.RSGBondCard.name(), LoggerType.RSGBondCard.version, "C0603"))
+					,getCardId, useCardId};
+			LoggerType.RSGBondCard.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 五行界
+	 * @param player 升至等级	获得皮肤ID	各ID皮肤升至星数
+	 */
+	public static void DefenceLine(Player player, int level, int skinId, int star1) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.DefenceLine.name(), LoggerType.DefenceLine.version, "C0700"))
+					,level, skinId, star1};
+			LoggerType.DefenceLine.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 降妖伏魔扫荡
+	 * @param player 升至等级	今日扫荡次数	花费元宝	关卡ID	扫荡奖励
+	 */
+	public static void DemonSweep(Player player,int count, int battleId, List<RewardMsg.RewardInfo> reward) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.DemonSweep.name(), LoggerType.DemonSweep.version, "C0800"))
+					,count, battleId, reward};
+			LoggerType.DemonSweep.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 灵山问禅次数购买
+	 * @param player 今日购买次数	花费元宝
+	 */
+	public static void LingShanPurchase(Player player, int count, int cost) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.LingShanPurchase.name(), LoggerType.LingShanPurchase.version, "C0901"))
+					,count, cost};
+			LoggerType.LingShanPurchase.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 灵山问禅扫荡
+	 * @param player 今日扫荡次数	关卡ID	扫荡奖励
+	 */
+	public static void LingShanSweep(Player player, int count, int battleId, List<RewardMsg.RewardInfo> reward) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.LingShanSweep.name(), LoggerType.LingShanSweep.version, "C0902"))
+					,count, battleId, reward};
+			LoggerType.LingShanSweep.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 *灵山问禅进度奖励   无用
+	 * @param player 领取奖励ID
+	 */
+	public static void LingShanProgressReward(Player player, int count, int battleId, String reward) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.LingShanProgressReward.name(), LoggerType.LingShanProgressReward.version, "C0903"))
+					,count, battleId, reward};
+			LoggerType.LingShanProgressReward.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+
+	/**
+	 * 大圣擂台次数购买
+	 * @param player 今日购买次数	花费元宝
+	 */
+	public static void DaShengPurchase(Player player, int count, int cost) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.DaShengPurchase.name(), LoggerType.DaShengPurchase.version, "C1000"))
+					,count,cost};
+			LoggerType.DaShengPurchase.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 大圣擂台挑战
+	 * @param player  战报所属玩家 战报内容
+	 */
+	public static void DaShengChallenge(Player player, Object playerId, Object report) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.DaShengChallenge.name(), LoggerType.DaShengChallenge.version, "C1001"))
+					,playerId, report};
+			LoggerType.DaShengChallenge.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+
+	/**
+	 * 图鉴
+	 * @param player 神将图鉴积分获得	获得后总积分	积分升至等级	等级奖励ID	妖怪图鉴开启ID	妖怪图鉴领取奖励ID
+	 */
+	public static void HeroBook(Player player, int getScore, int totalScore, int level, int levelRewardId, int openId, int rewardId) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.HeroBook.name(), LoggerType.HeroBook.version, "C1200"))
+					,getScore, totalScore, level, levelRewardId, openId, rewardId};
+			LoggerType.HeroBook.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会创建
+	 * @param player  仙会ID	仙会名称	仙会旗帜
+	 */
+	public static void GuildCreate(Player player, long guildId, String name, int flag) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildCreate.name(), LoggerType.GuildCreate.version, "C1300"))
+					,guildId, name, flag};
+			LoggerType.GuildCreate.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会加入
+	 * @param player  仙会ID	仙会名称	仙会旗帜
+	 */
+	public static void GuildJoin(Player player, long guildId, String name, int flag) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildJoin.name(), LoggerType.GuildJoin.version, "C1301"))
+					,guildId, name, flag};
+			LoggerType.GuildJoin.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会解散
+	 * @param player  仙会ID	仙会名称
+	 */
+	public static void GuildDisband(Player player, long guildId, String name) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildDisband.name(), LoggerType.GuildDisband.version, "C1302"))
+					,guildId, name};
+			LoggerType.GuildDisband.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会退出
+	 * @param player  仙会ID	仙会名称
+	 */
+	public static void GuildExit(Player player, long guildId, String name) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildExit.name(), LoggerType.GuildExit.version, "C1303"))
+					,guildId, name};
+			LoggerType.GuildExit.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会信息变化
+	 * @param player  仙会ID	仙会修改名称	仙会修改旗帜
+	 */
+	public static void GuildInfoChange(Player player, long guildId  ,String name, int flag) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildInfoChange.name(), LoggerType.GuildInfoChange.version, "C1304"))
+					,guildId, name,flag};
+			LoggerType.GuildInfoChange.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会成员职位变化
+	 * @param player  成员ID	变更前职位	变更后职位
+	 */
+	public static void GuildMemberPositionChange(Player player, long guildId  ,int beforePosition, int afterPosition) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildMemberPositionChange.name(), LoggerType.GuildMemberPositionChange.version, "C1305"))
+					,guildId, beforePosition,afterPosition};
+			LoggerType.GuildMemberPositionChange.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会升级
+	 * @param player  获得经验值	升至等级
+	 */
+	public static void GuildUpgrade(Player player, long guildId, int exp, int level) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildUpgrade.name(), LoggerType.GuildUpgrade.version, "C1306"))
+					,guildId, exp, level};
+			LoggerType.GuildUpgrade.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会商店
+	 * @param player  仙会ID	兑换商品ID
+	 */
+	public static void GuildShop(Player player,  long guildId, int itemId) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildShop.name(), LoggerType.GuildShop.version, "C1307"))
+					,guildId,itemId};
+			LoggerType.GuildShop.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会砍价
+	 * @param player  仙会ID	 兑今日仙会第几次砍价	砍掉金额	砍后价格
+	 */
+	public static void GuildBargain(Player player,  long guildId, int num ,int bargainNum, int bargainPrice) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildBargain.name(), LoggerType.GuildBargain.version, "C1308"))
+					,guildId, num, bargainNum, bargainPrice};
+			LoggerType.GuildBargain.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会砍价购买
+	 * @param player  商品ID	花费元宝
+	 */
+	public static void GuildBargainPurchase(Player player, int itemId, int num) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildBargainPurchase.name(), LoggerType.GuildBargainPurchase.version, "C1309"))
+					,itemId, num};
+			LoggerType.GuildBargainPurchase.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会捐献
+	 * @param player  捐献类型	该类型今日次数	获得贡献值	成员ID
+	 */
+	public static void GuildDonate(Player player, int type, int num, int contribute, long playerId) {
+		try {
+			Object[] array = new Object[] {
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildDonate.name(), LoggerType.GuildDonate.version, "C1310"))
+					,type, num, contribute, playerId};
+			LoggerType.GuildDonate.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
+	/**
+	 * 仙会任务
+	 * @param player  完成任务ID	领取奖励ID	今日累计完成次数	领取累计次数奖励ID
+	 */
+	public static void GuildQuest(Player player ,int taskId, int rewardId, int num, int rewardNum) {
+		try {
+			Object[] array = new Object[]{
+					LoggerType
+							.splice(GameLogAssistant
+							.buildLogCYPrefix(player, LoggerType.GuildQuest.name(), LoggerType.GuildQuest.version, "C1311"))
+					, taskId, rewardId, num, rewardNum};
+			LoggerType.GuildQuest.logger.info(LoggerType.splice(array));
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+	}
 }
