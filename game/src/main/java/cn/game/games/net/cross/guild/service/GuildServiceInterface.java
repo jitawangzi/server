@@ -35,6 +35,8 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @return
 	 */
 	GuildShowInfo getGuildShowInfo(long guildId);
+	
+	String getGuildName(long guildId);
 
 	/** 
 	 * 获取工会成员可以看到的工会共享数据 

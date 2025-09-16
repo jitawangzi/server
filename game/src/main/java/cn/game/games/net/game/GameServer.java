@@ -206,6 +206,7 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().initRewardTask();
 		PushService.getInstance().init(PlayerHelper::sendProtocol);
 		initSimplePlayers();
+//		refreshSimplePlayers();
 		initRobots(1000);
 //		initAllSimplePlayers();
 //		kickClientsAfterChangeTime();

@@ -15,6 +15,8 @@ public enum CacheDataType {
 
 	GUILD_SIMPLE_INFO("guild_simple_info", 30, 50_000, CacheBackend.REMOTE, false),
 	
+	GUILD_NAME("guild_name", 60, 50_000, CacheBackend.REMOTE, false),
+	
 	// 直接使用 Redis 的通用数据 - 统一通过 REDIS 访问
 	REDIS_CACHE("redis_cache", 600, 100_000, CacheBackend.REDIS, false);
 

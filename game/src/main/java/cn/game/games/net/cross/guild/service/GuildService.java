@@ -88,6 +88,14 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		return guild.toShowProto();
 	}
 	@Override
+	public String getGuildName(long guildId) {
+		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		if (guild == null) {
+			return null; 
+		}
+		return guild.getName();
+	}
+	@Override
 	public GuildServiceInfo getGuildAllInfoForMember(long guildId) {
 		Guild guild = GuildManager.getInstance().getGuild(guildId);
 		if (guild == null) {

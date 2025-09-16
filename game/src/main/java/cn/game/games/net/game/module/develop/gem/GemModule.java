@@ -1,9 +1,14 @@
 package cn.game.games.net.game.module.develop.gem;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.GemAttrConfig;
 import cn.game.protocol.generated.config.GemConfig;
@@ -58,10 +63,27 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		GemManager.instance().get(id);
 	}
 
-	public int getCountGTQuality(int quality) {
-		return (int) list().stream().filter(gem -> {
-			GemConfig config = GemManager.instance().get(gem.getConfigId());
-			return config.quality >= quality;
-		}).count();
+	public int getCountGTQualityWearCount(int quality) {
+		EquipModule module = player.getModule(EquipModule.class); 
+		Set<Entry<Integer, EquipPart>> entrySet = module.getEquipPartMap().entrySet(); 
+		int ret = 0 ; 
+		
+		for (Entry<Integer, EquipPart> entry : entrySet) {
+			Map<Long, Integer> gemPosMap = entry.getValue().getGemPosMap(); 
+			for (Long gemUid : gemPosMap.keySet()) {
+				Gem gem = get(gemUid);
+				if (gem != null) {
+					GemConfig config = GemManager.instance().get(gem.getConfigId());
+					if (config.quality >= quality) {
+						ret++;
+					}
+				}
+			}
+		}
+		return ret; 
+//		return (int) list().stream().filter(gem -> {
+//			GemConfig config = GemManager.instance().get(gem.getConfigId());
+//			return config.quality >= quality;
+//		}).count();
 	}
 }

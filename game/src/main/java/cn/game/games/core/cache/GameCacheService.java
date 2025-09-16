@@ -48,6 +48,9 @@ public class GameCacheService {
 		cache.registerLoader(CacheDataType.GUILD_SIMPLE_INFO,
 				(key) -> CompletableFuture.supplyAsync(() -> fetchGuildSimpleInfo(Long.parseLong(key))), null // 可在将来增加跨服批量 RPC
 		);
+		cache.registerLoader(CacheDataType.GUILD_NAME,
+				(key) -> CompletableFuture.supplyAsync(() -> fetchGuildName(Long.parseLong(key))), null
+				);
 
 		cache.registerLoader(CacheDataType.SERVER_OPEN_LIST,
 				(key) -> CompletableFuture.supplyAsync(() -> ServerContext.getInstance().getValidGameService().getValidServers()), null);
@@ -93,6 +96,11 @@ public class GameCacheService {
 		String key = String.valueOf(player.getGuildId());
 		GuildSimpleInfo guildSimpleInfo = cache.get(CacheDataType.GUILD_SIMPLE_INFO, key);
 		return guildSimpleInfo == null ? 0 : guildSimpleInfo.getLevel();
+	}
+	public String getGuildName(long guildId) {
+		String key = String.valueOf(guildId);
+		String name = cache.get(CacheDataType.GUILD_NAME, key);
+		return name == null ? "" : name;
 	}
 
 
@@ -266,6 +274,18 @@ public class GameCacheService {
 			return null;
 		}
 		return info.getSimpleInfo();
+	}
+	private String fetchGuildName(long guildId) {
+		if (guildId <= 0) {
+			return null;
+		}
+		Set<String> serverSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Cross); 
+		if (serverSet.isEmpty()) {
+			return null;
+		}
+		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
+		String name = guildProxy.getGuildName(guildId);
+		return name;
 	}
 
 	private List<Long> fetchGuildMembersFromRemote(long guildId) {

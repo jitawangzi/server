@@ -1162,7 +1162,7 @@ public class PlayerHelper {
 			}
 			case GemWearNum -> {
 				GemModule module = player.getModule(GemModule.class);
-				yield module.getCountGTQuality(extParam[0]);
+				yield module.getCountGTQualityWearCount(extParam[0]);
 			}
 			case LingShanLevel -> {
 				BattleModule module = player.getModule(BattleModule.class);
