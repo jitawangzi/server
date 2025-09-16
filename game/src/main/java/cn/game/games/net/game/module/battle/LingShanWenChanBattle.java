@@ -6,6 +6,7 @@ import java.util.List;
 import cn.game.core.exception.LogicException;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -194,6 +195,8 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		battleTimes++;
 
 		List<RewardInfo> resources = PlayerHelper.addResources(player, getReward(lastCompleteFloor, true), OpType.LingShanWenChan);
+		GameLogger.LingShanSweep(player,battleTimes,id,resources);
+
 		return ResultObject.success(resources);
 	}
 

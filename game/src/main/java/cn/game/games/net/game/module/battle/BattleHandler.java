@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import cn.game.games.cache.entity.Base;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BattleMsg;
 import org.springframework.stereotype.Component;
@@ -1490,6 +1491,7 @@ public class BattleHandler extends GameBaseHandler {
         }
         PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.LingshanChallangeCost[battleTimes], OpType.LingShanBuyTimes);
         battle.setPayTimes(payTimes + 1);
+        GameLogger.LingShanPurchase(player,battle.getPayTimes(),  GlobalConst.LingshanChallangeCost[battleTimes]);
         client.sendProtocol(resp);
     }
 

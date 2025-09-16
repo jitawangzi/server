@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.game.protocol.generated.enume.Asset;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -363,6 +364,18 @@ public class TestHandler extends GameBaseHandler {
             {
 				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
             	break;
+            }
+            case "super":
+            {
+                for (Asset resourceEnum : Asset.values()) {
+                    PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
+                }
+//                HeroModule heroModule = player.getHeroModule();
+//                for (var resourceEnum : HeroManager.instance().list()) {
+//                    heroModule.add(resourceEnum.ID, OpType.Test);
+//                }
+                player.getFuncModule().gmUnlockFunc((byte) 0);
+                break;
             }
             case "time":
             {

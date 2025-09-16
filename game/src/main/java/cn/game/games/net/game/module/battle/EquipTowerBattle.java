@@ -9,6 +9,7 @@ import cn.game.games.cache.entity.EquiptowerHelp;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -166,6 +167,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         insert.onFailure(t-> {
             System.err.println(t);
         });
+        GameLogger.equiptowerassist(player,floor,help);
         // 通知在线玩家
         if (PlayerManager.getInstance().isOnline(help)) {
             GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, help);
@@ -228,6 +230,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         BattleConfig battleConfig = BattleManager.instance().get(battleId);
         var tmp = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.EquipTowerHelp);
         allReward.addAll(tmp);
+        GameLogger.equiptowerassistbox(player,floor);
     }
 
     @Override

@@ -50,7 +50,7 @@ public enum LoggerType {
 //    activationcode,                                                             //激活码激活
 	gethero, // 获取卡牌
 	heroraise, // 卡牌养成
-
+    rank , // 排行榜结算
     /* *********************** 其他 ************************* */
 //	equipmentshape, // 装备幻化
 //	equipmentwear, // 装备穿戴
@@ -75,7 +75,44 @@ public enum LoggerType {
 //    guildmanagement,                                                            // 公会管理
 //    guildsnap,                                                                  // 公会成员快照
 //    leagueboss,                                                                 // 公会讨伐
-
+    gemtowerbuff	,//宝石塔每日刷新buff
+    gemtowersweep	,//宝石塔扫荡
+    equiptowerassist	,//装备本助战
+    equiptowerassistbox,//	装备本助战宝箱
+    equiptowerassistvideo	,//装备本助战录像
+    patrolmountainend	,//大王来巡山副本闯关
+    UltimateCardDraw	,//常规刷新招募
+    RSGTreeGrow	,//人参果树培养
+    RSGTreeReward	,//人参果奖励
+    RSGTreeShopExchange,//	人参果商店兑换
+    RSGBondCard	,//人参果羁绊卡
+    DefenceLine	,//五行界
+    DemonSweep	,//降妖伏魔扫荡
+    LingShanPurchase,//	灵山问禅次数购买
+    LingShanSweep	,//灵山问禅扫荡
+    LingShanProgressReward,//	灵山问禅进度奖励
+    DaShengPurchase	,//大圣擂台次数购买
+    DaShengChallenge	,//大圣擂台挑战
+    DaShengBeingChallenged	,//大圣擂台被挑战
+    DaShengSettlement	,//大圣擂台结算
+    SamsaraPurchase	,//轮回西行次数购买
+    SamsaraBattle	,//轮回西行战斗
+    SamsaraBUFF	,//轮回西行BUFF
+    SamsaraFlipReward	,//轮回西行翻牌奖励
+    SamsaraGVG	,//轮回西行GVG
+    HeroBook	,//图鉴
+    GuildCreate	,//仙会创建
+    GuildJoin	,//仙会加入
+    GuildDisband	,//仙会解散
+    GuildExit	,//仙会退出
+    GuildInfoChange,//	仙会信息变化
+    GuildMemberPositionChange,//	仙会成员职位变化
+    GuildUpgrade	,//仙会升级
+    GuildShop	,//仙会商店
+    GuildBargain	,//仙会砍价
+    GuildBargainPurchase,//	仙会砍价购买
+    GuildDonate	,//仙会捐献
+    GuildQuest	,//仙会任务
     ;
 
 

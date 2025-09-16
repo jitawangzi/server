@@ -1,17 +1,16 @@
 package cn.game.games.net.game.module.battle;
 
 import cn.game.games.core.ResultObject;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.RankConfig;
-import cn.game.protocol.generated.config.TowerConfig;
+import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.RankManager;
+import cn.game.protocol.generated.manager.TowerBuffListManager;
 import cn.game.protocol.generated.manager.TowerManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -69,7 +68,7 @@ public class TowerBattle extends XiYouBattleHandler {
     @Override
     void newDay() {
         reset();
-
+        GameLogger.gemtowerbuff(player, this.radomBuff);
     }
 
     /**
@@ -87,6 +86,7 @@ public class TowerBattle extends XiYouBattleHandler {
         resp.setRewardCount(getRewardCount());
         curFloor.forEach((k, v) -> resp.putCurFloor(k, v));
         player.getGameClient().sendProtocol(resp.build());
+
     }
 
     @Override
@@ -219,6 +219,7 @@ public class TowerBattle extends XiYouBattleHandler {
                 List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
                 allRewards.addAll(reward);
             }
+            GameLogger.gemtowersweep(player,battleType,id%1000 , GlobalConst.MainTowerRewardMax , GlobalConst.MainTowerRewardMax-rewardCount,rewardCount);
             return ResultObject.success(allRewards);
         }
         return ResultObject.success();

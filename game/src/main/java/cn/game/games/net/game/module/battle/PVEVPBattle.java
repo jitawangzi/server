@@ -5,6 +5,7 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.ResultObject;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.PlayerRank;
 import cn.game.games.net.game.module.rank.RankEntry;
@@ -209,6 +210,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 2,
                 player.getPlayerId()
         );
+        GameLogger.DaShengChallenge(player,rediskey, recordData);
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport - 1);
@@ -225,7 +227,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 1,
                 simplePlayer.getId()
         );
-
+        GameLogger.DaShengChallenge(player,rediskey, recordData);
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
@@ -244,6 +246,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                   type,
                 simplePlayer.getId()
         );
+        GameLogger.DaShengChallenge(player,rediskey, recordData);
         // 使用 List 保持插入顺序
         RedisUtil.getRedis().getList(rediskey).add(recordData);
         RedisUtil.getRedis().getList(rediskey).trim(0, GlobalConst.DaShengReport
@@ -375,7 +378,6 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 }
             });
         });
-
         return playerRanksStage.toCompletableFuture();
     }
 
@@ -481,6 +483,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         }
         buyCount--;
         ticketCount++;
+        GameLogger.DaShengPurchase(player,GlobalConst.DaShengBuyTicket-buyCount, num);
     }
 
     public int getTicketCount() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.game.core.exception.LogicException;
 import cn.game.games.core.ResultObject;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.rank.RankService;
@@ -87,9 +88,10 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 		}
 		PlayerHelper.delResources(player, GlobalConst.DemonsChallangeCost[sweepTimes], OpType.XiangYaoChuMo);
 		sweepTimes++;
-
 		BattleConfig battleConfig = BattleManager.instance().get(id);
-		return ResultObject.success(PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.XiangYaoChuMo));
+		List<RewardInfo> resources = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.XiangYaoChuMo);
+		GameLogger.DemonSweep(player,sweepTimes,id,resources);
+		return ResultObject.success(resources);
 	}
 
 	@Override
