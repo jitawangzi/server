@@ -81,38 +81,38 @@ public enum LoggerType {
     equiptowerassistbox,//	装备本助战宝箱
     equiptowerassistvideo	,//装备本助战录像
     patrolmountainend	,//大王来巡山副本闯关
-    UltimateCardDraw	,//常规刷新招募
-    RSGTreeGrow	,//人参果树培养
-    RSGTreeReward	,//人参果奖励
-    RSGTreeShopExchange,//	人参果商店兑换
-    RSGBondCard	,//人参果羁绊卡
-    DefenceLine	,//五行界
-    DemonSweep	,//降妖伏魔扫荡
-    LingShanPurchase,//	灵山问禅次数购买
-    LingShanSweep	,//灵山问禅扫荡
-    LingShanProgressReward,//	灵山问禅进度奖励
-    DaShengPurchase	,//大圣擂台次数购买
-    DaShengChallenge	,//大圣擂台挑战
-    DaShengBeingChallenged	,//大圣擂台被挑战
-    DaShengSettlement	,//大圣擂台结算
-    SamsaraPurchase	,//轮回西行次数购买
-    SamsaraBattle	,//轮回西行战斗
-    SamsaraBUFF	,//轮回西行BUFF
-    SamsaraFlipReward	,//轮回西行翻牌奖励
-    SamsaraGVG	,//轮回西行GVG
-    HeroBook	,//图鉴
-    GuildCreate	,//仙会创建
-    GuildJoin	,//仙会加入
-    GuildDisband	,//仙会解散
-    GuildExit	,//仙会退出
-    GuildInfoChange,//	仙会信息变化
-    GuildMemberPositionChange,//	仙会成员职位变化
-    GuildUpgrade	,//仙会升级
-    GuildShop	,//仙会商店
-    GuildBargain	,//仙会砍价
-    GuildBargainPurchase,//	仙会砍价购买
-    GuildDonate	,//仙会捐献
-    GuildQuest	,//仙会任务
+    ultimateCardDraw	,//常规刷新招募
+    rSGTreeGrow	,//人参果树培养
+   // RSGTreeReward	,//人参果奖励
+  //  RSGTreeShopExchange,//	人参果商店兑换
+   // RSGBondCard	,//人参果羁绊卡
+  //  DefenceLine	,//五行界
+    demonSweep	,//降妖伏魔扫荡
+    lingShanPurchase,//	灵山问禅次数购买
+    lingShanSweep	,//灵山问禅扫荡
+    lingShanProgressReward,//	灵山问禅进度奖励
+    daShengPurchase	,//大圣擂台次数购买
+    daShengChallenge	,//大圣擂台挑战
+
+//    SamsaraPurchase	,//轮回西行次数购买
+//    SamsaraBattle	,//轮回西行战斗
+//    SamsaraBUFF	,//轮回西行BUFF
+//    SamsaraFlipReward	,//轮回西行翻牌奖励
+//    SamsaraGVG	,//轮回西行GVG
+    heroBook	,//图鉴
+    guildCreate	,//仙会创建
+    guildJoin	,//仙会加入
+    guildDisband	,//仙会解散
+    guildExit	,//仙会退出
+    guildInfoChange,//	仙会信息变化
+    guildMemberPositionChange,//	仙会成员职位变化
+    guildUpgrade	,//仙会升级
+    guildShop	,//仙会商店
+    guildBargain	,//仙会砍价
+    guildBargainPurchase,//	仙会砍价购买
+    guildDonate,//仙会捐献
+    guildQuest,//仙会任务
+    commonLevelUp,//通用等级升级
     ;
 
 
