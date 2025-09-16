@@ -1,12 +1,22 @@
 package cn.game.games.net.game.module.develop.gem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import cn.game.games.cache.entity.Equip;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
+import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.GemAttrConfig;
 import cn.game.protocol.generated.config.GemConfig;
+import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.GemAttrManager;
 import cn.game.protocol.generated.manager.GemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
@@ -64,5 +74,27 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 			GemConfig config =  GemManager.instance().get(gem.getConfigId());
 			return config.quality >= quality; 
 		}).count();
+	}
+	
+	/** 
+	 * 获取所有宝石增加的 效果条目
+	 * @return
+	 */
+	public List<Integer> getAllEntryEffect(){
+		List<Integer> ret = new ArrayList<>();
+		EquipModule equipModule = player.getEquipModule();  
+		Iterator<Entry<Integer, EquipPart>> iterator = equipModule.getEquipPartMap().entrySet().iterator(); 
+		while (iterator.hasNext()) {
+			Entry<Integer, EquipPart> next = iterator.next();
+			EquipPart equipPart = next.getValue();
+			Map<Long, Integer> gemPosMap = equipPart.getGemPosMap(); 
+			for (Long gemUid : gemPosMap.keySet()) {
+				Gem gem = get(gemUid);
+				if (gem != null) {
+					ret.addAll(gem.getEntryEffectList());
+				}
+			}
+		}
+		return ret; 
 	}
 }

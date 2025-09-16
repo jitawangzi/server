@@ -12,6 +12,7 @@ import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ItemConfig;
+import cn.game.protocol.generated.enume.EntryEffectEnum;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -22,6 +23,7 @@ import cn.game.protocol.protobuf.ItemMsg.ItemUseInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.GameUtil;
+import cn.game.util.Rnd;
 
 /**
  * 道具处理器
@@ -65,7 +67,15 @@ public class ItemHandler extends GameBaseHandler {
 				client.sendProtocol(resp, ErrorMsgEnum.config_data_not_found.getId());
 				return;
 			}
-			PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
+			if (item.ItemType == 13) {
+				// 手操卡有概率不消耗
+				int entryEffectValue = player.getAttrModule().getEntryEffectValue(EntryEffectEnum.ReleaseFree); 
+				if (!Rnd.hit(entryEffectValue)) {
+					PlayerHelper.delResources(player, id,count, OpType.ItemOpen);
+				}
+			}else {
+				PlayerHelper.delResources(player, id, count, OpType.ItemOpen);
+			}
 			ItemUse itemUse = ItemUse.valueOf(item.ItemType);
 			if (itemUse == null) {
 				throw new LogicException(1, "item  use not implement: " + item.ItemType);

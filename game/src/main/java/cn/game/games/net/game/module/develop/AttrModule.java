@@ -1,7 +1,10 @@
 package cn.game.games.net.game.module.develop;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -17,6 +20,13 @@ import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.BattleHelper;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
 import cn.game.games.net.game.module.develop.attr.PlayerAttrCalc;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
+import cn.game.games.net.game.module.develop.gem.Gem;
+import cn.game.games.net.game.module.develop.gem.GemModule;
+import cn.game.protocol.generated.config.EntryEffectConfig;
+import cn.game.protocol.generated.enume.EntryEffectEnum;
+import cn.game.protocol.generated.manager.EntryEffectManager;
 import cn.game.protocol.protobuf.BattleMsg.HeroAttr;
 import cn.game.protocol.protobuf.BattleMsg.PlayerBattleAttrs;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -195,6 +205,31 @@ public class AttrModule extends BasePlayerModule {
 
 		this.power = allCombat;
 		return allCombat; 
+	}
+	
+	/** 
+	 * 获取某类型的效果条目值
+	 * 同类型的效果条目值取最大的
+	 * @return
+	 */
+	public int getEntryEffectValue(EntryEffectEnum type){
+		int ret = 0; 
+		GemModule gemModule = player.getModule(GemModule.class);  
+		List<Integer> allEntryEffect = gemModule.getAllEntryEffect(); 
+		ret = effectValue(type, ret, allEntryEffect);
+		return ret; 
+	}
+
+	private int effectValue(EntryEffectEnum type, int ret, List<Integer> allEntryEffect) {
+		for (Integer integer : allEntryEffect) {
+			EntryEffectConfig entryEffectConfig = EntryEffectManager.instance().get(integer);
+			if (entryEffectConfig.type == type.ID) {
+				if (entryEffectConfig.numParam > ret) {
+					ret = entryEffectConfig.numParam;
+				}
+			}
+		}
+		return ret;
 	}
 	
 }

@@ -44,6 +44,7 @@ import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.dragon.DragonModule;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.fairyfriend.FairyFriend;
 import cn.game.games.net.game.module.develop.fairyfriend.FairyFriendModule;
 import cn.game.games.net.game.module.develop.hccommon.HCCommonModule;
@@ -246,6 +247,9 @@ public class Player {
 
 	public HeroModule getHeroModule() {
 		return getModule(HeroModule.class);
+	}
+	public EquipModule getEquipModule() {
+		return getModule(EquipModule.class);
 	}
 
 	public HCHeroModule getHCHeroModule() {
