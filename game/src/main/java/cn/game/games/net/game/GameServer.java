@@ -344,7 +344,7 @@ public class GameServer implements GameServerMBean {
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		} else {
 			Player player = new Player();
-			player.initModule(null);
+			player.initModuleCheck(null);
 			Files.write(JsonUtil.toJsonStringWithType(player), file, Charset.defaultCharset());
 //			FileUtils.writeStringToFile(file, JsonUtil.toJsonString(player), Charset.defaultCharset());
 		}

@@ -373,6 +373,22 @@ public class Player {
 			}
 		}
 	}
+	public void initModuleCheck(HashMap<String, BasePlayerModule> modulesFromDb) {
+		for (Class<? extends BasePlayerModule> clazz : allModuleClass) {
+			try {
+				BasePlayerModule instance = createBasePlayerModuleInstance(clazz, modulesFromDb);
+				modules.put(clazz.getName(), instance);
+				if (instance instanceof GoodsModule) {
+					GoodsModule goodsModule = (GoodsModule) instance;
+					GoodsTypeEnum goodsTypeEnum = goodsModule.getGoodsTypeEnum();
+					goodsModules.put(goodsTypeEnum.getId(), goodsModule);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
 	public BasePlayerModule createBasePlayerModuleInstance(Class<? extends BasePlayerModule> clazz,
 			HashMap<String, BasePlayerModule> modulesFromDb) throws InstantiationException, IllegalAccessException,
