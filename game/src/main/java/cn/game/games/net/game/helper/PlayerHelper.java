@@ -37,6 +37,7 @@ import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
+import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -1147,6 +1148,17 @@ public class PlayerHelper {
 			case GemWearNum -> {
 				GemModule module = player.getModule(GemModule.class);
 				yield module.getCountGTQuality(extParam[0]);
+			}
+			case HeroIDAndLevel -> {
+				boolean ret = false;
+				Collection<Hero> byConfigId = player.getHeroModule().getByConfigId(id); 
+				for (Hero hero : byConfigId) {
+					if (hero.getLevel() >= extParam[0] && hero.getLevel() <= extParam[1]) {
+						ret = true; 
+						break; 
+					}
+				}
+				yield ret ? 1 : 0;
 			}
 			case LingShanLevel -> {
 				BattleModule module = player.getModule(BattleModule.class);
