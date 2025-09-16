@@ -270,9 +270,6 @@ public class GinsengTreeHandler extends GameBaseHandler {
             List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
             resp.addAllRewards(resources);
         }
-        if (map.getMap().isEmpty()) {
-			module.clearBugs(); 
-		}
         module.startFruitTask();
         client.sendProtocol(resp.build());
     }
