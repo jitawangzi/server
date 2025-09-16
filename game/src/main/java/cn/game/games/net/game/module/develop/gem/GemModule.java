@@ -39,7 +39,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		// 随机宝石属性
 		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
 		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);
-		GemAttrConfig config = Rnd.randomElement(posqualityList);
+		GemAttrConfig config = Rnd.randomElement(posqualityList, r -> r.weight);
 		instance.getEntryEffectList().add(config.effectId);
 	}
 
