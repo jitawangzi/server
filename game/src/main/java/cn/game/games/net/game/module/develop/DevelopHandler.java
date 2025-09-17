@@ -332,8 +332,8 @@ public class DevelopHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
             return;
         }
-        HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
-        int[] taskID = heavenlyDaoConfig.TaskID;
+//        HeavenlyDaoConfig heavenlyDaoConfig = HeavenlyDaoManager.instance().get(heavenlyDaoLevel);
+        int[] taskID = nextConfig.TaskID;
         QuestModule questModule = player.getQuestModule();
         boolean isAllTaskReceived = true;
         for (int tid : taskID) {
@@ -347,7 +347,7 @@ public class DevelopHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.player_check_error.getId());
             return;
         }
-        resp.addAllRewards(PlayerHelper.addResources(player, heavenlyDaoConfig.Reward, OpType.TianDaoLvUp)); 
+        resp.addAllRewards(PlayerHelper.addResources(player, nextConfig.Reward, OpType.TianDaoLvUp)); 
         developModule.setHeavenlyDaoLevel(heavenlyDaoLevel + 1);
         player.handleEvent(EventTypeEnum.CultivatesImmortals);
         client.sendProtocol(resp.build());
