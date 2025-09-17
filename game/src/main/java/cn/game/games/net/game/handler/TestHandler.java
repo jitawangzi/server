@@ -361,14 +361,15 @@ public class TestHandler extends GameBaseHandler {
                     break;
                 }
             case "gamenewday":
-            {
-    			ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
-    			int nowDay = DateUtil.getDay();
-    			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-    				player.getData().setRefreshDay(nowDay - 1);
-    				PlayerHelper.refreshDay(player);
-    			});
-            }
+			{
+				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
+				int nowDay = DateUtil.getDay();
+				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
+					player.getData().setRefreshDay(nowDay - 1);
+					PlayerHelper.refreshDay(player);
+				});
+				break;
+			}
             case "super":
             {
                 for (Asset resourceEnum : Asset.values()) {
