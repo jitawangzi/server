@@ -28,5 +28,20 @@ public class PVEVPRecordData {
     public PVEVPRecordData() {
     }
 
+    @Override
+    public String toString() {
+        return "PVEVPRecordData{" +
+                "result=" + result +
+                ", name='" + name + '\'' +
+                ", level=" + level +
+                ", combatEffectiveness=" + combatEffectiveness +
+                ", scoreChange=" + scoreChange +
+                ", head=" + head +
+                ", headFrame=" + headFrame +
+                ", battleTime=" + battleTime +
+                ", type=" + type +
+                ", playerId=" + playerId +
+                '}';
+    }
 
 }
