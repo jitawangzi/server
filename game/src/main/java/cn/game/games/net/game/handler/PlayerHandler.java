@@ -45,6 +45,7 @@ import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.battle.DaoHeartBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.battle.WorldBossBattle;
+import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.IdConstant;
@@ -76,6 +77,8 @@ import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.protocol.protobuf.PlayerMsg.ExpLevelInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataRequest_01000200;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetDataResponse_01000201;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetRecoverRequest_01000210;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerAssetRecoverResponse_01000211;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoOtherRequest_01000009;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerBriefInfoRequest_01000007;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerCloudBoxRequest_01000042;
@@ -175,9 +178,18 @@ public class PlayerHandler extends GameBaseHandler {
 		putInvoker(PbProtocol.PlayerFigureRequest_01000021, this::figure);
 
 		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
+		putInvoker(PbProtocol.PlayerAssetRecoverRequest_01000210, this::assetRecover);
 		
 	}
 
+	private void assetRecover(NetClient client, Object message) {
+		PlayerAssetRecoverRequest_01000210 request = (PlayerAssetRecoverRequest_01000210) message;
+		PlayerAssetRecoverResponse_01000211.Builder respBuilder = PlayerAssetRecoverResponse_01000211.newBuilder(); 
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		MoneyRecoverModule module = player.getModule(MoneyRecoverModule.class); 
+		respBuilder.putAllAssetRecover(module.getIdUpdateTimeMap());
+		client.sendProtocol(respBuilder.build());
+	}
 	private void figure(NetClient client, Object message) {
 		PlayerFigureRequest_01000021 request = (PlayerFigureRequest_01000021) message;
 		int id = request.getId();

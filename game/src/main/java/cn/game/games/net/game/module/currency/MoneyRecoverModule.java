@@ -228,6 +228,9 @@ public class MoneyRecoverModule extends BasePlayerModule {
 		builder.putAllAssetRecover(idUpdateTimeMap);
 	}
 
+	public Map<Integer, Long> getIdUpdateTimeMap() {
+		return idUpdateTimeMap;
+	}
 	@Override
 	protected int getInitOrder() {
 		return INIT_PRIORITY_LOW;
