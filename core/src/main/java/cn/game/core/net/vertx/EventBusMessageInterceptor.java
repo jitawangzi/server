@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -398,10 +399,12 @@ class MessageTracker {
 
 			// 使用迭代器安全地清理过期消息
 			Iterator<Map.Entry<String, MessageInfo>> it = messageMap.entrySet().iterator();
+			List<MessageInfo> expiredMessages = new java.util.ArrayList<>();
 			while (it.hasNext()) {
 				Map.Entry<String, MessageInfo> entry = it.next();
 				MessageInfo info = entry.getValue();
 				if (now - info.getTimestamp() > info.getTimeout() + 5000) { // 额外5秒缓冲
+					expiredMessages.add(info); 
 					it.remove();
 					cancelExistingTimer(entry.getKey());
 					cleanedCount.incrementAndGet();
@@ -411,6 +414,12 @@ class MessageTracker {
 			int cc = cleanedCount.get();
 			if (cc > 0) {
 				logger.warn("定期清理: 清理了 {} 个过期消息", cc);
+				logger.warn("过期消息详情:" + expiredMessages.stream()
+						.map(info -> String.format("reqAddr=%s, traceId=%s, bodyClass=%s, bodyHash=%s, sentAt=%s, timeout=%dms, headers=%s",
+								info.getAddress(), info.getTraceId(), info.getBodyClass(), info.getBodyHash(),
+								formatTimestamp(info.getTimestamp()), info.getTimeout(), info.getHeaders()))
+						.reduce((a, b) -> a + "\n" + b)
+						.orElse("无"));
 			}
 
 			// 记录当前跟踪状态

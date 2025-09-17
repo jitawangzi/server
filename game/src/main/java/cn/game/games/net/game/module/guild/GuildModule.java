@@ -253,15 +253,6 @@ public class GuildModule extends BasePlayerModule {
 		applyJoinList.remove(guildId);
 	}
 
-	public int getLevel() {
-		if (player.getGuildId() == 0) {
-			return 0;
-		}
-		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-		GuildShowInfo guildShowInfo = guildProxy.getGuildShowInfo(player.getGuildId());
-		return guildShowInfo.getSimpleInfo().getLevel();
-	}
-
 	public IntMapWrapper getDonateMap() {
 		return donateMap;
 	}
