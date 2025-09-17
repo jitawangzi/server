@@ -48,6 +48,7 @@ public enum EventTypeEnum {
     SystemTimeChange("系统时间改变"),
     /** 升级,注意是所有等级，包含玩家等级。  参数： 经验，升到的等级*/
     LevelUp("升级"),
+    DefenceLevelUp("防线升级"),
     /** 通关关卡，包含剧情普通关卡，探索关卡等 */
     Level("通关关卡"), // 参数： 关卡id，回合数，剩余人数
     /** 章节胜利  参数: 章节id */

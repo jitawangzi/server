@@ -366,6 +366,7 @@ public class DevelopHandler extends GameBaseHandler {
         }
         PlayerHelper.delResources(player, curDefenceLevelUpConfig.Material, curDefenceLevelUpConfig.Point, OpType.DefenceLevelUp);
         player.getDevelopModule().setDefenceLevel(defenceLevel + 1);
+        player.handleEvent(EventTypeEnum.DefenceLevelUp,defenceLevel + 1);
         client.sendProtocol(defaultInstance);
     }
 

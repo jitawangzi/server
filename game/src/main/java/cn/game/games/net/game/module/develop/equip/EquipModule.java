@@ -123,6 +123,16 @@ public class EquipModule extends AbstractItemNoStackModule<Equip> {
 		}
 		return count;
 	}
+	public int getEquipPartCountLTlevel(int level) {
+		int count = 0;
+		Collection<EquipPart> values = equipPartMap.values();
+		for (EquipPart equipPart : values) {
+			if (equipPart.getStrength() < level) {
+				count++;
+			}
+		}
+		return count;
+	}
 	public int getEquipCountGTQuality(int quality) {
 		int count = 0;
 		

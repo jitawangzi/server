@@ -65,7 +65,7 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		GemManager.instance().get(id);
 	}
 
-	public int getCountGTQualityWearCount(int quality) {
+	public int getCountGTQualityWearCount(int quality,boolean gt) {
 		EquipModule module = player.getModule(EquipModule.class);
 		Set<Entry<Integer, EquipPart>> entrySet = module.getEquipPartMap().entrySet();
 		int ret = 0;
@@ -76,17 +76,13 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 				Gem gem = get(gemUid);
 				if (gem != null) {
 					GemConfig config = GemManager.instance().get(gem.getConfigId());
-					if (config.quality >= quality) {
+					if (gt ? config.quality >= quality : config.quality < quality) {
 						ret++;
 					}
 				}
 			}
 		}
 		return ret;
-//		return (int) list().stream().filter(gem -> {
-//			GemConfig config = GemManager.instance().get(gem.getConfigId());
-//			return config.quality >= quality;
-//		}).count();
 	}
 
 	/** 

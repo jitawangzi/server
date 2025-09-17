@@ -72,6 +72,7 @@ import cn.game.games.net.game.module.battle.TowerBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.gem.GemModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
@@ -1131,6 +1132,7 @@ public class PlayerHelper {
 			case PlayerLevel -> player.getLevel();
 			case VIPLevel -> player.getVipLevel();
 			case RemainMatiarialNow -> player.getCurrencyModule().get(id).getCount();
+			case DefencelineLevelLowerThan -> player.getDevelopModule().getDefenceLevel();
 			case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp);
 			case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId());
 			case ChapterFinish -> {
@@ -1145,9 +1147,25 @@ public class PlayerHelper {
 				EquipModule module = player.getModule(EquipModule.class);
 				yield module.getEquipPartCountGTlevel(extParam[0]);
 			}
+			case EquipEnhanceLevelLowerThan -> {
+				EquipModule module = player.getModule(EquipModule.class);
+				yield module.getEquipPartCountLTlevel(extParam[0]);
+			}
 			case GemWearNum -> {
 				GemModule module = player.getModule(GemModule.class);
-				yield module.getCountGTQualityWearCount(extParam[0]);
+				yield module.getCountGTQualityWearCount(extParam[0],true);
+			}
+			case GemWearNumLowerThan -> {
+				GemModule module = player.getModule(GemModule.class);
+				yield module.getCountGTQualityWearCount(extParam[0],false);
+			}
+			case HeroNumLowerThan -> {
+				HeroModule heroModule = player.getHeroModule(); 
+				yield heroModule.list().size(); 
+			}
+			case HeroRatioLowerThan -> {
+				HeroModule heroModule = player.getHeroModule(); 
+				yield heroModule.getHeroRateInAllHeros(); 
 			}
 			case HeroIDAndLevel -> {
 				boolean ret = false;

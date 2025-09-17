@@ -321,6 +321,14 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		return illustrationsMonsterRewardMap;
 	}
 
+	public int getHeroRateInAllHeros() {
+		int allHeroCount = HeroManager.instance().list().size();
+		if (allHeroCount == 0) {
+			return 100;
+		}
+		return (int) (list().size() * 100L / allHeroCount);
+	}
+
 	@Override
 	public void checkConfig(int id) {
 		HeroManager.instance().get(id);
