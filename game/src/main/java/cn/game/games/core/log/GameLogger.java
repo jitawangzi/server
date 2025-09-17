@@ -1277,15 +1277,15 @@ public class GameLogger extends DeprecatedLogger {
 	}
 	/**
 	 * 装备本助战录像
-	 * @param player  挑战关卡id	录像上传类型	录像上传时间
+	 * @param player  挑战关卡id	录像上传时间
 	 */
-	public static void equiptowerassistvideo(Player player, int battleId, int type, int time) {
+	public static void equiptowerassistvideo(Player player, int battleId, int time) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.equiptowerassistvideo.name(), LoggerType.equiptowerassistvideo.version, "C0301"))
-					,battleId, type, time};
+					,battleId, time};
 			LoggerType.equiptowerassistvideo.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -1480,7 +1480,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.daShengChallenge.name(), LoggerType.daShengChallenge.version, "C1001"))
-					,playerId, report};
+					,playerId, report.toString()};
 			LoggerType.daShengChallenge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);

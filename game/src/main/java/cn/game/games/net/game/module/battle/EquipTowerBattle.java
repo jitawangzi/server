@@ -297,6 +297,8 @@ public class EquipTowerBattle extends XiYouBattleHandler {
 
     public void setRecord(int floor, String request) {
         battleRecord.put(floor, request);
+        GameLogger.equiptowerassistvideo(player, floor, DateUtil.currentTimeSeconds());
+
     }
 
     public void addRank(int addPoint) {

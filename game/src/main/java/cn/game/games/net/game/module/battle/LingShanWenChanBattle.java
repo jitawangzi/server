@@ -40,6 +40,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	private int startFloor;
 
 	public LingShanWenChanBattle() {
+
 	};
 
 	@Override
@@ -97,7 +98,6 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	
 	@Override
 	public void onLogin() {
-		
 	}
 	
 	@Override
