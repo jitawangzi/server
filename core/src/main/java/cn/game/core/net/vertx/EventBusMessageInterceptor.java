@@ -6,23 +6,24 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.internal.VertxInternal;
+import io.vertx.core.spi.cluster.ClusterManager;
+import io.vertx.spi.cluster.zookeeper.ZookeeperClusterManager;
 
 public class EventBusMessageInterceptor {
 	private static final Logger logger = LoggerFactory.getLogger(EventBusMessageInterceptor.class);
@@ -32,10 +33,23 @@ public class EventBusMessageInterceptor {
 	private static final String HDR_SENDER_CTX = "sender-ctx";
 	private static final String HDR_MSG_HASH = "msg-hash";
 	private static final String HDR_MSG_CLASS = "msg-class";
+	private static final String HDR_SEND_TIMESTAMP = "send-timestamp";
+	private static final String HDR_SEND_CONFIRM = "send-confirm";
+
+	// 记录回复消息的发送状态
+	private static final ConcurrentHashMap<String, ReplyStatus> replyStatusMap = new ConcurrentHashMap<>();
+	
+	// 集群状态缓存
+	private static volatile ClusterStatus lastClusterStatus = new ClusterStatus();
+	private static Vertx vertxInstance;
 
 	public static void register(Vertx vertx) {
+		vertxInstance = vertx;
 		// 初始化消息跟踪器
 		MessageTracker.initialize(vertx);
+		
+		// 启动集群健康监控
+		startClusterMonitoring(vertx);
 
 		// Outbound 拦截器：记录发送消息并跟踪需要回复的消息
 		vertx.eventBus().addOutboundInterceptor(dc -> {
@@ -43,12 +57,17 @@ public class EventBusMessageInterceptor {
 				Message<?> message = dc.message();
 				Object actualBody = extractMessageBody(message);
 				Class<?> bodyClass = (actualBody != null) ? actualBody.getClass() : null;
+				String address = message.address();
 
 				String traceId = message.headers().get(HDR_TRACE_ID); 
 				if (traceId == null) {
 					traceId = java.util.UUID.randomUUID().toString();
 					message.headers().add(HDR_TRACE_ID, traceId);
 				}
+				String traceIdFinal = traceId;
+				// 添加发送时间戳
+				message.headers().add(HDR_SEND_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+				
 				// 由于无法访问 DeliveryOptions，这里用默认/透传的超时值
 				String hdrTimeout = message.headers() != null ? message.headers().get("orig-timeout") : null;
 				long timeout = 30000L; // 默认 30s
@@ -62,20 +81,57 @@ public class EventBusMessageInterceptor {
 					timeout = getMessageTimeout(message);
 				}
 
+				// 增强：对回复消息进行特殊处理
+				if (address != null && address.startsWith("__vertx.reply.")) {
+					// 记录回复状态
+					ReplyStatus status = new ReplyStatus(address, traceId, System.currentTimeMillis());
+					replyStatusMap.put(address, status);
+					
+					// 记录详细的发送上下文
+					logger.info("准备发送回复消息: address={}, traceId={}, thread={}, context={}, eventLoop={}, 集群状态={}",
+							address, traceId, Thread.currentThread().getName(), 
+							Vertx.currentContext(), isOnEventLoopThread(), lastClusterStatus);
+					
+					// 设置验证定时器
+					vertx.setTimer(100, id -> {
+						ReplyStatus currentStatus = replyStatusMap.get(address);
+						if (currentStatus != null) {
+							currentStatus.setConfirmed(true);
+							logger.info("回复消息发送确认(100ms后): address={}, traceId={}, confirmed={}", 
+								address, traceIdFinal, currentStatus.isConfirmed());
+						}
+					});
+					
+					// 1秒后再次检查
+					vertx.setTimer(1000, id -> {
+						ReplyStatus finalStatus = replyStatusMap.remove(address);
+						if (finalStatus != null && !finalStatus.isReceived()) {
+							logger.error("警告：回复消息可能未被接收: address={}, traceId={}, 发送时间={}, 集群状态={}",
+								address, traceIdFinal, formatTimestamp(finalStatus.getSendTime()), lastClusterStatus);
+						}
+					});
+				}
+
 				// 记录发送日志
 				logger.info("发送消息到[{}] replyAddress[{}] traceId[{}] timeout[{}] messageClass[{}] messageBody[{}] headers[{}] sender[{}]",
-						message.address(), message.replyAddress(), traceId, timeout, bodyClass, limitBody(actualBody), message.headers(),
+						address, message.replyAddress(), traceId, timeout, bodyClass, limitBody(actualBody), message.headers(),
 						extractMessageSender(message));
 
 				// 跟踪需要回复的消息
 				String replyAddress = message.replyAddress();
 				if (replyAddress != null) {
 					String bodyHash = safeBodyHash(actualBody);
-					MessageTracker.trackMessage(replyAddress, new MessageInfo(message.address(), message.headers(), actualBody,
+					MessageTracker.trackMessage(replyAddress, new MessageInfo(address, message.headers(), actualBody,
 							System.currentTimeMillis(), timeout, traceId, bodyClass == null ? null : bodyClass.getName(), bodyHash));
 				}
 
 				dc.next();
+				
+				// 发送后立即检查（仅对回复消息）
+				if (address != null && address.startsWith("__vertx.reply.")) {
+					logger.info("回复消息已通过拦截器: address={}, traceId={}", address, traceId);
+				}
+				
 			} catch (Throwable t) {
 				logger.error("Outbound 拦截器异常", t);
 				try {
@@ -95,20 +151,40 @@ public class EventBusMessageInterceptor {
 				String traceId = message.headers() != null ? message.headers().get(HDR_TRACE_ID) : null;
 				String origTimeout = message.headers() != null ? message.headers().get("orig-timeout") : null;
 				String msgHash = message.headers() != null ? message.headers().get("msg-hash") : null;
+				String sendTimestamp = message.headers() != null ? message.headers().get(HDR_SEND_TIMESTAMP) : null;
+
+				// 计算传输延迟
+				long transmissionDelay = -1;
+				if (sendTimestamp != null) {
+					try {
+						long sendTime = Long.parseLong(sendTimestamp);
+						transmissionDelay = System.currentTimeMillis() - sendTime;
+					} catch (NumberFormatException ignore) {
+					}
+				}
 
 				logger.info(
-						"接收消息从[{}] replyAddress[{}] traceId[{}] origTimeout[{}] messageClass[{}] messageBody[{}] headers[{}] sender[{}]",
+						"接收消息从[{}] replyAddress[{}] traceId[{}] origTimeout[{}] messageClass[{}] messageBody[{}] headers[{}] sender[{}] 传输延迟[{}ms]",
 						message.address(), message.replyAddress(), traceId, origTimeout, bodyClass, limitBody(actualBody),
-						message.headers(), extractMessageSender(message));
+						message.headers(), extractMessageSender(message), transmissionDelay);
 
 				String messageAddress = message.address();
 				if (messageAddress != null && messageAddress.startsWith("__vertx.reply.")) {
+					// 标记回复已被接收
+					ReplyStatus status = replyStatusMap.get(messageAddress);
+					if (status != null) {
+						status.setReceived(true);
+						logger.info("回复消息已被接收确认: address={}, traceId={}, 传输延迟={}ms", 
+							messageAddress, traceId, transmissionDelay);
+					}
+					
 					MessageInfo trackedInfo = MessageTracker.handleReply(messageAddress, traceId, msgHash);
 					if (trackedInfo != null) {
 						logger.debug("收到回复，取消超时跟踪: replyAddress={} traceId={} reqAddr={}", messageAddress, traceId,
 								trackedInfo.getAddress());
 					} else {
-						logger.debug("收到回复，但未匹配到已跟踪请求: replyAddress={} traceId={}", messageAddress, traceId);
+						logger.warn("收到回复，但未匹配到已跟踪请求: replyAddress={} traceId={} 可能是超时后到达的回复", 
+							messageAddress, traceId);
 					}
 				}
 			} catch (Throwable t) {
@@ -119,6 +195,71 @@ public class EventBusMessageInterceptor {
 				} catch (Throwable ignore) {
 				}
 			}
+		});
+		
+		// 启动诊断定时器
+		startDiagnostics(vertx);
+	}
+
+	// 启动集群监控
+	private static void startClusterMonitoring(Vertx vertx) {
+		vertx.setPeriodic(10000, id -> {
+			try {
+				updateClusterStatus(vertx);
+			} catch (Exception e) {
+				logger.error("更新集群状态失败", e);
+			}
+		});
+	}
+	
+	// 更新集群状态
+	private static void updateClusterStatus(Vertx vertx) {
+		try {
+			if (vertx instanceof VertxInternal) {
+				ClusterManager cm = ((VertxInternal) vertx).clusterManager();
+				if (cm != null) {
+					ClusterStatus status = new ClusterStatus();
+					status.setActive(cm.isActive());
+					status.setNodeCount(cm.getNodes().size());
+					status.setNodes(cm.getNodes());
+					
+					// 检查 ZooKeeper 特定状态
+					if (cm instanceof ZookeeperClusterManager) {
+						ZookeeperClusterManager zkCm = (ZookeeperClusterManager) cm;
+						// 可以通过反射获取更多状态信息
+						status.setClusterManagerType("ZooKeeper");
+					}
+					
+					lastClusterStatus = status;
+					
+					// 如果集群状态异常，记录警告,节点数至少要有3个
+					if (!status.isActive() || status.getNodeCount() < 3) {
+						logger.warn("集群状态异常: {}", status);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error("获取集群状态失败", e);
+		}
+	}
+	
+	// 启动诊断功能
+	private static void startDiagnostics(Vertx vertx) {
+		// 每30秒输出一次诊断信息
+		vertx.setPeriodic(30000, id -> {
+			int activeMessages = MessageTracker.getActiveMessageCount();
+			int activeTimers = MessageTracker.getActiveTimerCount();
+			int pendingReplies = replyStatusMap.size();
+			
+			if (activeMessages > 0 || activeTimers > 0 || pendingReplies > 0) {
+				logger.info("EventBus 诊断信息: 活跃消息={}, 活跃定时器={}, 待确认回复={}, 集群状态={}",
+					activeMessages, activeTimers, pendingReplies, lastClusterStatus);
+			}
+			
+			// 清理过期的回复状态
+			long now = System.currentTimeMillis();
+			replyStatusMap.entrySet().removeIf(entry -> 
+				now - entry.getValue().getSendTime() > 60000); // 60秒后清理
 		});
 	}
 
@@ -240,6 +381,80 @@ public class EventBusMessageInterceptor {
 			return String.format("msgHeaders=%s, optionsHeaders=%s", String.valueOf(msgHeaders), String.valueOf(optionsHeaders));
 		} catch (Throwable ignore) {
 			return "headers[unavailable]";
+		}
+	}
+	
+	private static String formatTimestamp(long timestamp) {
+		return Instant.ofEpochMilli(timestamp)
+				.atZone(ZoneId.systemDefault())
+				.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+	}
+	
+	// 内部类：回复状态
+	static class ReplyStatus {
+		private final String address;
+		private final String traceId;
+		private final long sendTime;
+		private volatile boolean confirmed = false;
+		private volatile boolean received = false;
+		
+		public ReplyStatus(String address, String traceId, long sendTime) {
+			this.address = address;
+			this.traceId = traceId;
+			this.sendTime = sendTime;
+		}
+		
+		// getter/setter
+		public boolean isConfirmed() { return confirmed; }
+		public void setConfirmed(boolean confirmed) { this.confirmed = confirmed; }
+		public boolean isReceived() { return received; }
+		public void setReceived(boolean received) { this.received = received; }
+		public long getSendTime() { return sendTime; }
+	}
+	
+	// 内部类：集群状态
+	static class ClusterStatus {
+		private boolean active = false;
+		private int nodeCount = 0;
+		private List<String> nodes = new ArrayList<>();
+		private String clusterManagerType = "Unknown";
+
+		// getter/setter
+		public boolean isActive() {
+			return active;
+		}
+
+		public void setActive(boolean active) {
+			this.active = active;
+		}
+
+		public int getNodeCount() {
+			return nodeCount;
+		}
+
+		public void setNodeCount(int nodeCount) {
+			this.nodeCount = nodeCount;
+		}
+
+		public List<String> getNodes() {
+			return nodes;
+		}
+
+		public void setNodes(List<String> nodes) {
+			this.nodes = nodes;
+		}
+
+		public String getClusterManagerType() {
+			return clusterManagerType;
+		}
+
+		public void setClusterManagerType(String type) {
+			this.clusterManagerType = type;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("ClusterStatus[active=%s, nodes=%d, type=%s, nodeList=%s]", active, nodeCount, clusterManagerType, nodes);
 		}
 	}
 }

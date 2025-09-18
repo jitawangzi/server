@@ -7,9 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.formula.functions.T;
 
 import cn.game.core.net.protocol.IProtocol;
-import cn.game.core.net.vertx.VxContextRegistry;
-import io.vertx.core.Context;
-import io.vertx.core.internal.ContextInternal;
 
 public abstract class AbstractNetClient implements NetClient
 {

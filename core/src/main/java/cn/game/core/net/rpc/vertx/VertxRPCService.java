@@ -1,5 +1,9 @@
 package cn.game.core.net.rpc.vertx;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.game.core.base.ServerContext;
 import cn.game.core.net.message.AbstractMessageHandlerService;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RPCService;
@@ -20,6 +24,7 @@ import io.vertx.core.eventbus.ReplyFailure;
  * @param <T>
  */
 public class VertxRPCService<T> extends AbstractMessageHandlerService implements RPCService<T> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(VertxRPCService.class);
 	private RPCServiceImpl<T> rpcService;
 
 	public VertxRPCService(T wrappedService, String serverId, ServerType serverType, Processor processor) {
@@ -31,9 +36,11 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 	public void handleMessage(Message<Object> message) {
 		Command command = (Command) message.body();
 		long objectId = command.getObjectId();
-	    String traceId = message.headers().get("trace_id");
+	    String traceId = message.headers().get("trace-id");
+		String replyAddress = message.replyAddress();
+
 		if (log.isDebugEnabled()) {
-			log.debug("Received RPC command: {}, objectId: {},replyAddress: {} , traceId: {}", command, objectId, message.replyAddress(),traceId == null ? "null" : traceId);
+			log.debug("Received RPC command: {}, objectId: {},replyAddress: {} , traceId: {}", command, objectId, replyAddress,traceId == null ? "null" : traceId);
 		}
 		Command commandFinal = command;
 		processor.process(objectId, () -> {
@@ -52,8 +59,16 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
 					message.fail(ReplyFailure.ERROR.toInt(), errString);
 				} else {
-				    DeliveryOptions deliveryOptions = traceId == null? VxHolder.universalOptions: new DeliveryOptions(VxHolder.universalOptions).addHeader("trace_id", traceId);
+				    DeliveryOptions deliveryOptions = traceId == null? VxHolder.universalOptions: new DeliveryOptions(VxHolder.universalOptions).addHeader("trace-id", traceId);
 					message.reply(r.result(), deliveryOptions);
+					if (ServerContext.getInstance().getRunMode().isTest()) {
+						// 发送成功后的确认
+						LOGGER.info("VertxRPCService回复发送成功: replyAddress={}, traceId={}", replyAddress, traceId);
+						// 验证发送状态
+						vertx.setTimer(500, id -> {
+							LOGGER.info("VertxRPCService回复发送后验证(500ms): replyAddress={}, traceId={}, 集群节点数={}", replyAddress, traceId, VxHolder.getClusterNodeCount());
+						});
+					}
 				}
 			});
 		},true);

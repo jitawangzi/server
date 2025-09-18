@@ -46,8 +46,10 @@ import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpResponseExpectation;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.internal.VertxInternal;
 import io.vertx.core.internal.buffer.BufferInternal;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
@@ -77,7 +79,7 @@ public class VxHolder {
 	/** IProtocol类型消息 */
 	public static final DeliveryOptions protocolOptions = new DeliveryOptions().setCodecName(protocolCodec.name());
 	public static final DeliveryOptions defaultOptions = new DeliveryOptions();
-	
+
 	public static final DeliveryOptions universalOptions = new DeliveryOptions().setCodecName(universalMessageCodec.name());
 	private static List<Verticle> verticles;
 	public static ZookeeperClusterManager zookeeperClusterManager;
@@ -87,7 +89,7 @@ public class VxHolder {
 	private static WebClientOptions webClientOption = new WebClientOptions().setDefaultPort(80).setConnectTimeout(5000);
 
 	private static volatile boolean inited = false;
-	
+
 	private VxHolder() {
 	};
 
@@ -106,29 +108,39 @@ public class VxHolder {
 		}
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
-		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress());
+		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress())
+				.setPort(0) // 使用随机端口，避免端口冲突
+				.setClusterPingInterval(5000) // 集群心跳间隔
+				.setClusterPingReplyInterval(10000) // 心跳响应超时
+				.setConnectTimeout(60000) // 连接超时时间
+				.setSendBufferSize(1024 * 1024) // 发送缓冲区大小
+				.setReceiveBufferSize(1024 * 1024) // 接收缓冲区大小
+				.setTcpNoDelay(true) // 禁用 Nagle 算法
+				.setTcpKeepAlive(true) // 启用 TCP Keep-Alive
+				.setReuseAddress(true) // 允许地址重用
+				.setReusePort(false); // 不重用端口
+		// 设置集群节点元数据
+		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
+
 		Config zkConfig = ConfigService.getConfig("zookeeper");
 		String content = zkConfig.getProperty("zk", null);
 		JsonObject conf = new JsonObject(content);
 
-		zookeeperClusterManager = new ZookeeperClusterManager(ZkHelper.curator);
-		zookeeperClusterManager.setConfig(conf);
+		zookeeperClusterManager = new ZookeeperClusterManager(conf);
 
-		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
-		
 		VertxOptions options = new VertxOptions().setEventBusOptions(eventBusOptions);
 		//
 //		options.setMetricsOptions(new DropwizardMetricsOptions().setEnabled(true).setJmxEnabled(true).setJmxDomain("vertx-metrics"));
 		options.setMetricsOptions(new MicrometerMetricsOptions()
-						// 启用 JMX
-						.setJmxMetricsOptions(new VertxJmxMetricsOptions().setEnabled(true).setStep(10) // 指标刷新间隔
-						)
-						// 启用 Prometheus（按需开启）
-						.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true)
-								.setStartEmbeddedServer(true) // 启动内置 HTTP 服务器
-								.setEmbeddedServerOptions(
-										new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
-								.setEmbeddedServerEndpoint("/metrics"))
+				// 启用 JMX
+				.setJmxMetricsOptions(new VertxJmxMetricsOptions().setEnabled(true).setStep(10) // 指标刷新间隔
+				)
+				// 启用 Prometheus（按需开启）
+				.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true)
+						.setStartEmbeddedServer(true) // 启动内置 HTTP 服务器
+						.setEmbeddedServerOptions(
+								new HttpServerOptions().setPort(cn.game.util.Config.VERTX_PROMETHEU_HTTP_PORT).setHost("0.0.0.0"))
+						.setEmbeddedServerEndpoint("/metrics"))
 				.setEnabled(false));
 
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
@@ -137,12 +149,8 @@ public class VxHolder {
 		options.setInternalBlockingPoolSize(32);
 		options.setWorkerPoolSize(options.getEventLoopPoolSize() * 2);
 
-		Future<Vertx> clusteredVertxFuture = Vertx
-				  .builder()
-				  .with(options)
-				.withClusterManager(zookeeperClusterManager)
-				  .buildClustered();
-		
+		Future<Vertx> clusteredVertxFuture = Vertx.builder().with(options).withClusterManager(zookeeperClusterManager).buildClustered();
+
 		vertx = clusteredVertxFuture.toCompletionStage().toCompletableFuture().get(3000, TimeUnit.SECONDS);
 		vertx.exceptionHandler(e -> {
 			log.error("vertx uncaptured exception： ", e);
@@ -156,13 +164,35 @@ public class VxHolder {
 		vertx.eventBus().registerCodec(protobufMessageCodec);
 		vertx.eventBus().registerCodec(protocolCodec);
 		vertx.eventBus().registerCodec(customMessageCodec);
-		
+
 		vertx.eventBus().registerCodec(universalMessageCodec);
 
 		deployVerticles();
 		inited = true;
 	}
 
+	
+	@Deprecated
+	private static void startClusterHealthCheck() {
+	    // 每30s检查一次集群健康状态
+	    vertx.setPeriodic(30000, id -> {
+	        try {
+	            ClusterManager cm = ((VertxInternal) vertx).clusterManager();
+	            if (cm != null && cm instanceof ZookeeperClusterManager) {
+	                boolean isActive = cm.isActive();
+	                List<String> nodes = cm.getNodes(); 
+	                int nodeCount = nodes.size();
+	                log.info("集群健康检查: active={}, nodesCount={}, nodes={}", isActive, nodeCount,nodes);
+	                
+	                if (!isActive || nodeCount < 2) {
+	                    log.warn("集群状态异常: active={}, nodesCount={}, nodes={}", isActive, nodeCount,nodes);
+	                }
+	            }
+	        } catch (Exception e) {
+	            log.error("集群健康检查失败", e);
+	        }
+	    });
+	}
 	private static void deployVerticles() throws Exception {
 
 		if (verticles != null) {
@@ -259,7 +289,7 @@ public class VxHolder {
 		}
 		if (message instanceof com.google.protobuf.Message || message instanceof IProtocol) {
 			return vertx.eventBus().request(serverId, message, universalOptions).map(msg -> convertResponseObject(msg.body()));
-		}  else {
+		} else {
 			throw new IllegalArgumentException("不支持的vertx消息类型：" + message.getClass().getName());
 		}
 	}
@@ -291,10 +321,10 @@ public class VxHolder {
 
 	private static <T> T convertResponseObject(Object body) {
 		if (body instanceof com.google.protobuf.Message) {
-			return (T)body;
+			return (T) body;
 		}
 		if (body instanceof IProtocol) {
-			return (T)((IProtocol) body).getData();
+			return (T) ((IProtocol) body).getData();
 		}
 		throw new UnsupportedOperationException("Unsupported ResponseObject message type: " + body);
 	}
@@ -385,8 +415,8 @@ public class VxHolder {
 				.expecting(HttpResponseExpectation.SC_SUCCESS)
 				.expecting(HttpResponseExpectation.JSON)
 				.onFailure(err -> {
-			log.error("HTTP GET request failed: " + requestURI, err);
-		});
+					log.error("HTTP GET request failed: " + requestURI, err);
+				});
 	}
 
 	/** 
@@ -548,5 +578,20 @@ public class VxHolder {
 	private static <T> Future<T> executeBlockingWithTimeoutInternal(Callable<T> blockingCodeHandler, long timeoutMs, boolean ordered) {
 		// 执行阻塞操作
 		return vertx.executeBlocking(blockingCodeHandler, ordered).timeout(timeoutMs, TimeUnit.MILLISECONDS);
+	}
+	
+	public static int getClusterNodeCount() {
+		try {
+			// 获取集群节点数
+			if (vertx instanceof VertxInternal) {
+				ClusterManager cm = VxHolder.zookeeperClusterManager;
+				if (cm != null) {
+					return cm.getNodes().size();
+				}
+			}
+		} catch (Exception e) {
+			log.debug("无法获取集群节点数", e);
+		}
+		return -1;
 	}
 }
