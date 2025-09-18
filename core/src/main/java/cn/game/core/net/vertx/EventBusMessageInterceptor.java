@@ -235,6 +235,8 @@ public class EventBusMessageInterceptor {
 					// 如果集群状态异常，记录警告,节点数至少要有3个
 					if (!status.isActive() || status.getNodeCount() < 3) {
 						logger.warn("集群状态异常: {}", status);
+					}else {
+						logger.warn("集群当前状态: {}", status);
 					}
 				}
 			}
