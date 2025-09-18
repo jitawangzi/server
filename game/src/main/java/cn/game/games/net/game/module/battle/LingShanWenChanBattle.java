@@ -112,7 +112,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	public List<RewardInfo> skipFloor(int floor) {
 		LingShanConfig floorConfig = getFloorConfig(floor); // 校验数据
 
-		long power = player.getAttrModule().getPower();
+		long power = player.getAttrModule().calcPower();
 		// TODO 
 //		power = 50000 ;// 临时测试用
 		int floorInConfig = getFloorInConfig(floor, floorConfig);
