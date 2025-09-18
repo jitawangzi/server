@@ -108,17 +108,7 @@ public class VxHolder {
 		}
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
-		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress())
-				.setPort(0) // 使用随机端口，避免端口冲突
-				.setClusterPingInterval(5000) // 集群心跳间隔
-				.setClusterPingReplyInterval(10000) // 心跳响应超时
-				.setConnectTimeout(60000) // 连接超时时间
-				.setSendBufferSize(1024 * 1024) // 发送缓冲区大小
-				.setReceiveBufferSize(1024 * 1024) // 接收缓冲区大小
-				.setTcpNoDelay(true) // 禁用 Nagle 算法
-				.setTcpKeepAlive(true) // 启用 TCP Keep-Alive
-				.setReuseAddress(true) // 允许地址重用
-				.setReusePort(false); // 不重用端口
+		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress());
 		// 设置集群节点元数据
 		eventBusOptions.setClusterNodeMetadata(new JsonObject().put("serverId", serverId).put("serverType", serverType.name()));
 
