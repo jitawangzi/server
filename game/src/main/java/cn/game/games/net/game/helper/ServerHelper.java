@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -107,7 +108,8 @@ public class ServerHelper {
 	}
 	
 	public static Map<String, VirtualServerView> getServerOpenMap() {
-		return GameCacheService.getInstance().getOpenServerMap(); 
+		return ServerContext.getInstance().getValidGameService().getValidServers();
+//		return GameCacheService.getInstance().getOpenServerMap(); 
 	}
 	public static String[] getServerIds() {
 		return getServerOpenMap().values().stream().map(r -> r.ID).collect(toList()).toArray(new String[] {});
@@ -116,6 +118,18 @@ public class ServerHelper {
 		VirtualServerView openServerLatest = GameCacheService.getInstance().getOpenServerLatest(); 
 		Objects.requireNonNull(openServerLatest, "没有开启的服务器");
 		return openServerLatest.ID;
+	}
+	public static String getServerIdLatestAsync() {
+		VirtualServerView retServerView= null; 
+		Map<String, VirtualServerView> validServers = ServerContext.getInstance().getValidGameService().getValidServers(); 
+		if (validServers != null && validServers.size() > 0) {
+			List<VirtualServerView> list = validServers.values()
+					.stream()
+					.sorted((a, b) -> b.getOpenTime().compareTo(a.getOpenTime()))
+					.collect(Collectors.toList());
+			retServerView = list.get(0);
+		}
+		return retServerView.ID;
 	}
 	public static String getServerName(String serverId) {
 		VirtualServerView virtualServerView = getServerOpenMap().get(serverId); 

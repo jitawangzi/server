@@ -969,10 +969,12 @@ public class PlayerHandler extends GameBaseHandler {
 					checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
 							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
-							.onSuccess(r -> {
-								ServerContext.getInstance().getProcessor().process(r.getPlayerId(),
-									    () -> handleLoginSuccess(newGameClient, r)); 
-								
+							.compose(r -> {
+								return ServerContext.getInstance().getProcessor().process(r.getPlayerId(),
+									    () -> {
+									    	 handleLoginSuccess(newGameClient, r); 
+									    	 return null; 
+									    },null); 
 							})
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
@@ -1113,7 +1115,7 @@ public class PlayerHandler extends GameBaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-		playerData.setServerId(ServerHelper.getServerIdLatest());
+		playerData.setServerId(ServerHelper.getServerIdLatestAsync());
 		playerData.setPlayerId(id);
 		playerData.setUid(uid);
 		playerData.setGender(isMan);
