@@ -147,6 +147,8 @@ public class VxHolder {
 		});
 		if (ServerContext.getInstance().getRunMode().isTest()) {
 			EventBusMessageInterceptor.register(vertx);
+			EventLoopBlockingDetector.detectBlocking(vertx); 
+			EventLoopHealthChecker.startChecking(vertx); 
 		}
 		httpClient = WebClient.create(vertx, webClientOption);
 

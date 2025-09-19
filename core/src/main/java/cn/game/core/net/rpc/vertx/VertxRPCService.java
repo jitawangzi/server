@@ -63,10 +63,10 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 					message.reply(r.result(), deliveryOptions);
 					if (ServerContext.getInstance().getRunMode().isTest()) {
 						// 发送成功后的确认
-						LOGGER.info("VertxRPCService回复发送成功: replyAddress={}, traceId={}", replyAddress, traceId);
+						LOGGER.debug("VertxRPCService回复发送成功: replyAddress={}, traceId={}", replyAddress, traceId);
 						// 验证发送状态
 						vertx.setTimer(500, id -> {
-							LOGGER.info("VertxRPCService回复发送后验证(500ms): replyAddress={}, traceId={}, 集群节点数={}", replyAddress, traceId, VxHolder.getClusterNodeCount());
+							LOGGER.debug("VertxRPCService回复发送后验证(500ms): replyAddress={}, traceId={}, 集群节点数={}", replyAddress, traceId, VxHolder.getClusterNodeCount());
 						});
 					}
 				}

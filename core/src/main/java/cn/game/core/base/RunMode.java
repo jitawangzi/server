@@ -2,8 +2,11 @@ package cn.game.core.base;
 
 public enum RunMode {
 
-	TEST, CHECK, PRESSURE, PRODUCTION;
+	DEV, TEST, CHECK, PRESSURE, PRODUCTION;
 
+	public boolean isDev() {
+		return this.equals(DEV);
+	}
 	public boolean isTest() {
 		return this.equals(TEST);
 	}

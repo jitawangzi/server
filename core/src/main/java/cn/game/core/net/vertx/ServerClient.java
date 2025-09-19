@@ -42,7 +42,7 @@ public class ServerClient extends AbstractNetClient {
 
 		if (ServerContext.getInstance().getRunMode().isTest()) {
 			// 添加发送前日志
-			logger.info("ServerClient准备发送回复: replyAddress={}, traceId={}, messageType={}, thread={}", replyAddress, traceId,
+			logger.debug("ServerClient准备发送回复: replyAddress={}, traceId={}, messageType={}, thread={}", replyAddress, traceId,
 					message.getClass().getName(), Thread.currentThread().getName());
 		}
 
@@ -56,11 +56,11 @@ public class ServerClient extends AbstractNetClient {
 
 			if (ServerContext.getInstance().getRunMode().isTest()) {
 				// 发送成功后的确认
-				logger.info("ServerClient回复发送成功: replyAddress={}, traceId={}", replyAddress, traceId);
+				logger.debug("ServerClient回复发送成功: replyAddress={}, traceId={}", replyAddress, traceId);
 
 				// 验证发送状态
 				VxHolder.vertx.setTimer(500, id -> {
-					logger.info("ServerClient回复发送后验证(500ms): replyAddress={}, traceId={}, 集群节点数={}", replyAddress, traceId,VxHolder.getClusterNodeCount());
+					logger.debug("ServerClient回复发送后验证(500ms): replyAddress={}, traceId={}, 集群节点数={}", replyAddress, traceId,VxHolder.getClusterNodeCount());
 				});
 			}
 		} catch (Exception e) {

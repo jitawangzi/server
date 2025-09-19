@@ -23,7 +23,7 @@
 		<skipTests>true</skipTests>
 
 		<!-- 第三方依赖版本 -->
-		<vertx.version>5.0.0</vertx.version>
+		<vertx.version>5.0.4</vertx.version>
 		<spring.version>5.3.32</spring.version>
 	</properties>
 	<build>
