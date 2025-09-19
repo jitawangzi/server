@@ -969,7 +969,11 @@ public class PlayerHandler extends GameBaseHandler {
 					checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
 							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
-							.onSuccess(r -> handleLoginSuccess(newGameClient, r))
+							.onSuccess(r -> {
+								ServerContext.getInstance().getProcessor().process(r.getPlayerId(),
+									    () -> handleLoginSuccess(newGameClient, r)); 
+								
+							})
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
 			}
