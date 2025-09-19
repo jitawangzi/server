@@ -25,6 +25,7 @@ import cn.game.protocol.generated.config.EquipTowerConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RankConfig;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.EquipTowerManager;
 import cn.game.protocol.generated.manager.RankManager;
@@ -84,7 +85,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     public void initEquipBattle() {
 
         helpRewardMap.clear();
-        ticketCount = GlobalConst.TicketRefreshMax;
+        ticketCount =0;
         nextGetTicketTime = DateUtil.currentTimeSeconds();
         floorData.clear();
          EquipTowerManager.instance().list().forEach(equipTowerConfig -> {
@@ -128,7 +129,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
      */
     public void reset() {
         helpRewardMap.clear();
-        ticketCount = GlobalConst.TicketRefreshMax;
+        ticketCount = 0;//
     }
     boolean isPass(int floor)
     {
@@ -190,10 +191,10 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         if (DateUtil.currentTimeSeconds() < nextGetTicketTime) {
             return null;
         }
-        if (ticketCount <= 0) {
+        if (ticketCount > GlobalConst.TicketRefreshMax + player.getWelfareValue(WelfareTypeEnum.TaSuiLingXiaoAddTimes)) {
             return null;
         }
-        ticketCount--;
+        ticketCount++;
         nextGetTicketTime = DateUtil.currentTimeSeconds() + GlobalConst.TicketRefreshTime * 3600;
         return PlayerHelper.addResources(player, GlobalConst.TicketItemId, 1, OpType.EquipTowerTicket);
     }
@@ -322,7 +323,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     }
 
     public int getTicketCount() {
-        return ticketCount;
+        return  GlobalConst.TicketRefreshMax + player.getWelfareValue(WelfareTypeEnum.TaSuiLingXiaoAddTimes)-ticketCount;
     }
 
     public long getNextGetTicketTime() {

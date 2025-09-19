@@ -15,6 +15,7 @@ import cn.game.protocol.generated.config.DaShengExtraPointsConfig;
 import cn.game.protocol.generated.config.DaShengPointsConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.DaShengExtraPointsManager;
 import cn.game.protocol.generated.manager.DaShengPointsManager;
@@ -122,13 +123,13 @@ public class PVEVPBattle extends XiYouBattleHandler {
      * 每天重置数据
      */
     public void reset() {
-        ticketCount=GlobalConst.DaShengFreeTicket;
+        ticketCount=0;
         buyCount=GlobalConst.DaShengBuyTicket;
     }
     @Override
     public int checkCustom(int id, int subId, long... args) {
 
-        if (ticketCount <= 0) {
+        if (ticketCount >GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)) {
             return ErrorMsgEnum.PVEVP_No_Ticket.getId();
         }
         if (!mainShowRank.containsKey(subId)) {
@@ -139,7 +140,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //        }
         inBattleRank = mainShowRank.get(subId);
         inBattleRankPlayerId=inBattleRank.getRankEntry().getId();
-        ticketCount--;
+        ticketCount++;
         return 0;
     }
 
@@ -487,7 +488,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
 
     public int getTicketCount() {
-        return ticketCount;
+        return GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)-ticketCount;
     }
 
     public int getEndTime() {
