@@ -669,6 +669,7 @@ public class Player {
 		SimplePlayerInfo.Builder builder = SimplePlayerInfo.newBuilder();
 		builder.setId(playerId + "");
 		builder.setLevel(getData().getLevel());
+		builder.setVipLevel(getVipLevel()); 
 		builder.setName(getData().getName());
 		builder.setOnline(true);
 		builder.setOfflineTime(0);

@@ -39,6 +39,7 @@ public class SimplePlayer implements Serializable {
 	public long id; // id
 	public String name; // 名字
 	public int level; // 等级
+	public int vipLevel; // vip等级
 	public int combatEffectiveness; // 战力
 	public int head; // 头像
 	public int headFrame; // 头像
@@ -102,6 +103,7 @@ public class SimplePlayer implements Serializable {
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
 		this.level = player.getLevel();
+		this.vipLevel = player.getVipLevel();
 		this.lastLoginTimer = player.getLastLoginTimer();
 		this.createTimer =  player.getCreateTimer();
 		this.battleId = player.getBattleModule().getMainBattleHighest();
@@ -182,6 +184,7 @@ public class SimplePlayer implements Serializable {
 
 		builder.setId(id + "");
 		builder.setLevel(level);
+		builder.setVipLevel(vipLevel);
 		builder.setName(name);
 		builder.setOnline(isOnline());
 		builder.setOfflineTime((int) (getOfflineTime() / 1000));
