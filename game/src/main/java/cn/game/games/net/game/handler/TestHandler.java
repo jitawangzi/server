@@ -13,7 +13,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.RankType;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -380,6 +382,12 @@ public class TestHandler extends GameBaseHandler {
 //                    heroModule.add(resourceEnum.ID, OpType.Test);
 //                }
                 player.getFuncModule().gmUnlockFunc((byte) 0);
+                break;
+            }
+            case "rankds":
+            {
+                RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), p1);
+                RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(),p1);
                 break;
             }
             case "time":
