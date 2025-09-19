@@ -13,6 +13,7 @@ import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.LingShanConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.LingShanManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -188,10 +189,13 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		if (subId != lastCompleteFloor) {
 			throw new LogicException(ErrorMsgEnum.request_parameter_error.getId());
 		}
-		if (battleTimes >= GlobalConst.LingshanChallangeCost.length) {
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingShanAddTimes); 
+		int maxBattleTimes = GlobalConst.LingshanChallangeCost.length + welfareValue;
+		
+		if (battleTimes >= maxBattleTimes) {
 			return ResultObject.fail(ErrorMsgEnum.times_limit.getId());
 		}
-		int cost = GlobalConst.LingshanChallangeCost[battleTimes];
+		int cost = GameUtil.getArrayCost(GlobalConst.LingshanChallangeCost, battleTimes) ; 
 		PlayerHelper.delResources(player, Asset.diamond.ID, cost, OpType.LingShanWenChan);
 		battleTimes++;
 
