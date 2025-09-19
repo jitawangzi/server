@@ -31,6 +31,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import cn.game.core.cache.CacheDataType.CacheBackend;
+import cn.game.core.util.AsyncUtils;
 import cn.game.util.RedisUtil;
 import io.vertx.core.Future;
 
@@ -155,6 +156,8 @@ public class SimpleCacheManager {
 
 	private static <T> T join(CompletionStage<T> stage) {
 		try {
+			// 确保在非事件循环线程调用
+			AsyncUtils.checkEventLoop();
 			return stage.toCompletableFuture().get();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -164,6 +167,8 @@ public class SimpleCacheManager {
 	// ============== 同步 API（按次传 loader） ==============
 
 	public <T> T get(CacheDataType type, String key, Function<String, T> loader) {
+		AsyncUtils.checkEventLoop();
+
 		Objects.requireNonNull(type);
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(loader);
@@ -292,6 +297,8 @@ public class SimpleCacheManager {
 	// ============== 使用已注册默认 loader 的便捷 API ==============
 
 	public <T> T get(CacheDataType type, String key) {
+		AsyncUtils.checkEventLoop();
+
 		Function<String, CompletionStage<Object>> loader = asyncLoaders.get(type);
 		if (loader == null) {
 			throw new IllegalStateException("No default async loader registered for type=" + type.getPrefix());

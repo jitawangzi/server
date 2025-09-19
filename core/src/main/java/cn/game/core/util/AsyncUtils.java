@@ -29,7 +29,7 @@ import io.vertx.core.impl.VertxThread;
 public class AsyncUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncUtils.class);
 	/** 
-	 * 检查当前线程是不是eventLoop线程, 如果不是则抛出异常
+	 * 检查当前线程是不是eventLoop线程, 如果是则抛出异常
 	 */
 	public static void checkEventLoop() {
 		Thread currentThread = Thread.currentThread();
