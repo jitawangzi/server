@@ -113,4 +113,15 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 		return sweepTimes;
 	}
 
+
+	public boolean hasRed() {
+		int maxFreeCount = 0 ; 
+		for (int[] a : GlobalConst.DemonsChallangeCost) {
+			if (a[1] == 0) {
+				maxFreeCount ++ ; 
+			}
+		}
+		return sweepTimes < maxFreeCount; 
+	}
+
 }

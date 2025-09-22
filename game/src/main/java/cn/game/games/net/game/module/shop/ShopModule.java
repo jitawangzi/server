@@ -411,6 +411,27 @@ public class ShopModule extends BasePlayerModule {
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+	/** 
+	 * 判断某个商店，是否有免费的商品没有购买
+	 * @param shop
+	 * @return
+	 */
+	public boolean hasFreeShopItem(int ... shops) {
+		for (int shop : shops) {
+			Collection<ShopItem> collection = shopItemsMap.get(shop);
+			for (ShopItem shopItem : collection) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
+				if (shopItemConfig.PurchaseParameter.length ==0 && shopItem.getItemBuyTimes() < shopItemConfig.ShopItemQuota) {
+					return true; 
+				}
+			}
+		}
+		return false ; 
+	}
+	
+	public boolean hasHeishiRed() {
+		return hasFreeShopItem(2,3,4) ; 
+	}
 
 	@Override
 	public void handleEvent(PlayerEvent event) {

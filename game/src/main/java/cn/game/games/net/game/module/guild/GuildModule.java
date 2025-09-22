@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.guild;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -13,8 +14,11 @@ import cn.game.games.net.data.mapper.GuildJoinMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.protocol.generated.config.GuildDonateConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
+import cn.game.protocol.generated.manager.GuildDonateManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
@@ -291,5 +295,26 @@ public class GuildModule extends BasePlayerModule {
 			return 0;
 		}
 		return guildJoin.getGuildId();
+	}
+
+	public boolean hasGuild() {
+		return guildJoin != null;
+	}
+	
+	public boolean hasRed() {
+		if (!hasGuild()) {
+			return false ; 
+		}
+        Collection<GuildDonateConfig> guildDonateConfigs = GuildDonateManager.instance().list();
+        for (GuildDonateConfig guildDonateConfig : guildDonateConfigs) {
+			if (guildDonateConfig.Price.length == 0 && donateMap.getValue(guildDonateConfig.ID) < guildDonateConfig.DayCount) {
+				return true;
+			}
+		}
+		if (player.getCurrencyModule().getCount(Asset.GuildBargain.ID) > 0) {
+			return true;
+		}
+		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(getGuildId()); 
+		return guildProxy.hasPendingApplication(player.getGuildId(), playerId); 
 	}
 }

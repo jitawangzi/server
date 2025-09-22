@@ -31,6 +31,10 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 	public EventTypeEnum[] getEventTypes() {
 		return eventTypes;
 	}
+	@Override
+	public boolean hasRed() {
+		return !isDayReward;
+	}
 
 	@Override
 	public boolean newDay() {

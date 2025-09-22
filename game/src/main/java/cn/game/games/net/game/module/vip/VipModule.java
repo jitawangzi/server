@@ -69,7 +69,8 @@ public class VipModule extends BasePlayerModule {
                 if (type == Asset.VIPExp.ID){
                     //旧的免费礼包未领取  在VIP升级后，没有领取的每日奖励通过邮件发送ID=8；
                     if (level > 0 && !getRewardFreeGiftList().contains(level - 1)){
-                        sendFreeGiftMail(level -1);
+                    	// 先不发vip等级奖励的邮件了
+//                        sendFreeGiftMail(level -1);
                         rewardFreeGiftTimer = 0;
                         VipMsg.getVipInfoResponse_34000002.Builder res = VipMsg.getVipInfoResponse_34000002.newBuilder();
                         res.setInfo(toPb());

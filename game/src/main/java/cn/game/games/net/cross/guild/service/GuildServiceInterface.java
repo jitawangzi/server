@@ -140,4 +140,12 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	
 	Future<?> donate(long guildId, long playerId, int donateType);
 	
+	/** 
+	 *  是否有可以处理的入会申请
+	 * @param guildId
+	 * @param playerId
+	 * @return
+	 */
+	boolean hasPendingApplication(long guildId, long playerId);
+	
 }
