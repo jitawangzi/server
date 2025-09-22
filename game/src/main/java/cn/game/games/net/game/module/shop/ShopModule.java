@@ -137,6 +137,11 @@ public class ShopModule extends BasePlayerModule {
 			refreshFixItems(shopId);
 			return ; 
 		}
+		// 随机刷新
+		if (shopConfig.ItemRefreshType == 2) {
+			refreshHeishiItems(shopId);
+			return ; 
+		}
 		// 特殊规则自定义刷新方法
 		switch (shopConfig.Type) {
 		case 1: {
@@ -144,7 +149,7 @@ public class ShopModule extends BasePlayerModule {
 		}
 		case 2: {
 			// 刷新黑市
-			refreshHeishiItems(shopId);
+//			refreshHeishiItems(shopId);
 			break;
 		}
 		case 3:
@@ -272,19 +277,12 @@ public class ShopModule extends BasePlayerModule {
 
 		// 刷新黑市
 		shopItemsMap.removeAll(shop);
-
-		List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, 1);
-		int fixCount = 0;
-		if (typeList != null) {
-			fixCount = typeList.size();
-			for (HeishiConfig heishiConfig : typeList) {
-				shopItemsMap.put(shop, new ShopItem(heishiConfig.Item));
-			}
-		}
-		typeList = HeishiManager.instance().getShopIDTypeList(shop, 2);
-		if (typeList != null) {
+		ShopConfig shopConfig = ShopManager.instance().get(shop); 
+		for (int i = 0; i < shopConfig.ItemRefreshParam.length; i += 2) {
+			List<HeishiConfig> typeList = HeishiManager.instance().getShopIDTypeList(shop, shopConfig.ItemRefreshParam[i]);
+			int count = shopConfig.ItemRefreshParam[i + 1]; 
 			List<HeishiConfig> randomWeighableElementsNonRepeating = Rnd.randomWeighableElementsNonRepeating(typeList,
-					GlobalConst.HeishiShelvesCnt - fixCount);
+					count);
 			for (HeishiConfig heishiConfig2 : randomWeighableElementsNonRepeating) {
 				shopItemsMap.put(shop, new ShopItem(heishiConfig2.Item));
 			}
