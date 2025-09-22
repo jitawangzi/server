@@ -12,6 +12,7 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -19,6 +20,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.GameUtil;
 
 /**    
  * 降妖伏魔
@@ -83,10 +85,14 @@ public class XiangYaoFuMoBattle extends XiYouBattleHandler {
 		if (id != lastCompleteBattleId) {
 			throw new LogicException(ErrorMsgEnum.request_parameter_error.getId());
 		}
-		if (sweepTimes >= GlobalConst.DemonsChallangeCost.length) {
+		
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.XiangYaoFuMoAddTimes); 
+		int maxTims = GlobalConst.DemonsChallangeCost.length + welfareValue; 
+		if (sweepTimes >= maxTims) {
 			return ResultObject.fail(ErrorMsgEnum.times_limit.getId());
 		}
-		PlayerHelper.delResources(player, GlobalConst.DemonsChallangeCost[sweepTimes], OpType.XiangYaoChuMo);
+		int[] arrayCost = GameUtil.getArrayCost(GlobalConst.DemonsChallangeCost, sweepTimes); 
+		PlayerHelper.delResources(player, arrayCost, OpType.XiangYaoChuMo);
 		sweepTimes++;
 		BattleConfig battleConfig = BattleManager.instance().get(id);
 		List<RewardInfo> resources = PlayerHelper.addReward(player, battleConfig.SweepReward, OpType.XiangYaoChuMo);

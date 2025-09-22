@@ -567,5 +567,8 @@ public class GameUtil {
 	public static int[] getArrayCost(int[][] array, int count) {
 		return count >= array.length ? array[array.length - 1] : array[count];
 	}
+	public static int getArrayCost(int[] array, int count) {
+		return count >= array.length ? array[array.length - 1] : array[count];
+	}
 
 }

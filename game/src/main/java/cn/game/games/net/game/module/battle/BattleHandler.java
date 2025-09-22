@@ -1485,13 +1485,17 @@ public class BattleHandler extends GameBaseHandler {
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
         int battleTimes = battle.getBattleTimes();
         int payTimes = battle.getPayTimes();
-        if (payTimes >= GameUtil.length(GlobalConst.LingshanChallangeCost)) {
+        
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingShanAddTimes); 
+
+        if (payTimes >= GameUtil.length(GlobalConst.LingshanChallangeCost) + welfareValue) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
         }
-        PlayerHelper.delResources(player, Asset.diamond.ID, GlobalConst.LingshanChallangeCost[battleTimes], OpType.LingShanBuyTimes);
+        int cost = GameUtil.getArrayCost(GlobalConst.LingshanChallangeCost, battleTimes) ; 
+        PlayerHelper.delResources(player, Asset.diamond.ID, cost, OpType.LingShanBuyTimes);
         battle.setPayTimes(payTimes + 1);
-        GameLogger.LingShanPurchase(player,battle.getPayTimes(),  GlobalConst.LingshanChallangeCost[battleTimes]);
+        GameLogger.LingShanPurchase(player,battle.getPayTimes(),  cost);
         client.sendProtocol(resp);
     }
 
