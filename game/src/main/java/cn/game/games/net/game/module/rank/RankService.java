@@ -68,7 +68,7 @@ public class RankService {
 	private static final RankService INSTANCE = new RankService();
 	/** 缩放次要分数 */
 	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
-	private static final long TIME_END = DateUtil.currentTimeSeconds() + DateUtil.DAY_SECONDS * 365;
+	private static final long TIME_END = 4093726323l;//2099-09-22 10:12:03
 
 
 	private static final int DEFAULT_PAGE_SIZE = 50;

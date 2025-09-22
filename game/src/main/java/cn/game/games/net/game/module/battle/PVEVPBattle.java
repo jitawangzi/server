@@ -295,28 +295,31 @@ public class PVEVPBattle extends XiYouBattleHandler {
      */
     private List<Integer> radomPlayer(int myscore) {
         List<Integer> rankIds = new ArrayList<>();
-        if (myscore <= 4) {
-            rankIds.add(1);
-            rankIds.add(2);
-            rankIds.add(3);
-            rankIds.add(4);
+        if (myscore <= 5) {
+            for (int i = 1; i <=5; i++) {
+                if(i!=myscore)
+                {
+                    rankIds.add(i);
+                }
+            }
+        }else {
+            int before = (int) (myscore * GlobalConst.DaShengRankingRatio[0]/ 10000.0f);
+            if (before >= myscore - 3) {
+                before = myscore - 3;
+            }
+            if(before<=1) {
+                before=1;
+            }
+            rankIds.addAll(Rnd.generateRandomNumbers(before, myscore - 1, 3));
+            int end = (int) (myscore * GlobalConst.DaShengRankingRatio[1]/ 10000.0f);
+            if (end <= myscore + 1) {
+                end = myscore + 1;
+            }
+            if (end >1000) {
+                end = 1000;
+            }
+            rankIds.add(Rnd.get(myscore + 1, end));
         }
-        int before = (int) (myscore * GlobalConst.DaShengRankingRatio[0]/ 10000.0f);
-        if (before >= myscore - 3) {
-            before = myscore - 3;
-        }
-        if(before<=1) {
-            before=1;
-        }
-        rankIds.addAll(Rnd.generateRandomNumbers(before, myscore - 1, 3));
-        int end = (int) (myscore * GlobalConst.DaShengRankingRatio[1]/ 10000.0f);
-        if (end <= myscore + 1) {
-            end = myscore + 1;
-        }
-        if (end >1000) {
-            end = 1000;
-        }
-        rankIds.add(Rnd.get(myscore + 1, end));
         return rankIds;
     }
 
