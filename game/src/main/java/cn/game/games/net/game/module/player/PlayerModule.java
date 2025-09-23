@@ -22,6 +22,7 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.hero.QualityStarObj;
+import cn.game.games.net.game.module.player.headbox.HeadBoxModule;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.protocol.generated.config.FuncOpenConfig;
 import cn.game.protocol.generated.config.GlobalConst;
@@ -265,7 +266,6 @@ public class PlayerModule extends BasePlayerModule {
 		builder.putAllGuide(guideMap);
 		builder.setDisableIosPayVersion(Config.disableIosPayClientVersion);
 		
-		builder.addAllHeadboxs(getIdsSet(IdConstant.HEAD_BOX));
 		builder.addAllHeadPortraits(getIdsSet(IdConstant.HEAD_PORTRAIT));
 		builder.addAllFuncOpenRewardIds(getIdsSet(IdConstant.FUNC_OPEN_REWARD));
 		builder.addAllHeroSkinIds(getIdsSet(IdConstant.HERO_SKIN));
@@ -308,13 +308,6 @@ public class PlayerModule extends BasePlayerModule {
 				}
 			}
 			player.getData().setHead(headPortrait);
-			int headBox = 0;
-			Set<Integer> headBoxSet = player.getPlayerModule().getIdsSet(IdConstant.HEAD_BOX);
-			for (Integer integer : headBoxSet) {
-				headBox = integer;
-				break;
-			}
-			player.getData().setHeadFrame(headBox);
 			player.getData().setImage(headPortrait);
 
 			break;

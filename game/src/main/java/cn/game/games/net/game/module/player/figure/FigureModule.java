@@ -77,10 +77,10 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 		return figure;
 	}
 
-	@Override
-	protected int getInitOrder() {
-		return INIT_PRIORITY_LOW;
-	}
+//	@Override
+//	protected int getInitOrder() {
+//		return INIT_PRIORITY_LOW;
+//	}
 
 	public void setFigure(int figure) {
 		this.figure = figure;
@@ -89,6 +89,5 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 	public int getFigure() {
 		return figure;
 	}
-	
 
 }
