@@ -43,10 +43,13 @@ import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.battle.DaoHeartBattle;
+import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.battle.WorldBossBattle;
+import cn.game.games.net.game.module.battle.XiangYaoFuMoBattle;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
+import cn.game.games.net.game.module.guild.GuildModule;
 import cn.game.games.net.game.module.mail.MailModule;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
@@ -436,6 +439,18 @@ public class PlayerHandler extends GameBaseHandler {
 					}
 					break;
 				}
+				case Lingshan: {
+					BattleModule battleModule = player.getModule(BattleModule.class);
+					LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+					ret = battle.hasRed(); 
+					break;
+				}
+				case DemonsBoss: {
+					BattleModule battleModule = player.getModule(BattleModule.class);
+					XiangYaoFuMoBattle battle = battleModule.getBattle(DungeonTypeEnum.XiangYaoFuMo);
+					ret = battle.hasRed(); 
+					break;
+				}
 				case SpiritBattle: {
 					PointRewardModule pointRewardModule = player.getPointRewardModule();
 					ret = pointRewardModule.canReward(PointRewardType.LingPo, 0, 0, true,-1);
@@ -461,58 +476,17 @@ public class PlayerHandler extends GameBaseHandler {
 						continue;
 					}
 					ShopModule shopModule = player.getShopModule();
-//					IntMapWrapper heishiRefreshTimesMap = shopModule.getHeishiRefreshTimesMap();
-//					int heishiRefreshTimes = heishiRefreshTimesMap.getValue(2);
-//
-//					int freeFreshMaxTimes = GlobalConst.HeishiFreeRefresh;
-//					int welfareValue = player.getWelfareValue(WelfareTypeEnum.StoreRefresh);
-//					freeFreshMaxTimes += welfareValue;
-//
-//					ret = freeFreshMaxTimes > heishiRefreshTimes;
-//					if (!ret) {
-						List<HeishiConfig> heishiList = HeishiManager.instance().getShopIDTypeList(2, 1);
-						if (typeList != null) {
-							for (HeishiConfig heishiConfig : heishiList) {
-								ShopItem shopItem = shopModule.getShopItem(2, heishiConfig.Item);
-								if (shopItem != null && shopItem.getItemBuyTimes() == 0) {
-									ret = true;
-									break;
-								}
-							}
-						}
-//					}
+					ret = shopModule.hasHeishiRed(); 
 					break;
 				}
 				case RSGTree: {
-//						有可浇水、施肥、捉虫的操作时，入口处有红点；
-//						有成熟的人参果时，入口处有红点；
-//						挂机奖励达到上限时，入口处有红点；
 					GinsengTreeModule module = player.getModule(GinsengTreeModule.class);
-					if (module.getWaterTimes() < GlobalConst.RSGTreeWaterFreeCnt) {
-						ret = true;
-						break;
-					}
-					// 有肥料？
-					if (player.getItemModule().has(212001)) {
-						ret = true;
-						break;
-					}
-
-//					// 虫子
-					if (module.getBugs()> 0) {
-						ret = true;
-						break;
-					}
-					// 成熟的人参果
-					Map<Integer, Integer> map = module.getFruitMap().getMap();
-					for (Integer t : map.values()) {
-						if (t <= DateUtil.currentTimeSeconds()) {
-							ret = true;
-							break;
-						}
-					}
-					// 挂机奖励达到上限时
-
+					ret = module.hasRed(); 
+					break;
+				}
+				case Guild: {
+					GuildModule module = player.getModule(GuildModule.class);
+					ret = module.hasRed(); 
 					break;
 				}
 				default:

@@ -432,4 +432,15 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		}
 		return Future.succeededFuture();
 	}
+
+	@Override
+	public boolean hasPendingApplication(long guildId, long playerId) {
+		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		GuildMember member = guild.getMember(playerId); 
+		GuildPermissionsConfig guildPermissionsConfig = GuildPermissionsManager.instance().get(member.position); 
+		if (!guildPermissionsConfig.Approval) {
+			return false; 
+		}
+		return guild.hasApply();
+	}
 }

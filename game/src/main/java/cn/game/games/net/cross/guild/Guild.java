@@ -272,6 +272,9 @@ public class Guild {
 	public boolean hasApply(long playerId) {
 		return module.applyList.contains(playerId);
 	}
+	public boolean hasApply() {
+		return module.applyList.size() > 0;
+	}
 
 	public void applyJoin(long playerId) {
 		module.applyList.add(playerId);

@@ -16,6 +16,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyTurntableManager;
@@ -49,6 +50,10 @@ public class ActivityWestLucky extends PlayerActivityBase {
 		return new EventTypeEnum[] { EventTypeEnum.NewDay };
 	}
 
+	@Override
+	public boolean hasRed() {
+		return todayCount < GlobalConst.ActivityWestLuckyDayCount;
+	}
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {

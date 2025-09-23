@@ -4,6 +4,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,6 +15,7 @@ import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.award.RewardHelper;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.RSGTreeLvConfig;
 import cn.game.protocol.generated.enume.Asset;
@@ -298,6 +300,33 @@ public class GinsengTreeModule extends BasePlayerModule {
 	public void buildPlayerAllInfo(Builder builder) {
 		builder.addAllHandCardIds(handCardList); 
 	}
+	
+	public boolean hasRed() {
+//		存在免费浇水次数时
+//		人参果成熟时
+//		时辰果匣存在可领取体力
+		if (getWaterTimes() < GlobalConst.RSGTreeWaterFreeCnt) {
+			return true;
+		}
+		// 有肥料？
+		/*		if (player.getItemModule().has(212001)) {
+					ret = true;
+				}
+		//		// 虫子
+				if (getBugs()> 0) {
+					ret = true;
+				}*/
+		// 成熟的人参果
+		Map<Integer, Integer> map = getFruitMap().getMap();
+		for (Integer t : map.values()) {
+			if (t <= DateUtil.currentTimeSeconds()) {
+				return true;
+			}
+		}
+		BattleModule battleModule = player.getBattleModule(); 
+		return battleModule.getStoreStaminas().size() > 0 ;
+	}
+	
 
 	public IntMapWrapper getFruitMap() {
 		return fruitMap;

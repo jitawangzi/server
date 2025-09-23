@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.battle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.game.core.exception.LogicException;
@@ -21,6 +22,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.BattleMsg.BattleFieldEndRequest_13000003;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.ByteHelp;
 import cn.game.util.GameUtil;
 
 /**    
@@ -262,6 +264,24 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 			return 0;
 		}
 		return floor - config.StartFloor;
+	}
+	
+	public boolean hasRed() {
+        if (battleTimes < GameUtil.length(GlobalConst.LingshanChallangeCost)) {
+            return true;
+        }
+        LingShanConfig curFloorConfig = getCurFloorConfig();
+        if (curFloorConfig == null) {
+        	return false;
+        }
+        for (int index = 0; index < GlobalConst.LingshanBonueLevel.length; index++) {
+            if (GlobalConst.LingshanBonueLevel[index] <= curFloorConfig.EndFloor) {
+            	if (!ByteHelp.isOne(rewardBattleIds, index)) {
+					return true; 
+				}
+            }
+        }
+		return false; 
 	}
 
 	public int getLastCompleteFloor() {
