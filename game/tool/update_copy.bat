@@ -9,7 +9,7 @@ rem 拉取配置表数据时，根据出包的分支，选择不同的配置表�
 rem 线上出包的代码分支
 set SOURCE_CODE_BRANCH=pre_release
 rem 如果当前代码是上面的分支，则使用下面的配置表分支
-set META_BRANCH=xianshang
+set META_BRANCH=1.0.49
 rem 设置默认远程仓库名（通常是origin）
 set REMOTE_NAME=origin
 
@@ -90,6 +90,6 @@ if "%current_branch%"=="%SOURCE_CODE_BRANCH%" (
         echo.
     )
 )
-
+pause
 echo 所有操作已完成!
 exit /b 0
