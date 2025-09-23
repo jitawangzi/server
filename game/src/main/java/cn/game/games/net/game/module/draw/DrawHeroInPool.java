@@ -22,7 +22,7 @@ public class DrawHeroInPool {
         this.huiLiuAdd = 0;
         this.isDraw = 0;
         this.position = position;
-        calWeight();
+       // calWeight();
     }
     void calWeight()
     {
