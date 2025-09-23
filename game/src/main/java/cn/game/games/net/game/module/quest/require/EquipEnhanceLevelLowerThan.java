@@ -21,7 +21,7 @@ public class EquipEnhanceLevelLowerThan extends AbstractCumulativeCondition {
 	
 	@Override
 	protected boolean checkAchieve() {
-		return getFinishCount() < getRequireCount() ; 
+		return getFinishCount() == getRequireCount() ; 
 	}
 
 	@Override
