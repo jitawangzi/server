@@ -3,6 +3,9 @@ package cn.game.games.net.game.module.draw;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.cache.entity.Hero;
+import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.manager.HeroManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
@@ -19,12 +22,8 @@ import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
 
 public class HeroRecruit {
-	/** 英雄碎片id*/
-	private List<Integer> itemIdList = new ArrayList<Integer>();
-	/** 英雄碎片id对应的数量 */
-	private List<Integer> itemCountList = new ArrayList<Integer>();
-	/** 已经招募过的英雄碎片位置，从0开始 */
-	private List<Integer> recruitedPosList = new ArrayList<Integer>();
+    /**随机出来的3英雄*/
+	private List<DrawHeroInPool> drawHeroInPoolList = new ArrayList<DrawHeroInPool>();
 	/** 英雄刷新时间 */
 	private int heroRefreshTime;
 	/** 招募次数 */
@@ -36,6 +35,7 @@ public class HeroRecruit {
 
 	@JsonIgnore
 	private transient Player player;
+
 
 	public HeroRecruit() {
 	};
@@ -59,10 +59,7 @@ public class HeroRecruit {
 		return t <= 0;
 	}
 	public void refresh() {
-		itemIdList.clear();
-		itemCountList.clear();
-		recruitedPosList.clear();
-
+		drawHeroInPoolList.clear();
 		int randomId = 1001001;
 
 		GuaranteeModule guaranteeModule = player.getGuaranteeModule();
@@ -86,30 +83,35 @@ public class HeroRecruit {
 				throw new IllegalArgumentException("RandomGiven: " + tmpRandomId + " 刷新招募英雄配置错误，生成的数量不对: " + randomReward.size());
 			}
 			Goods goods = randomReward.get(0);
-			itemIdList.add(goods.getId());
-			itemCountList.add(goods.getCount());
+			drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0,i));
 		}
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
 	}
 	public void initHeros() {
-		if (!itemIdList.isEmpty()) {
-			return ; 
+		if (!drawHeroInPoolList.isEmpty()) {
+			return ;
 		}
 		int[][] gachaFirstTime = GlobalConst.GachaFirstTime;
 		for (int i = 0; i < gachaFirstTime.length; i++) {
 			int itemId = gachaFirstTime[i][0];
 			int itemCount = gachaFirstTime[i][1];
-			itemIdList.add(itemId);
-			itemCountList.add(itemCount);
+			drawHeroInPoolList.add(new DrawHeroInPool(itemId, itemCount, 0,i));
 		}
 	}
 
 	public DrawHeroInfo buildDrawHeroInfo() {
 		DrawHeroInfo.Builder resp = DrawHeroInfo.newBuilder();
-		resp.addAllItemId(itemIdList);
-		resp.addAllItemCount(itemCountList);
-		resp.addAllRecruitedPos(recruitedPosList);
+		drawHeroInPoolList.forEach(
+				drawHeroInPool -> {
+					resp.addItemId(drawHeroInPool.getItemId());
+					resp.addItemCount(drawHeroInPool.getItemCount());
+					if(drawHeroInPool.getIsDraw()==1)
+					{
+						resp.addRecruitedPos(drawHeroInPool.getPosition());
+					}
+				}
+		);
 
 		resp.setCanMultiple(recruitCount >= GlobalConst.GachaTripleTime);
 		if (notRefresh()) {
@@ -131,26 +133,6 @@ public class HeroRecruit {
 		return resp.build();
 	}
 
-	public List<Integer> getItemIdList() {
-		return itemIdList;
-	}
-
-	public List<Integer> getItemCountList() {
-		return itemCountList;
-	}
-
-	public void setItemCountList(List<Integer> itemCountList) {
-		this.itemCountList = itemCountList;
-	}
-
-
-	public List<Integer> getRecruitedPosList() {
-		return recruitedPosList;
-	}
-
-	public void setRecruitedPosList(List<Integer> recruitedPosList) {
-		this.recruitedPosList = recruitedPosList;
-	}
 
 	public int getHeroRefreshTime() {
 		return heroRefreshTime;
@@ -196,4 +178,96 @@ public class HeroRecruit {
 		this.luckyValueQuality = luckyValueQuality;
 	}
 
+	public  List<DrawHeroInPool> getDrawHeroInPoolList() {
+		return drawHeroInPoolList;
+	}
+    /**
+     * 是否已招募
+     * @return
+     */
+	public boolean isRecruited() {
+		for (int i = 0; i < drawHeroInPoolList.size(); i++) {
+			if(drawHeroInPoolList.get( i).getIsDraw()==1) {
+				return true;
+			}
+		}
+        return false;
+    }
+	/**
+	 * 获取已招募的英雄位置
+	 * @return
+	 */
+	public List<Integer> getRecruitedPosList() {
+		List<Integer> resp = new ArrayList<>();
+		drawHeroInPoolList.forEach(
+				drawHeroInPool -> {
+					if(drawHeroInPool.getIsDraw()==1)
+					{
+						resp.add(drawHeroInPool.getPosition());
+					}
+				}
+		);
+		return resp;
+	}
+	// 根据身上卡牌的品质 删选
+	public void aaa(int pos) {
+		// 筛选出初始品质大于等于3的英雄
+		List<Hero> all = new ArrayList<>();
+		List<Integer> lowlist = new ArrayList<>();
+		// 计算平均等级
+		float avgLevel = 0;
+		int totalLevel = 0;
+		int highestLevel = 0;
+		int lowestLevel = 0;
+		Hero lowesthero = null;
+		var heroList = player.getHeroModule().list().stream().toList();
+		for (int i = 0; i < heroList.size(); i++) {
+			var hero = heroList.get(i);
+			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
+			if (heroConfig.InitialQuality >= 3) {
+				all.add(hero);
+				totalLevel += hero.getLevel();
+				if (highestLevel < hero.getLevel()) {
+					highestLevel = hero.getLevel();
+				}
+				if (lowestLevel > hero.getLevel()) {
+					lowestLevel = hero.getLevel();
+					lowesthero = hero;
+				}
+			}
+		}
+		avgLevel = 1.0f + totalLevel / all.size();
+		for (int i = 0; i < all.size(); i++) {
+			var hero = all.get(i);
+			if (hero.getLevel() < avgLevel) {
+				lowlist.add(hero.getConfigId());
+			}
+		}
+		if (avgLevel - lowestLevel > 5) {
+			// 找等级最低的神将
+			int id = Rnd.randomElement(lowlist);
+			drawHeroInPoolList.add(new DrawHeroInPool(id, 20, 2, pos));
+			//是否还要随机
+
+		} else {
+			//找新神将
+			List<Integer> basepool = new ArrayList<>();
+			List<Integer> radompool = new ArrayList<>();
+			for (int i = 0; i < basepool.size(); i++) {
+				int id = basepool.get(i);
+				Hero hero = player.getHeroModule().get(id);
+				if (hero == null) {
+					radompool.add(id);
+				}
+			}
+			int heroid = 0;
+			if (radompool.isEmpty()) {
+				heroid = Rnd.randomElement(basepool);
+			} else {
+				heroid = Rnd.randomElement(radompool);
+			}
+			drawHeroInPoolList.add(new DrawHeroInPool(heroid, 20, 2, pos));
+		}
+
+	}
 }
