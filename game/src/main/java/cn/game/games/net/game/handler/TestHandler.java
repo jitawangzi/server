@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.*;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -76,11 +77,6 @@ import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
-import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.ItemManager;
-import cn.game.protocol.generated.manager.QuestManager;
-import cn.game.protocol.generated.manager.RandomGivenManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
@@ -189,27 +185,22 @@ public class TestHandler extends GameBaseHandler {
                 }
             case "hero":
                 {
-                    if (p2 > 0) {
-                        // 指定了品质
-                        String string = GlobalConst.HeroQuality1.get(p2);
-                        if (StringUtils.isEmpty(string)) {
-                            throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
-                        }
-                        HeroModule heroModule = player.getHeroModule();
-                        heroModule.add(p1, OpType.Test);
-                        Collection<Hero> heros = heroModule.getByConfigId(p1);
-                        for (Hero hero : heros) {
-                            hero.setQuality(p2);
-                            RewardInfo rewardInfo = RewardInfo.newBuilder().setRole(hero.toHeroInfo()).build();
-                            client.sendProtocol(RewardPush_55000501.newBuilder().addRewards(rewardInfo).build());
-                            break;
-                        }
-                    } else {
-                        List<RewardInfo> items = TestHelper.addItems(player, p1, 1);
-                        client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(items).build());
-                    }
+                    List<RewardInfo> resources = PlayerHelper.addResources(player, p1, p2, OpType.Test);
+                    client.sendProtocol(RewardPush_55000501.newBuilder().addAllRewards(resources).build());
                     break;
                 }
+            case "herolv":
+            {
+                int size=player.getHeroModule().list().size();
+                for (int i = 0; i <size ; i++) {
+                    var hero = player.getHeroModule().list().stream().toList().get(i);
+                    if(hero.getConfigId()==p1)
+                    {
+                        hero.setLevel(p2);
+                    }
+                }
+                break;
+            }
             case "tdlv":
                 {
                     // 设置天道修为等级
@@ -377,11 +368,23 @@ public class TestHandler extends GameBaseHandler {
                 for (Asset resourceEnum : Asset.values()) {
                     PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
                 }
-//                HeroModule heroModule = player.getHeroModule();
-//                for (var resourceEnum : HeroManager.instance().list()) {
-//                    heroModule.add(resourceEnum.ID, OpType.Test);
-//                }
-                player.getFuncModule().gmUnlockFunc((byte) 0);
+                for (var resourceEnum : HeroManager.instance().list()) {
+                    if(resourceEnum.HeroType==1)
+                    {
+                        List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+                    }
+                }
+                int size=player.getHeroModule().list().size();
+                for (int i = 0; i <size ; i++) {
+                    var hero = player.getHeroModule().list().stream().toList().get(i);
+                    hero.setLevel(100);
+                }
+                for (var resourceEnum : GemManager.instance().list()) {
+                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+                }
+                for (var resourceEnum : EquipManager.instance().list()) {
+                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+                }
                 break;
             }
             case "rankds":
