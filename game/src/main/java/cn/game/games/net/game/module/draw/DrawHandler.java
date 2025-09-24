@@ -240,8 +240,8 @@ public class DrawHandler extends GameBaseHandler {
 
 		int pos = 0; 
 		if (heroRecruit.notRefresh()) {
-			pos = 1; 
-		}else {
+			pos = 1;
+        }else {
 			List<Integer> allPos = Lists.newArrayList(0, 1, 2);
 			allPos.removeAll(recruitedPosList);
 			pos = Rnd.randomElement(allPos);
@@ -273,8 +273,14 @@ public class DrawHandler extends GameBaseHandler {
 		}
 		List<RewardInfo> resources = PlayerHelper.addResources(player, id, count, OpType.DrawHero); 
 		resp.addAllItems(resources);
-		recruitedPosList.add(pos);
+        heroRecruit.setIsDraw(pos);
 		heroRecruit.setRecruitCount(heroRecruit.getRecruitCount() + 1);
+        ItemConfig itemConfig1 = ItemManager.instance().get(id);
+        if (itemConfig1.Quality >= 3) {
+            heroRecruit.setNoHighQualityRecruitCount(0);
+        }else {
+            heroRecruit.setNoHighQualityRecruitCount(heroRecruit.getNoHighQualityRecruitCount()+1);
+        }
 		// 如果
 		boolean needRefresh = true;
 		if (recruitedPosList.size() < 3) {

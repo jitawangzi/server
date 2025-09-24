@@ -37,7 +37,7 @@ import cn.game.util.IntMapWrapper;
 import cn.game.util.Rnd;
 
 public class DrawModule extends BasePlayerModule {
-	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay };
+	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginSuccess };
 	/** 当前第几档必送神将,key：GiftCardConfig 表id */
 	@Deprecated
 	private IntMapWrapper giftIndex = new IntMapWrapper();
@@ -90,6 +90,11 @@ public class DrawModule extends BasePlayerModule {
 			freeDrawCount.clear();
 			break;
 		}
+		case LoginSuccess: {
+		        if (GlobalConst.HeroRecruitPlayerOfflineDays <= DateUtil.diffDays(player.getData().getLoginDate())) {
+					heroRecruit.setHuiLiuCount(GlobalConst.HeroRecruitPlayerRefluxTimes);
+				}
+	      	}
 		}
 	}
 
