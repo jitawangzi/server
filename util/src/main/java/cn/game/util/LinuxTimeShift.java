@@ -34,6 +34,12 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.jna.*;
+
+/**
+ * - 当环境禁止 exec 外部命令（spawn helper 失败）时，自动回退为“内核直调 clock_settime”，不再依赖 timedatectl/date。
+ * - 需要 root 或 CAP_SYS_TIME。若缺少权限会返回 EPERM。
+ */
 public class LinuxTimeShift {
 private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.class);
     private static final Path STATE_DIR = Paths.get("/var/lib/java-time-shift");
@@ -308,7 +314,6 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
         System.out.println(shift.negative ? "已减少时间。" : "已增加时间。");
         System.out.println("提示：restore 将把时间对到当前网络时间。");
     }
-
     private static void restore() throws Exception {
         System.out.println("准备恢复时间");
         ensureRoot();
@@ -318,7 +323,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
         Properties props = Files.exists(STATE_FILE) ? loadProps(STATE_FILE) : new Properties();
         boolean ntpOriginally = Boolean.parseBoolean(props.getProperty("ntpOriginally", "false"));
 
-        // 1) 优先 timedatectl 开关（若原本开启）
+        // 1) 尝试 timedatectl set-ntp（仅在可用时，且不因异常中断）
         if (tool.hasTimedatectl && ntpOriginally) {
             System.out.println("尝试通过 timedatectl set-ntp true 恢复时间同步...");
             try {
@@ -340,60 +345,70 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
             }
         }
 
-        // 2) chrony 路径
+        // 2) 尝试 chronyc（仅在可通信时，否则跳过；异常不终止）
         if (!success && tool.hasChronyc) {
             System.out.println("尝试通过 chronyc 手动同步...");
-            if (!chronyResponsive()) startChronydIfPossible();
-            if (chronyResponsive()) {
-                runIgnore("chronyc", "-a", "online");
-                runIgnore("chronyc", "-a", "burst", "4/4");
-                System.out.println("等待 chrony 与服务器通信...");
-                Thread.sleep(3000);
+            try {
+                if (!chronyResponsive()) startChronydIfPossible();
+                if (chronyResponsive()) {
+                    runIgnore("chronyc", "-a", "online");
+                    runIgnore("chronyc", "-a", "burst", "4/4");
+                    System.out.println("等待 chrony 与服务器通信...");
+                    Thread.sleep(3000);
 
-                CommandResult step = run("chronyc", "-a", "makestep");
-                boolean ok = step.exitCode == 0 &&
-                        (step.stdout.contains("200 OK") || step.stderr.contains("200 OK"));
+                    CommandResult step = run("chronyc", "-a", "makestep");
+                    boolean ok = step.exitCode == 0 &&
+                            (step.stdout.contains("200 OK") || step.stderr.contains("200 OK"));
 
-                if (ok) {
-                    success = true;
-                    method = "chronyc makestep";
-                    if (!ntpOriginally) {
-                        System.out.println("NTP 原本为关闭状态，将 chrony 恢复为 offline。");
-                        runIgnore("chronyc", "-a", "offline");
+                    if (ok) {
+                        success = true;
+                        method = "chronyc makestep";
+                        if (!ntpOriginally) {
+                            System.out.println("NTP 原本为关闭状态，将 chrony 恢复为 offline。");
+                            runIgnore("chronyc", "-a", "offline");
+                        }
+                    } else {
+                        System.out.println("chronyc makestep 未确认成功。 stdout: " + step.stdout.trim() + ", stderr: " + step.stderr.trim());
                     }
-                } else {
-                    System.out.println("chronyc makestep 未确认成功。 stdout: " + step.stdout.trim() + ", stderr: " + step.stderr.trim());
                 }
+            } catch (Exception e) {
+                System.out.println("chronyc 尝试失败: " + e.getMessage());
             }
         }
 
-        // 3) ntpdate
+        // 3) 尝试 ntpdate（异常不终止）
         if (!success && tool.hasNtpdate) {
             System.out.println("尝试通过 ntpdate 同步...");
-            List<String> args = new ArrayList<>();
-            args.add("ntpdate");
-            args.add("-u");
-            args.addAll(Arrays.asList(getNtpServers()));
-            CommandResult r = run(args.toArray(new String[0]));
-            if (r.exitCode == 0) {
-                success = true;
-                method = "ntpdate";
-            } else {
-                System.out.println("ntpdate 对时失败，stderr: " + r.stderr.trim());
+            try {
+                List<String> args = new ArrayList<>();
+                args.add("ntpdate");
+                args.add("-u");
+                args.addAll(Arrays.asList(getNtpServers()));
+                CommandResult r = run(args.toArray(new String[0]));
+                if (r.exitCode == 0) {
+                    success = true;
+                    method = "ntpdate";
+                } else {
+                    System.out.println("ntpdate 对时失败，stderr: " + r.stderr.trim());
+                }
+            } catch (Exception e) {
+                System.out.println("ntpdate 执行失败: " + e.getMessage());
             }
         }
 
-        // 4) 内置 SNTP
+        // 4) 内置 SNTP + clock_settime（不依赖任何外部命令）
         if (!success) {
             System.out.println("尝试通过内置 SNTP 客户端同步...");
             Instant ntpInstant = querySntpFirstSuccess(serversList());
             if (ntpInstant != null) {
-                Tool t2 = detectTool();
-                if (t2.preferred != ToolKind.NONE) {
-                    String formatted = ZonedDateTime.ofInstant(ntpInstant, ZONE).format(DT);
-                    applySystemTime(formatted, t2);
+                // 直接使用 clock_settime，不再依赖 date/timedatectl
+                ZonedDateTime z = ZonedDateTime.ofInstant(ntpInstant, ZONE);
+                try {
+                    setSystemTimeViaClockSettime(z);
                     success = true;
-                    method = "SNTP 内置客户端";
+                    method = "SNTP 内置客户端 + clock_settime";
+                } catch (Exception e) {
+                    System.out.println("clock_settime 设置失败: " + e.getMessage());
                 }
             } else {
                 System.out.println("内置 SNTP 客户端获取时间失败。");
@@ -401,14 +416,13 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
         }
 
         if (success) {
-            tryHwclockSync();
+            tryHwclockSync(); // 如果 hwclock 也不能 exec，则 silently ignore
             String now = ZonedDateTime.now(ZONE).format(DT);
             System.out.println("成功恢复到网络时间: " + now + " (方法: " + method + ")");
+            try { Files.deleteIfExists(STATE_FILE); } catch (IOException ignored) {}
         } else {
-            System.err.println("所有方法均失败，未能恢复网络时间。请检查网络连接和NTP服务（chronyd/ntpd）配置。");
+            System.err.println("所有方法均失败，未能恢复网络时间。请检查网络连接与防火墙，或为容器授予网络访问。");
         }
-
-        try { Files.deleteIfExists(STATE_FILE); } catch (IOException ignored) {}
     }
 
     /**
@@ -441,7 +455,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
     }
 
     private static void startChronydIfPossible() {
-        if (!hasCommand("systemctl", "--version")) return;
+        if (!hasCommandExecutable("systemctl")) return;
         try {
             CommandResult st = run("systemctl", "is-active", "chronyd");
             if (!st.stdout.trim().equalsIgnoreCase("active")) {
@@ -529,16 +543,75 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
     }
 
     // ---- system time helpers ----
-
     private static void applySystemTime(String formattedLocalTime, Tool tool) throws Exception {
-        if (tool.preferred == ToolKind.TIMEDATECTL) {
-            CommandResult r = run("timedatectl", "set-time", formattedLocalTime);
-            if (r.exitCode != 0) throw new RuntimeException("timedatectl 设置失败: " + r.stderr.trim());
-        } else if (tool.preferred == ToolKind.DATE) {
-            CommandResult r = run("date", "-s", formattedLocalTime);
-            if (r.exitCode != 0) throw new RuntimeException("date -s 设置失败: " + r.stderr.trim());
+        if (tool.preferred == ToolKind.DATE) {
+            try {
+                CommandResult r = run("date", "-s", formattedLocalTime);
+                if (r.exitCode == 0) return;
+                if (tool.hasTimedatectl) {
+                    try {
+                        CommandResult r2 = run("timedatectl", "set-time", formattedLocalTime);
+                        if (r2.exitCode == 0) return;
+                        throw new RuntimeException("timedatectl 设置失败: " + r2.stderr.trim());
+                    } catch (Exception e2) {
+                        LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                        ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                        setSystemTimeViaClockSettime(z);
+                        return;
+                    }
+                }
+                LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                setSystemTimeViaClockSettime(z);
+                return;
+            } catch (Exception e) {
+                try {
+                    if (tool.hasTimedatectl) {
+                        CommandResult r2 = run("timedatectl", "set-time", formattedLocalTime);
+                        if (r2.exitCode == 0) return;
+                    }
+                } catch (Exception ignored) {}
+                LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                setSystemTimeViaClockSettime(z);
+                return;
+            }
+        } else if (tool.preferred == ToolKind.TIMEDATECTL) {
+            try {
+                CommandResult r = run("timedatectl", "set-time", formattedLocalTime);
+                if (r.exitCode == 0) return;
+                if (tool.hasDate) {
+                    try {
+                        CommandResult r2 = run("date", "-s", formattedLocalTime);
+                        if (r2.exitCode == 0) return;
+                        throw new RuntimeException("date -s 设置失败: " + r2.stderr.trim());
+                    } catch (Exception e2) {
+                        LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                        ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                        setSystemTimeViaClockSettime(z);
+                        return;
+                    }
+                }
+                LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                setSystemTimeViaClockSettime(z);
+                return;
+            } catch (Exception e) {
+                try {
+                    if (tool.hasDate) {
+                        CommandResult r2 = run("date", "-s", formattedLocalTime);
+                        if (r2.exitCode == 0) return;
+                    }
+                } catch (Exception ignored) {}
+                LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+                ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+                setSystemTimeViaClockSettime(z);
+                return;
+            }
         } else {
-            throw new IllegalStateException("无可用工具设置系统时间。");
+            LocalDateTime ldt = LocalDateTime.parse(formattedLocalTime, DT);
+            ZonedDateTime z = ZonedDateTime.of(ldt, ZONE);
+            setSystemTimeViaClockSettime(z);
         }
     }
 
@@ -571,64 +644,74 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
     }
 
     private static Tool detectTool() {
-        boolean hasTimedatectl = hasCommand("timedatectl", "status");
-        boolean hasDate = hasCommand("date", "--version") || hasCommand("date", "-v");
-        boolean hasChronyc = hasCommand("chronyc", "-n");
-        boolean hasNtpdate = hasCommand("ntpdate", "-u");
+        boolean hasTimedatectl = hasCommandExecutable("timedatectl");
+        boolean hasDate = hasCommandExecutable("date");
+        boolean hasChronyc = hasCommandExecutable("chronyc");
+        boolean hasNtpdate = hasCommandExecutable("ntpdate");
         ToolKind preferred = ToolKind.NONE;
-        if (hasTimedatectl) preferred = ToolKind.TIMEDATECTL;
-        else if (hasDate) preferred = ToolKind.DATE;
+        if (hasDate) preferred = ToolKind.DATE;
+        else if (hasTimedatectl) preferred = ToolKind.TIMEDATECTL;
         return new Tool(hasTimedatectl, hasDate, hasChronyc, hasNtpdate, preferred);
     }
 
-    private static boolean hasCommand(String cmd, String argForCheck) {
-        if (cmd == null || cmd.isEmpty()) {
-            return false;
+    private static boolean hasCommandExecutable(String cmd) {
+        if (cmd == null || cmd.isEmpty()) return false;
+
+        Path p0 = Paths.get(cmd);
+        if (p0.isAbsolute()) {
+            return Files.isExecutable(p0);
         }
 
-        try {
-            ProcessBuilder pb = (argForCheck == null || argForCheck.isEmpty())
-                    ? new ProcessBuilder(cmd)
-                    : new ProcessBuilder(cmd, argForCheck);
+        String[] common = {"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin", "/usr/local/sbin"};
+        for (String base : common) {
+            Path p = Paths.get(base, cmd);
+            if (Files.isExecutable(p)) return true;
+        }
 
-            Process p = pb.redirectErrorStream(true).start();
-
-            Thread streamGobbler = new Thread(() -> {
-                try (java.io.InputStream in = p.getInputStream()) {
-                    byte[] buffer = new byte[1024];
-                    while (in.read(buffer) != -1) {
-                        // consume
-                    }
-                } catch (IOException ignored) {}
-            });
-            streamGobbler.setDaemon(true);
-            streamGobbler.start();
-
-            boolean exited = p.waitFor(5, java.util.concurrent.TimeUnit.SECONDS);
-            if (!exited) {
-                p.destroyForcibly();
-                return false;
+        String path = System.getenv("PATH");
+        if (path != null) {
+            for (String dir : path.split(":")) {
+                if (dir == null || dir.isEmpty()) continue;
+                Path p = Paths.get(dir, cmd);
+                if (Files.isExecutable(p)) return true;
             }
-
-            streamGobbler.join(1000);
-            return p.exitValue() == 0;
-
-        } catch (IOException e) {
-            return false;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
         }
+        return false;
+    }
+
+    private static boolean hasCommand(String cmd, String argForCheck) {
+        return hasCommandExecutable(cmd);
     }
 
     private static void ensureRoot() throws NeedsRootException {
         try {
+            String status = Files.readString(Paths.get("/proc/self/status"));
+            for (String line : status.split("\n")) {
+                if (line.startsWith("Uid:")) {
+                    String[] parts = line.replace('\t', ' ').trim().split("\\s+");
+                    if (parts.length >= 2 && "0".equals(parts[1])) {
+                        return;
+                    }
+                    break;
+                }
+            }
+        } catch (IOException ignore) {}
+
+        try {
+            CommandResult r = run("/usr/bin/id", "-u");
+            if (r.exitCode == 0 && r.stdout.trim().equals("0")) return;
+        } catch (IOException ignore) {}
+
+        try {
             CommandResult r = run("id", "-u");
             if (r.exitCode == 0 && r.stdout.trim().equals("0")) return;
-            throw new NeedsRootException("当前用户不是 root。id -u=" + r.stdout.trim());
-        } catch (IOException e) {
-            throw new NeedsRootException("无法确认权限（id 命令不可用）。");
-        }
+        } catch (IOException ignore) {}
+
+        String user = System.getProperty("user.name", "");
+        if ("root".equals(user)) return;
+
+        String path = System.getenv("PATH");
+        throw new NeedsRootException("未能确认 root 身份。已检查 /proc/self/status、/usr/bin/id 和 id。PATH=" + path);
     }
 
     private static void maybeSaveOriginalState() throws Exception {
@@ -698,29 +781,73 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
         String stderr;
     }
 
-    private static CommandResult run(String... cmd) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        Process p = pb.start();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
-
-        Thread t1 = pipe(p.getInputStream(), out);
-        Thread t2 = pipe(p.getErrorStream(), err);
-
-        try {
-            int code = p.waitFor();
-            t1.join();
-            t2.join();
-            CommandResult r = new CommandResult();
-            r.exitCode = code;
-            r.stdout = out.toString(StandardCharsets.UTF_8.name());
-            r.stderr = err.toString(StandardCharsets.UTF_8.name());
-            return r;
-        } catch (InterruptedException e) {
-            p.destroyForcibly();
-            Thread.currentThread().interrupt();
-            throw new IOException("命令中断: " + String.join(" ", cmd));
+    // ---------- 进程执行增强：候选绝对路径 + 回退 ----------
+    private static String[] resolveExecCandidates(String cmd) {
+        List<String> cands = new ArrayList<>();
+        Path p0 = Paths.get(cmd);
+        if (p0.isAbsolute()) {
+            cands.add(cmd);
+        } else {
+            String[] common = {"/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin", "/usr/local/sbin"};
+            for (String base : common) {
+                Path p = Paths.get(base, cmd);
+                if (Files.isExecutable(p)) {
+                    cands.add(p.toString());
+                }
+            }
+            cands.add(cmd);
         }
+        return cands.toArray(new String[0]);
+    }
+
+    private static CommandResult runExec(String cmd, String... args) throws IOException {
+        String[] cands = resolveExecCandidates(cmd);
+        List<String> errors = new ArrayList<>();
+        IOException last = null;
+
+        for (String exe : cands) {
+            try {
+                List<String> cmdline = new ArrayList<>();
+                cmdline.add(exe);
+                cmdline.addAll(Arrays.asList(args));
+                ProcessBuilder pb = new ProcessBuilder(cmdline);
+                Process p = pb.start();
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ByteArrayOutputStream err = new ByteArrayOutputStream();
+                Thread t1 = pipe(p.getInputStream(), out);
+                Thread t2 = pipe(p.getErrorStream(), err);
+                int code = p.waitFor();
+                t1.join();
+                t2.join();
+
+                CommandResult r = new CommandResult();
+                r.exitCode = code;
+                r.stdout = out.toString(StandardCharsets.UTF_8.name());
+                r.stderr = err.toString(StandardCharsets.UTF_8.name());
+                return r;
+            } catch (IOException ioe) {
+                last = ioe;
+                errors.add(exe + ": " + ioe.getMessage());
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                IOException ioe = new IOException("命令中断: " + exe);
+                last = ioe;
+                errors.add(exe + ": " + ioe.getMessage());
+            }
+        }
+        String msg = "所有可执行路径均启动失败: " + String.join(" | ", errors);
+        if (last != null) {
+            throw new IOException(msg, last);
+        }
+        throw new IOException(msg);
+    }
+
+    private static CommandResult run(String... cmd) throws IOException {
+        if (cmd == null || cmd.length == 0) throw new IOException("空命令");
+        String bin = cmd[0];
+        String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
+        return runExec(bin, args);
     }
 
     private static void runIgnore(String... cmd) {
@@ -739,6 +866,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
         t.start();
         return t;
     }
+    // ---------- 进程执行增强结束 ----------
 
     // ---- Shift parsing ----
 
@@ -848,4 +976,45 @@ private static final Logger LOGGER = LoggerFactory.getLogger(LinuxTimeShift.clas
     private static class NeedsRootException extends Exception {
         NeedsRootException(String msg) { super(msg); }
     }
+
+    // ---------- 纯 Java 内核直调：clock_settime ----------
+    private interface CLib extends Library {
+        CLib INSTANCE = Native.load("c", CLib.class);
+        // struct timespec { time_t tv_sec; long tv_nsec; }
+        public static class Timespec extends Structure {
+            public NativeLong tv_sec; // time_t
+            public NativeLong tv_nsec;
+            @Override
+            protected List<String> getFieldOrder() {
+                return Arrays.asList("tv_sec", "tv_nsec");
+            }
+        }
+        int clock_settime(int clk_id, Timespec tp);
+    }
+
+    private static final int CLOCK_REALTIME = 0;
+
+    private static void setSystemTimeViaClockSettime(ZonedDateTime targetLocal) throws Exception {
+        // 说明：targetLocal 是“本地时区”的目标时间。clock_settime 接收的是 UTC epoch 秒。
+        Instant instant = targetLocal.toInstant();
+        long sec = instant.getEpochSecond();
+        long nsec = instant.getNano();
+
+        CLib.Timespec ts = new CLib.Timespec();
+        ts.tv_sec = new NativeLong(sec);
+        ts.tv_nsec = new NativeLong(nsec);
+
+        int rc = CLib.INSTANCE.clock_settime(CLOCK_REALTIME, ts);
+        if (rc != 0) {
+            int errno = Native.getLastError();
+            String msg;
+            switch (errno) {
+                case 1: msg = "EPERM（缺少 root/CAP_SYS_TIME）"; break;
+                case 22: msg = "EINVAL（参数错误）"; break;
+                default: msg = "errno=" + errno;
+            }
+            throw new RuntimeException("clock_settime 失败: " + msg);
+        }
+    }
+    // ---------- 纯 Java 内核直调结束 ----------
 }
