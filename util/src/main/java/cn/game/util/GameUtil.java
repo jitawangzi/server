@@ -563,6 +563,23 @@ public class GameUtil {
 		}
 		return ret;
 	}
+	/** 
+	 * 获取一个数组中，只是0的元素个数
+	 * @param array
+	 * @return
+	 */
+	public static int zeroLength(int[] array) {
+		if (array == null) {
+			return 0;
+		}
+		int ret = 0;
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] == 0) {
+				ret++;
+			}
+		}
+		return ret;
+	}
 
 	public static int[] getArrayCost(int[][] array, int count) {
 		return count >= array.length ? array[array.length - 1] : array[count];
