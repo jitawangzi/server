@@ -236,45 +236,51 @@ public class GinsengTreeHandler extends GameBaseHandler {
             return;
         }
         map.remove(pos);
-        List<Integer> heroIdList = module.getHeroIdList();
-        // 基础奖励
-        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
-        int[][] baseReward = GameUtil.arrayZoomBy10k(rsgTreeLvConfig.Reward, heroIdList.size() * 100);
-        int rewardReduceBugCount = module.getRewardReduceBugCount(); 
-        if (rewardReduceBugCount > 0) {
-            baseReward = GameUtil.arrayZoomBy10k(baseReward, -rewardReduceBugCount * GlobalConst.RSGTreeBugRewardReduce);
+        if (module.isFirstFruit()) {// 第一次特殊奖励
+        	List<RewardInfo> reward = PlayerHelper.addReward(player, 1030002, OpType.GinsengTreeHarvest); 
+        	resp.addAllRewards(reward); 
+        	module.setFirstFruit(false);
+		}else {
+			  List<Integer> heroIdList = module.getHeroIdList();
+		        // 基础奖励
+		        RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(player.getLevel(Asset.RSGTreeExp));
+		        int[][] baseReward = GameUtil.arrayZoomBy10k(rsgTreeLvConfig.Reward, heroIdList.size() * 100);
+		        int rewardReduceBugCount = module.getRewardReduceBugCount(); 
+		        if (rewardReduceBugCount > 0) {
+		            baseReward = GameUtil.arrayZoomBy10k(baseReward, -rewardReduceBugCount * GlobalConst.RSGTreeBugRewardReduce);
+				}
+		        List<RewardInfo> baseRewardList = PlayerHelper.addResources(player, baseReward, OpType.GinsengTreeHarvest);
+		        resp.addAllRewards(baseRewardList);
+		        // 手操卡加成的默认奖励
+		        Map<Integer, Integer> fetterMap = new HashMap<>();
+		        if (!heroIdList.isEmpty()) {
+		            List<RSGFetterConfig> list = RSGFetterManager.instance().list();
+		            for (RSGFetterConfig rsgFetterConfig : list) {
+		                if (GameUtil.containsAll(heroIdList, rsgFetterConfig.HeroList)) {
+		                    fetterMap.put(rsgFetterConfig.RSGRewardID, rsgFetterConfig.AddRewardWeight);
+		                }
+		            }
+		        }
+		        List<RSGRewardConfig> list = RSGRewardManager.instance().list();
+		        int rewardCount = Rnd.randomInRange(GlobalConst.RSGTreeRewardNum);
+		        for (int i = 0; i < rewardCount; i++) {
+		            RSGRewardConfig rsgRewardConfig = null;
+		            if (fetterMap.isEmpty()) {
+		                rsgRewardConfig = Rnd.randomElement(list);
+		            } else {
+		                int index = Rnd.randomIndex(list, e -> {
+		                    int weigetAdd = 0;
+		                    if (!fetterMap.isEmpty()) {
+		                        weigetAdd = fetterMap.getOrDefault(e.ID, 0);
+		                    }
+		                    return e.RewardWeight + weigetAdd;
+		                });
+		                rsgRewardConfig = list.get(index);
+		            }
+		            List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
+		            resp.addAllRewards(resources);
+		        }
 		}
-        List<RewardInfo> baseRewardList = PlayerHelper.addResources(player, baseReward, OpType.GinsengTreeHarvest);
-        resp.addAllRewards(baseRewardList);
-        // 手操卡加成的默认奖励
-        Map<Integer, Integer> fetterMap = new HashMap<>();
-        if (!heroIdList.isEmpty()) {
-            List<RSGFetterConfig> list = RSGFetterManager.instance().list();
-            for (RSGFetterConfig rsgFetterConfig : list) {
-                if (GameUtil.containsAll(heroIdList, rsgFetterConfig.HeroList)) {
-                    fetterMap.put(rsgFetterConfig.RSGRewardID, rsgFetterConfig.AddRewardWeight);
-                }
-            }
-        }
-        List<RSGRewardConfig> list = RSGRewardManager.instance().list();
-        int rewardCount = Rnd.randomInRange(GlobalConst.RSGTreeRewardNum);
-        for (int i = 0; i < rewardCount; i++) {
-            RSGRewardConfig rsgRewardConfig = null;
-            if (fetterMap.isEmpty()) {
-                rsgRewardConfig = Rnd.randomElement(list);
-            } else {
-                int index = Rnd.randomIndex(list, e -> {
-                    int weigetAdd = 0;
-                    if (!fetterMap.isEmpty()) {
-                        weigetAdd = fetterMap.getOrDefault(e.ID, 0);
-                    }
-                    return e.RewardWeight + weigetAdd;
-                });
-                rsgRewardConfig = list.get(index);
-            }
-            List<RewardInfo> resources = PlayerHelper.addResources(player, rsgRewardConfig.RewardID, OpType.GinsengTreeHarvest);
-            resp.addAllRewards(resources);
-        }
         module.startFruitTask();
         client.sendProtocol(resp.build());
     }

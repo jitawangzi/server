@@ -2,6 +2,7 @@ package cn.game.games.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.game.games.cache.entity.Item;

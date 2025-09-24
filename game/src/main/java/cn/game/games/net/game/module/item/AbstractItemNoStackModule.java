@@ -28,7 +28,7 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 	protected Map<Long, E> uid_items = new HashMap<>();
 	// configId => List<T> ,通常用来判断有没有某种东西
 	@JsonIgnore
-	protected transient Multimap<Integer, E> id_items = HashMultimap.create();
+	protected Multimap<Integer, E> id_items = HashMultimap.create();
 
 	/*	@Override
 		protected void initFromDb(ListIterator<?> iterator) {
