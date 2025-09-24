@@ -105,6 +105,8 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
+import cn.game.protocol.protobuf.BaseMsg.EquipInfo;
+import cn.game.protocol.protobuf.BaseMsg.GemInfo;
 import cn.game.protocol.protobuf.BaseMsg.HCHeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -286,7 +288,13 @@ public class PlayerHelper {
 			} else if (rewardInfo.hasAsset()) {
 				AssetInfo asset = rewardInfo.getAsset();
 				ret.addAll(addResources(player, asset.getId(), (int) asset.getCount() * multiple, OpType.BattleEndMultipleReward));
-			} else if (rewardInfo.hasRole()) {
+			} else if (rewardInfo.hasGem()) {
+				GemInfo asset = rewardInfo.getGem();
+				ret.addAll(addResources(player, asset.getConfigId(), (int) 1 * multiple, OpType.BattleEndMultipleReward));
+			}else if (rewardInfo.hasEquip()) {
+				EquipInfo asset = rewardInfo.getEquip();
+				ret.addAll(addResources(player, asset.getConfigId(), 1 * multiple, OpType.BattleEndMultipleReward));
+			}  else if (rewardInfo.hasRole()) {
 				HeroInfo info = rewardInfo.getRole();
 				ret.addAll(addResources(player, info.getConfigId(), multiple, OpType.BattleEndMultipleReward));
 			} else if (rewardInfo.hasMergeEquip()) {

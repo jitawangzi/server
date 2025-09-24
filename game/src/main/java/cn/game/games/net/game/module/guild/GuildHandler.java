@@ -16,6 +16,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.cross.guild.GuildHelper;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
@@ -496,6 +497,7 @@ public class GuildHandler extends GameBaseHandler {
                 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
                 res.setGuild(allInfo);
                 client.sendProtocol(res);
+//                GameLogger.guildCreate(player, nextJoinTimer, name, getModule())
                 return null;
             }).onFailure(player::handleFail);
         });
