@@ -88,7 +88,7 @@ public class HeroRecruit {
 			if (guaranteeIndex > -1 && guaranteeIndex == i) {
 				tmpRandomId = guaranteeRandomId;
 			}
-			if(Rnd.nextInt(100) <= GlobalConst.HeroRecruitBagDetect)
+			if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
 			{
 				bagDetect(i);
 			}else {
