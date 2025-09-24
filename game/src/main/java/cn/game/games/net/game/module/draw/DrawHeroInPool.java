@@ -1,7 +1,11 @@
 package cn.game.games.net.game.module.draw;
 
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.util.Rnd;
 
 public class DrawHeroInPool {
     private  int itemId;
@@ -14,7 +18,7 @@ public class DrawHeroInPool {
     public DrawHeroInPool()
     {
     }
-    public DrawHeroInPool(int itemId, int itemCount, int itemFrom, int position) {
+    public DrawHeroInPool(int itemId, int itemCount, int itemFrom, int position,int noHighQualityCount,boolean isHuiLiu) {
         this.itemId = itemId;
         this.itemCount = itemCount;
         this.itemWeight = 1;
@@ -22,17 +26,39 @@ public class DrawHeroInPool {
         this.huiLiuAdd = 0;
         this.isDraw = 0;
         this.position = position;
-       // calWeight();
+        calWeight(noHighQualityCount,isHuiLiu);
     }
-    void calWeight()
+    void calWeight(int noHighQualityCount,boolean isHuiLiu)
     {
         // 1 基础值
-        HeroConfig heroConfig = HeroManager.instance().get(itemId);
-        int baseweight= heroConfig.InitialQuality ;
-        int huiLiuAdd  =0;
-        float shuaijian  =1.0f;
-        int shuiwei  =0;
-        this.itemWeight =(int)((baseweight+ huiLiuAdd+shuiwei)*shuaijian);
+        ItemConfig heroConfig = ItemManager.instance().get(itemId);
+        int baseweight= heroConfig.Quality ;
+        for (int i = 0; i < GlobalConst.HeroRecruitQualityWeight.length; i++) {
+            if(GlobalConst.HeroRecruitQualityWeight[i][0]== heroConfig.Quality) {
+                baseweight= GlobalConst.HeroRecruitQualityWeight[i][1];
+                break;
+            }
+        }
+        int huiLiuAdd  = 0;
+        if(isHuiLiu )
+        {
+            huiLiuAdd  = GlobalConst.HeroRecruitPlayerReflux;
+        }
+        int shuiwei  = noHighQualityCount*GlobalConst.HeroRecruitAttenuation;
+        int shuaijian  =10000;
+        if(itemFrom==2)
+        {
+            shuaijian= GlobalConst.HeroRecruitAttenuation;
+            //仓检产出的数量 要重新设置
+            for (int i = 0; i < GlobalConst.HeroRecruitChipRange.length; i++) {
+                if(GlobalConst.HeroRecruitChipRange[i][0]== heroConfig.Quality) {
+                    itemCount=Rnd.nextInt( GlobalConst.HeroRecruitChipRange[i][1], GlobalConst.HeroRecruitChipRange[i][1]);
+                    break;
+                }
+            }
+        }
+        this.itemWeight =(int)((baseweight+ huiLiuAdd+shuiwei)*shuaijian/10000.0f);
+        System.out.print(" itemWeight: " + itemWeight+" baseweight:"+ baseweight + " huiLiuAdd: " + huiLiuAdd+  " shuiwei:" + shuiwei );
     }
 
     public int getHuiLiuAdd() {

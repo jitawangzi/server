@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import cn.game.games.net.game.module.draw.DrawModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,7 +264,9 @@ public class Player {
 	public DragonModule getDragonModule() {
 		return getModule(DragonModule.class);
 	}
-
+	public DrawModule getDrawModule() {
+		return getModule(DrawModule.class);
+	}
 	public DragonSkillModule getDragonSkillModule() {
 		return getModule(DragonSkillModule.class);
 	}

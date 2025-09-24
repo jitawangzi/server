@@ -353,6 +353,11 @@ public class TestHandler extends GameBaseHandler {
                     PlayerHelper.refreshDay(player);
                     break;
                 }
+            case "qingshen":
+            {
+                player.getDrawModule().getHeroRecruit().refresh();
+                break;
+            }
             case "gamenewday":
 			{
 				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
