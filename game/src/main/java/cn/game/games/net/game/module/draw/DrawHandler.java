@@ -197,7 +197,7 @@ public class DrawHandler extends GameBaseHandler {
 		int clientGold = req.getGold();
 		DrawModule drawModule = player.getModule(DrawModule.class);
 		HeroRecruit heroRecruit = drawModule.getHeroRecruit();
-		if (heroRecruit.getRecruitedPosList().size() == 0) { // 没有招募过
+		if (!heroRecruit.isRecruited()) { // 没有招募过
 			int t = GlobalConst.GachaRefreshTime - (DateUtil.currentTimeSeconds() - heroRecruit.getHeroRefreshTime());
 			int minute = t / 60 + 1;
 
@@ -265,9 +265,9 @@ public class DrawHandler extends GameBaseHandler {
 		}
 
 		PlayerHelper.delResources(player, is, OpType.DrawHero);
-		List<Integer> itemIdList = heroRecruit.getItemIdList();
-		int id = itemIdList.get(pos);
-		int count = heroRecruit.getItemCountList().get(pos);
+        DrawHeroInPool item =  heroRecruit.getDrawHeroInPoolList().get(pos);
+		int id = item.getItemId();
+		int count = item.getItemCount();
 		if (multiple > 1) {
 			count *= multiple;
 		}
@@ -278,9 +278,10 @@ public class DrawHandler extends GameBaseHandler {
 		// 如果
 		boolean needRefresh = true;
 		if (recruitedPosList.size() < 3) {
-			for (int i = 0; i < itemIdList.size(); i++) {
-				if (!recruitedPosList.contains(i)) {
-					ItemConfig itemConfig = ItemManager.instance().get(itemIdList.get(i));
+			for (int i = 0; i <  heroRecruit.getDrawHeroInPoolList().size(); i++) {
+                var drawHeroInPool=heroRecruit.getDrawHeroInPoolList().get(i);
+				if (drawHeroInPool.getIsDraw()==0) {
+					ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool.getItemId());
 					if (itemConfig.Quality >= 4) {
 						needRefresh = false;
 						break;

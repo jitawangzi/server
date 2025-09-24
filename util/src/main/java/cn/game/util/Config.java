@@ -195,7 +195,7 @@ public final class Config {
 			DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS = Integer
 					.parseInt(initialProp.getProperty("DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_MINUTES", "600"));
 
-			APP_KEY = initialProp.getProperty("APP_KEY", "1720081940160");
+			APP_KEY = initialProp.getProperty("APP_KEY", "1758594234585");
 			ENABLE_VERTX_PROMETHEUS = Boolean.parseBoolean(initialProp.getProperty("ENABLE_VERTX_PROMETHEUS", "false"));
 			VERTX_PROMETHEU_HTTP_PORT = Integer.parseInt(initialProp.getProperty("VERTX_PROMETHEU_HTTP_PORT", "8380"));
 

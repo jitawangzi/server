@@ -27,7 +27,9 @@ import org.slf4j.LoggerFactory;
  */
 public class LuaScriptUtil {
 	private static final Logger logger = LoggerFactory.getLogger(LuaScriptUtil.class);
-
+	// 慢脚本阈值（毫秒）
+	private static volatile long SLOW_THRESHOLD_MS = 50L;
+	
 	public enum LuaScript {
 		UPDATE_SET_SCORE_IF_GREATER("update_set_score_if_greater.lua", "更新值set分数如果新值更大", true),
 		SUBTRACT_HASH_IF_NON_NEGATIVE("subtract_hash_if_non_negative.lua", "减少hash表中指定字段的数值，确保结果不为负数", true),
@@ -87,6 +89,33 @@ public class LuaScriptUtil {
 		}
 	}
 
+
+	// 可运行时调整阈值
+	public static void setSlowThresholdMs(long thresholdMs) {
+		if (thresholdMs < 0) {
+			logger.warn("Slow threshold must be >= 0, got {}. Keep previous: {}", thresholdMs, SLOW_THRESHOLD_MS);
+			return;
+		}
+		SLOW_THRESHOLD_MS = thresholdMs;
+	}
+
+	// 统一耗时日志打印
+	private static void logDuration(String phase, LuaScript script, List<Object> keys, Object[] values, long elapsedMs, boolean retried,
+			Throwable ex) {
+		String base = String.format("LuaScript[%s] phase=%s keys=%d args=%d elapsed=%dms retried=%s", script.getFilename(), phase,
+				(keys == null ? 0 : keys.size()), (values == null ? 0 : values.length), elapsedMs, retried);
+		if (ex != null) {
+			// 异常统一打 warn，附带异常
+			logger.warn(base + " failed: " + ex.getMessage(), ex);
+			return;
+		}
+		if (elapsedMs >= SLOW_THRESHOLD_MS) {
+			logger.warn(base + " SLOW");
+		} else {
+			logger.debug(base);
+		}
+	}
+
 	/** 
 	 * 预加载Lua脚本，并返回脚本的SHA1哈希值
 	 * @param script
@@ -111,15 +140,19 @@ public class LuaScriptUtil {
 	 */
 	public static <T> CompletionStage<T> executeLuaScriptAsync(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		final RScript rScript = (codec == null) ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
+		final long startNanos = System.nanoTime();
 
-		// 如果不使用 sha1，直接 eval（不建议生产中频繁使用，会传送脚本内容）
+		// 如果不使用 sha1，直接 eval
 		if (!script.useSha1) {
 			CompletableFuture<T> cf = new CompletableFuture<>();
 			rScript.evalAsync(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values)
 					.whenComplete((val, ex) -> {
+						long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
 						if (ex != null) {
+							logDuration("evalAsync(no-sha1)", script, keys, values, elapsedMs, false, ex);
 							cf.completeExceptionally(ex);
 						} else {
+							logDuration("evalAsync(no-sha1)", script, keys, values, elapsedMs, false, null);
 							@SuppressWarnings("unchecked")
 							T casted = (T) val;
 							cf.complete(casted);
@@ -127,11 +160,15 @@ public class LuaScriptUtil {
 					});
 			return cf;
 		}
+
 		// 使用 EVALSHA，若遇到 NOSCRIPT 则自动 LOAD 并重试一次
 		CompletableFuture<T> result = new CompletableFuture<>();
 
 		rScript.evalShaAsync(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE, keys, values).whenComplete((val, ex) -> {
+			long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+
 			if (ex == null) {
+				logDuration("evalShaAsync", script, keys, values, elapsedMs, false, null);
 				@SuppressWarnings("unchecked")
 				T casted = (T) val;
 				result.complete(casted);
@@ -140,21 +177,30 @@ public class LuaScriptUtil {
 
 			// 非 NOSCRIPT，直接失败
 			if (!isNoScript(ex)) {
+				logDuration("evalShaAsync", script, keys, values, elapsedMs, false, ex);
 				result.completeExceptionally(ex);
 				return;
 			}
 
 			// NOSCRIPT：reload 脚本并重试一次
+			final long reloadStart = System.nanoTime();
 			rScript.scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+				long reloadElapsed = (System.nanoTime() - reloadStart) / 1_000_000L;
+				// 先记录 load 的耗时
+				logDuration("scriptLoadAsync", script, keys, values, reloadElapsed, true, loadEx);
 				if (loadEx != null) {
 					result.completeExceptionally(loadEx);
 					return;
 				}
 
-				// 更新脚本 sha1（线程安全地写回枚举字段）
+				// 更新脚本 sha1
 				updateScriptSha(script, newSha);
 
+				final long retryStart = System.nanoTime();
 				rScript.evalShaAsync(RScript.Mode.READ_WRITE, newSha, RScript.ReturnType.VALUE, keys, values).whenComplete((val2, ex2) -> {
+					long retryElapsed = (System.nanoTime() - retryStart) / 1_000_000L;
+					// 记录重试的耗时
+					logDuration("evalShaAsync(retry)", script, keys, values, retryElapsed, true, ex2);
 					if (ex2 != null) {
 						result.completeExceptionally(ex2);
 					} else {
@@ -194,24 +240,52 @@ public class LuaScriptUtil {
 
 	public static <T> T executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
+		final long startNanos = System.nanoTime();
 		if (!script.useSha1) {
-			return rScript.eval(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
-		}
-		try {
-			return rScript.evalSha(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE, keys, values);
-		} catch (Exception ex) {
-			if (isNoScript(ex)) {
-				String newSha = rScript.scriptLoad(script.getContent());
-				updateScriptSha(script, newSha);
-				return rScript.evalSha(RScript.Mode.READ_WRITE, newSha, RScript.ReturnType.VALUE, keys, values);
+			try {
+				T res = rScript.eval(RScript.Mode.READ_WRITE, script.getContent(), RScript.ReturnType.VALUE, keys, values);
+				long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+				logDuration("eval(no-sha1)", script, keys, values, elapsedMs, false, null);
+				return res;
+			} catch (Exception ex) {
+				long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+				logDuration("eval(no-sha1)", script, keys, values, elapsedMs, false, ex);
+				throw ex;
 			}
-			throw ex;
+		}
+
+		try {
+			T res = rScript.evalSha(RScript.Mode.READ_WRITE, script.getSha1(), RScript.ReturnType.VALUE, keys, values);
+			long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+			logDuration("evalSha", script, keys, values, elapsedMs, false, null);
+			return res;
+		} catch (Exception ex) {
+			long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+			// 如果不是 NOSCRIPT，直接记录并抛出
+			if (!isNoScript(ex)) {
+				logDuration("evalSha", script, keys, values, elapsedMs, false, ex);
+				throw ex;
+			}
+
+			// NOSCRIPT：load + retry
+			final long loadStart = System.nanoTime();
+			String newSha = rScript.scriptLoad(script.getContent());
+			long loadElapsed = (System.nanoTime() - loadStart) / 1_000_000L;
+			logDuration("scriptLoad", script, keys, values, loadElapsed, true, null);
+			updateScriptSha(script, newSha);
+
+			final long retryStart = System.nanoTime();
+			T res2 = rScript.evalSha(RScript.Mode.READ_WRITE, newSha, RScript.ReturnType.VALUE, keys, values);
+			long retryElapsed = (System.nanoTime() - retryStart) / 1_000_000L;
+			logDuration("evalSha(retry)", script, keys, values, retryElapsed, true, null);
+			return res2;
 		}
 	}
 
 	// 批量：每个调用对应一组 keys 和 values，返回每个调用的结果 Object 列表（由调用方再做类型映射）
 	public static CompletionStage<List<Object>> executeLuaScriptBatchAsync(LuaScript script, Codec codec, List<List<Object>> batchedKeys,
 			List<Object[]> batchedValues) {
+		final long startNanos = System.nanoTime();
 		RBatch batch = RedisUtil.getRedis().createBatch();
 		RScriptAsync batchScript = (codec == null) ? batch.getScript() : batch.getScript(codec);
 
@@ -230,19 +304,31 @@ public class LuaScriptUtil {
 
 		CompletableFuture<List<Object>> result = new CompletableFuture<>();
 		batch.executeAsync().whenComplete((batchRes, batchEx) -> {
+			long elapsedMs = (System.nanoTime() - startNanos) / 1_000_000L;
+
 			if (batchEx != null) {
+				// 如果 NOSCRIPT，reload + retry once
 				if (script.useSha1 && isNoScript(batchEx)) {
-					// reload + retry once
+					logDuration("batch.executeAsync NOSCRIPT", script, null, null, elapsedMs, true, null);
+
 					RedissonClient c2 = clientProvider();
 					RScript rScript = (codec == null) ? c2.getScript() : c2.getScript(codec);
+
+					final long loadStart = System.nanoTime();
 					rScript.scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+						long loadElapsed = (System.nanoTime() - loadStart) / 1_000_000L;
+						logDuration("batch.scriptLoadAsync", script, null, null, loadElapsed, true, loadEx);
 						if (loadEx != null) {
 							result.completeExceptionally(loadEx);
 							return;
 						}
 						updateScriptSha(script, newSha);
+
 						// 重建 batch 再执行一次
+						final long retryStart = System.nanoTime();
 						executeLuaScriptBatchAsync(script, codec, batchedKeys, batchedValues).whenComplete((v2, ex2) -> {
+							long retryElapsed = (System.nanoTime() - retryStart) / 1_000_000L;
+							logDuration("batch.retry", script, null, null, retryElapsed, true, ex2);
 							if (ex2 != null)
 								result.completeExceptionally(ex2);
 							else
@@ -250,6 +336,7 @@ public class LuaScriptUtil {
 						});
 					});
 				} else {
+					logDuration("batch.executeAsync", script, null, null, elapsedMs, false, batchEx);
 					result.completeExceptionally(batchEx);
 				}
 				return;
@@ -259,8 +346,10 @@ public class LuaScriptUtil {
 				for (RFuture<Object> f : futures) {
 					out.add(f.getNow());
 				}
+				logDuration("batch.executeAsync", script, null, null, elapsedMs, false, null);
 				result.complete(out);
 			} catch (Throwable t) {
+				logDuration("batch.collect", script, null, null, elapsedMs, false, t);
 				result.completeExceptionally(t);
 			}
 		});

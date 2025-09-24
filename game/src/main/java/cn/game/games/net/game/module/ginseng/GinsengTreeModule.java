@@ -69,6 +69,9 @@ public class GinsengTreeModule extends BasePlayerModule {
 	private long lastBugAppearTime;
 	private List<Long> bugAppearTimeList = new ArrayList<>();
 	private int deadBugCount;
+	
+	/** 是否第一次收获果实 */
+	private boolean isFirstFruit = true ;
 
 	@JsonIgnore
 	private long fruitTimer;
@@ -103,6 +106,9 @@ public class GinsengTreeModule extends BasePlayerModule {
 				hangUpStartTime = DateUtil.currentTimeSeconds();
 				hangUpRewardCalcTime = hangUpStartTime;
 
+				// 开启功能时，先给个果实
+				fruitMap.add(0,0) ; 
+				
 				startFruitTask();
 				startBugTask();
 
@@ -426,5 +432,14 @@ public class GinsengTreeModule extends BasePlayerModule {
 	public List<Integer> getHandCardList() {
 		return handCardList;
 	}
+
+	public boolean isFirstFruit() {
+		return isFirstFruit;
+	}
+
+	public void setFirstFruit(boolean isFirstFruit) {
+		this.isFirstFruit = isFirstFruit;
+	}
+	
 
 }

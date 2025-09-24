@@ -267,7 +267,9 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	}
 	
 	public boolean hasRed() {
-        if (battleTimes < GameUtil.length(GlobalConst.LingshanChallangeCost)) {
+		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingShanAddTimes); 
+		// 有可挑战次数，  最大免费次数，vip次数，购买次数
+        if (battleTimes < GameUtil.zeroLength(GlobalConst.LingshanChallangeCost)  + welfareValue + payTimes) {
             return true;
         }
         LingShanConfig curFloorConfig = getCurFloorConfig();
