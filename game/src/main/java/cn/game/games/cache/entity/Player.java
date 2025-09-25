@@ -842,6 +842,12 @@ public class Player {
 	}
 
 	public String getOpenId() {
+		return getAccount().openid;
+	}
+	public String getUnionId() {
+		return getAccount().unionid;
+	}
+	public String getDeviceId() {
 		return getAccount().deviceId;
 	}
 
