@@ -38,12 +38,18 @@ public class Account {
     /**邀请者id  不存在则为 0*/
 	@JsonIgnore
     public  long invitePid;
+	
+	// 微信小程序专用
+	public String unionid ; 
+	public String openid ; 
 
 	public Account(PlayerLoginRequest_01000001 req) {
 //        this.accountType = req.getAccountType();
 		this.accountId = req.getAccountId();
 		this.payChannel = req.getSdkPayChannel();
 		this.deviceId = req.getDeviceId();
+		this.unionid = req.getUnionid();
+		this.openid = req.getOpenid();
 
 		this.version = req.getVerstion();
         this.adChannel = req.getAdChannel();
