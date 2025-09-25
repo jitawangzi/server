@@ -50,6 +50,8 @@ public class LoginServerHandler extends BaseHandler {
 	public static final int UPDATE_NOTICE = 2;
 
 	Map<Integer, BasePayOrderProcessor> payOrderProcessorMap = new HashMap<>();
+	// 总是使用畅游sdk支付
+	private BasePayOrderProcessor payOrderProcessor = new AndroidAppPayOrderProcessor(); 
 	@Override
 	protected int getModule() {
 		return 0x7d;
@@ -181,19 +183,23 @@ public class LoginServerHandler extends BaseHandler {
 		String sessionId = request.getSessionId();
 		String platform = request.getPlatform();
 		log.info(String.format("paymentCreate:%s", request.toString()));
-		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(Integer.parseInt(platform));
-		if (payOrderProcessor == null){
-			log.error(String.format(" BasePayOrderProcessor payOrderProcessor not found platform:%s not support, req:%s", platform,request.toString()));
-			resp.setOrderId(0);
-			client.sendProtocol(resp.build());
-			return;
-		}
+		// 不通过平台选择sdk支付方式，直接指定畅游sdk
+//		BasePayOrderProcessor payOrderProcessor = payOrderProcessorMap.get(Integer.parseInt(platform));
+//		if (payOrderProcessor == null){
+//			log.error(String.format(" BasePayOrderProcessor payOrderProcessor not found platform:%s not support, req:%s", platform,request.toString()));
+//			resp.setOrderId(0);
+//			client.sendProtocol(resp.build());
+//			return;
+//		}
 
-		Future<PayOrder> payOrderFuture = payOrderProcessor.createPayOrder(request, resp);
+		Future<PayOrder> payOrderFuture = payOrderProcessor.createPayOrder(request);
 		payOrderFuture.onSuccess(payOrder -> {
 			if (payOrder != null){
 				log.info("create new order:" +  payOrder.toString());
 				resp.setOrderId(payOrder.getId());
+				if (payOrder.getPaymentOrderProto() != null) {
+					resp.setOrder(payOrder.getPaymentOrderProto()) ; 
+				}
 			} else {
 				resp.setOrderId(0);
 				log.error(String.format(" BasePayOrderProcessor payOrderProcessor  create payOrder fail, req:%s", request.toString()));

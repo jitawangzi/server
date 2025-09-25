@@ -320,8 +320,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 	}
 
 	@Override
-	public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req,
-			ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
+	public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 req) {
 		final int goodPrice = req.getGoodsPrice();
 //        final  int goodPrice = 1;
 		long playerId = req.getPlayerId();
@@ -384,6 +383,6 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 				.build();
 
 		ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp = ServerMsg.PaymentOrderCreateResponse_7d000021.newBuilder();
-		payOrderProcessor.createPayOrder(req, resp);
+		payOrderProcessor.createPayOrder(req);
 	}
 }

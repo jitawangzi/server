@@ -134,9 +134,9 @@ public class LoginServer {
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		Processor processor = SpringContextLoader.getContext().getBean(Processor.class);
 		MsgConsumerVerticle verticle = new MsgConsumerVerticle(serverId, serverType, processor);
-		VxHolder.deployVerticleSync(verticle);
+		VxHolder.deployVerticleSync(verticle,new DeploymentOptions().setThreadingModel(ThreadingModel.VIRTUAL_THREAD));
 		VertxRPCService verticleRpc = new VertxRPCService(null, serverId, serverType, processor);
-		VxHolder.deployVerticleSync(verticleRpc);
+		VxHolder.deployVerticleSync(verticleRpc,new DeploymentOptions().setThreadingModel(ThreadingModel.VIRTUAL_THREAD));
 	}
 
 	public static void main(String[] args) {

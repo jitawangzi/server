@@ -32,7 +32,7 @@ public abstract class BasePayOrderProcessor {
      * @param request
      * @return 新生成的订单
      */
-    public abstract Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp);
+    public abstract Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request);
 
     public static enum  PayOrderPlatformEnum {
 		// 1 IOS APP
