@@ -116,6 +116,9 @@ public class PayOrder implements Serializable {
 	 * @mbg.generated
 	 */
 	private String callback;
+	
+	/** 微信小游戏订单参数 */
+	private transient cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto paymentOrderProto; 
 	/**
 	 * @mbg.generated
 	 */
@@ -441,6 +444,15 @@ public class PayOrder implements Serializable {
 	 */
 	public void setCallback(String callback) {
 		this.callback = callback;
+	}
+	
+
+	public cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto getPaymentOrderProto() {
+		return paymentOrderProto;
+	}
+
+	public void setPaymentOrderProto(cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto paymentOrderProto) {
+		this.paymentOrderProto = paymentOrderProto;
 	}
 
 	@Override

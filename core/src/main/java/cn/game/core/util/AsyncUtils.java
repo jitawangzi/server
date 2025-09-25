@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,20 @@ public class AsyncUtils {
 
 	public static boolean isVertxThread() {
 		return Thread.currentThread() instanceof VertxThread;
+	}
+	
+	/** 
+	 * 包裹可能出现异常的同步代码，避免同步代码异常没有返回Future 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
+	public static <T> Future<T> fromSync(Supplier<Future<T>> supplier) {
+	    try {
+	        return supplier.get();
+	    } catch (Throwable t) {
+	        return Future.failedFuture(t);
+	    }
 	}
 
 	/** 
