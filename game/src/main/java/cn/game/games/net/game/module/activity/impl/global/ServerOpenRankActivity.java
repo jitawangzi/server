@@ -46,7 +46,7 @@ public class ServerOpenRankActivity extends GameActivityBase {
 	}
 
 	private void refresh() {
-		if (ServerContext.getInstance().isLeader() == true) {
+		if (ServerContext.getInstance().isLeader() == false) {
 			return;
 		}
 		// 复制前一天的排行榜
