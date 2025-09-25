@@ -126,9 +126,15 @@ public class DAO {
 			log.debug("execute db operation: mapperClass[{}]method[{}]args[{}]", mapperClass.getSimpleName(), method,
 					JSON.toJSONString(args));
 		}
+		long start = System.currentTimeMillis();
 		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
 		Method method2 = MapperConstant.getMethod(mapperClass, method);
 		Object result = ReflectionUtils.invokeMethod(method2, targetObject, args);
+		long end = System.currentTimeMillis();
+		if (end - start > 100) {
+			log.warn("Slow DB operation: mapperClass[{}]method[{}]args[{}] took {} ms", mapperClass.getSimpleName(), method,
+					JSON.toJSONString(args), (end - start));
+		}
 		return (T)result;
 	}
 }
