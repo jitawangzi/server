@@ -107,7 +107,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 				hangUpRewardCalcTime = hangUpStartTime;
 
 				// 开启功能时，先给个果实
-				fruitMap.add(0,0) ; 
+				fruitMap.add(0,DateUtil.currentTimeSeconds()) ; 
 				
 				startFruitTask();
 				startBugTask();
