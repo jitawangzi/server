@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
@@ -17,9 +18,14 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.gm.GmHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.currency.CurrencyModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
+import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
+import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.DefenceSkinConfig;
 import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.GemConfig;
@@ -28,6 +34,7 @@ import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.config.SoulPetConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.generated.manager.DefenceSkinManager;
 import cn.game.protocol.generated.manager.EquipManager;
 import cn.game.protocol.generated.manager.GemManager;
@@ -35,11 +42,13 @@ import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
 import cn.game.protocol.generated.manager.SoulPetManager;
 import cn.game.protocol.generated.manager.VirtualServerManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
+import cn.game.util.MapWrapper;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 
@@ -52,9 +61,9 @@ public class TestHelper {
 	private static final Logger log = LoggerFactory.getLogger(GmHelper.class);
 
 	public static List<RewardInfo> addItems(Player player, int id, int count) {
-        List<RewardInfo> allRewards = new ArrayList<>();
-        List<RewardInfo> rewardItems = null;
-        int goodsType = ItemHelper.getGoodsType(id);
+		List<RewardInfo> allRewards = new ArrayList<>();
+		List<RewardInfo> rewardItems = null;
+		int goodsType = ItemHelper.getGoodsType(id);
 
 		if (count == 0) {
 			if (goodsType == 0) {
@@ -77,13 +86,13 @@ public class TestHelper {
 					// }
 					rewardItems = PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
 					allRewards.addAll(rewardItems);
-                }
+				}
 			} else if (goodsType == GoodsTypeEnum.Item.getId()) {
 				Collection<ItemConfig> list = ItemManager.instance().list();
 				for (ItemConfig e : list) {
 					rewardItems = PlayerHelper.addResources(player, e.ID, 80000, OpType.Test);
 					allRewards.addAll(rewardItems);
-                }
+				}
 			} else if (goodsType == GoodsTypeEnum.Hero.getId()) {
 				Collection<HeroConfig> list = HeroManager.instance().list();
 				for (HeroConfig e : list) {
@@ -92,13 +101,13 @@ public class TestHelper {
 					}
 					rewardItems = PlayerHelper.addResources(player, e.ID, 1, OpType.Test);
 					allRewards.addAll(rewardItems);
-                }
+				}
 			} else if (goodsType == GoodsTypeEnum.Pet.getId()) {
 				Collection<SoulPetConfig> list = SoulPetManager.instance().list();
 				for (SoulPetConfig e : list) {
 					rewardItems = PlayerHelper.addResources(player, e.ID, 10, OpType.Test);
 					allRewards.addAll(rewardItems);
-                }
+				}
 			} else if (goodsType == GoodsTypeEnum.Equipment.getId()) {
 				Collection<EquipConfig> list = EquipManager.instance().list();
 				for (EquipConfig e : list) {
@@ -120,11 +129,11 @@ public class TestHelper {
 			} else {
 				List<RewardInfo> tmp = PlayerHelper.addResources(player, id, count, OpType.Test);
 				allRewards.addAll(tmp);
-            }
+			}
 		} else {
 			rewardItems = PlayerHelper.addResources(player, id, count, OpType.Test);
 			allRewards.addAll(rewardItems);
-        }
+		}
 		return allRewards;
 	}
 
@@ -165,10 +174,10 @@ public class TestHelper {
 	 * @param targetServer
 	 */
 	public static void transferServer(long playerId, String targetServer) {
-		String serverName = ServerHelper.getServerName(targetServer); 
+		String serverName = ServerHelper.getServerName(targetServer);
 		if (StringUtils.isEmpty(serverName)) {
-			log.warn("transferServer failed, player[{}],targetServer[{}] not found",playerId,targetServer);
-			return ; 
+			log.warn("transferServer failed, player[{}],targetServer[{}] not found", playerId, targetServer);
+			return;
 		}
 		PlayerHelper.modifyPlayer(playerId, player -> {
 			String serverId = player.getData().getServerId();
@@ -190,5 +199,72 @@ public class TestHelper {
 			}
 			return true;
 		});
+	}
+
+	/** 
+	 * 给资源，解锁功能等
+	 * @param player
+	 * @param opType
+	 */
+	public static  void setMaxCurrency(Player player, OpType opType) {
+		CurrencyModule currencyModule = player.getCurrencyModule();
+		MapWrapper currencyMap = currencyModule.getCurrencyMap();
+		Asset[] values = Asset.values();
+		for (Asset asset : values) {
+			if (asset.Type == 1) {
+				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+			} else if (asset.Type == 2) {
+				if (asset == Asset.playerExp) {
+					currencyModule.addExp(asset.ID, 100_0000);
+				}
+			} else if (asset.Type == 3) {
+				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+			}
+		}
+
+		// 在给些道具。
+		ItemModule itemModule = player.getItemModule();
+		Collection<ItemConfig> list = ItemManager.instance().list();
+		for (ItemConfig itemConfig : list) {
+			int itemType = itemConfig.ItemType;
+			if (itemType == 1 || itemType == 2 || itemType == 3 || itemType == 10 || itemType == 11 || itemType == 13) {
+				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, opType);
+			}
+		}
+		// 主线关卡全开,方便测试关卡
+		BattleModule battleModule = player.getBattleModule();
+		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.BattleChapter.getId());
+		for (BattleConfig battleConfig : battleTypeList) {
+			battleModule.setMainBattleHighest(battleConfig.ID);
+			battleModule.addChapter(battleConfig.ID);
+			Chapter chapter = battleModule.getChapter(battleConfig.ID);
+			chapter.setBattleTime(30);
+			chapter.setPass(true);
+		}
+
+		for (GemConfig config : GemManager.instance().list()) {
+			PlayerHelper.addResources(player, config.ID, 100, opType);
+		}
+		for (EquipConfig config : EquipManager.instance().list()) {
+			PlayerHelper.addResources(player, config.ID, 100, opType);
+		}
+		HeroModule module = player.getModule(HeroModule.class);
+		
+		for (HeroConfig config : HeroManager.instance().list()) {
+			if (config.HeroType == 1) {
+				if (module.getByConfigId(config.ID).isEmpty()) {
+					PlayerHelper.addResources(player, config.ID, 1, opType);
+				}
+			}
+		}
+		// 跳过新手引导
+		player.getPlayerModule().getGuideMap().put(6, 99); 
+		player.getPlayerModule().getGuideMap().put(7, 99); 
+		player.getPlayerModule().getGuideMap().put(8, 99); 
+		player.getPlayerModule().getGuideMap().put(9, 99); 
+		
+		// 最后解锁所有功能
+		player.getFuncModule().gmUnlockFunc((byte) 0);
+
 	}
 }

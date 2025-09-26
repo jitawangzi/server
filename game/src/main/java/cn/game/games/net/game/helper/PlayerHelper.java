@@ -655,7 +655,7 @@ public class PlayerHelper {
 		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
 
 		if (ServerContext.getInstance().getRunMode().isPressure()) {
-			player.getCurrencyModule().setMaxCurrency();
+			TestHelper.setMaxCurrency(player, OpType.PressureTest);
 		}
 
 		GameLogger.rolebuild(player);
