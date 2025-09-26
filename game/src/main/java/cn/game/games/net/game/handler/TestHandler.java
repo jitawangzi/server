@@ -231,6 +231,8 @@ public class TestHandler extends GameBaseHandler {
                         chapter.setPass(true);
                         battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
                     }
+                    // 刷新一下功能开启
+                    player.getFuncModule().refreshFuncOpen(); 
                     break;
                 }
             case "lingshan":
@@ -392,6 +394,11 @@ public class TestHandler extends GameBaseHandler {
                 }
                 break;
             }
+            case "cs":
+            {
+            	TestHelper.setMaxCurrency(player, OpType.Test);
+            	break;
+            }   
             case "rankds":
             {
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), p1);
@@ -962,7 +969,7 @@ public class TestHandler extends GameBaseHandler {
         TestConfigCheckResponse_6f000091 defaultInstance = TestConfigCheckResponse_6f000091.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         // 给资源
-        player.getCurrencyModule().setMaxCurrency();
+        TestHelper.setMaxCurrency(player,OpType.Test);
         // 所有道具给一遍。
         Collection<ItemConfig> items = ItemManager.instance().list();
         for (ItemConfig itemConfig : items) {

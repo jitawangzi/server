@@ -1,17 +1,29 @@
 package cn.game.games.net.game.module.currency;
 
 import java.util.Collection;
+import java.util.List;
 
+import cn.game.games.cache.entity.Chapter;
 import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.item.ItemModule;
+import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.EquipConfig;
 import cn.game.protocol.generated.config.ExpConfig;
+import cn.game.protocol.generated.config.GemConfig;
+import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.EquipManager;
+import cn.game.protocol.generated.manager.GemManager;
+import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
@@ -198,32 +210,6 @@ public class CurrencyModule extends GoodsModule<Currency> {
 
 	public void setCurrencyMap(MapWrapper currencyMap) {
 		this.currencyMap = currencyMap;
-	}
-
-	public void setMaxCurrency() {
-		Asset[] values = Asset.values();
-		for (Asset asset : values) {
-			if (asset.Type == 1) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
-			} else if (asset.Type == 2) {
-				if (asset == Asset.playerExp) {
-					addExp(asset.ID, 1000000000);
-				}
-			} else if (asset.Type == 3) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
-			}
-		}
-
-		player.getFuncModule().gmUnlockFunc((byte)0);
-		// 在给些道具。
-		ItemModule itemModule = player.getItemModule();
-		Collection<ItemConfig> list = ItemManager.instance().list();
-		for (ItemConfig itemConfig : list) {
-			int itemType = itemConfig.ItemType;
-			if (itemType == 1 || itemType == 2 || itemType == 3 || itemType == 10) {
-				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, OpType.PressureTest);
-			}
-		}
 	}
 
 	@Override
