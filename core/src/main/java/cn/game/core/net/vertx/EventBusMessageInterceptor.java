@@ -236,7 +236,7 @@ public class EventBusMessageInterceptor {
 					if (!status.isActive() || status.getNodeCount() < 3) {
 						logger.warn("集群状态异常: {}", status);
 					}else {
-						logger.warn("集群当前状态: {}", status);
+						logger.info("集群当前状态: {}", status);
 					}
 				}
 			}

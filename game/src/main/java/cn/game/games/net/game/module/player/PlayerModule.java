@@ -66,7 +66,7 @@ public class PlayerModule extends BasePlayerModule {
 	private IntMapWrapper alchemysMap = new IntMapWrapper();
 	/** 支付成功后的回调 */
 	@JsonIgnore
-	private Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
+	private transient Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
 	/** 本次订单充了多少钱 */
 	@JsonIgnore
 	@Deprecated

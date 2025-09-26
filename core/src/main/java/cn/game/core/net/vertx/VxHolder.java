@@ -34,6 +34,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.vertx.core.Context;
+import io.vertx.core.Deployable;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -204,7 +205,10 @@ public class VxHolder {
 	 * @throws ExecutionException
 	 */
 	public static String deployVerticleSync(Verticle verticle) throws Exception {
-		String string = vertx.deployVerticle(verticle)
+		return deployVerticleSync(verticle, new DeploymentOptions()) ;
+	}
+	public static String deployVerticleSync(Deployable verticle, DeploymentOptions options) throws Exception {
+		String string = vertx.deployVerticle(verticle,options)
 				.toCompletionStage()
 				.toCompletableFuture()
 				.get(getDeployVerticleWaitTime(), TimeUnit.SECONDS);

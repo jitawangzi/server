@@ -23,31 +23,30 @@ public class AndroidAppPayOrderProcessor extends BasePayOrderProcessor{
     }
 
     @Override
-    public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
-        long playerId = request.getPlayerId();
-        String sessionId = request.getSessionId();
-		long outTradeNo = IdUtil.genOrderId(playerId);
-
-        User user = UserHelper.getUserBySessionId(sessionId);
-        // 创建一个订单
-        PayOrder payOrder = new PayOrder() ;
-        payOrder.setId(outTradeNo);
-        payOrder.setCreateDate(DateUtil.nowDateStr());
-        payOrder.setCreateTime(DateUtil.nowTimeStr());
-		payOrder.setEnv((byte) (ServerContext.getInstance().getRunMode().isProduction() ? 0 : 1));
-        payOrder.setIsDeliver(false);
-        payOrder.setPayState((byte) 1);
-        payOrder.setPlayerId(playerId);
-        payOrder.setPrice(request.getGoodsPrice());
-        payOrder.setUserId(playerId);
-		payOrder.setThirdUid(user.getUsername());
-//		ObjUtil.setDefaultValue(payOrder);
-
+    public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request) {
 		return VxHolder.vertx.executeBlocking(() -> {
+			long playerId = request.getPlayerId();
+			String sessionId = request.getSessionId();
+			long outTradeNo = IdUtil.genOrderId(playerId);
+
+			User user = UserHelper.getUserBySessionId(sessionId);
+			// 创建一个订单
+			PayOrder payOrder = new PayOrder();
+			payOrder.setId(outTradeNo);
+			payOrder.setCreateDate(DateUtil.nowDateStr());
+			payOrder.setCreateTime(DateUtil.nowTimeStr());
+			payOrder.setEnv((byte) (ServerContext.getInstance().getRunMode().isProduction() ? 0 : 1));
+			payOrder.setIsDeliver(false);
+			payOrder.setPayState((byte) 1);
+			payOrder.setPlayerId(playerId);
+			payOrder.setPrice(request.getGoodsPrice());
+			payOrder.setUserId(playerId);
+			payOrder.setThirdUid(user.getUsername());
+
 			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
 			mapper.insert(payOrder);
 			return payOrder;
-        }).onFailure(e -> {
+		}).onFailure(e -> {
 			log.error("", e);
         });
     }

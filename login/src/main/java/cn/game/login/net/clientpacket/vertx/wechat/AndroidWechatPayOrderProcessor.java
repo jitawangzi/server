@@ -28,7 +28,7 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
     }
 
     @Override
-    public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request, ServerMsg.PaymentOrderCreateResponse_7d000021.Builder resp) {
+    public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request) {
         long playerId = request.getPlayerId();
         String sessionId = request.getSessionId();
         JSONObject signData = new JSONObject();
@@ -73,8 +73,7 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
             newBuilder.setSignData(rawDate);
             newBuilder.setPaySig(paySig);
             newBuilder.setSignature(signature);
-            resp.setOrderId(outTradeNo);
-            resp.setOrder(newBuilder.build());
+            payOrder.setPaymentOrderProto(newBuilder.build()) ; 
 			return payOrder;
         }).onFailure(e -> {
 			log.error("Error creating Wechat pay order", e);

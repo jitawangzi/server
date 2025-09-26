@@ -124,13 +124,14 @@ public class ChangYouShipPush implements BaseVertxHandler {
 					payOrder.setCompleteTime(DateUtil.nowTimeStr());
 				}
 				updatePayOrder(paymentNotification, payOrder);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
+				return VxHolder.vertx.executeBlocking(() -> mapper.updateByPrimaryKeyWithBLOBs(payOrder));
+			}).compose(r -> {
 				// 通知畅游sdk更新订单状态
 				return notifyUpdateOrder(paymentNotification);
 			}).onSuccess(r -> {
-				log.info("wechat ship resp from game success : " + paymentNotification.getPushInfo().getGameOrderId());
+				log.info("ChangYouShipPush  resp from game success : " + paymentNotification.getPushInfo().getGameOrderId());
 			}).onFailure(r -> {
-				log.error("wechat ship resp from game fail : " + paymentNotification.getPushInfo().getGameOrderId(), r);
+				log.error("ChangYouShipPush resp from game fail : " + paymentNotification.getPushInfo().getGameOrderId(), r);
 				updatePayOrder(paymentNotification, payOrder);
 				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
 			});

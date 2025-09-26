@@ -331,83 +331,164 @@ public class ServerHandler extends GameBaseHandler {
 		resp.setPlayer(gmProto);
 		client.sendProtocol(resp.build());
 	}
+	
 	protected void ship(NetClient client, Object message) {
-		PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
-		PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
-		long playerId = request.getPlayerId();
-		long uid = request.getUid(); 
-		log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (player != null && player.isIslogouting()) {
-			log.error(String.format("充值失败:%b",player.isIslogouting()));
-			resp.setSuccess(false);
-			client.sendProtocol(resp.build());
-			return;
-		}
-		// 离线玩家单独处理 调用 payItem.getPayType().offlinePay(player,payItem); 处理
-		if (player == null) {
-			PlayerHelper.loadPlayerFromDb(playerId).map(offlinePlayer -> {
-				if (offlinePlayer != null){
-					PayItem payItem = offlinePlayer.getPlayerModule().getPayItems(uid);
-					if (payItem == null || payItem.isFinish()) {
-						log.warn("PayItem offline ship fail : " + payItem);
-						resp.setSuccess(false);
-						client.sendProtocol(resp.build());
-						return null;
-					}
-					boolean offlinePay = payItem.getPayType().offlinePay(offlinePlayer,payItem);
-					if (offlinePay) {
-						log.warn("PayItem offlinePay fail : " + payItem);
-					}
-					payItem.finish();
-					offlinePlayer.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
-					GameLogger.recharge(offlinePlayer, payItem);
-					// 支付后先实时保存数据到数据库
-					PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
-						resp.setSuccess(true);
-						client.sendProtocol(resp.build());
-					}).onFailure(t -> {
-						resp.setSuccess(false);
-						client.sendProtocol(resp.build());
-					});
-					PlayerManager.getInstance().deletePlayer(playerId);
-				}
-				return offlinePlayer;
-			}).onFailure((err)->{
-				log.error("PayItem offline ship fail : ", err);
-				resp.setSuccess(false);
-				client.sendProtocol(resp.build());
-			});
-		} else {
-			PlayerHelper.addTask(playerId, () -> {
-				PayItem payItem = player.getPlayerModule().getPayItems(uid);
-				if (payItem == null || payItem.isFinish()) {
-					log.error("PayItem online ship fail : " + payItem);
-					resp.setSuccess(false);
-					client.sendProtocol(resp.build());
-					return;
-				}
-				// 这里只是通知支付后的后续操作，不过一般也不会失败
-				if (!player.getPlayerModule().execPayCallback(uid)){//玩家重新登录之前的订单 没有callback 需要走离线补单逻辑
-					payItem.getPayType().offlinePay(player,payItem);
-				}
-				payItem.finish();
-				player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
-				GameLogger.recharge(player, payItem);
-				// 支付后先实时保存数据到数据库
-				PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
-					resp.setSuccess(true);
-					client.sendProtocol(resp.build());
-				}).onFailure(t -> {
-					t.printStackTrace();
-					log.error(String.format("充值失败:%s",t.getMessage() ));
-					player.handleFail(t);
-					resp.setSuccess(false);
-					client.sendProtocol(resp.build());
-				});
-			});
-		}
+	    PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
+	    long playerId = request.getPlayerId();
+	    long uid = request.getUid();
+	    log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
+
+	    Player onlinePlayer = PlayerManager.getInstance().getPlayer(playerId);
+
+	    // 玩家正在登出，直接拒绝（仅对在线玩家生效）
+	    if (onlinePlayer != null && onlinePlayer.isIslogouting()) {
+	        log.error("PayItem[{}] ship fail, player[{}] logouting", uid, playerId);
+	        sendResult(client, false);
+	        return;
+	    }
+
+	    if (onlinePlayer == null) {
+	        // 离线流程：加载 -> 处理 -> 保存 -> 清理
+	        PlayerHelper.loadPlayerFromDb(playerId).map(offlinePlayer -> {
+	            if (offlinePlayer == null) {
+	                log.warn("PayItem[{}] offline ship fail, player not found", uid);
+	                sendResult(client, false);
+	                return null;
+	            }
+	            handlePaymentForPlayer(client, offlinePlayer, uid, false);
+	            return offlinePlayer;
+	        }).onFailure(err -> {
+	            log.error("PayItem offline ship fail: playerId={}, uid={}", playerId, uid, err);
+	            sendResult(client, false);
+	        });
+	    } else {
+	        // 在线流程：串行任务队列
+	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid, true));
+	    }
 	}
+
+	/**
+	 * 统一处理一个玩家的一笔订单（在线/离线通用）
+	 */
+	private void handlePaymentForPlayer(NetClient client, Player player, long uid, boolean online) {
+	    try {
+	        PayItem payItem = findAndValidatePayItem(player, uid, online);
+	        if (payItem == null) {
+	            sendResult(client, false);
+	            return;
+	        }
+
+	        boolean ok = processPayment(player, payItem, online);
+	        if (!ok) {
+	            // processPayment 内部已做必要日志
+	            sendResult(client, false);
+	            cleanupIfOffline(player, online);
+	            return;
+	        }
+
+	        persistAndReply(client, player, online);
+	    } catch (Exception e) {
+	        log.error("ship unexpected error, playerId={}, uid={}", player.getPlayerId(), uid, e);
+	        if (online) {
+	            player.handleFail(e);
+	        }
+	        sendResult(client, false);
+	        cleanupIfOffline(player, online);
+	    }
+	}
+
+	/**
+	 * 查找订单并进行幂等校验
+	 */
+	private PayItem findAndValidatePayItem(Player player, long uid, boolean online) {
+	    PayItem payItem = player.getPlayerModule().getPayItems(uid);
+	    if (payItem == null) {
+	        if (online) {
+	            log.error("PayItem[{}] ship fail, order not exist (online), playerId={}", uid, player.getPlayerId());
+	        } else {
+	            log.warn("PayItem[{}] ship fail, order not exist (offline), playerId={}", uid, player.getPlayerId());
+	        }
+	        return null;
+	    }
+	    if (payItem.isFinish()) {
+	        if (online) {
+	            log.error("PayItem[{}] ship repeated (online), playerId={}, payItem={}", uid, player.getPlayerId(), payItem);
+	        } else {
+	            log.warn("PayItem[{}] ship repeated (offline), playerId={}, payItem={}", uid, player.getPlayerId(), payItem);
+	        }
+	        return null;
+	    }
+	    return payItem;
+	}
+
+	/**
+	 * 执行支付后回调/补单、finish、事件与日志
+	 */
+	private boolean processPayment(Player player, PayItem payItem, boolean online) {
+	    boolean callbackOk = true;
+	    if (online) {
+	        // 如果是老订单，可能没有 callback，需要走离线补单逻辑
+	        if (!player.getPlayerModule().execPayCallback(payItem.getOrderId())) {
+	            boolean offOk = payItem.getPayType().offlinePay(player, payItem);
+	            if (!offOk) {
+	                log.warn("PayItem offlinePay fail (online fallback), playerId={}, payItem={}", player.getPlayerId(), payItem);
+		            callbackOk = false;
+	            }
+	        }
+	    } else {
+	        // 离线直接走 offlinePay
+	        boolean offRet = payItem.getPayType().offlinePay(player, payItem);
+	        if (!offRet) {
+	            log.warn("PayItem offlinePay fail (offline), playerId={}, payItem={}", player.getPlayerId(), payItem);
+	            callbackOk = false;
+	        }
+	    }
+
+	    if (callbackOk) {
+	    	// 完成订单、事件与日志
+	    	payItem.finish();
+	    	player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
+	    	GameLogger.recharge(player, payItem);
+		}
+	    return callbackOk;
+	}
+
+	/**
+	 * 持久化并统一回复
+	 */
+	private void persistAndReply(NetClient client, Player player, boolean online) {
+	    long playerId = player.getPlayerId();
+	    PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
+	        sendResult(client, true);
+	        cleanupIfOffline(player, online);
+	    }).onFailure(t -> {
+	        log.error("充值发货持久化失败: playerId={}", playerId, t);
+	        if (online) {
+	            player.handleFail(t);
+	        }
+	        sendResult(client, false);
+	        cleanupIfOffline(player, online);
+	    });
+	}
+
+	/**
+	 * 离线玩家处理完后清理缓存
+	 */
+	private void cleanupIfOffline(Player player, boolean online) {
+	    if (!online) {
+	        PlayerHelper.clearPlayer(player.getPlayerId());
+	    }
+	}
+
+	/**
+	 * 统一发送结果
+	 */
+	private void sendResult(NetClient client, boolean success) {
+	    PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
+	    resp.setSuccess(success);
+	    client.sendProtocol(resp.build());
+	}
+	
 	protected void playerRequest(NetClient client, Object message) {
 		GamePlayerRequest_7d000015 request = (GamePlayerRequest_7d000015) message;
 		GamePlayerResponse_7d000016.Builder resp = GamePlayerResponse_7d000016.newBuilder();
