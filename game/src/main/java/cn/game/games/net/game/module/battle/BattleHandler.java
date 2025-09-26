@@ -1418,7 +1418,7 @@ public class BattleHandler extends GameBaseHandler {
         battleModule.setLastBattleRewards(allRewards);
         client.sendProtocol(resp);
         //		Chapter chapter = battleModule.getChapter(attackingDungeonId);
-        //		GameLogger.pvefight(player, attackingDungeonId, 1, win, req.getBattleTime(), chapter == null ? 1 : chapter.getFinishTimes());
+       	GameLogger.pvefight(player, attackingId, attackingType,req.getBattleTime(),win );
     }
 
     private void reward(NetClient client, Object message) {

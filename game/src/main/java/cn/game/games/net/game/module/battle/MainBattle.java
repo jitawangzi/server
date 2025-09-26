@@ -72,7 +72,6 @@ public class MainBattle extends XiYouBattleHandler {
 			}
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
-		GameLogger.pvefight(player, battleConfig.ID, 1, win, request.getBattleTime(), chapter.getFinishTimes());
 
 		if (request.getBattleTime() > chapter.getBattleTime()) {
 			chapter.setBattleTime(request.getBattleTime());

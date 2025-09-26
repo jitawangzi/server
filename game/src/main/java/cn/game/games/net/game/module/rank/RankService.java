@@ -14,6 +14,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import cn.game.games.core.log.GameLogger;
 import org.redisson.Redisson;
 import org.redisson.api.BatchResult;
 import org.redisson.api.RBatch;
@@ -409,7 +410,6 @@ public class RankService {
 	 * 同步获取排行榜的指定页面。
 	 *
 	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
 	 * @param page 页码
 	 * @param pageSize 每页大小
 	 * @return 指定页面的玩家排行信息列表
@@ -807,6 +807,7 @@ public class RankService {
 				for (String serverId : serverIds) {
 					List<MailRankInfo> playerRank = new ArrayList<>();
 					CompletionStage<List<BaseMsg.PlayerRankInfo>> rankPagePlayerInfos = RankHelper.getRankPagePlayerInfos(serverId, RankType.DaShengLeiTaiSeason, 1, 5);
+
 					rankPagePlayerInfos.thenAccept(r -> {
 						r.forEach(p -> {
 							playerRank.add(new MailRankInfo(p.getPlayer().getName(), p.getRank(), p.getPlayer().getFigure(), p.getPlayer().getId()));
@@ -911,12 +912,16 @@ public class RankService {
 					totalQueryCount.addAndGet(entrys.size());
 					return entrys;
 				};
+				StringBuilder rankContent = new StringBuilder();
+				StringBuilder scoreContent = new StringBuilder();
 				BatchQueryUtil.processBatchAsync(batchQuery, rankEntry -> {
 					RankRewardConfig rankStageConfig = BinarySearchUtil.findFirstGreaterThanOrEqual(rewardList, rankEntry.getRank(),
 							r -> r.RewardStage);
 					if (PlayerHelper.isRobot(rankEntry.getId())) {
 						return CompletableFuture.completedFuture(null) ; 
 					}
+					rankContent.append(rankEntry.getId()).append(",");
+					scoreContent.append(rankEntry.getScore()).append(",");
 					List<Goods> goods = PlayerHelper.randomReward(rankStageConfig.Reward);
 					return MailHelper.sendMail(rankEntry.getId(), rankConfig.RewardMailId, goods, false).onSuccess(v -> {
 						totalProcessCount.incrementAndGet();
@@ -926,6 +931,20 @@ public class RankService {
 					}).toCompletionStage().toCompletableFuture();
 				}, true).onFailure(e -> {
 					log.error("processBatchAsync rank reward error serverId[{}]rankId[{}] exception[{}]", serverId, rankId, e);
+				}).onComplete(v -> {
+					if(rankContent.length()>0)
+					{
+						rankContent.deleteCharAt(rankContent.length() - 1);
+					}else {
+						rankContent.append("null");
+					}
+					if(scoreContent.length()>0)
+					{
+						scoreContent.deleteCharAt(scoreContent.length() - 1);;
+					}else {
+						scoreContent.append("null");
+					}
+					GameLogger.rank(rankType.ID, rankContent.toString(), scoreContent.toString());
 				}).toCompletionStage().toCompletableFuture().join();
 
 				log.info("serverId[{}]rankId[{}]queryCount[{}]processCount[{}] reward completed, use time[{}] ms", serverId, rankId,

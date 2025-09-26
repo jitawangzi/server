@@ -84,12 +84,14 @@ public class PVEVPBattle extends XiYouBattleHandler {
            String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
            boolean isRobot = inBattleRankPlayerId<10000;
            // 生成战报
+           var simplePlayer = PlayerHelper.getSimplePlayer(inBattleRankPlayerId);
            if (isRobot) {
-               createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy,1);
+               createBattleRecord_Robot(simplePlayer, 0, false,rediskeyMy,1);
            } else {
                createBattleRecord_Target(0,true,rediskeyTarget);
-               createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
+               createBattleRecord_My(simplePlayer, 0, false,rediskeyMy);
            }
+           GameLogger.pvpfight(player,false,simplePlayer,false);
            inBattleRankPlayerId = 0L;
            mainShowRank.clear();
        }
@@ -102,12 +104,15 @@ public class PVEVPBattle extends XiYouBattleHandler {
             String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
             boolean isRobot = inBattleRankPlayerId<10000;
             // 生成战报
+            var simplePlayer = PlayerHelper.getSimplePlayer(inBattleRankPlayerId);
+
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy,1);
+                createBattleRecord_Robot(simplePlayer, 0, false,rediskeyMy,1);
             } else {
                 createBattleRecord_Target(0,true,rediskeyTarget);
-                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRankPlayerId), 0, false,rediskeyMy);
+                createBattleRecord_My(simplePlayer, 0, false,rediskeyMy);
             }
+            GameLogger.pvpfight(player,false,simplePlayer,false);
             inBattleRankPlayerId = 0L;
             mainShowRank.clear();
         }
@@ -140,6 +145,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
 //        }
         inBattleRank = mainShowRank.get(subId);
         inBattleRankPlayerId=inBattleRank.getRankEntry().getId();
+        var simplePlayer =  PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId());
+        GameLogger.pvpfight(player,true,simplePlayer,false);
         ticketCount++;
         return 0;
     }
@@ -155,6 +162,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         String rediskeyTarget = CacheType.PVEVP_RECORD_ID.key( inBattleRank.getRankEntry().getId());
         String rediskeyMy = CacheType.PVEVP_RECORD_ID.key(player.getData().getPlayerId());
         boolean isRobot = inBattleRank.getPlayer().getId()<10000;
+        var simplePlayer =  PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId());
         if (request.getWin()) {
             BattleConfig battleConfig = BattleManager.instance().get(battleModule.getAttackingId());
             List<RewardInfo> allRewards = new ArrayList<>();
@@ -170,14 +178,14 @@ public class PVEVPBattle extends XiYouBattleHandler {
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(), myRank.getScore());
             RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getId(), targetDelScore);
             RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getId(), targetDelScore);
-
             // 生成战报
             if (isRobot) {
-                createBattleRecord_Robot(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), (int) myAddScore, true,rediskeyMy,1);
+                createBattleRecord_Robot(simplePlayer, (int) myAddScore, true,rediskeyMy,1);
             } else {
                 createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
-                createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), myAddScore, true,rediskeyMy);
+                createBattleRecord_My(simplePlayer, myAddScore, true,rediskeyMy);
             }
+            GameLogger.pvpfight(player,false,simplePlayer,false);
             resetCache();
             response.addParams((int)(myScore+myAddScore)   );
             response.addParams((int)myAddScore   );
@@ -192,6 +200,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 createBattleRecord_Target(0,true,rediskeyTarget);
                 createBattleRecord_My(PlayerHelper.getSimplePlayer(inBattleRank.getRankEntry().getId()), 0, false,rediskeyMy);
             }
+            GameLogger.pvpfight(player,false,simplePlayer,false);
             inBattleRank = null;
             inBattleRankPlayerId = 0L;
            // return ResultObject.success();
@@ -267,10 +276,11 @@ public class PVEVPBattle extends XiYouBattleHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         BattleConfig battleConfig = BattleManager.instance().get(id);
 
-        if (ticketCount <= 0) {
-            return ResultObject.fail(ErrorMsgEnum.PVEVP_No_Ticket.getId());
+
+        if (ticketCount >GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)) {
+            return ResultObject.fail(ErrorMsgEnum.PVEVP_No_Ticket.ID);
         }
-        ticketCount--;
+        ticketCount++;
         List<RewardInfo> allRewards = PlayerHelper.addReward(player, battleConfig.SweepReward, opType);
         return ResultObject.success(allRewards);
     }
@@ -486,12 +496,13 @@ public class PVEVPBattle extends XiYouBattleHandler {
             return ;
         }
         buyCount--;
-        ticketCount++;
+        //  ticketCount++;
         GameLogger.DaShengPurchase(player,GlobalConst.DaShengBuyTicket-buyCount, num);
     }
 
     public int getTicketCount() {
-        return GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)-ticketCount;
+        return GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)-ticketCount
+                +GlobalConst.DaShengBuyTicket-buyCount;
     }
 
     public int getEndTime() {

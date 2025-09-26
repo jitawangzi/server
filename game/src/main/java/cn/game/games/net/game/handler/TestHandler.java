@@ -358,6 +358,12 @@ public class TestHandler extends GameBaseHandler {
                 player.getDrawModule().getHeroRecruit().refresh();
                 break;
             }
+            case "rankreward":
+            {
+                RankService.getInstance().reward(p1);
+               // player.getDrawModule().getHeroRecruit().refresh();
+                break;
+            }
             case "gamenewday":
 			{
 				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
@@ -389,6 +395,16 @@ public class TestHandler extends GameBaseHandler {
                 }
                 for (var resourceEnum : EquipManager.instance().list()) {
                     List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+                }
+                BattleModule battleModule = player.getBattleModule();
+                battleModule.setMainBattleHighest(110085);
+                BattleConfig battleConfig = BattleManager.instance().getNullable(110085);
+                while (battleConfig != null) {
+                    battleModule.addChapter(battleConfig.ID);
+                    Chapter chapter = battleModule.getChapter(battleConfig.ID);
+                    chapter.setBattleTime(30);
+                    chapter.setPass(true);
+                    battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
                 }
                 break;
             }
