@@ -42,7 +42,7 @@ public enum LoggerType {
     item,                                                                       // 物品获得与消耗
     pvpfight,                                                                   // pvp战斗
     pvefight,                                                                   // 关卡战斗
-
+    adwatching,                                                                  // 广告观看
     task,                                                                       // 任务
     achievement,                                                                // 个人完成成就
     activity,                                                                   // 参与活动
