@@ -84,6 +84,7 @@ import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.BattleMsg.BattleBuyTicketResponse_13000555;
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordResponse_13000529;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagResponse_1300053c;
+import cn.game.protocol.protobuf.BattleMsg.BattleHandCardResponse_13000601;
 
 @Component
 public class ClientBattleHandler extends BaseHandler {
@@ -163,6 +164,7 @@ public class ClientBattleHandler extends BaseHandler {
         putInvoker(PbProtocol.BattleBuyTicketResponse_13000555, this::buyTicket);
         putInvoker(PbProtocol.BattleEquipTowerRecordResponse_13000529, this::equipTowerRecord);
         putInvoker(PbProtocol.BattleMountainBuffBagResponse_1300053c, this::mountainBuffBag);
+        putInvoker(PbProtocol.BattleHandCardResponse_13000601, this::handCard);
     }
 
     private void fieldStart(NetClient netClient, Object message) {
@@ -522,7 +524,7 @@ public class ClientBattleHandler extends BaseHandler {
         List<EquipTowerHelpRewardInfo> helpRewardList = resp.getHelpRewardList();
         Client client = (Client) netClient;
         client.helpRewardList.clear();
-        client.helpRewardList=helpRewardList;
+        client.helpRewardList = helpRewardList;
     }
 
     private void equipTowerData(NetClient netClient, Object message) {
@@ -612,6 +614,12 @@ public class ClientBattleHandler extends BaseHandler {
 
     private void mountainBuffBag(NetClient netClient, Object message) {
         BattleMountainBuffBagResponse_1300053c resp = (BattleMountainBuffBagResponse_1300053c) message;
+        Client client = (Client) netClient;
+    }
+
+    private void handCard(NetClient netClient, Object message) {
+        BattleHandCardResponse_13000601 resp = (BattleHandCardResponse_13000601) message;
+        boolean consume = resp.getConsume();
         Client client = (Client) netClient;
     }
 }

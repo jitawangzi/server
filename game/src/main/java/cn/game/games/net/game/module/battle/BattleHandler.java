@@ -39,6 +39,7 @@ import cn.game.protocol.generated.config.PatrolConfig;
 import cn.game.protocol.generated.config.RichManItemConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.EntryEffectEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
@@ -141,6 +142,8 @@ import cn.game.util.BinarySearchUtil;
 import cn.game.util.ByteHelp;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.util.IntMapWrapper;
+import cn.game.util.Rnd;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataRequest_13000521;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerDataResponse_13000522;
 import cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524;
@@ -181,6 +184,8 @@ import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordRequest_1300052
 import cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerRecordResponse_13000529;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b;
 import cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagResponse_1300053c;
+import cn.game.protocol.protobuf.BattleMsg.BattleHandCardRequest_13000600;
+import cn.game.protocol.protobuf.BattleMsg.BattleHandCardResponse_13000601;
 
 @Component
 public class BattleHandler extends GameBaseHandler {
@@ -260,6 +265,7 @@ public class BattleHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BattleBuyTicketRequest_13000554, this::buyTicket);
         putInvoker(PbProtocol.BattleEquipTowerRecordRequest_13000528, this::equipTowerRecord);
         putInvoker(PbProtocol.BattleMountainBuffBagRequest_1300053b, this::mountainBuffBag);
+        putInvoker(PbProtocol.BattleHandCardRequest_13000600, this::handCard);
     }
 
     protected void xiangYaoChuMoInfo(NetClient client, Object message) {
@@ -1045,7 +1051,7 @@ public class BattleHandler extends GameBaseHandler {
         BattlePatrolRewardRequest_13000044 request = (BattlePatrolRewardRequest_13000044) message;
         boolean isFast = request.getIsFast();
         boolean advertising = request.getAdvertising();
-        int multiple = request.getMultiple(); 
+        int multiple = request.getMultiple();
         BattlePatrolRewardResponse_13000045.Builder resp = BattlePatrolRewardResponse_13000045.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         BattleModule battleModule = player.getModule(BattleModule.class);
@@ -1059,8 +1065,8 @@ public class BattleHandler extends GameBaseHandler {
             return;
         }
         if (multiple < 1 || !player.hasWelfare(WelfareTypeEnum.TravelTimeMultiple)) {
-        	multiple = 1 ;
-		}
+            multiple = 1;
+        }
         if (isFast) {
             // 快速巡逻次数处理
             if (advertising) {
@@ -1074,23 +1080,22 @@ public class BattleHandler extends GameBaseHandler {
             } else {
                 int quickPatrolCount = battleModule.getQuickPatrolCount();
                 if (!player.hasWelfare(WelfareTypeEnum.TravelTimeMultiple)) {
-                	if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
-                		client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
-                		return;
-                	}
-        		}
+                    if (quickPatrolCount >= GlobalConst.QuickPatrolCnt + player.getWelfareValue(WelfareTypeEnum.QuicPatrolCnt)) {
+                        client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
+                        return;
+                    }
+                }
                 // 消耗
-                PlayerHelper.delResourcesWithConsume(player, GlobalConst.QuickPatrolConsume ,multiple, OpType.Patrol);
+                PlayerHelper.delResourcesWithConsume(player, GlobalConst.QuickPatrolConsume, multiple, OpType.Patrol);
                 battleModule.setQuickPatrolCount(quickPatrolCount + 1);
             }
         }
         PatrolConfig patrolConfig = PatrolManager.instance().get(player.getBattleModule().getFightMainBattleId());
-
         if (isFast) {
-        	for (int i = 0; i < multiple; i++) {
-        		List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.SweepRandomID, OpType.Patrol); 
-        		resp.addAllRewards(reward); 
-			}
+            for (int i = 0; i < multiple; i++) {
+                List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.SweepRandomID, OpType.Patrol);
+                resp.addAllRewards(reward);
+            }
         } else {
             // 最大巡逻时间
             // 巡逻时间
@@ -1112,8 +1117,8 @@ public class BattleHandler extends GameBaseHandler {
             PlayerHelper.addResources(player, Asset.playerExp.ID, exp, OpType.Patrol);
             PlayerHelper.addResources(player, Asset.gold.ID, gold, OpType.Patrol);
             for (int i = 0; i < hours; i++) {
-            	List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID, OpType.Patrol);
-            	resp.addAllRewards(reward);
+                List<RewardInfo> reward = PlayerHelper.addReward(player, patrolConfig.IncomeRandomID, OpType.Patrol);
+                resp.addAllRewards(reward);
             }
             resp.setExp(exp);
             resp.setGold(gold);
@@ -1485,17 +1490,15 @@ public class BattleHandler extends GameBaseHandler {
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
         int battleTimes = battle.getBattleTimes();
         int payTimes = battle.getPayTimes();
-        
-		int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingShanAddTimes); 
-
+        int welfareValue = player.getWelfareValue(WelfareTypeEnum.LingShanAddTimes);
         if (payTimes >= GameUtil.length(GlobalConst.LingshanChallangeCost) + welfareValue) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
         }
-        int cost = GameUtil.getArrayCost(GlobalConst.LingshanChallangeCost, battleTimes) ; 
+        int cost = GameUtil.getArrayCost(GlobalConst.LingshanChallangeCost, battleTimes);
         PlayerHelper.delResources(player, Asset.diamond.ID, cost, OpType.LingShanBuyTimes);
         battle.setPayTimes(payTimes + 1);
-        GameLogger.LingShanPurchase(player,battle.getPayTimes(),  cost);
+        GameLogger.LingShanPurchase(player, battle.getPayTimes(), cost);
         client.sendProtocol(resp);
     }
 
@@ -1561,11 +1564,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleEquipTowerDataResponse_13000527.Builder resp = BattleEquipTowerDataResponse_13000527.newBuilder();
         resp.setTicketCount(towerBattle.getTicketCount());
         resp.setNextTicketTime(towerBattle.getNextGetTicketTime());
-            towerBattle.getFloorData().forEach(
-                    (k, v) ->
-                            resp.putFloorData(k, v)
-            );
-
+        towerBattle.getFloorData().forEach((k, v) -> resp.putFloorData(k, v));
         client.sendProtocol(resp.build());
     }
 
@@ -1677,12 +1676,7 @@ public class BattleHandler extends GameBaseHandler {
         resp.setLevelPro(mapData.getLevelPro());
         mapData.getMapData().forEach((k, v) -> {
             v.forEach(node -> {
-                var builder = BaseMsg.MountainMapNodeData.newBuilder()
-                        .setNodeID(node.getNodeId())
-                        .setNodeType(node.getNodeType())
-                        .setEventId(node.getEventId())
-                        .setLevelpro(node.getLevelpro())
-                        .setNodeStatus(node.getNodeStatus());
+                var builder = BaseMsg.MountainMapNodeData.newBuilder().setNodeID(node.getNodeId()).setNodeType(node.getNodeType()).setEventId(node.getEventId()).setLevelpro(node.getLevelpro()).setNodeStatus(node.getNodeStatus());
                 builder.addAllShopId(node.getShopId());
                 builder.addAllMonsterId(node.getMonsterIds());
                 resp.addMapdata(builder.build());
@@ -1691,7 +1685,7 @@ public class BattleHandler extends GameBaseHandler {
         mapData.getScoreReward().forEach((k, v) -> {
             resp.putScoreReward(k, v);
         });
-         mapData.getBuffBag().forEach((k, v) -> {
+        mapData.getBuffBag().forEach((k, v) -> {
             resp.putBuffBag(k, v);
         });
         client.sendProtocol(resp.build());
@@ -1723,8 +1717,8 @@ public class BattleHandler extends GameBaseHandler {
         BattleMountainGetRewardResponse_13000544.Builder resp = BattleMountainGetRewardResponse_13000544.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);
         DaShengXunShanBattle daShengXunShanBattle = battleModule.getBattle(DungeonTypeEnum.MountainBattle);
-        List<RewardInfo>rewardInfos= daShengXunShanBattle.getReward(rewardId);
-        if(rewardInfos!= null) {
+        List<RewardInfo> rewardInfos = daShengXunShanBattle.getReward(rewardId);
+        if (rewardInfos != null) {
             resp.addAllRewards(rewardInfos);
         }
         daShengXunShanBattle.getMountainMapData().getScoreReward().forEach((k, v) -> {
@@ -1748,12 +1742,7 @@ public class BattleHandler extends GameBaseHandler {
         resp.setLevelPro(mapData.getLevelPro());
         mapData.getMapData().forEach((k, v) -> {
             v.forEach(node -> {
-                var builder = BaseMsg.MountainMapNodeData.newBuilder()
-                        .setNodeID(node.getNodeId())
-                        .setNodeType(node.getNodeType())
-                        .setEventId(node.getEventId())
-                        .setLevelpro(node.getLevelpro())
-                        .setNodeStatus(node.getNodeStatus());
+                var builder = BaseMsg.MountainMapNodeData.newBuilder().setNodeID(node.getNodeId()).setNodeType(node.getNodeType()).setEventId(node.getEventId()).setLevelpro(node.getLevelpro()).setNodeStatus(node.getNodeStatus());
                 builder.addAllShopId(node.getShopId());
                 builder.addAllMonsterId(node.getMonsterIds());
                 resp.addMapdata(builder.build());
@@ -1770,10 +1759,11 @@ public class BattleHandler extends GameBaseHandler {
         BattleMountainNextFlooResponse_13000548.Builder resp = BattleMountainNextFlooResponse_13000548.newBuilder();
         BattleModule battleModule = player.getModule(BattleModule.class);
         DaShengXunShanBattle daShengXunShanBattle = battleModule.getBattle(DungeonTypeEnum.MountainBattle);
-        daShengXunShanBattle. nextFloor(floor);
+        daShengXunShanBattle.nextFloor(floor);
         resp.setCurNodeId(daShengXunShanBattle.getMountainMapData().getCurNodeId());
         client.sendProtocol(resp.build());
     }
+
     private void mountainBuffBag(NetClient client, Object message) {
         BattleMountainBuffBagRequest_1300053b req = (BattleMountainBuffBagRequest_1300053b) message;
         BattleMountainBuffBagResponse_1300053c defaultInstance = BattleMountainBuffBagResponse_1300053c.getDefaultInstance();
@@ -1787,6 +1777,7 @@ public class BattleHandler extends GameBaseHandler {
         });
         client.sendProtocol(resp.build());
     }
+
     private void pVEVPData(NetClient client, Object message) {
         BattlePVEVPDataRequest_13000549 req = (BattlePVEVPDataRequest_13000549) message;
         BattlePVEVPDataResponse_1300054a defaultInstance = BattlePVEVPDataResponse_1300054a.getDefaultInstance();
@@ -1808,7 +1799,7 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         pvevpBattle.getBattleRecordFromRedis();
-       // 获取一个反向的新列表而不修改原列表
+        // 获取一个反向的新列表而不修改原列表
         List<PVEVPRecordData> reversedList = new ArrayList<>(pvevpBattle.recordDataList.reversed());
         reversedList.forEach(v -> {
             BaseMsg.PVEVPRecordData.Builder builder = BaseMsg.PVEVPRecordData.newBuilder();
@@ -1833,26 +1824,24 @@ public class BattleHandler extends GameBaseHandler {
         BattleModule battleModule = player.getModule(BattleModule.class);
         PVEVPBattle pvevpBattle = battleModule.getBattle(DungeonTypeEnum.PVEVPBattle);
         BattleMsg.BattlePVEVPChallengeResponse_13000553.Builder resp = BattleMsg.BattlePVEVPChallengeResponse_13000553.newBuilder();
-
-        var dataLoadingStage =pvevpBattle.getRadomPlayer(req.getType());
+        var dataLoadingStage = pvevpBattle.getRadomPlayer(req.getType());
         dataLoadingStage.thenAccept(r -> {
-                r.forEach((k, v) -> {
+            r.forEach((k, v) -> {
                 PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
                 rb.setRank(v.getRankEntry().getRank());
                 rb.setPlayer(v.getPlayer().toSimplePlayerInfo());
                 long score = v.getRankEntry().getScore();
                 rb.setScore((score < 0 ? 0 : score) + "");
                 resp.addChallengePlayers(rb);
-
-            } );
+            });
             PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
             rb.setRank(pvevpBattle.getMyRank().getRank());
             rb.setPlayer(new SimplePlayer(player).toSimplePlayerInfo());
             long score = pvevpBattle.getMyRank().getScore();
             rb.setScore((score < 0 ? 0 : score) + "");
             resp.setMyRankInfo(rb);
-            client.sendProtocol(resp.build());})
-        .exceptionally(player::handleFailFunction);
+            client.sendProtocol(resp.build());
+        }).exceptionally(player::handleFailFunction);
     }
 
     private void buyTicket(NetClient client, Object message) {
@@ -1880,5 +1869,34 @@ public class BattleHandler extends GameBaseHandler {
         client.sendProtocol(defaultInstance);
     }
 
+    private void handCard(NetClient client, Object message) {
+        BattleHandCardRequest_13000600 req = (BattleHandCardRequest_13000600) message;
+        int id = req.getId();
+        BattleHandCardResponse_13000601 defaultInstance = BattleHandCardResponse_13000601.getDefaultInstance();
+        BattleHandCardResponse_13000601.Builder resp = BattleHandCardResponse_13000601.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        BattleModule battleModule = player.getModule(BattleModule.class);
 
+		if (!PlayerHelper.isEnough(player, id, 1)) {
+			client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
+			return;
+		}
+		boolean consume = true; 
+		IntMapWrapper handCardUseCount = battleModule.getHandCardUseCount(); 
+		int value = handCardUseCount.getValue(id); 
+		if (value >= GlobalConst.HandCardUseMax -1) { // 必定消耗
+			PlayerHelper.delResources(player, id,1, OpType.ItemOpen);
+		}else {
+			// 有概率不消耗
+			int entryEffectValue = player.getAttrModule().getEntryEffectValue(EntryEffectEnum.ReleaseFree); 
+			if (!Rnd.hit(entryEffectValue)) {
+				PlayerHelper.delResources(player, id,1, OpType.ItemOpen);
+			}else {
+				consume = false; 
+				handCardUseCount.add(id); 
+			}
+		}
+        resp.setConsume(consume); 
+        client.sendProtocol(resp.build());
+    }
 }

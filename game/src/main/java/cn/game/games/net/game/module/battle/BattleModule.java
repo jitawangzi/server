@@ -131,6 +131,9 @@ public class BattleModule extends BasePlayerModule  {
 	
 	/** 玩法类型--> 连续失败次数记录 */
 	private IntMapWrapper consecutiveFailures = new IntMapWrapper();
+	
+	/** 本局内手操卡使用时没有被扣掉的次数 */
+	private IntMapWrapper handCardUseCount = new IntMapWrapper() ;
 
 	/** 
 	 * 
@@ -560,6 +563,7 @@ public class BattleModule extends BasePlayerModule  {
 		case BattleStart: {
 			this.reliveCountPerBattle = 0;
 			this.adRogueCountPerBattle = 0;
+			this.handCardUseCount.clear();
 			break;
 		}
 		case BattleEnd: {
@@ -570,6 +574,7 @@ public class BattleModule extends BasePlayerModule  {
 			}else {
 				consecutiveFailures.remove(battleConfig.BattleType) ; 
 			}
+			this.handCardUseCount.clear();
 			break;
 		}
 		case GetItem: {
@@ -791,6 +796,11 @@ public class BattleModule extends BasePlayerModule  {
     	}
     	return heros;
     }
+    
+	public IntMapWrapper getHandCardUseCount() {
+		return handCardUseCount;
+	}
+
 	@Override
 	public int processOrder() {
 		return EVENT_PROCESS_ORDER_HIGH;
