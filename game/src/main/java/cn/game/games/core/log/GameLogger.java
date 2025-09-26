@@ -167,7 +167,12 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
 					player.getData().getName() == null ? "null" : player.getData().getName(),
-					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID) };
+					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID)
+			        ,player.getHeroModule().list().size(),
+					1,//todo  月卡剩余天数
+					1,//todo 微信小程序中的unionid
+					1//todo 微信小程序中的openid
+			};
 			LoggerType.login.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -180,6 +185,8 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login_wxxcx.name(), LoggerType.login_wxxcx.version, "2051")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getGameClient().getIp(),
 					player.getCurrencyModule().getCount(Asset.diamond.ID),
+					1,//todo 微信小程序中的unionid
+					1,//todo 微信小程序中的openid
 					player.getAccount().getClue_token() == null ? "{}" : player.getAccount().getClue_token() };
 			LoggerType.login_wxxcx.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -198,7 +205,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolebuild.name(), LoggerType.rolebuild.version, "3025")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getData().getGender() ? 1 : 2,
-					player.getAccount().getPlatform() };
+					1,//todo 微信小程序中的unionid
+					1//todo 微信小程序中的openid
+					};
 			LoggerType.rolebuild.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -216,7 +225,10 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolelogin.name(), LoggerType.rolelogin.version, "3030")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getCurrencyModule().getCount(Asset.diamond.ID),
-					player.getAccount().getPlatform() };
+					1,//todo  月卡剩余天数
+					1,//todo 微信小程序中的unionid
+					1//todo 微信小程序中的openid
+					 };
 			LoggerType.rolelogin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -236,9 +248,10 @@ public class GameLogger extends DeprecatedLogger {
 					player.getData().getName(),
 					player.getCurrencyModule().getCount(Asset.diamond.ID), GameLogAssistant.calculatePlayerOnlineDurationSecond(player),
 					player.getVipLevel(),
-					player.getCurrencyModule().getCount(Asset.playerEnergy.ID), player.getAttrModule().getPower(),
-					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()),
-					player.getAccount().getPlatform() };
+					0,// 默认
+					0,// 默认
+					1//月卡剩余天数
+			};
 			LoggerType.logout.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -255,8 +268,9 @@ public class GameLogger extends DeprecatedLogger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
-					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), -1,
-					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()), player.getAccount().getPlatform() };
+					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1),
+					0// 默认
+					};
 			LoggerType.levelup.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -268,8 +282,9 @@ public class GameLogger extends DeprecatedLogger {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.gethero.name(), LoggerType.gethero.version, "B8110")),
-					hero.getConfigId(), heroConfig.InitialQuality, hero.getId(), opType, player.getHeroModule().list().size(),
-					player.getHeroModule().getSizeDeduplication(), player.getAccount().getPlatform() };
+					hero.getConfigId(), hero.getId(), opType, player.getHeroModule().list().size()
+					,0//默认值
+					};
 			LoggerType.gethero.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -297,7 +312,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.heroraise.name(), LoggerType.heroraise.version, step)),
 					hero.getConfigId(), operatetype, addvalue <= 0 ? 1 : addvalue, endvalue, beforeCombat, afterCombat,
-					player.getAccount().getPlatform() };
+					};
 			LoggerType.heroraise.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -331,7 +346,7 @@ public class GameLogger extends DeprecatedLogger {
 			}
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), itemType,
-					itemId, itemCount, costId, costCount, shopId, player.getVipLevel(), player.getAccount().getPlatform() };
+					itemId, itemCount, costId, costCount, shopId, player.getVipLevel()};
 			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -368,7 +383,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
 					opType.name(), count, player.getCurrencyModule().getCount(id), id, player.getVipLevel(),
-					"null", isIncrease ? 1 : -1, player.getAccount().getPlatform() };
+					"null", isIncrease ? 1 : -1 };
 			LoggerType.money.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -379,7 +394,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * 货币获得与消耗
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
 	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量, 时区
+	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量
 	 */
 	public static void item(Player player, int id, int count, OpType opType, boolean isAdd) {
 		try {
@@ -389,7 +404,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type, id,
 					opType.name(), count, player.getVipLevel(),
 					"null", isAdd ? 1 : -1, player.getGoodsModule(id).getCount(id),
-					player.getAccount().getPlatform() };
+				 };
 			LoggerType.item.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -416,9 +431,14 @@ public class GameLogger extends DeprecatedLogger {
 					payItem.getAddId() > 0 ? player.getGoodsModule(payItem.getAddId()).getCount(payItem.getAddId())
 							: player.getCurrencyModule().getCount(Asset.diamond.ID),
 					player.getVipLevel(),
-					payItem.getPayId(),
+					payItem.getPayId(), // 商品id
 					payItem.getOrderId(),
-					player.getAccount().getPlatform() };
+					2,//todo 1-是代金券，2-非代金券
+					1,//todo packageid  具体礼包id
+					1,// unionid
+					1// openid
+
+			};
 			LoggerType.recharge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -587,7 +607,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.task.name(), LoggerType.task.version, stepnumid)),
-					taskId, "1", questConfig.Type + "", player.getAccount().getPlatform() };
+					taskId, "1", questConfig.Type + ""};
 			LoggerType.task.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -608,7 +628,9 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 									.buildLogCYPrefix(player, LoggerType.achievement.name(), LoggerType.achievement.version, "B5110")),
-					taskId, conditionTypeEnum.name(), -1 };
+					taskId, conditionTypeEnum.name()
+					,0//默认值
+					 };
 			LoggerType.achievement.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -730,7 +752,7 @@ public class GameLogger extends DeprecatedLogger {
 			String stepNum = String.valueOf(step);
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.newstages.name(), LoggerType.newstages.version, stepNum)),
-					small };
+					small ,0,0};
 			LoggerType.newstages.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
