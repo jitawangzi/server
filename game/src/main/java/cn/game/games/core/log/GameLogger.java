@@ -6,12 +6,15 @@ import java.util.List;
 
 import cn.game.core.base.ServerContext;
 import cn.game.games.cache.entity.Hero;
+import cn.game.games.cache.entity.MonthCard;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.recharge.PayItem;
+import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.config.HeroConfig;
 import cn.game.protocol.generated.config.QuestConfig;
@@ -163,11 +166,18 @@ public class GameLogger extends DeprecatedLogger {
 	 * 角色名，登录ip，价值虚拟币总量
 	 */
 	public static void login(Player player) {
+		Account account = player.getAccount();
+
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login.name(), LoggerType.login.version, "2050")),
 					player.getData().getName() == null ? "null" : player.getData().getName(),
-					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID) };
+					player.getGameClient().getIp(), player.getCurrencyModule().getCount(Asset.diamond.ID)
+			        ,player.getHeroModule().list().size(),
+					getMonthCardInfo(player),
+                    account.unionid,
+					account.openid
+			};
 			LoggerType.login.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -175,11 +185,14 @@ public class GameLogger extends DeprecatedLogger {
 	}
 
 	public static void login_wxxcx(Player player) {
+		Account account = player.getAccount();
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.login_wxxcx.name(), LoggerType.login_wxxcx.version, "2051")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getGameClient().getIp(),
 					player.getCurrencyModule().getCount(Asset.diamond.ID),
+					account.unionid,
+					account.openid,
 					player.getAccount().getClue_token() == null ? "{}" : player.getAccount().getClue_token() };
 			LoggerType.login_wxxcx.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -198,7 +211,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolebuild.name(), LoggerType.rolebuild.version, "3025")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getData().getGender() ? 1 : 2,
-					player.getAccount().getPlatform() };
+					player.getAccount().unionid,
+					player.getAccount().openid,
+					};
 			LoggerType.rolebuild.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -216,7 +231,10 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.rolelogin.name(), LoggerType.rolelogin.version, "3030")),
 					player.getData().getName() == null ? "null" : player.getData().getName(), player.getCurrencyModule().getCount(Asset.diamond.ID),
-					player.getAccount().getPlatform() };
+					getMonthCardInfo(player),
+					player.getAccount().unionid,
+					player.getAccount().openid,
+					 };
 			LoggerType.rolelogin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -236,9 +254,10 @@ public class GameLogger extends DeprecatedLogger {
 					player.getData().getName(),
 					player.getCurrencyModule().getCount(Asset.diamond.ID), GameLogAssistant.calculatePlayerOnlineDurationSecond(player),
 					player.getVipLevel(),
-					player.getCurrencyModule().getCount(Asset.playerEnergy.ID), player.getAttrModule().getPower(),
-					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()),
-					player.getAccount().getPlatform() };
+					0,// 默认
+					0,// 默认
+					1//月卡剩余天数
+			};
 			LoggerType.logout.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -255,8 +274,9 @@ public class GameLogger extends DeprecatedLogger {
 		try {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.levelup.name(), LoggerType.levelup.version, "6010")),
-					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1), -1,
-					player.getBattleModule().getFightBattleId(DungeonTypeEnum.BattleChapter.getId()), player.getAccount().getPlatform() };
+					player.getData().getName(), player.getLevel(), Math.max(0, player.getLevel() - 1),
+					0// 默认
+					};
 			LoggerType.levelup.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -268,8 +288,9 @@ public class GameLogger extends DeprecatedLogger {
 			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.gethero.name(), LoggerType.gethero.version, "B8110")),
-					hero.getConfigId(), heroConfig.InitialQuality, hero.getId(), opType, player.getHeroModule().list().size(),
-					player.getHeroModule().getSizeDeduplication(), player.getAccount().getPlatform() };
+					hero.getConfigId(), hero.getId(), opType, player.getHeroModule().list().size()
+					,0//默认值
+					};
 			LoggerType.gethero.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -296,8 +317,8 @@ public class GameLogger extends DeprecatedLogger {
 			}
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.heroraise.name(), LoggerType.heroraise.version, step)),
-					hero.getConfigId(), operatetype, addvalue <= 0 ? 1 : addvalue, endvalue, beforeCombat, afterCombat,
-					player.getAccount().getPlatform() };
+					hero.getConfigId(), operatetype,"null",1, addvalue <= 0 ? 1 : addvalue, endvalue,"null"
+					};
 			LoggerType.heroraise.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -331,7 +352,7 @@ public class GameLogger extends DeprecatedLogger {
 			}
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), itemType,
-					itemId, itemCount, costId, costCount, shopId, player.getVipLevel(), player.getAccount().getPlatform() };
+					itemId, itemCount, costId, costCount, shopId, player.getVipLevel()};
 			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -368,7 +389,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.money.name(), LoggerType.money.version, "8010")),
 					opType.name(), count, player.getCurrencyModule().getCount(id), id, player.getVipLevel(),
-					"null", isIncrease ? 1 : -1, player.getAccount().getPlatform() };
+					"null", isIncrease ? 1 : -1 };
 			LoggerType.money.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -379,7 +400,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * 货币获得与消耗
 	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
 	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量, 时区
+	 * 物品类型id , 物品id, 获得或消耗方式id, 获得或消耗数量, Vip等级, 获得或消耗位置, 行为, 剩余总量
 	 */
 	public static void item(Player player, int id, int count, OpType opType, boolean isAdd) {
 		try {
@@ -389,7 +410,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.item.name(), LoggerType.item.version, "B2110")), type, id,
 					opType.name(), count, player.getVipLevel(),
 					"null", isAdd ? 1 : -1, player.getGoodsModule(id).getCount(id),
-					player.getAccount().getPlatform() };
+				 };
 			LoggerType.item.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -416,9 +437,14 @@ public class GameLogger extends DeprecatedLogger {
 					payItem.getAddId() > 0 ? player.getGoodsModule(payItem.getAddId()).getCount(payItem.getAddId())
 							: player.getCurrencyModule().getCount(Asset.diamond.ID),
 					player.getVipLevel(),
-					payItem.getPayId(),
+					payItem.getPayId(), // 商品id
 					payItem.getOrderId(),
-					player.getAccount().getPlatform() };
+					2,
+					payItem.getPayId(),
+					player.getUnionId(),// unionid
+					player.getOpenId()// openid
+
+			};
 			LoggerType.recharge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -587,7 +613,7 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.task.name(), LoggerType.task.version, stepnumid)),
-					taskId, "1", questConfig.Type + "", player.getAccount().getPlatform() };
+					taskId, "1", questConfig.Type + ""};
 			LoggerType.task.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -608,7 +634,9 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 									.buildLogCYPrefix(player, LoggerType.achievement.name(), LoggerType.achievement.version, "B5110")),
-					taskId, conditionTypeEnum.name(), -1 };
+					taskId, conditionTypeEnum.name()
+					,0//默认值
+					 };
 			LoggerType.achievement.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -639,25 +667,20 @@ public class GameLogger extends DeprecatedLogger {
 	 * 剩余体力,上阵卡牌战力总和,当前关卡推荐战力,上阵卡牌1,上阵卡牌2,上阵卡牌3,角色属性,
 	 * 时区
 	 */
-	public static void pvefight(Player player, int stageId, int type, boolean result, long time, int battleCount) {
+	public static void pvefight(Player player, int stageId, int type,  long time,boolean result) {
 		try {
-			type = 1;
-//			BattleConfig battleConfig = BattleManager.instance().get(stageId);
-			int re = 2;
-			if (result) {
-				re = 1;
-			}
 			List<Hero> battleHeros = player.getHeroModule().getBattleHeroList();
 			List<Integer> heroList = battleHeros.stream().map(r -> r.getConfigId()).collect(toList());
 
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")), stageId,
-					type, re, "null", time,
+					type,  "null",result?1:0, "null", "null", "null", time, player.getAttrModule().getPower(),
+					0,0,
 					heroList.size() > 0 ? heroList.get(0) : "null",
 					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
 					heroList.size() > 3 ? heroList.get(3) : "null", heroList.size() > 4 ? heroList.get(4) : "null",
-					heroList.size() > 5 ? heroList.get(5) : "null",
-					player.getAccount().getPlatform(), player.getAttrModule().getPower(), battleCount
+					heroList.size() > 5 ? heroList.get(5) : "null",	heroList.size() > 6 ? heroList.get(6) : "null",
+					heroList.size() > 7 ? heroList.get(7) : "null",
 			};
 			LoggerType.pvefight.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -670,25 +693,12 @@ public class GameLogger extends DeprecatedLogger {
 	 *
 	 * @param player
 	 * @param startFlag
-	 * @param selfRankBf
-	 * @param selfRankAf
-	 * @param battleType
+	//1:胜利  2:战斗失败
+	 * @param startFlag
 	 * @param targetPlayer
-	 * @param targetRankBf
-	 * @param targetRankAf
-	 * @param battleTime
+
 	 */
-	public static void pvpfight(Player player,boolean startFlag, int selfRankBf, int selfRankAf, int battleType, SimplePlayer targetPlayer, int targetRankBf, int targetRankAf, int battleTime, int endType,boolean win){
-		int sellteType = -1; //1:胜利 0:超时失败 -1:战斗失败 2：退出
-		if (!startFlag) {
-		  if (endType == 0 && win) { // 结算类型: 0 正常结算; 1 主动退出战斗; 2 扫荡结算
-			sellteType = 1;
-		  } else if (endType == 1) {
-			{
-			  sellteType = 2;
-			}
-		  }
-		}
+	public static void pvpfight(Player player,boolean startFlag, SimplePlayer targetPlayer, boolean win){
 
 		try {
 			String stepnumid = startFlag? "B8310" : "B8320";
@@ -696,18 +706,18 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvpfight.name(), LoggerType.pvpfight.version, stepnumid)),
 					player.getAttrModule().getPower(), //上阵英雄战力
-					selfRankBf, //战斗前排名
-					selfRankAf, //战斗后排名
-					battleType, //战场id
+					0, //战斗前排名
+					0, //战斗后排名
+					"NULL", //战场id
 					targetPlayer.id , //对手角色id
 					targetPlayer.getName(), //对手角色名
                     targetPlayer.getLevel(), //对手角色等级
 					targetPlayer.getCombatEffectiveness(), //对手战力
-                    targetRankBf, //对手战斗前排名
-					targetRankAf, //对手战斗后排名
-					sellteType, //战斗结果
-                    battleTime, //持续时长
-					player.getAccount().getPlatform() //平台标识
+                    0, //对手战斗前排名
+					0, //对手战斗后排名
+					win, //战斗结果
+                    0, //持续时长
+
 			};
 			LoggerType.pvpfight.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -730,213 +740,37 @@ public class GameLogger extends DeprecatedLogger {
 			String stepNum = String.valueOf(step);
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.newstages.name(), LoggerType.newstages.version, stepNum)),
-					small };
+					small ,0,0};
 			LoggerType.newstages.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
 	}
+
+	/**
+	 * B9510 榜快照
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 榜单类型,榜单名次,榜单对应值,
+	 * 时区
+	 */
+    public static void rank( int type, String rank, String value) {
+
+		try {
+            Object[] array = new Object[]{
+					getCurrentTimeLogText(), Config.APP_KEY, "null", LoggerType.rank.name(), LoggerType.rank.version, "B9510",
+					ServerContext.getInstance().getServerId(),  "null",
+					"null","null",
+					0, "null","null", "null",0,0,
+                    type,0, rank, value,0,0,0
+            };
+            LoggerType.rank.logger.info(LoggerType.splice(array));
+        } catch (Exception e) {
+            SystemLogger.error(e);
+        }
+    }
 //
-//
-//	/**
-//	 * C0102 装备幻化
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 选择前装备id,选择后装备id,装备类型
-//	 */
-//    public static void equipmentshape(Player player, int beforeShapeId, int afterShapeId, int position) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.equipmentshape.name(), LoggerType.equipmentshape.version, "C0102")),
-//                    beforeShapeId, afterShapeId, position, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.equipmentshape.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0103 翅膀强化
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 操作类型:(1.升级 2.升阶),单次升级增加的经验,操作前的等级,操作后的等级阶数
-//	 */
-//    public static void wingupdate(Player player, int wingId, int type, int exp, int beforeLv, int beforeStage, int afterLv, int afterStage) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.wingupdate.name(), LoggerType.wingupdate.version, "C0103")),
-//                    wingId, type, type == 1 ? exp : -1, type == 1 ? beforeLv : beforeStage, type == 1 ? afterLv : afterStage, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.wingupdate.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0104 挂机
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 操作类型:(1:普通挂机 2:快速挂机),该次挂机总时长(s),当日剩余快速挂机次数,玩家总快速挂机次数
-//	 */
-//    public static void onhook(Player player, int type, long hangupTime, int dailyLimitHangupTime, int totalHangupTime) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.onhook.name(), LoggerType.onhook.version, "C0104")),
-//                    type, hangupTime, dailyLimitHangupTime, totalHangupTime, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.onhook.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0105 宝箱升级
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 操作前宝箱等级,操作后宝箱等级,加速卷使用数量,升级实际所用时间
-//	 */
-//    public static void boxlevelup(Player player, int beforeBoxLevel, int afterBoxLevel, long quantityNum, long time, long useAdTime) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.boxlevelup.name(), LoggerType.boxlevelup.version, "C0105")),
-//                    beforeBoxLevel, afterBoxLevel, quantityNum, time, useAdTime, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.boxlevelup.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0106 宝箱开启
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 装备实例id,装备模板id,装备品质,装备等级,挑战卷数量
-//	 */
-//    public static void boxopen(Player player, int equipId, int equipTemplate, int quality, int level, int num) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.boxopen.name(), LoggerType.boxopen.version, "C0106")),
-//                    equipId, equipTemplate, quality, level, num, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.boxopen.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0107 荣誉榜快照
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 榜单类型,榜单名次,榜单对应值,
-//	 * 时区
-//	 */
-//    public static void rankkz(MiniPlayer miniPlayer, int type, long rank, long value) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(miniPlayer, LoggerType.rankkz.name(), LoggerType.rankkz.version, "C0107")),
-//                    type, rank, value, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.rankkz.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//
-//	/**
-//	 * C0109 聊天
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 聊天频道,聊天类型,聊天内容,对方id,是否为好友,
-//	 * 时区
-//	 */
-//    public static void chat(Player player, int channelId, String typeId, String content, long targetId, boolean friend) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.chat.name(), LoggerType.chat.version, "C0109")),
-//                    channelId, typeId, content, targetId, friend ? 1 : 0, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.chat.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0110 邮箱
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 邮件id,邮件名称,邮件类型(1:无奖励邮件 2:有奖励邮件),操作类型
-//	 * 时区
-//	 */
-//    public static void mailbox(Player player, long mailId, long mailName, int mailType, int type) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.mailbox.name(), LoggerType.mailbox.version, "C0110")),
-//                    mailId, mailName, mailType, type, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.mailbox.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0111 玩家信息修改
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 操作类型,原内容,新内容
-//	 * 时区
-//	 */
-//    public static void roleinfochange(Player player, int type, String oldString, String newString) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.roleinfochange.name(), LoggerType.roleinfochange.version, "C0111")),
-//                    type, oldString, newString, GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.roleinfochange.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
-//	/**
-//	 * C0113 宝石合成
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 合成结果,合成宝石id,合成宝石品质
-//	 * 合成消耗宝石1,合成消耗宝石品质1
-//	 * 合成消耗宝石2,合成消耗宝石品质2
-//	 * 合成消耗宝石3,合成消耗宝石品质3
-//	 * 时区
-//	 */
-//    public static void mergegems(Player player, int result, int newGemId, int newGemQuality, List<Pair<Integer, Integer>> costGemMap) {
-//        try {
-//            Object[] gemLogDat = {0, 0, 0, 0, 0, 0};
-//            if (CollectionUtil.isNotEmpty(costGemMap)) {
-//                int size = Math.min(3, costGemMap.size());
-//                for (int i = 0; i < size; i++) {
-//                    Pair<Integer, Integer> pair = costGemMap.get(i);
-//                    gemLogDat[i * 2] = pair.getLeft();
-//                    gemLogDat[i * 2 + 1] = pair.getRight();
-//                }
-//            }
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.mergegems.name(), LoggerType.mergegems.version, "C0113")),
-//                    result, newGemId, newGemQuality,
-//                    gemLogDat[0], gemLogDat[1], gemLogDat[2], gemLogDat[3], gemLogDat[4], gemLogDat[5], GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.mergegems.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
-//
+
 //	/**
 //	 * C0114 玩家属性快照
 //	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
@@ -1020,38 +854,7 @@ public class GameLogger extends DeprecatedLogger {
 ////            SystemLogger.error(e);
 ////        }
 //    }
-//
-//
-//	/**
-//	 * C0116 坐骑招募刷新
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 刷新类型,刷出的野马数量和品质
-//	 * 时区
-//	 */
-//    public static void horserefresh(Player player, int type, List<Pair<Integer, Integer>> wildInfo) {
-//    }
-//
-//	/**
-//	 * C0117 坐骑招募刷新
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 刷新类型,刷出的野马数量和品质
-//	 * 时区
-//	 */
-//    public static void horsesummon(Player player, int wildTemplateId, int wildHorseId, int wilHorseQuality, int costNum, int getHorseTemplateId, int getHorseId, int getHorseQuality) {
-//    }
-//
-//	/**
-//	 * C0118 坐骑图鉴
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 图鉴id,已激活马匹,是否激活属性
-//	 * 时区
-//	 */
-//    public static void horseImage(Player player, int imageId, List<Integer> canUseHorse, boolean active, int horseTemplateId, int horseId) {
-//    }
-//
+
 //	/**
 //	 * [C0121] 公会成员快照（guildsnap）三级日志
 //	 * <p>
@@ -1094,25 +897,25 @@ public class GameLogger extends DeprecatedLogger {
 //        }
 //    }
 //
-//	/**
-//	 * 广告观看
-//	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
-//	 * 账号id，角色id，角色等级，班级id，设备唯一标识
-//	 * 活动id ,活动档位
-//	 * 时区
-//	 */
-//    public static void adwatching(Player player, int adposition) {
-//        try {
-//            Object[] array = new Object[]{
-//                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.adwatching.name(), LoggerType.adwatching.version, "C0126")),
-//                    adposition, 1,
-//                    GameLogAssistant.TIME_ZONE
-//            };
-//            LoggerType.adwatching.logger.info(LoggerType.splice(array));
-//        } catch (Exception e) {
-//            SystemLogger.error(e);
-//        }
-//    }
+	/**
+	 * 广告观看
+	 * 时间，游戏标识，客户端版本号，日志模块名，日志版本，步骤号，区服id，推广渠道id
+	 * 账号id，角色id，角色等级，班级id，设备唯一标识
+	 * 活动id ,活动档位
+	 * 时区
+	 */
+    public static void adwatching(Player player, int adposition) {
+        try {
+            Object[] array = new Object[]{
+                    LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.adwatching.name(), LoggerType.adwatching.version, "C0126")),
+                    adposition, 1,
+                    GameLogAssistant.TIME_ZONE
+            };
+            LoggerType.adwatching.logger.info(LoggerType.splice(array));
+        } catch (Exception e) {
+            SystemLogger.error(e);
+        }
+    }
 //
 //	/**
 //	 * 邮件
@@ -1710,5 +1513,30 @@ public class GameLogger extends DeprecatedLogger {
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
+	}
+
+
+	public static String getMonthCardInfo(Player player) {
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
+			MonthCard monthCard = monthCardModule.getMonthCard(1);
+			stringBuilder.append("1:");
+			if (monthCard != null) {
+				stringBuilder.append(monthCard.getExpireTime());
+			} else {
+				stringBuilder.append(0);
+			}
+			stringBuilder.append(";2:");
+			var monthCard2 = monthCardModule.getMonthCard(1);
+			if (monthCard2 != null) {
+				stringBuilder.append(monthCard2.getExpireTime());
+			} else {
+				stringBuilder.append(0);
+			}
+		} catch (Exception e) {
+			SystemLogger.error(e);
+		}
+		return stringBuilder.toString();
 	}
 }
