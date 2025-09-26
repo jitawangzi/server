@@ -394,7 +394,7 @@ public class TestHandler extends GameBaseHandler {
                 }
                 break;
             }
-            case "cs":
+            case "init":
             {
             	TestHelper.setMaxCurrency(player, OpType.Test);
             	break;

@@ -629,7 +629,7 @@ public class ActivityHandler extends GameBaseHandler {
         	if (curConfig == targetConfig) {
         		rankType = RankType.get(targetConfig.RankID);
         	} else {
-        		rankType = RankType.get(targetConfig.RankID);
+        		rankType = RankType.get(targetConfig.RewardRankId);
         	}
         }
         CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);

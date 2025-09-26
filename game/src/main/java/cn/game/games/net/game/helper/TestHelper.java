@@ -20,6 +20,7 @@ import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
+import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.item.ItemModule;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankService;
@@ -247,11 +248,20 @@ public class TestHelper {
 		for (EquipConfig config : EquipManager.instance().list()) {
 			PlayerHelper.addResources(player, config.ID, 100, opType);
 		}
+		HeroModule module = player.getModule(HeroModule.class);
+		
 		for (HeroConfig config : HeroManager.instance().list()) {
 			if (config.HeroType == 1) {
-				PlayerHelper.addResources(player, config.ID, 1, opType);
+				if (module.getByConfigId(config.ID).isEmpty()) {
+					PlayerHelper.addResources(player, config.ID, 1, opType);
+				}
 			}
 		}
+		// 跳过新手引导
+		player.getPlayerModule().getGuideMap().put(6, 99); 
+		player.getPlayerModule().getGuideMap().put(7, 99); 
+		player.getPlayerModule().getGuideMap().put(8, 99); 
+		player.getPlayerModule().getGuideMap().put(9, 99); 
 		
 		// 最后解锁所有功能
 		player.getFuncModule().gmUnlockFunc((byte) 0);
