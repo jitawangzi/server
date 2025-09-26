@@ -26,7 +26,7 @@ public class DrawHeroInPool {
         this.huiLiuAdd = 0;
         this.isDraw = 0;
         this.position = position;
-        calWeight(noHighQualityCount,isHuiLiu);
+       // calWeight(noHighQualityCount,isHuiLiu);
     }
     void calWeight(int noHighQualityCount,boolean isHuiLiu)
     {

@@ -88,17 +88,17 @@ public class HeroRecruit {
 			if (guaranteeIndex > -1 && guaranteeIndex == i) {
 				tmpRandomId = guaranteeRandomId;
 			}
-			if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
-			{
-				bagDetect(i);
-			}else {
+			//if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
+			//{
+			//	bagDetect(i);
+			//}else {
 				List<Goods> randomReward = PlayerHelper.randomReward(tmpRandomId);
 				if (randomReward.size() != 1) {
 					throw new IllegalArgumentException("RandomGiven: " + tmpRandomId + " 刷新招募英雄配置错误，生成的数量不对: " + randomReward.size());
 				}
 				Goods goods = randomReward.get(0);
 				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
-			}
+			//}
 		}
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
