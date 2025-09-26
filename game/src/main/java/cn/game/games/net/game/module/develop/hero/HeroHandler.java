@@ -195,7 +195,7 @@ public class HeroHandler extends GameBaseHandler {
 		if (qualityStarObj == null) {
 			qualityStarObj = new QualityStarObj();
 			qualityStarObj.quality = heroConfig.InitialQuality;
-			qualityStarObj.star = 1;
+			qualityStarObj.star = 0;
 			starsMap.put(heroId, qualityStarObj);
 		} else {
 			if (hero.getQuality() == qualityStarObj.quality) {
@@ -211,13 +211,13 @@ public class HeroHandler extends GameBaseHandler {
 			} else if (hero.getQuality() > qualityStarObj.quality) {
 				if (qualityStarObj.star >= maxStar) {
 					qualityStarObj.quality++;
-					qualityStarObj.star = 1;
+					qualityStarObj.star = 0;
 				} else {
 					qualityStarObj.star++;
 				}
 			} else if (hero.getQuality() > qualityStarObj.quality) {
 				qualityStarObj.quality++;
-				qualityStarObj.star = 1;
+				qualityStarObj.star = 0;
 			} else {
 				client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 				return;
