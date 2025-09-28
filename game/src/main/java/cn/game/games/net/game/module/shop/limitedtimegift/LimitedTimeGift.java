@@ -21,7 +21,7 @@ public class LimitedTimeGift {
 		}
 		LimitedTimeGiftConfig limitedTimeGiftConfig = LimitedTimeGiftManager.instance().get(id); 
 
-		conditionContainer.create(playerId, Ints.asList(limitedTimeGiftConfig.UnlockCondition), false, null,
+		conditionContainer.create(playerId, Ints.asList(limitedTimeGiftConfig.TriggerCondition), false, null,
 				null, finishAction, null);
 		regEvent();
 	}
