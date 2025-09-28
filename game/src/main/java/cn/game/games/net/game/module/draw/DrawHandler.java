@@ -4,6 +4,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.core.log.GameLogger;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -139,6 +140,7 @@ public class DrawHandler extends GameBaseHandler {
         //		resp.setGold(gold);
         resp.setDraw(drawModule.buildDrawInfo(id));
         client.sendProtocol(resp.build());
+        GameLogger.recruit(player, id, drawCount, countReq);
     }
 
     private void heroWish(NetClient client, Object message) {

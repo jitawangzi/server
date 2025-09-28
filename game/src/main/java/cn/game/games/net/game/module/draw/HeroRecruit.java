@@ -6,7 +6,9 @@ import java.util.List;
 
 import cn.game.games.cache.entity.Hero;
 import cn.game.protocol.generated.config.HeroConfig;
+import cn.game.protocol.generated.config.RandomGroupConfig;
 import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.manager.RandomGroupManager;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
@@ -92,16 +94,50 @@ public class HeroRecruit {
 			//{
 			//	bagDetect(i);
 			//}else {
-				List<Goods> randomReward = PlayerHelper.randomReward(tmpRandomId);
-				if (randomReward.size() != 1) {
-					throw new IllegalArgumentException("RandomGiven: " + tmpRandomId + " 刷新招募英雄配置错误，生成的数量不对: " + randomReward.size());
-				}
-				Goods goods = randomReward.get(0);
-				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
-			//}
+			   commonDrop(i);
+		//}
 		}
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
+	}
+	public void commonDrop(int i)
+	{
+		int vipLevel = player.getVipLevel();
+		var randomGivenConfig = GlobalConst.UltimateCardDraw;
+		int lanweight= randomGivenConfig[3][1];
+		int lanDrop= randomGivenConfig[3][0];
+
+		int ziweight= randomGivenConfig[2][1];
+		int ziDrop= randomGivenConfig[2][0];
+
+		int jinweight= randomGivenConfig[1][1];
+		int jinDrop= randomGivenConfig[1][0];
+
+		int hongweight= randomGivenConfig[0][1];
+		int hongDrop= randomGivenConfig[0][0];
+		if(vipLevel>=3)
+		{
+			lanweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][3];
+			ziweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][2];
+			jinweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][1];
+			hongDrop+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][0];
+		}
+		List<Integer> weightList = new ArrayList<>();
+		weightList.add(lanweight);
+		weightList.add(ziweight);
+		weightList.add(jinweight);
+		weightList.add(hongweight);
+		List<Integer> dropList = new ArrayList<>();
+		dropList.add(lanDrop);
+		dropList.add(ziDrop);
+		dropList.add(jinDrop);
+		dropList.add(hongDrop);
+		int randomIndex = Rnd.randomIndex(weightList);
+		int group =dropList.get(randomIndex);
+		List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+		RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
+		Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
+		drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
 	}
 	public void initHeros() {
 		if (!drawHeroInPoolList.isEmpty()) {

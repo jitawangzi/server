@@ -24,13 +24,13 @@ public enum LoggerType {
 	Monitor,
 
     /* *********************** 一级 ************************* */
-    heart("v3"),                                                     // 心跳
+    heart("v4"),                                                     // 心跳
     login,                                                                      // 登录
 	login_wxxcx, // 微信小程序登录
     rolebuild,                                                                  // 创建角色
     rolelogin,                                                                  // 创建角色
     logout,                                                                     // 登出
-//    serverevent,                                                                // 服务器事件
+    serverevent,                                                                // 服务器事件
     recharge,                                                                   // 充值
 
     levelup,                                                                    // 升级
@@ -46,7 +46,7 @@ public enum LoggerType {
     task,                                                                       // 任务
     achievement,                                                                // 个人完成成就
     activity,                                                                   // 参与活动
-//    arena,                                                                      // 竞技场
+    recruit,                                                                      // 抽卡
 //    activationcode,                                                             //激活码激活
 	gethero, // 获取卡牌
 	heroraise, // 卡牌养成
@@ -90,7 +90,7 @@ public enum LoggerType {
     demonSweep	,//降妖伏魔扫荡
     lingShanPurchase,//	灵山问禅次数购买
     lingShanSweep	,//灵山问禅扫荡
-    lingShanProgressReward,//	灵山问禅进度奖励
+  //  lingShanProgressReward,//	灵山问禅进度奖励
     daShengPurchase	,//大圣擂台次数购买
     daShengChallenge	,//大圣擂台挑战
 
@@ -127,8 +127,8 @@ public enum LoggerType {
     public final String version;
 
     LoggerType() {
-        // 现在默认v3版本了
-		this("v3");
+        // 现在默认v4版本了
+		this("v4");
     }
 
     LoggerType(String version) {
