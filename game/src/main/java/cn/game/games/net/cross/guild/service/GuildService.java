@@ -350,14 +350,16 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	@Override
-	public Future<?> addGuildAsset(long guildId, long playerId, int assetId, int value) {
+	public Future<Integer> addGuildAsset(long guildId, long playerId, int assetId, int value) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
 		if (guildInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
+		int oldLevel = guildInfo.getLv(); 
 		guildInfo.addGuildAsset(playerId, assetId, value);
-		
-		return Future.succeededFuture();
+		int newLevel = guildInfo.getLv(); 
+
+		return Future.succeededFuture(newLevel > oldLevel ? newLevel : 0);
 	}
 	@Override
 	public Future<?> addMemberContribute(long guildId, long playerId, int value) {
@@ -372,12 +374,6 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		return Future.succeededFuture();
 	}
 
-	/**
-	 * 公会砍价
-	 * @param guildId 公会ID
-	 * @param playerId 玩家ID
-	 * @return 砍价次数
-	 */
 	@Override
 	public int[] bargain(long guildId, long playerId) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
@@ -391,7 +387,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 
 		GuildBargain bargain = guildInfo.getModule().getBargain();
 		int bargainCount = bargain.performBargain(playerId,guildInfo.getLv());
-		return new int[] {bargain.getBargainItemId(), bargainCount};
+		return new int[] {bargain.getBargainItemId(), bargainCount,bargain.getBargainLogMap().size()};
 	}
 
 	@Override
@@ -442,5 +438,14 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			return false; 
 		}
 		return guild.hasApply();
+	}
+
+	@Override
+	public GuildMember getMember(long guildId, long playerId) {
+		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		if (guild == null) {
+			return null;
+		}
+		return guild.getMember(playerId); 
 	}
 }

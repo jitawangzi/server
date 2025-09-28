@@ -120,5 +120,10 @@ public class GuildBargain implements GuildConstants.GuildEventHandler {
 	public void setGuildId(long guildId) {
 		this.guildId = guildId;
 	}
+
+	public Map<String, Integer> getBargainLogMap() {
+		return bargainLogMap;
+	}
+	
 	
 }

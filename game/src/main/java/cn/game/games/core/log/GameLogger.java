@@ -1324,15 +1324,15 @@ public class GameLogger extends DeprecatedLogger {
 	}
 	/**
 	 * 仙会加入
-	 * @param player  仙会ID	仙会名称	仙会旗帜
+	 * @param player  仙会ID
 	 */
-	public static void guildJoin(Player player, long guildId, String name, int flag) {
+	public static void guildJoin(Player player, long guildId) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.guildJoin.name(), LoggerType.guildJoin.version, "C1301"))
-					,guildId, name, flag};
+					,guildId};
 			LoggerType.guildJoin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -1406,13 +1406,13 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会升级
 	 * @param player  获得经验值	升至等级
 	 */
-	public static void guildUpgrade(Player player, long guildId, int exp, int level) {
+	public static void guildUpgrade(Player player, int exp, int level) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.guildUpgrade.name(), LoggerType.guildUpgrade.version, "C1306"))
-					,guildId, exp, level};
+					, exp, level};
 			LoggerType.guildUpgrade.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);

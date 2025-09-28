@@ -25,6 +25,7 @@ import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankHelper;
 import cn.game.games.net.game.module.rank.RankService;
@@ -63,6 +64,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildBountyTargetRefreshResponse_40000
 import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberPositionSetResponse_40000016;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
@@ -183,6 +185,9 @@ public class GuildHandler extends GameBaseHandler {
         player.handleEvent(EventTypeEnum.GuildBargain);
         guildModule.setBargainCount(bargainCount + 1);
         client.sendProtocol(res.build());
+        
+        GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]); 
+        
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -275,6 +280,7 @@ public class GuildHandler extends GameBaseHandler {
                     client.sendProtocol(callBack.response);
                 }
             }
+            
         }).onFailure(err -> {
             err.printStackTrace();
             client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
@@ -301,7 +307,13 @@ public class GuildHandler extends GameBaseHandler {
     private void setGuildMemberPosition(NetClient client, Object o) {
         GuildMsg.GuildMemberPositionSetRequest_40000015 req = (GuildMsg.GuildMemberPositionSetRequest_40000015) o;
         GuildMsg.GuildMemberPositionSetResponse_40000016.Builder res = GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder();
-        autoForwardGuildServer(client, res, req, null);
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId()); 
+        long guildId = player.getGuildId(); 
+        autoForwardGuildServer(client, res, req, (result) -> {
+        	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
+        	GameLogger.guildMemberPositionChange(player, guildId, response.getOldPosition(), response.getPosition()) ; 
+            return null;
+        });
     }
 
     private void setGuildSetting(NetClient client, Object o) {
@@ -359,6 +371,7 @@ public class GuildHandler extends GameBaseHandler {
                 }
                 res.setResult(true);
                 client.sendProtocol(res);
+				GameLogger.guildInfoChange(player, player.getGuildId(), req.getName() == null ? "null" : req.getName(), req.getIcon()) ; 
                 return null;
             });
         });
@@ -374,6 +387,8 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
+        long guildId = player.getGuildId(); 
+        String guildName = player.getGuildName();
         sendMsgToGuildServer(player, req, "").onSuccess(callBack -> {
             if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
                 client.sendProtocol(res.build(), callBack.errorCode);
@@ -386,6 +401,7 @@ public class GuildHandler extends GameBaseHandler {
                 if (module.getDisbandCount() > 1) {
                     module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * 1000);
                 }
+                GameLogger.guildDisband(player, guildId, guildName);
                 client.sendProtocol(callBack.response);
             }
         }).onFailure(err -> {
@@ -497,7 +513,7 @@ public class GuildHandler extends GameBaseHandler {
                 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
                 res.setGuild(allInfo);
                 client.sendProtocol(res);
-//                GameLogger.guildCreate(player, nextJoinTimer, name, getModule())
+                GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
                 return null;
             }).onFailure(player::handleFail);
         });
@@ -677,6 +693,10 @@ public class GuildHandler extends GameBaseHandler {
         donateMap.add(id);
         player.handleEvent(EventTypeEnum.GuildDonate,id);
         client.sendProtocol(resp);
+        
+        long guildContribute = RewardHelper.getRewardCount(resources, Asset.GuildContribute) ; 
+        
+        GameLogger.GuildDonate(player, id, donateMap.getValue(id), (int)guildContribute, player.getPlayerId());
     }
 
     private void rankList(NetClient client, Object message) {
