@@ -18,11 +18,6 @@ public class EquipEnhanceLevelLowerThan extends AbstractCumulativeCondition {
 	public EquipEnhanceLevelLowerThan() {
 
 	}
-	
-	@Override
-	protected boolean checkAchieve() {
-		return getFinishCount() == getRequireCount() ; 
-	}
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {

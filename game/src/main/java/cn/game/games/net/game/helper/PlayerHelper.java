@@ -1691,7 +1691,9 @@ public class PlayerHelper {
 				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
-				return DAO.executeDbTaskList(dbTasks);
+				return DAO.executeDbTaskList(dbTasks).onComplete(r -> {
+					data.setModules("{}") ; 
+				});
 			}
 			// 下面暂时用不到
 			List<DbEntity> entities = new ArrayList<>();
