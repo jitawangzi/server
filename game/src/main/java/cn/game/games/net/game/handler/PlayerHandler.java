@@ -182,7 +182,8 @@ public class PlayerHandler extends GameBaseHandler {
 
 		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
 		putInvoker(PbProtocol.PlayerAssetRecoverRequest_01000210, this::assetRecover);
-		
+		putInvoker(PbProtocol.PlayerAdBIInfoRequest_01100603, this::biInfo);
+
 	}
 
 	private void assetRecover(NetClient client, Object message) {
@@ -193,6 +194,14 @@ public class PlayerHandler extends GameBaseHandler {
 		respBuilder.putAllAssetRecover(module.getIdUpdateTimeMap());
 		client.sendProtocol(respBuilder.build());
 	}
+	private void biInfo(NetClient client, Object message) {
+		PlayerMsg.PlayerAdBIInfoRequest_01100603 request = (PlayerMsg.PlayerAdBIInfoRequest_01100603) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		GameLogger.adwatching(player, request.getAdBIinfoList());
+//		PlayerMsg.PlayerBIInfoResponse_01100604.Builder respBuilder = PlayerMsg.PlayerBIInfoResponse_01100604.newBuilder();
+//		client.sendProtocol(respBuilder.build());
+	}
+
 	private void figure(NetClient client, Object message) {
 		PlayerFigureRequest_01000021 request = (PlayerFigureRequest_01000021) message;
 		int id = request.getId();
