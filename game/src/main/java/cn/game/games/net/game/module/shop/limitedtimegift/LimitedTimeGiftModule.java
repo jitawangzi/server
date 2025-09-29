@@ -53,6 +53,9 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 			return;
 		}
 		LimitedTimeGiftConfig limitedTimeGiftConfig = LimitedTimeGiftManager.instance().get(id);
+		if (!PlayerHelper.checkCondition(player, limitedTimeGiftConfig.UnlockCondition)) {
+			return ; 
+		}
 		boolean checkActiveCount = checkActiveCount(limitedTimeGiftConfig);
 		if (!checkActiveCount) {
 			return;

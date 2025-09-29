@@ -9,6 +9,7 @@ import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.data.mapper.GuildJoinMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -25,6 +26,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.protocol.protobuf.PlayerMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.IntMapWrapper;
+import io.vertx.core.Future;
 
 public class GuildModule extends BasePlayerModule {
 	private static EventTypeEnum[] events = new EventTypeEnum[] {EventTypeEnum.PLAYER_CREATE,EventTypeEnum.GetItem, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
@@ -130,7 +132,19 @@ public class GuildModule extends BasePlayerModule {
 				int count = event.get(1);
 				if (id == Asset.GuildExp.ID || id == Asset.GuildPoint.ID || id == Asset.GuildContribute.ID) {
 					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-					guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
+					Future<Integer> newLevelFuture = guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
+					newLevelFuture.onComplete(ar -> {
+						if (ar.succeeded()) {
+							int newLevel = ar.result();
+							if (newLevel > 0) {
+								// 公会升级了
+								GameLogger.guildUpgrade(player, count, newLevel) ; 
+							}
+						} else {
+							log.error("addGuildAsset failed! guildId={}, playerId={}, assetId={}, value={}, cause={}",
+									player.getGuildId(), playerId, id, count, ar.cause().getMessage());
+						}
+					});
 				}
 			}
 			;
@@ -242,6 +256,7 @@ public class GuildModule extends BasePlayerModule {
 			guildJoin.setCreateTime(DateUtil.currentTimeMillis());
 			player.getData().setUnionId(guildId);
 		}
+        GameLogger.guildJoin(player, guildId);
 		player.handleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
 	}
 

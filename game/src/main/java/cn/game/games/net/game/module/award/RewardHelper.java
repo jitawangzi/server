@@ -20,6 +20,7 @@ import cn.game.games.net.game.module.develop.pet.Pet;
 import cn.game.games.net.game.module.develop.secretscript.Secretscript;
 import cn.game.games.net.game.module.player.figure.Figure;
 import cn.game.games.net.game.module.player.headbox.HeadBox;
+import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.BaseMsg.GemInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
@@ -202,6 +203,24 @@ public class RewardHelper {
 		}
 
 		return goodsList;
+	}
+	/** 
+	 * 从奖励中提取某种资源奖励的数量
+	 * @param rewardList
+	 * @param asset
+	 * @return
+	 */
+	public static long getRewardCount(List<RewardInfo> rewardList, Asset asset) {
+		
+        for (RewardInfo rewardInfo : rewardList) {
+			if (rewardInfo.hasAsset()) {
+				int id2 = rewardInfo.getAsset().getId(); 
+				if (id2 == asset.ID) {
+					return rewardInfo.getAsset().getCount(); 
+				}
+			}
+		}
+        return 0; 
 	}
 
 	public static void main(String[] args) {

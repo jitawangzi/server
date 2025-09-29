@@ -169,11 +169,14 @@ public class GuildCrossHandler extends GameBaseHandler {
 	// 设置成员职位
 	private void setGuildMemberPosition(long guildId, long playerId, Message message, List<String> paramList, NetClient client) {
 		GuildMsg.GuildMemberPositionSetRequest_40000015 req = (GuildMsg.GuildMemberPositionSetRequest_40000015) message;
+		GuildMember member = guildService.getMember(guildId, req.getTargetPid()); 
+		int oldPosition = member == null ? 0 :  member.getPosition();
 		guildService.setMemberPosition(guildId, playerId, req.getTargetPid(), req.getPosition());
 		sendMsgToGameServer(playerId, client,
 				GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder()
 						.setResult(true)
 						.setPosition(req.getPosition())
+						.setOldPosition(oldPosition)
 						.setTargetPid(req.getTargetPid())
 						.build(),
 				PbProtocol.GuildMemberPositionSetResponse_40000016);
