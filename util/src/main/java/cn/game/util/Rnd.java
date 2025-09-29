@@ -245,8 +245,8 @@ public final class Rnd {
 		for (int i : weight) {
 			total += i;
 		}
-
 		int rand = Rnd.nextInt(total);
+		System.out.println("---------------------随机到的随机数={}"+rand);
 		int current = 0;
 		for (int i = 0; i < weight.size(); i++) {
 			current += weight.get(i);

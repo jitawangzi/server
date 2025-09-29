@@ -26,6 +26,17 @@ public class DrawHeroInPool {
         this.huiLiuAdd = 0;
         this.isDraw = 0;
         this.position = position;
+        // 1 基础值
+        ItemConfig heroConfig = ItemManager.instance().get(itemId);
+        int baseweight= heroConfig.Quality ;
+        for (int i = 0; i < GlobalConst.HeroRecruitQualityWeight.length; i++) {
+            if(GlobalConst.HeroRecruitQualityWeight[i][0]== heroConfig.Quality) {
+                baseweight= GlobalConst.HeroRecruitQualityWeight[i][1];
+                break;
+            }
+        }
+        this.itemWeight = baseweight;
+        System.out.println("--------------------当前物品随机概率-itemId=" +itemId +" itemWeight=" +itemWeight);
        // calWeight(noHighQualityCount,isHuiLiu);
     }
     void calWeight(int noHighQualityCount,boolean isHuiLiu)

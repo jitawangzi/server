@@ -132,6 +132,7 @@ public class HeroRecruit {
 		dropList.add(ziDrop);
 		dropList.add(jinDrop);
 		dropList.add(hongDrop);
+		log.info("commonDrop:随机权重 lanweight={} ziweight={} jinweight={} hongweight={}", lanweight,ziweight,jinweight,hongweight);
 		int randomIndex = Rnd.randomIndex(weightList);
 		int group =dropList.get(randomIndex);
 		List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
@@ -342,6 +343,21 @@ public class HeroRecruit {
 			drawHeroInPoolList.add(new DrawHeroInPool(heroConfig.Fragment, 1, 2, pos,noHighQualityRecruitCount,huiLiuCount>0));
 		}
 
+	}
+	// 从权重3里挑一个
+	public DrawHeroInPool radom31() {
+		List<Integer> radomWeight = new ArrayList<>();
+		List<DrawHeroInPool> value = new ArrayList<>();
+		for (int j = 0; j < drawHeroInPoolList.size(); j++) {
+			var drawHeroInPool = drawHeroInPoolList.get(j);
+			if(drawHeroInPool.getIsDraw()==0){
+				radomWeight.add(drawHeroInPool.getItemWeight());
+				value.add(drawHeroInPool);
+				log.info("当前可随机英雄  pos:{}  Id:{} radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.getItemWeight());
+			}
+		}
+        int index = Rnd.randomIndex(radomWeight);
+		return value.get(index);
 	}
 
     public int getNoHighQualityRecruitCount() {

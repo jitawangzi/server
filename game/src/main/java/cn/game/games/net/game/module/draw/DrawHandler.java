@@ -244,9 +244,8 @@ public class DrawHandler extends GameBaseHandler {
 		if (heroRecruit.notRefresh()) {
 			pos = 1;
         }else {
-			List<Integer> allPos = Lists.newArrayList(0, 1, 2);
-			allPos.removeAll(recruitedPosList);
-			pos = Rnd.randomElement(allPos);
+            var hero=heroRecruit.radom31()  ;
+			pos = hero.getPosition();
 		}
 //		if (recruitedPosList.contains(pos)) {
 //			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
