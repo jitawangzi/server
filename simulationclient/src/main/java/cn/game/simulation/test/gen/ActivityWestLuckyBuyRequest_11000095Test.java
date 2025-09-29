@@ -1,8 +1,13 @@
 package cn.game.simulation.test.gen;
 
 import com.google.protobuf.Message;
+
+import java.util.Collection;
+
 import org.springframework.stereotype.Component;
 
+import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
+import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
@@ -13,7 +18,8 @@ public class ActivityWestLuckyBuyRequest_11000095Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.newBuilder() ; 
 		
-		
+		builder.setActivityId(1001); 
+		builder.setId(1001); 
 		
 		return builder.build() ; 
 	}
@@ -22,7 +28,11 @@ public class ActivityWestLuckyBuyRequest_11000095Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.newBuilder() ; 
 		
-		
+		Collection<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list(); 
+		if (!list.isEmpty()) {
+			builder.setActivityId(1001);
+			builder.setId(list.iterator().next().ID);
+		}
 		
 		return builder.build() ; 
 	}

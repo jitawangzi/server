@@ -23,6 +23,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
@@ -598,6 +599,18 @@ public class ActivityStateManager {
 		mergeIdsInto(result, ActivityState.VIEW_VALUE);
 		mergeIdsInto(result, ActivityState.START_VALUE);
 		return result;
+	}
+	public List<Integer> testGetOpenIds(ActivityTypeEnum activityTypeEnum) {
+		Set<Integer> result = new HashSet<>();
+		mergeIdsInto(result, ActivityState.VIEW_VALUE);
+		mergeIdsInto(result, ActivityState.START_VALUE);
+		for (Integer id : result) {
+            ActivityConfig config = ActivityManager.instance().get(id);
+            if (config.type != activityTypeEnum.ID) {
+                result.remove(id);
+            }
+		}
+		return new ArrayList<Integer>(result);
 	}
 
 	/** 

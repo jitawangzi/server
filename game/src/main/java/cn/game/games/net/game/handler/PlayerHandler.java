@@ -519,6 +519,9 @@ public class PlayerHandler extends GameBaseHandler {
 		guideMap.put(request.getType(), request.getStep());
 		client.sendProtocol(resp);
 		GameLogger.newstages(player, request.getType(), request.getStep());
+		if (request.getType() == 1 && request.getStep() == 1) {
+			GameLogger.serverEvent(player.getAccount(), 10020);
+		}
 	}
 
 	private void patrolInfo(NetClient client, Object message) {
@@ -1058,6 +1061,7 @@ public class PlayerHandler extends GameBaseHandler {
 		builder.setInfo(PbBuilder.buildPlayerInfo(player));
 		client.sendProtocol(builder.build());
 		GameClientManager.getInstance().broadcastOnlineToOtherServer(player.getPlayerId(), true, null);
+		GameLogger.serverEvent(player.getAccount(), 10016);
 	}
 
 	protected void logout(NetClient client, Object message) {

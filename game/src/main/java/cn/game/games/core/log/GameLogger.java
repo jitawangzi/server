@@ -104,7 +104,7 @@ public class GameLogger extends DeprecatedLogger {
 //	 * 时间，游戏标识，SDK版本号，系统，推广渠道id，设备唯一标识，账号id，自定义事件id，客户端版本号
 //	 * 时区
 //	 */
-//    public static void clientEvent(PbProtocol.LoginCheckReq req, int eventId, String ip) {
+//    public static void clientEvent(LoginCheckReq req, int eventId, String ip) {
 //        try {
 //            Object[] array;
 //            if (req != null) {
@@ -129,21 +129,19 @@ public class GameLogger extends DeprecatedLogger {
 //        }
 //    }
 
-//
-//	/**
-//	 * 时间、日志模块名、日志版本、匿名id、自定义事件id、自定义事件名、客户端当前版本、IP
-//	 */
-//    public static void clientEvent(Account account, int eventId) {
-//        String sdkDeviceId = account.getSdkDeviceId();
-//        String adChannel = account.adChannel;
-//        String system = account.deviceType;
-//        Object[] array = new Object[]{
-//                getCurrentTimeLogText(), GameLogAssistant.APP_KEY, account.sdkVersion, system, adChannel, sdkDeviceId, account.getAccountId(), eventId, account.version,
-//                GameLogAssistant.TIME_ZONE
-//        };
-//        LoggerType.serverevent.logger.info(LoggerType.splice(array));
-//    }
-//
+
+	public static void serverEvent(Account account, int eventId) {
+		String sdkversion = account == null ? "null" : account.sdkVersion;
+		String system = "all";
+		String adChannel = account == null ? "null" : account.adChannel;
+		String sdkDeviceId = account == null ? "null" : account.deviceId;
+		String accountId = account == null ? "null" : account.accountId;
+		String version = account == null ? "null" : account.version;
+		Object[] array = new Object[] { getCurrentTimeLogText(), Config.APP_KEY, sdkversion, system, adChannel, sdkDeviceId, accountId,
+				eventId, version };
+		LoggerType.serverevent.logger.info(LoggerType.splice(array));
+	}
+
 
 	/**
 	 * 心跳

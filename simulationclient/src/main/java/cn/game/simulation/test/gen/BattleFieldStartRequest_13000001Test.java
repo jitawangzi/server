@@ -10,6 +10,7 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class BattleFieldStartRequest_13000001Test extends ServerTest {
@@ -33,14 +34,7 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 		builder.setType(1);
 
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(1);
-		if (battleTypeList != null) {
-			for (BattleConfig battleConfig : battleTypeList) {
-				if (battleConfig.preBattle == 0) {
-					builder.setTypeId(battleConfig.ID);
-					break;
-				}
-			}
-		}
+		builder.setTypeId(Rnd.randomElement(battleTypeList).ID);
 
 		return builder.build();
 	}

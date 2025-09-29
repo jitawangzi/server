@@ -12,11 +12,12 @@ import cn.game.simulation.test.base.ServerTest;
 import java.util.List;
 
 @Component
-public class BattleDaoHeartSweepBatchRequest_13000062Test extends ServerTest{
+public class BattleDaoHeartSweepBatchRequest_13000062Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.newBuilder() ;
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062
+				.newBuilder();
 
 		int type = 2;
 		builder.setType(type);
@@ -28,13 +29,14 @@ public class BattleDaoHeartSweepBatchRequest_13000062Test extends ServerTest{
 		} else {
 			builder.setId(20001);
 		}
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.newBuilder() ;
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062
+				.newBuilder();
 
 		int type = 2;
 		builder.setType(type);
@@ -46,13 +48,13 @@ public Message getMessagePressure(Client client) {
 		} else {
 			builder.setId(20001);
 		}
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    BattleDaoHeartSweepBatchRequest_13000062Test instance = new BattleDaoHeartSweepBatchRequest_13000062Test();
-	    instance.start();
+		BattleDaoHeartSweepBatchRequest_13000062Test instance = new BattleDaoHeartSweepBatchRequest_13000062Test();
+		instance.start();
 	}
 
 }

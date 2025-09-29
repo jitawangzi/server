@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.Message;
 
 import cn.game.core.net.pressure.GlobalMessageStatistics;
+import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
@@ -85,6 +86,8 @@ public class ServerTestContext {
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
+		ActivityStateManager.getInstance().start();
+
 		init();
 		initEnvFromArgs(args);
 
@@ -153,7 +156,8 @@ public class ServerTestContext {
 							futures.add(channelFuture);
 						}
 					}
-					CompletableFuture<Void>[] completableFutures = futures.stream().map(ServerTestContext::toCompletableFuture)
+					CompletableFuture<Void>[] completableFutures = futures.stream()
+							.map(ServerTestContext::toCompletableFuture)
 							.toArray(CompletableFuture[]::new);
 
 					CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures);
@@ -167,8 +171,7 @@ public class ServerTestContext {
 						e.printStackTrace();
 					}
 
-					GlobalMessageStatistics.getInstance()
-							.calculateStatisticsAndSaveResult(clients);
+					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
 					System.err.println("shutdown hook execution completed");
 
 				} catch (Exception e) {
@@ -292,7 +295,8 @@ public class ServerTestContext {
 		System.exit(0);
 	}
 
-	public static void send(Client client, Message message) throws URISyntaxException, InterruptedException, UnknownHostException, SSLException {
+	public static void send(Client client, Message message)
+			throws URISyntaxException, InterruptedException, UnknownHostException, SSLException {
 
 		if (login) {
 			client.loginPassport(loginServerUrl);
@@ -370,7 +374,8 @@ public class ServerTestContext {
 		passportUsername = initialProp.getProperty("user.name");
 		pwd = initialProp.getProperty("user.pwd");
 		gateServerIp = initialProp.getProperty("game.server.ip");
-		gateServerPort = initialProp.getProperty("game.server.port") == null ? 0 : Integer.parseInt(initialProp.getProperty("game.server.port"));
+		gateServerPort = initialProp.getProperty("game.server.port") == null ? 0
+				: Integer.parseInt(initialProp.getProperty("game.server.port"));
 		loginServerUrl = initialProp.getProperty("login.server.url");
 
 		logbackFile = initialProp.getProperty("logbackFile");
