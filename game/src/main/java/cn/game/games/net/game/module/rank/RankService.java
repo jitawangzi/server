@@ -818,6 +818,7 @@ public class RankService {
 						removeRank(RankType.DaShengLeiTaiDay);
 						// 准备NPC数据
 						setNpcToRank(serverId, rankType);
+						setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
 					});
 				}
 			}else {
