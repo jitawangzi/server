@@ -1,10 +1,15 @@
 package cn.game.simulation.test.base;
 
+import java.util.List;
+
 import com.google.protobuf.Message;
 
+import cn.game.games.net.game.manager.ActivityStateManager;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.jmeter.util.JmeterUtil;
+import cn.game.util.Rnd;
 import cn.game.util.log.LoggerManager;
 
 public abstract class ServerTest {
@@ -34,6 +39,19 @@ public abstract class ServerTest {
 	public String getHexStringMessage(Client client) {
 		Message message = getMessage(client);
 		return JmeterUtil.toHexString(message);
+	}
+	
+	/** 
+	 * 随机一个已开启的活动id
+	 * @param activityTypeEnum  活动类型
+	 * @return
+	 */
+	public int activityId(ActivityTypeEnum activityTypeEnum) {
+		List<Integer> testGetOpenIds = ActivityStateManager.getInstance().testGetOpenIds(ActivityTypeEnum.ActivityZhuanPan); 
+		if (testGetOpenIds.isEmpty()) {
+			return 0 ; 
+		}
+		return Rnd.randomElement(testGetOpenIds) ; 
 	}
 
 	public void start() throws Exception {

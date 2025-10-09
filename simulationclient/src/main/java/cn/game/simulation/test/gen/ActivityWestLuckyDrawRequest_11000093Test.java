@@ -13,7 +13,8 @@ public class ActivityWestLuckyDrawRequest_11000093Test extends ServerTest{
 	public Message getMessage(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.newBuilder() ; 
 		
-		
+		builder.setActivityId(1001); 
+		builder.setDrawNum(1); 
 		
 		return builder.build() ; 
 	}
@@ -21,8 +22,8 @@ public class ActivityWestLuckyDrawRequest_11000093Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.newBuilder() ; 
-		
-		
+		builder.setActivityId(1001); 
+		builder.setDrawNum(1); 
 		
 		return builder.build() ; 
 	}

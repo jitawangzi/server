@@ -25,6 +25,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -557,6 +558,10 @@ public class BattleModule extends BasePlayerModule  {
 			LingPoBattle lingPoBattle = getBattle(DungeonTypeEnum.LingPo);
 			if (lingPoBattle != null) {
 				lingPoBattle.updateBattleId();
+			}
+			int battleId = event.getIntParameter(0); 
+			if (battleId == 19902) {
+				GameLogger.serverEvent(player.getAccount(), 10022);
 			}
 			break;
 		}

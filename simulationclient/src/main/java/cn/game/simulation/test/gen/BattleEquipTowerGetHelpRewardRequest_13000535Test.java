@@ -20,14 +20,13 @@ public class BattleEquipTowerGetHelpRewardRequest_13000535Test extends ServerTes
 	
 	@Override
 	public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_13000535.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_13000535.newBuilder() ;
-		client.helpRewardList.forEach(item->
-				{
-					builder.addBattleID(item.getHelpID());
-					builder.addFloor(item.getHelpfloor());
-				}
-		);
-		return builder.build() ;
+		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_13000535.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerGetHelpRewardRequest_13000535
+				.newBuilder();
+		client.helpRewardList.forEach(item -> {
+			builder.addBattleID(item.getHelpID());
+			builder.addFloor(item.getHelpfloor());
+		});
+		return builder.build();
 	}
 	
 	public static void main(String args[]) throws Exception {

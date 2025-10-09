@@ -23,7 +23,8 @@ public class ActivityWestLuckyCountRewardRequest_11000097Test extends ServerTest
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.newBuilder() ; 
 		
-		
+		builder.setActivityId(1001); 
+		builder.addRewardIndex(1); 
 		
 		return builder.build() ; 
 	}

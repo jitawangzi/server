@@ -86,6 +86,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Promise;
+
 /**
  * 模拟的客户端数据
 * 2016-6-13 下午5:15:18
@@ -131,7 +132,7 @@ public class Client extends AbstractNetClient {
 	/** 是否是pc端 */
 	private boolean isPc;
 	/** 存档列表 */
-	//	List<PlayerArchiveInfo> archivesList;
+	// List<PlayerArchiveInfo> archivesList;
 	public volatile int messageType = (byte) 0x01;
 
 	public static Map<String, Client> clients = new ConcurrentHashMap<>();
@@ -145,9 +146,9 @@ public class Client extends AbstractNetClient {
 //	public static final String defaultChannel = "wechat";
 //	public static final String defaultChannel = "steam";
 //	int seq = 0;
-	
-	public AtomicInteger sendCount = new AtomicInteger(0) ; 
-	public AtomicInteger recvCount = new AtomicInteger(0) ; 
+
+	public AtomicInteger sendCount = new AtomicInteger(0);
+	public AtomicInteger recvCount = new AtomicInteger(0);
 	public AtomicInteger seq = new AtomicInteger(1);
 
 	private volatile int resendCount = 0;
@@ -167,7 +168,7 @@ public class Client extends AbstractNetClient {
 	/** 玩家数据 **/
 	private PlayerAllInfo playerAllInfo;
 
-	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse ;
+	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse;
 	private long inPvPBattlePid;
 
 	private Map<Integer, Message> sendingMessageMap = new HashMap<>();
@@ -192,7 +193,7 @@ public class Client extends AbstractNetClient {
 	// 保存一些临时数据，用在后续的测试模拟协议数据
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
-	
+
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
@@ -227,7 +228,7 @@ public class Client extends AbstractNetClient {
 
 	public void loginPassport(String url) {
 
-		JSONObject jsonObject = new JSONObject() ; 
+		JSONObject jsonObject = new JSONObject();
 
 		if (name == null || name.trim().length() == 0) {
 			register(url);
@@ -250,17 +251,17 @@ public class Client extends AbstractNetClient {
 			loginPassport(url);
 			return;
 		}
-		
-		JSONObject respJsonObject = JSONObject.parseObject(resp); 
+
+		JSONObject respJsonObject = JSONObject.parseObject(resp);
 		systemOutLog.info("登陆返回: " + respJsonObject);
 		String passport = respJsonObject.getString("passport_session_id");
 		setPassportSessionId(passport);
 //		map = new HashMap<>();
-		jsonObject = new JSONObject() ; 
+		jsonObject = new JSONObject();
 //		map.put("passport_session_id", passport+"");
-		jsonObject = new JSONObject() ;
-		jsonObject.put("passport_session_id", passport+"");
-		resp = HttpUtil.postJSON(url + "/account/server_list", jsonObject.toJSONString(),"UTF-8",null);
+		jsonObject = new JSONObject();
+		jsonObject.put("passport_session_id", passport + "");
+		resp = HttpUtil.postJSON(url + "/account/server_list", jsonObject.toJSONString(), "UTF-8", null);
 
 		JSONObject serverList = JSONObject.parseObject(resp);
 		JSONArray jsonArray = serverList.getJSONArray("serverList");
@@ -268,7 +269,7 @@ public class Client extends AbstractNetClient {
 			JSONObject obj = jsonArray.getJSONObject(i);
 			String sid = obj.getString("server_id");
 			if (serverId != null && serverId.equals(sid)) {
-				this.serverIp = obj.getString("ip") ; 
+				this.serverIp = obj.getString("ip");
 				this.serverPort = obj.getIntValue("port");
 				break;
 			}
@@ -356,7 +357,7 @@ public class Client extends AbstractNetClient {
 	public void register(String url, String name, String pwd) {
 
 		Map<String, String> map = new HashMap<>();
-		JSONObject jsonObject = new JSONObject() ; 
+		JSONObject jsonObject = new JSONObject();
 		if (name == null) {
 			this.name = UUID.randomUUID().toString();
 			if (pwd != null && pwd.length() > 0) {
@@ -419,7 +420,7 @@ public class Client extends AbstractNetClient {
 
 		startConnectTime = System.currentTimeMillis();
 		connect(ip, port, sourceIp);
-		
+
 //		PlayerMsg.PlayerLoginRequest_01000001.Builder builder = PlayerMsg.PlayerLoginRequest_01000001.newBuilder();
 //		builder.setServerId(ServerTestContext.serverId);
 //		builder.setSessionId(passportSessionId + "");
@@ -461,7 +462,6 @@ public class Client extends AbstractNetClient {
 
 		// builder.addFriendId(22386);
 
-		
 		System.exit(0);
 
 	}
@@ -481,7 +481,7 @@ public class Client extends AbstractNetClient {
 	public Promise<Client> connect(String serverIp, int port, boolean login) throws URISyntaxException, UnknownHostException, SSLException {
 		return connect(serverIp, port, null, true);
 	}
-	
+
 	/**
 	 * 连接游戏服务器
 	 * @param serverIp
@@ -492,13 +492,14 @@ public class Client extends AbstractNetClient {
 	 * @throws UnknownHostException 
 	 * @throws SSLException 
 	 */
-	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login) throws URISyntaxException, UnknownHostException, SSLException {
+	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login)
+			throws URISyntaxException, UnknownHostException, SSLException {
 		if (serverIp == null) {
 			serverIp = this.serverIp;
 			port = this.serverPort;
 		}
 		if (StringUtils.isEmpty(serverIp) || port == 0) {
-			throw new IllegalArgumentException("serverIp or port is null,没有指定game ip和端口，也没有可用的指定id的game服务器")	;
+			throw new IllegalArgumentException("serverIp or port is null,没有指定game ip和端口，也没有可用的指定id的game服务器");
 		}
 		InetAddressValidator validator = InetAddressValidator.getInstance();
 		boolean validInet4Address = validator.isValidInet4Address(serverIp);
@@ -506,9 +507,11 @@ public class Client extends AbstractNetClient {
 		// 如果配置了域名，则使用wss连接，如果是ip则用ws
 		String url = (wss ? "wss://" : "ws://") + serverIp + ":" + port + "/";
 		URI uri = new URI(url);
-		final WebSocketClientHandler handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(uri,
-				WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
-		Bootstrap bootstrap = new Bootstrap().group(group).channel(NioSocketChannel.class).option(ChannelOption.SO_REUSEADDR, true)
+		final WebSocketClientHandler handler = new WebSocketClientHandler(
+				WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+		Bootstrap bootstrap = new Bootstrap().group(group)
+				.channel(NioSocketChannel.class)
+				.option(ChannelOption.SO_REUSEADDR, true)
 				.option(ChannelOption.TCP_NODELAY, true);
 
 		bootstrap.handler(new ChannelInitializer<SocketChannel>() {
@@ -523,8 +526,8 @@ public class Client extends AbstractNetClient {
 				ClientHandler clientHandler = new ClientHandler();
 				clientHandler.setDispatcher(SpringContextLoader.getContext().getBean(Dispatcher.class));
 				// 支持大点的数据包。5m
-				p.addLast(new HttpClientCodec(), new HttpObjectAggregator(5 * 1024 * 1024), new WebSocketFrameAggregator(5 * 1024 * 1024), handler,
-						clientHandler);
+				p.addLast(new HttpClientCodec(), new HttpObjectAggregator(5 * 1024 * 1024), new WebSocketFrameAggregator(5 * 1024 * 1024),
+						handler, clientHandler);
 			}
 		});
 
@@ -553,14 +556,14 @@ public class Client extends AbstractNetClient {
 					PlayerLoginRequest_01000001.Builder builder = PlayerLoginRequest_01000001.newBuilder();
 					builder.setSessionId(passportSessionId + "");
 					builder.setVerstion(version);
-					
+
 					builder.setAdChannel("4019392002");
 					builder.setPlatform(5);
 					builder.setSdkPayChannel("0010");
 					builder.setSdkVersion("NULL");
 					builder.setSystem("system");
 					builder.setClueToken("{}");
-					
+
 					sendProtocol(builder.build());
 				}
 			});
@@ -595,9 +598,8 @@ public class Client extends AbstractNetClient {
 				if (f.isSuccess()) {
 //					System.out.print("==============================消息发送成功==========================");
 					if (!msg.getClass().getSimpleName().equals("PlayerHeartbeatRequest_01000005")) {
-						netLogger
-								.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name,
-										msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend);
+						netLogger.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name,
+								msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend);
 					}
 					// 先不记录这个数据了
 //					sendingMessageMap.put(seqSend, msg);
@@ -607,17 +609,14 @@ public class Client extends AbstractNetClient {
 					resendCount = 0;
 
 				} else {
-					logger
-							.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]", playerId, name,
-									msg.getClass().getSimpleName(),
-							TextFormat.shortDebugString(msg), seqSend, f.cause());
+					logger.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]", playerId, name,
+							msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend, f.cause());
 				}
 			});
 			return future;
 //			logger.info("【send】: " + msg.getClass().getSimpleName() + "  " + TextFormat.shortDebugString(msg));
 		} else {
-			logger.warn("player[{}] write message[{}] err,session[{}]", this, TextFormat.shortDebugString(msg),
-					channel);
+			logger.warn("player[{}] write message[{}] err,session[{}]", this, TextFormat.shortDebugString(msg), channel);
 			return null;
 		}
 
@@ -694,13 +693,13 @@ public class Client extends AbstractNetClient {
 	 * @return
 	 */
 	public boolean isLastMessageReturn() {
-		int i = seq.get(); 
+		int i = seq.get();
 		if (i == 1) {
 			return true;
 		}
 		return recvMessages.get(i - 1) != null;
 	}
-	
+
 	public void waitLastMessageReturn() throws TimeoutException {
 		int loop = 0;
 		while (!isLastMessageReturn()) {
@@ -723,7 +722,6 @@ public class Client extends AbstractNetClient {
 			setLastSendMessageTime(System.currentTimeMillis());
 		}
 	}
-	
 
 	public ChannelFuture sendProtocol(Message message) {
 		setLastSendMessageTime(System.currentTimeMillis());
@@ -745,6 +743,7 @@ public class Client extends AbstractNetClient {
 			sendWsPack(message);
 		}
 	}
+
 	public void sendProtocolAfterInit(Supplier<Message> supplier, boolean wait) {
 
 		if (wait) {
@@ -795,19 +794,17 @@ public class Client extends AbstractNetClient {
 		this.playerAllInfo = playerAllInfo;
 	}
 
-
-
 	public void setPc(boolean isPc) {
 		this.isPc = isPc;
 	}
 
-	//	public List<PlayerArchiveInfo> getArchivesList() {
-	//		return archivesList;
-	//	}
+	// public List<PlayerArchiveInfo> getArchivesList() {
+	// return archivesList;
+	// }
 	//
-	//	public void setArchivesList(List<PlayerArchiveInfo> archivesList) {
-	//		this.archivesList = archivesList;
-	//	}
+	// public void setArchivesList(List<PlayerArchiveInfo> archivesList) {
+	// this.archivesList = archivesList;
+	// }
 
 	public long getLastSendMessageTime() {
 		return lastSendMessageTime;
@@ -850,10 +847,10 @@ public class Client extends AbstractNetClient {
 	}
 
 	public String getinPvPBattlePid() {
-		return inPvPBattlePid+"";
+		return inPvPBattlePid + "";
 	}
 
-	//	@Override
+	// @Override
 //	public String getIp() {
 //		return null;
 //	}
@@ -862,6 +859,5 @@ public class Client extends AbstractNetClient {
 //	public int getPort() {
 //		return 0;
 //	}
-
 
 }
