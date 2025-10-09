@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.game.games.cache.entity.Hero;
-import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.RandomGroupConfig;
-import cn.game.protocol.generated.manager.HeroManager;
-import cn.game.protocol.generated.manager.RandomGroupManager;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
@@ -16,10 +14,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.guarantee.Guarantee;
 import cn.game.games.net.game.module.guarantee.GuaranteeModule;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.GuaranteeConfig;
 import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
-import cn.game.protocol.generated.manager.GuaranteeManager;
 import cn.game.protocol.protobuf.DrawMsg.DrawHeroInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
@@ -70,7 +65,7 @@ public class HeroRecruit {
 	}
 	public void refresh() {
 		drawHeroInPoolList.clear();
-		int randomId = 1001001;
+		int baodi = -1;
         if(huiLiuCount>0 ) {
             huiLiuCount--;
         }
@@ -83,18 +78,31 @@ public class HeroRecruit {
 			guarantee.reset();
 			guaranteeIndex = Rnd.nextInt(3);
 			guaranteeRandomId = guaranteeConfig.effectiveParam;
+			RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(guaranteeRandomId);
+			baodi = randomGivenConfig.RandomParameterGroupId[0];
 		}
 		
 		for (int i = 0; i < 3; i++) {
-			int tmpRandomId = randomId;
-			if (guaranteeIndex > -1 && guaranteeIndex == i) {
-				tmpRandomId = guaranteeRandomId;
-			}
+//			int tmpRandomId = randomId;
+//			if (guaranteeIndex > -1 && guaranteeIndex == i) {
+//				tmpRandomId = guaranteeRandomId;
+//			}
 			//if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
 			//{
 			//	bagDetect(i);
 			//}else {
-			   commonDrop(i);
+			if(baodi > -1 && guaranteeIndex == i)
+			{
+				log.info("commonDrop:保底权重 baodi={} ", baodi);
+				int group =baodi;
+				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
+				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
+				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
+			}else {
+				commonDrop(i);
+			}
+
 		//}
 		}
 		heroRefreshTime = DateUtil.currentTimeSeconds();
@@ -357,9 +365,27 @@ public class HeroRecruit {
 			}
 		}
         int index = Rnd.randomIndex(radomWeight);
+		var drawHeroInPool = value.get(index).getItemId();
+		ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool);
+
+		log.info("当前可随机英雄  品质:{}",itemConfig.Quality);
 		return value.get(index);
 	}
-
+	public int radom31test() {
+		List<Integer> radomWeight = new ArrayList<>();
+		List<DrawHeroInPool> value = new ArrayList<>();
+		for (int j = 0; j < drawHeroInPoolList.size(); j++) {
+			var drawHeroInPool = drawHeroInPoolList.get(j);
+			if(drawHeroInPool.getIsDraw()==0){
+				radomWeight.add(drawHeroInPool.getItemWeight());
+				value.add(drawHeroInPool);
+			//	log.info("当前可随机英雄  pos:{}  Id:{} radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.getItemWeight());
+			}
+		}
+		int index = Rnd.randomIndex(radomWeight);
+		var drawHeroInPool = value.get(index);
+		return drawHeroInPool.quality;
+	}
     public int getNoHighQualityRecruitCount() {
         return noHighQualityRecruitCount;
     }
