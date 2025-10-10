@@ -604,13 +604,13 @@ public class ShopHandler extends GameBaseHandler {
         int id = req.getId();
         LimitedTimeGiftBuyResponse_15000062.Builder resp = LimitedTimeGiftBuyResponse_15000062.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        
-        LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class); 
-        Future<List<RewardInfo>> buy = module.buy(id, true); 
+        LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class);
+        Future<List<RewardInfo>> buy = module.buy(id, true);
         buy.map(r -> {
-        	resp.addAllRewards(r);
-        	client.sendProtocol(resp.build());
-        	return null; 
-		}).onFailure(player::handleFail); 
+            resp.addAllRewards(r);
+            client.sendProtocol(resp.build());
+            return null;
+        }).onFailure(player::handleFail);
     }
+
 }
