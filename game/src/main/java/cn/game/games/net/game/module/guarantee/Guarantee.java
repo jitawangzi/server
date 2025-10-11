@@ -81,9 +81,11 @@ public class Guarantee {
 			}
 		}
 		if (!hasNextStage) {
-			nexGuaranteeConfig = typeRoundList.get(0);
 			this.stage = 1;
 			this.round++;
+			roundToQuary = this.round > max ? max : this.round;
+			typeRoundList = GuaranteeManager.instance().getTypeRoundList(guaranteeConfig.type, roundToQuary);
+			nexGuaranteeConfig = typeRoundList.get(0);
 		} else {
 			this.stage++;
 		}
