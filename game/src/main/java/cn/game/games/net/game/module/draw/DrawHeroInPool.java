@@ -15,9 +15,9 @@ public class DrawHeroInPool {
     private  int position;
     public  transient int quality;
     @Deprecated
-    private transient int itemFrom;
+    private  int itemFrom;
     @Deprecated
-    private transient  int huiLiuAdd;
+    private   int huiLiuAdd;
     public DrawHeroInPool()
     {
     }

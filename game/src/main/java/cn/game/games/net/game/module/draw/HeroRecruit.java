@@ -41,7 +41,7 @@ public class HeroRecruit {
 	private HashMap<Integer , Integer> drawHeroCountMap= new HashMap<Integer , Integer>();
 	/** 回流增益次数   登录触发回流 设置为N次  之后随机基础的3英雄会带有回流增益 */
 	@Deprecated
-	private transient int huiLiuCount;
+	private  int huiLiuCount;
 	@JsonIgnore
 	private transient Player player;
 
