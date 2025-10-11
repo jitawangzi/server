@@ -277,7 +277,7 @@ public class VertxThirdPartyConfirmReq implements BaseVertxHandler {
 	private void sendSuccessResponse(HttpServerResponse response, User user) {
 		AccountLoginResponse responseProto = AccountLoginResponse.newBuilder()
 				.setPassportSessionId(String.valueOf(user.getSessionId()))
-				.setUserId(String.valueOf(user.getId()))
+				.setUserId(String.valueOf(user.getUsername()))
 				.setExt(user.getExtInfo() == null ? "" : user.getExtInfo())
 				.build();
 		response.end(Buffer.buffer(responseProto.toByteArray()));

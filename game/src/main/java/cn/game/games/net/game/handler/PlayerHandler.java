@@ -942,12 +942,17 @@ public class PlayerHandler extends GameBaseHandler {
 				return null;
 			}
 			if (reconnect) { // 客户端主动重连
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
-						oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
-				if (!isReallyReconnect) {
-					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-					GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
-				}
+				// 这里可能有阻塞操作
+				ServerContext.getInstance().getProcessor().process(oldGameClient == null ? 0 : oldGameClient.getPlayerId(), () -> {
+					boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
+							oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
+					if (!isReallyReconnect) {
+						client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
+						GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
+					}
+					return null;
+				}, null);
+
 			} else {
 				// 客户端新登陆
 				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
@@ -956,11 +961,11 @@ public class PlayerHandler extends GameBaseHandler {
 							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
 //							.compose(PlayerHelper::saveSimplePlayer)
 							.compose(r -> {
-								return ServerContext.getInstance().getProcessor().process(r.getPlayerId(),
-									    () -> {
-									    	 handleLoginSuccess(newGameClient, r); 
-									    	 return null; 
-									    },null); 
+								return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
+									// 这里可能有阻塞操作
+									handleLoginSuccess(newGameClient, r);
+									return null;
+								}, null);
 							})
 							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 				}
