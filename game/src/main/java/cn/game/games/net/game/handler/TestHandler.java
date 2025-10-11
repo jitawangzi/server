@@ -1,5 +1,9 @@
 package cn.game.games.net.game.handler;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Time;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -13,8 +17,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.game.games.net.game.module.guarantee.Guarantee;
+import cn.game.games.net.game.module.guarantee.GuaranteeModule;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.*;
 import org.apache.commons.lang3.StringUtils;
@@ -412,9 +419,54 @@ public class TestHandler extends GameBaseHandler {
             }
             case "init":
             {
-            	TestHelper.setMaxCurrency(player, OpType.Test);
-            	break;
-            }   
+                TestHelper.setMaxCurrency(player, OpType.Test);
+                break;
+            }
+            case "ssss":
+            {
+                File file = new File("D:\\test\\");
+                if (!file.exists()) {
+                    file.mkdirs(); // 创建目录
+                }
+                String fileName = "qualityList"+ DateUtil.currentTimeSeconds() +".txt";
+                // 创建一个文件来保存数据
+                File outputFile = new File(file, fileName);
+                StringBuilder stringBuilder = new StringBuilder();
+                GuaranteeModule guaranteeModule = player.getGuaranteeModule();
+                Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
+                guarantee.setRound(1);
+                guarantee.setStage(1);
+                guarantee.setCount(0);
+                guarantee.setId(1);
+                for (int i = 0; i < p1; i++) {
+                    var hero =  player.getDrawModule().getHeroRecruit();
+                    hero.refresh();
+                    List<Integer> qualityList = new ArrayList<>();
+                    for(var h:hero.getDrawHeroInPoolList()) {
+                        qualityList.add(h.quality);
+                    }
+                    qualityList.sort((o1, o2) -> o2-o1);
+                    int end= hero.radom31test();
+
+                    qualityList.add( end);
+                    for (int j = 0; j < qualityList.size(); j++) {  // 修改了循环条件
+                        stringBuilder.append(qualityList.get(j));
+                        if(j != qualityList.size()-1) {  // 修改了条件判断
+                            stringBuilder.append(":");
+                        }
+                    }
+                    stringBuilder.append("\n");
+                    // 将字符串写入文件
+                    try (FileWriter writer = new FileWriter(outputFile)) {
+                        writer.write(stringBuilder.toString());
+                    } catch (IOException e) {
+                        logger.error("写入文件失败", e);
+                    }
+                    player.handleEvent(EventTypeEnum.HeroRecruit);
+                }
+               // System.out.println(stringBuilder.toString());
+                break;
+            }
             case "rankds":
             {
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), p1);

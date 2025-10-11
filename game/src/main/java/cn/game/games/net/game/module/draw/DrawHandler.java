@@ -140,7 +140,7 @@ public class DrawHandler extends GameBaseHandler {
         //		resp.setGold(gold);
         resp.setDraw(drawModule.buildDrawInfo(id));
         client.sendProtocol(resp.build());
-        GameLogger.recruit(player, id, drawCount, countReq);
+
     }
 
     private void heroWish(NetClient client, Object message) {
@@ -305,5 +305,6 @@ public class DrawHandler extends GameBaseHandler {
 		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
 
         client.sendProtocol(resp.build());
+        GameLogger.recruit(player, id, count, multiple);
     }
 }

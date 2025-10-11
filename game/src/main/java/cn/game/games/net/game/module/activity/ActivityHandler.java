@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import cn.game.games.net.game.module.activity.impl.player.*;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
 import org.springframework.stereotype.Component;
 import com.mysql.cj.x.protobuf.MysqlxNotice.ServerHello;
 import cn.game.core.net.client.NetClient;
@@ -21,37 +25,9 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.activity.impl.player.ActivityJQB;
-import cn.game.games.net.game.module.activity.impl.player.ActivityLeiChong;
-import cn.game.games.net.game.module.activity.impl.player.ActivityMeiRiBaoLi;
-import cn.game.games.net.game.module.activity.impl.player.ActivityQingShen;
-import cn.game.games.net.game.module.activity.impl.player.ActivityWestLucky;
-import cn.game.games.net.game.module.activity.impl.player.DayGiftActivity;
-import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
-import cn.game.games.net.game.module.activity.impl.player.ServerOpenRankPlayerActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDayCarnivalActivity;
-import cn.game.games.net.game.module.activity.impl.player.SevenDaysSignin;
 import cn.game.games.net.game.module.rank.RankHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.net.game.module.recharge.PayType;
-import cn.game.protocol.generated.config.ActivityConfig;
-import cn.game.protocol.generated.config.ActivityMeiRiTeHuiConfig;
-import cn.game.protocol.generated.config.ActivityQingShenConfig;
-import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
-import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
-import cn.game.protocol.generated.config.ActivityWestLuckyProgressConfig;
-import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
-import cn.game.protocol.generated.config.FirstChargeConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.SevenDaysSigninConfig;
-import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.protocol.generated.manager.ActivityMeiRiTeHuiManager;
-import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
-import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
-import cn.game.protocol.generated.manager.ActivityWestLuckyProgressManager;
-import cn.game.protocol.generated.manager.ActivityWestLuckyTurntableManager;
-import cn.game.protocol.generated.manager.FirstChargeManager;
-import cn.game.protocol.generated.manager.SevenDaysSigninManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg;
@@ -96,6 +72,12 @@ import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardResponse_11000206;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardResponse_11000098;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignBuyRequest_11000301;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignBuyResponse_11000302;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignAllRequest_11000303;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignAllResponse_11000304;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignReceiveRequest_11000305;
+import cn.game.protocol.protobuf.ActivityMsg.FundPassSignReceiveResponse_11000306;
 
 /**
  * 活动处理器
@@ -132,6 +114,9 @@ public class ActivityHandler extends GameBaseHandler {
         putInvoker(PbProtocol.ActivityServerOpenRankListRequest_11000203, this::serverOpenRankList);
         putInvoker(PbProtocol.ActivityServerOpenRankRewardRequest_11000205, this::serverOpenRankReward);
         putInvoker(PbProtocol.ActivityWestLuckyCountRewardRequest_11000097, this::westLuckyCountReward);
+        putInvoker(PbProtocol.FundPassSignBuyRequest_11000301, this::fundPassSignBuy);
+        putInvoker(PbProtocol.FundPassSignAllRequest_11000303, this::fundPassSignAll);
+        putInvoker(PbProtocol.FundPassSignReceiveRequest_11000305, this::fundPassSignReceive);
     }
 
     private void empty(NetClient client, Object message) {
@@ -478,7 +463,7 @@ public class ActivityHandler extends GameBaseHandler {
         if (activityWestLucky.getTotalNum() + drawNum > GlobalConst.ActivityWestLuckyDayCount) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
-		}
+        }
         int[] cost = activityWestLucky.getDrawItemId();
         if (drawNum > 1) {
             cost = GameUtil.arrayMultiple(cost, drawNum);
@@ -621,16 +606,15 @@ public class ActivityHandler extends GameBaseHandler {
                 break;
             }
         }
-        
         RankType rankType = null;
         if (type == RankType.TotalServerOpenActivity.ID) {
-        	rankType = RankType.TotalServerOpenActivity;
-        }else {
-        	if (curConfig == targetConfig) {
-        		rankType = RankType.get(targetConfig.RankID);
-        	} else {
-        		rankType = RankType.get(targetConfig.RewardRankId);
-        	}
+            rankType = RankType.TotalServerOpenActivity;
+        } else {
+            if (curConfig == targetConfig) {
+                rankType = RankType.get(targetConfig.RankID);
+            } else {
+                rankType = RankType.get(targetConfig.RewardRankId);
+            }
         }
         CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
         rankInfo.thenAccept(r -> {
@@ -658,36 +642,92 @@ public class ActivityHandler extends GameBaseHandler {
     private void westLuckyCountReward(NetClient client, Object message) {
         ActivityWestLuckyCountRewardRequest_11000097 req = (ActivityWestLuckyCountRewardRequest_11000097) message;
         List<Integer> rewardIndexList = req.getRewardIndexList();
-        int activityId = req.getActivityId(); 
+        int activityId = req.getActivityId();
         ActivityWestLuckyCountRewardResponse_11000098 defaultInstance = ActivityWestLuckyCountRewardResponse_11000098.getDefaultInstance();
         ActivityWestLuckyCountRewardResponse_11000098.Builder resp = ActivityWestLuckyCountRewardResponse_11000098.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        
         ActivityWestLucky activityWestLucky = (ActivityWestLucky) player.getActivityModule().get(activityId);
         if (activityWestLucky == null) {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        List<Integer> rewardIndexList2 = activityWestLucky.getRewardIndexList(); 
+        List<Integer> rewardIndexList2 = activityWestLucky.getRewardIndexList();
         for (Integer integer : rewardIndexList) {
-			if (rewardIndexList2.contains(integer)) {
-				client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
-				return;
-			}
-		}
-        ActivityWestLuckyProgressConfig activityWestLuckyProgressConfig = ActivityWestLuckyProgressManager.instance().get(activityId); 
-        int totalNum = activityWestLucky.getTotalNum(); 
+            if (rewardIndexList2.contains(integer)) {
+                client.sendProtocol(resp, ErrorMsgEnum.repeat_request.getId());
+                return;
+            }
+        }
+        ActivityWestLuckyProgressConfig activityWestLuckyProgressConfig = ActivityWestLuckyProgressManager.instance().get(activityId);
+        int totalNum = activityWestLucky.getTotalNum();
         for (Integer integer : rewardIndexList) {
-        	if (activityWestLuckyProgressConfig.count[integer] > totalNum) {
-        		client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
-        		return;
-        	}
-		}
+            if (activityWestLuckyProgressConfig.count[integer] > totalNum) {
+                client.sendProtocol(resp, ErrorMsgEnum.illegal_request.getId());
+                return;
+            }
+        }
         for (int i = 0; i < rewardIndexList.size(); i++) {
-        	List<RewardInfo> resources = PlayerHelper.addResources(player, activityWestLuckyProgressConfig.reward[i], OpType.ZhuanPanCountReward);
-        	resp.addAllReward(resources); 
-		}
-        rewardIndexList2.addAll(rewardIndexList); 
+            List<RewardInfo> resources = PlayerHelper.addResources(player, activityWestLuckyProgressConfig.reward[i], OpType.ZhuanPanCountReward);
+            resp.addAllReward(resources);
+        }
+        rewardIndexList2.addAll(rewardIndexList);
         client.sendProtocol(resp.build());
+    }
+
+    private void fundPassSignBuy(NetClient client, Object message) {
+        FundPassSignBuyRequest_11000301 req = (FundPassSignBuyRequest_11000301) message;
+        int id = req.getId();
+        FundPassSignBuyResponse_11000302 defaultInstance = FundPassSignBuyResponse_11000302.getDefaultInstance();
+        FundPassSignBuyResponse_11000302.Builder resp = FundPassSignBuyResponse_11000302.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+        int activityId = req.getActivityId();
+        FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
+        Future<Boolean> pay = player.pay(PayType.FundPassSignActivity, id, fundPassConfig.Price);
+        pay.onComplete(t -> {
+            if (t.result()) {
+                FundPassSignActivity activity = player.getActivityModule().get(activityId);
+                if (activity == null) {
+                    client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+                    return;
+                }
+                client.sendProtocol(activity.buy(id));
+            } else {
+                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+            }
+        });
+        client.sendProtocol(resp.build());
+    }
+
+    private void fundPassSignAll(NetClient client, Object message) {
+        FundPassSignAllRequest_11000303 req = (FundPassSignAllRequest_11000303) message;
+        FundPassSignAllResponse_11000304 defaultInstance = FundPassSignAllResponse_11000304.getDefaultInstance();
+        FundPassSignAllResponse_11000304.Builder resp = FundPassSignAllResponse_11000304.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        int id = req.getActivityId();
+
+        FundPassSignActivity activity = player.getActivityModule().get(id);
+        if (activity == null) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        client.sendProtocol(activity.buildActivityShowInfo());
+
+
+    }
+
+    private void fundPassSignReceive(NetClient client, Object message) {
+        FundPassSignReceiveRequest_11000305 req = (FundPassSignReceiveRequest_11000305) message;
+        FundPassSignReceiveResponse_11000306 defaultInstance = FundPassSignReceiveResponse_11000306.getDefaultInstance();
+        FundPassSignReceiveResponse_11000306.Builder resp = FundPassSignReceiveResponse_11000306.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        int activityId = req.getActivityId();
+        int id = req.getId();
+        FundPassSignActivity activity = player.getActivityModule().get(activityId);
+        if (activity == null) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        client.sendProtocol(activity.receive(id));
     }
 }

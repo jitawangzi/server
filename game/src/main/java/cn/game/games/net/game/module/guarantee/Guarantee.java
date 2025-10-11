@@ -6,9 +6,12 @@ import java.util.Set;
 
 import cn.game.protocol.generated.config.GuaranteeConfig;
 import cn.game.protocol.generated.manager.GuaranteeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Guarantee {
 
+	private static final Logger log = LoggerFactory.getLogger(Guarantee.class);
 	/** GuaranteeConfig 表ID */
 	private int id;
 	/** 当前轮次 */
@@ -36,6 +39,7 @@ public class Guarantee {
 		int ret = 0;
 		for (int i = 0; i < count; i++) {
 			this.count++;
+			log.info("幸运值+1 id:{} round:{} stage:{} count:{}", id, round, stage, this.count);
 			GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
 			if (this.count >= guaranteeConfig.count) {// 触发保底
 				ret = this.id;
@@ -77,13 +81,16 @@ public class Guarantee {
 			}
 		}
 		if (!hasNextStage) {
-			nexGuaranteeConfig = typeRoundList.get(0);
 			this.stage = 1;
 			this.round++;
+			roundToQuary = this.round > max ? max : this.round;
+			typeRoundList = GuaranteeManager.instance().getTypeRoundList(guaranteeConfig.type, roundToQuary);
+			nexGuaranteeConfig = typeRoundList.get(0);
 		} else {
 			this.stage++;
 		}
 		this.id = nexGuaranteeConfig.ID;
+		log.info("触发幸运值充值 id:{} round:{} stage:{} count:{}", id, round, stage, this.count);
 	}
 
 	public int getId() {
@@ -113,5 +120,7 @@ public class Guarantee {
 	public int getCount() {
 		return count;
 	}
-
+	public void setCount(int count) {
+		this.count = count;
+	}
 }

@@ -15,6 +15,7 @@ public class DrawHeroInPool {
     private  int huiLiuAdd;
     private  int isDraw;  // 0 未抽 1 已抽
     private  int position;
+    public  transient int quality;
     public DrawHeroInPool()
     {
     }
@@ -36,6 +37,7 @@ public class DrawHeroInPool {
             }
         }
         this.itemWeight = baseweight;
+        quality = heroConfig.Quality;
         System.out.println("--------------------当前物品随机概率-itemId=" +itemId +" itemWeight=" +itemWeight);
        // calWeight(noHighQualityCount,isHuiLiu);
     }

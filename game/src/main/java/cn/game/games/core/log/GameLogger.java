@@ -668,7 +668,7 @@ public class GameLogger extends DeprecatedLogger {
 	 */
 	public static void pvefight(Player player, int stageId, int type,  long time,boolean result) {
 		try {
-			List<Hero> battleHeros = player.getHeroModule().getBattleHeroList();
+			List<Hero> battleHeros = player.getBattleModule().getDefaultLineupHeroes();
 			List<Integer> heroList = battleHeros.stream().map(r -> r.getConfigId()).collect(toList());
 
 			Object[] array = new Object[] {
