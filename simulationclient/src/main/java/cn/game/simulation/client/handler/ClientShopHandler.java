@@ -29,9 +29,6 @@ import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeResponse_15000023;
 import cn.game.protocol.protobuf.ShopMsg.XianShiLiBaoInfo;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.ShopMsg.FundPassSignBuyResponse_15000072;
-import cn.game.protocol.protobuf.ShopMsg.FundPassSignAllResponse_15000074;
-import cn.game.protocol.protobuf.ShopMsg.FundPassSignReceiveResponse_15000076;
 
 @Component
 public class ClientShopHandler extends GameBaseHandler {
@@ -60,9 +57,6 @@ public class ClientShopHandler extends GameBaseHandler {
         putInvoker(PbProtocol.BuyXianShiLiBaoResponse_15000053, this::buyXianShiLiBao);
         putInvoker(PbProtocol.LimitedTimeGiftBuyResponse_15000062, this::limitedTimeGiftBuy);
         putInvoker(PbProtocol.LimitedTimeGiftPush_15100054, this::limitedTimeGiftPush);
-        putInvoker(PbProtocol.FundPassSignBuyResponse_15000072, this::fundPassSignBuy);
-        putInvoker(PbProtocol.FundPassSignAllResponse_15000074, this::fundPassSignAll);
-        putInvoker(PbProtocol.FundPassSignReceiveResponse_15000076, this::fundPassSignReceive);
     }
 
     private void itemList(NetClient netClient, Object message) {
@@ -168,21 +162,4 @@ public class ClientShopHandler extends GameBaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void fundPassSignBuy(NetClient netClient, Object message) {
-        FundPassSignBuyResponse_15000072 resp = (FundPassSignBuyResponse_15000072) message;
-        List<FundPassSignInfo> infoList = resp.getInfoList();
-        Client client = (Client) netClient;
-    }
-
-    private void fundPassSignAll(NetClient netClient, Object message) {
-        FundPassSignAllResponse_15000074 resp = (FundPassSignAllResponse_15000074) message;
-        List<FundPassSignInfo> infoList = resp.getInfoList();
-        Client client = (Client) netClient;
-    }
-
-    private void fundPassSignReceive(NetClient netClient, Object message) {
-        FundPassSignReceiveResponse_15000076 resp = (FundPassSignReceiveResponse_15000076) message;
-        List<RewardInfo> rewardsList = resp.getRewardsList();
-        Client client = (Client) netClient;
-    }
 }
