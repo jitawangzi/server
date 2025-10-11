@@ -24,7 +24,7 @@ public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.VipMsg.buyVipGiftRequest_34000005.Builder builder = cn.game.protocol.protobuf.VipMsg.buyVipGiftRequest_34000005.newBuilder() ; 
 		
 		
-		
+		builder.setId(0); 
 		return builder.build() ; 
 	}
 	
