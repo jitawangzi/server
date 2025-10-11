@@ -14,6 +14,10 @@ public class DrawHeroInPool {
     private  int isDraw;  // 0 未抽 1 已抽
     private  int position;
     public  transient int quality;
+    @Deprecated
+    private transient int itemFrom;
+    @Deprecated
+    private transient  int huiLiuAdd;
     public DrawHeroInPool()
     {
     }

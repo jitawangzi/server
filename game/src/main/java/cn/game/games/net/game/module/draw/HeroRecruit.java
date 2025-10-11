@@ -39,6 +39,9 @@ public class HeroRecruit {
 	private int luckyValueQuality; // 当前保底品质--幸运值颜色
 	//	玩家抽卡时记录玩家的神将偏好数据，玩家抽中高品神将后，该神将的抽卡权重增加X，最高增加Y   记录已抽数据  key  itemID  value  次数
 	private HashMap<Integer , Integer> drawHeroCountMap= new HashMap<Integer , Integer>();
+	/** 回流增益次数   登录触发回流 设置为N次  之后随机基础的3英雄会带有回流增益 */
+	@Deprecated
+	private transient int huiLiuCount;
 	@JsonIgnore
 	private transient Player player;
 
