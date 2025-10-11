@@ -39,7 +39,7 @@ public class Guarantee {
 		int ret = 0;
 		for (int i = 0; i < count; i++) {
 			this.count++;
-			log.info("幸运值+1 id:{} round:{} stage:{} count:{}", id, round, stage, this.count);
+			log.info("抽卡日志 幸运值+1 id:{} round:{} stage:{} count:{}", id, round, stage, this.count);
 			GuaranteeConfig guaranteeConfig = GuaranteeManager.instance().get(id);
 			if (this.count >= guaranteeConfig.count) {// 触发保底
 				ret = this.id;

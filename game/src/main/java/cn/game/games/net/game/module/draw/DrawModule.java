@@ -91,9 +91,6 @@ public class DrawModule extends BasePlayerModule {
 			break;
 		}
 		case LoginSuccess: {
-		        if (GlobalConst.HeroRecruitPlayerOfflineDays <= DateUtil.diffDays(player.getData().getLoginDate())) {
-					heroRecruit.setHuiLiuCount(GlobalConst.HeroRecruitPlayerRefluxTimes);
-				}
 	      	}
 		}
 	}

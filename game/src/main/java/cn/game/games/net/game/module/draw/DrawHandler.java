@@ -277,7 +277,7 @@ public class DrawHandler extends GameBaseHandler {
         heroRecruit.setIsDraw(pos);
 		heroRecruit.setRecruitCount(heroRecruit.getRecruitCount() + 1);
         ItemConfig itemConfig1 = ItemManager.instance().get(id);
-        if (itemConfig1.Quality >= 3) {
+        if (itemConfig1.Quality >= GlobalConst.HeroRecruitQualityReflux) {
             heroRecruit.setNoHighQualityRecruitCount(0);
         }else {
             heroRecruit.setNoHighQualityRecruitCount(heroRecruit.getNoHighQualityRecruitCount()+1);

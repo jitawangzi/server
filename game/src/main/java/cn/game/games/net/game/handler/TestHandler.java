@@ -428,42 +428,51 @@ public class TestHandler extends GameBaseHandler {
                 if (!file.exists()) {
                     file.mkdirs(); // 创建目录
                 }
-                String fileName = "qualityList"+ DateUtil.currentTimeSeconds() +".txt";
-                // 创建一个文件来保存数据
-                File outputFile = new File(file, fileName);
-                StringBuilder stringBuilder = new StringBuilder();
-                GuaranteeModule guaranteeModule = player.getGuaranteeModule();
-                Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
-                guarantee.setRound(1);
-                guarantee.setStage(1);
-                guarantee.setCount(0);
-                guarantee.setId(1);
-                for (int i = 0; i < p1; i++) {
-                    var hero =  player.getDrawModule().getHeroRecruit();
-                    hero.refresh();
-                    List<Integer> qualityList = new ArrayList<>();
-                    for(var h:hero.getDrawHeroInPoolList()) {
-                        qualityList.add(h.quality);
+                for (int k = 0; k < p2; k++) {
+                    try  {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
                     }
-                    qualityList.sort((o1, o2) -> o2-o1);
-                    int end= hero.radom31test();
-
-                    qualityList.add( end);
-                    for (int j = 0; j < qualityList.size(); j++) {  // 修改了循环条件
-                        stringBuilder.append(qualityList.get(j));
-                        if(j != qualityList.size()-1) {  // 修改了条件判断
-                            stringBuilder.append(":");
+                    player.getDrawModule().getHeroRecruit().getDrawHeroCountMap().clear();
+                    String fileName = "qualityList"+ DateUtil.currentTimeSeconds() +".txt";
+                    // 创建一个文件来保存数据
+                    File outputFile = new File(file, fileName);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    GuaranteeModule guaranteeModule = player.getGuaranteeModule();
+                    Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
+                    guarantee.setRound(1);
+                    guarantee.setStage(1);
+                    guarantee.setCount(0);
+                    guarantee.setId(1);
+                    for (int i = 0; i < p1; i++) {
+                        var hero =  player.getDrawModule().getHeroRecruit();
+                        hero.refresh();
+                        List<Integer> qualityList = new ArrayList<>();
+                        for(var h:hero.getDrawHeroInPoolList()) {
+                            qualityList.add(h.quality);
                         }
+                        qualityList.sort((o1, o2) -> o2-o1);
+                        int end= hero.radom31test();
+
+                        qualityList.add( end);
+                        for (int j = 0; j < qualityList.size(); j++) {  // 修改了循环条件
+                            stringBuilder.append(qualityList.get(j));
+                            if(j != qualityList.size()-1) {  // 修改了条件判断
+                                stringBuilder.append(":");
+                            }
+                        }
+                        stringBuilder.append("\n");
+                        // 将字符串写入文件
+                        try (FileWriter writer = new FileWriter(outputFile)) {
+                            writer.write(stringBuilder.toString());
+                        } catch (IOException e) {
+                            logger.error("写入文件失败", e);
+                        }
+                        player.handleEvent(EventTypeEnum.HeroRecruit);
                     }
-                    stringBuilder.append("\n");
-                    // 将字符串写入文件
-                    try (FileWriter writer = new FileWriter(outputFile)) {
-                        writer.write(stringBuilder.toString());
-                    } catch (IOException e) {
-                        logger.error("写入文件失败", e);
-                    }
-                    player.handleEvent(EventTypeEnum.HeroRecruit);
+
                 }
+
                // System.out.println(stringBuilder.toString());
                 break;
             }
