@@ -119,7 +119,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		if (guildInfo.isHasMember(playerId)) {
-			fail(ErrorMsgEnum.zong_men_player_apply_has);
+			fail(ErrorMsgEnum.zong_men_player_in);
 		}
 		if (guildInfo.isFull()) {
 			fail(ErrorMsgEnum.zong_men_full);
