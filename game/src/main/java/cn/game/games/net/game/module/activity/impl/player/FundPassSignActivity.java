@@ -133,15 +133,15 @@ public class FundPassSignActivity extends PlayerActivityBase {
     public boolean newDay() {
         loginday++;
         if (FundPassSignActivityData.containsKey(Begin_30 + loginday)) {
-            var fundPassSignActivityData = FundPassSignActivityData.get(loginday);
+            var fundPassSignActivityData = FundPassSignActivityData.get(Begin_30 + loginday);
             fundPassSignActivityData.finish = true;
         }
         if (FundPassSignActivityData.containsKey(Begin_Free + loginday)) {
-            var fundPassSignActivityData = FundPassSignActivityData.get(loginday);
+            var fundPassSignActivityData = FundPassSignActivityData.get(Begin_Free + loginday);
             fundPassSignActivityData.finish = true;
         }
         if (FundPassSignActivityData.containsKey(Begin_60 + loginday)) {
-            var fundPassSignActivityData = FundPassSignActivityData.get(loginday);
+            var fundPassSignActivityData = FundPassSignActivityData.get(Begin_60 + loginday);
             fundPassSignActivityData.finish = true;
         }
         return true;

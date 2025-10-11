@@ -81,7 +81,7 @@ public class HeroRecruit {
 			RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(guaranteeRandomId);
 			baodi = randomGivenConfig.RandomParameterGroupId[0];
 		}
-		
+		log.info("---------------------------随机开始-------------------------------");
 		for (int i = 0; i < 3; i++) {
 //			int tmpRandomId = randomId;
 //			if (guaranteeIndex > -1 && guaranteeIndex == i) {
@@ -93,18 +93,19 @@ public class HeroRecruit {
 			//}else {
 			if(baodi > -1 && guaranteeIndex == i)
 			{
-				log.info("commonDrop:保底权重 baodi={} ", baodi);
 				int group =baodi;
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
 				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
+				log.info("commonDrop:保底权重 baodi={} 物品id={}", baodi,goods.getId());
 				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
 			}else {
 				commonDrop(i);
 			}
-
 		//}
 		}
+		log.info("---------------------------随机结束-------------------------------");
+
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
 	}
