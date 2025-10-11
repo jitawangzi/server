@@ -1098,8 +1098,8 @@ public class PlayerHelper {
 			return true;
 		}
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
-		int count = conditionConfig.numParam;
-		return getConditionCount(player, condition) >= count;
+		long conditionCount = getConditionCount(player, condition); 
+		return operator(conditionCount, conditionConfig.numParam, conditionConfig.operator) ; 
 	}
 
 	/**
@@ -1209,14 +1209,14 @@ public class PlayerHelper {
 		throw new IllegalArgumentException(" not suport condition  " + type);
 	}
 
-	public static boolean operator(int value, int configValue, int operator) {
+	public static boolean operator(long value, long configValue, int operator) {
 		return switch (operator) {
-		case 1 -> value > configValue;
-		case 2 -> value >= configValue;
-		case 3 -> value == configValue;
-		case 4 -> value <= configValue;
-		case 5 -> value < configValue;
-		case 6 -> value != configValue;
+		case 0 -> value >= configValue;
+		case 1 -> value <= configValue;
+		case 2 -> value > configValue;
+		case 3 -> value < configValue;
+		case 4 -> value == configValue;
+		case 5 -> value != configValue;
 		default -> false;
 		};
 	}

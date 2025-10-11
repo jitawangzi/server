@@ -14,8 +14,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import cn.game.games.core.log.GameLogger;
-import org.redisson.Redisson;
 import org.redisson.api.BatchResult;
 import org.redisson.api.RBatch;
 import org.redisson.api.RFuture;
@@ -32,8 +30,8 @@ import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.BatchQueryUtil;
-import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -48,7 +46,6 @@ import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.DaShengNPCManager;
 import cn.game.protocol.generated.manager.RankManager;
 import cn.game.protocol.generated.manager.RankRewardManager;
-import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.util.BinarySearchUtil;
 import cn.game.util.DateUtil;
@@ -986,4 +983,216 @@ public class RankService {
 			}, rankConfig.RewardTime.getCronExpression());
 		}
 	}
+	
+	// ====================== 实时总榜（A+B）增量维护 BEGIN ======================
+
+    /**
+     * 根据传入的 RankType 生成 历史总榜(A) 的 key。
+     */
+    public String getHistKey(String serverId, RankType histType) {
+        return getKey(serverId, histType);
+    }
+
+    /**
+     * 根据传入的 RankType 生成 实时估分榜(B) 的 key（例如战力预估积分榜）。
+     */
+    public String getRealKey(String serverId, RankType realType) {
+        return getKey(serverId, realType);
+    }
+
+    /**
+     * 根据传入的 RankType 生成 实时总榜(S=A+B) 的 key（对外展示用）。
+     */
+    public String getSumKey(String serverId, RankType sumType) {
+        return getKey(serverId, sumType);
+    }
+
+    /**
+     * 初始化/重置某玩家的 A、B、S（一次性写入）。
+     * 适用于新玩家或全量校准。
+     *
+     * @param serverId 服务器ID
+     * @param playerId 玩家ID
+     * @param histType 历史榜 RankType（A）
+     * @param realType 实时估分榜 RankType（B）
+     * @param sumType  实时总榜 RankType（S）
+     * @param a 历史积分A
+     * @param b 预估积分B
+     */
+    public void initOrResetABAndSum(String serverId, long playerId,
+                                    RankType histType, RankType realType, RankType sumType,
+                                    long a, long b) {
+        // 写 A
+        setScore(serverId, histType, playerId, a);
+        // 写 B
+        setScore(serverId, realType, playerId, b);
+        // 写 S = A + B
+        setScore(serverId, sumType, playerId, a + b);
+    }
+
+    /**
+     * 当实时估分 B 变化时，增量同步 S（推荐）。
+     * 流程：
+     * 1) 读取旧B（没有当0）
+     * 2) 写入新B
+     * 3) delta = newB - oldB
+     * 4) 对 S 执行 addScore(delta)
+     *
+     * @param serverId 服务器ID
+     * @param playerId 玩家ID
+     * @param realType 实时估分榜 RankType（B）
+     * @param sumType  实时总榜 RankType（S）
+     * @param newB 新的预估积分
+     * @return 最新 S 分数（long）
+     */
+    public long onRealScoreChangedUpdateSum(String serverId, long playerId,
+                                            RankType realType, RankType sumType,
+                                            long newB) {
+        String realKey = getRealKey(serverId, realType);
+        String sumKey  = getSumKey(serverId, sumType);
+
+        RScoredSortedSet<Long> real = getRankSet(realKey);
+        RScoredSortedSet<Long> sum  = getRankSet(sumKey);
+
+        Double oldBObj = real.getScore(playerId);
+        long oldB = (oldBObj == null) ? 0L : oldBObj.longValue();
+
+        if (oldB != newB) {
+            // 1) 更新 B
+            real.add((double) newB, playerId);
+            // 2) 增量更新 S
+            long delta = newB - oldB;
+            double newSumScore = sum.addScore(playerId, (double) delta);
+            return (long) newSumScore;
+        } else {
+            Double s = sum.getScore(playerId);
+            return s == null ? 0L : s.longValue();
+        }
+    }
+
+    /**
+     * 异步版：当实时估分 B 变化时，增量同步 S。
+     */
+    public CompletionStage<Long> onRealScoreChangedUpdateSumAsync(String serverId, long playerId,
+                                                                  RankType realType, RankType sumType,
+                                                                  long newB) {
+        String realKey = getRealKey(serverId, realType);
+        String sumKey  = getSumKey(serverId, sumType);
+
+        RScoredSortedSet<Long> real = getRankSet(realKey);
+        RScoredSortedSet<Long> sum  = getRankSet(sumKey);
+
+        return real.getScoreAsync(playerId).thenCompose(oldBObj -> {
+            long oldB = (oldBObj == null) ? 0L : oldBObj.longValue();
+            if (oldB == newB) {
+                return sum.getScoreAsync(playerId).thenApply(s -> s == null ? 0L : s.longValue());
+            }
+            // 先写 B，再增量 S
+            return real.addAsync((double) newB, playerId)
+                       .thenCompose(added -> sum.addScoreAsync(playerId, (double) (newB - oldB)))
+                       .thenApply(newSumScore -> newSumScore == null ? 0L : newSumScore.longValue());
+        });
+    }
+
+    /**
+     * 当历史积分 A 变化时，增量同步 S。
+     * 用于赛季结算、补发历史积分等场景。
+     *
+     * @param serverId 服务器ID
+     * @param playerId 玩家ID
+     * @param histType 历史榜 RankType（A）
+     * @param sumType  实时总榜 RankType（S）
+     * @param newA 新的历史积分
+     * @return 最新 S 分数
+     */
+    public long onHistScoreChangedUpdateSum(String serverId, long playerId,
+                                            RankType histType, RankType sumType,
+                                            long newA) {
+        String histKey = getHistKey(serverId, histType);
+        String sumKey  = getSumKey(serverId, sumType);
+
+        RScoredSortedSet<Long> hist = getRankSet(histKey);
+        RScoredSortedSet<Long> sum  = getRankSet(sumKey);
+
+        Double oldAObj = hist.getScore(playerId);
+        long oldA = (oldAObj == null) ? 0L : oldAObj.longValue();
+
+        if (oldA != newA) {
+            hist.add((double) newA, playerId);
+            long delta = newA - oldA;
+            double newSumScore = sum.addScore(playerId, (double) delta);
+            return (long) newSumScore;
+        } else {
+            Double s = sum.getScore(playerId);
+            return s == null ? 0L : s.longValue();
+        }
+    }
+
+    /**
+     * 批量更新一批玩家的 B（预估分）并增量同步 S，使用 Redisson RBatch（pipeline）。
+     *
+     * @param serverId 服务器ID
+     * @param realType 实时估分榜 RankType（B）
+     * @param sumType  实时总榜 RankType（S）
+     * @param newBMap  playerId -> newB
+     */
+    public void batchUpdateRealScoreAndSum(String serverId,
+                                           RankType realType, RankType sumType,
+                                           Map<Long, Long> newBMap) {
+        if (newBMap == null || newBMap.isEmpty()) {
+            return;
+        }
+        String realKey = getRealKey(serverId, realType);
+        String sumKey  = getSumKey(serverId, sumType);
+
+        // 先读旧B（简单实现：逐个get；若QPS更高可做缓存或分片优化）
+        Map<Long, Long> oldBMap = new HashMap<>(newBMap.size());
+        RScoredSortedSet<Long> real = getRankSet(realKey);
+        for (Map.Entry<Long, Long> e : newBMap.entrySet()) {
+            Double b = real.getScore(e.getKey());
+            oldBMap.put(e.getKey(), b == null ? 0L : b.longValue());
+        }
+
+        // 批处理：写B与增量S
+        RBatch batch = RedisUtil.getRedis().createBatch();
+        RScoredSortedSetAsync<Long> realAsync = batch.getScoredSortedSet(realKey, LongCodec.INSTANCE);
+        RScoredSortedSetAsync<Long> sumAsync  = batch.getScoredSortedSet(sumKey,  LongCodec.INSTANCE);
+
+        for (Map.Entry<Long, Long> e : newBMap.entrySet()) {
+            long pid = e.getKey();
+            long newB = e.getValue();
+            long oldB = oldBMap.getOrDefault(pid, 0L);
+            if (oldB == newB) continue;
+
+            realAsync.addAsync((double) newB, pid);
+            long delta = newB - oldB;
+            sumAsync.addScoreAsync(pid, (double) delta);
+        }
+        batch.execute();
+    }
+
+    /**
+     * 读取：获取实时总榜 S 的前N名（传入 sumType）
+     */
+    public List<RankEntry> getRealTimeTotalTopN(String serverId, RankType sumType, int n) {
+        return getTopN(serverId, sumType, n);
+    }
+
+    /**
+     * 读取：获取某玩家在实时总榜 S 的名次与分数（传入 sumType）
+     */
+    public RankEntry getRealTimeTotalEntry(String serverId, RankType sumType, long playerId) {
+        return getRankEntry(serverId, sumType, playerId);
+    }
+
+    /**
+     * 读取：获取实时估分榜 B 的前N名（传入 realType）
+     */
+    public List<RankEntry> getRealTimeEstimateTopN(String serverId, RankType realType, int n) {
+        return getTopN(serverId, realType, n);
+    }
+
+    // ====================== 实时总榜（A+B）增量维护 END ======================
+	
+	
 }

@@ -8,6 +8,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.manager.ConditionManager;
@@ -73,7 +74,8 @@ public abstract class AbstractCondition implements Condition {
 	 * @return
 	 */
 	protected boolean checkAchieve() {
-		return getFinishCount() >= getRequireCount() ; 
+		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
+		return PlayerHelper.operator(getFinishCount(), conditionConfig.numParam, conditionConfig.operator) ; 
 	}
 	@Override
 	public boolean isAchieve() {

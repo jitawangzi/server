@@ -23,7 +23,7 @@ public class DrawHeroWishRequest_37000005Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.newBuilder() ; 
 		
-		
+		builder.setHeroId(331001);
 		
 		return builder.build() ; 
 	}

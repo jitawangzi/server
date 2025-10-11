@@ -60,9 +60,8 @@ public class ServerOpenRankActivity extends GameActivityBase {
 			}
 			// 结算前一天的排行榜奖励
 			RankService.getInstance().serverOpenActivityReward(new String[] { serverId }, activityServerOpenRankConfig.RewardRankId);
-		} else {
+			// 结算总榜
 			if (serverOpenDay - 1 == ActivityServerOpenRankManager.instance().list().size()) {
-				// 结算总榜
 				RankService.getInstance().reward(new String[] { serverId }, RankType.TotalServerOpenActivity.ID);
 			}
 		}
