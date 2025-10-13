@@ -562,6 +562,7 @@ public class Player {
 							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
 							.setOrderId(body.getOrderId() + "")
 							.setSdkGoodsId(cost[2]+"")
+							.setServerId(ServerContext.getInstance().getServerId())
 							.build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
