@@ -6,19 +6,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
+
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.cross.guild.GuildHelper;
+import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.handler.GameBaseHandler;
@@ -32,21 +36,18 @@ import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildDonateConfig;
-import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.GuildDonateManager;
-import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.GuildCrossMsg.GuildMsgPush_41000045;
 import cn.game.protocol.protobuf.GuildCrossMsg.GuildMsgResponse_41000046;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptRequest_40000070;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptResponse_40000071;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyBattleEndRequest_40000078;
@@ -66,19 +67,21 @@ import cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberPositionSetResponse_40000016;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankListRequest_40000081;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankListResponse_40000082;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
-import cn.game.protocol.protobuf.RankMsg.RankInfo;
-import cn.game.protocol.protobuf.RankMsg.RankListResponse_35000002;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
-import cn.game.util.DateUtil;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ServerType;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import cn.game.protocol.protobuf.GuildMsg.GuildRankListRequest_40000081;
-import cn.game.protocol.protobuf.GuildMsg.GuildRankListResponse_40000082;
+import io.vertx.core.ThreadingModel;
+import io.vertx.core.Vertx;
 
 @Component
 public class GuildHandler extends GameBaseHandler {
@@ -488,42 +491,54 @@ public class GuildHandler extends GameBaseHandler {
         checkStrs.add(name);
         Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, name);
         // 非法字符串检测
-        List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
-        for (String str : checkStrs) {
-            checkComplatableList.add((CompletableFuture<Boolean>) PlayerHelper.checkContextData(player, str).toCompletionStage());
-        }
-        CompletableFuture.allOf(checkComplatableList.toArray(new CompletableFuture[0])).thenAcceptAsync(result -> {
-            if (checkComplatableList.stream().anyMatch(CompletableFuture::isCompletedExceptionally)) {
-                client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-                return;
-            }
-            for (CompletableFuture<Boolean> future : checkComplatableList) {
-                try {
-                    if (future.get().booleanValue() == false) {
-                        client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-                    return;
-                }
-            }
-            GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
-            Future<GuildServiceInfo> guild = guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(),req.getAutoJoin());
-            guild.map(r -> {
-                // 创建公会成功
-                PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
-                // 设置玩家公会信息
-                GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-                player.getGuildModule().join(simpleInfo.getId());
-                GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
-                res.setGuild(allInfo);
-                client.sendProtocol(res);
-                GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
-                return null;
-            }).onFailure(player::handleFail);
-        });
+     log.warn("start thread " + Thread.currentThread().getName());
+
+     List<Future<Boolean>> checks = new ArrayList<>(checkStrs.size());
+     for (String str : checkStrs) {
+       Future<Boolean> f = PlayerHelper.checkContextData(player, str); // 应为 Vert.x Future<Boolean>
+       checks.add(f);
+     }
+     checks.add(checkFuture);
+     Future.all(checks).compose(cf -> {
+       // 验证是否有 false
+       for (int i = 0; i < checks.size(); i++) {
+         Boolean ok = (Boolean) cf.resultAt(i);
+         if (Boolean.FALSE.equals(ok)) {
+           client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+           return Future.failedFuture("context-check-fail");
+         }
+       }
+       // 通过校验，发起远程调用
+       GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
+       return guildProxy.createGuild(
+           player.getPlayerId(),
+           req.getName(),
+           req.getNotice(),
+           req.getDeclaration(),
+           req.getIcon(),
+           req.getAutoJoin()
+       );
+     }).onSuccess(r -> {
+    	 ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+    		 log.warn("map exec" + Thread.currentThread().getName());
+    		 log.warn("thread=" + Thread.currentThread().getName());
+//    		 log.warn("isEventLoop=" + context.isEventLoopContext());
+//    		 log.warn("isWorker=" + context.isWorkerContext());
+//    		 log.warn("isVirtualThread=" + (context.threadingModel() == ThreadingModel.VIRTUAL_THREAD ? "true":"false"));
+    		 // 创建公会成功
+    		 // 创建公会成功的业务逻辑
+    		 PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
+    		 GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
+    		 player.getGuildModule().join(simpleInfo.getId());
+    		 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
+    		 res.setGuild(allInfo);
+    		 client.sendProtocol(res);
+    		 GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
+		}); 
+     }).onFailure(err -> {
+       // 如果是校验未通过，前面已返回相应协议；这里兜底
+       player.handleFail(err);
+     });
     }
 
     private void findGuild(NetClient client, Object o) {

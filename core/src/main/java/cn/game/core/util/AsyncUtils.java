@@ -3,6 +3,7 @@ package cn.game.core.util;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,7 @@ public class AsyncUtils {
     private static final long ERROR_THRESHOLD_MS = 200;
     
     // 是否允许在 EventLoop 上执行短暂阻塞
-    private static boolean allowEventLoopBlocking = true;
+    private static boolean allowEventLoopBlocking = false;
     
 	public static boolean isEventLoopThread() {
 		Thread currentThread = Thread.currentThread();
@@ -362,6 +363,7 @@ public class AsyncUtils {
      * - 如果不在 EventLoop 上，直接执行
      * - 如果在 EventLoop 上，使用 executeBlocking
      */
+	@Deprecated
     public static <T> T safeExecute(String operationName, Supplier<T> supplier) {
         Context context = Vertx.currentContext();
         
@@ -385,15 +387,25 @@ public class AsyncUtils {
      * 在 EventLoop 上安全执行阻塞操作
      */
     private static <T> T executeBlockingOnEventLoop(Context context, String operationName, Supplier<T> supplier) {
-        Promise<T> promise = Promise.promise();
-        context.executeBlocking(() -> {
-            // 这里在 Worker 线程执行，避免死锁
+        
+        // 如果当前不是 EventLoop 线程，直接执行
+        if (!isEventLoopThread()) {
+//            logger.debug("当前线程不是 EventLoop，直接执行: {}", operationName);
             return executeWithMonitoring(operationName, supplier, true);
-        }, false).onComplete(promise);
-        // 注意：这里仍然会阻塞 EventLoop，但避免了死锁
+        }
+        // 如果是 EventLoop 线程，使用独立的线程池执行
+        logger.warn("在 EventLoop 线程上执行阻塞操作，切换到专用线程池: {}", operationName);
+        CompletableFuture<T> future = CompletableFuture.supplyAsync(() -> {
+            return executeWithMonitoring(operationName, supplier, true);
+        });
         try {
-            return promise.future().timeout(3000, TimeUnit.MILLISECONDS).toCompletionStage().toCompletableFuture().get();
+            return future.get(3000, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            logger.error("执行阻塞操作超时: " + operationName, e);
+            throw new RuntimeException("执行阻塞操作超时: " + operationName, e);
         } catch (Exception e) {
+            logger.error("执行阻塞操作失败: " + operationName, e);
             throw new RuntimeException("执行阻塞操作失败: " + operationName, e);
         }
     }
