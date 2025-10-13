@@ -29,6 +29,7 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.simulation.test.gen.TestAddItemRequest_6f000008Test;
 import cn.game.simulation.util.CSVMessagesReader;
 import cn.game.simulation.util.CSVMessagesReader.CSVMessage;
 import cn.game.util.SpringContextLoader;
@@ -277,6 +278,8 @@ public class ServerTestContext {
 					if (serverTest == null) {
 						throw new IllegalArgumentException("test message not found : " + randomMessage);
 					}
+					// 人工测试
+//					serverTest = beansMap.get("TestGmCmdRequest_6f000001".toLowerCase());
 					Message message = serverTest.getMessagePressure(client);
 					if (message != null) {
 						client.sendProtocol(message);
