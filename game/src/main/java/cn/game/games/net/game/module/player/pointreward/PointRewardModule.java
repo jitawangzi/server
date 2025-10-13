@@ -236,6 +236,7 @@ public class PointRewardModule extends BasePlayerModule {
 			clearActiveRewardList(PointRewardType.DAY_CHALLENGE);
 			clearActiveRewardList(PointRewardType.LingPo);
 			clearActiveRewardList(PointRewardType.WorldBoss);
+			clearActiveRewardList(PointRewardType.Guild);
 			break;
 		}
 		}

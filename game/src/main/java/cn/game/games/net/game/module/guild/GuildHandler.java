@@ -323,7 +323,7 @@ public class GuildHandler extends GameBaseHandler {
         List<String> checkStrs = new ArrayList<>();
         if (!StringUtils.isEmpty(req.getName())) {
             // - 公会名称：需要花费500元宝（GuildNameRevise），最多输入6个字；
-            if (req.getName().length() > 6) {
+            if (req.getName().length() > GlobalConst.GuildName) {
                 client.sendProtocol(res.build(), ErrorMsgEnum.not_name.ID);
                 return;
             }

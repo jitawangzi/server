@@ -135,7 +135,7 @@ public class GuildModule extends BasePlayerModule {
 					Future<Integer> newLevelFuture = guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
 					newLevelFuture.onComplete(ar -> {
 						if (ar.succeeded()) {
-							int newLevel = ar.result();
+							int newLevel = ar.result() == null ? 0 :ar.result() ;
 							if (newLevel > 0) {
 								// 公会升级了
 								GameLogger.guildUpgrade(player, count, newLevel) ; 
