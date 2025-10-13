@@ -561,6 +561,7 @@ public class Player {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
 							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
 							.setOrderId(body.getOrderId() + "")
+							.setSdkGoodsId(cost[2]+"")
 							.build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
