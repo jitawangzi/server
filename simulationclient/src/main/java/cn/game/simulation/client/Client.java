@@ -717,7 +717,7 @@ public class Client extends AbstractNetClient {
 
 	public void resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
-		if (System.currentTimeMillis() - lastSendMessageTime > 5000) {
+		if (lastSendMessageContent != null &&  System.currentTimeMillis() - lastSendMessageTime > 5000) {
 			resendWsPack(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(lastSendMessageContent)));
 			setLastSendMessageTime(System.currentTimeMillis());
 		}

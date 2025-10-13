@@ -245,10 +245,10 @@ public class TestHelper {
 		}
 
 		for (GemConfig config : GemManager.instance().list()) {
-			PlayerHelper.addResources(player, config.ID, 100, opType);
+			PlayerHelper.addResources(player, config.ID, 5, opType);
 		}
 		for (EquipConfig config : EquipManager.instance().list()) {
-			PlayerHelper.addResources(player, config.ID, 100, opType);
+			PlayerHelper.addResources(player, config.ID, 5, opType);
 		}
 		HeroModule module = player.getModule(HeroModule.class);
 		

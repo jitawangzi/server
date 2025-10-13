@@ -121,6 +121,7 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
+import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
@@ -143,6 +144,9 @@ public class PlayerHelper {
 	public static final int REFRESH_TYPE_DAY = 1;
 	public static final int REFRESH_TYPE_WEEK = 2;
 	public static final int REFRESH_TYPE_MONTH = 3;
+	
+	private static final int MB = 1024 * 1024;
+	private static final int APPROX_WARN_BYTES = 8 * MB;  // 8 MB 预警
 
 	/** 
 	 * 判断某个id是不是机器人
@@ -1688,7 +1692,19 @@ public class PlayerHelper {
 			PlayerData data = player.getData();
 			if (ServerContext.getInstance().isSinglePlayerTable()) {
 				data.beforeSave();
-				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
+				String jsonString = JsonUtil.toJsonStringWithType(player.getModules()); 
+				data.setModules(jsonString);
+				int sizeBytes  = ByteHelp.estimateUtf8Bytes(jsonString);
+			    // 预警
+			    if (sizeBytes >= APPROX_WARN_BYTES) {
+			        double mb = sizeBytes / 1024.0 / 1024.0;
+			        log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({}) MB",
+			                 playerId, sizeBytes, String.format("%.2f", mb));
+			    }else {
+			        if (log.isDebugEnabled()) {
+			            log.debug("saveClientCache: playerId={}, modules approx size={} bytes", playerId, sizeBytes);
+			        }
+			    }
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
 				return DAO.executeDbTaskList(dbTasks).onComplete(r -> {

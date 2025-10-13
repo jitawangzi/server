@@ -285,4 +285,10 @@ public class ByteHelp {
 	public static String toBinaryStringWithZero(byte data) {
 		return String.format("%8s", Integer.toBinaryString(data & 0xFF)).replace(' ', '0');
 	}
+	
+	// 估算 UTF-8 字节数（性能优先）
+	public static int estimateUtf8Bytes(String s) {
+	    long approx = (long) s.length() * 4L; // UTF-8 上限
+	    return approx > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) approx;
+	}
 }
