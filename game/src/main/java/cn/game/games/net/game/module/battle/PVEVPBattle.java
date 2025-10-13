@@ -134,7 +134,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     @Override
     public int checkCustom(int id, int subId, long... args) {
 
-        if (ticketCount >GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)) {
+        if (getTicketCount()<=0) {
             return ErrorMsgEnum.PVEVP_No_Ticket.getId();
         }
         if (!mainShowRank.containsKey(subId)) {
@@ -277,7 +277,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
         BattleConfig battleConfig = BattleManager.instance().get(id);
 
 
-        if (ticketCount >GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)) {
+        if (getTicketCount() <=0) {
             return ResultObject.fail(ErrorMsgEnum.PVEVP_No_Ticket.ID);
         }
         ticketCount++;
