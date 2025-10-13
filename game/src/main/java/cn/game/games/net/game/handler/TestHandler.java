@@ -394,17 +394,22 @@ public class TestHandler extends GameBaseHandler {
                         List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
                     }
                 }
-                int size=player.getHeroModule().list().size();
-                for (int i = 0; i <size ; i++) {
-                    var hero = player.getHeroModule().list().stream().toList().get(i);
-                    hero.setLevel(100);
-                }
-                for (var resourceEnum : GemManager.instance().list()) {
-                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-                }
-                for (var resourceEnum : EquipManager.instance().list()) {
-                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-                }
+                // 跳过新手引导
+                player.getPlayerModule().getGuideMap().put(6, 99);
+                player.getPlayerModule().getGuideMap().put(7, 99);
+                player.getPlayerModule().getGuideMap().put(8, 99);
+                player.getPlayerModule().getGuideMap().put(9, 99);
+//                int size=player.getHeroModule().list().size();
+//                for (int i = 0; i <size ; i++) {
+//                    var hero = player.getHeroModule().list().stream().toList().get(i);
+//                    hero.setLevel(100);
+//                }
+//                for (var resourceEnum : GemManager.instance().list()) {
+//                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+//                }
+//                for (var resourceEnum : EquipManager.instance().list()) {
+//                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+//                }
                 BattleModule battleModule = player.getBattleModule();
                 battleModule.setMainBattleHighest(110085);
                 BattleConfig battleConfig = BattleManager.instance().getNullable(110085);

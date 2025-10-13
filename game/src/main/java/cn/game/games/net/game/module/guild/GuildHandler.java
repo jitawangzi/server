@@ -175,19 +175,22 @@ public class GuildHandler extends GameBaseHandler {
             return;
         }
         // 先扣次数
+        log.info("guild bargain BIBIBI 1");
         PlayerHelper.delResources(player, Asset.GuildBargain.ID, 1, OpType.GuildBargain);
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         int[] ret = guildProxy.bargain(player.getGuildId(), player.getPlayerId());
         GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(ret[0]);
+        log.info("guild bargain BIBIBI 2");
         List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.BargainReward, OpType.GuildBargain);
         res.addAllRewards(resources);
         res.setCount(ret[1]);
+        log.info("guild bargain BIBIBI 3");
         player.handleEvent(EventTypeEnum.GuildBargain);
+        log.info("guild bargain BIBIBI 4");
         guildModule.setBargainCount(bargainCount + 1);
         client.sendProtocol(res.build());
-        
+        log.info("guild bargain BIBIBI 5");
         GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]); 
-        
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -198,8 +201,10 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
+        log.info("guild buyBargain BIBIBI 1");
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         int[] bargainPrice = guildProxy.getBargainPrice(player.getGuildId());
+        log.info("guild buyBargain BIBIBI 2");
         GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargainPrice[0]);
         PlayerHelper.delResources(player, guildBargainConfig.Price[0], bargainPrice[1], OpType.GuildBargain);
         List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.GuildBargain);
@@ -207,6 +212,8 @@ public class GuildHandler extends GameBaseHandler {
         GuildModule guildModule = player.getGuildModule();
         guildModule.setBargainBuy(true);
         client.sendProtocol(res.build());
+        log.info("guild buyBargain BIBIBI 3");
+        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID,1);
     }
 
     private void updateMemberAuth(NetClient client, Object o) {

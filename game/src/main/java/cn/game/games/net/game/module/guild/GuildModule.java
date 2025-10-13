@@ -219,7 +219,7 @@ public class GuildModule extends BasePlayerModule {
 			return;
 		}
 //		lastId = 0;
-
+		GameLogger.guildJoin(player, lastId, 2);
 		if (guildJoin != null) {
 			guildJoin.delete(); 
 			guildJoin = null;
@@ -256,7 +256,7 @@ public class GuildModule extends BasePlayerModule {
 			guildJoin.setCreateTime(DateUtil.currentTimeMillis());
 			player.getData().setUnionId(guildId);
 		}
-        GameLogger.guildJoin(player, guildId);
+        GameLogger.guildJoin(player, guildId, 1);
 		player.handleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
 	}
 
