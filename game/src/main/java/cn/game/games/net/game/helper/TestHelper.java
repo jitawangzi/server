@@ -212,13 +212,15 @@ public class TestHelper {
 		Asset[] values = Asset.values();
 		for (Asset asset : values) {
 			if (asset.Type == 1) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+				currencyMap.setValue(asset.ID, 1000000000);
 			} else if (asset.Type == 2) {
 				if (asset == Asset.playerExp) {
 					currencyModule.addExp(asset.ID, 100_0000);
+				}else {
+					currencyModule.addExp(asset.ID, 100_0000);
 				}
 			} else if (asset.Type == 3) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+				currencyMap.setValue(asset.ID, 1000000000);
 			}
 		}
 
