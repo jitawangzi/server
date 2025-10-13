@@ -232,11 +232,8 @@ public class ShopModule extends BasePlayerModule {
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
-				ShopItemConfig shopItemConfig = ShopItemManager.instance().getNullable(shopItem.getItemId()); 
-				if (shopItemConfig == null) {
-					continue; 
-				}
-				if (shopItemConfig.ResetType == refreshType) {
+				ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
+				if (shopItemConfig!=null&&shopItemConfig.ResetType == refreshType) {
 					shopItem.setItemBuyTimes(0);
 				}
 			}

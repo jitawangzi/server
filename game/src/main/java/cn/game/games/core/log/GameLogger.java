@@ -1342,13 +1342,13 @@ public class GameLogger extends DeprecatedLogger {
 	 * 仙会加入
 	 * @param player  仙会ID
 	 */
-	public static void guildJoin(Player player, long guildId) {
+	public static void guildJoin(Player player, long guildId,int type) {
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.guildJoin.name(), LoggerType.guildJoin.version, "C1301"))
-					,guildId};
+					,guildId,type};
 			LoggerType.guildJoin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
