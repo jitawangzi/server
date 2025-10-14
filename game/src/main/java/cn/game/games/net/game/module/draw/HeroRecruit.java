@@ -339,6 +339,12 @@ public class HeroRecruit {
 		int index = Rnd.randomIndex(radomWeight);
 		var drawHeroInPool = value.get(index);
 		addDrawHeroCount(drawHeroInPool.getItemId());
+		ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool.getItemId());
+		if (itemConfig.Quality >= GlobalConst.HeroRecruitQualityReflux) {
+			setNoHighQualityRecruitCount(0);
+		}else {
+			setNoHighQualityRecruitCount(getNoHighQualityRecruitCount()+1);
+		}
 		log.info("抽卡日志 当前3随1命中英雄 ID:{}  品质:{}  该英雄已抽次数:{}",drawHeroInPool,drawHeroInPool.quality,drawHeroCountMap.get(drawHeroInPool));
 		return drawHeroInPool.quality;
 	}
