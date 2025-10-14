@@ -132,7 +132,7 @@ public class DAO {
 		long end = System.currentTimeMillis();
 		if (end - start > 100) {
 			log.warn("Slow DB operation: mapperClass[{}]method[{}]args[{}] took {} ms", mapperClass.getSimpleName(), method,
-					JsonUtil.toJsonString(args), (end - start));
+					args.getClass().getName(), (end - start));
 		}
 		return (T)result;
 	}
