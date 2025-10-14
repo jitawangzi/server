@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
+<Configuration status="WARN" shutdownHook="disable" monitorInterval="60">
+
+    <Properties>
+         <Property name="shutdownCallbackRegistry">org.apache.logging.log4j.core.impl.Log4jContextFactory</Property>
+    
+        <Property name="path_system">${sys:SEVER_PATH}/logs/system</Property>
+        <Property name="path_game">${sys:SEVER_PATH}/logs/game</Property>
+        <Property name="path_cy_game">${sys:SEVER_PATH_CYLOG}</Property>
+        <Property name="date_suffix">%d{yyyy-MM-dd}</Property>
+        <Property name="extension">.log</Property>
+
+        <Property name="file_stdout">stdout</Property>
+        <Property name="file_system">system</Property>
+        <Property name="file_net">net</Property>
+        <Property name="file_monitor">monitor</Property>
+<!--         <Property name="file_netcheck">netcheck</Property> -->
+
+        <!-- *********************** 一级 ************************* -->
+		<Property name="file_serverevent">serverevent</Property>
+        <Property name="file_heart">heart</Property>
+        <Property name="file_login">login</Property>
+        <Property name="file_login_wxxcx">login_wxxcx</Property>
+        <Property name="file_rolebuild">rolebuild</Property>
+        <Property name="file_rolelogin">rolelogin</Property>
+        <Property name="file_logout">logout</Property>
+        <Property name="file_money">money</Property>
+        <Property name="file_recharge">recharge</Property>
+        <Property name="file_newstages">newstages</Property>
+        <Property name="file_levelup">levelup</Property>
+        <Property name="file_shoptrade">shoptrade</Property>
+        <Property name="file_activity">activity</Property>
+
+
+
+        <!-- *********************** 二级 ************************* -->
+        <Property name="file_item">item</Property>
+        <Property name="file_pvpfight">pvpfight</Property>
+        <Property name="file_task">task</Property>
+        <Property name="file_pvefight">pvefight</Property>
+        <Property name="file_achievement">achievement</Property>
+        <Property name="file_gethero">gethero</Property>
+        <Property name="file_heroraise">heroraise</Property>
+        <Property name="file_invite">invite</Property>
+		<Property name="file_rank">rank</Property>
+		<Property name="file_adwatching">adwatching</Property>
+		 <Property name="file_recruit">recruit</Property>
+        <!-- *********************** 三级 ************************* -->
+        <Property name="file_gemtowerbuff">gemtowerbuff</Property>
+		<Property name="file_gemtowersweep">gemtowersweep</Property>
+		<Property name="file_equiptowerassist">equiptowerassist</Property>
+		<Property name="file_equiptowerassistbox">equiptowerassistbox</Property>
+		<Property name="file_equiptowerassistvideo">equiptowerassistvideo</Property>
+		<Property name="file_ultimateCardDraw">ultimateCardDraw</Property>		
+		<Property name="file_rSGTreeGrow">rSGTreeGrow</Property>
+		
+		<Property name="file_lingShanPurchase">lingShanPurchase</Property>		
+		<Property name="file_lingShanSweep">lingShanSweep</Property>		
+	
+		<Property name="file_daShengPurchase">daShengPurchase</Property>	
+		<Property name="file_daShengChallenge">daShengChallenge</Property>		
+		<Property name="file_commonLevelUp">commonLevelUp</Property>	
+		<Property name="file_heroBook">heroBook</Property>		
+		
+		<Property name="file_guildCreate">guildCreate</Property>	
+		<Property name="file_guildJoin">guildJoin</Property>
+		<Property name="file_guildUpgrade">guildUpgrade</Property>
+		<Property name="file_guildMemberPositionChange">guildMemberPositionChange</Property>
+		<Property name="file_guildInfoChange">guildInfoChange</Property>
+		<Property name="file_guildShop">guildShop</Property>
+		<Property name="file_guildBargain">guildBargain</Property>
+		<Property name="file_guildBargainPurchase">guildBargainPurchase</Property>
+		<Property name="file_guildDonate">guildDonate</Property>		
+
+        <!-- *********************** 其他 ************************* -->
+    </Properties>
+
+    <Loggers>
+
+        <logger name="io.netty" level="warn"/>
+        <logger name="org.redisson" level="warn"/>
+        <logger name="org.apache" level="warn"/>
+        <logger name="org.quartz" level="warn"/>
+
+        <!--additivity,boolean,用来指定输出添加关系,子Logger的输出是否需要输出到父Logger中-->
+       <AsyncRoot level="info" includeLocation="false" >
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Stdout"/>
+            <AppenderRef ref="Warn"/>
+            <AppenderRef ref="Error"/>
+        </AsyncRoot>
+
+        <AsyncLogger name="System" level="info" includeLocation="false" additivity="true">
+            <AppenderRef ref="System"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="Warn" level="warn" includeLocation="false" additivity="true">
+            <AppenderRef ref="Warn"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="Error" level="error" includeLocation="false" additivity="true">
+            <AppenderRef ref="Error"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
+            <AppenderRef ref="Net"/>
+        </AsyncLogger>
+        
+        <AsyncLogger name="Monitor" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="Monitor"/>
+        </AsyncLogger>
+        
+        <AsyncLogger name="Db" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="Db"/>
+        </AsyncLogger>
+
+        <!--  已处理的日志  ============================================================== start -->
+
+        <AsyncLogger name="heart" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="heart"/>
+        </AsyncLogger>
+		 <AsyncLogger name="serverevent" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="serverevent"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="login" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="login"/>
+        </AsyncLogger>
+        <AsyncLogger name="login_wxxcx" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="login_wxxcx"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="rolebuild" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="rolebuild"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="rolelogin" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="rolelogin"/>
+        </AsyncLogger>
+        <AsyncLogger name="logout" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="logout"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="levelup" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="levelup"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="item" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="item"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="money" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="money"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="recharge" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="recharge"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="shoptrade" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="shoptrade"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="activity" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="activity"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="pvpfight" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="pvpfight"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="task" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="task"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="pvefight" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="pvefight"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="newstages" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="newstages"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="achievement" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="achievement"/>
+        </AsyncLogger>
+		
+        <AsyncLogger name="gethero" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="gethero"/>
+        </AsyncLogger>
+		
+        <AsyncLogger name="heroraise" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="heroraise"/>
+        </AsyncLogger>
+		
+        <AsyncLogger name="invite" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="invite"/>
+        </AsyncLogger>
+		
+		 <AsyncLogger name="rank" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="rank"/>		
+        </AsyncLogger>
+		
+		<AsyncLogger name="adwatching" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="adwatching"/>
+        </AsyncLogger>
+		
+		<AsyncLogger name="recruit" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="recruit"/>
+        </AsyncLogger>		
+		
+        <AsyncLogger name="gemtowerbuff" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="gemtowerbuff"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="gemtowersweep" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="gemtowersweep"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="equiptowerassist" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="equiptowerassist"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="equiptowerassistbox" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="equiptowerassistbox"/>
+        </AsyncLogger>
+		
+        <AsyncLogger name="equiptowerassistvideo" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="equiptowerassistvideo"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="ultimateCardDraw" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="ultimateCardDraw"/>
+        </AsyncLogger>
+		
+        <AsyncLogger name="rSGTreeGrow" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="rSGTreeGrow"/>
+        </AsyncLogger>	
+		
+        <AsyncLogger name="lingShanPurchase" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="lingShanPurchase"/>
+        </AsyncLogger>	
+        <AsyncLogger name="lingShanSweep" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="lingShanSweep"/>
+        </AsyncLogger>	
+	
+        <AsyncLogger name="daShengPurchase" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="daShengPurchase"/>
+        </AsyncLogger>			
+        <AsyncLogger name="daShengChallenge" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="daShengChallenge"/>
+        </AsyncLogger>	
+        <AsyncLogger name="commonLevelUp" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="commonLevelUp"/>
+        </AsyncLogger>	    
+		<AsyncLogger name="heroBook" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="heroBook"/>
+        </AsyncLogger>		
+
+		<AsyncLogger name="guildCreate" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildCreate"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildJoin" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildJoin"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildUpgrade" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildUpgrade"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildMemberPositionChange" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildMemberPositionChange"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildInfoChange" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildInfoChange"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildShop" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildShop"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildBargain" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildBargain"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildBargainPurchase" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildBargainPurchase"/>
+        </AsyncLogger>		
+		<AsyncLogger name="guildDonate" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="guildDonate"/>
+        </AsyncLogger>	
+		
+        <!--  已处理的日志  ============================================================== end -->
+    </Loggers>
+
+    <Appenders>
+        <!--log格式采用'|'为分列符号,方便日志分析程序进行分列处理,并且带时区,用以跨地区日志分析使用-->
+        <Console name="Console">
+            <PatternLayout charset="UTF-8" pattern="[%t] %-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%c{1.}|%m%n"/>
+        </Console>
+
+<RollingRandomAccessFile name="Stdout" fileName="${path_system}/stdout.log" filePattern="${path_system}/%d{yyyy-MM-dd}/stdout.%d{yyyy-MM-dd}-%i.log">
+    <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c{1.} - %msg%n"/>
+    <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="1024MB"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+</RollingRandomAccessFile>
+        <RollingRandomAccessFile name="System" fileName="${path_system}/system.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/${file_system}.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+        
+              <!-- 按天滚动的错误日志文件输出 -->
+        <RollingRandomAccessFile name="Error" fileName="${path_system}/err.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/err.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+        
+        <!-- 按天滚动的警告日志文件输出 -->
+        <RollingRandomAccessFile name="Warn" fileName="${path_system}/warn.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/warn.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+            <Filters>
+                <!-- 使用 LevelRangeFilter 来限制只记录 WARN 级别的日志 -->
+                <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="Net" fileName="${path_system}/${file_net}.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/${file_net}.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="Monitor" fileName="${path_system}/${file_monitor}.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/${file_monitor}.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="Db" fileName="${path_system}/db.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/db.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="1024MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+
+        <!--  已处理的日志  ============================================================== start -->
+        <RollingRandomAccessFile name="serverevent"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_serverevent}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>		
+				
+        <RollingRandomAccessFile name="heart"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_heart}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="login"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_login}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="login_wxxcx"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_login_wxxcx}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="rolebuild"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_rolebuild}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="rolelogin"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_rolelogin}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="logout"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_logout}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="levelup"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_levelup}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="shoptrade"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_shoptrade}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="activity"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_activity}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+
+        <RollingRandomAccessFile name="money"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_money}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="item"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_item}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="recharge"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_recharge}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="pvpfight"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_pvpfight}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="task"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_task}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="pvefight"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_pvefight}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="newstages"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_newstages}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+
+        <RollingRandomAccessFile name="achievement"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_achievement}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="gethero"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_gethero}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="heroraise"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_heroraise}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+        <RollingRandomAccessFile name="rank"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_rank}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+        <RollingRandomAccessFile name="invite"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_invite}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+		 <RollingRandomAccessFile name="adwatching"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_adwatching}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>    
+
+		<RollingRandomAccessFile name="recruit"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_recruit}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+		
+        <RollingRandomAccessFile name="gemtowerbuff"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_gemtowerbuff}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="gemtowersweep"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_gemtowersweep}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="equiptowerassist"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_equiptowerassist}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+        <RollingRandomAccessFile name="equiptowerassistbox"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_equiptowerassistbox}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+		        <RollingRandomAccessFile name="equiptowerassistvideo"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_equiptowerassistvideo}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+		
+        <RollingRandomAccessFile name="ultimateCardDraw"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_ultimateCardDraw}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="rSGTreeGrow"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_rSGTreeGrow}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="lingShanPurchase"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_lingShanPurchase}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+		
+        <RollingRandomAccessFile name="lingShanSweep"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_lingShanSweep}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+       
+        <RollingRandomAccessFile name="daShengPurchase"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_daShengPurchase}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>		
+        <RollingRandomAccessFile name="daShengChallenge"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_daShengChallenge}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="commonLevelUp"
+							 immediateFlush="true"
+							 filePattern="${path_cy_game}/${file_commonLevelUp}.log.${date_suffix}">
+			<PatternLayout charset="UTF-8" pattern="%m%n"/>
+				<Policies>
+				<TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+				<OnStartupTriggeringPolicy/>
+				<CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+				</Policies>
+			</RollingRandomAccessFile>	
+        <RollingRandomAccessFile name="heroBook"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_heroBook}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>		
+        <RollingRandomAccessFile name="guildCreate"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildCreate}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>		
+        <RollingRandomAccessFile name="guildJoin"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildJoin}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>		
+		<RollingRandomAccessFile name="guildUpgrade"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildUpgrade}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildMemberPositionChange"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildMemberPositionChange}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildInfoChange"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildInfoChange}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildShop"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildShop}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildBargain"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildBargain}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildBargainPurchase"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildBargainPurchase}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+		<RollingRandomAccessFile name="guildDonate"
+                                 immediateFlush="true"
+                                 filePattern="${path_cy_game}/${file_guildDonate}.log.${date_suffix}">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <OnStartupTriggeringPolicy/>
+                <CronTriggeringPolicy schedule="0 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingRandomAccessFile>	
+
+
+
+        <!--  已处理的日志 ============================================================== end -->
+    </Appenders>
+</Configuration>

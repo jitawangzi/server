@@ -55,7 +55,8 @@ groupId:artifactId:type:classifier:version
             <outputDirectory>./</outputDirectory> <!--目标位置-->
             <directory>target/classes</directory><!--源目录-->
             <excludes>
-                <exclude>config/logback.xml</exclude>
+<!--                 <exclude>config/logback.xml</exclude> -->
+                <exclude>log4j2.xml</exclude>
             </excludes>
         </fileSet>
         
