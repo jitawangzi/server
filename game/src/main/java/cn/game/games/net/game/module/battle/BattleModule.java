@@ -54,7 +54,7 @@ import cn.game.util.IntMapWrapper;
  */
 public class BattleModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart, EventTypeEnum.BattleEnd  };
+			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart, EventTypeEnum.BattleEnd, EventTypeEnum.GetItem   };
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
