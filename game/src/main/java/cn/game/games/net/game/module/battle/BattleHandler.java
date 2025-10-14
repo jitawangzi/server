@@ -1408,9 +1408,11 @@ public class BattleHandler extends GameBaseHandler {
                 if (richManItemConfig.ServerOpt == 1) {
                     if (richManItemConfig.OptType == 9) {
                         // 返还体力
-                        ConsumeConfig consumeConfig = ConsumeManager.instance().get(battleConfig.cost);
-                        List<RewardInfo> resources = PlayerHelper.addResources(player, consumeConfig.cost, OpType.BattleEnd);
-                        allRewards.addAll(resources);
+                        ConsumeConfig consumeConfig = ConsumeManager.instance().getNullable(battleConfig.cost);
+                        if (consumeConfig != null) {
+                        	List<RewardInfo> resources = PlayerHelper.addResources(player, consumeConfig.cost, OpType.BattleEnd);
+                        	allRewards.addAll(resources);
+						}
                     }
                 }
             }

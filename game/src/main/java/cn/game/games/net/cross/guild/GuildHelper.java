@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.protobuf.Message;
 
 import cn.game.core.cache.CacheType;
@@ -129,6 +131,9 @@ public class GuildHelper {
 		for (long playerId : notifyPlayerId) {
 			builder.addPlayerId(playerId);
 			String serverId = IdCache.getPlayerServerId(playerId);
+			if (StringUtils.isEmpty(serverId)) {
+				continue; 
+			}
 			serverIdList.add(serverId);
 			pidSb.append(playerId).append(",");
 		}

@@ -149,7 +149,7 @@ public class ServerHandler extends GameBaseHandler {
 					player.getGuildModule().kickGuild((GuildMsg.GuildQuitPush_40000024) message);
 				}
 				//玩家 加入 公会
-				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinGuild((GuildMsg.GuildJoinPush_40000044) message);
+				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinAndPush((GuildMsg.GuildJoinPush_40000044) message);
 				case PbProtocol.ChatMessagePush_31010001 -> {//公会聊天
 					guildChat(player,(ChatMsg.ChatMessagePush_31010001) message);
 				}
