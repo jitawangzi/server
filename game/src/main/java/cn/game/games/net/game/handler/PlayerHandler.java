@@ -944,7 +944,7 @@ public class PlayerHandler extends GameBaseHandler {
 			return ;
 		}
 		account.accountId = uidResponse.getAccountId();
-		account.deviceId = uidResponse.getDeviceId();
+//		account.deviceId = uidResponse.getDeviceId();
 
 		newGameClient.setSessionId(passportSessionId);
 		if (reconnect) { // 客户端主动重连
