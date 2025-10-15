@@ -725,12 +725,12 @@ public class GameLogger extends DeprecatedLogger {
 
 	}
 
-	public static void recruit(Player player, int id ,int count, int beishu) {
+	public static void recruit(Player player, int id ,int count, int beishu,int costId,int costCount) {
 		try {
 
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recruit.name(), LoggerType.recruit.version, "B9210")),
-					0,0,0,beishu,"null",0,id,count,"null","null"
+					0,0,0,beishu,"null",0,id,count,"null","null",costId,costCount
 					};
 			LoggerType.recruit.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {

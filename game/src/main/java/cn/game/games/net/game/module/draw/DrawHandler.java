@@ -305,6 +305,6 @@ public class DrawHandler extends GameBaseHandler {
 		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
 
         client.sendProtocol(resp.build());
-        GameLogger.recruit(player, id, count, multiple);
+        GameLogger.recruit(player, id, count, multiple,is[0],is[1]);
     }
 }

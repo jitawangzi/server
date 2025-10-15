@@ -17,9 +17,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.game.games.cache.entity.*;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.guarantee.Guarantee;
 import cn.game.games.net.game.module.guarantee.GuaranteeModule;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
@@ -43,11 +47,6 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Hero;
-import cn.game.games.cache.entity.Item;
-import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
@@ -78,11 +77,6 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.ItemConfig;
-import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -385,34 +379,42 @@ public class TestHandler extends GameBaseHandler {
 			}
             case "super":
             {
-                for (Asset resourceEnum : Asset.values()) {
-                    PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
-                }
-                for (var resourceEnum : HeroManager.instance().list()) {
-                    if(resourceEnum.HeroType==1)
-                    {
-                        List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-                    }
-                }
+
+                PlayerHelper.addResources(player, 100001, 1000000, OpType.Test);
+                PlayerHelper.addResources(player, 100007, 100000, OpType.Test);
+                PlayerHelper.addResources(player, 100201, 100000, OpType.Test);
+                PlayerHelper.addResources(player, 101003, 1000, OpType.Test);
+                PlayerHelper.addResources(player, 709056, 100000, OpType.Test);
+
+                PlayerHelper.addResources(player, 709061, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709062, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709063, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709064, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709065, 5, OpType.Test);
+
+                PlayerHelper.addResources(player, 1500106, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500206, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500306, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500406, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500606, 5, OpType.Test);
+
+                PlayerHelper.addResources(player, 355003, 5, OpType.Test);
+                PlayerHelper.addResources(player, 355004, 5, OpType.Test);
+                PlayerHelper.addResources(player, 355005, 5, OpType.Test);
+                PlayerHelper.addResources(player, 332003, 5, OpType.Test);
+                PlayerHelper.addResources(player, 332004, 5, OpType.Test);
+                TestHelper.addItems(player, 3000, 0);
+                PlayerHelper.addResources(player, 203001, 2000, OpType.Test);
+
                 // 跳过新手引导
                 player.getPlayerModule().getGuideMap().put(6, 99);
                 player.getPlayerModule().getGuideMap().put(7, 99);
                 player.getPlayerModule().getGuideMap().put(8, 99);
                 player.getPlayerModule().getGuideMap().put(9, 99);
-//                int size=player.getHeroModule().list().size();
-//                for (int i = 0; i <size ; i++) {
-//                    var hero = player.getHeroModule().list().stream().toList().get(i);
-//                    hero.setLevel(100);
-//                }
-//                for (var resourceEnum : GemManager.instance().list()) {
-//                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-//                }
-//                for (var resourceEnum : EquipManager.instance().list()) {
-//                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-//                }
+
                 BattleModule battleModule = player.getBattleModule();
-                battleModule.setMainBattleHighest(110085);
-                BattleConfig battleConfig = BattleManager.instance().getNullable(110085);
+                battleModule.setMainBattleHighest(110025);
+                BattleConfig battleConfig = BattleManager.instance().getNullable(110025);
                 while (battleConfig != null) {
                     battleModule.addChapter(battleConfig.ID);
                     Chapter chapter = battleModule.getChapter(battleConfig.ID);
@@ -457,6 +459,7 @@ public class TestHandler extends GameBaseHandler {
                             qualityList.add(h.quality);
                         }
                         qualityList.sort((o1, o2) -> o2-o1);
+                        log.info("抽卡日志 抽取次数 :{}",i);
                         int end= hero.radom31test();
 
                         qualityList.add( end);

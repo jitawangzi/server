@@ -89,6 +89,7 @@ public class PlayerModule extends BasePlayerModule {
 	/** 账号也记录一下，如果离线修复数据时触发bi使用 */
 	private Account account;
 
+
 //	@Override
 //	public Class<?>[] defaultDbMapperClass() {
 //		return new Class[] { PlayerIdsMapper.class };
@@ -282,6 +283,7 @@ public class PlayerModule extends BasePlayerModule {
 		builder.setRewardLevel(heroModule.getIllustrationRewardLevel());
 
 		builder.setShabiyincangguanggao(Config.shabiyincangguanggao);
+		builder.setLoginDay(PlayerHelper.getConditionCount(player, 3001));
 	}
 	@Override
 	public void handleEvent(PlayerEvent event) {
@@ -388,5 +390,7 @@ public class PlayerModule extends BasePlayerModule {
 	public EventTypeEnum[] getEventTypes() {
 		return events;
 	}
+
+
 
 }
