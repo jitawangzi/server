@@ -82,7 +82,7 @@ public class HeroRecruit {
 			RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(guaranteeRandomId);
 			baodi = randomGivenConfig.RandomParameterGroupId[0];
 		}
-		log.info("------------------------抽卡日志---随机开始-------------------------------");
+	//	log.info("------------------------抽卡日志---随机开始-------------------------------");
 		for (int i = 0; i < 3; i++) {
 //			int tmpRandomId = randomId;
 //			if (guaranteeIndex > -1 && guaranteeIndex == i) {
@@ -98,14 +98,14 @@ public class HeroRecruit {
 				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
 				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
 				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
-				log.info("抽卡日志 commonDrop:保底权重 baodi={} 物品id={}", baodi,goods.getId());
+			//	log.info("抽卡日志 commonDrop:保底权重 baodi={} 物品id={}", baodi,goods.getId());
 				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), i, noHighQualityRecruitCount));
 			}else {
 				commonDrop(i);
 			}
 		//}
 		}
-		log.info("---------抽卡日志------------------随机结束-------------------------------");
+	//	log.info("---------抽卡日志------------------随机结束-------------------------------");
 
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
@@ -142,7 +142,7 @@ public class HeroRecruit {
 		dropList.add(ziDrop);
 		dropList.add(jinDrop);
 		dropList.add(hongDrop);
-		log.info("抽卡日志 commonDrop:随机权重 lanweight={} ziweight={} jinweight={} hongweight={}", lanweight,ziweight,jinweight,hongweight);
+		//log.info("抽卡日志 commonDrop:随机权重 lanweight={} ziweight={} jinweight={} hongweight={}", lanweight,ziweight,jinweight,hongweight);
 		int randomIndex = Rnd.randomIndex(weightList);
 		int group =dropList.get(randomIndex);
 		//
@@ -165,7 +165,7 @@ public class HeroRecruit {
 			radomWeight.add(weight);
 			if(randomGroupIDList.get(j).Weight!=weight)
 			{
-				log.info("抽卡日志 commonDrop:重新设置偏好权重 itemId={} weight={}", itemId,weight);
+				//log.info("抽卡日志 commonDrop:重新设置偏好权重 itemId={} weight={}", itemId,weight);
 			}
 		}
 		int index = Rnd.randomIndex(radomWeight);
@@ -333,7 +333,7 @@ public class HeroRecruit {
 			if(drawHeroInPool.getIsDraw()==0){
 				radomWeight.add(drawHeroInPool.getItemWeight());
 				value.add(drawHeroInPool);
-			//	log.info("当前可随机英雄  pos:{}  Id:{} radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.getItemWeight());
+				log.info("抽卡日志 当前可随机英雄  pos:{}   Id:{}  quailty:{}  radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.quality,drawHeroInPool.getItemWeight());
 			}
 		}
 		int index = Rnd.randomIndex(radomWeight);
@@ -346,7 +346,7 @@ public class HeroRecruit {
 		}else {
 			setNoHighQualityRecruitCount(getNoHighQualityRecruitCount()+1);
 		}
-		log.info("抽卡日志 当前3随1命中英雄 ID:{}  品质:{}  该英雄已抽次数:{}",drawHeroInPool,drawHeroInPool.quality,drawHeroCountMap.get(drawHeroInPool));
+		log.info("抽卡日志 当前3随1命中英雄 ID:{}  品质:{}  该英雄已抽次数:{}",drawHeroInPool.getItemId(),drawHeroInPool.quality,drawHeroCountMap.get(drawHeroInPool));
 		return drawHeroInPool.quality;
 	}
     public int getNoHighQualityRecruitCount() {
