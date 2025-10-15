@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" shutdownHook="disable" monitorInterval="60">
+  <Properties>
+    <Property name="LOG_PATH">.</Property>
+    <Property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+  </Properties>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${PATTERN}"/>
+    </Console>
+    <File name="InitLog" fileName="${LOG_PATH}/init.log" append="false">
+      <PatternLayout pattern="${PATTERN}"/>
+    </File>
+  </Appenders>
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="InitLog"/>
+    </Root>
+  </Loggers>
+</Configuration>
