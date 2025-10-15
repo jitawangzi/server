@@ -37,7 +37,11 @@ public class DrawHeroInPool {
             }
         }int shuiwei  =0;
         if(heroConfig.Quality>=GlobalConst.HeroRecruitQualityReflux) {
-            shuiwei  = noHighQualityCount*GlobalConst.HeroRecruitWaterLevel;
+           // shuiwei  = noHighQualityCount*GlobalConst.HeroRecruitWaterLevel;
+            if(noHighQualityCount>250)
+            {
+                shuiwei  = (noHighQualityCount-250)*25;
+            }
         }
         this.itemWeight =(  baseweight+ +shuiwei);
         quality = heroConfig.Quality;

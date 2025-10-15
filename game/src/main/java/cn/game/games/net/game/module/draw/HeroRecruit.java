@@ -339,6 +339,7 @@ public class HeroRecruit {
 		int index = Rnd.randomIndex(radomWeight);
 		var drawHeroInPool = value.get(index);
 		addDrawHeroCount(drawHeroInPool.getItemId());
+		setRecruitCount(getRecruitCount()+1);
 		ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool.getItemId());
 		if (itemConfig.Quality >= GlobalConst.HeroRecruitQualityReflux) {
 			setNoHighQualityRecruitCount(0);

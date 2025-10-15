@@ -918,10 +918,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * 时区
 	 */
     public static void adwatching(Player player,List<String> info) {
-		   if(info.size()<11)
-		   {
-			   return;
-		   }
+
         try {
             Object[] array = new Object[]{
                     LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.adwatching.name(), LoggerType.adwatching.version, "B9410")),

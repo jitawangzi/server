@@ -197,9 +197,15 @@ public class PlayerHandler extends GameBaseHandler {
 	private void biInfo(NetClient client, Object message) {
 		PlayerMsg.PlayerAdBIInfoRequest_01100603 request = (PlayerMsg.PlayerAdBIInfoRequest_01100603) message;
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		PlayerMsg.PlayerBIInfoResponse_01100604.Builder respBuilder = PlayerMsg.PlayerBIInfoResponse_01100604.newBuilder();
+		client.sendProtocol(respBuilder.build());
+		if(request.getAdBIinfoList().size()<11)
+		{
+			log.error("adwatching error,info size is not 11,info:{}，size:{}", request.getAdBIinfoList(),request.getAdBIinfoList().size());
+			return;
+		}
 		GameLogger.adwatching(player, request.getAdBIinfoList());
-//		PlayerMsg.PlayerBIInfoResponse_01100604.Builder respBuilder = PlayerMsg.PlayerBIInfoResponse_01100604.newBuilder();
-//		client.sendProtocol(respBuilder.build());
+
 	}
 
 	private void figure(NetClient client, Object message) {
