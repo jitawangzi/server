@@ -213,7 +213,7 @@ public class ServerTestContext {
 		for (int i = botIdStart; i < botIdStart + botCount; i++) {
 			long loginTimeStart = System.currentTimeMillis();
 			try {
-				Client client = new Client(i + "", i + "", serverId, version);
+				Client client = new Client(i + "","", serverId, version);
 				client.loginPassportProto(loginServerUrl);
 				String sourceIp = null;
 				if (ipIterator != null) {
