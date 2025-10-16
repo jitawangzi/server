@@ -363,7 +363,7 @@ public class TestHandler extends GameBaseHandler {
             }
             case "rankreward":
             {
-                RankService.getInstance().reward(p1);
+                RankService.getInstance().rewardGm(p1);
                // player.getDrawModule().getHeroRecruit().refresh();
                 break;
             }

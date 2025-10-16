@@ -311,7 +311,15 @@ public class EquipTowerBattle extends XiYouBattleHandler {
 
         return ResultObject.success();
     }
-
+    public boolean hasRed() {
+        if (DateUtil.currentTimeSeconds() < nextGetTicketTime) {
+            return false;
+        }
+        if (ticketCount > GlobalConst.TicketRefreshMax + player.getWelfareValue(WelfareTypeEnum.TaSuiLingXiaoAddTimes)) {
+            return false;
+        }
+        return true;
+    }
     @Override
     public int getType() {
         return DungeonTypeEnum.EquipTower.getId();

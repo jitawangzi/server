@@ -247,6 +247,9 @@ public class TowerBattle extends XiYouBattleHandler {
     public int getRadomBuff() {
         return radomBuff;
     }
+    public boolean hasRed() {
+        return floorCount>0;
+    }
 
     public void setRadomBuff(int radomBuff) {
         this.radomBuff = radomBuff;

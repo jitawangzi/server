@@ -781,7 +781,10 @@ public class RankService {
 	 * 结算排行榜
 	 * @param rankId
 	 */
-	public void reward(int rankId) {
+	public void rewardGm(int rankId) {
+		reward(rankId,true);
+	}
+	private void reward(int rankId,boolean gm) {
 		log.info("pre rank reward,rankId[{}] server[{}]", rankId, ServerContext.getInstance().getServerId());
 
 		RankConfig rankConfig = RankManager.instance().get(rankId);
@@ -791,7 +794,7 @@ public class RankService {
 		}
 		RankType rankType = RankType.get(rankId);
 		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SET_RANK.key(rankId));
-		if (!lock) {
+		if (!gm&&!lock) {
 			return;
 		}
 		String[] serverIds = ServerHelper.getServerIds();
@@ -979,7 +982,7 @@ public class RankService {
 		RankConfig rankConfig = RankManager.instance().get(rankId);
 		if (rankConfig.RewardTime != null) {
 			SchedulerService.getInstance().scheduleCronTask(() -> {
-				reward(rankConfig.ID);
+				reward(rankConfig.ID,false);
 			}, rankConfig.RewardTime.getCronExpression());
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.games.net.game.module.battle.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -41,12 +42,6 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.DaoHeartBattle;
-import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
-import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
-import cn.game.games.net.game.module.battle.WorldBossBattle;
-import cn.game.games.net.game.module.battle.XiangYaoFuMoBattle;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.guild.GuildModule;
@@ -504,6 +499,24 @@ public class PlayerHandler extends GameBaseHandler {
 					ret = module.hasRed(); 
 					break;
 				}
+				case DragonTreasure: {
+					BattleModule module = player.getBattleModule() ;
+					TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
+					ret = battle.hasRed();
+					break;
+				}
+				case DaSheng: {
+					BattleModule module = player.getBattleModule() ;
+					PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle);
+					ret = battle.hasRed();
+					break;
+				}
+					case EquipTower: {
+						BattleModule module = player.getBattleModule() ;
+						EquipTowerBattle battle = module.getBattle(DungeonTypeEnum.EquipTower);
+						ret = battle.hasRed();
+						break;
+					}
 				default:
 					errorCode = ErrorMsgEnum.red_point_not_support.getId();
 					break; 
