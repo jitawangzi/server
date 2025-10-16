@@ -356,6 +356,8 @@ public class Guild {
 				member.addcontribution(num);
 				// 成员加贡献的时候，同时增加公会活跃度
 				module.setLiveness(module.liveness + num);
+				// 同时增加仙会经验
+				addExp(num);
 			}
 		}else {
 			throw new IllegalArgumentException("不支持的公会资产类型: " + id);

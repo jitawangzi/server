@@ -18,6 +18,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.Player;
@@ -182,6 +183,7 @@ public class GmHandler extends GameBaseHandler {
       return;
     }
     GmMail gmMail = new GmMail();
+	gmMail.setId(IdUtil.getId());
     gmMail.setTitle(title);
     gmMail.setContext(content);
     gmMail.setOptFlag((byte)0);

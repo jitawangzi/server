@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.message.AbstractMessageHandlerService;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RPCService;
 import cn.game.core.net.rpc.RPCServiceImpl;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.util.GameUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
@@ -55,9 +57,18 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 			}
 			rpcService.handleResult(result, promise);
 			promise.future().onComplete(r -> {
-				if (r.failed() || r.result() instanceof Throwable) {
+				if (r.failed() || r.cause() != null|| r.result() instanceof Throwable) {
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
-					message.fail(ReplyFailure.ERROR.toInt(), errString);
+					if (r.cause() != null) {
+						LogicException cause = GameUtil.findCause(r.cause(),LogicException.class);
+						if (cause!=null) {
+							message.reply(cause,VxHolder.universalOptions) ; 
+						}else {
+							message.fail(ReplyFailure.ERROR.toInt(), errString);
+						}
+					}else {
+						message.fail(ReplyFailure.ERROR.toInt(), errString);
+					}
 				} else {
 				    DeliveryOptions deliveryOptions = traceId == null? VxHolder.universalOptions: new DeliveryOptions(VxHolder.universalOptions).addHeader("trace-id", traceId);
 					message.reply(r.result(), deliveryOptions);

@@ -1,6 +1,7 @@
 package cn.game.core.net.socket.handler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import cn.game.core.net.socket.controller.Dispatcher;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
+import cn.game.util.GameUtil;
 import cn.game.util.HexUtil;
 
 public abstract class BaseHandler implements Handler {
@@ -68,10 +70,15 @@ public abstract class BaseHandler implements Handler {
 				} catch (LogicException e) {
 					client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), e.getErrorCode());
 				} catch (Throwable e) {
+					int errorCode = ErrorMsgEnum.unknown.getId() ; 
+					LogicException cause = GameUtil.findCause(e,LogicException.class);
+					if (cause!=null) {
+						errorCode = cause.getErrorCode(); 
+					}
 					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
 							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
-							.build(), ErrorMsgEnum.unknown.getId());
+							.build(), errorCode);
 //					CompletableFuture.runAsync(() -> {
 //						try {
 //							MailUtil.reportException("玩家:" + client + "请求处理异常", ExceptionUtils.getFullStackTrace(e));
