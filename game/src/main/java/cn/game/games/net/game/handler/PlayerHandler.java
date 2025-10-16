@@ -538,7 +538,7 @@ public class PlayerHandler extends GameBaseHandler {
 		guideMap.put(request.getType(), request.getStep());
 		client.sendProtocol(resp);
 		GameLogger.newstages(player, request.getType(), request.getStep());
-		if (request.getType() == 1 && request.getStep() == 1) {
+		if (request.getType() == 1001 && request.getStep() == 1) {
 			GameLogger.serverEvent(player.getAccount(), 10020);
 		}
 	}
