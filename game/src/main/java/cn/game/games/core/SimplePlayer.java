@@ -149,6 +149,7 @@ public class SimplePlayer implements Serializable {
 		if(equipTowerBattle!=null) {
 			this.equipBattleRecord =equipTowerBattle.getBattleRecord();
 		}
+		this.unionId = player.getGuildId();
 	}
 
 	public SimplePlayer(SimplePlayerInfo simplePlayerInfo) {
@@ -160,7 +161,7 @@ public class SimplePlayer implements Serializable {
 		simplePlayer.setOnline(simplePlayerInfo.getOnline());
 		simplePlayer.setOfflineTime(simplePlayerInfo.getOfflineTime());
 		simplePlayer.setServerId(simplePlayerInfo.getServerId());
-
+		simplePlayer.setUnionId(simplePlayerInfo.getUnionId());
 	}
 	public SimplePlayer initDataEx() {
 //		setServerId(ServerContext.getInstance().getServerId());
@@ -198,6 +199,7 @@ public class SimplePlayer implements Serializable {
 		equipBattleRecord.forEach((k, v) -> {
 			builder.putEquipBattleRecord(k,v);
 		});
+		builder.setUnionId((int)unionId);
 		return builder.build();
 	}
 
