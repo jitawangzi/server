@@ -142,6 +142,14 @@ public class JsonUtil {
 			throw new RuntimeException("json 反序列化异常:" + value, e);
 		}
 	}
+	
+	public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
+		try {
+			return objectMapper.convertValue(fromValue, toValueType);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("json convertValue异常:" + fromValue, e);
+		}
+	}
 
 	public static <T> T parseObject(String value, TypeReference<T> typeReference) {
 		try {

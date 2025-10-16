@@ -146,7 +146,7 @@ public class ChangYouSdk {
 		String[] json = parsePaymentNotificationString(bodyStr);
 		// 解析 receiptJson 为 PaymentNotification 对象，
 		ChangYouReceipt receipt = JsonUtil.parseObject(json[0], ChangYouReceipt.class);
-		ChangYouPushInfo pushInfo = new ChangYouPushInfo(json[1]);
+		ChangYouPushInfo pushInfo = ChangYouPushInfo.fromKV(json[1]);
 		ChangYouPaymentNotification notification = new ChangYouPaymentNotification();
 		notification.setReceipt(receipt);
 		notification.setPushInfo(pushInfo);

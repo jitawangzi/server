@@ -1,10 +1,12 @@
 package cn.game.core.sdk;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Map;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cn.game.util.JsonUtil;
+import cn.game.util.StrUtil;
 
 /**
  * 支付通知数据实体类，用于封装通过解码 receipt 得到的订单信息。
@@ -263,30 +265,10 @@ public class ChangYouPaymentNotification {
 		public void setGameOrderId(long gameOrderId) {
 			this.gameOrderId = gameOrderId;
 		}
-		public ChangYouPushInfo(String kvString) {
-			if (!StringUtils.isEmpty(kvString)) {
-				// 按照=拆分key value，可能有个kv键值对用"&" 分隔
-				String[] pairs = kvString.split("&");
-				for (String pair : pairs) {
-					String[] kv = pair.split("=", 2);
-					if (kv.length == 2) {
-						String key = kv[0].trim();
-						String value = kv[1].trim();
-						if ("gameOrderId".equals(key)) {
-							try {
-								this.gameOrderId = Long.parseLong(value);
-							} catch (NumberFormatException e) {
-								this.gameOrderId = 0;
-							}
-						}
-					}
-				}
-				
-			
-			}
-			
+		public static ChangYouPushInfo fromKV(String kvString) {
+			Map<String, String> kv = StrUtil.parseKv(kvString, false); 
+	        return JsonUtil.convertValue(kv, ChangYouPushInfo.class) ; 
 		}
-
 	}
 
 }
