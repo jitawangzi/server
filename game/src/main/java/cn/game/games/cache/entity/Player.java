@@ -809,6 +809,9 @@ public class Player {
 
 	public void setAccount(Account account) {
 		this.account = account;
+		if (data != null && !StringUtils.isEmpty(account.deviceId)) {
+			data.setDeviceId(account.deviceId);
+		}
 	}
 
 	public boolean isOnline() {
