@@ -69,8 +69,8 @@ public enum LoggerType {
 //	mergegems, // 宝石合成
 //    propertysnap,                                                               // 玩家属性快照
 //    resourcegrab,                                                               // 领地资源抢夺
-    orderCreate,                                                                // 创建订单
-    orderFinish,                                                                // 订单完成
+   // orderCreate,                                                                // 创建订单
+  //  orderFinish,                                                                // 订单完成
     invite,                                                                     // 邀请好友
 //    guildmanagement,                                                            // 公会管理
 //    guildsnap,                                                                  // 公会成员快照
@@ -81,38 +81,38 @@ public enum LoggerType {
     equiptowerassistbox,//	装备本助战宝箱
     equiptowerassistvideo	,//装备本助战录像
     patrolmountainend	,//大王来巡山副本闯关
-    ultimateCardDraw	,//常规刷新招募
-    rSGTreeGrow	,//人参果树培养
+    //ultimateCardDraw	,//常规刷新招募
+    rsgtreegrow,//人参果树培养
    // RSGTreeReward	,//人参果奖励
   //  RSGTreeShopExchange,//	人参果商店兑换
    // RSGBondCard	,//人参果羁绊卡
   //  DefenceLine	,//五行界
-    demonSweep	,//降妖伏魔扫荡
-    lingShanPurchase,//	灵山问禅次数购买
-    lingShanSweep	,//灵山问禅扫荡
+    demonsweep,//降妖伏魔扫荡
+    lingshanpurchase,//	灵山问禅次数购买
+    lingshansweep	,//灵山问禅扫荡
   //  lingShanProgressReward,//	灵山问禅进度奖励
-    daShengPurchase	,//大圣擂台次数购买
-    daShengChallenge	,//大圣擂台挑战
+    dashengpurchase,//大圣擂台次数购买
+    dashengchallenge,//大圣擂台挑战
 
 //    SamsaraPurchase	,//轮回西行次数购买
 //    SamsaraBattle	,//轮回西行战斗
 //    SamsaraBUFF	,//轮回西行BUFF
 //    SamsaraFlipReward	,//轮回西行翻牌奖励
 //    SamsaraGVG	,//轮回西行GVG
-    heroBook	,//图鉴
-    guildCreate	,//仙会创建
-    guildJoin	,//仙会加入
-    guildDisband	,//仙会解散
-    guildExit	,//仙会退出
-    guildInfoChange,//	仙会信息变化
-    guildMemberPositionChange,//	仙会成员职位变化
-    guildUpgrade	,//仙会升级
-    guildShop	,//仙会商店
-    guildBargain	,//仙会砍价
-    guildBargainPurchase,//	仙会砍价购买
-    guildDonate,//仙会捐献
-    guildQuest,//仙会任务
-    commonLevelUp,//通用等级升级
+    herobook,//图鉴
+    guildcreate,//仙会创建
+    guildjoin,//仙会加入
+    guilddisband,//仙会解散
+    guildexit,//仙会退出
+    guildinfochange,//	仙会信息变化
+    guildmemberpositionchange,//	仙会成员职位变化
+    guildupgrade,//仙会升级
+    guildshop,//仙会商店
+    guildbargain,//仙会砍价
+    guildbargainpurchase,//	仙会砍价购买
+    guilddonate,//仙会捐献
+    guildquest,//仙会任务
+    commonlevelup,//通用等级升级
     ;
 
 

@@ -25,10 +25,10 @@ import cn.game.protocol.generated.manager.ConditionManager;
 import cn.game.protocol.generated.manager.HeroManager;
 import cn.game.protocol.generated.manager.QuestManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
-import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.util.Config;
+import cn.game.util.StrUtil;
 import cn.game.util.log.DeprecatedLogger;
 import cn.game.util.log.LoggerType;
 import cn.game.util.log.SystemLogger;
@@ -730,7 +730,7 @@ public class GameLogger extends DeprecatedLogger {
 
 			Object[] array = new Object[] { LoggerType
 					.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.recruit.name(), LoggerType.recruit.version, "B9210")),
-					0,0,0,beishu,"null",0,id,count,"null","null",costId,costCount
+					0,0,0,beishu,"null",0,id,count,"null",0,"null",costId,costCount
 					};
 			LoggerType.recruit.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
@@ -1148,9 +1148,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.rSGTreeGrow.name(), LoggerType.rSGTreeGrow.version, "C0600"))
+							.buildLogCYPrefix(player, LoggerType.rsgtreegrow.name(), LoggerType.rsgtreegrow.version, "C0600"))
 					,type, num};
-			LoggerType.rSGTreeGrow.logger.info(LoggerType.splice(array));
+			LoggerType.rsgtreegrow.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1213,9 +1213,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.demonSweep.name(), LoggerType.demonSweep.version, "C0800"))
-					,count, battleId, reward};
-			LoggerType.demonSweep.logger.info(LoggerType.splice(array));
+							.buildLogCYPrefix(player, LoggerType.demonsweep.name(), LoggerType.demonsweep.version, "C0800"))
+					,count, battleId};
+			LoggerType.demonsweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1229,9 +1229,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.lingShanPurchase.name(), LoggerType.lingShanPurchase.version, "C0900"))
+							.buildLogCYPrefix(player, LoggerType.lingshanpurchase.name(), LoggerType.lingshanpurchase.version, "C0900"))
 					,count, cost};
-			LoggerType.lingShanPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.lingshanpurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1245,9 +1245,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.lingShanSweep.name(), LoggerType.lingShanSweep.version, "C0902"))
-					,count, battleId, reward};
-			LoggerType.lingShanSweep.logger.info(LoggerType.splice(array));
+							.buildLogCYPrefix(player, LoggerType.lingshansweep.name(), LoggerType.lingshansweep.version, "C0902"))
+					,count, battleId};
+			LoggerType.lingshansweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1279,9 +1279,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.daShengPurchase.name(), LoggerType.daShengPurchase.version, "C1000"))
+							.buildLogCYPrefix(player, LoggerType.dashengpurchase.name(), LoggerType.dashengpurchase.version, "C1000"))
 					,count,cost};
-			LoggerType.daShengPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.dashengpurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1290,14 +1290,16 @@ public class GameLogger extends DeprecatedLogger {
 	 * 大圣擂台挑战
 	 * @param player  战报所属玩家 战报内容
 	 */
-	public static void DaShengChallenge(Player player, Object playerId, Object report) {
+	public static void DaShengChallenge(Player player, String playerId, Object report) {
+		String[] split = playerId.split("_");
+		String playerIdStr = split[split.length-1];
 		try {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.daShengChallenge.name(), LoggerType.daShengChallenge.version, "C1001"))
-					,playerId, report.toString()};
-			LoggerType.daShengChallenge.logger.info(LoggerType.splice(array));
+							.buildLogCYPrefix(player, LoggerType.dashengchallenge.name(), LoggerType.dashengchallenge.version, "C1001"))
+					,playerIdStr, report.toString()};
+			LoggerType.dashengchallenge.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1312,9 +1314,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.heroBook.name(), LoggerType.heroBook.version, "C1200"))
+							.buildLogCYPrefix(player, LoggerType.herobook.name(), LoggerType.herobook.version, "C1200"))
 					,getScore, totalScore, heroID};
-			LoggerType.heroBook.logger.info(LoggerType.splice(array));
+			LoggerType.herobook.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1328,9 +1330,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildCreate.name(), LoggerType.guildCreate.version, "C1300"))
+							.buildLogCYPrefix(player, LoggerType.guildcreate.name(), LoggerType.guildcreate.version, "C1300"))
 					,guildId, name, flag};
-			LoggerType.guildCreate.logger.info(LoggerType.splice(array));
+			LoggerType.guildcreate.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1344,9 +1346,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildJoin.name(), LoggerType.guildJoin.version, "C1301"))
+							.buildLogCYPrefix(player, LoggerType.guildjoin.name(), LoggerType.guildjoin.version, "C1301"))
 					,guildId,type};
-			LoggerType.guildJoin.logger.info(LoggerType.splice(array));
+			LoggerType.guildjoin.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1360,9 +1362,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildDisband.name(), LoggerType.guildDisband.version, "C1302"))
+							.buildLogCYPrefix(player, LoggerType.guilddisband.name(), LoggerType.guilddisband.version, "C1302"))
 					,guildId, name};
-			LoggerType.guildDisband.logger.info(LoggerType.splice(array));
+			LoggerType.guilddisband.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1376,9 +1378,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildExit.name(), LoggerType.guildExit.version, "C1303"))
+							.buildLogCYPrefix(player, LoggerType.guildexit.name(), LoggerType.guildexit.version, "C1303"))
 					,guildId, name};
-			LoggerType.guildExit.logger.info(LoggerType.splice(array));
+			LoggerType.guildexit.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1392,9 +1394,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildInfoChange.name(), LoggerType.guildInfoChange.version, "C1304"))
+							.buildLogCYPrefix(player, LoggerType.guildinfochange.name(), LoggerType.guildinfochange.version, "C1304"))
 					,guildId, name,flag};
-			LoggerType.guildInfoChange.logger.info(LoggerType.splice(array));
+			LoggerType.guildinfochange.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1408,9 +1410,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildMemberPositionChange.name(), LoggerType.guildMemberPositionChange.version, "C1305"))
+							.buildLogCYPrefix(player, LoggerType.guildmemberpositionchange.name(), LoggerType.guildmemberpositionchange.version, "C1305"))
 					,guildId, beforePosition,afterPosition};
-			LoggerType.guildMemberPositionChange.logger.info(LoggerType.splice(array));
+			LoggerType.guildmemberpositionchange.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1424,9 +1426,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildUpgrade.name(), LoggerType.guildUpgrade.version, "C1306"))
+							.buildLogCYPrefix(player, LoggerType.guildupgrade.name(), LoggerType.guildupgrade.version, "C1306"))
 					, exp, level};
-			LoggerType.guildUpgrade.logger.info(LoggerType.splice(array));
+			LoggerType.guildupgrade.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1440,9 +1442,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildShop.name(), LoggerType.guildShop.version, "C1307"))
+							.buildLogCYPrefix(player, LoggerType.guildshop.name(), LoggerType.guildshop.version, "C1307"))
 					,guildId,itemId};
-			LoggerType.guildShop.logger.info(LoggerType.splice(array));
+			LoggerType.guildshop.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1456,9 +1458,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildBargain.name(), LoggerType.guildBargain.version, "C1308"))
+							.buildLogCYPrefix(player, LoggerType.guildbargain.name(), LoggerType.guildbargain.version, "C1308"))
 					,guildId, num, bargainNum, bargainPrice};
-			LoggerType.guildBargain.logger.info(LoggerType.splice(array));
+			LoggerType.guildbargain.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1472,9 +1474,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildBargainPurchase.name(), LoggerType.guildBargainPurchase.version, "C1309"))
+							.buildLogCYPrefix(player, LoggerType.guildbargainpurchase.name(), LoggerType.guildbargainpurchase.version, "C1309"))
 					,itemId, num};
-			LoggerType.guildBargainPurchase.logger.info(LoggerType.splice(array));
+			LoggerType.guildbargainpurchase.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1488,9 +1490,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildDonate.name(), LoggerType.guildDonate.version, "C1310"))
+							.buildLogCYPrefix(player, LoggerType.guilddonate.name(), LoggerType.guilddonate.version, "C1310"))
 					,type, num, contribute, playerId};
-			LoggerType.guildDonate.logger.info(LoggerType.splice(array));
+			LoggerType.guilddonate.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1504,9 +1506,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[]{
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.guildQuest.name(), LoggerType.guildQuest.version, "C1311"))
+							.buildLogCYPrefix(player, LoggerType.guildquest.name(), LoggerType.guildquest.version, "C1311"))
 					, taskId, rewardId, num, rewardNum};
-			LoggerType.guildQuest.logger.info(LoggerType.splice(array));
+			LoggerType.guildquest.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1520,9 +1522,9 @@ public class GameLogger extends DeprecatedLogger {
 			Object[] array = new Object[] {
 					LoggerType
 							.splice(GameLogAssistant
-							.buildLogCYPrefix(player, LoggerType.commonLevelUp.name(), LoggerType.commonLevelUp.version, "C1312"))
+							.buildLogCYPrefix(player, LoggerType.commonlevelup.name(), LoggerType.commonlevelup.version, "C1312"))
 					,expId, level};
-			LoggerType.commonLevelUp.logger.info(LoggerType.splice(array));
+			LoggerType.commonlevelup.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
 		}
@@ -1552,4 +1554,16 @@ public class GameLogger extends DeprecatedLogger {
 		}
 		return stringBuilder.toString();
 	}
+
+
+	public static String rewardString(List<RewardMsg.RewardInfo> reward) {
+		StringBuilder stringBuilder=new StringBuilder();
+		reward.forEach(
+				info -> stringBuilder.append(info.getItem().getId() + ":" +info.getItem().getCount() + ";")
+		);
+		stringBuilder.deleteCharAt(stringBuilder.length()-1);
+		return stringBuilder.toString();
+	}
+
+
 }
