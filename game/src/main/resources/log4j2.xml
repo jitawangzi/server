@@ -58,7 +58,7 @@
         <Property name="file_lingshanpurchase">lingshanpurchase</Property>
         <Property name="file_lingshansweep">lingshansweep</Property>
 
-        <Property name="file_dashengpurchase">dashengchallenge</Property>
+        <Property name="file_dashengchallenge">dashengchallenge</Property>
         <Property name="file_dashengpurchase">dashengpurchase</Property>
         <Property name="file_commonlevelup">commonlevelup</Property>
         <Property name="file_herobook">herobook</Property>
