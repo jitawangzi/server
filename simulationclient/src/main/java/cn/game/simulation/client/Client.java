@@ -556,6 +556,7 @@ public class Client extends AbstractNetClient {
 					PlayerLoginRequest_01000001.Builder builder = PlayerLoginRequest_01000001.newBuilder();
 					builder.setSessionId(passportSessionId + "");
 					builder.setVerstion(version);
+					builder.setDeviceId("testdevice");
 
 					builder.setAdChannel("4019392002");
 					builder.setPlatform(5);
