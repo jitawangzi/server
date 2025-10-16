@@ -472,11 +472,22 @@ public class PVEVPBattle extends XiYouBattleHandler {
             refreshTime = DateUtil.currentTimeSeconds() + 2;
             myRank = RankService.getInstance().getRankEntry(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId());
             if (myRank != null) {
-                List<Integer> ids = radomPlayer(myRank.getRank());
-                return  fillMainShowRankAsync(ids)
-                        .thenCompose(rankEntries -> {
-                            return CompletableFuture.supplyAsync(() -> mainShowRank);
-                        });
+                if(myRank.getRank()==-1)
+                {
+                    return RankService.getInstance()
+                            .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
+                            .thenCompose(rankEntries -> {
+                                rankEntries.forEach(this::setData);
+                                return CompletableFuture.supplyAsync(() -> mainShowRank);
+                            });
+                }else
+                {
+                    List<Integer> ids = radomPlayer(myRank.getRank());
+                    return  fillMainShowRankAsync(ids)
+                            .thenCompose(rankEntries -> {
+                                return CompletableFuture.supplyAsync(() -> mainShowRank);
+                            });
+                }
             }
             return CompletableFuture.failedStage(null);
         }
