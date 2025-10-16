@@ -75,6 +75,10 @@ public class CSVMessagesReader {
 //			String weight = csvRecord.get("权重");
 //			String description = csvRecord.get("描述");
 
+			String seq = csvRecord.get(0);
+			if (StringUtils.isEmpty(seq)) {
+				continue;
+			}
 			String protocol = csvRecord.get(1);
 			String protocolNumber = csvRecord.get(2);
 

@@ -26,7 +26,10 @@ public enum VarConstant {
 	WECHAT_NOTIFY_MONTH_SIGN_REWARD(23),
 
 	/** 是否开启体力满了微信推送 */
-	WECHAT_NOTIFY_ENERGY(24);
+	WECHAT_NOTIFY_ENERGY(24),
+	/** 角色创建时间， 秒时间戳 */
+	PLAYER_CREATE_TIME(25),
+	;
 
 	private final int value;
 

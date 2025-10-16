@@ -49,14 +49,6 @@ public class VarModule extends BasePlayerModule {
 		return varMap.getValue(type.getValue());
 	}
 
-	public int addVar(int type,int value) {
-		return varMap.add(type, value);
-	}
-
-	public int addVar(VarConstant type) {
-		return varMap.add(type.getValue(), 1);
-	}
-
 	public boolean getBoolVar(VarConstant type) {
 		int variable = getVar(type);
 		return  variable > 0;
@@ -72,12 +64,15 @@ public class VarModule extends BasePlayerModule {
 //		}
 	}
 
-	public int incrVar(VarConstant type) {
+	public int addVar(VarConstant type) {
+		return addVar(type, 1);
+	}
+	public int addVar(VarConstant type,int count) {
 //		int var = getVar(type);
 //		int newVar = var + 1;
 //		setVar(type, newVar);
 //		return newVar;
-		return varMap.add(type.getValue(), 1);
+		return varMap.add(type.getValue(), count);
 	}
 
 	@Override
@@ -91,6 +86,7 @@ public class VarModule extends BasePlayerModule {
 		setting.setIsOpenNotifyFirstRechargeReward(getBoolVar(VarConstant.WECHAT_NOTIFY_FIRST_RECHARGE_REWARD));
 		setting.setIsOpenNotifyMonthSignReward(getBoolVar(VarConstant.WECHAT_NOTIFY_MONTH_SIGN_REWARD));
 		builder.setWechatSetting(setting);
+		builder.setPlayerCreateTime(getVar(VarConstant.PLAYER_CREATE_TIME)) ; 
 	}
 
 	/*	@Override
@@ -110,7 +106,8 @@ public class VarModule extends BasePlayerModule {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
-			incrVar(VarConstant.WALL_LEVEL);
+			addVar(VarConstant.WALL_LEVEL);
+			addVar(VarConstant.PLAYER_CREATE_TIME, (int) (System.currentTimeMillis() / 1000));
 			break;
 		}
 		default:

@@ -57,6 +57,15 @@ public class CountingModule extends BasePlayerModule {
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
 		case PLAYER_CREATE: {
+			cumulativeCountMap.put(0, new IntMapWrapper()) ; 
+			cumulativeCountMap.put(1, new IntMapWrapper()) ; 
+			cumulativeCountMap.put(2, new IntMapWrapper()) ; 
+			cumulativeCountMap.put(3, new IntMapWrapper()) ; 
+			cumulativeCountExtMap.put(0, new StringMapWrapper()) ; 
+			cumulativeCountExtMap.put(1, new StringMapWrapper()) ; 
+			cumulativeCountExtMap.put(2, new StringMapWrapper()) ; 
+			cumulativeCountExtMap.put(3, new StringMapWrapper()) ; 
+			
 			addCount(ConditionTypeEnum.CumulativeLogins, 1);
 			break;
 		}

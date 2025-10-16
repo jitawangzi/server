@@ -318,7 +318,6 @@ public class PlayerModule extends BasePlayerModule {
 			}
 			player.getData().setHeadFrame(headBox);
 			player.getData().setImage(headPortrait);
-
 			break;
 		}
 		case Reconnect: {
