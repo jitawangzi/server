@@ -510,7 +510,9 @@ public class PVEVPBattle extends XiYouBattleHandler {
         //  ticketCount++;
         GameLogger.DaShengPurchase(player,GlobalConst.DaShengBuyTicket-buyCount, num);
     }
-
+    public boolean hasRed() {
+        return getTicketCount()>0;
+    }
     public int getTicketCount() {
         return GlobalConst.DaShengFreeTicket +player.getWelfareValue(WelfareTypeEnum.DaShengAddTimes)-ticketCount
                 +GlobalConst.DaShengBuyTicket-buyCount;
