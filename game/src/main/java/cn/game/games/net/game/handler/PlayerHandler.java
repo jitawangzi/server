@@ -886,7 +886,7 @@ public class PlayerHandler extends GameBaseHandler {
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
 		renameFuture.map(r -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);
-			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
+			player.getVarModule().addVar(VarConstant.RANAME_COUNT);
 			client.sendProtocol(resp);
 			return null;
 
@@ -906,7 +906,7 @@ public class PlayerHandler extends GameBaseHandler {
 //			player.isEnough(var, var); 
 		}
 		if (var == 0) {
-			player.getVarModule().incrVar(VarConstant.GENDER_COUNT);
+			player.getVarModule().addVar(VarConstant.GENDER_COUNT);
 		}
 		player.getData().setGender(isMan);
 		client.sendProtocol(resp);
