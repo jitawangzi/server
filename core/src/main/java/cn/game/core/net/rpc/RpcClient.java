@@ -12,12 +12,16 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.RunMode;
 import cn.game.core.base.ServerContext;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.ReplyFailure;
 
 public interface RpcClient {
 
@@ -178,19 +182,28 @@ public interface RpcClient {
 			Future<Message<Object>> request = request(targetAddr, command, options);
 			Message<Object> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
 			Object result = message.body();
-			if (result instanceof Throwable) {
-				String errorMsg = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
-						Thread.currentThread().getName());
-				log.error(errorMsg, (Throwable) result);
-				throw new RuntimeException((Throwable) result);
-			}
+		    if (result instanceof Throwable) {
+		        Throwable t = (Throwable) result;
+		        // 远端返回的 Error 只是数据，不是本地致命错误，可以包装成 RuntimeException 再抛
+		        if (t instanceof Error) {
+		            throw new RuntimeException("remote error: " + t.getClass().getName(), t);
+		        }
+		        throw (t instanceof RuntimeException) ? (RuntimeException) t : new RuntimeException(t);
+		    }
 			return result;
 		} catch (Exception e) {
-			String errorMsg = MessageFormat.format("远程调用获取结果异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
-					Thread.currentThread().getName());
-			log.error(errorMsg, ExceptionUtils.getRootCause(e));
-			throw new RuntimeException(e);
+		    String scene = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]",
+		            targetAddr, command, Thread.currentThread().getName());
+		    ExceptionHelper.rethrowWithPolicy(e, log, scene);
+		    return null; // 不会到达
+
+		} catch (Error err) {
+		    // 本地真正的 Error：不要改变它的类型，避免影响框架的默认处理
+		    log.error("远程调用过程中发生本地致命错误(Error): targetAddr[{}] command[{}] thread[{}]",
+		            targetAddr, command, Thread.currentThread().getName(), err);
+		    throw err;
 		}
+		// never reach
 	}
 
 	private void logError(String targetAddr, Command command, long startLong, Throwable t) {

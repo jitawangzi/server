@@ -18,6 +18,7 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -67,15 +68,18 @@ public abstract class BaseHandler implements Handler {
 						invoker.invoke(client, message);
 						client.afterProcess(protocol);
 					}
-				} catch (LogicException e) {
-					client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), e.getErrorCode());
-				} catch (Throwable e) {
+				}catch (Exception e) {
 					int errorCode = ErrorMsgEnum.unknown.getId() ; 
-					LogicException cause = GameUtil.findCause(e,LogicException.class);
-					if (cause!=null) {
-						errorCode = cause.getErrorCode(); 
+					String errorMsg = client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(); 
+			        LogicException le = (e instanceof LogicException)
+			                ? (LogicException) e
+			                : ExceptionHelper.findCause(e, LogicException.class);
+					if (le != null) {
+						errorCode = le.getErrorCode();
+						log.error(errorMsg + " ,errorcode: " + errorCode);
+					}else {
+						log.error(errorMsg, e);
 					}
-					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
 							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
 							.build(), errorCode);

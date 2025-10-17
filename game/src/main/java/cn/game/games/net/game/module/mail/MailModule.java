@@ -77,19 +77,51 @@ public class MailModule extends BasePlayerModule  {
 	}
 
 	public boolean delete(long id) {
-		Mail mail = get(id);
-		if(mail!=null&&mail.getType()==MailType.DASHENG_XUN_SHAN.getValue()) {
+//		Mail mail = get(id);
+//		if(mail!=null&&mail.getType()==MailType.DASHENG_XUN_SHAN.getValue()) {
+//			return true;
+//		}
+		Mail remove = this.mails.get(id); 
+		return delete(remove);
+	}
+
+	public boolean delete(Mail mail) {
+		if (mail != null) {
+			if (!mail.getSee()) {
+				// 未查看邮件不能删除
+				return false; 
+			}
+			this.mails.remove(mail.getId()) ; 
+			if (mail == notice) {
+				mail.setIsDeleted(true);
+			} else {
+				mail.delete();
+			}
 			return true;
 		}
-		Mail remove = this.mails.remove(id); 
-		if (remove!= null) {
-			if (remove == notice) {
-				remove.setIsDeleted(true);
-			} else {
-				remove.delete();
+		return false;
+	}
+	/** 
+	 * 按类型删除邮件
+	 * @param type
+	 * @return
+	 */
+	public void deleteByType(int type) {
+		List<Mail> delList = new ArrayList<>();
+		for (Mail mail : this.mails.values()) {
+			if (mail.getType() == type) {
+				delList.add(mail);
 			}
 		}
-		return false;
+		for (Mail mail : delList) {
+			delete(mail);
+		}
+	}
+	public void deleteAll() {
+		List<Mail> delList = new ArrayList<>(this.mails.values());
+		for (Mail mail : delList) {
+			delete(mail);
+		}
 	}
 
 	public Collection<Mail> list() {

@@ -288,11 +288,14 @@ public class Guild {
 		return module.menMemberMap.get(playerId);
 	}
 
-	// 解散公会
-	public void dissolveGuild() {
+	/** 
+	 * 解散公会
+	 * @param quitType 2 会长主动解散 3 公会活跃度低强制解散
+	 */
+	public void dissolveGuild(int quitType) {
 
 		// 删除所有玩家
-		module.removeAllMember();
+		module.removeAllMember(quitType);
 		// 删除公会排行榜
 		RankService.getInstance().removeRankAsync(RankType.Guild,data.getServerId(), getId());
 		// 删除公会名称 id 映射

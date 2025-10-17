@@ -90,7 +90,7 @@ public class GuildManager {
 				Promise<Void> promise = Promise.promise();
 				saveFutures.add(promise.future());
 
-				// 投递到eventloop执行
+				// 投递到虚拟线程执行
 				ServerContext.getInstance().getProcessor().process(info.getId(), () -> {
 					info.setSaveDataTimer(now);
 					info.updateModuleData();

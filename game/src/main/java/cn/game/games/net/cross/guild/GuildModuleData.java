@@ -122,10 +122,14 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 		return totalPower;
 	}
 
-	public void removeAllMember() {
+	/** 
+	 * 
+	 * @param quitType 2 会长主动解散 3 公会活跃度低强制解散
+	 */
+	public void removeAllMember(int quitType) {
 		List<Long> pidList = new ArrayList<>(menMemberMap.keySet());
 		pidList.forEach(playerId -> {
-			removeMember(playerId,2);
+			removeMember(playerId,quitType);
 		});
 		menMemberMap.clear();
 	}
@@ -133,7 +137,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 	/** 
 	 * 移除成员
 	 * @param playerId
-	 * @param quitType 0 自己退出 1 会长踢出 2 公会解散
+	 * @param quitType 0 自己退出 1 会长踢出 2 会长主动解散 3 公会活跃度低强制解散
 	 */
 	public void removeMember(long playerId,int quitType) {
 		menMemberMap.remove(playerId);
@@ -143,7 +147,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 		
 		// 给成员发邮件
 		Guild guild = GuildManager.getInstance().getGuild(guildId); 
-		int mailId = quitType ==0 ? 0 :  quitType == 1 ? 25 : 26;
+		int mailId = quitType == 1 ? 25 : quitType == 3 ? 26 : 0;
 		if (mailId > 0) {
 			MailHelper.sendMail(playerId, mailId,true,guild.getName()); 
 		}
@@ -216,7 +220,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 			Guild guild = GuildManager.getInstance().getGuild(guildId); 
 			if (livenessLowDay > GlobalConst.GuildDisbandDay) {
 				// 如果活跃度低于某个值，超过某个天数，就会被解散
-				guild.dissolveGuild();
+				guild.dissolveGuild(3);
 				return ; 
 			}
 			if (livenessLowDay > GlobalConst.GuildDisbandHitDay) {

@@ -1,4 +1,4 @@
-﻿﻿序号,协议名,协议号,模块,功能组,组顺序,权重,描述
+﻿序号,协议名,协议号,模块,功能组,组顺序,组权重,描述
 1,ActivityBaoLiInfoRequest_11000061,0x11000061,活动,1000,,,每日豹利信息请求
 2,ActivityFirstChargeBuyRequest_11000010,0x11000010,活动,1000,,1,购买首冲礼包，只能购买有售价的礼包。
 3,ActivityFirstChargeRequest_11000007,0x11000007,活动,1000,,,查看首冲活动数据
@@ -256,3 +256,16 @@
 308,BattleMountainBuffBagRequest_1300053b,0x1300053b,,,,,请求buff背包列表
 309,LimitedTimeGiftBuyRequest_15000061,0x15000061,,,,,购买限时礼包
 310,GuildRankListRequest_40000081,0x40000081,,,,,请求工会排行榜数据
+311,ActivityServerOpenRankListRequest_11000203,0x11000203,,,,,查看开服7天排行榜数据
+312,ActivityServerOpenRankRequest_11000200,0x11000200,,,,,查看开服7天排行榜活动数据
+313,ActivityServerOpenRankRewardRequest_11000205,0x11000205,,,,,领取开服7天排行每日奖励
+314,ActivityWestLuckyCountRewardRequest_11000097,0x11000097,,,,,领取次数进度奖励
+315,BattleHandCardRequest_13000600,0x13000600,,,,,使用手操卡
+316,FundPassSignAllRequest_11000303,0x11000303,,,,,请求所有的购买通行证
+317,FundPassSignBuyRequest_11000301,0x11000301,,,,,购买通行证
+318,FundPassSignReceiveRequest_11000305,0x11000305,,,,,领取通行证
+319,GinsengTreeHandCardRequest_39000025,0x39000025,,,,,保存手操卡
+320,HeroIllustrationsMonsterAddRequest_16000046,0x16000046,,,,,增加新图鉴怪物
+321,HeroIllustrationsMonsterRewardRequest_16000048,0x16000048,,,,,领取怪物图鉴奖励
+322,PlayerAdBIInfoRequest_01100603,0x01100603,,,,,广告BI
+323,PlayerAssetRecoverRequest_01000210,0x01000210,,,,,请求定时恢复的资源剩余时间，一般用在客户端从后台切换回来时使用，确保倒计时正确

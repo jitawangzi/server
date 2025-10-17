@@ -227,25 +227,21 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
+        int optType = req.getOptType();
         // 不能审批自己
-        if (req.getTargetPidListList().contains(player.getPlayerId())) {
+        List<Integer> targetPidListList = req.getTargetPidListList();
+		if (targetPidListList.contains(player.getPlayerId())) {
             client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
             return;
         }
-        if (req.getOptType() != 1 && req.getOptType() != 2 && req.getOptType() != 3) {
+        if (optType != 1 && optType != 2 && optType != 3) {
             client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
             return;
         }
-        sendMsgToGuildServer(player, req, player.getPlayerName()).onSuccess(callBack -> {
-            if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(res.build(), callBack.errorCode);
-            } else {
-                client.sendProtocol(callBack.response);
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
-        });
+        List<Long> targetPidList = targetPidListList.stream().map(i -> i.longValue()).collect(Collectors.toList());
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId()); 
+        guildProxy.updateMemberAuth(player.getGuildId(), player.getPlayerId(), player.getPlayerName(), optType, targetPidList);
+        client.sendProtocol(res.setResult(true).build());
     }
 
     private void getGuildLogs(NetClient client, Object o) {
@@ -300,18 +296,18 @@ public class GuildHandler extends GameBaseHandler {
     private void quitGuild(NetClient client, Object o) {
         GuildMsg.GuildQuitRequest_40000017 req = (GuildMsg.GuildQuitRequest_40000017) o;
         GuildMsg.GuildQuitResponse_40000018.Builder res = GuildMsg.GuildQuitResponse_40000018.newBuilder();
-        autoForwardGuildServer(client, res, req, (result) -> {
-            // 退出成功
-            Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-            player.getGuildModule().quit();
-            player.getGuildModule().setDisbandCount(player.getGuildModule().getDisbandCount() + 1);
-            // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
-            if (player.getGuildModule().getDisbandCount() > 1) {
-                player.getGuildModule().setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
-            }
-            client.sendProtocol(result);
-            return null;
-        });
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+        GuildModule guildModule = player.getGuildModule(); 
+        long guildId = guildModule.getGuildId(); 
+		if (guildId <= 0) {
+			player.fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
+        guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
+        // 退出成功
+        guildModule.quit();
+        client.sendProtocol(res.setResult(true).build());
     }
 
     private void setGuildMemberPosition(NetClient client, Object o) {
@@ -341,6 +337,12 @@ public class GuildHandler extends GameBaseHandler {
                 client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
                 return;
             }
+            // 检查公会名称是否重复
+            boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(req.getName()); 
+            if (checkGuildNameRepeat) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
+                return;
+    		}
             checkStrs.add(req.getName());
         }
         if (!StringUtils.isEmpty(req.getNotice())) {
@@ -429,17 +431,14 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
-        long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
-        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
-            return;
-        }
+        GuildModule guildModule = player.getGuildModule(); 
+        guildModule.checkJoinCd(); 
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
         if (guild != null) {
             GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
             // 玩家直接加入公会
-            player.getGuildModule().join(simpleInfo.getId());
+            guildModule.join(simpleInfo.getId	());
             GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
             client.sendProtocol(res.setGuild(allInfo).build());
         } else {

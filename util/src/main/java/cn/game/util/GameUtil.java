@@ -589,16 +589,4 @@ public class GameUtil {
 		return count >= array.length ? array[array.length - 1] : array[count];
 	}
 	
-	
-	public static <T extends Throwable> T findCause(Throwable throwable, Class<T> targetType) {
-	    if (throwable == null || targetType == null) return null;
-	    @SuppressWarnings("unchecked")
-	    java.util.List<Throwable> list = ExceptionUtils.getThrowableList(throwable);
-	    for (Throwable t : list) {
-	        if (targetType.isInstance(t)) {
-	            return targetType.cast(t);
-	        }
-	    }
-	    return null;
-	}
 }

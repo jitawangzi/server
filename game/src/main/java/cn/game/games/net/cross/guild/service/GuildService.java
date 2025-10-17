@@ -160,7 +160,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (member.getPosition() != GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
-		guildInfo.dissolveGuild();
+		guildInfo.dissolveGuild(2);
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (member.getPosition() == GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			// 公会没人了 直接解散
 			if (guildInfo.getModule().menMemberMap.size() <= 1) {
-				guildInfo.dissolveGuild();
+				guildInfo.dissolveGuild(2);
 			} else {
 				// 公会有人存在 则不可退出 需要先把宗主转让出去
 				fail(ErrorMsgEnum.zong_men_permission_not_enough);
@@ -305,46 +305,45 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	 * @return 是否成功
 	 */
 	@Override
-	public void updateMemberAuth(long guildId, MemberAuthRequest request) {
+	public void updateMemberAuth(long guildId, long operatorId,String operatorName, int optType, List<Long> targetPidList) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
 		if (guildInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
-		GuildMember operator = guildInfo.getMember(request.getOperatorId());
+		GuildMember operator = guildInfo.getMember(operatorId);
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(operator.position);
 
 		// 权限检查
-		if ((request.getOptType() == 1 || request.getOptType() == 2) && !permissionsConfig.Approval) {
+		if ((optType == 1 || optType == 2) && !permissionsConfig.Approval) {
 			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
-		if (request.getOptType() == 3 && !permissionsConfig.Rename) {
+		if (optType == 3 && !permissionsConfig.Rename) {
 			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
 
 		// 数据校验
-		for (long targetPid : request.getTargetPlayerIds()) {
-			if ((request.getOptType() == 1 || request.getOptType() == 2) && !guildInfo.hasApply(targetPid)) {
+		for (long targetPid : targetPidList) {
+			if ((optType == 1 || optType == 2) && !guildInfo.hasApply(targetPid)) {
 				fail(ErrorMsgEnum.request_parameter_error);
 			}
-			if (request.getOptType() == 3 && !guildInfo.isHasMember(targetPid)) {
+			if (optType == 3 && !guildInfo.isHasMember(targetPid)) {
 				fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 			}
 		}
 
-		if (request.getOptType() == 1 && guildInfo.isFull()) {
+		if (optType == 1 && guildInfo.isFull()) {
 			fail(ErrorMsgEnum.zong_men_full);
 		}
-
 		// 执行操作
-		switch (request.getOptType()) {
+		switch (optType) {
 		case 1: // 审批同意添加成员
-			guildInfo.addMemberAuth(request.getTargetPlayerIds(), request.getOperatorName());
+			guildInfo.addMemberAuth(targetPidList, operatorName);
 			break;
 		case 2: // 审批拒绝添加成员
-			guildInfo.removeApplyAuth(request.getTargetPlayerIds(), request.getOperatorName());
+			guildInfo.removeApplyAuth(targetPidList, operatorName);
 			break;
 		case 3: // 踢人
-			guildInfo.kickMember(request.getTargetPlayerIds(), request.getOperatorName());
+			guildInfo.kickMember(targetPidList, operatorName);
 			break;
 		}
 	}

@@ -261,8 +261,10 @@ public class ServerTestContext {
 						continue;
 					}
 					if (!client.isLastMessageReturn()) {
-						client.resendLastMessage();
-						continue;
+						boolean resendLastMessage = client.resendLastMessage();
+						if (resendLastMessage) {
+							continue;
+						}
 					}
 					if (client.getLastSendMessageTime() > 0
 							&& System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
@@ -401,7 +403,7 @@ public class ServerTestContext {
 		botSendInterval = Integer.parseInt(initialProp.getProperty("botSendInterval"));
 		messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval"));
 		botRunTimeMax = Integer.parseInt(initialProp.getProperty("botRunTimeMax"));
-		msgGroup = Integer.parseInt(initialProp.getProperty("msgGroup"));
+		msgGroup =initialProp.getProperty("msgGroup") == null? 0 :Integer.parseInt(initialProp.getProperty("msgGroup"));
 		String sourceIpsString = initialProp.getProperty("sourceIps");
 		if (!StringUtils.isEmpty(sourceIpsString)) {
 			sourceIps = new ArrayList<>();
