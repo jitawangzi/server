@@ -495,7 +495,7 @@ public class Client extends AbstractNetClient {
 	 */
 	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login)
 			throws URISyntaxException, UnknownHostException, SSLException {
-		if (serverIp == null) {
+		if (StringUtils.isEmpty(serverIp)) {
 			serverIp = this.serverIp;
 			port = this.serverPort;
 		}
@@ -535,7 +535,9 @@ public class Client extends AbstractNetClient {
 		// 连接到服务器：
 		Promise<Client> promise = group.next().newPromise();
 		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
-				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+			StringUtils.isEmpty(sourceIp)? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+//		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
+//				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
 
 		connectFuture.addListener(f -> {
 			ChannelFuture handshakeFuture = handler.handshakeFuture();
@@ -565,6 +567,8 @@ public class Client extends AbstractNetClient {
 					builder.setSdkVersion("NULL");
 					builder.setSystem("system");
 					builder.setClueToken("{}");
+					
+					builder.setAccountId(name) ; 
 
 					sendProtocol(builder.build());
 				}

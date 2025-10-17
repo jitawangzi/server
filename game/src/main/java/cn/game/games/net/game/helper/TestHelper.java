@@ -229,7 +229,7 @@ public class TestHelper {
 		Collection<ItemConfig> list = ItemManager.instance().list();
 		for (ItemConfig itemConfig : list) {
 			int itemType = itemConfig.ItemType;
-			if (itemType == 1 || itemType == 2 || itemType == 3 || itemType == 10 || itemType == 11 || itemType == 13) {
+			if (itemType >= 1 && itemType <= 3 || itemType >= 9 && itemType <= 11 || itemType == 13) {
 				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, opType);
 			}
 		}
@@ -247,8 +247,9 @@ public class TestHelper {
 		for (GemConfig config : GemManager.instance().list()) {
 			PlayerHelper.addResources(player, config.ID, 5, opType);
 		}
+		// 装备表一共500多个，所以每个id只给一个就够了
 		for (EquipConfig config : EquipManager.instance().list()) {
-			PlayerHelper.addResources(player, config.ID, 5, opType);
+			PlayerHelper.addResources(player, config.ID, 1, opType);
 		}
 		HeroModule module = player.getModule(HeroModule.class);
 		
