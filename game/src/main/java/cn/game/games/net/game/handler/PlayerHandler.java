@@ -956,6 +956,7 @@ public class PlayerHandler extends GameBaseHandler {
 			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
 			return ;
 		}
+		// 使用sdk登陆，这两个参数都从客户端传递，不使用Login中获取的了
 //		account.accountId = uidResponse.getAccountId();
 //		account.deviceId = uidResponse.getDeviceId();
 
