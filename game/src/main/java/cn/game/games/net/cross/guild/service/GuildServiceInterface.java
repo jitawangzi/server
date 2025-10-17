@@ -1,5 +1,7 @@
 package cn.game.games.net.cross.guild.service;
 
+import java.util.List;
+
 import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.guild.Guild;
 import cn.game.games.net.cross.guild.GuildMember;
@@ -95,7 +97,7 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param request 权限请求
 	 * @return 是否成功
 	 */
-	void updateMemberAuth(long guildId, MemberAuthRequest request);
+	void updateMemberAuth(long guildId, long operatorId,String operatorName, int optType, List<Long> targetPidList);
 
 	/**
 	 * 增加公会资产，经验、活跃度等

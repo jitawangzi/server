@@ -207,7 +207,9 @@ public class MailHelper {
 		PlayerManager.getInstance().getAllPlayer().values().forEach(player -> {
 			try {
 				if (canAddMail(player, gmMail)) {
-					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),gmMail.getMailopttype(),
+					byte mailopttype = gmMail.getMailopttype(); 
+					int mailType = gmMailTypeToPlayerMailType(mailopttype);
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),mailType,
 							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("addGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
@@ -233,7 +235,9 @@ public class MailHelper {
 			try {
 				if (canAddMail(player, gmMail)) {
 					List<Goods> attachmentList = GmHelper.getAttachment(gmMail);
-					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),  gmMail.getMailopttype(),
+					byte mailopttype = gmMail.getMailopttype(); 
+					int mailType = gmMailTypeToPlayerMailType(mailopttype);
+					sendMail(player.getPlayerId(), 0, null, "系统管理员", gmMail.getTitle(), gmMail.getContext(),  mailType,
 							attachmentList, true);
 					player.getMailModule().setGlobalMailId(gmMail.getId());
 					log.info(String.format("onLoginAddGlobalMail playerId = %s, mailId = %s", player.getPlayerId(), gmMail.getId()));
@@ -243,6 +247,21 @@ public class MailHelper {
 				throw new RuntimeException(e);
 			}
 		});
+	}
+
+
+	private static int gmMailTypeToPlayerMailType(byte mailopttype) {
+		int mailType = 0;
+		if (mailopttype > 2) { // 特殊类型邮件，保留类型
+			mailType = mailopttype ; 
+		}else {
+			if (mailopttype == 0 || mailopttype == 1) {
+				mailType = 2; 
+			}else {
+				mailType = 1; 
+			}
+		}
+		return mailType;
 	}
 
 	private static boolean canAddMail(Player player, GmMail gmMail) throws ParseException {

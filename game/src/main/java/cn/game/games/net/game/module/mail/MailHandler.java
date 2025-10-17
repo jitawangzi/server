@@ -84,20 +84,17 @@ public class MailHandler extends GameBaseHandler {
 	private void delete(NetClient client, Object message) {
 		MailDeleteRequest_12000007 req = (MailDeleteRequest_12000007) message;
 		String uid = req.getUid();
+		int type = req.getType(); 
 		long id = StringUtils.isEmpty(uid) ? 0 : Long.parseLong(uid);
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		MailModule mailModule = player.getMailModule();
 		if (id > 0) {
-			Mail mail = mailModule.get(id);
-			if (mail != null && mail.getSee()) {
-				mailModule.delete(id);
-			}
+			mailModule.delete(id);
 		} else {
-			List<Mail> list = new ArrayList<Mail>(mailModule.list());
-			for (Mail mail : list) {
-				if (mail.getSee()) {
-					mailModule.delete(mail.getId());
-				}
+			if (type > 0) {
+				mailModule.deleteByType(type);
+			}else {
+				mailModule.deleteAll();
 			}
 		}
 		client.sendProtocol(MailDeleteResponse_12000008.getDefaultInstance());

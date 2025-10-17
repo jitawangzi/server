@@ -72,10 +72,13 @@ public abstract class BaseHandler implements Handler {
 				} catch (Throwable e) {
 					int errorCode = ErrorMsgEnum.unknown.getId() ; 
 					LogicException cause = GameUtil.findCause(e,LogicException.class);
-					if (cause!=null) {
-						errorCode = cause.getErrorCode(); 
+					if (cause != null) {
+						errorCode = cause.getErrorCode();
+						log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData()
+								+ "errorcode: " + errorCode);
+					}else {
+						log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
 					}
-					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
 							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
 							.build(), errorCode);

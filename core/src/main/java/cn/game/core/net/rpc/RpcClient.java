@@ -12,12 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.RunMode;
 import cn.game.core.base.ServerContext;
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.util.Config;
+import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.ReplyFailure;
 
 public interface RpcClient {
 
@@ -178,18 +181,28 @@ public interface RpcClient {
 			Future<Message<Object>> request = request(targetAddr, command, options);
 			Message<Object> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
 			Object result = message.body();
-			if (result instanceof Throwable) {
+	        if (result instanceof Throwable) {
+	            Throwable t = (Throwable) result;
+	            LogicException le = GameUtil.findCause(t, LogicException.class);
+	            if (le != null) {
+	                throw le; // 业务异常,原样抛出,不记录堆栈
+				} 
 				String errorMsg = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
 						Thread.currentThread().getName());
 				log.error(errorMsg, (Throwable) result);
-				throw new RuntimeException((Throwable) result);
-			}
+//				log.error(errorMsg, ExceptionUtils.getRootCause((Throwable) result));
+				throw (t instanceof RuntimeException) ? (RuntimeException) t : new RuntimeException(t);
+	        }
 			return result;
 		} catch (Exception e) {
-			String errorMsg = MessageFormat.format("远程调用获取结果异常: targetAddr[{0}] command[{1}] thread[{2}]", targetAddr, command,
-					Thread.currentThread().getName());
-			log.error(errorMsg, ExceptionUtils.getRootCause(e));
-			throw new RuntimeException(e);
+			if (e instanceof LogicException) {
+				throw (LogicException)e ; 
+			}
+			LogicException cause = GameUtil.findCause(e,LogicException.class);
+			if (cause != null) {
+				throw cause;
+			}
+			throw (e instanceof RuntimeException) ? (RuntimeException) e: new RuntimeException(e);
 		}
 	}
 

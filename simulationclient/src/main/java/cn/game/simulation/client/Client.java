@@ -627,12 +627,15 @@ public class Client extends AbstractNetClient {
 	 * 一般是当消息没有收到回复时，用来重发某个消息
 	 * @param binaryWebSocketFrame
 	 */
-	private void resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
-		resendCount++;
+	private boolean resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
+		if (resendCount++ >= 3 ) {
+			return false; 
+		}
 		if (this.channel != null && this.channel.isActive() && this.channel.isWritable()) {
 			ChannelFuture future = this.channel.writeAndFlush(binaryWebSocketFrame);
 		}
 		logger.warn("[{}]resend message,count[{}]", this, resendCount);
+		return true; 
 	}
 
 	@Override
@@ -716,12 +719,17 @@ public class Client extends AbstractNetClient {
 		}
 	}
 
-	public void resendLastMessage() {
+	public boolean resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
 		if (lastSendMessageContent != null &&  System.currentTimeMillis() - lastSendMessageTime > 5000) {
-			resendWsPack(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(lastSendMessageContent)));
+			boolean resendWsPack = resendWsPack(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(lastSendMessageContent)));
+			if (!resendWsPack) {
+				return false;
+			}
 			setLastSendMessageTime(System.currentTimeMillis());
+			return true; 
 		}
+		return false;
 	}
 
 	public ChannelFuture sendProtocol(Message message) {

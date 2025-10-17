@@ -15,6 +15,7 @@ import cn.game.games.net.data.mapper.GuildJoinMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.quest.QuestModule;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildDonateConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
@@ -226,6 +227,12 @@ public class GuildModule extends BasePlayerModule {
 			player.getData().setUnionId(0);
 		}
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
+		this.disbandCount++; 
+        // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
+        if (this.disbandCount > 1) {
+            setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
+        }
+        
 	}
 
 	public void join(long guildId) {
@@ -283,6 +290,13 @@ public class GuildModule extends BasePlayerModule {
 		builder.putAllDonate(donateMap.getMap());
 
 		return builder.build();
+	}
+	
+	public void checkJoinCd() {
+        long nextJoinTimer = getNextJoinTimer();
+        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
+        	player.fail(ErrorMsgEnum.zong_men_apply_join_timer);
+        }
 	}
 
 	public boolean isInited() {
