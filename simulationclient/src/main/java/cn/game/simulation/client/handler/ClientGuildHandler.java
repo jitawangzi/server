@@ -44,7 +44,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyRejectedPush_40100001;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -86,7 +86,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildQuitPush_40000024, this::quitPush);
         putInvoker(PbProtocol.GuildJoinPush_40000044, this::joinPush);
         putInvoker(PbProtocol.GuildRankListResponse_40000082, this::rankList);
-        putInvoker(PbProtocol.GuildApplyRejectedPush_40100001, this::applyRejectedPush);
+        putInvoker(PbProtocol.GuildApplyProcessedPush_40100001, this::applyProcessedPush);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -254,8 +254,9 @@ public class ClientGuildHandler extends GameBaseHandler {
         Client client = (Client) netClient;
     }
 
-    private void applyRejectedPush(NetClient netClient, Object message) {
-        GuildApplyRejectedPush_40100001 resp = (GuildApplyRejectedPush_40100001) message;
+    private void applyProcessedPush(NetClient netClient, Object message) {
+        GuildApplyProcessedPush_40100001 resp = (GuildApplyProcessedPush_40100001) message;
+        long guildId = resp.getGuildId();
         long playerId = resp.getPlayerId();
         Client client = (Client) netClient;
     }

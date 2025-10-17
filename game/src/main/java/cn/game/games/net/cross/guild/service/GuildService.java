@@ -332,6 +332,9 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		}
 
 		if (optType == 1 && guildInfo.isFull()) {
+			for (Long targetPid : targetPidList) {
+				guildInfo.getModule().removeApply(targetPid);
+			}
 			fail(ErrorMsgEnum.zong_men_full);
 		}
 		// 执行操作

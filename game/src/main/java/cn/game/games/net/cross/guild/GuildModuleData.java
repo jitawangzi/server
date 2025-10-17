@@ -16,6 +16,7 @@ import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.GuildMsg;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 import cn.game.util.RedisUtil;
 
 /**
@@ -160,6 +161,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 
 	public void removeApply(long playerId) {
 		applyList.remove(playerId);
+		GuildHelper.sendMsgToPlayer(playerId, GuildApplyProcessedPush_40100001.newBuilder().setGuildId(guildId).setPlayerId(playerId).build());
 	}
 
 	public int getLiveness() {

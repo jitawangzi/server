@@ -151,6 +151,22 @@ public class GuildHelper {
 			VxHolder.sendRemoteServer(serverId, req);
 		});
 	}
+	
+	/** 
+	 * 一般是在跨服中，给Game中的玩家发消息，不需要消息返回
+	 * @param playerId
+	 * @param msg
+	 */
+	public static void sendMsgToPlayer(long playerId, Message msg) {
+
+		String serverId = IdCache.getPlayerServerId(playerId);
+		GuildManager.log
+				.info("sendMsgToPlayer playerId : " + playerId + " serverId : " + serverId  + " msg : " + msg);
+		if (org.apache.commons.lang3.StringUtils.isEmpty(serverId)) {
+			VxHolder.sendRemoteServer(ServerType.Game, msg);
+		}
+		VxHolder.sendRemoteServer(serverId, msg);
+	}
 
 	public static Future<GuildHandler.GuildCallbackMsg> sendMsgToGuildServer(Player player, Message req, String... params) {
 		return GuildHandler.sendMsgToGuildServer(player, req);

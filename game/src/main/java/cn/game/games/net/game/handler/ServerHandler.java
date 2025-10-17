@@ -45,7 +45,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ChatMsg;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
 import cn.game.protocol.protobuf.GuildMsg;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyRejectedPush_40100001;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
@@ -154,8 +154,8 @@ public class ServerHandler extends GameBaseHandler {
 				case PbProtocol.ChatMessagePush_31010001 -> {//公会聊天
 					guildChat(player,(ChatMsg.ChatMessagePush_31010001) message);
 				}
-				case PbProtocol.GuildApplyRejectedPush_40100001 -> {
-					GuildApplyRejectedPush_40100001 push = (GuildApplyRejectedPush_40100001)message; 
+				case PbProtocol.GuildApplyProcessedPush_40100001 -> {
+					GuildApplyProcessedPush_40100001 push = (GuildApplyProcessedPush_40100001)message; 
 					Player player2 = PlayerManager.getInstance().getPlayer(push.getPlayerId()); 
 					if (player2 != null) {
 						player2.getGuildModule().getApplyJoinList().remove(push.getGuildId()) ; 
