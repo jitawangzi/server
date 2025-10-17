@@ -1214,7 +1214,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.demonsweep.name(), LoggerType.demonsweep.version, "C0800"))
-					,count, battleId};
+					,count, battleId,"null"};
 			LoggerType.demonsweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
@@ -1246,7 +1246,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.lingshansweep.name(), LoggerType.lingshansweep.version, "C0902"))
-					,count, battleId};
+					,count, battleId,"null"};
 			LoggerType.lingshansweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);
