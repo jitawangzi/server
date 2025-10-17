@@ -11,6 +11,7 @@ import cn.game.core.net.rpc.RPCService;
 import cn.game.core.net.rpc.RPCServiceImpl;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.util.GameUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Handler;
@@ -60,7 +61,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 				if (r.failed() || r.cause() != null|| r.result() instanceof Throwable) {
 					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
 					if (r.cause() != null) {
-						LogicException cause = GameUtil.findCause(r.cause(),LogicException.class);
+						LogicException cause = ExceptionHelper.findCause(r.cause(),LogicException.class);
 						if (cause!=null) {
 							message.reply(cause,VxHolder.universalOptions) ; 
 						}else {
