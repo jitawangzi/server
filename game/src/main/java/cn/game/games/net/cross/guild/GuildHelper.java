@@ -37,6 +37,7 @@ import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 
 /**
  * @ClassName GuildHelper
@@ -107,7 +108,7 @@ public class GuildHelper {
 		builder.setMsgId(msgId);
 		builder.setData(msg.toByteString());
 		builder.addPlayerId(playerId);
-		VxHolder.executeBlockingWithTimeout(() -> {
+		VxHolder.vertx.executeBlocking(() -> {
 			String serverId = IdCache.getPlayerServerId(playerId);
 			GuildManager.log
 					.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId + " msgId : " + msgId + " msg : " + msg);
@@ -147,7 +148,7 @@ public class GuildHelper {
 				.info("notifyMsgToPlayer msgId : " + msgId + " msg : " + msg + " serverIdList : " + serverIdList + " pidSb : " + pidSb);
 		ServerMsg.NotifyGuildMsgToGame_7d000047 req = builder.build();
 		serverIdList.forEach(serverId -> {
-			VxHolder.requestRemoteServer(serverId, req);
+			VxHolder.sendRemoteServer(serverId, req);
 		});
 	}
 

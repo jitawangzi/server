@@ -34,6 +34,9 @@ public class DefenceSkinStarUpRequest_25000033Test extends ServerTest{
 		
 		List<DefenceSkinInfo> defenceSkinsList = client.getPlayerAllInfo().getDefenceSkinsList(); 
 		
+		if (defenceSkinsList.isEmpty()) {
+			return null; 
+		}
 		builder.setStarUpUid(defenceSkinsList.get(0).getUid());
 		
 		for (int i = 1; i < defenceSkinsList.size(); i++) {
