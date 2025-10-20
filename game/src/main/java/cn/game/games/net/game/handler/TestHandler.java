@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.game.games.cache.entity.*;
+import cn.game.games.net.game.module.battle.*;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.guarantee.Guarantee;
@@ -61,11 +62,6 @@ import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.BattleHandler;
-import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
-import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
-import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
@@ -212,6 +208,14 @@ public class TestHandler extends GameBaseHandler {
                     developModule.setHeavenlyDaoLevel(p1);
                     break;
                 }
+            case "ly":
+            {
+                // 设置关卡id
+                BattleModule battleModule = player.getBattleModule();
+                TowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.GemTower);
+                towerBattle.gmJump(p1);
+                break;
+            }
             case "zxgk":
                 {
                     // 设置主线关卡id
@@ -488,6 +492,11 @@ public class TestHandler extends GameBaseHandler {
             {
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), p1);
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(),p1);
+                break;
+            }
+            case "rank":
+            {
+                RankService.getInstance().setScoreAsync(player.getServerId(), RankType.get(p1), player.getPlayerId(), p2);
                 break;
             }
             case "time":
