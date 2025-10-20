@@ -956,7 +956,7 @@ public class PlayerHandler extends GameBaseHandler {
 			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
 			return ;
 		}
-		account.accountId = uidResponse.getAccountId();
+//		account.accountId = uidResponse.getAccountId();
 //		account.deviceId = uidResponse.getDeviceId();
 
 		newGameClient.setSessionId(passportSessionId);
