@@ -336,6 +336,7 @@ public class ServerHandler extends GameBaseHandler {
 	    PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
 	    long playerId = request.getPlayerId();
 	    long uid = request.getUid();
+	    String sdkOrderId = request.getSdkOrderId(); 
 	    log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
 
 	    Player onlinePlayer = PlayerManager.getInstance().getPlayer(playerId);
@@ -355,7 +356,7 @@ public class ServerHandler extends GameBaseHandler {
 	                sendResult(client, false);
 	                return null;
 	            }
-	            handlePaymentForPlayer(client, offlinePlayer, uid, false);
+	            handlePaymentForPlayer(client, offlinePlayer, uid,sdkOrderId, false);
 	            return offlinePlayer;
 	        }).onFailure(err -> {
 	            log.error("PayItem offline ship fail: playerId={}, uid={}", playerId, uid, err);
@@ -363,20 +364,21 @@ public class ServerHandler extends GameBaseHandler {
 	        });
 	    } else {
 	        // 在线流程：串行任务队列
-	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid, true));
+	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid,sdkOrderId, true));
 	    }
 	}
 
 	/**
 	 * 统一处理一个玩家的一笔订单（在线/离线通用）
 	 */
-	private void handlePaymentForPlayer(NetClient client, Player player, long uid, boolean online) {
+	private void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
 	    try {
 	        PayItem payItem = findAndValidatePayItem(player, uid, online);
 	        if (payItem == null) {
 	            sendResult(client, false);
 	            return;
 	        }
+	        payItem.setSdkOrderId(sdkOrderId);
 
 	        boolean ok = processPayment(player, payItem, online);
 	        if (!ok) {

@@ -570,6 +570,7 @@ public class Player {
 					payItem.setRmb(rmbCost);
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
+					payItem.setSdkGoodsId(cost[2]); 
 					if (otherId != null) {
 						payItem.addPaySubIds(otherId);
 					}

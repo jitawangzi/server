@@ -436,8 +436,8 @@ public class GameLogger extends DeprecatedLogger {
 					payItem.getAddId() > 0 ? player.getGoodsModule(payItem.getAddId()).getCount(payItem.getAddId())
 							: player.getCurrencyModule().getCount(Asset.diamond.ID),
 					player.getVipLevel(),
-					payItem.getPayId(), // 商品id
-					payItem.getOrderId(),
+					payItem.getSdkGoodsId(), // 商品id
+					payItem.getSdkOrderId(),
 					2,
 					payItem.getPayId(),
 					player.getUnionId(),// unionid
