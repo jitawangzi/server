@@ -152,6 +152,7 @@ public class Client extends AbstractNetClient {
 	public AtomicInteger seq = new AtomicInteger(1);
 
 	private volatile int resendCount = 0;
+	public static boolean exitOnClientClose = true;
 
 	/** 发送中的消息组 */
 	public int sendingGroup;

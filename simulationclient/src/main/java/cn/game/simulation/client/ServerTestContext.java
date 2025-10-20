@@ -84,6 +84,20 @@ public class ServerTestContext {
 	private static List<String> sourceIps;
 
 	public static void main(String args[]) throws Exception {
+		Client.exitOnClientClose = false ; 
+//		jdk.internal.misc.Signal.handle(new jdk.internal.misc.Signal("TERM"), sig -> System.err.println("Got SIGTERM"));
+//		jdk.internal.misc.Signal.handle(new jdk.internal.misc.Signal("INT"), sig -> System.err.println("Got SIGINT"));
+//		jdk.internal.misc.Signal.handle(new jdk.internal.misc.Signal("HUP"), sig -> System.err.println("Got SIGHUP"));
+		
+		// 仅用于定位，生产环境谨慎使用内部API
+		try {
+		    sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
+		    sun.misc.Signal.handle(new sun.misc.Signal("INT"),  sig -> System.err.println("Java caught SIGINT"));
+		    sun.misc.Signal.handle(new sun.misc.Signal("HUP"),  sig -> System.err.println("Java caught SIGHUP"));
+		} catch (Throwable t) {
+		    System.err.println("Signal handlers not installed: " + t);
+		}
+		
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
@@ -102,8 +116,8 @@ public class ServerTestContext {
 		if (args == null || args.length == 0) {
 			return;
 		}
-		if (args.length != 7) {
-			System.err.println("args length must be 7");
+		if (args.length != 8) {
+			System.err.println("args length must be 8");
 			System.exit(0);
 		}
 		singleMessage = Integer.parseInt(args[0]);
@@ -148,7 +162,7 @@ public class ServerTestContext {
 			@Override
 			public void run() {
 				try {
-					System.err.println("start shutdown hook");
+					System.err.println("start shutdown hook at " + System.currentTimeMillis());
 					run = false;
 					List<ChannelFuture> futures = new ArrayList<>();
 					for (Client client : clients) {
@@ -238,12 +252,11 @@ public class ServerTestContext {
 		long lastSendTime = System.currentTimeMillis();
 		Iterator<Client> iterator = clients.iterator();
 		while (run) {
-
 			try {
 				if (botRunTimeMax > 0 && System.currentTimeMillis() - startTime > botRunTimeMax * 60 * 1000) {
 					// 到运行时间上限，该停止了
-					System.err.println(" time to stop");
-					System.exit(0);
+					System.err.println("time to stop, runtime=" + (System.currentTimeMillis() - startTime) + "ms, botRunTimeMax=" + botRunTimeMax + "min");
+					run = false ; 
 				}
 				if (System.currentTimeMillis() - lastStatisticsTime > messageStatisticsInterval * 60 * 1000) {
 					Thread.sleep(5000); // 先等待一下回复消息
@@ -278,7 +291,9 @@ public class ServerTestContext {
 					}
 					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
 					if (serverTest == null) {
-						throw new IllegalArgumentException("test message not found : " + randomMessage);
+//						throw new IllegalArgumentException("test message not found : " + randomMessage);
+						logger.warn("test message not found : " + randomMessage);
+						continue; 
 					}
 					// 人工测试
 //					serverTest = beansMap.get("TestGmCmdRequest_6f000001".toLowerCase());
@@ -297,7 +312,7 @@ public class ServerTestContext {
 				e.printStackTrace();
 			}
 		}
-		System.exit(0);
+		System.err.println("Main loop exited. run=" + run);
 	}
 
 	public static void send(Client client, Message message)
