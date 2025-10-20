@@ -1,5 +1,7 @@
 package cn.game.login.net.clientpacket.vertx.gm;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +40,17 @@ public class GmPayOrderSuccessReq implements BaseVertxHandler {
         String id =  context.request().getParam("id");
         JSONObject result = GmSelectOrderReq.getResultData();
         PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-        PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(id));
+        PayOrder payOrderSelect = mapper.selectByPrimaryKey(Long.parseLong(id));
+        if (payOrderSelect == null) {
+        	List<PayOrder> selectByThirdOrderId = mapper.selectByThirdOrderId(id); 
+        	if (!selectByThirdOrderId.isEmpty()) {
+        		payOrderSelect = selectByThirdOrderId.get(0); 
+        		if (selectByThirdOrderId.size() > 1) {
+					log.warn("selectByThirdOrderId size > 1 : " + id) ; 
+				}
+			}
+		}
+        PayOrder payOrder = payOrderSelect ; 
         if (payOrder == null){
             result.put("result","param err order not found");
             log.error(String.format("改订单不存在 id:%s",id));
@@ -56,6 +68,7 @@ public class GmPayOrderSuccessReq implements BaseVertxHandler {
         ServerMsg.PaymentOrderShipRequest_7d000022.newBuilder()
             .setPlayerId(payOrder.getPlayerId())
             .setUid(payOrder.getId())
+            .setSdkOrderId(payOrder.getThirdOrderId())
             .build();
 			Future<ServerMsg.PaymentOrderShipResponse_7d000023> future;
         if (StringUtils.isEmpty(serverId)) {
