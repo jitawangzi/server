@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -605,11 +606,13 @@ public class ActivityStateManager {
 		Set<Integer> result = new HashSet<>();
 		mergeIdsInto(result, ActivityState.VIEW_VALUE);
 		mergeIdsInto(result, ActivityState.START_VALUE);
-		for (Integer id : result) {
-            ActivityConfig config = ActivityManager.instance().get(id);
-            if (config.type != activityTypeEnum.ID) {
-                result.remove(id);
-            }
+		Iterator<Integer> iterator = result.iterator(); 
+		while (iterator.hasNext()) {
+			Integer id = iterator.next();
+			ActivityConfig config = ActivityManager.instance().get(id);
+			if (config.type != activityTypeEnum.ID) {
+				iterator.remove();
+			}
 		}
 		return new ArrayList<Integer>(result);
 	}
