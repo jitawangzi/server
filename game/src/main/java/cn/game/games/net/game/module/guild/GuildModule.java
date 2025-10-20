@@ -7,6 +7,7 @@ import java.util.ListIterator;
 
 import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.core.BasePlayerModule;
+import cn.game.games.core.cache.GameCacheService;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.log.GameLogger;
@@ -340,7 +341,8 @@ public class GuildModule extends BasePlayerModule {
 				return true;
 			}
 		}
-		if (player.getCurrencyModule().getCount(Asset.GuildBargain.ID) > 0) {
+        int playerGuildLevel = GameCacheService.getInstance().getPlayerGuildLevel(getGuildId()); 
+		if (playerGuildLevel >= GlobalConst.GuildBargainLevel &&  player.getCurrencyModule().getCount(Asset.GuildBargain.ID) > 0) {
 			return true;
 		}
 		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(getGuildId()); 
