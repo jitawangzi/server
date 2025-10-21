@@ -1,18 +1,12 @@
 package cn.game.games.net.game.module.player.headbox;
 
-import java.util.Set;
-
 import cn.game.games.cache.entity.Item;
-import cn.game.games.core.GoodsModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.item.AbstractItemOnlyOneModule;
-import cn.game.games.net.game.module.player.IdConstant;
-import cn.game.games.net.game.module.player.figure.Figure;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.HeadBoxConfig;
-import cn.game.protocol.generated.config.PlayerFigureConfig;
 import cn.game.protocol.generated.manager.HeadBoxManager;
-import cn.game.protocol.generated.manager.PlayerFigureManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
@@ -59,6 +53,23 @@ public class HeadBoxModule extends AbstractItemOnlyOneModule<HeadBox> {
 	public void checkConfig(int id) {
 //		HeadBoxManager.instance().get
 	}
+	
+	@Override
+	public void delItemAfter(Item item, OpType... args) {
+		if (player.getData().getHeadFrame() == item.getConfigId()) {
+			for (int[] array : GlobalConst.initItems) {
+				if (array[0] == GoodsTypeEnum.HeadBox.getId()) {
+					int headBoxId = array[1];
+					HeadBox headBox = get(headBoxId);
+					if (headBox != null) {
+						player.getData().setHeadFrame(headBoxId);
+						return;
+					}
+					
+				}
+			}
+		}
+	}
 
 	@Override
 	public HeadBox newInstance() {
@@ -73,7 +84,7 @@ public class HeadBoxModule extends AbstractItemOnlyOneModule<HeadBox> {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		idItems.forEach((k, v) -> {
-			builder.putFigureMap(k, v.getExpiredTime() > 0 ? DateUtil.currentTimeSeconds() - v.getExpiredTime() : 0);
+			builder.putHeadBoxMap(k, v.getExpiredTime());
 		});
 	}
 

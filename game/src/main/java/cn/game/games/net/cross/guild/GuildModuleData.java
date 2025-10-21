@@ -85,7 +85,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 		});
 		long endTimer = System.currentTimeMillis();
 		if (endTimer - beginTimer > 50) {
-			GuildManager.log.error("handleEvent time is too long, type:%s, use:%d", evenType.getDesc(), endTimer - beginTimer);
+			GuildManager.log.error("handleEvent time is too long, type:{}, use:{}", evenType.getDesc(), endTimer - beginTimer);
 		}
 	}
 

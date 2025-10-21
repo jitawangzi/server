@@ -71,6 +71,10 @@ public class MainBattle extends XiYouBattleHandler {
 				allRewards.addAll(PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleEnd));
 			}
 		}
+		if(battleConfig.BattleType == 99)
+		{
+			GameLogger.serverEvent(player.getAccount(), 10022);
+		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
 
 		if (request.getBattleTime() > chapter.getBattleTime()) {
