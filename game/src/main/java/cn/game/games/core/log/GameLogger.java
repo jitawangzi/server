@@ -1543,7 +1543,7 @@ public class GameLogger extends DeprecatedLogger {
 				stringBuilder.append(0);
 			}
 			stringBuilder.append(";2:");
-			var monthCard2 = monthCardModule.getMonthCard(1);
+			var monthCard2 = monthCardModule.getMonthCard(2);
 			if (monthCard2 != null) {
 				stringBuilder.append(monthCard2.getExpireTime());
 			} else {
