@@ -217,16 +217,15 @@ public class GuildModule extends BasePlayerModule {
 	 * 退出一个公会
 	 */
 	public void quit() {
-		if (lastId == 0) {
+		if (guildJoin == null) { // 不在公会
 			return;
 		}
 //		lastId = 0;
-		GameLogger.guildJoin(player, lastId, 2);
-		if (guildJoin != null) {
-			guildJoin.delete(); 
-			guildJoin = null;
-			player.getData().setUnionId(0);
-		}
+		GameLogger.guildJoin(player, guildJoin.getGuildId(), 2);
+		
+		guildJoin.delete(); 
+		guildJoin = null;
+		player.getData().setUnionId(0);
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
 		this.disbandCount++; 
         // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
@@ -237,9 +236,10 @@ public class GuildModule extends BasePlayerModule {
 	}
 
 	public void join(long guildId) {
-		if (guildJoin != null) {
-			return ; // 已经有公会了
-		}
+//		离线被通过，可能guildJoin != null，依然需要执行加入逻辑
+//		if (guildJoin != null) {
+//			return ; // 已经有公会了,
+//		}
 //		if (guildId == lastId) {
 //			return;
 //		}
