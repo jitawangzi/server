@@ -460,12 +460,9 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID); 
             return ; 
 		}
-        
-        long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
-        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
-            return;
-        }
+        GuildModule guildModule = player.getGuildModule(); 
+        guildModule.checkJoinCd(); 
+
         String name = req.getName();
         List<String> checkStrs = new ArrayList<>();
         if (!player.isEnough(GlobalConst.GuildCreationConsume[0], GlobalConst.GuildCreationConsume[1])) {
@@ -529,7 +526,7 @@ public class GuildHandler extends GameBaseHandler {
     		 // 创建公会成功的业务逻辑
     		 PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
     		 GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-    		 player.getGuildModule().join(simpleInfo.getId());
+    		 guildModule.join(simpleInfo.getId());
     		 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
     		 res.setGuild(allInfo);
     		 client.sendProtocol(res);
