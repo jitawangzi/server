@@ -50,7 +50,7 @@ public class GameLogAssistant extends DeprecatedLogger {
 		return new Object[] { getCurrentTimeLogText(), Config.APP_KEY, account.version != null ? account.version : "null", logName, logVersion, stepNum,
 				ServerContext.getInstance().getServerId(), account.adChannel != null ? account.adChannel : "null",
 				player.getData().getAccountId() != null ? player.getData().getAccountId() : "null",
-				player.getPlayerId(), player.getLevel(), 0,
+				player.getPlayerId(), player.getLevel(), player.getGuildId(),
 				player.getData().getDeviceId() != null ? player.getData().getDeviceId() : "null" };
 	}
 

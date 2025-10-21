@@ -22,7 +22,7 @@ public class BIHelper {
 
 		int goodsType = ItemHelper.getGoodsType(id);
 		if (goodsType == GoodsTypeEnum.Resource.getId()) {
-			if (id == Asset.gold.ID || id == Asset.diamond.ID) {
+			if (id == Asset.gold.ID || id == Asset.diamond.ID|| id == Asset.GuildContribute.ID|| id == Asset.GuildCoin.ID) {
 				GameLogger.money(player, id, value, opType, isAdd);
 			}
 		} else {

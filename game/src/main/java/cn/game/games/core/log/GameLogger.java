@@ -666,14 +666,14 @@ public class GameLogger extends DeprecatedLogger {
 	 * 剩余体力,上阵卡牌战力总和,当前关卡推荐战力,上阵卡牌1,上阵卡牌2,上阵卡牌3,角色属性,
 	 * 时区
 	 */
-	public static void pvefight(Player player, int stageId, int type,  long time,boolean result) {
+	public static void pvefight(Player player, int stageId, int type,  long time,boolean result,int subId) {
 		try {
 			List<Hero> battleHeros = player.getBattleModule().getDefaultLineupHeroes();
 			List<Integer> heroList = battleHeros.stream().map(r -> r.getConfigId()).collect(toList());
 
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")), stageId,
-					type,  "null",result?1:0, "null", "null", "null", time, player.getAttrModule().getPower(),
+					type,  "null",result?1:2, "null", subId>0?subId:"null", "null", time, player.getAttrModule().getPower(),
 					0,0,
 					heroList.size() > 0 ? heroList.get(0) : "null",
 					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
@@ -773,7 +773,7 @@ public class GameLogger extends DeprecatedLogger {
             Object[] array = new Object[]{
 					getCurrentTimeLogText(), Config.APP_KEY, "null", LoggerType.rank.name(), LoggerType.rank.version, "B9510",
 					ServerContext.getInstance().getServerId(),  "null",
-					"null","null",
+					"null","server",
 					0, "null","null", "null",0,0,
                     type,0, rank, value,0,0,0
             };
@@ -1214,7 +1214,7 @@ public class GameLogger extends DeprecatedLogger {
 					LoggerType
 							.splice(GameLogAssistant
 							.buildLogCYPrefix(player, LoggerType.demonsweep.name(), LoggerType.demonsweep.version, "C0800"))
-					,count, battleId,"null"};
+					,count,0, battleId,"null"};
 			LoggerType.demonsweep.logger.info(LoggerType.splice(array));
 		} catch (Exception e) {
 			SystemLogger.error(e);

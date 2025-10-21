@@ -216,7 +216,7 @@ public class GuildHandler extends GameBaseHandler {
         guildModule.setBargainBuy(true);
         client.sendProtocol(res.build());
         log.info("guild buyBargain BIBIBI 3");
-        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID,1);
+        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID,bargainPrice[1]);
     }
 
     private void updateMemberAuth(NetClient client, Object o) {
@@ -317,7 +317,7 @@ public class GuildHandler extends GameBaseHandler {
         long guildId = player.getGuildId(); 
         autoForwardGuildServer(client, res, req, (result) -> {
         	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
-        	GameLogger.guildMemberPositionChange(player, guildId, response.getOldPosition(), response.getPosition()) ; 
+        	GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition()) ;
             return null;
         });
     }
