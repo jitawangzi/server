@@ -62,6 +62,11 @@ public interface PayOrderMapper {
 	 */
 	List<PayOrder> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
+	/**
+	 * @mbg.generated
+	 */
+	List<PayOrder> selectByThirdOrderId(@Param("thirdOrderId") String thirdOrderId);
+
 	public List<PayOrder> selectOrderList(
 			@Param("playerId") Long playerId,
             @Param("status") Integer status,

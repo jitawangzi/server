@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
@@ -37,6 +38,15 @@ public class VertxRegisterReq implements BaseVertxHandler {
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 		}
+		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
+		AccountRegisterResponse.Builder resp = AccountRegisterResponse.newBuilder();
+
+		if (ServerContext.getInstance().getRunMode().isProduction()) {
+			log.error("正式环境不能自己注册账号") ; 
+			HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("正式环境不能自己注册账号").setErrorCode(AccountErrorCode.ACCOUNT_REGISTER_NOT_ALLOWED).build();
+			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+			return;
+		}
 		String account = from.getAccount();
 		String pwd = from.getPwd();
 //		System.err.println(account);
@@ -44,8 +54,6 @@ public class VertxRegisterReq implements BaseVertxHandler {
 //		JsonObject bodyAsJson = context.getBodyAsJson();
 //		String account = bodyAsJson.getString("account");
 //		String pwd = bodyAsJson.getString("pwd");
-		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
-		AccountRegisterResponse.Builder resp = AccountRegisterResponse.newBuilder();
 //		ServerListResp resp = new ServerListResp();
 
 		if (StringUtils.isEmpty(account)) {
