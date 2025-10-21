@@ -248,13 +248,18 @@ public class MailModule extends BasePlayerModule  {
 		int nowTimeSeconds = DateUtil.currentTimeSeconds();
 		List<Long> deleteIds = new ArrayList<>();
 		for (Mail mail : this.mails.values()) {
+			int expireTime = mail.getExpireTime(); 
+			if (expireTime <= 0) {
+				continue; 
+			}
 			MailConfig mailConfig = MailManager.instance().getNullable(mail.getMailId());
 			if (mailConfig != null) {
-				if (mailConfig.Expiration > 0 && nowTimeSeconds - mail.getCreateTime() > mailConfig.Expiration) {
-					deleteIds.add(mail.getId());
-				}
 				if (mailConfig.Type == 1) {
 					notice = mail;
+					continue; 
+				}
+				if (nowTimeSeconds  > expireTime) {
+					deleteIds.add(mail.getId());
 				}
 			}
 		}

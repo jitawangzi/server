@@ -135,7 +135,7 @@ public class PbBuilder {
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
-		builder.setExpireTime(mailConfig != null ? (int) (mail.getCreateTime() + mailConfig.Expiration) : (int)(mail.getCreateTime() + (365* DateUtil.DAY_SECONDS)));
+		builder.setExpireTime(mail.getExpireTime());
 		builder.setReceive(mail.getReceive());
 		builder.setSee(mail.getSee());
 		builder.setSender(mail.getSender());
