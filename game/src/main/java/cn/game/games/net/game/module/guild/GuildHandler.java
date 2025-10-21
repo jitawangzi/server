@@ -318,6 +318,7 @@ public class GuildHandler extends GameBaseHandler {
         autoForwardGuildServer(client, res, req, (result) -> {
         	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
         	GameLogger.guildMemberPositionChange(player, guildId, response.getOldPosition(), response.getPosition()) ; 
+        	client.sendProtocol(response); 
             return null;
         });
     }
