@@ -1408,9 +1408,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
-		// 方便测试，强制关闭服务器后快速登陆账号使用
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
-			return Future.succeededFuture();
+			// 方便测试，强制关闭服务器后快速登陆账号使用,强制设置serverId
+			return VxHolder.toVertxFuture(setServerId(playerId));
 		}
 		return VxHolder.toVertxFuture(IdCache.trySetServerIdAsync(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
 			if (!locked) {
@@ -1694,6 +1694,8 @@ public class PlayerHelper {
 				data.beforeSave();
 				String jsonString = JsonUtil.toJsonStringWithType(player.getModules()); 
 				data.setModules(jsonString);
+//				int sizeBytesEquip  = ByteHelp.estimateUtf8Bytes(JsonUtil.toJsonStringWithType(player.getEquipModule()));
+//				log.info("equip module size: playerId={}, equip size={} mb", playerId, sizeBytesEquip/1024.0/1024.0);
 				int sizeBytes  = ByteHelp.estimateUtf8Bytes(jsonString);
 			    // 预警
 			    if (sizeBytes >= APPROX_WARN_BYTES) {
