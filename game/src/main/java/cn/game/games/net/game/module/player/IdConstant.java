@@ -5,8 +5,8 @@ import cn.game.util.UniqueValueEnum;
 public enum IdConstant {
 	/** 章节礼包 */
 	CHAPTER_PACK(1),
-	/** 头像框 */
-	HEAD_BOX(2),
+//	/** 头像框 */
+//	HEAD_BOX(2),
 	/** 问卷调查奖励 */
 	Questionnaire(3),
 	/** 功能开启奖励 */
