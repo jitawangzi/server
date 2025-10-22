@@ -16,6 +16,7 @@ public class TestGmCmdRequest_6f000001Test extends ServerTest {
 				.newBuilder();
 //		builder.setCmd("itemdel 240200370 100002 10");
 		builder.setCmd("init");
+//		builder.setCmd("playerdel 240222081");
 
 		return builder.build();
 	}
