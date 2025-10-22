@@ -587,7 +587,8 @@ public class ActivityStateManager {
 				.setId(id)
 				.setStateValue(getState(id))
 				.setStartTime(getOpenTimeRemaining(id))
-				.setEndTime(getEndTimeRemaining(id))
+				// 
+				.setEndTime(getDestroyTimeRemaining(id))
 				.build();
 	}
 

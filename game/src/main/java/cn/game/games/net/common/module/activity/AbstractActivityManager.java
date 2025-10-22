@@ -67,6 +67,30 @@ public abstract class AbstractActivityManager {
 						activityBase.syncActivityInfo();
 					}
 					afterActivityOpen(activityBase);
+					
+					checkExpired(id);
+				}
+			}
+		}
+	}
+	/** 
+	 * 生成一个已经结束的活动实例
+	 * @param id
+	 * @param notify
+	 */
+	public void openEnd(int id, boolean notify) {
+		if (!activities.containsKey(id)) {
+			ActivityConfig activityConfig = ActivityManager.instance().get(id);
+			ActivityBase activityBase = createActivity(activityConfig);
+			if (activityBase != null) {
+				activityBase.setServerId(serverId);
+				ActivityBase old = activities.putIfAbsent(activityConfig.ID, activityBase); 
+				if (old == null) {
+					activityBase.init(activityConfig.ID);
+					activityBase.setState(ActivityState.CLOSE_VALUE);
+					if (notify) {
+						activityBase.syncActivityInfo();
+					}
 				}
 			}
 		}
@@ -146,10 +170,23 @@ public abstract class AbstractActivityManager {
 				destoryIds.add(cid);
 			}
 		}
+		// 先结束，再销毁
 		for (Integer id : endIds) {
 			end(id, false);
 		}
-		for (Integer id : endIds) {
+		for (Integer id : destoryIds) {
+			destroy(id, false);
+		}
+	}
+	public void checkExpired(int id) {
+		ActivityBase activityBase = activities.get(id); 
+		if (activityBase == null) {
+			return ; 
+		}
+		int expireState = expireState(activityBase); 
+		if (expireState == 1) {
+			end(id, false);
+		}else if (expireState == 2) {
 			destroy(id, false);
 		}
 	}
@@ -190,9 +227,7 @@ public abstract class AbstractActivityManager {
 	public void checkAndOpenActivitys(Object owner) {
 		Collection<ActivityConfig> list = ActivityManager.instance().list();
 		for (ActivityConfig activityConfig : list) {
-			if (canOpen(activityConfig)) {
-				open(activityConfig.ID, owner, false);
-			}
+			open(activityConfig.ID, owner, false);
 		}
 	}
 
@@ -306,11 +341,12 @@ public abstract class AbstractActivityManager {
 
 	/** 
 	 * 判断当前的按时间开启的活动，是否在活动时间内
+	 * view、start、end 状态的活动
 	 * @param id
 	 * @return
 	 */
 	protected boolean isInOpenTime(int id) {
-		Collection<Integer> openList = ActivityStateManager.getInstance().getOpenIds();
+		Collection<Integer> openList = ActivityStateManager.getInstance().getShowIds();
 		return openList.contains(id);
 	}
 	public boolean canOpenExt(ActivityConfig activityConfig) {
@@ -378,6 +414,7 @@ public abstract class AbstractActivityManager {
 
 	/** 
 	 * 检查某个活动是否可以开启
+	 * 对于end状态的活动，也认为可以开启。在开启之后，执行end检查 
 	 * @param config
 	 * @return
 	 */
@@ -398,7 +435,7 @@ public abstract class AbstractActivityManager {
 			VirtualServerView virtualServerView = validServers.get(serverId);
 			if (virtualServerView != null && virtualServerView.openTime != null) {
 				int days =  DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
-				return days >= config.openParam && days < config.openParam + config.endDuration;
+				return days >= config.openParam && days < config.openParam + config.destroyDuration;
 			}
 		}
 		return canOpenExt(config);
