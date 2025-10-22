@@ -1343,8 +1343,11 @@ public class PlayerHelper {
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}
-		PlayerHelper.initAfterLogin(player);
-		return Future.succeededFuture(player);
+		// 这个地方可能有异步操作，所以先特殊处理一下
+		return ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+			PlayerHelper.initAfterLogin(player);
+			return player; 
+		},null);
 	}
 
 	/**
