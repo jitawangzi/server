@@ -1,9 +1,7 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
-
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
@@ -46,6 +44,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyRejectedPush_40100001;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -87,6 +86,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildQuitPush_40000024, this::quitPush);
         putInvoker(PbProtocol.GuildJoinPush_40000044, this::joinPush);
         putInvoker(PbProtocol.GuildRankListResponse_40000082, this::rankList);
+        putInvoker(PbProtocol.GuildApplyRejectedPush_40100001, this::applyRejectedPush);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -251,6 +251,12 @@ public class ClientGuildHandler extends GameBaseHandler {
     private void rankList(NetClient netClient, Object message) {
         GuildRankListResponse_40000082 resp = (GuildRankListResponse_40000082) message;
         GuildRankList rankList = resp.getRankList();
+        Client client = (Client) netClient;
+    }
+
+    private void applyRejectedPush(NetClient netClient, Object message) {
+        GuildApplyRejectedPush_40100001 resp = (GuildApplyRejectedPush_40100001) message;
+        long playerId = resp.getPlayerId();
         Client client = (Client) netClient;
     }
 }

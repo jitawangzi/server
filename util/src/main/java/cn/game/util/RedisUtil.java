@@ -14,11 +14,13 @@ import org.redisson.api.RBatch;
 import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 import org.redisson.api.RedissonClient;
+import org.redisson.config.ClusterServersConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
+
 
 /**
  * Redisson操作工具类，封装常用方法
@@ -62,6 +64,13 @@ public class RedisUtil {
 		String content = redisConfig.getProperty("redisson", "");
 		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(content);
 		redis = Redisson.create(config);
+		
+		// 定期打印连接池状态
+//	    ClusterServersConfig clusterConfig = redis.getConfig().useClusterServers();
+//	    logger.info("Master pool size: {}, min idle: {}", 
+//	        clusterConfig.getMasterConnectionPoolSize(),
+//	        clusterConfig.getMasterConnectionMinimumIdleSize());
+	
 	}
 
 	/**

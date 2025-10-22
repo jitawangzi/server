@@ -34,6 +34,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -110,6 +111,9 @@ public class GuildHelper {
 			String serverId = IdCache.getPlayerServerId(playerId);
 			GuildManager.log
 					.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId + " msgId : " + msgId + " msg : " + msg);
+			if (org.apache.commons.lang3.StringUtils.isEmpty(serverId)) {
+				return VxHolder.requestRemoteServer(ServerType.Game, builder.build());
+			}
 			return VxHolder.requestRemoteServer(serverId, builder.build());
 		});
 	}

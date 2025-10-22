@@ -41,12 +41,13 @@ public class VertxRegisterReq implements BaseVertxHandler {
 		HttpServerResponse response = context.response().putHeader("content-type", "application/octet-stream");
 		AccountRegisterResponse.Builder resp = AccountRegisterResponse.newBuilder();
 
-		if (ServerContext.getInstance().getRunMode().isProduction()) {
-			log.error("正式环境不能自己注册账号") ; 
-			HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("正式环境不能自己注册账号").setErrorCode(AccountErrorCode.ACCOUNT_REGISTER_NOT_ALLOWED).build();
-			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-			return;
-		}
+		// 方便测试，先停用
+//		if (ServerContext.getInstance().getRunMode().isProduction()) {
+//			log.error("正式环境不能自己注册账号") ; 
+//			HttpResult httpResult = HttpResult.newBuilder().setErrorMsg("正式环境不能自己注册账号").setErrorCode(AccountErrorCode.ACCOUNT_REGISTER_NOT_ALLOWED).build();
+//			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+//			return;
+//		}
 		String account = from.getAccount();
 		String pwd = from.getPwd();
 //		System.err.println(account);

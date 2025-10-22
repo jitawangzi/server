@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.exception.LogicException;
 import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.cache.entity.GuildData;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBasicManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildSharedInfo;
@@ -103,9 +105,9 @@ public class Guild {
 			@Nullable
 			Object await = AsyncUtils.await(insert);
 		} catch (Exception e) {
-			// 可能重复加入
+			// 可能重复加入,提示已经在工会中了
 			LOGGER.warn(joinPlayerId + " joinGuild failed",e);
-			return false ; 
+			throw new LogicException(ErrorMsgEnum.zong_men_player_in.ID) ; 
 		} 
 		
 		GuildMember member = new GuildMember(joinPlayerId, position);

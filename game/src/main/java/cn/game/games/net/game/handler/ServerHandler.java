@@ -44,6 +44,8 @@ import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ChatMsg;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
+import cn.game.protocol.protobuf.GuildMsg;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyRejectedPush_40100001;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
@@ -73,7 +75,6 @@ import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
-import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -152,6 +153,15 @@ public class ServerHandler extends GameBaseHandler {
 				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinAndPush((GuildMsg.GuildJoinPush_40000044) message);
 				case PbProtocol.ChatMessagePush_31010001 -> {//公会聊天
 					guildChat(player,(ChatMsg.ChatMessagePush_31010001) message);
+				}
+				case PbProtocol.GuildApplyRejectedPush_40100001 -> {
+					GuildApplyRejectedPush_40100001 push = (GuildApplyRejectedPush_40100001)message; 
+					Player player2 = PlayerManager.getInstance().getPlayer(push.getPlayerId()); 
+					if (player2 != null) {
+						player2.getGuildModule().getApplyJoinList().remove(push.getGuildId()) ; 
+					}else {
+						// TODO 离线稍后处理
+					}
 				}
 				default -> {
 					log.error(String.format("guildMsgNotify msgId:%d is error",req.getMsgId()));
