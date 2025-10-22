@@ -344,6 +344,10 @@ public class GuildModule extends BasePlayerModule {
 			return true;
 		}
 		GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(getGuildId()); 
-		return guildProxy.hasPendingApplication(player.getGuildId(), playerId); 
+		boolean hasPendingApplication =  guildProxy.hasPendingApplication(player.getGuildId(), playerId); 
+		if (hasPendingApplication) {
+			return true; 
+		}
+		return false; 
 	}
 }
