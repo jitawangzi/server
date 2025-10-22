@@ -597,7 +597,7 @@ public class ActivityHandler extends GameBaseHandler {
             return;
         }
         int serverOpenDay = ServerHelper.getServerOpenDay(player.getServerId());
-        ActivityServerOpenRankConfig curConfig = ActivityServerOpenRankManager.instance().get(serverOpenDay);
+        ActivityServerOpenRankConfig curConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay);
         ActivityServerOpenRankConfig targetConfig = null;
         Collection<ActivityServerOpenRankConfig> list = ActivityServerOpenRankManager.instance().list();
         for (ActivityServerOpenRankConfig activityServerOpenRankConfig2 : list) {
@@ -610,7 +610,7 @@ public class ActivityHandler extends GameBaseHandler {
         if (type == RankType.TotalServerOpenActivity.ID) {
             rankType = RankType.TotalServerOpenActivity;
         } else {
-            if (curConfig == targetConfig) {
+            if (curConfig ==null|| curConfig == targetConfig) {
                 rankType = RankType.get(targetConfig.RankID);
             } else {
                 rankType = RankType.get(targetConfig.RewardRankId);
