@@ -112,9 +112,10 @@ public class GuildHelper {
 			GuildManager.log
 					.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId + " msgId : " + msgId + " msg : " + msg);
 			if (org.apache.commons.lang3.StringUtils.isEmpty(serverId)) {
-				return VxHolder.requestRemoteServer(ServerType.Game, builder.build());
+				VxHolder.sendRemoteServer(ServerType.Game, builder.build());
 			}
-			return VxHolder.requestRemoteServer(serverId, builder.build());
+			VxHolder.sendRemoteServer(serverId, builder.build());
+			return null;
 		});
 	}
 
