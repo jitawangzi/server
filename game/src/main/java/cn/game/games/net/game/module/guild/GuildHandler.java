@@ -434,10 +434,10 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildModule guildModule = player.getGuildModule(); 
         List<Long> applyJoinList = guildModule.getApplyJoinList(); 
-        if (applyJoinList.contains(id)) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
-            return;
-		}
+//        if (applyJoinList.contains(id)) {
+//            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
+//            return;
+//		}
         guildModule.checkJoinCd(); 
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
