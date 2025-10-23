@@ -426,23 +426,29 @@ public class GuildHandler extends GameBaseHandler {
     private void applyJoinGuild(NetClient client, Object o) {
         GuildMsg.GuildApplyJoinRequest_40000007 req = (GuildMsg.GuildApplyJoinRequest_40000007) o;
         GuildMsg.GuildApplyJoinResponse_40000008.Builder res = GuildMsg.GuildApplyJoinResponse_40000008.newBuilder();
-        int id = req.getId();
+        long id = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
         GuildModule guildModule = player.getGuildModule(); 
+        List<Long> applyJoinList = guildModule.getApplyJoinList(); 
+        if (applyJoinList.contains(id)) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
+            return;
+		}
         guildModule.checkJoinCd(); 
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
         if (guild != null) {
             GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
             // 玩家直接加入公会
-            guildModule.join(simpleInfo.getId	());
+            guildModule.join(simpleInfo.getId());
             GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
             client.sendProtocol(res.setGuild(allInfo).build());
         } else {
+        	applyJoinList.add(id) ; 
             client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
         }
     }
