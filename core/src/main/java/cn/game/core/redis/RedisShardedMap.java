@@ -11,18 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.redisson.api.RFuture;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapAsync;
 import org.redisson.api.RedissonClient;
-import org.redisson.misc.RPromise;
-import org.redisson.misc.RedissonPromise;
 
 /**
  * 分片Redis Map实现，提供水平扩展的Map数据结构
@@ -270,7 +265,7 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 		return newMap.getAllAsync().thenApply(newData -> {
 			// 检查数据大小是否匹配
 			if (originalData.size() != newData.size()) {
-				System.out.println("Size mismatch - Original: " + originalData.size() + ", New: " + newData.size());
+				log.info("Size mismatch - Original: {}, New: {}", originalData.size(), newData.size());
 				return false;
 			}
 
@@ -279,8 +274,7 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 				V newValue = newData.get(entry.getKey());
 				boolean matches = Objects.equals(entry.getValue(), newValue);
 				if (!matches) {
-					System.out.println(
-							"Data mismatch for key: " + entry.getKey() + " - Original: " + entry.getValue() + ", New: " + newValue);
+					log.info("Data mismatch for key: {} - Original: {}, New: {}", entry.getKey(), entry.getValue(), newValue);
 				}
 				return matches;
 			});
@@ -295,7 +289,7 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 			try {
 				// 1. 获取原始数据
 				Map<K, V> originalData = newMap.getAll();
-				System.out.println("Original data size: " + originalData.size());
+				log.info("Original data size: {}", originalData.size());
 
 				// 2. 先清除所有旧数据
 				for (int i = 0; i < shardCount; i++) {
@@ -313,8 +307,8 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 				Map<K, V> verifyData = getAll();
 				boolean verified = verifyData.equals(originalData);
 
-				log.info("Data verification: " + (verified ? "successful" : "failed"));
-				log.info("Original size: " + originalData.size() + ", New size: " + verifyData.size());
+				log.info("Data verification: {}", verified ? "successful" : "failed");
+				log.info("Original size: {}, New size: {}", originalData.size(), verifyData.size());
 
 				return verified;
 			} catch (Exception e) {
@@ -465,47 +459,27 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 	 * 异步批量检查键是否存在
 	 *
 	 * @param keys 要检查的键集合
-	 * @return 返回CompletionStage，完成时包含检查结果
+	 * @return 返回CompletableFuture，完成时包含检查结果
 	 */
-	public CompletionStage<Map<K, Boolean>> containsKeysAsync(Collection<K> keys) {
-		List<RFuture<Map.Entry<K, Boolean>>> futures = keys.stream().map(key -> {
-			RFuture<Boolean> future = getMapAsync(getShardKey(key)).containsKeyAsync(key);
-			RPromise<Map.Entry<K, Boolean>> promise = new RedissonPromise<>();
-			future.onComplete((exists, ex) -> {
-				if (ex != null) {
-					promise.tryFailure(ex);
-				} else {
-					promise.trySuccess(new AbstractMap.SimpleEntry<>(key, exists));
-				}
-			});
-			return promise;
-		}).collect(Collectors.toList());
+	public CompletableFuture<Map<K, Boolean>> containsKeysAsync(Collection<K> keys) {
+		List<CompletableFuture<Map.Entry<K, Boolean>>> futures = new ArrayList<>();
 
-		RPromise<Map<K, Boolean>> result = new RedissonPromise<>();
+		for (K key : keys) {
+			CompletableFuture<Map.Entry<K, Boolean>> future = getMapAsync(getShardKey(key))
+					.containsKeyAsync(key)
+					.toCompletableFuture()
+					.thenApply(exists -> new AbstractMap.SimpleEntry<>(key, exists));
+			futures.add(future);
+		}
 
-		AtomicInteger counter = new AtomicInteger(futures.size());
-		Map<K, Boolean> resultMap = new ConcurrentHashMap<>();
-		AtomicReference<Throwable> error = new AtomicReference<>();
-
-		futures.forEach(future -> {
-			future.onComplete((entry, ex) -> {
-				if (ex != null) {
-					error.set(ex);
-				} else if (entry != null) {
-					resultMap.put(entry.getKey(), entry.getValue());
-				}
-
-				if (counter.decrementAndGet() == 0) {
-					if (error.get() != null) {
-						result.tryFailure(error.get());
-					} else {
-						result.trySuccess(new LinkedHashMap<>(resultMap));
-					}
-				}
-			});
-		});
-
-		return result;
+		return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+				.thenApply(v -> futures.stream()
+						.map(CompletableFuture::join)
+						.collect(Collectors.toMap(
+								Map.Entry::getKey,
+								Map.Entry::getValue,
+								(v1, v2) -> v1,
+								LinkedHashMap::new)));
 	}
 
 	/**
@@ -514,7 +488,6 @@ public class RedisShardedMap<K, V> extends AbstractShardedRedis {
 	 * @param key 分片键
 	 * @return 返回对应的RMap实例
 	 */
-
 	private RMap<K, V> getMap(String shardKey) {
 		return redisClient.getMap(shardKey);
 	}
