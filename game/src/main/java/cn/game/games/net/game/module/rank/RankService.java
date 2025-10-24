@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -793,8 +794,8 @@ public class RankService {
 			return;
 		}
 		RankType rankType = RankType.get(rankId);
-		boolean lock = LockUtil.tryLockNoWaitSync(600, CacheType.SET_RANK.key(rankId));
-		if (!gm&&!lock) {
+		boolean acquire = LockUtil.acquire(CacheType.RANK_REWARD_ACQUIRE.key(rankId),30, TimeUnit.MINUTES);
+		if (!gm && !acquire) {
 			return;
 		}
 		String[] serverIds = ServerHelper.getServerIds();

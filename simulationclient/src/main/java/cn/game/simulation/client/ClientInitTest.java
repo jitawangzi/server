@@ -16,8 +16,8 @@ import cn.game.util.log.LoggerManager;
  */
 public class ClientInitTest {
 
-	private static int idStart = 3035 ; 
-	private static int count = 5 ; 
+	private static int idStart = 3050 ; 
+	private static int count = 10 ; 
 	private static String serverId = "SYQ" ; 
 	private static String loginServerUrl =  "http://test:9390" ;
 	

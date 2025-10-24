@@ -224,8 +224,8 @@ public class GameServer implements GameServerMBean {
 	 * 同步SimplePlayer和名字
 	 */
 	private void initSimplePlayers() {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
-		if (lock == null) {
+		boolean acquire = LockUtil.acquire("initSimplePlayers", 30, TimeUnit.MINUTES);
+		if (acquire == false) {
 			return;
 		}
 		try {
@@ -248,9 +248,7 @@ public class GameServer implements GameServerMBean {
 			}
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			lock.unlock();
-		}
+		} 
 	}
 	private void refreshSimplePlayers() {
 		try {
@@ -273,8 +271,8 @@ public class GameServer implements GameServerMBean {
 	 * 初始化1000个机器人，给某些玩法使用
 	 */
 	private void initRobots(int count) {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
-		if (lock == null) {
+		boolean acquire = LockUtil.acquire(CacheType.GAME_SERVER_LOCK.name(), 30, TimeUnit.MINUTES);
+		if (acquire == false) {
 			return;
 		}
 		try {
@@ -292,9 +290,7 @@ public class GameServer implements GameServerMBean {
 			
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			lock.unlock();
-		}
+		} 
 	}
 
 	private void initAllSimplePlayers() {
