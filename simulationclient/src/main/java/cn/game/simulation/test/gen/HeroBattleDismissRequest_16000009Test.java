@@ -14,33 +14,35 @@ import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
 @Component
-public class HeroBattleDismissRequest_16000009Test extends ServerTest{
+public class HeroBattleDismissRequest_16000009Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009
+				.newBuilder();
+
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
 		builder.setUid(Rnd.randomElement(herosList).getUid());
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009
+				.newBuilder();
+
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
 		List<HeroInfo> herosList = playerAllInfo.getHerosList();
 		builder.setUid(Rnd.randomElement(herosList).getUid());
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    HeroBattleDismissRequest_16000009Test instance = new HeroBattleDismissRequest_16000009Test();
-	    instance.start();
+		HeroBattleDismissRequest_16000009Test instance = new HeroBattleDismissRequest_16000009Test();
+		instance.start();
 	}
 
 }

@@ -8,29 +8,27 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class HeroIllustrationsListRequest_16000040Test extends ServerTest{
+public class HeroIllustrationsListRequest_16000040Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsListRequest_16000040
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    HeroIllustrationsListRequest_16000040Test instance = new HeroIllustrationsListRequest_16000040Test();
-	    instance.start();
+		HeroIllustrationsListRequest_16000040Test instance = new HeroIllustrationsListRequest_16000040Test();
+		instance.start();
 	}
 
 }

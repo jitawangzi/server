@@ -45,6 +45,8 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
+import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.BattleMsg;
@@ -210,8 +212,8 @@ public class Client extends AbstractNetClient {
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
 	
-	/** 一些返回协议的临时数据，可以保存这个Map中，key: 一般是返回协议名 value:根据协议名，自己决定保存什么数据 */
-	public Map<String, Object> respDataMap = new HashMap<String, Object>(); 
+	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
+	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
 
 
 	public static Client getClient(int callback) {
@@ -877,6 +879,34 @@ public class Client extends AbstractNetClient {
 
 	public String getinPvPBattlePid() {
 		return inPvPBattlePid + "";
+	}
+	
+	public boolean hasHero(int id) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getConfigId() == id) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasItem(int id,int count) {
+		List<ItemInfo> itemsList = getPlayerAllInfo().getItemsList(); 
+		for (ItemInfo itemInfo : itemsList) {
+			if (itemInfo.getId() == id && itemInfo.getCount() >= count) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasHero(String uid) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getUid().equals(uid)) {
+				return true; 
+			}
+		}
+		return false; 
 	}
 
 	// @Override
