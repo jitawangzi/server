@@ -168,7 +168,7 @@ public class GuildModule extends BasePlayerModule {
 		if (guildJoin == null) {
 			// 离线期间被退出了
 			if (lastId > 0) {
-				quit();
+				quit(1);
 			} else {
 				// 一直没有,忽略
 			}
@@ -200,7 +200,7 @@ public class GuildModule extends BasePlayerModule {
 	}
 
 	public void kickGuild(GuildMsg.GuildQuitPush_40000024 quitGuildMsg) {
-		quit();
+		quit(1);
 		player.getGameClient().sendProtocol(quitGuildMsg);
 	}
 
@@ -215,8 +215,10 @@ public class GuildModule extends BasePlayerModule {
 
 	/** 
 	 * 退出一个公会
+	 * 	 * @param quitType 0 自己退出 1 会长踢出 2 会长主动解散 3 公会活跃度低强制解散
+
 	 */
-	public void quit() {
+	public void quit(int quitType) {
 		if (guildJoin == null) { // 不在公会
 			return;
 		}
@@ -229,7 +231,7 @@ public class GuildModule extends BasePlayerModule {
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
 		this.disbandCount++; 
         // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
-        if (this.disbandCount > 1) {
+        if (this.disbandCount > 1 && quitType == 0) {
             setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
         }
         

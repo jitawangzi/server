@@ -306,7 +306,7 @@ public class GuildHandler extends GameBaseHandler {
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
         guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
         // 退出成功
-        guildModule.quit();
+        guildModule.quit(0);
         client.sendProtocol(res.setResult(true).build());
     }
 
@@ -408,7 +408,7 @@ public class GuildHandler extends GameBaseHandler {
             } else {
                 // 解散公会成功
                 GuildModule module = player.getGuildModule();
-                module.quit();
+                module.quit(2);
                 module.setDisbandCount(module.getDisbandCount() + 1);
                 // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
                 if (module.getDisbandCount() > 1) {
