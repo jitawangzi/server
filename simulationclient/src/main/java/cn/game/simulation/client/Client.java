@@ -58,6 +58,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
+import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
 import cn.game.util.HttpUtil;
@@ -206,6 +207,7 @@ public class Client extends AbstractNetClient {
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
 	public GuildAllInfo guildAllInfo;
+	public List<MailInfo> mailsList; 
 
 	/** 排行榜中看到的公会id，可以作为申请使用 */
 	public List<Integer> guildIds = new ArrayList<>();
