@@ -9,29 +9,31 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ShopBoxOpenRequest_15000040Test extends ServerTest{
+public class ShopBoxOpenRequest_15000040Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040
+				.newBuilder();
+
 		builder.setWatchAds(false);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopBoxOpenRequest_15000040
+				.newBuilder();
+
 		builder.setWatchAds(false);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    ShopBoxOpenRequest_15000040Test instance = new ShopBoxOpenRequest_15000040Test();
-	    instance.start();
+		ShopBoxOpenRequest_15000040Test instance = new ShopBoxOpenRequest_15000040Test();
+		instance.start();
 	}
 
 }

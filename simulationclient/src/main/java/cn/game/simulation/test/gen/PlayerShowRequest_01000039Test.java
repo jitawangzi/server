@@ -29,8 +29,9 @@ public class PlayerShowRequest_01000039Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.newBuilder() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039
+				.newBuilder();
 		List<SimplePlayerInfo> recommendList = client.recommendList;
 		if (recommendList != null && recommendList.size() > 0) {
 			SimplePlayerInfo playerInfo = Rnd.randomElement(recommendList);
@@ -38,7 +39,7 @@ public Message getMessagePressure(Client client) {
 		} else {
 			builder.setPlayerId(240200669 + "");
 		}
-		return builder.build() ; 
+		return builder.build();
 	}
 	
 	public static void main(String args[]) throws Exception {

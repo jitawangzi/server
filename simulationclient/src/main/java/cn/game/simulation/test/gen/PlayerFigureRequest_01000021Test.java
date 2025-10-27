@@ -1,10 +1,14 @@
 package cn.game.simulation.test.gen;
 
 import com.google.protobuf.Message;
+
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class PlayerFigureRequest_01000021Test extends ServerTest{
@@ -22,8 +26,12 @@ public class PlayerFigureRequest_01000021Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.newBuilder() ; 
 		
-		
-		
+		Map<Integer, Integer> figureMap = client.getPlayerAllInfo().getFigureMapMap(); 
+		if (figureMap.isEmpty()) {
+			return null; 
+		}
+		Integer randomElement = Rnd.randomElement(figureMap.keySet()); 
+		builder.setId(randomElement); 
 		return builder.build() ; 
 	}
 	

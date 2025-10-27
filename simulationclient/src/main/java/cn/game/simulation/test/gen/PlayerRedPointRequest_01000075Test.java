@@ -9,29 +9,34 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class PlayerRedPointRequest_01000075Test extends ServerTest{
+public class PlayerRedPointRequest_01000075Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075
+				.newBuilder();
+
 		builder.addType(InitialUI.Shop.ID);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.newBuilder() ; 
-		
-		builder.addType(InitialUI.YaoWangBiePao.ID);
-		
-		return builder.build() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerRedPointRequest_01000075
+				.newBuilder();
+
+		builder.addType(InitialUI.Letter.ID);
+		builder.addType(InitialUI.Shop.ID);
+		builder.addType(InitialUI.RSGTree.ID);
+		builder.addType(InitialUI.Guild.ID);
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    PlayerRedPointRequest_01000075Test instance = new PlayerRedPointRequest_01000075Test();
-	    instance.start();
+		PlayerRedPointRequest_01000075Test instance = new PlayerRedPointRequest_01000075Test();
+		instance.start();
 	}
 
 }

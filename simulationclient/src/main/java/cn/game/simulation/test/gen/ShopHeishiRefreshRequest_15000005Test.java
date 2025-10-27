@@ -9,29 +9,31 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ShopHeishiRefreshRequest_15000005Test extends ServerTest{
+public class ShopHeishiRefreshRequest_15000005Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005
+				.newBuilder();
+
 		builder.setShopId(2);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005
+				.newBuilder();
+
 		builder.setShopId(2);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    ShopHeishiRefreshRequest_15000005Test instance = new ShopHeishiRefreshRequest_15000005Test();
-	    instance.start();
+		ShopHeishiRefreshRequest_15000005Test instance = new ShopHeishiRefreshRequest_15000005Test();
+		instance.start();
 	}
 
 }

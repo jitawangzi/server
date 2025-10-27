@@ -55,6 +55,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
@@ -188,27 +189,30 @@ public class Client extends AbstractNetClient {
 	private long lastSendMessageTime;
 	/** 最后一次发消息的内容 */
 	private byte[] lastSendMessageContent;
+	public Message lastSendMessage;
+	// 上一次心跳时间
+	private long lastHeartbeatTime = System.currentTimeMillis();
 
+	// 玩家的游戏数据
 	public int guideType = 1;
 	public int guideStep = 1;
-
-	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
 	/** 好友列表 */
 	public List<FriendInfo> friendsList = new ArrayList<>();
 	/** 黑名单列表 */
 	public List<String> blackList = new ArrayList<>();
 	/** 好友申请列表 */
 	public List<String> applicationList = new ArrayList<>();
+	// 商店
+	public Map<Integer, List<ShopItemProto>> shopItemMap = new HashMap<>();
 
-	// 上一次心跳时间
-	private long lastHeartbeatTime = System.currentTimeMillis();
-	// 保存一些临时数据，用在后续的测试模拟协议数据
 	/** 自己在工会中的成员数据 */
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
 	public GuildAllInfo guildAllInfo;
 	public List<MailInfo> mailsList; 
 
+	// 保存一些临时数据，用在后续的测试模拟协议数据
+	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
 	/** 排行榜中看到的公会id，可以作为申请使用 */
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
@@ -216,7 +220,6 @@ public class Client extends AbstractNetClient {
 	
 	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
 	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
-
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);
@@ -602,6 +605,7 @@ public class Client extends AbstractNetClient {
 		if (msg == null) {
 			throw new IllegalArgumentException("发送的消息不能为空！");
 		}
+		lastSendMessage = msg; 
 		byte[] byteArray = msg.toByteArray();
 		CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
 		ByteBuf headerBuf = Unpooled.buffer(12);
