@@ -53,6 +53,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
@@ -199,9 +200,12 @@ public class Client extends AbstractNetClient {
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
 	// 保存一些临时数据，用在后续的测试模拟协议数据
+	/** 自己在工会中的成员数据 */
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
+	public GuildAllInfo guildAllInfo;
 
+	/** 排行榜中看到的公会id，可以作为申请使用 */
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();

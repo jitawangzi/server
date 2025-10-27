@@ -146,6 +146,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildAllInfo info = resp.getInfo();
         Client client = (Client) netClient;
         if (info != null) {
+        	client.guildAllInfo = info; 
             client.guildPersonalInfo = info.getPersonalInfo();
             List<GuildMemberInfo> membersList = info.getShowInfo().getMembersList();
             for (GuildMemberInfo guildMemberInfo : membersList) {
@@ -185,6 +186,17 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildQuickJoinResponse_40000066 resp = (GuildQuickJoinResponse_40000066) message;
         GuildAllInfo info = resp.getGuild();
         Client client = (Client) netClient;
+        if (info != null) {
+        	client.guildAllInfo = info;
+            client.guildPersonalInfo = info.getPersonalInfo();
+            List<GuildMemberInfo> membersList = info.getShowInfo().getMembersList();
+            for (GuildMemberInfo guildMemberInfo : membersList) {
+                if (Long.parseLong(guildMemberInfo.getSimplePlayer().getId()) == client.getPlayerId()) {
+                    client.guildMember = guildMemberInfo;
+                    break;
+                }
+            }
+        }
     }
 
     private void bountyAccept(NetClient netClient, Object message) {
