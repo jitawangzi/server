@@ -1,6 +1,8 @@
 package cn.game.games.util;
 
-import cn.game.core.net.vertx.VxHolder;
+import java.util.concurrent.TimeUnit;
+
+import cn.game.core.task.SchedulerService;
 import cn.game.games.cache.entity.Hero;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.log.GameLogger;
@@ -8,14 +10,13 @@ import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.util.DateUtil;
 
 public class BIHelper {
 
 	public static void start() {
-		VxHolder.vertx.setPeriodic(DateUtil.MINUTE_MILLIS, r -> {
+		SchedulerService.getInstance().scheduleAtFixedRate(() -> {
 			GameLogger.heart();
-		});
+		}, 1, TimeUnit.MINUTES);
 	}
 
 	public static void resourceUpdate(Player player, int id, long value, OpType opType, boolean isAdd) {
