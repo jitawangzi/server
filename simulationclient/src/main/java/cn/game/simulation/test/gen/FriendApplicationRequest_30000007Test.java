@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class FriendApplicationRequest_30000007Test extends ServerTest{
@@ -21,10 +22,12 @@ public class FriendApplicationRequest_30000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplicationRequest_30000007.newBuilder() ; 
-		
-		builder.addPlayerIds(240200680 + "");
+		if (client.applicationList.isEmpty()) {
+			return null; 
+		}
+		builder.addPlayerIds(Rnd.randomElement(client.applicationList));
 		builder.setAgree(true);
 		
 		return builder.build() ; 

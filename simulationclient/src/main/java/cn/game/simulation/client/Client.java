@@ -46,6 +46,7 @@ import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
@@ -188,6 +189,12 @@ public class Client extends AbstractNetClient {
 	public int guideStep = 1;
 
 	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
+	/** 好友列表 */
+	public List<FriendInfo> friendsList = new ArrayList<>();
+	/** 黑名单列表 */
+	public List<String> blackList = new ArrayList<>();
+	/** 好友申请列表 */
+	public List<String> applicationList = new ArrayList<>();
 
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
@@ -198,6 +205,10 @@ public class Client extends AbstractNetClient {
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
+	
+	/** 一些返回协议的临时数据，可以保存这个Map中，key: 一般是返回协议名 value:根据协议名，自己决定保存什么数据 */
+	public Map<String, Object> respDataMap = new HashMap<String, Object>(); 
+
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);

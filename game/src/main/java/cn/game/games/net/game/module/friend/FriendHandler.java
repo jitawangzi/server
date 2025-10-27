@@ -1,4 +1,4 @@
-package cn.game.games.net.game.handler;
+package cn.game.games.net.game.module.friend;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;

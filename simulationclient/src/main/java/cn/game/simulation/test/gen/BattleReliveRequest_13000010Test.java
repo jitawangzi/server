@@ -3,36 +3,36 @@ package cn.game.simulation.test.gen;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
-import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
-import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class BattleReliveRequest_13000010Test extends ServerTest{
+public class BattleReliveRequest_13000010Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.newBuilder() ; 
-		
+		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010
+				.newBuilder();
+
 		builder.setType(2);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.newBuilder() ; 
-		
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010
+				.newBuilder();
+
 		builder.setType(2);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    BattleReliveRequest_13000010Test instance = new BattleReliveRequest_13000010Test();
-	    instance.start();
+		BattleReliveRequest_13000010Test instance = new BattleReliveRequest_13000010Test();
+		instance.start();
 	}
 
 }

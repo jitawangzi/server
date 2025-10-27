@@ -25,8 +25,8 @@ public class BattleFieldQuickEndRequest_13000005Test extends ServerTest {
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005
 				.newBuilder();
-		builder.setType(20);
-		builder.setTypeId(40010);
+		builder.setType(22);
+		builder.setTypeId(220002);
 		builder.setSubId(1);
 
 		return builder.build();
