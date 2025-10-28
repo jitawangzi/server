@@ -219,7 +219,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (!Rnd.hit(GlobalConst.RSGTreeRefreshWeight)) {
 			return Collections.EMPTY_LIST;
 		}
-		if (getInsecticidesEndTime() > 0 && apperTime < getInsecticidesEndTime()) {
+		if (getInsecticidesEndTime() > 0 && apperTime/1000 < getInsecticidesEndTime()) {
 			return PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave,
 					OpType.GinsengTreeBug);
 		}else {
