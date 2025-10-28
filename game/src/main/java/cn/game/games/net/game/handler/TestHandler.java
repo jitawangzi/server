@@ -79,6 +79,7 @@ import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.TestMsg;
@@ -358,6 +359,8 @@ public class TestHandler extends GameBaseHandler {
                     int nowDay = DateUtil.getDay();
                     player.getData().setRefreshDay(nowDay - 1);
                     PlayerHelper.refreshDay(player);
+                    // 通知客户端跨天了， 使用登陆来刷新所有数据。
+    				client.sendProtocol(PlayerResetPush_01100016.getDefaultInstance());
                     break;
                 }
             case "qingshen":

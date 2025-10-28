@@ -106,6 +106,8 @@ public class Guild {
 			Object await = AsyncUtils.await(insert);
 		} catch (Exception e) {
 			// 可能重复加入,提示已经在工会中了
+			// 并且删除这个申请。 
+			getModule().removeApply(joinPlayerId);
 			LOGGER.warn(joinPlayerId + " joinGuild failed",e);
 			throw new LogicException(ErrorMsgEnum.zong_men_player_in.ID) ; 
 		} 
