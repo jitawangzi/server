@@ -151,6 +151,8 @@ public class GuildCrossHandler extends GameBaseHandler {
 
 			sendMsgToGameServer(playerId, client, GuildMsg.GuildSettingResponse_40000014.newBuilder().setResult(true).build(),
 					PbProtocol.GuildSettingResponse_40000014);
+			Guild guild = guildService.getGuild(guildId); 
+			GuildManager.getInstance().saveSimpleData(guild) ; 
 		}else {
 			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.GuildSettingResponse_40000014);
 		}
