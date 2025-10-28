@@ -654,6 +654,7 @@ public class Client extends AbstractNetClient {
 	/** 
 	 * 一般是当消息没有收到回复时，用来重发某个消息
 	 * @param binaryWebSocketFrame
+	 * return 是否到达了最大重发次数
 	 */
 	private boolean resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
 		if (resendCount++ >= 3 ) {
@@ -747,6 +748,10 @@ public class Client extends AbstractNetClient {
 		}
 	}
 
+	/** 
+	 * 
+	 * @return 如果重发了消息，返回true，否则返回false
+	 */
 	public boolean resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
 		if (lastSendMessageContent != null &&  System.currentTimeMillis() - lastSendMessageTime > 5000) {
