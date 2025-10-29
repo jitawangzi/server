@@ -52,6 +52,8 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
@@ -108,6 +110,7 @@ import cn.game.util.LinuxTimeShift;
 import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -384,6 +387,14 @@ public class TestHandler extends GameBaseHandler {
 				});
 				break;
 			}
+            case "guildnewday":
+            {
+            	List<GuildServiceInterface> allServerInterface = ServerHelper.getAllServerInterface(ServerType.Cross, GuildServiceInterface.class); 
+            	for (GuildServiceInterface guildServiceInterface : allServerInterface) {
+            		guildServiceInterface.testGuildNewDay() ; 
+				}
+            	break;
+            }
             case "super":
             {
 

@@ -153,4 +153,9 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	
 	GuildMember getMember(long guildId, long playerId);
 	
+	/** 
+	 * 公会服务跨天，只在测试使用
+	 */
+	void testGuildNewDay(); 
+	
 }

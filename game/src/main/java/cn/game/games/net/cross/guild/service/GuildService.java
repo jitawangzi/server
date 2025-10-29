@@ -450,4 +450,13 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		}
 		return guild.getMember(playerId); 
 	}
+
+	@Override
+	public void testGuildNewDay() {
+
+		Collection<Guild> allGuild = GuildManager.getInstance().getAllGuild();
+		for (Guild guild : allGuild) {
+			guild.handleEvent(GuildConstants.GuildEvenType.CROSS_DAY);
+		}
+	}
 }
