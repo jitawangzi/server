@@ -21,7 +21,11 @@ public class EquipAttrCalc extends PlayerAttrCalc {
 		EquipModule equipModule = player.getModule(EquipModule.class);
 		Map<Integer, EquipPart> equipPartMap = equipModule.getEquipPartMap();
 		equipPartMap.forEach((k, v) -> {
-			Equip equip = equipModule.get(v.getEquipUid());
+			long equipUid = v.getEquipUid();
+			if (equipUid <= 0) {
+				return;
+			}
+			Equip equip = equipModule.get(equipUid);
 			EquipConfig equipConfig = EquipManager.instance().get(equip.getConfigId());
 
 			// 基础属性 + 强化属性
