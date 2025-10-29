@@ -257,7 +257,6 @@ public class GameSSLogger extends DeprecatedLogger {
         try {
             String eventName = event.remove(BI_MODULE_EVENT_NAME).toString();
             te.track(String.valueOf(roleId), distinctId, eventName, event);
-            teFlush();
         } catch (Exception e) {
             System.err.println("[SSLobbyLog][uploadTEEvent]track Error ");
         }
@@ -267,7 +266,6 @@ public class GameSSLogger extends DeprecatedLogger {
         try {
             String eventName = event.remove(BI_MODULE_EVENT_NAME).toString();
             te.track(roleId, distinctId, eventName, event);
-           // teFlush();
         } catch (Exception e) {
             System.err.println("[SSLobbyLog][uploadTEEvent]track Error ");
         }

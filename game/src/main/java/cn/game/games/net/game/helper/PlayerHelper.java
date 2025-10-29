@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import cn.game.games.core.log.GameSSLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
 import org.slf4j.Logger;
@@ -661,8 +662,8 @@ public class PlayerHelper {
 		if (ServerContext.getInstance().getRunMode().isPressure()) {
 			TestHelper.setMaxCurrency(player, OpType.PressureTest);
 		}
-
 		GameLogger.rolebuild(player);
+		GameSSLogger.getInstance().teFlush();
 	}
 
 	/**
