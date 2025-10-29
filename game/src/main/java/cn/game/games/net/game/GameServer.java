@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import cn.game.games.core.log.GameSSLogger;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -211,7 +212,8 @@ public class GameServer implements GameServerMBean {
 		DataFixManager.getInstance().init();
 
 		RankService.getInstance().setNpcToRank();
-		initLeaderTask(); 
+		initLeaderTask();
+		GameSSLogger.getInstance().init();
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
@@ -468,6 +470,8 @@ public class GameServer implements GameServerMBean {
 			// 安全关闭logback
 //			LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 //			context.stop();
+			GameSSLogger.getInstance().teFlush();
+			GameSSLogger.getInstance().teClose();
 			LogManager.shutdown(); // 关闭log4j2日志
 
 		} catch (Throwable e) {
