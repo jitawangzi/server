@@ -200,7 +200,7 @@ public class GuildModule extends BasePlayerModule {
 	}
 
 	public void kickGuild(GuildMsg.GuildQuitPush_40000024 quitGuildMsg) {
-		quit(1);
+		quit(quitGuildMsg.getQuitType());
 		player.getGameClient().sendProtocol(quitGuildMsg);
 	}
 
