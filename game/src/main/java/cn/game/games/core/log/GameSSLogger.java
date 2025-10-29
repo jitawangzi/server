@@ -16,12 +16,14 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.util.Config;
+import cn.game.util.config.ConfigUtil;
 import cn.game.util.log.DeprecatedLogger;
 import cn.game.util.log.LoggerType;
 import cn.game.util.log.SystemLogger;
 import cn.thinkingdata.analytics.TDAnalytics;
 import cn.thinkingdata.analytics.TDLoggerConsumer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +69,8 @@ public class GameSSLogger extends DeprecatedLogger {
      */
     public void init() {
         //按照标准日志300MB切割，按天生成。
+    	String rootPath = ConfigUtil.getConfig("SEVER_PATH");
+    	ssLogDir = rootPath + File.separator + "logs" + File.separator + "sslog";
         TDLoggerConsumer.Config config = new TDLoggerConsumer.Config(ssLogDir, 300);
         //config默认8K缓存再写入，暂时不修改
         //config.setBufferSize(4096);
