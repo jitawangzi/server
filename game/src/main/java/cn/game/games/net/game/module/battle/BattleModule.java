@@ -561,7 +561,7 @@ public class BattleModule extends BasePlayerModule  {
 			}
 			int battleId = event.getIntParameter(0); 
 			if (battleId == 19902) {
-				GameLogger.serverEvent(player.getAccount(), 10022);
+				GameLogger.serverEvent(player, 10022);
 			}
 			break;
 		}

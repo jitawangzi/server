@@ -360,7 +360,7 @@ public class GameSSLogger extends DeprecatedLogger {
      * 客户端版本号	version	字符串	是
      * 时区	Timezone	字符串	是	服务器时区，格式为UTC+8、UTC-5等取不到时默认值为-1.
      */
-    public void logServerEvent(LoggerType logType, String stepNumId, String adChannel, String devicdId, String accountId, int code) {
+    public void logServerEvent(LoggerType logType, String stepNumId, String adChannel, String devicdId, String accountId, long playerId, int code) {
         Map<String, Object> event = teInitEvent(logType, stepNumId);
         event.put("code", code);
         //此字段只 记录 小游戏的所有渠道，
@@ -368,7 +368,7 @@ public class GameSSLogger extends DeprecatedLogger {
         event.put("device_id", devicdId);
         event.put("userid", accountId);
         event.put("appkey", getAppkey());
-        uploadTEEvent(accountId, teDistinctId(), event);
+        uploadTEEvent(playerId, teDistinctId(), event);
     }
 
     /**
