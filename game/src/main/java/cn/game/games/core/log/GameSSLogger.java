@@ -419,7 +419,7 @@ public class GameSSLogger extends DeprecatedLogger {
     public void logRoleBuild(Player player) {
         //上传事件
         Map<String, Object> event = teHeaderEvent(player, LoggerType.rolebuild, "3025");
-        event.put("rolename", getRoleName(player));
+        event.put("rolebuild_rolename", getRoleName(player));
         event.put("gender", getRoleGender(player));
         event.put("unionid", player.getUnionId());
         event.put("openid", player.getOpenId());
@@ -507,7 +507,7 @@ public class GameSSLogger extends DeprecatedLogger {
         event.put("rechargechannel", player.getAccount().sdkPayChannel);
         event.put("currency", payItem.getAddCount());// 币种 人民币元
         event.put("valuequantity", 1);
-        event.put("valueamount", player.getGameClient().getIp());
+        event.put("recharge_valueamount", player.getGameClient().getIp());
         event.put("goods_id", payItem.getSdkGoodsId());
         event.put("orderid", payItem.getSdkOrderId());
         event.put("isvouchers", 2);
@@ -660,7 +660,7 @@ public class GameSSLogger extends DeprecatedLogger {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.heroraise, step);
         event.put("heroid", hero.getConfigId());
         event.put("cardorderid",  hero.getId());;
-        event.put("stageid", operatetype);
+        event.put("heroraise_stageid", operatetype);
         event.put("result",1);
         uploadTEEvent(getRoleID(player), teDistinctId(player), event);
     }
@@ -693,7 +693,7 @@ public class GameSSLogger extends DeprecatedLogger {
         event.put("stageid", stageId);
         event.put("fighttype", type);
         event.put("npcid", BI_DEFAULT_STR);
-        event.put("result", result ? 1 : 2);
+        event.put("pvefightresult", result ? 1 : 2);
         event.put("mapid", BI_DEFAULT_STR);
         event.put("stagetype", BI_DEFAULT_STR);
         event.put("fighttime", time);
@@ -789,7 +789,7 @@ public class GameSSLogger extends DeprecatedLogger {
     public void loggemtowersweep(Player player, int towerType,int floor, int sweepTotal, int sweepCount, int sweepCountLeft) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.gemtowersweep, "C0201");
         event.put("towertype", towerType);
-        event.put("stageid", floor);
+        event.put("tower_stageid", floor);
         event.put("sweepcountmax", sweepTotal);
         event.put("sweepcount", sweepCount);
         event.put("sweepcountleft", sweepCountLeft);
@@ -823,7 +823,7 @@ public class GameSSLogger extends DeprecatedLogger {
     public void logdemonsweep(Player player, int count, int battleId, List<RewardMsg.RewardInfo> reward) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.demonsweep, "C0800");
         event.put("count", count);
-        event.put("battleid", battleId);
+        event.put("demon_stageid", battleId);
         event.put("reward", reward);
         event.put("diamondcost", 0);
         uploadTEEvent(getRoleID(player), teDistinctId(player), event);
@@ -836,8 +836,8 @@ public class GameSSLogger extends DeprecatedLogger {
     }
     public void loglingshansweep(Player player, int count, int battleId, List<RewardMsg.RewardInfo> reward) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.lingshansweep, "C0902");
-        event.put("count", count);
-        event.put("stageid", battleId);
+        event.put("lingshansweep_count", count);
+        event.put("lingshansweep_stageid", battleId);
         event.put("reward", reward);
         uploadTEEvent(getRoleID(player), teDistinctId(player), event);
     }
@@ -877,7 +877,7 @@ public class GameSSLogger extends DeprecatedLogger {
         public void logguildjoin(Player player, long guildId,int type) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.guildjoin, "C1301");
         event.put("joinguildid", guildId);
-        event.put("type", type);
+        event.put("guildJointype", type);
         uploadTEEvent(getRoleID(player), teDistinctId(player), event);
 
         Map<String, Object> userSet = new HashMap<>();
@@ -921,8 +921,8 @@ public class GameSSLogger extends DeprecatedLogger {
 
     public void logguildbargainpurchase(Player player, int itemId, int num) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.guildbargainpurchase, "C1309");
-        event.put("itemid", itemId);
-        event.put("itemcost", num);
+        event.put("guildbargainpurchase_id", itemId);
+        event.put("guildbargainpurchase_cost", num);
         uploadTEEvent(getRoleID(player), teDistinctId(player), event);
     }
         public void logguilddonate(Player player,int type, int num, int contribute, long playerId) {
