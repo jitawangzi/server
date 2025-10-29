@@ -10,16 +10,18 @@ import com.google.common.io.Files;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.util.IdWorker;
 import cn.game.util.Rnd;
+import io.vertx.core.Context;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 
 public class GTT {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
-	public static void main(String[] args) throws Exception {
-		System.out.println(RankType.BaiGuJing.Name);
-		System.out.println(RankType.BaiGuJing.name());
-	}
+	public static void main(String[] args) {}
 
+	
+	
 	public static void test(Integer c) {
 
 		System.out.println(c);
