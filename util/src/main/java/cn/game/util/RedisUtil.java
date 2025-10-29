@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import org.redisson.Redisson;
@@ -14,7 +17,6 @@ import org.redisson.api.RBatch;
 import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 import org.redisson.api.RedissonClient;
-import org.redisson.config.ClusterServersConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,13 +66,19 @@ public class RedisUtil {
 		String content = redisConfig.getProperty("redisson", "");
 		org.redisson.config.Config config = org.redisson.config.Config.fromYAML(content);
 		redis = Redisson.create(config);
-		
+
+		logger.info("=== Redisson Connection Test ===\\n");
+		// 1. 配置信息
+		printConfig(config);
+
+		// 2. 基本操作测试
+		testBasicOps(redis);
 		// 定期打印连接池状态
 //	    ClusterServersConfig clusterConfig = redis.getConfig().useClusterServers();
 //	    logger.info("Master pool size: {}, min idle: {}", 
 //	        clusterConfig.getMasterConnectionPoolSize(),
 //	        clusterConfig.getMasterConnectionMinimumIdleSize());
-	
+
 	}
 
 	/**
@@ -346,6 +354,100 @@ public class RedisUtil {
 		RBucket<V> bucket = redis.getBucket(key);
 		return bucket.get();
 	}
+	
+	private static void printConfig(org.redisson.config.Config config) {
+        System.out.println("--- Configuration ---");
+        if (config.isClusterConfig()) {
+            System.out.println("Mode: CLUSTER");
+            System.out.println("Nodes: " + config.useClusterServers().getNodeAddresses());
+            System.out.println("Master pool: " + config.useClusterServers().getMasterConnectionPoolSize());
+            System.out.println("Slave pool: " + config.useClusterServers().getSlaveConnectionPoolSize());
+            System.out.println("Read mode: " + config.useClusterServers().getReadMode());
+        } else {
+            System.out.println("Mode: SINGLE");
+            System.out.println("Address: " + config.useSingleServer().getAddress());
+            System.out.println("Pool size: " + config.useSingleServer().getConnectionPoolSize());
+        }
+        System.out.println();
+    }
+    
+    private static void testBasicOps(RedissonClient redisson) {
+        System.out.println("--- Basic Operations ---");
+        
+        String testKey = "test_" + System.currentTimeMillis();
+        RBucket<String> bucket = redisson.getBucket(testKey);
+        
+        // 写入
+        bucket.set("Hello Redisson 3.52.0");
+        System.out.println("✓ Write successful");
+        
+        // 读取
+        String value = bucket.get();
+        System.out.println("✓ Read successful: " + value);
+        
+        // 删除
+        bucket.delete();
+        System.out.println("✓ Delete successful\n");
+    }
+    
+    private static void stressTest(RedissonClient redisson, int usersPerSecond, int opsPerUser) 
+            throws InterruptedException {
+        
+        System.out.println("--- Stress Test ---");
+        System.out.println("Simulating: " + usersPerSecond + " users/sec × " + opsPerUser + " ops/user");
+        
+        ExecutorService executor = Executors.newFixedThreadPool(50);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
+        
+        int totalUsers = usersPerSecond * 5; // 测试5秒
+        long startTime = System.currentTimeMillis();
+        
+        for (int i = 0; i < totalUsers; i++) {
+            final int userId = i;
+            
+            executor.submit(() -> {
+                try {
+                    // 模拟每个用户的多次操作
+                    for (int op = 0; op < opsPerUser; op++) {
+                        String key = "PLAYER_SERVER_ID_" + userId;
+                        RBucket<String> bucket = redisson.getBucket(key);
+                        bucket.set("server_xy_game_1");
+                        bucket.get();
+                    }
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    errorCount.incrementAndGet();
+                    System.err.println("Error for user " + userId + ": " + e.getMessage());
+                }
+            });
+            
+            // 控制速率：每秒 usersPerSecond 个用户
+            if ((i + 1) % usersPerSecond == 0) {
+                Thread.sleep(1000);
+            }
+        }
+        
+        executor.shutdown();
+        executor.awaitTermination(60, TimeUnit.SECONDS);
+        
+        long duration = System.currentTimeMillis() - startTime;
+        int totalOps = totalUsers * opsPerUser;
+        
+        System.out.println("\nResults:");
+        System.out.println("  Total users: " + totalUsers);
+        System.out.println("  Total operations: " + totalOps);
+        System.out.println("  Success: " + successCount.get());
+        System.out.println("  Errors: " + errorCount.get());
+        System.out.println("  Duration: " + duration + "ms");
+        System.out.println("  QPS: " + (totalOps * 1000 / duration));
+        
+        if (errorCount.get() > 0) {
+            System.err.println("\n✗ Test failed with " + errorCount.get() + " errors!");
+        } else {
+            System.out.println("\n✓ Stress test passed!");
+        }
+    }
 
 	public static void main(String args[]) throws Exception {
 
