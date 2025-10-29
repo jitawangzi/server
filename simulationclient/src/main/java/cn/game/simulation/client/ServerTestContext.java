@@ -302,7 +302,7 @@ public class ServerTestContext {
 					CSVMessage randomMessage = null;
 					if (singleMessage > 0) {
 						randomMessage = CSVMessagesReader.randomMessage();
-					} else if (singleMessage <= 0) {
+					} else if (singleMessage <= 0) { // 全消息混压
 						randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.msgNameSend);
 					}
 					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
@@ -310,12 +310,19 @@ public class ServerTestContext {
 						logger.warn("test message not found : " + randomMessage);
 						continue; 
 					}
-					Message message = serverTest.getMessagePressure(client);
+					Message message = null;
+					try {
+						message = serverTest.getMessagePressure(client);
+					} catch (Exception e) {
+						System.err.println("message is null : " + randomMessage +" "+ e);
+						// 生成消息内容失败，重置这个消息组，重新随机消息
+						client.sendingGroup = 0;
+						continue;
+					}
 					if (message != null) {
 						client.sendProtocol(message);
 						client.sendingGroup = randomMessage.group;
 						client.msgNameSend = randomMessage.msgName;
-
 						lastSendTime = System.currentTimeMillis();
 					}
 				} else {
@@ -594,7 +601,7 @@ public class ServerTestContext {
 		msgGroup = initialProp.getProperty("msgGroup") == null ? 0 : Integer.parseInt(initialProp.getProperty("msgGroup"));
 		
 		// 读取登录并发数配置
-		loginConcurrency = initialProp.getProperty("loginConcurrency") == null ? 10 : Integer.parseInt(initialProp.getProperty("loginConcurrency"));
+		loginConcurrency = initialProp.getProperty("loginConcurrency") == null ? 8 : Integer.parseInt(initialProp.getProperty("loginConcurrency"));
 		
 		String sourceIpsString = initialProp.getProperty("sourceIps");
 		if (!StringUtils.isEmpty(sourceIpsString)) {

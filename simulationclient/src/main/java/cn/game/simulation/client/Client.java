@@ -209,7 +209,7 @@ public class Client extends AbstractNetClient {
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
 	public GuildAllInfo guildAllInfo;
-	public List<MailInfo> mailsList; 
+	public List<MailInfo> mailsList = new ArrayList<>(); 
 
 	// 保存一些临时数据，用在后续的测试模拟协议数据
 	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
@@ -469,8 +469,12 @@ public class Client extends AbstractNetClient {
 	public void afterLogin(PlayerAllInfo allInfo) {
 		setPlayerAllInfo(allInfo);
 		PlayerInfo player = allInfo.getPlayer();
-		setPlayerId(player.getId());
-		setInit();
+		if (player.getId()  > 0) {
+			setPlayerId(player.getId());
+			setInit();
+		}else {
+			logger.error("玩家登录后，playerId为0，没有正常初始化，登录失败！ ");
+		}
 	}
 
 	public static void main(String args[]) throws Exception {
