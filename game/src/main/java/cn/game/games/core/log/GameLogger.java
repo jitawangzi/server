@@ -130,7 +130,8 @@ public class GameLogger extends DeprecatedLogger {
 //    }
 
 
-	public static void serverEvent(Account account, int eventId) {
+	public static void serverEvent(Player player, int eventId) {
+		Account account = player.getAccount();
 		String sdkversion = account == null ? "null" : account.sdkVersion;
 		String system = "all";
 		String adChannel = account == null ? "null" : account.adChannel;
@@ -140,7 +141,7 @@ public class GameLogger extends DeprecatedLogger {
 		Object[] array = new Object[] { getCurrentTimeLogText(), Config.APP_KEY, sdkversion, system, adChannel, sdkDeviceId, accountId,
 				eventId, version };
 		LoggerType.serverevent.logger.info(LoggerType.splice(array));
-		GameSSLogger.getInstance().logServerEvent(LoggerType.serverevent,"9999",adChannel,sdkDeviceId,accountId,eventId);
+		GameSSLogger.getInstance().logServerEvent(LoggerType.serverevent,"9999",adChannel,sdkDeviceId,accountId, player.getPlayerId(),eventId);
 	}
 
 
