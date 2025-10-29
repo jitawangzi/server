@@ -133,10 +133,14 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (level == 0) {
 			return;
 		}
+		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
+        // 已经满果实了
+		if (fruitMap.size() >= rsgTreeLvConfig.Num) {
+			return;
+		}
 		// 根据当前果实数，计算刷新果实的时间
 		int remaningSeconds = calcRemaningSeconds();
 		// 剩余刷新秒数
-		RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(level);
 		int nextFruitTime = DateUtil.currentTimeSeconds() + remaningSeconds;
 		boolean changeTimer = false;
 		if (this.nextFruitTime > 0) {
@@ -215,7 +219,7 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (!Rnd.hit(GlobalConst.RSGTreeRefreshWeight)) {
 			return Collections.EMPTY_LIST;
 		}
-		if (getInsecticidesEndTime() > 0 && apperTime < getInsecticidesEndTime()) {
+		if (getInsecticidesEndTime() > 0 && apperTime/1000 < getInsecticidesEndTime()) {
 			return PlayerHelper.addResources(player, GlobalConst.RSGTreeInsecticideLeave,
 					OpType.GinsengTreeBug);
 		}else {

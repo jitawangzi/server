@@ -13,11 +13,12 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ShopChapterPacksBuyRequest_15000020Test extends ServerTest{
+public class ShopChapterPacksBuyRequest_15000020Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.newBuilder() ; 
+		cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020
+				.newBuilder();
 		Collection<ChapterPacksConfig> list = ChapterPacksManager.instance().list();
 		if (list != null) {
 			for (ChapterPacksConfig chapterPacksConfig : list) {
@@ -27,12 +28,13 @@ public class ShopChapterPacksBuyRequest_15000020Test extends ServerTest{
 		} else {
 			builder.setId(1);
 		}
-		return builder.build() ; 
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.newBuilder() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopChapterPacksBuyRequest_15000020
+				.newBuilder();
 		Collection<ChapterPacksConfig> list = ChapterPacksManager.instance().list();
 		if (list != null) {
 			for (ChapterPacksConfig chapterPacksConfig : list) {
@@ -42,12 +44,12 @@ public Message getMessagePressure(Client client) {
 		} else {
 			builder.setId(1);
 		}
-		return builder.build() ; 
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    ShopChapterPacksBuyRequest_15000020Test instance = new ShopChapterPacksBuyRequest_15000020Test();
-	    instance.start();
+		ShopChapterPacksBuyRequest_15000020Test instance = new ShopChapterPacksBuyRequest_15000020Test();
+		instance.start();
 	}
 
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class GuildSettingRequest_40000013Test extends ServerTest{
@@ -14,15 +15,13 @@ public class GuildSettingRequest_40000013Test extends ServerTest{
 		cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.newBuilder() ; 
 		
 		
-		
 		return builder.build() ; 
 	}
 	
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.newBuilder() ; 
-		
-		
+		builder.setAutoJoin(Rnd.nextBoolean() ? 1 : 2) ; 
 		
 		return builder.build() ; 
 	}

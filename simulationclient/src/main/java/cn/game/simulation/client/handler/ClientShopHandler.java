@@ -24,6 +24,7 @@ import cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyResponse_15000031;
 import cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardResponse_15000033;
 import cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshResponse_15000006;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemBuyResponse_15000004;
+import cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemListResponse_15000002;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 import cn.game.protocol.protobuf.ShopMsg.ShopRechargeResponse_15000023;
@@ -63,6 +64,9 @@ public class ClientShopHandler extends GameBaseHandler {
         ShopItemListResponse_15000002 resp = (ShopItemListResponse_15000002) message;
         List<ShopItemProto> itemsList = resp.getItemsList();
         Client client = (Client) netClient;
+		if (!itemsList.isEmpty() && client.lastSendMessage != null && client.lastSendMessage instanceof ShopItemListRequest_15000001) {
+			client.shopItemMap.computeIfAbsent(((ShopItemListRequest_15000001) client.lastSendMessage).getShopId(), k -> itemsList);
+		}
     }
 
     private void itemBuy(NetClient netClient, Object message) {

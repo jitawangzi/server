@@ -40,7 +40,7 @@ public class RPCServiceImpl<T> implements RPCService<T> {
 //        // 默认实现，可以被子类覆盖
 //    }
 
-    public Object invokeWithCache(Command command) throws Throwable {
+    public Object invokeWithCache(Command command) throws Exception {
 		Class<?> beanClass = Class.forName(command.getClassName());
 		// 远程接口的实现类，都由spring管理
 		Object bean = SpringContextLoader.getContext().getBean(beanClass);

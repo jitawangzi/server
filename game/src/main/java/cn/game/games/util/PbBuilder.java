@@ -41,7 +41,6 @@ import cn.game.protocol.protobuf.QuestMsg.QuestInfo;
 import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
-import cn.game.protocol.protobuf.UnionMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.Pair;
@@ -135,7 +134,7 @@ public class PbBuilder {
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
-		builder.setExpireTime(mailConfig != null ? (int) (mail.getCreateTime() + mailConfig.Expiration) : (int)(mail.getCreateTime() + (365* DateUtil.DAY_SECONDS)));
+		builder.setExpireTime(mail.getExpireTime());
 		builder.setReceive(mail.getReceive());
 		builder.setSee(mail.getSee());
 		builder.setSender(mail.getSender());
@@ -169,44 +168,6 @@ public class PbBuilder {
 	public static GoodsInfo buildGoodsInfo(int id, long count) {
 		return GoodsInfo.newBuilder().setId(id).setCount((int) count).build();
 	}
-
-	public static UnionMsg.UnionInfo buildUnionInfo(Union union, long playerId) throws Exception {
-		UnionMsg.UnionInfo.Builder info = UnionMsg.UnionInfo.newBuilder();
-		Member member = UnionManager.getInstance().getMember(playerId);
-		if (member != null) {
-			info.setTitle(member.getTitle());
-			info.setContribution(member.getContribution().intValue());
-		}
-		info.setUnion(buildUnionBaseInfo(union, playerId));
-		Collection<Member> members = UnionManager.getInstance().getMembers(union.getId());
-
-		for (Member m : members) {
-			info.addMembers(buildMemberInfo(m));
-		}
-
-//		info.setJournals(buildJournalInfo());
-//		info.setApplications(buildApplicationInfo());
-		return info.build();
-	}
-	public static UnionMsg.UnionBaseInfo buildUnionBaseInfo(Union union, long playerId) {
-		UnionMsg.UnionBaseInfo.Builder info = UnionMsg.UnionBaseInfo.newBuilder();
-		info.setLevel(union.getLevel()) ;
-		info.setMasterName(union.getMaster() == null?"" :union.getMaster().getName()) ;
-		info.setName(union.getName()) ;
-		info.setNotice(union.getNotice()) ;
-		info.setUid(union.getId() + "");
-		// TODO
-		info.setStatus(0);
-		return info.build();
-	}
-	public static UnionMsg.MemberInfo buildMemberInfo(Member member) throws Exception {
-		UnionMsg.MemberInfo.Builder builder = UnionMsg.MemberInfo.newBuilder();
-		builder.setTitle(member.getTitle());
-		builder.setContribution(member.getContribution().intValue());
-//		builder.setPlayer(buildSimplePlayerInfo(member.getPlayerId()));
-		return builder.build();
-	}
-	
 
 	// List<Pair(goodsId,可买数量)> list ->Collection<StoreMsg.StoreGoodsInfo>
 	public static Collection<GoodsInfo> buildStoreGoodsInfo(List<Pair<Integer, Integer>> goodsList1) {

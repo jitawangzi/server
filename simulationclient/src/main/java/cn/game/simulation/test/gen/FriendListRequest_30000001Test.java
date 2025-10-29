@@ -8,29 +8,27 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class FriendListRequest_30000001Test extends ServerTest{
+public class FriendListRequest_30000001Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendListRequest_30000001
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    FriendListRequest_30000001Test instance = new FriendListRequest_30000001Test();
-	    instance.start();
+		FriendListRequest_30000001Test instance = new FriendListRequest_30000001Test();
+		instance.start();
 	}
 
 }

@@ -85,6 +85,7 @@ public class EventBusMessageInterceptor {
 				if (address != null && address.startsWith("__vertx.reply.")) {
 					// 记录回复状态
 					ReplyStatus status = new ReplyStatus(address, traceId, System.currentTimeMillis());
+					status.setConfirmed(true);
 					replyStatusMap.put(address, status);
 					
 					// 记录详细的发送上下文
@@ -93,23 +94,23 @@ public class EventBusMessageInterceptor {
 							Vertx.currentContext(), isOnEventLoopThread(), lastClusterStatus);
 					
 					// 设置验证定时器
-					vertx.setTimer(100, id -> {
-						ReplyStatus currentStatus = replyStatusMap.get(address);
-						if (currentStatus != null) {
-							currentStatus.setConfirmed(true);
-							logger.info("回复消息发送确认(100ms后): address={}, traceId={}, confirmed={}", 
-								address, traceIdFinal, currentStatus.isConfirmed());
-						}
-					});
+//					vertx.setTimer(100, id -> {
+//						ReplyStatus currentStatus = replyStatusMap.get(address);
+//						if (currentStatus != null) {
+//							currentStatus.setConfirmed(true);
+//							logger.info("回复消息发送确认(100ms后): address={}, traceId={}, confirmed={}", 
+//								address, traceIdFinal, currentStatus.isConfirmed());
+//						}
+//					});
 					
 					// 1秒后再次检查
-					vertx.setTimer(1000, id -> {
-						ReplyStatus finalStatus = replyStatusMap.remove(address);
-						if (finalStatus != null && !finalStatus.isReceived()) {
-							logger.error("警告：回复消息可能未被接收: address={}, traceId={}, 发送时间={}, 集群状态={}",
-								address, traceIdFinal, formatTimestamp(finalStatus.getSendTime()), lastClusterStatus);
-						}
-					});
+//					vertx.setTimer(1000, id -> {
+//						ReplyStatus finalStatus = replyStatusMap.remove(address);
+//						if (finalStatus != null && !finalStatus.isReceived()) {
+//							logger.error("警告：回复消息可能未被接收: address={}, traceId={}, 发送时间={}, 集群状态={}",
+//								address, traceIdFinal, formatTimestamp(finalStatus.getSendTime()), lastClusterStatus);
+//						}
+//					});
 				}
 
 				// 记录发送日志

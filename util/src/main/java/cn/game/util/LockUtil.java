@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.redisson.RedissonMultiLock;
+import org.redisson.api.RBucket;
 import org.redisson.api.RFuture;
 import org.redisson.api.RLock;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Redisson分布式锁
+ * 尽量避免使用直接获取锁的方法，需要手动释放，增加代码复杂度和出错概率
+ * 建议使用封装的自动释放锁的方法 
  * 2020年12月10日 下午4:11:36
  * @author SYQ
  */
@@ -23,11 +26,34 @@ public class LockUtil {
 	public static final int waitTime = 5;
 	/** 锁最长持有时间,到时间后，无论任何情况都会释放锁，防止锁不被释放 */
 	public static final int leaseTime = 30;
-
+	
+	public static boolean acquire(String key) {
+		return acquire(key,leaseTime, TimeUnit.SECONDS); 
+	}
+	/** 
+	 * 获取一个租约，依靠过期时间自动释放
+	 * @param key
+	 * @param leaseTime
+	 * @param unit
+	 * @return
+	 */
+	public static boolean acquire(String key,long leaseTime, TimeUnit unit) {
+		RBucket<String> leaseBucket = RedisUtil.getRedis().getBucket(key); 	    
+		return leaseBucket.trySet("1", leaseTime, unit);
+	}
+	public static RFuture<Boolean> acquireAsync(String key) {
+		return acquireAsync(key,leaseTime, TimeUnit.SECONDS); 
+	}
+	public static RFuture<Boolean> acquireAsync(String key, long leaseTime, TimeUnit unit) {
+		RBucket<String> leaseBucket = RedisUtil.getRedis().getBucket(key); 	    
+		return leaseBucket.trySetAsync("1", leaseTime, unit);
+	}
+	
 	/**
 	 * 同步获取锁，如果正常获取到锁则直接锁定,处理完业务后需要手动释放锁
 	 * @param locks
 	 * @return lock，成功获取到锁，只能在获取锁成功情况下才能进行后续处理； null，获取锁失败
+	 * 
 	 */
 	public static RLock tryLockSync(String... locks) {
 		RLock lock = initLock(locks);
@@ -65,25 +91,8 @@ public class LockUtil {
 		return null;
 	}
 
-	/** 
-	 * 尝试同步获取锁，如果获取不到立刻返回，利用过期时间自动释放锁。
-	 * @param leaseTime 锁过期时间(秒)
-	 * @param keys
-	 * @return
-	 */
-	public static boolean tryLockNoWaitSync(int leaseTime, String... keys) {
-		RLock lock = initLock(keys);
-		boolean tryLock = false;
-		try {
-			tryLock = lock.tryLock(0, leaseTime, TimeUnit.SECONDS);
-		} catch (Exception e) {
-
-		}
-		return tryLock;
-	}
-
 	/**
-	 * 尝试同步获取锁，如果获取不到立刻返回，可以利用过期时间自动释放锁， 也可以手动释放
+	 * 尝试同步获取锁，如果获取不到立刻返回，需要手动释放锁
 	 * @param leaseTime 锁过期时间(秒)
 	 * @param keys
 	 * @return lock lock !=null 则获取到锁，否则 未获取到锁
@@ -104,6 +113,7 @@ public class LockUtil {
 
 	/** 
 	 * 获取一个不过期的锁，如果获取不到立刻返回。{@link #tryLockSync(String...)}
+	 * 谨慎使用，一般不能长时间持有锁
 	 * @param locks
 	 * @return 获取到的锁，没获取到返回null
 	 */
@@ -262,17 +272,21 @@ public class LockUtil {
 		RedisUtil.set("c", "c");
 		RedisUtil.set("d", "d");
 		// 同步
-		RLock lock = tryLockSync("fff");
-		if (lock != null) { // 获取到锁
-			try {
-				System.err.println("执行任务");
-				Thread.currentThread().sleep(10 * 1000);
-				System.err.println("执行任务完毕");
-			} finally {
-				unlock(lock);
-			}
-		} else {
-
+		RLock myLock = null;
+		try {
+		    myLock = LockUtil.tryLockNoExpiredNoWaitSync("someOtherKey"); 
+		    
+		    if (myLock != null) {
+		        // ... 只有在获取锁成功时才执行 ...
+		    } else {
+		        // ... 获取锁失败的逻辑 ...
+		    }
+		    
+		} catch (Exception e) {
+		    log.error("业务异常", e);
+		} finally {
+			// 必须解锁
+		    LockUtil.unlock(myLock);
 		}
 		Consumer<?> failConsumer = r -> {
 			System.err.println("获取锁失败");

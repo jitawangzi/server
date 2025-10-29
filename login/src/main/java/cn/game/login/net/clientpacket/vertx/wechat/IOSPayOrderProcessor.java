@@ -254,7 +254,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 			return false;
 		}
 
-		boolean lock = LockUtil.tryLockNoWaitSync(6, CacheType.IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK.key());
+		boolean lock = LockUtil.acquire(CacheType.IOS_WE_CHAT_ACCESS_TOKEN_REFRESH_LOCK.key());
 		if (!lock) {
 			log.info("startRefreshAccessTokenTask not lock");
 			return true;

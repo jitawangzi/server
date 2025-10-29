@@ -9,11 +9,12 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class PlayerGuideRequest_01000060Test extends ServerTest{
+public class PlayerGuideRequest_01000060Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.newBuilder() ; 
+		cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060
+				.newBuilder();
 
 		int guideType = client.guideType;
 		int guideStep = client.guideStep++;
@@ -23,13 +24,14 @@ public class PlayerGuideRequest_01000060Test extends ServerTest{
 		}
 		builder.setType(guideType > 10 ? 10 : guideType);
 		builder.setStep(guideStep > 10 ? 10 : guideStep);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.newBuilder() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGuideRequest_01000060
+				.newBuilder();
 
 		int guideType = client.guideType;
 		int guideStep = client.guideStep++;
@@ -39,13 +41,13 @@ public Message getMessagePressure(Client client) {
 		}
 		builder.setType(guideType > 10 ? 10 : guideType);
 		builder.setStep(guideStep > 10 ? 10 : guideStep);
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    PlayerGuideRequest_01000060Test instance = new PlayerGuideRequest_01000060Test();
-	    instance.start();
+		PlayerGuideRequest_01000060Test instance = new PlayerGuideRequest_01000060Test();
+		instance.start();
 	}
 
 }

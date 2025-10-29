@@ -152,6 +152,7 @@ public class GuildManager {
 	 * @param list
 	 */
 	public void loadGuildList(List<GuildData> list) {
+		log.info("load guild size : " + list.size());
 		list.forEach(guild -> {
 			if (IdCache.initServerId(DistributedObjectType.GUILD, guild.getId())) {
 				Guild info = new Guild(guild);

@@ -1,6 +1,7 @@
 package cn.game.simulation.test.gen;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import cn.game.protocol.generated.config.HeadBoxConfig;
 import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
 public class PlayerHeadFrameRequest_01000015Test extends ServerTest {
@@ -29,11 +31,13 @@ public class PlayerHeadFrameRequest_01000015Test extends ServerTest {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadFrameRequest_01000015
 				.newBuilder();
 
-		Collection<HeadBoxConfig> list = HeadBoxManager.instance().list();
-		for (HeadBoxConfig headBoxConfig : list) {
-			builder.setHeadFrame(headBoxConfig.ID);
-			break;
+		Map<Integer, Integer> headBoxMapMap = client.getPlayerAllInfo().getHeadBoxMapMap(); 
+		if (headBoxMapMap.isEmpty()) {
+			return null; 
 		}
+		Integer randomElement = Rnd.randomElement(headBoxMapMap.keySet()); 
+		builder.setHeadFrame(randomElement);
+		
 		return builder.build();
 	}
 

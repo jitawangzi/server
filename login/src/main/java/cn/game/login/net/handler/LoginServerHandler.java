@@ -276,7 +276,7 @@ public class LoginServerHandler extends BaseHandler {
 			}
 			User u = (User) retU;
 			client.sendProtocol(
-					LoginPlayerUidResponse_7d000019.newBuilder().setUid(u.getId()).setAccountId(u.getThirdUid()).setDeviceId(u.getUsername()).build());
+					LoginPlayerUidResponse_7d000019.newBuilder().setUid(u.getId()).setAccountId(u.getUsername()).setDeviceId(u.getUsername()).build());
 		});
 	}
 	protected void gameStatus(NetClient client, Object message) {

@@ -15,6 +15,7 @@ import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.MailConfig;
 import cn.game.protocol.generated.manager.MailManager;
+import cn.game.util.DateUtil;
 
 public class Mail implements Serializable, DbEntity {
 	/**
@@ -382,6 +383,19 @@ public class Mail implements Serializable, DbEntity {
 
 	public static Mail valueOfMailId(long receiverId, int mailId, String title, String content, List<Goods> goods) {
 		return valueOf(receiverId, mailId,null, "", title, content, 0, goods);
+	}
+	
+	/** 
+	 * 获取邮件的过期时间， 单位秒
+	 * 一般只有配置表中的邮件才有过期时间
+	 * @return 过期秒时间戳，0表示不过期
+	 */
+	public int getExpireTime() {
+		MailConfig mailConfig = MailManager.instance().getNullable(this.mailId);
+		if (mailConfig == null || mailConfig.Expiration == 0) {
+			return 0;
+		}
+		return createTime + mailConfig.Expiration;
 	}
 
 }

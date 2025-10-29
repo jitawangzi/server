@@ -124,7 +124,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (guildInfo.isFull()) {
 			fail(ErrorMsgEnum.zong_men_full);
 		}
-		if (guildInfo.hasApply(playerId)) {
+		if (guildInfo.hasApply(playerId) && !guildInfo.isAutoJoin()) {
 			fail(ErrorMsgEnum.zong_men_apply_exist);
 		}
 		if (guildInfo.isApplyFull()) {
@@ -332,6 +332,9 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		}
 
 		if (optType == 1 && guildInfo.isFull()) {
+			for (Long targetPid : targetPidList) {
+				guildInfo.getModule().removeApply(targetPid);
+			}
 			fail(ErrorMsgEnum.zong_men_full);
 		}
 		// 执行操作
@@ -446,5 +449,14 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			return null;
 		}
 		return guild.getMember(playerId); 
+	}
+
+	@Override
+	public void testGuildNewDay() {
+
+		Collection<Guild> allGuild = GuildManager.getInstance().getAllGuild();
+		for (Guild guild : allGuild) {
+			guild.handleEvent(GuildConstants.GuildEvenType.CROSS_DAY);
+		}
 	}
 }

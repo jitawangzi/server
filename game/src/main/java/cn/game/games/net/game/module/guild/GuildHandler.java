@@ -306,7 +306,7 @@ public class GuildHandler extends GameBaseHandler {
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
         guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
         // 退出成功
-        guildModule.quit();
+        guildModule.quit(0);
         client.sendProtocol(res.setResult(true).build());
     }
 
@@ -317,6 +317,7 @@ public class GuildHandler extends GameBaseHandler {
         long guildId = player.getGuildId(); 
         autoForwardGuildServer(client, res, req, (result) -> {
         	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
+        	client.sendProtocol(response); 
         	GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition()) ;
             return null;
         });
@@ -407,7 +408,7 @@ public class GuildHandler extends GameBaseHandler {
             } else {
                 // 解散公会成功
                 GuildModule module = player.getGuildModule();
-                module.quit();
+                module.quit(2);
                 module.setDisbandCount(module.getDisbandCount() + 1);
                 // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
                 if (module.getDisbandCount() > 1) {
@@ -425,23 +426,29 @@ public class GuildHandler extends GameBaseHandler {
     private void applyJoinGuild(NetClient client, Object o) {
         GuildMsg.GuildApplyJoinRequest_40000007 req = (GuildMsg.GuildApplyJoinRequest_40000007) o;
         GuildMsg.GuildApplyJoinResponse_40000008.Builder res = GuildMsg.GuildApplyJoinResponse_40000008.newBuilder();
-        int id = req.getId();
+        long id = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
         GuildModule guildModule = player.getGuildModule(); 
+        List<Long> applyJoinList = guildModule.getApplyJoinList(); 
+//        if (applyJoinList.contains(id)) {
+//            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
+//            return;
+//		}
         guildModule.checkJoinCd(); 
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
         if (guild != null) {
             GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
             // 玩家直接加入公会
-            guildModule.join(simpleInfo.getId	());
+            guildModule.join(simpleInfo.getId());
             GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
             client.sendProtocol(res.setGuild(allInfo).build());
         } else {
+        	applyJoinList.add(id) ; 
             client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
         }
     }
@@ -459,12 +466,9 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID); 
             return ; 
 		}
-        
-        long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
-        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
-            return;
-        }
+        GuildModule guildModule = player.getGuildModule(); 
+        guildModule.checkJoinCd(); 
+
         String name = req.getName();
         List<String> checkStrs = new ArrayList<>();
         if (!player.isEnough(GlobalConst.GuildCreationConsume[0], GlobalConst.GuildCreationConsume[1])) {
@@ -528,7 +532,7 @@ public class GuildHandler extends GameBaseHandler {
     		 // 创建公会成功的业务逻辑
     		 PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
     		 GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-    		 player.getGuildModule().join(simpleInfo.getId());
+    		 guildModule.join(simpleInfo.getId());
     		 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
     		 res.setGuild(allInfo);
     		 client.sendProtocol(res);

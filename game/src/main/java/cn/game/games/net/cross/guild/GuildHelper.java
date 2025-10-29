@@ -34,8 +34,10 @@ import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 
 /**
  * @ClassName GuildHelper
@@ -106,11 +108,15 @@ public class GuildHelper {
 		builder.setMsgId(msgId);
 		builder.setData(msg.toByteString());
 		builder.addPlayerId(playerId);
-		VxHolder.executeBlockingWithTimeout(() -> {
+		VxHolder.vertx.executeBlocking(() -> {
 			String serverId = IdCache.getPlayerServerId(playerId);
 			GuildManager.log
 					.info("notifyMsgToPlayer playerId : " + playerId + " serverId : " + serverId + " msgId : " + msgId + " msg : " + msg);
-			return VxHolder.requestRemoteServer(serverId, builder.build());
+			if (org.apache.commons.lang3.StringUtils.isEmpty(serverId)) {
+				VxHolder.sendRemoteServer(ServerType.Game, builder.build());
+			}
+			VxHolder.sendRemoteServer(serverId, builder.build());
+			return null;
 		});
 	}
 
@@ -142,8 +148,24 @@ public class GuildHelper {
 				.info("notifyMsgToPlayer msgId : " + msgId + " msg : " + msg + " serverIdList : " + serverIdList + " pidSb : " + pidSb);
 		ServerMsg.NotifyGuildMsgToGame_7d000047 req = builder.build();
 		serverIdList.forEach(serverId -> {
-			VxHolder.requestRemoteServer(serverId, req);
+			VxHolder.sendRemoteServer(serverId, req);
 		});
+	}
+	
+	/** 
+	 * 一般是在跨服中，给Game中的玩家发消息，不需要消息返回
+	 * @param playerId
+	 * @param msg
+	 */
+	public static void sendMsgToPlayer(long playerId, Message msg) {
+
+		String serverId = IdCache.getPlayerServerId(playerId);
+		GuildManager.log
+				.info("sendMsgToPlayer playerId : " + playerId + " serverId : " + serverId  + " msg : " + msg);
+		if (org.apache.commons.lang3.StringUtils.isEmpty(serverId)) {
+			VxHolder.sendRemoteServer(ServerType.Game, msg);
+		}
+		VxHolder.sendRemoteServer(serverId, msg);
 	}
 
 	public static Future<GuildHandler.GuildCallbackMsg> sendMsgToGuildServer(Player player, Message req, String... params) {

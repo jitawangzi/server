@@ -15,7 +15,6 @@ public class GuildListRequest_40000001Test extends ServerTest{
 
 		builder.setPage(0);
 		
-		
 		return builder.build() ; 
 	}
 	
@@ -23,7 +22,7 @@ public class GuildListRequest_40000001Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.newBuilder() ; 
 		
-		
+		builder.setPage(1);
 		
 		return builder.build() ; 
 	}

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.exception.LogicException;
 import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.cache.entity.GuildData;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBasicManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildSharedInfo;
@@ -103,9 +105,11 @@ public class Guild {
 			@Nullable
 			Object await = AsyncUtils.await(insert);
 		} catch (Exception e) {
-			// 可能重复加入
+			// 可能重复加入,提示已经在工会中了
+			// 并且删除这个申请。 
+			getModule().removeApply(joinPlayerId);
 			LOGGER.warn(joinPlayerId + " joinGuild failed",e);
-			return false ; 
+			throw new LogicException(ErrorMsgEnum.zong_men_player_in.ID) ; 
 		} 
 		
 		GuildMember member = new GuildMember(joinPlayerId, position);
@@ -376,16 +380,19 @@ public class Guild {
 		List<Long> joinPidList = new ArrayList<>();
 		for (Long targetPid : targetPidList) {
 			if (isFull()) {
-				break;
+				// 删除申请记录
+				module.removeApply(targetPid);
+				continue;
 			}
-			// 删除申请记录
-			module.removeApply(targetPid);
+
 			// 加入公会
 			boolean joinGuild = joinGuild(targetPid, GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 			if (joinGuild) {
 				joinPidList.add(targetPid);
 				MailHelper.sendPromptMail(targetPid,4,"恭喜加入："+getName()); 
 			}
+			// 删除申请记录
+			module.removeApply(targetPid);
 		}
 		// 通知被加入的玩家 加入公会
 		GuildHelper.broadcastNotifyMsgToPlayer(
@@ -393,6 +400,8 @@ public class Guild {
 				PbProtocol.GuildJoinPush_40000044, joinPidList);
 		// 更新公会战斗力排行榜
 		GuildManager.getInstance().saveGuildTotalPowerRank(this);
+		
+
 	}
 	
 	/**

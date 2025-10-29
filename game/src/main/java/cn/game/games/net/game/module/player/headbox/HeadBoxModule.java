@@ -1,19 +1,23 @@
 package cn.game.games.net.game.module.player.headbox;
 
-import cn.game.games.core.GoodsModule;
+import cn.game.games.cache.entity.Item;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.game.module.player.IdConstant;
+import cn.game.games.net.game.module.item.AbstractItemOnlyOneModule;
+import cn.game.protocol.generated.config.GlobalConst;
+import cn.game.protocol.generated.config.HeadBoxConfig;
+import cn.game.protocol.generated.manager.HeadBoxManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.util.DateUtil;
 
 /**    
  * 这里只是为了可以给头像框奖励
  * 2024年8月22日 下午4:16:56
  * @author SYQ
  */
-public class HeadBoxModule extends GoodsModule<HeadBox> {
+public class HeadBoxModule extends AbstractItemOnlyOneModule<HeadBox> {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -26,27 +30,45 @@ public class HeadBoxModule extends GoodsModule<HeadBox> {
 		switch (event.getType()) {
 
 		case PLAYER_CREATE: {
+
+			idItems.forEach((k, v) -> {
+				player.getData().setHeadFrame(v.getConfigId());
+				return;
+			});
+
 			break;
 		}
 		}
 
 	}
-
 	@Override
-	public long getCount(int configId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Object add(int configId, int count, OpType opType) {
-		player.getPlayerModule().addId(IdConstant.HEAD_BOX, configId);
-		return new HeadBox(configId, count);
+	public void setInstanceExt(HeadBox item) {
+		HeadBoxConfig config = HeadBoxManager.instance().get(item.getConfigId());
+		if (config.Time > 0) {
+			item.setExpiredTime(DateUtil.currentTimeSeconds() + config.Time);
+		}
 	}
 
 	@Override
 	public void checkConfig(int id) {
 //		HeadBoxManager.instance().get
+	}
+	
+	@Override
+	public void delItemAfter(Item item, OpType... args) {
+		if (player.getData().getHeadFrame() == item.getConfigId()) {
+			for (int[] array : GlobalConst.initItems) {
+				if (array[0] == GoodsTypeEnum.HeadBox.getId()) {
+					int headBoxId = array[1];
+					HeadBox headBox = get(headBoxId);
+					if (headBox != null) {
+						player.getData().setHeadFrame(headBoxId);
+						return;
+					}
+					
+				}
+			}
+		}
 	}
 
 	@Override
@@ -55,54 +77,22 @@ public class HeadBoxModule extends GoodsModule<HeadBox> {
 	}
 
 	@Override
-	public boolean del(int configId, long count, OpType... args) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean del(long uid, OpType... args) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public HeadBox get(int configId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HeadBox get(long uid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public GoodsTypeEnum getGoodsTypeEnum() {
 		return GoodsTypeEnum.HeadBox;
 	}
 
 	@Override
-	public void initAddCache(HeadBox item) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void buildPlayerAllInfo(Builder builder) {
-
+		idItems.forEach((k, v) -> {
+			builder.putHeadBoxMap(k, v.getExpiredTime());
+		});
 	}
 
 	@Override
-	public HeadBox removeFromCache(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HeadBox removeFromCache(long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Item addRepeated(int itemId) {
+		HeadBoxConfig config = HeadBoxManager.instance().get(itemId);
+		HeadBox headBox = get(itemId);
+		headBox.setExpiredTime(headBox.getExpiredTime() + config.Time);
+		return headBox;
 	}
 }

@@ -8,29 +8,27 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class MonthCardDoubleBonusRequest_15000016Test extends ServerTest{
+public class MonthCardDoubleBonusRequest_15000016Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardDoubleBonusRequest_15000016
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    MonthCardDoubleBonusRequest_15000016Test instance = new MonthCardDoubleBonusRequest_15000016Test();
-	    instance.start();
+		MonthCardDoubleBonusRequest_15000016Test instance = new MonthCardDoubleBonusRequest_15000016Test();
+		instance.start();
 	}
 
 }

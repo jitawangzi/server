@@ -45,15 +45,21 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
+import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
+import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
+import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
 import cn.game.util.HttpUtil;
@@ -183,21 +189,37 @@ public class Client extends AbstractNetClient {
 	private long lastSendMessageTime;
 	/** 最后一次发消息的内容 */
 	private byte[] lastSendMessageContent;
-
-	public int guideType = 1;
-	public int guideStep = 1;
-
-	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
-
+	public Message lastSendMessage;
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
-	// 保存一些临时数据，用在后续的测试模拟协议数据
+
+	// 玩家的游戏数据
+	public int guideType = 1;
+	public int guideStep = 1;
+	/** 好友列表 */
+	public List<FriendInfo> friendsList = new ArrayList<>();
+	/** 黑名单列表 */
+	public List<String> blackList = new ArrayList<>();
+	/** 好友申请列表 */
+	public List<String> applicationList = new ArrayList<>();
+	// 商店
+	public Map<Integer, List<ShopItemProto>> shopItemMap = new HashMap<>();
+
+	/** 自己在工会中的成员数据 */
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
+	public GuildAllInfo guildAllInfo;
+	public List<MailInfo> mailsList = new ArrayList<>(); 
 
+	// 保存一些临时数据，用在后续的测试模拟协议数据
+	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
+	/** 排行榜中看到的公会id，可以作为申请使用 */
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
+	
+	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
+	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);
@@ -447,8 +469,12 @@ public class Client extends AbstractNetClient {
 	public void afterLogin(PlayerAllInfo allInfo) {
 		setPlayerAllInfo(allInfo);
 		PlayerInfo player = allInfo.getPlayer();
-		setPlayerId(player.getId());
-		setInit();
+		if (player.getId()  > 0) {
+			setPlayerId(player.getId());
+			setInit();
+		}else {
+			logger.error("玩家登录后，playerId为0，没有正常初始化，登录失败！ ");
+		}
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -495,7 +521,7 @@ public class Client extends AbstractNetClient {
 	 */
 	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login)
 			throws URISyntaxException, UnknownHostException, SSLException {
-		if (serverIp == null) {
+		if (StringUtils.isEmpty(serverIp)) {
 			serverIp = this.serverIp;
 			port = this.serverPort;
 		}
@@ -535,7 +561,9 @@ public class Client extends AbstractNetClient {
 		// 连接到服务器：
 		Promise<Client> promise = group.next().newPromise();
 		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
-				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+			StringUtils.isEmpty(sourceIp)? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+//		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
+//				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
 
 		connectFuture.addListener(f -> {
 			ChannelFuture handshakeFuture = handler.handshakeFuture();
@@ -565,6 +593,8 @@ public class Client extends AbstractNetClient {
 					builder.setSdkVersion("NULL");
 					builder.setSystem("system");
 					builder.setClueToken("{}");
+					
+					builder.setAccountId(name) ; 
 
 					sendProtocol(builder.build());
 				}
@@ -579,6 +609,7 @@ public class Client extends AbstractNetClient {
 		if (msg == null) {
 			throw new IllegalArgumentException("发送的消息不能为空！");
 		}
+		lastSendMessage = msg; 
 		byte[] byteArray = msg.toByteArray();
 		CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
 		ByteBuf headerBuf = Unpooled.buffer(12);
@@ -627,6 +658,7 @@ public class Client extends AbstractNetClient {
 	/** 
 	 * 一般是当消息没有收到回复时，用来重发某个消息
 	 * @param binaryWebSocketFrame
+	 * return 是否到达了最大重发次数
 	 */
 	private boolean resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
 		if (resendCount++ >= 3 ) {
@@ -720,6 +752,10 @@ public class Client extends AbstractNetClient {
 		}
 	}
 
+	/** 
+	 * 
+	 * @return 如果重发了消息，返回true，否则返回false
+	 */
 	public boolean resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
 		if (lastSendMessageContent != null &&  System.currentTimeMillis() - lastSendMessageTime > 5000) {
@@ -858,6 +894,34 @@ public class Client extends AbstractNetClient {
 
 	public String getinPvPBattlePid() {
 		return inPvPBattlePid + "";
+	}
+	
+	public boolean hasHero(int id) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getConfigId() == id) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasItem(int id,int count) {
+		List<ItemInfo> itemsList = getPlayerAllInfo().getItemsList(); 
+		for (ItemInfo itemInfo : itemsList) {
+			if (itemInfo.getId() == id && itemInfo.getCount() >= count) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasHero(String uid) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getUid().equals(uid)) {
+				return true; 
+			}
+		}
+		return false; 
 	}
 
 	// @Override

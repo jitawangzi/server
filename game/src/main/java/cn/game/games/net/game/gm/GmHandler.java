@@ -26,6 +26,7 @@ import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.handler.GameBaseHandler;
+import cn.game.games.net.game.handler.GmBaseHandler;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.GameClientManager;
@@ -69,7 +70,7 @@ import io.vertx.core.Future;
 
 /** gm处理器 */
 @Component
-public class GmHandler extends GameBaseHandler {
+public class GmHandler extends GmBaseHandler {
 
 	@Override
 	protected int getModule() {

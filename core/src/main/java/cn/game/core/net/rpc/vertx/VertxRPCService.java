@@ -51,23 +51,28 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 			Promise<Object> promise = Promise.promise();
 			try {
 				result = rpcService.invokeWithCache(commandFinal);
-			} catch (Throwable e) {
-				log.error("Error invoking RPC method", e);
+			} catch (Exception e) {
+				// 这里先不记录异常堆栈了， 在处理异常时，根据异常类型选择记录
+//				log.error("Error invoking RPC method", r.cause());
 				// 异常包装，稍后 reply
 				result = new RPCServiceImpl.RPCException("Error invoking RPC method", e);
 			}
 			rpcService.handleResult(result, promise);
 			promise.future().onComplete(r -> {
-				if (r.failed() || r.cause() != null|| r.result() instanceof Throwable) {
-					String errString = r.result() == null ? "" : ((Throwable) r.result()).getMessage();
+				if (r.failed() || r.cause() != null|| r.result() instanceof Exception) {
+					String errString = r.result() == null ? "" : ((Exception) r.result()).getMessage();
 					if (r.cause() != null) {
-						LogicException cause = ExceptionHelper.findCause(r.cause(),LogicException.class);
-						if (cause!=null) {
-							message.reply(cause,VxHolder.universalOptions) ; 
-						}else {
+						LogicException cause = ExceptionHelper.findCause(r.cause(), LogicException.class);
+						if (cause != null) {
+							message.reply(cause, VxHolder.universalOptions);
+						} else {
+							log.error("Error invoking RPC method", r.cause());
 							message.fail(ReplyFailure.ERROR.toInt(), errString);
 						}
-					}else {
+					} else {
+						if (r.result() != null && r.result() instanceof Exception) {
+							log.warn("Error invoking RPC method", r.result());
+						}
 						message.fail(ReplyFailure.ERROR.toInt(), errString);
 					}
 				} else {
