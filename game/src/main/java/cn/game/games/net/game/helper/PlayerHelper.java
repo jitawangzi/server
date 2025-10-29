@@ -121,6 +121,7 @@ import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerRequest_7d000015;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerResponse_7d000016;
 import cn.game.protocol.protobuf.ServerMsg.LoginPlayerDeleteRequest_7d000080;
+import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
@@ -143,6 +144,9 @@ public class PlayerHelper {
 	public static final int REFRESH_TYPE_DAY = 1;
 	public static final int REFRESH_TYPE_WEEK = 2;
 	public static final int REFRESH_TYPE_MONTH = 3;
+	
+	private static final int MB = 1024 * 1024;
+	private static final int APPROX_WARN_BYTES = 8 * MB;  // 8 MB 预警
 
 	/** 
 	 * 判断某个id是不是机器人
@@ -1098,8 +1102,8 @@ public class PlayerHelper {
 			return true;
 		}
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
-		int count = conditionConfig.numParam;
-		return getConditionCount(player, condition) >= count;
+		long conditionCount = getConditionCount(player, condition); 
+		return operator(conditionCount, conditionConfig.numParam, conditionConfig.operator) ; 
 	}
 
 	/**
@@ -1209,14 +1213,14 @@ public class PlayerHelper {
 		throw new IllegalArgumentException(" not suport condition  " + type);
 	}
 
-	public static boolean operator(int value, int configValue, int operator) {
+	public static boolean operator(long value, long configValue, int operator) {
 		return switch (operator) {
-		case 1 -> value > configValue;
-		case 2 -> value >= configValue;
-		case 3 -> value == configValue;
-		case 4 -> value <= configValue;
-		case 5 -> value < configValue;
-		case 6 -> value != configValue;
+		case 0 -> value >= configValue;
+		case 1 -> value <= configValue;
+		case 2 -> value > configValue;
+		case 3 -> value < configValue;
+		case 4 -> value == configValue;
+		case 5 -> value != configValue;
 		default -> false;
 		};
 	}
@@ -1339,8 +1343,11 @@ public class PlayerHelper {
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}
-		PlayerHelper.initAfterLogin(player);
-		return Future.succeededFuture(player);
+		// 这个地方可能有异步操作，所以先特殊处理一下
+		return ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+			PlayerHelper.initAfterLogin(player);
+			return player; 
+		},null);
 	}
 
 	/**
@@ -1404,9 +1411,9 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public static Future<Void> getPlayerDistributedLock(long playerId) {
-		// 方便测试，强制关闭服务器后快速登陆账号使用
 		if (!ServerContext.getInstance().getRunMode().isProduction()) {
-			return Future.succeededFuture();
+			// 方便测试，强制关闭服务器后快速登陆账号使用,强制设置serverId
+			return VxHolder.toVertxFuture(setServerId(playerId));
 		}
 		return VxHolder.toVertxFuture(IdCache.trySetServerIdAsync(DistributedObjectType.PLAYER, playerId)).compose(locked -> {
 			if (!locked) {
@@ -1688,10 +1695,26 @@ public class PlayerHelper {
 			PlayerData data = player.getData();
 			if (ServerContext.getInstance().isSinglePlayerTable()) {
 				data.beforeSave();
-				data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
+				String jsonString = JsonUtil.toJsonStringWithType(player.getModules()); 
+				data.setModules(jsonString);
+//				int sizeBytesEquip  = ByteHelp.estimateUtf8Bytes(JsonUtil.toJsonStringWithType(player.getEquipModule()));
+//				log.info("equip module size: playerId={}, equip size={} mb", playerId, sizeBytesEquip/1024.0/1024.0);
+				int sizeBytes  = ByteHelp.estimateUtf8Bytes(jsonString);
+			    // 预警
+			    if (sizeBytes >= APPROX_WARN_BYTES) {
+			        double mb = sizeBytes / 1024.0 / 1024.0;
+			        log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({}) MB",
+			                 playerId, sizeBytes, String.format("%.2f", mb));
+			    }else {
+			        if (log.isDebugEnabled()) {
+			            log.debug("saveClientCache: playerId={}, modules approx size={} bytes", playerId, sizeBytes);
+			        }
+			    }
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
-				return DAO.executeDbTaskList(dbTasks);
+				return DAO.executeDbTaskList(dbTasks).onComplete(r -> {
+					data.setModules("{}") ; 
+				});
 			}
 			// 下面暂时用不到
 			List<DbEntity> entities = new ArrayList<>();

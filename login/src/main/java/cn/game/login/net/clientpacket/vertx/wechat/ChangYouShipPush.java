@@ -101,6 +101,7 @@ public class ChangYouShipPush implements BaseVertxHandler {
 				PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022.newBuilder()
 						.setPlayerId(user.getId())
 						.setUid(payOrder.getId())
+						.setSdkOrderId(paymentNotification.getReceipt().getOrderId())
 						.build();
 				String serverId = UserHelper.getServerId(user.getId());
 				Future<PaymentOrderShipResponse_7d000023> future;

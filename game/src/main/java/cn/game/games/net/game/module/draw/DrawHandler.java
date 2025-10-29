@@ -4,6 +4,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.game.games.core.log.GameLogger;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -139,6 +140,7 @@ public class DrawHandler extends GameBaseHandler {
         //		resp.setGold(gold);
         resp.setDraw(drawModule.buildDrawInfo(id));
         client.sendProtocol(resp.build());
+
     }
 
     private void heroWish(NetClient client, Object message) {
@@ -242,9 +244,8 @@ public class DrawHandler extends GameBaseHandler {
 		if (heroRecruit.notRefresh()) {
 			pos = 1;
         }else {
-			List<Integer> allPos = Lists.newArrayList(0, 1, 2);
-			allPos.removeAll(recruitedPosList);
-			pos = Rnd.randomElement(allPos);
+            var hero=heroRecruit.radom31()  ;
+			pos = hero.getPosition();
 		}
 //		if (recruitedPosList.contains(pos)) {
 //			client.sendProtocol(defaultInstance, ErrorMsgEnum.repeat_request.getId());
@@ -276,7 +277,7 @@ public class DrawHandler extends GameBaseHandler {
         heroRecruit.setIsDraw(pos);
 		heroRecruit.setRecruitCount(heroRecruit.getRecruitCount() + 1);
         ItemConfig itemConfig1 = ItemManager.instance().get(id);
-        if (itemConfig1.Quality >= 3) {
+        if (itemConfig1.Quality >= GlobalConst.HeroRecruitQualityReflux) {
             heroRecruit.setNoHighQualityRecruitCount(0);
         }else {
             heroRecruit.setNoHighQualityRecruitCount(heroRecruit.getNoHighQualityRecruitCount()+1);
@@ -304,5 +305,6 @@ public class DrawHandler extends GameBaseHandler {
 		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
 
         client.sendProtocol(resp.build());
+        GameLogger.recruit(player, id, count, multiple,is[0],is[1]);
     }
 }

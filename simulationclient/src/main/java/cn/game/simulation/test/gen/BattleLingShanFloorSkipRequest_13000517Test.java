@@ -21,8 +21,7 @@ public class BattleLingShanFloorSkipRequest_13000517Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipRequest_13000517.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanFloorSkipRequest_13000517.newBuilder() ; 
-		
-		
+		builder.setFloor(2); 
 		
 		return builder.build() ; 
 	}

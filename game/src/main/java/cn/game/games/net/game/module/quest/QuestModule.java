@@ -788,6 +788,7 @@ public class QuestModule extends BasePlayerModule {
 
 			PointRewardModule pointRewardModule = player.getPointRewardModule();
 			pointRewardModule.clearActiveRewardList(PointRewardType.QUEST, QuestTypeEnum.Daily.ID);
+			pointRewardModule.clearActiveRewardList(PointRewardType.QUEST, QuestTypeEnum.Guild.ID);
 
 //			getActiveRewardList(QuestTypeEnum.Daily).clear();
 			break;

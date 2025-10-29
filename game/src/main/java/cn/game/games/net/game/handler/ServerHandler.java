@@ -44,6 +44,8 @@ import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ChatMsg;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerInfo;
+import cn.game.protocol.protobuf.GuildMsg;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.CrossGameForwardPush_7d000003;
@@ -73,7 +75,6 @@ import cn.game.protocol.protobuf.ServerMsg.LoginGameQuestionnairePush_7d000090;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipRequest_7d000022;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderShipResponse_7d000023;
 import cn.game.protocol.protobuf.ServerMsg.ServerStatusResponse_7d000902;
-import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.util.Config;
 import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
@@ -149,9 +150,18 @@ public class ServerHandler extends GameBaseHandler {
 					player.getGuildModule().kickGuild((GuildMsg.GuildQuitPush_40000024) message);
 				}
 				//玩家 加入 公会
-				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinGuild((GuildMsg.GuildJoinPush_40000044) message);
+				case PbProtocol.GuildJoinPush_40000044 -> player.getGuildModule().joinAndPush((GuildMsg.GuildJoinPush_40000044) message);
 				case PbProtocol.ChatMessagePush_31010001 -> {//公会聊天
 					guildChat(player,(ChatMsg.ChatMessagePush_31010001) message);
+				}
+				case PbProtocol.GuildApplyProcessedPush_40100001 -> {
+					GuildApplyProcessedPush_40100001 push = (GuildApplyProcessedPush_40100001)message; 
+					Player player2 = PlayerManager.getInstance().getPlayer(push.getPlayerId()); 
+					if (player2 != null) {
+						player2.getGuildModule().getApplyJoinList().remove(push.getGuildId()) ; 
+					}else {
+						// TODO 离线稍后处理
+					}
 				}
 				default -> {
 					log.error(String.format("guildMsgNotify msgId:%d is error",req.getMsgId()));
@@ -336,6 +346,7 @@ public class ServerHandler extends GameBaseHandler {
 	    PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
 	    long playerId = request.getPlayerId();
 	    long uid = request.getUid();
+	    String sdkOrderId = request.getSdkOrderId(); 
 	    log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
 
 	    Player onlinePlayer = PlayerManager.getInstance().getPlayer(playerId);
@@ -355,7 +366,7 @@ public class ServerHandler extends GameBaseHandler {
 	                sendResult(client, false);
 	                return null;
 	            }
-	            handlePaymentForPlayer(client, offlinePlayer, uid, false);
+	            handlePaymentForPlayer(client, offlinePlayer, uid,sdkOrderId, false);
 	            return offlinePlayer;
 	        }).onFailure(err -> {
 	            log.error("PayItem offline ship fail: playerId={}, uid={}", playerId, uid, err);
@@ -363,20 +374,21 @@ public class ServerHandler extends GameBaseHandler {
 	        });
 	    } else {
 	        // 在线流程：串行任务队列
-	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid, true));
+	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid,sdkOrderId, true));
 	    }
 	}
 
 	/**
 	 * 统一处理一个玩家的一笔订单（在线/离线通用）
 	 */
-	private void handlePaymentForPlayer(NetClient client, Player player, long uid, boolean online) {
+	private void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
 	    try {
 	        PayItem payItem = findAndValidatePayItem(player, uid, online);
 	        if (payItem == null) {
 	            sendResult(client, false);
 	            return;
 	        }
+	        payItem.setSdkOrderId(sdkOrderId);
 
 	        boolean ok = processPayment(player, payItem, online);
 	        if (!ok) {

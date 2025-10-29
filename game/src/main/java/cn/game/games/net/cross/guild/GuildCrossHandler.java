@@ -65,8 +65,6 @@ public class GuildCrossHandler extends GameBaseHandler {
 				case PbProtocol.GuildLogRequest_40000025 -> getGuildLog(guildId, playerId, message, paramList, client);
 				case PbProtocol.GuildMemberPositionSetRequest_40000015 ->
 					setGuildMemberPosition(guildId, playerId, message, paramList, client);
-				case PbProtocol.GuildQuitRequest_40000017 -> quitGuild(guildId, playerId, message, paramList, client);
-				case PbProtocol.GuildMemberAuthRequest_40000041 -> updateMemberAuth(guildId, playerId, message, paramList, client);
 				case PbProtocol.GuildFindRequest_40000003 -> findGuild(guildId, playerId, message, paramList, client);
 				case PbProtocol.ChatMessagePush_31010001 -> guildChat(guildId, playerId, message, paramList, client);
 				default -> {
@@ -153,6 +151,8 @@ public class GuildCrossHandler extends GameBaseHandler {
 
 			sendMsgToGameServer(playerId, client, GuildMsg.GuildSettingResponse_40000014.newBuilder().setResult(true).build(),
 					PbProtocol.GuildSettingResponse_40000014);
+			Guild guild = guildService.getGuild(guildId); 
+			GuildManager.getInstance().saveSimpleData(guild) ; 
 		}else {
 			sendErrorCodeMsgToGameServer(playerId, client, ErrorMsgEnum.unknown.ID, PbProtocol.GuildSettingResponse_40000014);
 		}
@@ -169,40 +169,17 @@ public class GuildCrossHandler extends GameBaseHandler {
 	// 设置成员职位
 	private void setGuildMemberPosition(long guildId, long playerId, Message message, List<String> paramList, NetClient client) {
 		GuildMsg.GuildMemberPositionSetRequest_40000015 req = (GuildMsg.GuildMemberPositionSetRequest_40000015) message;
+		GuildMember member = guildService.getMember(guildId, req.getTargetPid()); 
+		int oldPosition = member == null ? 0 :  member.getPosition();
 		guildService.setMemberPosition(guildId, playerId, req.getTargetPid(), req.getPosition());
 		sendMsgToGameServer(playerId, client,
 				GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder()
 						.setResult(true)
 						.setPosition(req.getPosition())
+						.setOldPosition(oldPosition)
 						.setTargetPid(req.getTargetPid())
 						.build(),
 				PbProtocol.GuildMemberPositionSetResponse_40000016);
-	}
-
-	// 退出公会
-	private void quitGuild(long guildId, long playerId, Message message, List<String> paramList, NetClient client) {
-		String playerName = paramList.get(0);
-		guildService.quitGuild(guildId, playerId, playerName);
-		sendMsgToGameServer(playerId, client, GuildMsg.GuildQuitResponse_40000018.newBuilder().setResult(true).build(),
-				PbProtocol.GuildQuitResponse_40000018);
-	}
-
-	// 成员权限管理
-	private void updateMemberAuth(long guildId, long playerId, Message message, List<String> paramList, NetClient client) {
-		GuildMsg.GuildMemberAuthRequest_40000041 req = (GuildMsg.GuildMemberAuthRequest_40000041) message;
-
-		MemberAuthRequest authRequest = new MemberAuthRequest();
-		authRequest.setOperatorId(playerId);
-		authRequest.setOperatorName(paramList.get(0));
-		authRequest.setOptType(req.getOptType());
-
-		List<Long> targetPidList = new ArrayList<>();
-		req.getTargetPidListList().forEach(pid -> targetPidList.add(pid.longValue()));
-		authRequest.setTargetPlayerIds(targetPidList);
-
-		guildService.updateMemberAuth(guildId, authRequest);
-		sendMsgToGameServer(playerId, client, GuildMsg.GuildMemberAuthResponse_40000042.newBuilder().setResult(true).build(),
-				PbProtocol.GuildMemberAuthResponse_40000042);
 	}
 
 	// 查找公会

@@ -11,6 +11,7 @@ import cn.game.games.core.ResultObject;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;

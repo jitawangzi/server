@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
+import cn.game.core.exception.LogicException;
 import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.GuildJoin;
 import cn.game.games.cache.entity.GuildData;
@@ -27,6 +28,7 @@ import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBasicManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildSharedInfo;
@@ -103,9 +105,11 @@ public class Guild {
 			@Nullable
 			Object await = AsyncUtils.await(insert);
 		} catch (Exception e) {
-			// 可能重复加入
+			// 可能重复加入,提示已经在工会中了
+			// 并且删除这个申请。 
+			getModule().removeApply(joinPlayerId);
 			LOGGER.warn(joinPlayerId + " joinGuild failed",e);
-			return false ; 
+			throw new LogicException(ErrorMsgEnum.zong_men_player_in.ID) ; 
 		} 
 		
 		GuildMember member = new GuildMember(joinPlayerId, position);
@@ -288,11 +292,14 @@ public class Guild {
 		return module.menMemberMap.get(playerId);
 	}
 
-	// 解散公会
-	public void dissolveGuild() {
+	/** 
+	 * 解散公会
+	 * @param quitType 2 会长主动解散 3 公会活跃度低强制解散
+	 */
+	public void dissolveGuild(int quitType) {
 
 		// 删除所有玩家
-		module.removeAllMember();
+		module.removeAllMember(quitType);
 		// 删除公会排行榜
 		RankService.getInstance().removeRankAsync(RankType.Guild,data.getServerId(), getId());
 		// 删除公会名称 id 映射
@@ -356,6 +363,8 @@ public class Guild {
 				member.addcontribution(num);
 				// 成员加贡献的时候，同时增加公会活跃度
 				module.setLiveness(module.liveness + num);
+				// 同时增加仙会经验
+				addExp(num);
 			}
 		}else {
 			throw new IllegalArgumentException("不支持的公会资产类型: " + id);
@@ -371,16 +380,19 @@ public class Guild {
 		List<Long> joinPidList = new ArrayList<>();
 		for (Long targetPid : targetPidList) {
 			if (isFull()) {
-				break;
+				// 删除申请记录
+				module.removeApply(targetPid);
+				continue;
 			}
-			// 删除申请记录
-			module.removeApply(targetPid);
+
 			// 加入公会
 			boolean joinGuild = joinGuild(targetPid, GuildConstants.ZONG_MEN_POSITION_BANG_ZHONG);
 			if (joinGuild) {
 				joinPidList.add(targetPid);
 				MailHelper.sendPromptMail(targetPid,4,"恭喜加入："+getName()); 
 			}
+			// 删除申请记录
+			module.removeApply(targetPid);
 		}
 		// 通知被加入的玩家 加入公会
 		GuildHelper.broadcastNotifyMsgToPlayer(
@@ -388,6 +400,8 @@ public class Guild {
 				PbProtocol.GuildJoinPush_40000044, joinPidList);
 		// 更新公会战斗力排行榜
 		GuildManager.getInstance().saveGuildTotalPowerRank(this);
+		
+
 	}
 	
 	/**

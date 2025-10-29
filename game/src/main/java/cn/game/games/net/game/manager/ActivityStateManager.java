@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.net.game.module.activity.ActivityModule;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
@@ -586,7 +588,8 @@ public class ActivityStateManager {
 				.setId(id)
 				.setStateValue(getState(id))
 				.setStartTime(getOpenTimeRemaining(id))
-				.setEndTime(getEndTimeRemaining(id))
+				// 
+				.setEndTime(getDestroyTimeRemaining(id))
 				.build();
 	}
 
@@ -598,6 +601,20 @@ public class ActivityStateManager {
 		mergeIdsInto(result, ActivityState.VIEW_VALUE);
 		mergeIdsInto(result, ActivityState.START_VALUE);
 		return result;
+	}
+	public List<Integer> testGetOpenIds(ActivityTypeEnum activityTypeEnum) {
+		Set<Integer> result = new HashSet<>();
+		mergeIdsInto(result, ActivityState.VIEW_VALUE);
+		mergeIdsInto(result, ActivityState.START_VALUE);
+		Iterator<Integer> iterator = result.iterator(); 
+		while (iterator.hasNext()) {
+			Integer id = iterator.next();
+			ActivityConfig config = ActivityManager.instance().get(id);
+			if (config.type != activityTypeEnum.ID) {
+				iterator.remove();
+			}
+		}
+		return new ArrayList<Integer>(result);
 	}
 
 	/** 

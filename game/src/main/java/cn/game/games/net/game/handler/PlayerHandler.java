@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.game.games.net.game.module.battle.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -41,12 +42,6 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
-import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.DaoHeartBattle;
-import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
-import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
-import cn.game.games.net.game.module.battle.WorldBossBattle;
-import cn.game.games.net.game.module.battle.XiangYaoFuMoBattle;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.guild.GuildModule;
@@ -182,7 +177,8 @@ public class PlayerHandler extends GameBaseHandler {
 
 		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
 		putInvoker(PbProtocol.PlayerAssetRecoverRequest_01000210, this::assetRecover);
-		
+		putInvoker(PbProtocol.PlayerAdBIInfoRequest_01100603, this::biInfo);
+
 	}
 
 	private void assetRecover(NetClient client, Object message) {
@@ -193,6 +189,20 @@ public class PlayerHandler extends GameBaseHandler {
 		respBuilder.putAllAssetRecover(module.getIdUpdateTimeMap());
 		client.sendProtocol(respBuilder.build());
 	}
+	private void biInfo(NetClient client, Object message) {
+		PlayerMsg.PlayerAdBIInfoRequest_01100603 request = (PlayerMsg.PlayerAdBIInfoRequest_01100603) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		PlayerMsg.PlayerBIInfoResponse_01100604.Builder respBuilder = PlayerMsg.PlayerBIInfoResponse_01100604.newBuilder();
+		client.sendProtocol(respBuilder.build());
+		if(request.getAdBIinfoList().size()<11)
+		{
+			log.error("adwatching error,info size is not 11,info:{}，size:{}", request.getAdBIinfoList(),request.getAdBIinfoList().size());
+			return;
+		}
+		GameLogger.adwatching(player, request.getAdBIinfoList());
+
+	}
+
 	private void figure(NetClient client, Object message) {
 		PlayerFigureRequest_01000021 request = (PlayerFigureRequest_01000021) message;
 		int id = request.getId();
@@ -489,6 +499,24 @@ public class PlayerHandler extends GameBaseHandler {
 					ret = module.hasRed(); 
 					break;
 				}
+				case DragonTreasure: {
+					BattleModule module = player.getBattleModule() ;
+					TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
+					ret = battle.hasRed();
+					break;
+				}
+				case DaSheng: {
+					BattleModule module = player.getBattleModule() ;
+					PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle);
+					ret = battle.hasRed();
+					break;
+				}
+					case EquipTower: {
+						BattleModule module = player.getBattleModule() ;
+						EquipTowerBattle battle = module.getBattle(DungeonTypeEnum.EquipTower);
+						ret = battle.hasRed();
+						break;
+					}
 				default:
 					errorCode = ErrorMsgEnum.red_point_not_support.getId();
 					break; 
@@ -510,6 +538,9 @@ public class PlayerHandler extends GameBaseHandler {
 		guideMap.put(request.getType(), request.getStep());
 		client.sendProtocol(resp);
 		GameLogger.newstages(player, request.getType(), request.getStep());
+		if (request.getType() == 1001 && request.getStep() == 2) {
+			GameLogger.serverEvent(player.getAccount(), 10020);
+		}
 	}
 
 	private void patrolInfo(NetClient client, Object message) {
@@ -868,7 +899,7 @@ public class PlayerHandler extends GameBaseHandler {
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
 		renameFuture.map(r -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);
-			player.getVarModule().incrVar(VarConstant.RANAME_COUNT);
+			player.getVarModule().addVar(VarConstant.RANAME_COUNT);
 			client.sendProtocol(resp);
 			return null;
 
@@ -888,7 +919,7 @@ public class PlayerHandler extends GameBaseHandler {
 //			player.isEnough(var, var); 
 		}
 		if (var == 0) {
-			player.getVarModule().incrVar(VarConstant.GENDER_COUNT);
+			player.getVarModule().addVar(VarConstant.GENDER_COUNT);
 		}
 		player.getData().setGender(isMan);
 		client.sendProtocol(resp);
@@ -915,46 +946,47 @@ public class PlayerHandler extends GameBaseHandler {
 		GameClient newGameClient = (GameClient) client;
 
 		Account account = new Account(req);
-		Future<LoginPlayerUidResponse_7d000019> playerUid = getPlayerUid(passportSessionId);
-//		LoginPlayerUidResponse_7d000019 await = AsyncUtils.await(playerUid); 
-		
-		Future<Long> uidFuture =  playerUid.compose(r -> checkPlayerUnlock(r)).map(r -> {
-			account.accountId = r.getAccountId();
-			account.deviceId = r.getDeviceId();
-			return r.getUid();
-		});
-		uidFuture.map(uid -> {
-			newGameClient.setSessionId(passportSessionId);
-			if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
-				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.login_fail_player_is_forbid.getId());
-				return null;
+		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId)); 
+		long uid = uidResponse.getUid();
+		if (checkPlayerUnlock(uid) == false) {
+			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
+			return;
+		}
+		if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
+			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
+			return ;
+		}
+		// 使用sdk登陆，这两个参数都从客户端传递，不使用Login中获取的了
+//		account.accountId = uidResponse.getAccountId();
+//		account.deviceId = uidResponse.getDeviceId();
+
+		newGameClient.setSessionId(passportSessionId);
+		if (reconnect) { // 客户端主动重连
+			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
+					oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
+			if (!isReallyReconnect) {
+				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
+				GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
 			}
-			if (reconnect) { // 客户端主动重连
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
-						oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
-				if (!isReallyReconnect) {
-					client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
-					GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
-				}
-			} else {
-				// 客户端新登陆
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
-				if (!isReallyReconnect) {
-					checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
-							.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
-//							.compose(PlayerHelper::saveSimplePlayer)
-							.compose(r -> {
-								return ServerContext.getInstance().getProcessor().process(r.getPlayerId(),
-									    () -> {
-									    	 handleLoginSuccess(newGameClient, r); 
-									    	 return null; 
-									    },null); 
-							})
-							.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
-				}
+			return ;
+		} else {
+			// 客户端新登陆
+			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, uid, account);
+			if (!isReallyReconnect) {
+				checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
+						.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
+//						.compose(PlayerHelper::saveSimplePlayer)
+						.compose(r -> {
+							return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
+								// 这里可能有阻塞操作
+								handleLoginSuccess(newGameClient, r);
+								return null;
+							}, null);
+						})
+						.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 			}
-			return null;
-		}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
+		}
+//		uidFuture.map(uid -> {}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 	}
 
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
@@ -999,6 +1031,10 @@ public class PlayerHandler extends GameBaseHandler {
 			return Future.failedFuture(ErrorMsgEnum.login_forbidden.getId() + "");
 		}
 		return Future.succeededFuture(uidResponse);
+	}
+	private boolean checkPlayerUnlock(long uid) {
+		boolean checkUnlock = PlayerManager.getInstance().checkUnlock(uid);
+		return checkUnlock; 
 	}
 
 	/** 
@@ -1049,6 +1085,7 @@ public class PlayerHandler extends GameBaseHandler {
 		builder.setInfo(PbBuilder.buildPlayerInfo(player));
 		client.sendProtocol(builder.build());
 		GameClientManager.getInstance().broadcastOnlineToOtherServer(player.getPlayerId(), true, null);
+		GameLogger.serverEvent(player.getAccount(), 10016);
 	}
 
 	protected void logout(NetClient client, Object message) {

@@ -163,18 +163,18 @@ public class OfflineBattleHandler {
                 .getRankList(player.getPlayerId(), targetPlayer.id)
                 .whenComplete(
                     (rankResultList, action) -> {
-                      GameLogger.pvpfight(
-                          player,
-                          true,
-                          rankResultList.get(0),
-                          0,
-                          DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
-                          targetPlayer,
-                          rankResultList.get(1),
-                          0,
-                          0,
-                          0,
-                          false);
+//                      GameLogger.pvpfight(
+//                          player,
+//                          true,
+//                          rankResultList.get(0),
+//                          0,
+//                          DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+//                          targetPlayer,
+//                          rankResultList.get(1),
+//                          0,
+//                          0,
+//                          0,
+//                          false);
                     });
           }
           client.sendProtocol(res);
@@ -238,18 +238,18 @@ public class OfflineBattleHandler {
               .getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId()))
               .thenAccept(
                   (rankResultList1) -> {
-                          GameLogger.pvpfight(
-                              player,
-                              false,
-                              selfRank,
-                              rankResultList1.get(0),
-                              DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
-                              targetPlayer,
-                              targetRank,
-                              rankResultList1.get(1),
-                              req.getBattleTime(),
-                              req.getEndType(),
-                              req.getWin());
+//                          GameLogger.pvpfight(
+//                              player,
+//                              false,
+//                              selfRank,
+//                              rankResultList1.get(0),
+//                              DungeonTypeEnum.CHAPTER_TYPE_DA_DAO.getId(),
+//                              targetPlayer,
+//                              targetRank,
+//                              rankResultList1.get(1),
+//                              req.getBattleTime(),
+//                              req.getEndType(),
+//                              req.getWin());
                   });
 
           return null;

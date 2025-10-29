@@ -86,7 +86,7 @@ public abstract class ActivityBase {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
 		builder.setStateValue(state);
-		builder.setEndTime((int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000));
+		builder.setEndTime((int) (destroyTime <= 0 ? 0 : (destroyTime - System.currentTimeMillis()) / 1000));
 		return builder.build();
 	}
 
@@ -196,6 +196,9 @@ public abstract class ActivityBase {
 		if (isNew) {
 			startUp();
 		}
+	}
+	public void init(int id) {
+		this.id = id;
 	}
 
 	/**

@@ -1,7 +1,10 @@
 package cn.game.games.net.cross.guild.service;
 
+import java.util.List;
+
 import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.guild.Guild;
+import cn.game.games.net.cross.guild.GuildMember;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
 import cn.game.games.net.cross.guild.dto.MemberAuthRequest;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
@@ -94,7 +97,7 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param request 权限请求
 	 * @return 是否成功
 	 */
-	void updateMemberAuth(long guildId, MemberAuthRequest request);
+	void updateMemberAuth(long guildId, long operatorId,String operatorName, int optType, List<Long> targetPidList);
 
 	/**
 	 * 增加公会资产，经验、活跃度等
@@ -102,9 +105,9 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param playerId 玩家ID
 	 * @param assetId 资产ID
 	 * @param value 资产值
-	 * @return 是否成功
+	 * @return 如果升级了，返回新的等级，否则返回0
 	 */
-	Future<?> addGuildAsset(long guildId, long playerId, int assetId, int value);
+	Future<Integer> addGuildAsset(long guildId, long playerId, int assetId, int value);
 	
 	/** 
 	 * 增加某个成员的贡献值
@@ -120,7 +123,7 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * 公会砍价
 	 * @param guildId 公会ID
 	 * @param playerId 玩家ID
-	 * @return 当前的砍价id， 砍掉了多少的数量
+	 * @return 当前的砍价id， 砍掉了多少的数量,今天第多少次砍价
 	 */
 	int[] bargain(long guildId, long playerId);
 
@@ -147,5 +150,12 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @return
 	 */
 	boolean hasPendingApplication(long guildId, long playerId);
+	
+	GuildMember getMember(long guildId, long playerId);
+	
+	/** 
+	 * 公会服务跨天，只在测试使用
+	 */
+	void testGuildNewDay(); 
 	
 }

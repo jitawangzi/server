@@ -1,7 +1,5 @@
 package cn.game.games.net.game;
 
-import static java.util.stream.Collectors.minBy;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -54,10 +52,7 @@ import cn.game.core.task.TaskManager;
 import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.IdUtil;
 import cn.game.core.zookeeper.ZkBackedCacheFactory;
-import cn.game.core.zookeeper.ZkCacheRegistry;
-import cn.game.core.zookeeper.ZkCacheType;
 import cn.game.core.zookeeper.ZkToolInitializer;
-import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
@@ -96,6 +91,7 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.ThreadUncaughtExceptionHandler;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.Log4j2ApolloLoader;
+import cn.game.util.log.LoggerManager;
 import cn.game.util.log.LoggerType;
 import cn.game.util.quartz.QuartzInitializer;
 import io.micrometer.core.instrument.Meter;
@@ -144,8 +140,8 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, serverType);
-//		LoggerManager.init();
-		Log4j2ApolloLoader.getInstance().init();
+		LoggerManager.init();
+//		Log4j2ApolloLoader.getInstance().init();
 
 		ServerContext.getInstance().initBase(serverId, serverType);
 		ServerContext.getInstance().setEventBus(ServerEventBus.getInstance());
@@ -228,8 +224,8 @@ public class GameServer implements GameServerMBean {
 	 * 同步SimplePlayer和名字
 	 */
 	private void initSimplePlayers() {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
-		if (lock == null) {
+		boolean acquire = LockUtil.acquire("initSimplePlayers", 30, TimeUnit.MINUTES);
+		if (acquire == false) {
 			return;
 		}
 		try {
@@ -252,9 +248,7 @@ public class GameServer implements GameServerMBean {
 			}
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			lock.unlock();
-		}
+		} 
 	}
 	private void refreshSimplePlayers() {
 		try {
@@ -277,8 +271,8 @@ public class GameServer implements GameServerMBean {
 	 * 初始化1000个机器人，给某些玩法使用
 	 */
 	private void initRobots(int count) {
-		RLock lock = LockUtil.tryLockSync(0, 30, TimeUnit.MINUTES, CacheType.GAME_SERVER_LOCK.name());
-		if (lock == null) {
+		boolean acquire = LockUtil.acquire(CacheType.GAME_SERVER_LOCK.name(), 30, TimeUnit.MINUTES);
+		if (acquire == false) {
 			return;
 		}
 		try {
@@ -296,9 +290,7 @@ public class GameServer implements GameServerMBean {
 			
 		} catch (Exception e) {
 			throw e;
-		} finally {
-			lock.unlock();
-		}
+		} 
 	}
 
 	private void initAllSimplePlayers() {

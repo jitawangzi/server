@@ -212,13 +212,15 @@ public class TestHelper {
 		Asset[] values = Asset.values();
 		for (Asset asset : values) {
 			if (asset.Type == 1) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+				currencyMap.setValue(asset.ID, 1000000000);
 			} else if (asset.Type == 2) {
 				if (asset == Asset.playerExp) {
 					currencyModule.addExp(asset.ID, 100_0000);
+				}else {
+					currencyModule.addExp(asset.ID, 100_0000);
 				}
 			} else if (asset.Type == 3) {
-				currencyMap.setValue(asset.ID, Integer.MAX_VALUE / 2);
+				currencyMap.setValue(asset.ID, 1000000000);
 			}
 		}
 
@@ -227,7 +229,7 @@ public class TestHelper {
 		Collection<ItemConfig> list = ItemManager.instance().list();
 		for (ItemConfig itemConfig : list) {
 			int itemType = itemConfig.ItemType;
-			if (itemType == 1 || itemType == 2 || itemType == 3 || itemType == 10 || itemType == 11 || itemType == 13) {
+			if (itemType >= 1 && itemType <= 3 || itemType >= 9 && itemType <= 11 || itemType == 13) {
 				itemModule.add(itemConfig.ID, Integer.MAX_VALUE / 2, opType);
 			}
 		}
@@ -243,10 +245,11 @@ public class TestHelper {
 		}
 
 		for (GemConfig config : GemManager.instance().list()) {
-			PlayerHelper.addResources(player, config.ID, 100, opType);
+			PlayerHelper.addResources(player, config.ID, 5, opType);
 		}
+		// 装备表一共500多个，所以每个id只给一个就够了
 		for (EquipConfig config : EquipManager.instance().list()) {
-			PlayerHelper.addResources(player, config.ID, 100, opType);
+			PlayerHelper.addResources(player, config.ID, 1, opType);
 		}
 		HeroModule module = player.getModule(HeroModule.class);
 		

@@ -1,8 +1,11 @@
 package cn.game.util;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -254,7 +257,30 @@ public class StrUtil {
 	public static <T> String toJsonStr(T t) {
 		return JSONObject.toJSONString(t);
 	}
-	
+
+	public static Map<String, String> parseKv(String kvString, boolean urlDecode) {
+		Map<String, String> map = new LinkedHashMap<>();
+		if (kvString == null || kvString.isEmpty())
+			return map;
+		String[] pairs = kvString.split("&");
+		for (String pair : pairs) {
+			if (pair.isEmpty())
+				continue;
+			String[] kv = pair.split("=", 2);
+			String key = kv[0];
+			String val = kv.length > 1 ? kv[1] : "";
+			if (urlDecode) {
+				key = URLDecoder.decode(key, StandardCharsets.UTF_8);
+				val = URLDecoder.decode(val, StandardCharsets.UTF_8);
+			}
+			key = key.trim();
+			val = val.trim();
+			if (!key.isEmpty()) {
+				map.put(key, val);
+			}
+		}
+		return map;
+	}
 	
 
 	public static void main(String args[]) {

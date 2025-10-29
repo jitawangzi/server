@@ -3,6 +3,7 @@ package cn.game.core.util;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.net.vertx.VxHolder;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -29,14 +31,25 @@ import io.vertx.core.impl.VertxThread;
  */
 public class AsyncUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncUtils.class);
+	
+    // 阻塞操作的警告阈值（毫秒）
+    private static final long WARN_THRESHOLD_MS = 50;
+    private static final long ERROR_THRESHOLD_MS = 200;
+    
+    // 是否允许在 EventLoop 上执行短暂阻塞
+    private static boolean allowEventLoopBlocking = false;
+    
+	public static boolean isEventLoopThread() {
+		Thread currentThread = Thread.currentThread();
+		return currentThread instanceof VertxThread && ((VertxThread) currentThread).isWorker() == false; 
+	}
 	/** 
 	 * 检查当前线程是不是eventLoop线程, 如果是则抛出异常
 	 */
 	public static void checkEventLoop() {
-		Thread currentThread = Thread.currentThread();
-		if (currentThread instanceof VertxThread && ((VertxThread) currentThread).isWorker() == false) {
+		if (isEventLoopThread()) {
 			throw new IllegalStateException(
-					"Blocking operation cannot be executed on EventLoop thread. " + "Current thread: " + currentThread.getName());
+					"Blocking operation cannot be executed on EventLoop thread. " + "Current thread: " + Thread.currentThread().getName());
 		}
 	}
 
@@ -344,5 +357,82 @@ public class AsyncUtils {
 		}
 		return future;
 	}
+	
+    /**
+     * 安全地执行可能阻塞的操作
+     * - 如果不在 EventLoop 上，直接执行
+     * - 如果在 EventLoop 上，使用 executeBlocking
+     */
+	@Deprecated
+    public static <T> T safeExecute(String operationName, Supplier<T> supplier) {
+        Context context = Vertx.currentContext();
+        
+        // 不在 Vert.x 上下文或不在 EventLoop 上，直接执行
+        if (context == null || !context.isEventLoopContext()) {
+            return executeWithMonitoring(operationName, supplier, false);
+        }
+        
+        // 在 EventLoop 上，使用 executeBlocking
+        if (allowEventLoopBlocking) {
+            return executeBlockingOnEventLoop(context, operationName, supplier);
+        } else {
+            // 严格模式：禁止 EventLoop 阻塞
+            throw new IllegalStateException(
+                "不允许在 EventLoop 上执行阻塞操作: " + operationName
+            );
+        }
+    }
+    
+	 /**
+     * 在 EventLoop 上安全执行阻塞操作
+     */
+    private static <T> T executeBlockingOnEventLoop(Context context, String operationName, Supplier<T> supplier) {
+        
+        // 如果当前不是 EventLoop 线程，直接执行
+        if (!isEventLoopThread()) {
+//            logger.debug("当前线程不是 EventLoop，直接执行: {}", operationName);
+            return executeWithMonitoring(operationName, supplier, true);
+        }
+        // 如果是 EventLoop 线程，使用独立的线程池执行
+        logger.warn("在 EventLoop 线程上执行阻塞操作，切换到专用线程池: {}", operationName);
+        CompletableFuture<T> future = CompletableFuture.supplyAsync(() -> {
+            return executeWithMonitoring(operationName, supplier, true);
+        });
+        try {
+            return future.get(3000, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            logger.error("执行阻塞操作超时: " + operationName, e);
+            throw new RuntimeException("执行阻塞操作超时: " + operationName, e);
+        } catch (Exception e) {
+            logger.error("执行阻塞操作失败: " + operationName, e);
+            throw new RuntimeException("执行阻塞操作失败: " + operationName, e);
+        }
+    }
+    /**
+     * 执行并监控
+     */
+    private static <T> T executeWithMonitoring(String operationName, Supplier<T> supplier, boolean fromEventLoop) {
+        long startTime = System.currentTimeMillis();
+        String threadName = Thread.currentThread().getName();
+        
+        try {
+            T result = supplier.get();
+            long duration = System.currentTimeMillis() - startTime;
+            
+            // 检查是否超过阈值
+            if (duration > ERROR_THRESHOLD_MS) {
+                logger.error("阻塞操作耗时过长！operation={}, duration={}ms, thread={}, fromEventLoop={}", 
+                    operationName, duration, threadName, fromEventLoop);
+            } else if (duration > WARN_THRESHOLD_MS) {
+                logger.warn("阻塞操作耗时较长: operation={}, duration={}ms, thread={}, fromEventLoop={}", 
+                    operationName, duration, threadName, fromEventLoop);
+            }
+            return result;
+        } catch (Exception e) {
+//            long duration = System.currentTimeMillis() - startTime;
+            throw new RuntimeException("阻塞操作异常: " + operationName, e);
+        }
+    }
 
 }

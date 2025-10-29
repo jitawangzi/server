@@ -55,6 +55,7 @@ public class ShopModule extends BasePlayerModule {
 	private Multimap<Integer, ShopItem> shopItemsMap = ArrayListMultimap.create();
 	/** 通行证里领完的奖励,key: 通行证id，购买过的 */
 	private Map<Integer, List<Integer>> fundPassRewardsMap = new HashMap<Integer, List<Integer>>();
+
 	private IntMapWrapper heishiRefreshTimesMap = new IntMapWrapper();
 
 	/** 上次免费看广告开宝箱时间 */
@@ -232,7 +233,7 @@ public class ShopModule extends BasePlayerModule {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
 				ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId()); 
-				if (shopItemConfig.ResetType == refreshType) {
+				if (shopItemConfig!=null&&shopItemConfig.ResetType == refreshType) {
 					shopItem.setItemBuyTimes(0);
 				}
 			}

@@ -45,15 +45,21 @@ import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
+import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
+import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.BattleMsg;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
+import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
+import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
 import cn.game.util.HttpUtil;
@@ -86,6 +92,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Promise;
+
 /**
  * 模拟的客户端数据
 * 2016-6-13 下午5:15:18
@@ -131,7 +138,7 @@ public class Client extends AbstractNetClient {
 	/** 是否是pc端 */
 	private boolean isPc;
 	/** 存档列表 */
-	//	List<PlayerArchiveInfo> archivesList;
+	// List<PlayerArchiveInfo> archivesList;
 	public volatile int messageType = (byte) 0x01;
 
 	public static Map<String, Client> clients = new ConcurrentHashMap<>();
@@ -145,12 +152,13 @@ public class Client extends AbstractNetClient {
 //	public static final String defaultChannel = "wechat";
 //	public static final String defaultChannel = "steam";
 //	int seq = 0;
-	
-	public AtomicInteger sendCount = new AtomicInteger(0) ; 
-	public AtomicInteger recvCount = new AtomicInteger(0) ; 
+
+	public AtomicInteger sendCount = new AtomicInteger(0);
+	public AtomicInteger recvCount = new AtomicInteger(0);
 	public AtomicInteger seq = new AtomicInteger(1);
 
 	private volatile int resendCount = 0;
+	public static boolean exitOnClientClose = true;
 
 	/** 发送中的消息组 */
 	public int sendingGroup;
@@ -167,7 +175,7 @@ public class Client extends AbstractNetClient {
 	/** 玩家数据 **/
 	private PlayerAllInfo playerAllInfo;
 
-	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse ;
+	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse;
 	private long inPvPBattlePid;
 
 	private Map<Integer, Message> sendingMessageMap = new HashMap<>();
@@ -181,21 +189,37 @@ public class Client extends AbstractNetClient {
 	private long lastSendMessageTime;
 	/** 最后一次发消息的内容 */
 	private byte[] lastSendMessageContent;
-
-	public int guideType = 1;
-	public int guideStep = 1;
-
-	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
-
+	public Message lastSendMessage;
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
-	// 保存一些临时数据，用在后续的测试模拟协议数据
+
+	// 玩家的游戏数据
+	public int guideType = 1;
+	public int guideStep = 1;
+	/** 好友列表 */
+	public List<FriendInfo> friendsList = new ArrayList<>();
+	/** 黑名单列表 */
+	public List<String> blackList = new ArrayList<>();
+	/** 好友申请列表 */
+	public List<String> applicationList = new ArrayList<>();
+	// 商店
+	public Map<Integer, List<ShopItemProto>> shopItemMap = new HashMap<>();
+
+	/** 自己在工会中的成员数据 */
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
-	
+	public GuildAllInfo guildAllInfo;
+	public List<MailInfo> mailsList = new ArrayList<>(); 
+
+	// 保存一些临时数据，用在后续的测试模拟协议数据
+	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
+	/** 排行榜中看到的公会id，可以作为申请使用 */
 	public List<Integer> guildIds = new ArrayList<>();
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
+	
+	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
+	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);
@@ -227,7 +251,7 @@ public class Client extends AbstractNetClient {
 
 	public void loginPassport(String url) {
 
-		JSONObject jsonObject = new JSONObject() ; 
+		JSONObject jsonObject = new JSONObject();
 
 		if (name == null || name.trim().length() == 0) {
 			register(url);
@@ -250,17 +274,17 @@ public class Client extends AbstractNetClient {
 			loginPassport(url);
 			return;
 		}
-		
-		JSONObject respJsonObject = JSONObject.parseObject(resp); 
+
+		JSONObject respJsonObject = JSONObject.parseObject(resp);
 		systemOutLog.info("登陆返回: " + respJsonObject);
 		String passport = respJsonObject.getString("passport_session_id");
 		setPassportSessionId(passport);
 //		map = new HashMap<>();
-		jsonObject = new JSONObject() ; 
+		jsonObject = new JSONObject();
 //		map.put("passport_session_id", passport+"");
-		jsonObject = new JSONObject() ;
-		jsonObject.put("passport_session_id", passport+"");
-		resp = HttpUtil.postJSON(url + "/account/server_list", jsonObject.toJSONString(),"UTF-8",null);
+		jsonObject = new JSONObject();
+		jsonObject.put("passport_session_id", passport + "");
+		resp = HttpUtil.postJSON(url + "/account/server_list", jsonObject.toJSONString(), "UTF-8", null);
 
 		JSONObject serverList = JSONObject.parseObject(resp);
 		JSONArray jsonArray = serverList.getJSONArray("serverList");
@@ -268,7 +292,7 @@ public class Client extends AbstractNetClient {
 			JSONObject obj = jsonArray.getJSONObject(i);
 			String sid = obj.getString("server_id");
 			if (serverId != null && serverId.equals(sid)) {
-				this.serverIp = obj.getString("ip") ; 
+				this.serverIp = obj.getString("ip");
 				this.serverPort = obj.getIntValue("port");
 				break;
 			}
@@ -356,7 +380,7 @@ public class Client extends AbstractNetClient {
 	public void register(String url, String name, String pwd) {
 
 		Map<String, String> map = new HashMap<>();
-		JSONObject jsonObject = new JSONObject() ; 
+		JSONObject jsonObject = new JSONObject();
 		if (name == null) {
 			this.name = UUID.randomUUID().toString();
 			if (pwd != null && pwd.length() > 0) {
@@ -419,7 +443,7 @@ public class Client extends AbstractNetClient {
 
 		startConnectTime = System.currentTimeMillis();
 		connect(ip, port, sourceIp);
-		
+
 //		PlayerMsg.PlayerLoginRequest_01000001.Builder builder = PlayerMsg.PlayerLoginRequest_01000001.newBuilder();
 //		builder.setServerId(ServerTestContext.serverId);
 //		builder.setSessionId(passportSessionId + "");
@@ -445,8 +469,12 @@ public class Client extends AbstractNetClient {
 	public void afterLogin(PlayerAllInfo allInfo) {
 		setPlayerAllInfo(allInfo);
 		PlayerInfo player = allInfo.getPlayer();
-		setPlayerId(player.getId());
-		setInit();
+		if (player.getId()  > 0) {
+			setPlayerId(player.getId());
+			setInit();
+		}else {
+			logger.error("玩家登录后，playerId为0，没有正常初始化，登录失败！ ");
+		}
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -461,7 +489,6 @@ public class Client extends AbstractNetClient {
 
 		// builder.addFriendId(22386);
 
-		
 		System.exit(0);
 
 	}
@@ -481,7 +508,7 @@ public class Client extends AbstractNetClient {
 	public Promise<Client> connect(String serverIp, int port, boolean login) throws URISyntaxException, UnknownHostException, SSLException {
 		return connect(serverIp, port, null, true);
 	}
-	
+
 	/**
 	 * 连接游戏服务器
 	 * @param serverIp
@@ -492,13 +519,14 @@ public class Client extends AbstractNetClient {
 	 * @throws UnknownHostException 
 	 * @throws SSLException 
 	 */
-	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login) throws URISyntaxException, UnknownHostException, SSLException {
-		if (serverIp == null) {
+	public Promise<Client> connect(String serverIp, int port, String sourceIp, boolean login)
+			throws URISyntaxException, UnknownHostException, SSLException {
+		if (StringUtils.isEmpty(serverIp)) {
 			serverIp = this.serverIp;
 			port = this.serverPort;
 		}
 		if (StringUtils.isEmpty(serverIp) || port == 0) {
-			throw new IllegalArgumentException("serverIp or port is null,没有指定game ip和端口，也没有可用的指定id的game服务器")	;
+			throw new IllegalArgumentException("serverIp or port is null,没有指定game ip和端口，也没有可用的指定id的game服务器");
 		}
 		InetAddressValidator validator = InetAddressValidator.getInstance();
 		boolean validInet4Address = validator.isValidInet4Address(serverIp);
@@ -506,9 +534,11 @@ public class Client extends AbstractNetClient {
 		// 如果配置了域名，则使用wss连接，如果是ip则用ws
 		String url = (wss ? "wss://" : "ws://") + serverIp + ":" + port + "/";
 		URI uri = new URI(url);
-		final WebSocketClientHandler handler = new WebSocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(uri,
-				WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
-		Bootstrap bootstrap = new Bootstrap().group(group).channel(NioSocketChannel.class).option(ChannelOption.SO_REUSEADDR, true)
+		final WebSocketClientHandler handler = new WebSocketClientHandler(
+				WebSocketClientHandshakerFactory.newHandshaker(uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+		Bootstrap bootstrap = new Bootstrap().group(group)
+				.channel(NioSocketChannel.class)
+				.option(ChannelOption.SO_REUSEADDR, true)
 				.option(ChannelOption.TCP_NODELAY, true);
 
 		bootstrap.handler(new ChannelInitializer<SocketChannel>() {
@@ -523,15 +553,17 @@ public class Client extends AbstractNetClient {
 				ClientHandler clientHandler = new ClientHandler();
 				clientHandler.setDispatcher(SpringContextLoader.getContext().getBean(Dispatcher.class));
 				// 支持大点的数据包。5m
-				p.addLast(new HttpClientCodec(), new HttpObjectAggregator(5 * 1024 * 1024), new WebSocketFrameAggregator(5 * 1024 * 1024), handler,
-						clientHandler);
+				p.addLast(new HttpClientCodec(), new HttpObjectAggregator(5 * 1024 * 1024), new WebSocketFrameAggregator(5 * 1024 * 1024),
+						handler, clientHandler);
 			}
 		});
 
 		// 连接到服务器：
 		Promise<Client> promise = group.next().newPromise();
 		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
-				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+			StringUtils.isEmpty(sourceIp)? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
+//		ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(uri.getHost(), port),
+//				sourceIp == null ? null : new InetSocketAddress(InetAddress.getByName(sourceIp), 0));
 
 		connectFuture.addListener(f -> {
 			ChannelFuture handshakeFuture = handler.handshakeFuture();
@@ -553,7 +585,8 @@ public class Client extends AbstractNetClient {
 					PlayerLoginRequest_01000001.Builder builder = PlayerLoginRequest_01000001.newBuilder();
 					builder.setSessionId(passportSessionId + "");
 					builder.setVerstion(version);
-					
+					builder.setDeviceId("testdevice");
+
 					builder.setAdChannel("4019392002");
 					builder.setPlatform(5);
 					builder.setSdkPayChannel("0010");
@@ -561,6 +594,8 @@ public class Client extends AbstractNetClient {
 					builder.setSystem("system");
 					builder.setClueToken("{}");
 					
+					builder.setAccountId(name) ; 
+
 					sendProtocol(builder.build());
 				}
 			});
@@ -574,6 +609,7 @@ public class Client extends AbstractNetClient {
 		if (msg == null) {
 			throw new IllegalArgumentException("发送的消息不能为空！");
 		}
+		lastSendMessage = msg; 
 		byte[] byteArray = msg.toByteArray();
 		CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
 		ByteBuf headerBuf = Unpooled.buffer(12);
@@ -595,9 +631,8 @@ public class Client extends AbstractNetClient {
 				if (f.isSuccess()) {
 //					System.out.print("==============================消息发送成功==========================");
 					if (!msg.getClass().getSimpleName().equals("PlayerHeartbeatRequest_01000005")) {
-						netLogger
-								.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name,
-										msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend);
+						netLogger.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]", playerId, name,
+								msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend);
 					}
 					// 先不记录这个数据了
 //					sendingMessageMap.put(seqSend, msg);
@@ -607,17 +642,14 @@ public class Client extends AbstractNetClient {
 					resendCount = 0;
 
 				} else {
-					logger
-							.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]", playerId, name,
-									msg.getClass().getSimpleName(),
-							TextFormat.shortDebugString(msg), seqSend, f.cause());
+					logger.error("消息发送失败：   opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]", playerId, name,
+							msg.getClass().getSimpleName(), TextFormat.shortDebugString(msg), seqSend, f.cause());
 				}
 			});
 			return future;
 //			logger.info("【send】: " + msg.getClass().getSimpleName() + "  " + TextFormat.shortDebugString(msg));
 		} else {
-			logger.warn("player[{}] write message[{}] err,session[{}]", this, TextFormat.shortDebugString(msg),
-					channel);
+			logger.warn("player[{}] write message[{}] err,session[{}]", this, TextFormat.shortDebugString(msg), channel);
 			return null;
 		}
 
@@ -626,13 +658,17 @@ public class Client extends AbstractNetClient {
 	/** 
 	 * 一般是当消息没有收到回复时，用来重发某个消息
 	 * @param binaryWebSocketFrame
+	 * return 是否到达了最大重发次数
 	 */
-	private void resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
-		resendCount++;
+	private boolean resendWsPack(BinaryWebSocketFrame binaryWebSocketFrame) {
+		if (resendCount++ >= 3 ) {
+			return false; 
+		}
 		if (this.channel != null && this.channel.isActive() && this.channel.isWritable()) {
 			ChannelFuture future = this.channel.writeAndFlush(binaryWebSocketFrame);
 		}
 		logger.warn("[{}]resend message,count[{}]", this, resendCount);
+		return true; 
 	}
 
 	@Override
@@ -694,13 +730,13 @@ public class Client extends AbstractNetClient {
 	 * @return
 	 */
 	public boolean isLastMessageReturn() {
-		int i = seq.get(); 
+		int i = seq.get();
 		if (i == 1) {
 			return true;
 		}
 		return recvMessages.get(i - 1) != null;
 	}
-	
+
 	public void waitLastMessageReturn() throws TimeoutException {
 		int loop = 0;
 		while (!isLastMessageReturn()) {
@@ -716,14 +752,22 @@ public class Client extends AbstractNetClient {
 		}
 	}
 
-	public void resendLastMessage() {
+	/** 
+	 * 
+	 * @return 如果重发了消息，返回true，否则返回false
+	 */
+	public boolean resendLastMessage() {
 		// 如果5秒都没有收到返回，那就重发
-		if (System.currentTimeMillis() - lastSendMessageTime > 5000) {
-			resendWsPack(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(lastSendMessageContent)));
+		if (lastSendMessageContent != null &&  System.currentTimeMillis() - lastSendMessageTime > 5000) {
+			boolean resendWsPack = resendWsPack(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(lastSendMessageContent)));
+			if (!resendWsPack) {
+				return false;
+			}
 			setLastSendMessageTime(System.currentTimeMillis());
+			return true; 
 		}
+		return false;
 	}
-	
 
 	public ChannelFuture sendProtocol(Message message) {
 		setLastSendMessageTime(System.currentTimeMillis());
@@ -745,6 +789,7 @@ public class Client extends AbstractNetClient {
 			sendWsPack(message);
 		}
 	}
+
 	public void sendProtocolAfterInit(Supplier<Message> supplier, boolean wait) {
 
 		if (wait) {
@@ -795,19 +840,17 @@ public class Client extends AbstractNetClient {
 		this.playerAllInfo = playerAllInfo;
 	}
 
-
-
 	public void setPc(boolean isPc) {
 		this.isPc = isPc;
 	}
 
-	//	public List<PlayerArchiveInfo> getArchivesList() {
-	//		return archivesList;
-	//	}
+	// public List<PlayerArchiveInfo> getArchivesList() {
+	// return archivesList;
+	// }
 	//
-	//	public void setArchivesList(List<PlayerArchiveInfo> archivesList) {
-	//		this.archivesList = archivesList;
-	//	}
+	// public void setArchivesList(List<PlayerArchiveInfo> archivesList) {
+	// this.archivesList = archivesList;
+	// }
 
 	public long getLastSendMessageTime() {
 		return lastSendMessageTime;
@@ -850,10 +893,38 @@ public class Client extends AbstractNetClient {
 	}
 
 	public String getinPvPBattlePid() {
-		return inPvPBattlePid+"";
+		return inPvPBattlePid + "";
+	}
+	
+	public boolean hasHero(int id) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getConfigId() == id) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasItem(int id,int count) {
+		List<ItemInfo> itemsList = getPlayerAllInfo().getItemsList(); 
+		for (ItemInfo itemInfo : itemsList) {
+			if (itemInfo.getId() == id && itemInfo.getCount() >= count) {
+				return true; 
+			}
+		}
+		return false; 
+	}
+	public boolean hasHero(String uid) {
+		List<HeroInfo> herosList = getPlayerAllInfo().getHerosList(); 
+		for (HeroInfo heroInfo : herosList) {
+			if (heroInfo.getUid().equals(uid)) {
+				return true; 
+			}
+		}
+		return false; 
 	}
 
-	//	@Override
+	// @Override
 //	public String getIp() {
 //		return null;
 //	}
@@ -862,6 +933,5 @@ public class Client extends AbstractNetClient {
 //	public int getPort() {
 //		return 0;
 //	}
-
 
 }

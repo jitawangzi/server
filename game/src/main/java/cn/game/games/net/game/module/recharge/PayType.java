@@ -11,6 +11,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
+import cn.game.games.net.game.module.activity.impl.player.FundPassSignActivity;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.quest.Quest;
@@ -173,7 +174,17 @@ public enum PayType {
 			buy.onFailure(err -> {
 				LoggerType.Stdout.logger.error("玩家"+player.getPlayerId()+"离线充值购买限时礼包失败", err);
 			});
-			return AsyncUtils.await(buy)!=null; 
+			return AsyncUtils.await(buy)!=null;
+		}
+	},
+	/**基金通行证签到*/
+	FundPassSignActivity(12) {
+
+		public boolean offlinePay(Player player, PayItem payItem) {
+			int id = payItem.getPayId();
+			FundPassSignActivity fundPassSignActivityModule = player.getActivityModule().get(id);
+			fundPassSignActivityModule.buy(id);
+			return true;
 		}
 	},
 	;

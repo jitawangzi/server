@@ -28,24 +28,36 @@ public class CSVMessagesReader {
 	 */
 	public static CSVMessage randomGroupMessage(int sendingGroup, String msgNameSend) {
 
-		if (sendingGroup == 0) {
-			CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
-			List<CSVMessage> list = groupMessageMap.get(randomMessage.group);
-			return list.get(0);
-		}
-		List<CSVMessage> list = groupMessageMap.get(sendingGroup);
-//		if (StringUtils.isEmpty(msgNameSend)) {
-//			return list.get(0);
-//		}
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).msgName == msgNameSend && i != list.size() - 1) {
-				return list.get(i + 1);
+		List<CSVMessage> list = null; 
+		if (sendingGroup > 0) {
+			list = groupMessageMap.get(sendingGroup);
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).msgName == msgNameSend && i != list.size() - 1) {
+//					return list.get(i + 1);
+					CSVMessage nextMsg = nextMessage(list, i + 1);
+					if (nextMsg != null) {
+						return nextMsg;
+					} 
+				}
 			}
 		}
-		//
+		// 没有发过消息，随机一个组开始发送
 		CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
 		list = groupMessageMap.get(randomMessage.group);
-		return list.get(0);
+//		return list.get(0);
+		return nextMessage(list, 0);
+	}
+	private static CSVMessage nextMessage(List<CSVMessage> list,int index) {
+		if (index >= list.size()) {
+			return null;
+		}
+		CSVMessage csvMessage = list.get(index);
+		if (csvMessage.probability == 0 || Rnd.hitPercentage(csvMessage.probability)) {
+			return csvMessage;
+		} else {
+			return nextMessage(list, index + 1);
+		}
+		
 	}
 
 	/** 
@@ -75,6 +87,10 @@ public class CSVMessagesReader {
 //			String weight = csvRecord.get("权重");
 //			String description = csvRecord.get("描述");
 
+			String seq = csvRecord.get(0);
+			if (StringUtils.isEmpty(seq)) {
+				continue;
+			}
 			String protocol = csvRecord.get(1);
 			String protocolNumber = csvRecord.get(2);
 
@@ -85,6 +101,7 @@ public class CSVMessagesReader {
 			message.group = StringUtils.isEmpty(csvRecord.get(4)) ? 0 : Integer.parseInt(csvRecord.get(4));
 			message.order = StringUtils.isEmpty(csvRecord.get(5)) ? Integer.MAX_VALUE : Integer.parseInt(csvRecord.get(5));
 			message.weight = StringUtils.isEmpty(csvRecord.get(6)) ? 0 : Integer.parseInt(csvRecord.get(6));
+			message.probability = StringUtils.isEmpty(csvRecord.get(7)) ? 0 : Integer.parseInt(csvRecord.get(7));
 
 			messages.add(message);
 			groupMessageMap.computeIfAbsent(message.group, k -> new ArrayList<>()).add(message);
@@ -105,11 +122,12 @@ public class CSVMessagesReader {
 		public int group;
 		public int order;
 		public int weight;
+		/** 单个协议发送概率，百分数 */
+		public int probability;
 
-		@Override
 		public String toString() {
 			return "CSVMessage [msgId=" + msgId + ", msgName=" + msgName + ", group=" + group + ", order=" + order + ", weight=" + weight
-					+ "]";
+					+ ", probability=" + probability + "]";
 		}
 
 	}

@@ -6,31 +6,33 @@ import org.springframework.stereotype.Component;
 import cn.game.simulation.client.Client;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
+import cn.game.util.Rnd;
 
 @Component
-public class MailReceiveRequest_12000005Test extends ServerTest{
+public class MailReceiveRequest_12000005Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005
+				.newBuilder();
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.newBuilder() ; 
-		
-		
-		
-		return builder.build() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005
+				.newBuilder();
+//		if (client.mailsList.isEmpty()) {
+//			return null;
+//		}
+//		builder.setUid(Rnd.randomElement(client.mailsList).getUid());
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    MailReceiveRequest_12000005Test instance = new MailReceiveRequest_12000005Test();
-	    instance.start();
+		MailReceiveRequest_12000005Test instance = new MailReceiveRequest_12000005Test();
+		instance.start();
 	}
 
 }

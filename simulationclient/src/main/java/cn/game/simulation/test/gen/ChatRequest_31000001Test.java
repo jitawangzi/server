@@ -16,7 +16,8 @@ public class ChatRequest_31000001Test extends ServerTest{
 		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.newBuilder() ; 
 		
 		builder.setChatType(ChatType.WORLD_CHAT);
-		builder.setContent("习近平");
+//		builder.setContent("习近平");
+		builder.setContent("你好啊");
 //		builder.setTargetPlayerId(251220055 + "");
 		
 		return builder.build() ; 

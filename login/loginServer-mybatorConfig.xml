@@ -21,6 +21,8 @@
     <plugin type="org.mybatis.generator.plugins.GetBatchCursorPlugin" />
    	<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
    	<plugin type="org.mybatis.generator.plugins.BlobColumnTransformPlugin" />
+   	<plugin type="org.mybatis.generator.plugins.SelectByIndexPlugin" />
+   	
    	
 	<!-- 自定义生成的注释 -->
 	<commentGenerator type="org.mybatis.generator.internal.CustomCommentGenerator">

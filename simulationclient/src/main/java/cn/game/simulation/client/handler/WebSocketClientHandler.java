@@ -40,6 +40,7 @@ package cn.game.simulation.client.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.simulation.client.Client;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -85,7 +86,9 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 		ChannelFuture close = ctx.close();
 		close.addListener((f) -> {
 			systemOutLog.info("WebSocket Client closed! , System exit");
-			System.exit(0);
+			if (Client.exitOnClientClose) {
+				System.exit(0);
+			}
 		});
     }
 

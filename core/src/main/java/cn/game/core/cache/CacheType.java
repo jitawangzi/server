@@ -50,6 +50,8 @@ public enum CacheType {
 	IOS_OPENID_ORDER_DATA,
 	/** ios 平台支付订单的锁 */
 	IOS_OPENID_ORDER_DATA_LOCK,
+	/** 排行榜结算 */
+	RANK_REWARD_ACQUIRE,
 
 	//************公会相关***********
 	/**** 公会简单数据 */

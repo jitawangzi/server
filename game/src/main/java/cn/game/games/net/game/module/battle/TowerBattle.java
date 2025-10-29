@@ -243,9 +243,19 @@ public class TowerBattle extends XiYouBattleHandler {
         }
         return id >curFloor.get(battleConfig.BattleType);
     }
-
+    public void gmJump(int id) {
+        BattleModule battleModule = player.getModule(BattleModule.class);
+        BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+        if(battleConfig==null) {
+           return;
+        }
+        curFloor.put(battleConfig.BattleType, id + 1);
+    }
     public int getRadomBuff() {
         return radomBuff;
+    }
+    public boolean hasRed() {
+        return floorCount>0;
     }
 
     public void setRadomBuff(int radomBuff) {

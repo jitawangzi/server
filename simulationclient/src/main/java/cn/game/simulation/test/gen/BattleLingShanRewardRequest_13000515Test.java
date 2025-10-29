@@ -22,7 +22,7 @@ public class BattleLingShanRewardRequest_13000515Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.newBuilder() ; 
 		
-		
+		builder.setIndex(0); 
 		
 		return builder.build() ; 
 	}

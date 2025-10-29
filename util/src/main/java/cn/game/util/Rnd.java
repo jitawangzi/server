@@ -245,8 +245,8 @@ public final class Rnd {
 		for (int i : weight) {
 			total += i;
 		}
-
 		int rand = Rnd.nextInt(total);
+		//System.out.println("---------------------随机到的随机数={}"+rand);
 		int current = 0;
 		for (int i = 0; i < weight.size(); i++) {
 			current += weight.get(i);
@@ -679,6 +679,41 @@ public final class Rnd {
 		return array[Rnd.nextInt(array.length)];
 	}
 
+	public static <T> T randomElement(Collection<T> collection) {
+	    T result = null;
+	    int count = 0;
+	    
+	    for (T element : collection) {
+	        count++;
+	        // 以 1/count 的概率替换当前结果
+	        if (nextInt(count) == 0) {
+	            result = element;
+	        }
+	    }
+	    return result;
+	}
+	public static <T> List<T> randomElements(Collection<T> collection, int k) {
+	    List<T> reservoir = new ArrayList<>(k);
+	    int count = 0;
+	    
+	    for (T element : collection) {
+	        count++;
+	        if (count <= k) {
+	            // 前k个元素直接加入
+	            reservoir.add(element);
+	        } else {
+	            // 第i个元素以 k/i 的概率替换水塘中的某个元素
+	            int randomIndex = nextInt(count);
+	            if (randomIndex < k) {
+	                reservoir.set(randomIndex, element);
+	            }
+	        }
+	    }
+	    
+	    return reservoir;
+	}
+	
+
 	/** 
 	 * 从一个Set中随机出一个元素，并且这个元素不在排除的集合中
 	 * @param sourceSet
@@ -759,6 +794,7 @@ public final class Rnd {
 		Collections.shuffle(allNumbers);
 		return allNumbers.subList(0, n);
 	}
+	
 	public static void main(String args[]) {
 		int[] x = new int[] {11,22,33,44,55,66} ; 
 		int[] randomSubArray = randomSubArray(x, 3);

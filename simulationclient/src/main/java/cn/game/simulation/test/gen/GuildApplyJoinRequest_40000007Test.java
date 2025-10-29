@@ -21,10 +21,12 @@ public class GuildApplyJoinRequest_40000007Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.newBuilder() ; 
-		
-		builder.setId(Rnd.randomElement(client.guildIds)); 
-		
-		return builder.build() ; 
+		if (client.guildIds.isEmpty()) {
+			return null; 
+		}
+		Integer randomId = Rnd.randomElement(client.guildIds); 
+		builder.setId(randomId);
+		return builder.build();
 	}
 	
 	public static void main(String args[]) throws Exception {

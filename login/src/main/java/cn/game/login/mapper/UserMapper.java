@@ -58,6 +58,11 @@ public interface UserMapper {
 	 */
 	List<User> getBatchCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 
+	/**
+	 * @mbg.generated
+	 */
+	User selectByNameChannel(@Param("username") String username, @Param("channelLabel") String channelLabel);
+
 	User selectByNameAndChannel(@Param("username") String username, @Param("channel") String channel);
 
 	int updateServers(HashMap<String, String> map);

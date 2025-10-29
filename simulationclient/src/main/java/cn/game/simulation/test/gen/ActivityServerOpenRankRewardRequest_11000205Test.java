@@ -22,7 +22,7 @@ public class ActivityServerOpenRankRewardRequest_11000205Test extends ServerTest
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.newBuilder() ; 
 		
-		
+		builder.setId(42); 
 		
 		return builder.build() ; 
 	}

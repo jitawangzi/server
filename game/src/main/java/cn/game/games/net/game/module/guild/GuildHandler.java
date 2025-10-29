@@ -6,46 +6,48 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import com.google.protobuf.Message;
+
+import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
-import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.cross.guild.GuildHelper;
+import cn.game.games.net.cross.guild.SimpleGuild;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.games.net.game.module.rank.RankEntry;
 import cn.game.games.net.game.module.rank.RankHelper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.config.GuildDonateConfig;
-import cn.game.protocol.generated.config.QuestPointRewardConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.GuildDonateManager;
-import cn.game.protocol.generated.manager.QuestPointRewardManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
-import cn.game.protocol.protobuf.PbProtocol;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.GuildCrossMsg.GuildMsgPush_41000045;
 import cn.game.protocol.protobuf.GuildCrossMsg.GuildMsgResponse_41000046;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptRequest_40000070;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptResponse_40000071;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyBattleEndRequest_40000078;
@@ -63,20 +65,23 @@ import cn.game.protocol.protobuf.GuildMsg.GuildBountyTargetRefreshResponse_40000
 import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberPositionSetResponse_40000016;
 import cn.game.protocol.protobuf.GuildMsg.GuildRankList;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankListRequest_40000081;
+import cn.game.protocol.protobuf.GuildMsg.GuildRankListResponse_40000082;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
-import cn.game.protocol.protobuf.RankMsg.RankInfo;
-import cn.game.protocol.protobuf.RankMsg.RankListResponse_35000002;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
-import cn.game.util.DateUtil;
+import cn.game.protocol.protobuf.PbProtocol;
+import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.IntMapWrapper;
 import cn.game.util.ServerType;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import cn.game.protocol.protobuf.GuildMsg.GuildRankListRequest_40000081;
-import cn.game.protocol.protobuf.GuildMsg.GuildRankListResponse_40000082;
+import io.vertx.core.ThreadingModel;
+import io.vertx.core.Vertx;
 
 @Component
 public class GuildHandler extends GameBaseHandler {
@@ -173,16 +178,22 @@ public class GuildHandler extends GameBaseHandler {
             return;
         }
         // 先扣次数
+        log.info("guild bargain BIBIBI 1");
         PlayerHelper.delResources(player, Asset.GuildBargain.ID, 1, OpType.GuildBargain);
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         int[] ret = guildProxy.bargain(player.getGuildId(), player.getPlayerId());
         GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(ret[0]);
+        log.info("guild bargain BIBIBI 2");
         List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.BargainReward, OpType.GuildBargain);
         res.addAllRewards(resources);
         res.setCount(ret[1]);
+        log.info("guild bargain BIBIBI 3");
         player.handleEvent(EventTypeEnum.GuildBargain);
+        log.info("guild bargain BIBIBI 4");
         guildModule.setBargainCount(bargainCount + 1);
         client.sendProtocol(res.build());
+        log.info("guild bargain BIBIBI 5");
+        GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]); 
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -193,8 +204,10 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
+        log.info("guild buyBargain BIBIBI 1");
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         int[] bargainPrice = guildProxy.getBargainPrice(player.getGuildId());
+        log.info("guild buyBargain BIBIBI 2");
         GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargainPrice[0]);
         PlayerHelper.delResources(player, guildBargainConfig.Price[0], bargainPrice[1], OpType.GuildBargain);
         List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.GuildBargain);
@@ -202,6 +215,8 @@ public class GuildHandler extends GameBaseHandler {
         GuildModule guildModule = player.getGuildModule();
         guildModule.setBargainBuy(true);
         client.sendProtocol(res.build());
+        log.info("guild buyBargain BIBIBI 3");
+        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID,bargainPrice[1]);
     }
 
     private void updateMemberAuth(NetClient client, Object o) {
@@ -212,25 +227,21 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
+        int optType = req.getOptType();
         // 不能审批自己
-        if (req.getTargetPidListList().contains(player.getPlayerId())) {
+        List<Integer> targetPidListList = req.getTargetPidListList();
+		if (targetPidListList.contains(player.getPlayerId())) {
             client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
             return;
         }
-        if (req.getOptType() != 1 && req.getOptType() != 2 && req.getOptType() != 3) {
+        if (optType != 1 && optType != 2 && optType != 3) {
             client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
             return;
         }
-        sendMsgToGuildServer(player, req, player.getPlayerName()).onSuccess(callBack -> {
-            if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(res.build(), callBack.errorCode);
-            } else {
-                client.sendProtocol(callBack.response);
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
-        });
+        List<Long> targetPidList = targetPidListList.stream().map(i -> i.longValue()).collect(Collectors.toList());
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId()); 
+        guildProxy.updateMemberAuth(player.getGuildId(), player.getPlayerId(), player.getPlayerName(), optType, targetPidList);
+        client.sendProtocol(res.setResult(true).build());
     }
 
     private void getGuildLogs(NetClient client, Object o) {
@@ -275,6 +286,7 @@ public class GuildHandler extends GameBaseHandler {
                     client.sendProtocol(callBack.response);
                 }
             }
+            
         }).onFailure(err -> {
             err.printStackTrace();
             client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
@@ -284,24 +296,31 @@ public class GuildHandler extends GameBaseHandler {
     private void quitGuild(NetClient client, Object o) {
         GuildMsg.GuildQuitRequest_40000017 req = (GuildMsg.GuildQuitRequest_40000017) o;
         GuildMsg.GuildQuitResponse_40000018.Builder res = GuildMsg.GuildQuitResponse_40000018.newBuilder();
-        autoForwardGuildServer(client, res, req, (result) -> {
-            // 退出成功
-            Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-            player.getGuildModule().quit();
-            player.getGuildModule().setDisbandCount(player.getGuildModule().getDisbandCount() + 1);
-            // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
-            if (player.getGuildModule().getDisbandCount() > 1) {
-                player.getGuildModule().setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
-            }
-            client.sendProtocol(result);
-            return null;
-        });
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+        GuildModule guildModule = player.getGuildModule(); 
+        long guildId = guildModule.getGuildId(); 
+		if (guildId <= 0) {
+			player.fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
+        guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
+        // 退出成功
+        guildModule.quit(0);
+        client.sendProtocol(res.setResult(true).build());
     }
 
     private void setGuildMemberPosition(NetClient client, Object o) {
         GuildMsg.GuildMemberPositionSetRequest_40000015 req = (GuildMsg.GuildMemberPositionSetRequest_40000015) o;
         GuildMsg.GuildMemberPositionSetResponse_40000016.Builder res = GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder();
-        autoForwardGuildServer(client, res, req, null);
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId()); 
+        long guildId = player.getGuildId(); 
+        autoForwardGuildServer(client, res, req, (result) -> {
+        	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
+        	client.sendProtocol(response); 
+        	GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition()) ;
+            return null;
+        });
     }
 
     private void setGuildSetting(NetClient client, Object o) {
@@ -311,7 +330,7 @@ public class GuildHandler extends GameBaseHandler {
         List<String> checkStrs = new ArrayList<>();
         if (!StringUtils.isEmpty(req.getName())) {
             // - 公会名称：需要花费500元宝（GuildNameRevise），最多输入6个字；
-            if (req.getName().length() > 6) {
+            if (req.getName().length() > GlobalConst.GuildName) {
                 client.sendProtocol(res.build(), ErrorMsgEnum.not_name.ID);
                 return;
             }
@@ -319,6 +338,12 @@ public class GuildHandler extends GameBaseHandler {
                 client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
                 return;
             }
+            // 检查公会名称是否重复
+            boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(req.getName()); 
+            if (checkGuildNameRepeat) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
+                return;
+    		}
             checkStrs.add(req.getName());
         }
         if (!StringUtils.isEmpty(req.getNotice())) {
@@ -359,6 +384,7 @@ public class GuildHandler extends GameBaseHandler {
                 }
                 res.setResult(true);
                 client.sendProtocol(res);
+				GameLogger.guildInfoChange(player, player.getGuildId(), req.getName() == null ? "null" : req.getName(), req.getIcon()) ; 
                 return null;
             });
         });
@@ -374,18 +400,21 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
+        long guildId = player.getGuildId(); 
+        String guildName = player.getGuildName();
         sendMsgToGuildServer(player, req, "").onSuccess(callBack -> {
             if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
                 client.sendProtocol(res.build(), callBack.errorCode);
             } else {
                 // 解散公会成功
                 GuildModule module = player.getGuildModule();
-                module.quit();
+                module.quit(2);
                 module.setDisbandCount(module.getDisbandCount() + 1);
                 // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
                 if (module.getDisbandCount() > 1) {
                     module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * 1000);
                 }
+                GameLogger.guildDisband(player, guildId, guildName);
                 client.sendProtocol(callBack.response);
             }
         }).onFailure(err -> {
@@ -397,26 +426,29 @@ public class GuildHandler extends GameBaseHandler {
     private void applyJoinGuild(NetClient client, Object o) {
         GuildMsg.GuildApplyJoinRequest_40000007 req = (GuildMsg.GuildApplyJoinRequest_40000007) o;
         GuildMsg.GuildApplyJoinResponse_40000008.Builder res = GuildMsg.GuildApplyJoinResponse_40000008.newBuilder();
-        int id = req.getId();
+        long id = req.getId();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
-        long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
-        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
-            return;
-        }
+        GuildModule guildModule = player.getGuildModule(); 
+        List<Long> applyJoinList = guildModule.getApplyJoinList(); 
+//        if (applyJoinList.contains(id)) {
+//            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
+//            return;
+//		}
+        guildModule.checkJoinCd(); 
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
         if (guild != null) {
             GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
             // 玩家直接加入公会
-            player.getGuildModule().join(simpleInfo.getId());
+            guildModule.join(simpleInfo.getId());
             GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
             client.sendProtocol(res.setGuild(allInfo).build());
         } else {
+        	applyJoinList.add(id) ; 
             client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
         }
     }
@@ -434,12 +466,9 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID); 
             return ; 
 		}
-        
-        long nextJoinTimer = player.getGuildModule().getNextJoinTimer();
-        if (nextJoinTimer != 0 && System.currentTimeMillis() < nextJoinTimer) {
-            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_join_timer.ID);
-            return;
-        }
+        GuildModule guildModule = player.getGuildModule(); 
+        guildModule.checkJoinCd(); 
+
         String name = req.getName();
         List<String> checkStrs = new ArrayList<>();
         if (!player.isEnough(GlobalConst.GuildCreationConsume[0], GlobalConst.GuildCreationConsume[1])) {
@@ -465,42 +494,54 @@ public class GuildHandler extends GameBaseHandler {
         checkStrs.add(name);
         Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, name);
         // 非法字符串检测
-        List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
-        for (String str : checkStrs) {
-            checkComplatableList.add((CompletableFuture<Boolean>) PlayerHelper.checkContextData(player, str).toCompletionStage());
-        }
-        CompletableFuture.allOf(checkComplatableList.toArray(new CompletableFuture[0])).thenAcceptAsync(result -> {
-            if (checkComplatableList.stream().anyMatch(CompletableFuture::isCompletedExceptionally)) {
-                client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-                return;
-            }
-            for (CompletableFuture<Boolean> future : checkComplatableList) {
-                try {
-                    if (future.get().booleanValue() == false) {
-                        client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-                    return;
-                }
-            }
-            GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
-            Future<GuildServiceInfo> guild = guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(),req.getAutoJoin());
-            guild.map(r -> {
-                // 创建公会成功
-                PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
-                // 设置玩家公会信息
-                GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-                player.getGuildModule().join(simpleInfo.getId());
-                GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
-                res.setGuild(allInfo);
-                client.sendProtocol(res);
-//                GameLogger.guildCreate(player, nextJoinTimer, name, getModule())
-                return null;
-            }).onFailure(player::handleFail);
-        });
+     log.warn("start thread " + Thread.currentThread().getName());
+
+     List<Future<Boolean>> checks = new ArrayList<>(checkStrs.size());
+     for (String str : checkStrs) {
+       Future<Boolean> f = PlayerHelper.checkContextData(player, str); // 应为 Vert.x Future<Boolean>
+       checks.add(f);
+     }
+     checks.add(checkFuture);
+     Future.all(checks).compose(cf -> {
+       // 验证是否有 false
+       for (int i = 0; i < checks.size(); i++) {
+         Boolean ok = (Boolean) cf.resultAt(i);
+         if (Boolean.FALSE.equals(ok)) {
+           client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+           return Future.failedFuture("context-check-fail");
+         }
+       }
+       // 通过校验，发起远程调用
+       GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
+       return guildProxy.createGuild(
+           player.getPlayerId(),
+           req.getName(),
+           req.getNotice(),
+           req.getDeclaration(),
+           req.getIcon(),
+           req.getAutoJoin()
+       );
+     }).onSuccess(r -> {
+    	 ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+    		 log.warn("map exec" + Thread.currentThread().getName());
+    		 log.warn("thread=" + Thread.currentThread().getName());
+//    		 log.warn("isEventLoop=" + context.isEventLoopContext());
+//    		 log.warn("isWorker=" + context.isWorkerContext());
+//    		 log.warn("isVirtualThread=" + (context.threadingModel() == ThreadingModel.VIRTUAL_THREAD ? "true":"false"));
+    		 // 创建公会成功
+    		 // 创建公会成功的业务逻辑
+    		 PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
+    		 GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
+    		 guildModule.join(simpleInfo.getId());
+    		 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
+    		 res.setGuild(allInfo);
+    		 client.sendProtocol(res);
+    		 GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
+		}); 
+     }).onFailure(err -> {
+       // 如果是校验未通过，前面已返回相应协议；这里兜底
+       player.handleFail(err);
+     });
     }
 
     private void findGuild(NetClient client, Object o) {
@@ -677,6 +718,10 @@ public class GuildHandler extends GameBaseHandler {
         donateMap.add(id);
         player.handleEvent(EventTypeEnum.GuildDonate,id);
         client.sendProtocol(resp);
+        
+        long guildContribute = RewardHelper.getRewardCount(resources, Asset.GuildContribute) ; 
+        
+        GameLogger.GuildDonate(player, id, donateMap.getValue(id), (int)guildContribute, player.getPlayerId());
     }
 
     private void rankList(NetClient client, Object message) {

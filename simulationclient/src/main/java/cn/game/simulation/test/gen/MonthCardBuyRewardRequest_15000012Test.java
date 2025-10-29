@@ -9,29 +9,29 @@ import cn.game.simulation.client.ServerTestContext;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class MonthCardBuyRewardRequest_15000012Test extends ServerTest{
+public class MonthCardBuyRewardRequest_15000012Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.newBuilder() ; 
+		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012
+				.newBuilder();
 		builder.setId(1);
-		
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.newBuilder() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012
+				.newBuilder();
 		builder.setId(1);
-		
-		
-		return builder.build() ; 
+
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    MonthCardBuyRewardRequest_15000012Test instance = new MonthCardBuyRewardRequest_15000012Test();
-	    instance.start();
+		MonthCardBuyRewardRequest_15000012Test instance = new MonthCardBuyRewardRequest_15000012Test();
+		instance.start();
 	}
 
 }

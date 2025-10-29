@@ -1,6 +1,7 @@
 package cn.game.core.net.socket.handler;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -17,9 +18,11 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
+import cn.game.util.GameUtil;
 import cn.game.util.HexUtil;
 
 public abstract class BaseHandler implements Handler {
@@ -65,13 +68,21 @@ public abstract class BaseHandler implements Handler {
 						invoker.invoke(client, message);
 						client.afterProcess(protocol);
 					}
-				} catch (LogicException e) {
-					client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), e.getErrorCode());
-				} catch (Throwable e) {
-					log.error(client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(), e);
+				}catch (Exception e) {
+					int errorCode = ErrorMsgEnum.unknown.getId() ; 
+					String errorMsg = client + "run msg:" + HexUtil.toHexString(protocol.getMsgID()) + " err" + "data:" + protocol.getData(); 
+			        LogicException le = (e instanceof LogicException)
+			                ? (LogicException) e
+			                : ExceptionHelper.findCause(e, LogicException.class);
+					if (le != null) {
+						errorCode = le.getErrorCode();
+						log.error(errorMsg + " ,errorcode: " + errorCode);
+					}else {
+						log.error(errorMsg, e);
+					}
 					client.sendProtocol(PlayerErrorPush_01000099.newBuilder()
 							.setError(e.getMessage() != null ? e.getMessage() : ExceptionUtils.getFullStackTrace(e))
-							.build(), ErrorMsgEnum.unknown.getId());
+							.build(), errorCode);
 //					CompletableFuture.runAsync(() -> {
 //						try {
 //							MailUtil.reportException("玩家:" + client + "请求处理异常", ExceptionUtils.getFullStackTrace(e));

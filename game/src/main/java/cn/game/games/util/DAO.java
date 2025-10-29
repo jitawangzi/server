@@ -10,12 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
+import cn.game.util.JsonUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
@@ -124,7 +123,7 @@ public class DAO {
 	public static <T> T invoke(Class<?> mapperClass, String method, Object... args) {
 		if (log.isDebugEnabled()) {
 			log.debug("execute db operation: mapperClass[{}]method[{}]args[{}]", mapperClass.getSimpleName(), method,
-					JSON.toJSONString(args));
+					JsonUtil.toJsonString(args));
 		}
 		long start = System.currentTimeMillis();
 		Object targetObject = SpringContextLoader.getContext().getBean(mapperClass);
@@ -133,7 +132,7 @@ public class DAO {
 		long end = System.currentTimeMillis();
 		if (end - start > 100) {
 			log.warn("Slow DB operation: mapperClass[{}]method[{}]args[{}] took {} ms", mapperClass.getSimpleName(), method,
-					JSON.toJSONString(args), (end - start));
+					args.getClass().getName(), (end - start));
 		}
 		return (T)result;
 	}

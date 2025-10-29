@@ -28,6 +28,10 @@
 			<includes>
 				<!--<include>cn/</include>-->
 			</includes>
+			<!-- 全量包也还是先排除日志文件，防止覆盖不同环境的配置。  -->
+			<excludes>
+                <exclude>log4j2.xml</exclude>
+            </excludes>
 		</fileSet>
 <!--
 		<fileSet>

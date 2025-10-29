@@ -2,11 +2,12 @@ package cn.game.games.net.game.module.draw;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.game.games.cache.entity.Hero;
-import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.manager.HeroManager;
+import cn.game.protocol.generated.config.*;
+import cn.game.protocol.generated.manager.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.game.games.cache.entity.Player;
@@ -14,13 +15,11 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.games.net.game.module.guarantee.Guarantee;
 import cn.game.games.net.game.module.guarantee.GuaranteeModule;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.GuaranteeConfig;
 import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
-import cn.game.protocol.generated.manager.GuaranteeManager;
 import cn.game.protocol.protobuf.DrawMsg.DrawHeroInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.Rnd;
+import org.redisson.misc.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +33,15 @@ public class HeroRecruit {
 	private int recruitCount;
 	/** 没有招募到高品质的次数 */
 	private int noHighQualityRecruitCount;
-	/** 回流增益次数   登录触发回流 设置为N次  之后随机基础的3英雄会带有回流增益 */
-	private int huiLiuCount;
 	private int multiple = 1; // 招募时选择的倍数
 	private int luckyValue; // 当前保底幸运值
 	private int luckyValueMax; // 最大保底幸运值
 	private int luckyValueQuality; // 当前保底品质--幸运值颜色
-
+	//	玩家抽卡时记录玩家的神将偏好数据，玩家抽中高品神将后，该神将的抽卡权重增加X，最高增加Y   记录已抽数据  key  itemID  value  次数
+	private HashMap<Integer , Integer> drawHeroCountMap= new HashMap<Integer , Integer>();
+	/** 回流增益次数   登录触发回流 设置为N次  之后随机基础的3英雄会带有回流增益 */
+	@Deprecated
+	private  int huiLiuCount;
 	@JsonIgnore
 	private transient Player player;
 
@@ -68,10 +69,7 @@ public class HeroRecruit {
 	}
 	public void refresh() {
 		drawHeroInPoolList.clear();
-		int randomId = 1001001;
-        if(huiLiuCount>0 ) {
-            huiLiuCount--;
-        }
+		int baodi = -1;
 		GuaranteeModule guaranteeModule = player.getGuaranteeModule();
 		Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
 		int guaranteeIndex = -1;
@@ -81,27 +79,99 @@ public class HeroRecruit {
 			guarantee.reset();
 			guaranteeIndex = Rnd.nextInt(3);
 			guaranteeRandomId = guaranteeConfig.effectiveParam;
+			RandomGivenConfig randomGivenConfig = RandomGivenManager.instance().get(guaranteeRandomId);
+			baodi = randomGivenConfig.RandomParameterGroupId[0];
 		}
-		
+	//	log.info("------------------------抽卡日志---随机开始-------------------------------");
 		for (int i = 0; i < 3; i++) {
-			int tmpRandomId = randomId;
-			if (guaranteeIndex > -1 && guaranteeIndex == i) {
-				tmpRandomId = guaranteeRandomId;
-			}
-			if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
+//			int tmpRandomId = randomId;
+//			if (guaranteeIndex > -1 && guaranteeIndex == i) {
+//				tmpRandomId = guaranteeRandomId;
+//			}
+			//if(Rnd.nextInt(10000) <= GlobalConst.HeroRecruitBagDetect)
+			//{
+			//	bagDetect(i);
+			//}else {
+			if(baodi > -1 && guaranteeIndex == i)
 			{
-				bagDetect(i);
+				int group =baodi;
+				List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+				RandomGroupConfig groupConfig = Rnd.randomWeighableElement(randomGroupIDList);
+				Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
+			//	log.info("抽卡日志 commonDrop:保底权重 baodi={} 物品id={}", baodi,goods.getId());
+				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), i, noHighQualityRecruitCount));
 			}else {
-				List<Goods> randomReward = PlayerHelper.randomReward(tmpRandomId);
-				if (randomReward.size() != 1) {
-					throw new IllegalArgumentException("RandomGiven: " + tmpRandomId + " 刷新招募英雄配置错误，生成的数量不对: " + randomReward.size());
-				}
-				Goods goods = randomReward.get(0);
-				drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount(), 0, i, noHighQualityRecruitCount, huiLiuCount > 0));
+				commonDrop(i);
 			}
+		//}
 		}
+	//	log.info("---------抽卡日志------------------随机结束-------------------------------");
+
 		heroRefreshTime = DateUtil.currentTimeSeconds();
 
+	}
+	public void commonDrop(int i)
+	{
+		int vipLevel = player.getVipLevel();
+		var randomGivenConfig = GlobalConst.UltimateCardDraw;
+		int lanweight= randomGivenConfig[3][1];
+		int lanDrop= randomGivenConfig[3][0];
+
+		int ziweight= randomGivenConfig[2][1];
+		int ziDrop= randomGivenConfig[2][0];
+
+		int jinweight= randomGivenConfig[1][1];
+		int jinDrop= randomGivenConfig[1][0];
+
+		int hongweight= randomGivenConfig[0][1];
+		int hongDrop= randomGivenConfig[0][0];
+		if(vipLevel>=3)
+		{
+			lanweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][3];
+			ziweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][2];
+			jinweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][1];
+			hongweight+=GlobalConst.UltimateCardDrawVIPWeight[vipLevel-3][0];
+		}
+		List<Integer> weightList = new ArrayList<>();
+		weightList.add(lanweight);
+		weightList.add(ziweight);
+		weightList.add(jinweight);
+		weightList.add(hongweight);
+		List<Integer> dropList = new ArrayList<>();
+		dropList.add(lanDrop);
+		dropList.add(ziDrop);
+		dropList.add(jinDrop);
+		dropList.add(hongDrop);
+		//log.info("抽卡日志 commonDrop:随机权重 lanweight={} ziweight={} jinweight={} hongweight={}", lanweight,ziweight,jinweight,hongweight);
+		int randomIndex = Rnd.randomIndex(weightList);
+		int group =dropList.get(randomIndex);
+		//
+		List<RandomGroupConfig> randomGroupIDList = RandomGroupManager.instance().getRandomGroupIDList(group);
+		//重新设置权重
+		List<Integer> radomWeight = new ArrayList<>();
+		for (int j = 0; j < randomGroupIDList.size(); j++) {
+			int itemId = randomGroupIDList.get(j).AssetID;
+			ItemConfig itemConfig = ItemManager.instance().get(itemId);
+			int itemQuality = itemConfig.Quality;
+			int addWeight = 0;
+			for (int k = 0; k < GlobalConst.HeroCreateWeightReflux.length; k++) {
+				if(GlobalConst.HeroCreateWeightReflux[k][0]==itemQuality) {
+					addWeight= GlobalConst.HeroCreateWeightReflux[k][1];
+					break;
+				}
+			}
+			int weight = drawHeroCountMap.getOrDefault(itemId, 0)*addWeight
+					+randomGroupIDList.get(j).Weight;
+			radomWeight.add(weight);
+			if(randomGroupIDList.get(j).Weight!=weight)
+			{
+				//log.info("抽卡日志 commonDrop:重新设置偏好权重 itemId={} weight={}", itemId,weight);
+			}
+		}
+		int index = Rnd.randomIndex(radomWeight);
+		RandomGroupConfig groupConfig =randomGroupIDList.get( index);
+		Goods goods = new Goods(groupConfig.AssetID, Rnd.randomInRange(groupConfig.Several));
+		drawHeroInPoolList.add(new DrawHeroInPool(goods.getId(), goods.getCount() , i, noHighQualityRecruitCount ));
 	}
 	public void initHeros() {
 		if (!drawHeroInPoolList.isEmpty()) {
@@ -111,7 +181,7 @@ public class HeroRecruit {
 		for (int i = 0; i < gachaFirstTime.length; i++) {
 			int itemId = gachaFirstTime[i][0];
 			int itemCount = gachaFirstTime[i][1];
-			drawHeroInPoolList.add(new DrawHeroInPool(itemId, itemCount, 0,i,noHighQualityRecruitCount,huiLiuCount>0));
+			drawHeroInPoolList.add(new DrawHeroInPool(itemId, itemCount,i,noHighQualityRecruitCount));
 		}
 	}
 
@@ -236,91 +306,72 @@ public class HeroRecruit {
 		);
 		return resp;
 	}
-	// 根据身上卡牌的品质 删选
-	public void bagDetect(int pos) {
-		// 筛选出初始品质大于等于3的英雄
-		List<Hero> all = new ArrayList<>();
-		List<Integer> lowlist = new ArrayList<>();
-		// 计算平均等级
-		float avgLevel = 0;
-		int totalLevel = 0;
-		int highestLevel = 0;
-		int lowestLevel = 0;
-		Hero lowesthero = null;
-		var heroList = player.getHeroModule().list().stream().toList();
-		for (int i = 0; i < heroList.size(); i++) {
-			var hero = heroList.get(i);
-			HeroConfig heroConfig = HeroManager.instance().get(hero.getConfigId());
-			if (heroConfig.InitialQuality >= 4) {
-				all.add(hero);
-				totalLevel += hero.getLevel();
-				if (highestLevel < hero.getLevel()) {
-					highestLevel = hero.getLevel();
-				}
-				if (lowestLevel==0||lowestLevel > hero.getLevel()) {
-					lowestLevel = hero.getLevel();
-					lowesthero = hero;
-				}
+	// 从权重3里挑一个
+	public DrawHeroInPool radom31() {
+		List<Integer> radomWeight = new ArrayList<>();
+		List<DrawHeroInPool> value = new ArrayList<>();
+		for (int j = 0; j < drawHeroInPoolList.size(); j++) {
+			var drawHeroInPool = drawHeroInPoolList.get(j);
+			if(drawHeroInPool.getIsDraw()==0){
+				radomWeight.add(drawHeroInPool.getItemWeight());
+				value.add(drawHeroInPool);
+				log.info("抽卡日志 当前可随机英雄  pos:{}  Id:{} radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.getItemWeight());
 			}
 		}
-		avgLevel = 1.0f * totalLevel / all.size();
-		for (int i = 0; i < all.size(); i++) {
-			var hero = all.get(i);
-			if (hero.getLevel() <= avgLevel) {
-				lowlist.add(hero.getConfigId());
-			}
-		}
-		List<Integer> basepool = new ArrayList<>();
-		HeroManager.instance().list().forEach(heroConfig -> {
-			if(heroConfig.HeroType==1)
-			{
-				basepool.add(heroConfig.ID);
-			}
-		});
-		if (highestLevel - lowestLevel >= GlobalConst.HeroRecruitDetectCondition) {
-			// 找等级最低的神将
-			int heroid=0;
-			if (lowlist.isEmpty()) {
-				heroid = Rnd.randomElement(basepool);
-			}else {
-				heroid = Rnd.randomElement(lowlist);
-			}
-			HeroConfig heroConfig = HeroManager.instance().get(heroid);
-			drawHeroInPoolList.add(new DrawHeroInPool(heroConfig.Fragment, 1, 2, pos,noHighQualityRecruitCount,huiLiuCount>0));
-			//是否还要随机
-
-		} else {
-			//找新神将
-			List<Integer> radompool = new ArrayList<>(basepool);
-			var owen = player.getHeroModule().getId_items().keySet();
-			if (owen != null && !owen.isEmpty()) {
-				radompool.removeAll(owen);
-			}
-			int heroid = 0;
-			if (radompool.isEmpty()) {
-				heroid = Rnd.randomElement(basepool);
-			} else {
-				heroid = Rnd.randomElement(radompool);
-			}
-			HeroConfig heroConfig = HeroManager.instance().get(heroid);
-			drawHeroInPoolList.add(new DrawHeroInPool(heroConfig.Fragment, 1, 2, pos,noHighQualityRecruitCount,huiLiuCount>0));
-		}
-
+        int index = Rnd.randomIndex(radomWeight);
+		var drawHeroInPool = value.get(index).getItemId();
+		ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool);
+		addDrawHeroCount(drawHeroInPool);
+		log.info("抽卡日志 当前3随1命中英雄 ID:{}  品质:{}  该英雄已抽次数:{}",drawHeroInPool,itemConfig.Quality,drawHeroCountMap.get(drawHeroInPool));
+		return value.get(index);
 	}
-
+	public int radom31test() {
+		List<Integer> radomWeight = new ArrayList<>();
+		List<DrawHeroInPool> value = new ArrayList<>();
+		for (int j = 0; j < drawHeroInPoolList.size(); j++) {
+			var drawHeroInPool = drawHeroInPoolList.get(j);
+			if(drawHeroInPool.getIsDraw()==0){
+				radomWeight.add(drawHeroInPool.getItemWeight());
+				value.add(drawHeroInPool);
+				log.info("抽卡日志 当前可随机英雄  pos:{}   Id:{}  quailty:{}  radomWeight:{}",drawHeroInPool.getPosition(),drawHeroInPool.getItemId(),drawHeroInPool.quality,drawHeroInPool.getItemWeight());
+			}
+		}
+		int index = Rnd.randomIndex(radomWeight);
+		var drawHeroInPool = value.get(index);
+		addDrawHeroCount(drawHeroInPool.getItemId());
+		setRecruitCount(getRecruitCount()+1);
+		ItemConfig itemConfig = ItemManager.instance().get(drawHeroInPool.getItemId());
+		if (itemConfig.Quality >= GlobalConst.HeroRecruitQualityReflux) {
+			setNoHighQualityRecruitCount(0);
+		}else {
+			setNoHighQualityRecruitCount(getNoHighQualityRecruitCount()+1);
+		}
+		log.info("抽卡日志 当前3随1命中英雄 ID:{}  品质:{}  该英雄已抽次数:{}",drawHeroInPool.getItemId(),drawHeroInPool.quality,drawHeroCountMap.get(drawHeroInPool));
+		return drawHeroInPool.quality;
+	}
     public int getNoHighQualityRecruitCount() {
         return noHighQualityRecruitCount;
     }
 
     public void setNoHighQualityRecruitCount(int noHighQualityRecruitCount) {
+		log.info("抽卡日志 未随机到高品质  概率累计:{}",noHighQualityRecruitCount);
         this.noHighQualityRecruitCount = noHighQualityRecruitCount;
     }
 
-    public int getHuiLiuCount() {
-        return huiLiuCount;
+    public HashMap<Integer, Integer> getDrawHeroCountMap() {
+        return drawHeroCountMap;
     }
-
-    public void setHuiLiuCount(int huiLiuCount) {
-        this.huiLiuCount = huiLiuCount;
-    }
+	public void  addDrawHeroCount(int itemId) {
+		if(drawHeroCountMap.containsKey(itemId))
+		{
+			int count = drawHeroCountMap.get(itemId)+1;
+			int max = 100;
+			if(count>=max) {
+				count=max ;
+			}
+			drawHeroCountMap.put(itemId, count);
+		}else {
+			drawHeroCountMap.put(itemId,  1);
+		}
+	}
 }

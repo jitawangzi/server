@@ -115,11 +115,17 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 
 	public abstract boolean del(long uid, OpType... args);
 	
-	public boolean del(Item item, OpType... args) {
+	public boolean delItem(Item item, OpType... args) {
 		if (item.getId() > 0) {
 			return del(item.getId(), args);
 		}
-		return del(item.getConfigId(), item.getCount(), args) ; 
+		boolean ret =  del(item.getConfigId(), item.getCount(), args) ; 
+		if (ret) {
+			delItemAfter(item, args);
+		}
+		return ret; 
+	}
+	public void delItemAfter(Item item, OpType... args) {
 	}
 
 	public boolean isEnough(int configId, int count) {

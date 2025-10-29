@@ -108,7 +108,7 @@ public class RankHelper {
 	public static CompletionStage<CopyResult> copyRank(String serverId, RankType sourceRankType,RankType targetRankType,int topN) {
 		String sourceKey = RankService.getInstance().getKey(serverId, sourceRankType); 
 		String targetKey = RankService.getInstance().getKey(serverId, targetRankType); 
-		return LuaScriptUtil.copyZSetTopNAsync(sourceKey, targetKey, topN, null, 0).exceptionally(ex -> {
+		return LuaScriptUtil.copyZSetTopNAsync(sourceKey, targetKey, topN, true, 0).exceptionally(ex -> {
 			LOGGER.error("复制排行榜失败，serverId={}, sourceRankType={}, targetRankType={}, topN={}, error={}", serverId, sourceRankType, targetRankType, topN, ex.getMessage());
 			return null;
 		});

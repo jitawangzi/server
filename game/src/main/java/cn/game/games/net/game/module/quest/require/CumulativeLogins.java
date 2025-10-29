@@ -8,7 +8,7 @@ import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
 @ConditionType(type = ConditionTypeEnum.CumulativeLogins)
 public class CumulativeLogins extends AbstractCumulativeCondition {
-	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay };
+	private static final EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.NewDay, EventTypeEnum.PLAYER_CREATE };
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {

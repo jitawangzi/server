@@ -1,4 +1,4 @@
-package cn.game.games.net.game.handler;
+package cn.game.games.net.game.module.friend;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import cn.game.games.cache.entity.FriendApplication;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.FriendHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -196,6 +197,12 @@ public class FriendHandler extends GameBaseHandler {
 			if (myFriendModule.isFriend(id)) {
 				continue;
 			}
+			// 如果在我的黑名单中 不可以添加
+			if (myFriendModule.isBlack(id)) {
+				// 目前就一个人 先返回
+				client.sendProtocol(resp, ErrorMsgEnum.black_friend_not_send.getId());
+				return;
+			}
 			// 已经申请过了
 			if (myFriendModule.getMyApplications().contains(id)) {
 				continue;
@@ -213,10 +220,7 @@ public class FriendHandler extends GameBaseHandler {
 			}
 //			FriendHelper.receiveApplication(id, playerId, ServerContext.getInstance().getServerId());
 		
-			// 如果在我的黑名单中，则先从黑名单中删除
-			if (myFriendModule.isBlack(id)) {
-				myFriendModule.delete(id);
-			}
+
 			myFriendModule.addMyApplication(id);
 
 			FriendApplication friendApplication = FriendApplication.valueOf(id, playerId, "");

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PayItem {
-	/** 订单id */
+	/** 游戏服务器产生的订单id */
 	private long orderId;
+	/** sdk产生的订单id */
+	private String sdkOrderId;
 	/** 支付的人民币，元 */
 	private int rmb;
 	/** 付费类型 */
@@ -13,6 +15,7 @@ public class PayItem {
 	/** 买了什么东西？ 根据不同的付费类型，具体物品的id，例如通行证id，月卡id、某某活动id等等 。
 	 * 通常是代表一种特殊的购买，不单是加物品 */
 	private int payId;
+	private int sdkGoodsId	; 
 	/**
 	 * 充值 额外需要的参数列表
 	 */
@@ -106,6 +109,22 @@ public class PayItem {
 		for (int paySubId : paySubIds){
 			this.paySubIds.add(paySubId);
 		}
+	}
+
+	public String getSdkOrderId() {
+		return sdkOrderId;
+	}
+
+	public void setSdkOrderId(String sdkOrderId) {
+		this.sdkOrderId = sdkOrderId;
+	}
+
+	public int getSdkGoodsId() {
+		return sdkGoodsId;
+	}
+
+	public void setSdkGoodsId(int sdkGoodsId) {
+		this.sdkGoodsId = sdkGoodsId;
 	}
 
 	@Override

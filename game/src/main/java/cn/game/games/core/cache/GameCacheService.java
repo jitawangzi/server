@@ -159,7 +159,7 @@ public class GameCacheService {
 	// ========================= 批量 API 示例 =========================
 
 	public <T> List<T> multiGetRedis(List<String> redisKeys) {
-		return cache.multiGet(CacheDataType.REDIS_CACHE, redisKeys, keys -> {
+		return cache.multiGetList(CacheDataType.REDIS_CACHE, redisKeys, keys -> {
 			// 同步批量：RBatch
 			var redisson = RedisUtil.getRedis();
 			RBatch batch = redisson.createBatch();

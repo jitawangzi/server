@@ -1,5 +1,9 @@
 package cn.game.games.net.game.handler;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Time;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -13,8 +17,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cn.game.games.cache.entity.*;
+import cn.game.games.net.game.module.battle.*;
+import cn.game.games.net.game.module.develop.equip.EquipModule;
+import cn.game.games.net.game.module.develop.equip.EquipPart;
+import cn.game.games.net.game.module.guarantee.Guarantee;
+import cn.game.games.net.game.module.guarantee.GuaranteeModule;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.protocol.generated.config.*;
 import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.GuaranteeTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.*;
 import org.apache.commons.lang3.StringUtils;
@@ -36,15 +48,12 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.games.cache.entity.Chapter;
-import cn.game.games.cache.entity.Hero;
-import cn.game.games.cache.entity.Item;
-import cn.game.games.cache.entity.Player;
-import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
+import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.BattleHelper;
@@ -55,11 +64,6 @@ import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
-import cn.game.games.net.game.module.battle.BattleHandler;
-import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
-import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
-import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.develop.AttrModule;
 import cn.game.games.net.game.module.develop.DevelopModule;
 import cn.game.games.net.game.module.develop.attr.AttrCalcType;
@@ -71,17 +75,13 @@ import cn.game.games.net.game.module.quest.Quest;
 import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.DAO;
-import cn.game.protocol.generated.config.BattleConfig;
-import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HeroConfig;
-import cn.game.protocol.generated.config.ItemConfig;
-import cn.game.protocol.generated.config.RandomGivenConfig;
 import cn.game.protocol.generated.enume.QuestTypeEnum;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutResponse_01000004;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 import cn.game.protocol.protobuf.TestMsg;
@@ -110,6 +110,7 @@ import cn.game.util.LinuxTimeShift;
 import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.ObjUtil;
 import cn.game.util.RedisUtil;
+import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
@@ -211,6 +212,14 @@ public class TestHandler extends GameBaseHandler {
                     developModule.setHeavenlyDaoLevel(p1);
                     break;
                 }
+            case "ly":
+            {
+                // 设置关卡id
+                BattleModule battleModule = player.getBattleModule();
+                TowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.GemTower);
+                towerBattle.gmJump(p1);
+                break;
+            }
             case "zxgk":
                 {
                     // 设置主线关卡id
@@ -353,11 +362,19 @@ public class TestHandler extends GameBaseHandler {
                     int nowDay = DateUtil.getDay();
                     player.getData().setRefreshDay(nowDay - 1);
                     PlayerHelper.refreshDay(player);
+                    // 通知客户端跨天了， 使用登陆来刷新所有数据。
+    				client.sendProtocol(PlayerResetPush_01100016.getDefaultInstance());
                     break;
                 }
             case "qingshen":
             {
                 player.getDrawModule().getHeroRecruit().refresh();
+                break;
+            }
+            case "rankreward":
+            {
+                RankService.getInstance().rewardGm(p1);
+               // player.getDrawModule().getHeroRecruit().refresh();
                 break;
             }
             case "gamenewday":
@@ -370,39 +387,130 @@ public class TestHandler extends GameBaseHandler {
 				});
 				break;
 			}
+            case "guildnewday":
+            {
+            	List<GuildServiceInterface> allServerInterface = ServerHelper.getAllServerInterface(ServerType.Cross, GuildServiceInterface.class); 
+            	for (GuildServiceInterface guildServiceInterface : allServerInterface) {
+            		guildServiceInterface.testGuildNewDay() ; 
+				}
+            	break;
+            }
             case "super":
             {
-                for (Asset resourceEnum : Asset.values()) {
-                    PlayerHelper.addResources(player, resourceEnum.ID, 1000000, OpType.Test);
-                }
-                for (var resourceEnum : HeroManager.instance().list()) {
-                    if(resourceEnum.HeroType==1)
-                    {
-                        List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-                    }
-                }
-                int size=player.getHeroModule().list().size();
-                for (int i = 0; i <size ; i++) {
-                    var hero = player.getHeroModule().list().stream().toList().get(i);
-                    hero.setLevel(100);
-                }
-                for (var resourceEnum : GemManager.instance().list()) {
-                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
-                }
-                for (var resourceEnum : EquipManager.instance().list()) {
-                    List<RewardInfo> resources = PlayerHelper.addResources(player, resourceEnum.ID, 100, OpType.Test);
+
+                PlayerHelper.addResources(player, 100001, 1000000, OpType.Test);
+                PlayerHelper.addResources(player, 100007, 100000, OpType.Test);
+                PlayerHelper.addResources(player, 100201, 100000, OpType.Test);
+                PlayerHelper.addResources(player, 101003, 1000, OpType.Test);
+                PlayerHelper.addResources(player, 709056, 100000, OpType.Test);
+
+                PlayerHelper.addResources(player, 709061, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709062, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709063, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709064, 5, OpType.Test);
+                PlayerHelper.addResources(player, 709065, 5, OpType.Test);
+
+                PlayerHelper.addResources(player, 1500106, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500206, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500306, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500406, 5, OpType.Test);
+                PlayerHelper.addResources(player, 1500606, 5, OpType.Test);
+
+                PlayerHelper.addResources(player, 355003, 5, OpType.Test);
+                PlayerHelper.addResources(player, 355004, 5, OpType.Test);
+                PlayerHelper.addResources(player, 355005, 5, OpType.Test);
+                PlayerHelper.addResources(player, 332003, 5, OpType.Test);
+                PlayerHelper.addResources(player, 332004, 5, OpType.Test);
+                TestHelper.addItems(player, 3000, 0);
+                PlayerHelper.addResources(player, 203001, 2000, OpType.Test);
+
+                // 跳过新手引导
+                player.getPlayerModule().getGuideMap().put(6, 99);
+                player.getPlayerModule().getGuideMap().put(7, 99);
+                player.getPlayerModule().getGuideMap().put(8, 99);
+                player.getPlayerModule().getGuideMap().put(9, 99);
+
+                BattleModule battleModule = player.getBattleModule();
+                battleModule.setMainBattleHighest(110025);
+                BattleConfig battleConfig = BattleManager.instance().getNullable(110025);
+                while (battleConfig != null) {
+                    battleModule.addChapter(battleConfig.ID);
+                    Chapter chapter = battleModule.getChapter(battleConfig.ID);
+                    chapter.setBattleTime(30);
+                    chapter.setPass(true);
+                    battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
                 }
                 break;
             }
             case "init":
             {
-            	TestHelper.setMaxCurrency(player, OpType.Test);
-            	break;
-            }   
+                TestHelper.setMaxCurrency(player, OpType.Test);
+                break;
+            }
+            case "ssss":
+            {
+                File file = new File("D:\\test\\");
+                if (!file.exists()) {
+                    file.mkdirs(); // 创建目录
+                }
+                for (int k = 0; k < p2; k++) {
+                    try  {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                    player.getDrawModule().getHeroRecruit().getDrawHeroCountMap().clear();
+                    String fileName = "qualityList"+ DateUtil.currentTimeSeconds() +".txt";
+                    // 创建一个文件来保存数据
+                    File outputFile = new File(file, fileName);
+                    StringBuilder stringBuilder = new StringBuilder();
+                    GuaranteeModule guaranteeModule = player.getGuaranteeModule();
+                    Guarantee guarantee = guaranteeModule.get(GuaranteeTypeEnum.DrawRefresh);
+                    guarantee.setRound(1);
+                    guarantee.setStage(1);
+                    guarantee.setCount(0);
+                    guarantee.setId(1);
+                    for (int i = 0; i < p1; i++) {
+                        var hero =  player.getDrawModule().getHeroRecruit();
+                        hero.refresh();
+                        List<Integer> qualityList = new ArrayList<>();
+                        for(var h:hero.getDrawHeroInPoolList()) {
+                            qualityList.add(h.quality);
+                        }
+                        qualityList.sort((o1, o2) -> o2-o1);
+                        log.info("抽卡日志 抽取次数 :{}",i);
+                        int end= hero.radom31test();
+
+                        qualityList.add( end);
+                        for (int j = 0; j < qualityList.size(); j++) {  // 修改了循环条件
+                            stringBuilder.append(qualityList.get(j));
+                            if(j != qualityList.size()-1) {  // 修改了条件判断
+                                stringBuilder.append(":");
+                            }
+                        }
+                        stringBuilder.append("\n");
+                        // 将字符串写入文件
+                        try (FileWriter writer = new FileWriter(outputFile)) {
+                            writer.write(stringBuilder.toString());
+                        } catch (IOException e) {
+                            logger.error("写入文件失败", e);
+                        }
+                        player.handleEvent(EventTypeEnum.HeroRecruit);
+                    }
+
+                }
+
+               // System.out.println(stringBuilder.toString());
+                break;
+            }
             case "rankds":
             {
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), p1);
                 RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(),p1);
+                break;
+            }
+            case "rank":
+            {
+                RankService.getInstance().setScoreAsync(player.getServerId(), RankType.get(p1), player.getPlayerId(), p2);
                 break;
             }
             case "time":

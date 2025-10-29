@@ -25,6 +25,7 @@ import cn.game.games.cache.entity.Hero;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.data.mapper.BattleLevelMapper;
 import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -53,7 +54,7 @@ import cn.game.util.IntMapWrapper;
  */
 public class BattleModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay, EventTypeEnum.LoginFinish,
-			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart, EventTypeEnum.BattleEnd  };
+			 EventTypeEnum.Relogin,	EventTypeEnum.FuncOpen, EventTypeEnum.ChapterFirstWin, EventTypeEnum.BattleStart, EventTypeEnum.BattleEnd, EventTypeEnum.GetItem   };
 
 	private static final int[] REWARD_HOURS = { 6, 12, 18, 22 };
 
@@ -131,6 +132,9 @@ public class BattleModule extends BasePlayerModule  {
 	
 	/** 玩法类型--> 连续失败次数记录 */
 	private IntMapWrapper consecutiveFailures = new IntMapWrapper();
+	
+	/** 本局内手操卡使用时没有被扣掉的次数 */
+	private IntMapWrapper handCardUseCount = new IntMapWrapper() ;
 
 	/** 
 	 * 
@@ -555,11 +559,16 @@ public class BattleModule extends BasePlayerModule  {
 			if (lingPoBattle != null) {
 				lingPoBattle.updateBattleId();
 			}
+			int battleId = event.getIntParameter(0); 
+			if (battleId == 19902) {
+				GameLogger.serverEvent(player.getAccount(), 10022);
+			}
 			break;
 		}
 		case BattleStart: {
 			this.reliveCountPerBattle = 0;
 			this.adRogueCountPerBattle = 0;
+			this.handCardUseCount.clear();
 			break;
 		}
 		case BattleEnd: {
@@ -570,6 +579,7 @@ public class BattleModule extends BasePlayerModule  {
 			}else {
 				consecutiveFailures.remove(battleConfig.BattleType) ; 
 			}
+			this.handCardUseCount.clear();
 			break;
 		}
 		case GetItem: {
@@ -791,6 +801,11 @@ public class BattleModule extends BasePlayerModule  {
     	}
     	return heros;
     }
+    
+	public IntMapWrapper getHandCardUseCount() {
+		return handCardUseCount;
+	}
+
 	@Override
 	public int processOrder() {
 		return EVENT_PROCESS_ORDER_HIGH;

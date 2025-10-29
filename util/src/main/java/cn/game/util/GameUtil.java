@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
@@ -587,5 +588,5 @@ public class GameUtil {
 	public static int getArrayCost(int[] array, int count) {
 		return count >= array.length ? array[array.length - 1] : array[count];
 	}
-
+	
 }

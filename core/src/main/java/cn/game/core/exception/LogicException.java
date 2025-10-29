@@ -1,5 +1,7 @@
 package cn.game.core.exception;
 
+import cn.game.protocol.manual.ErrorMsgEnum;
+
 /**    
  * 逻辑异常，一般是服务器主动抛出的，设置错误码，代表某种错误。 
  * 2024年10月28日 11:56:19
@@ -16,8 +18,10 @@ public class LogicException extends RuntimeException {
 	}
 
 	public LogicException(int errorCode) {
-		super(errorCode + "", null, false, false);
-		this.errorCode = errorCode;
+		this(errorCode, "") ; 
+	}
+	public LogicException(ErrorMsgEnum errorMsgEnum) {
+		this(errorMsgEnum.getId()) ; 
 	}
 	public LogicException(int errorCode, String errorMessage) {
 		super(errorCode + "", null, false, false);

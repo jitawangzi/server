@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import cn.game.games.core.log.GameLoggerRunner;
 import org.checkerframework.checker.i18nformatter.qual.I18nInvalidFormat;
 import org.springframework.stereotype.Component;
 import com.google.protobuf.ProtocolStringList;
@@ -228,6 +230,9 @@ public class HeroHandler extends GameBaseHandler {
 		resp.addAllReward(resources);
 		// 给奖励
 		client.sendProtocol(resp.build());
+		GameLogger.HeroBook(player,GlobalConst.HeroHandBookEXP.get(heroConfig.InitialQuality),
+				player.getCurrencyModule().getCount(Asset.CatalogPoints.ID),heroConfig.ID
+				   );
 	}
 
 	private void illustrationsList(NetClient client, Object message) {

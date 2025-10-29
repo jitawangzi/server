@@ -561,6 +561,8 @@ public class Player {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
 							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
 							.setOrderId(body.getOrderId() + "")
+							.setSdkGoodsId(cost[2]+"")
+							.setServerId(ServerContext.getInstance().getServerId())
 							.build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
@@ -568,6 +570,7 @@ public class Player {
 					payItem.setRmb(rmbCost);
 					payItem.setPayType(payType);
 					payItem.setPayId(id);
+					payItem.setSdkGoodsId(cost[2]); 
 					if (otherId != null) {
 						payItem.addPaySubIds(otherId);
 					}
@@ -807,6 +810,9 @@ public class Player {
 
 	public void setAccount(Account account) {
 		this.account = account;
+		if (data != null && !StringUtils.isEmpty(account.deviceId)) {
+			data.setDeviceId(account.deviceId);
+		}
 	}
 
 	public boolean isOnline() {

@@ -43,7 +43,9 @@ public class ClientPlayerHandler extends BaseHandler {
 	}
 
 	protected void logout(NetClient client, Object message) {
-		System.exit(0);
+		if (Client.exitOnClientClose) {
+			System.exit(0);
+		}
 	}
 	protected void error(NetClient client, Object message) {
 
