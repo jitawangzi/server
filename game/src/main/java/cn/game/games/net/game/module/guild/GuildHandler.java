@@ -305,8 +305,8 @@ public class GuildHandler extends GameBaseHandler {
 		}
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
         guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
-        // 退出成功
-        guildModule.quit(0);
+        // 退出成功,在退出的推送协议里处理退出，这里先不处理了
+//        guildModule.quit(0);
         client.sendProtocol(res.setResult(true).build());
     }
 

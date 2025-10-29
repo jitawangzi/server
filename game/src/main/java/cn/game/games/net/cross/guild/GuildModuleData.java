@@ -143,7 +143,8 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 	public void removeMember(long playerId,int quitType) {
 		menMemberMap.remove(playerId);
 //		RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
-		GuildHelper.notifyMsgToPlayer(playerId, GuildMsg.GuildQuitPush_40000024.newBuilder().build(),
+		
+		GuildHelper.notifyMsgToPlayer(playerId, GuildMsg.GuildQuitPush_40000024.newBuilder().setQuitType(quitType).build(),
 				PbProtocol.GuildQuitPush_40000024);
 		
 		// 给成员发邮件
