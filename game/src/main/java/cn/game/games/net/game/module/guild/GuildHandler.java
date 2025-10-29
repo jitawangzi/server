@@ -315,6 +315,10 @@ public class GuildHandler extends GameBaseHandler {
         GuildMsg.GuildMemberPositionSetResponse_40000016.Builder res = GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId()); 
         long guildId = player.getGuildId(); 
+        if (guildId == 0) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
+            return;
+        }
         autoForwardGuildServer(client, res, req, (result) -> {
         	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
         	client.sendProtocol(response); 
@@ -327,6 +331,10 @@ public class GuildHandler extends GameBaseHandler {
         GuildMsg.GuildSettingRequest_40000013 req = (GuildMsg.GuildSettingRequest_40000013) o;
         GuildMsg.GuildSettingResponse_40000014.Builder res = GuildMsg.GuildSettingResponse_40000014.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        if (player.getGuildId() == 0) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
+            return;
+        }
         List<String> checkStrs = new ArrayList<>();
         if (!StringUtils.isEmpty(req.getName())) {
             // - 公会名称：需要花费500元宝（GuildNameRevise），最多输入6个字；
@@ -706,6 +714,12 @@ public class GuildHandler extends GameBaseHandler {
         GuildDonateResponse_40000068 defaultInstance = GuildDonateResponse_40000068.getDefaultInstance();
         GuildDonateResponse_40000068.Builder resp = GuildDonateResponse_40000068.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        
+        if (player.getGuildId() == 0) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.ID);
+            return;
+        }
+        
         GuildDonateConfig guildDonateConfig = GuildDonateManager.instance().get(id);
         IntMapWrapper donateMap = player.getGuildModule().getDonateMap();
         if (donateMap.getValue(id) >= guildDonateConfig.DayCount) {
