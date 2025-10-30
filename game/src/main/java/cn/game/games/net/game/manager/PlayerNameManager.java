@@ -191,13 +191,22 @@ public class PlayerNameManager {
 		});
 	}
 
-	public Future<Long> getPlayerId(String name) {
+	public Future<Long> getPlayerIdAsync(String name) {
 		if (StringUtils.isEmpty(name)) {
 			return Future.succeededFuture();
 		}
 		String key = getUsernameIdKey(name);
 		RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
 		return Future.fromCompletionStage(map.getAsync(name));
+	}
+	public long getPlayerId(String name) {
+		if (StringUtils.isEmpty(name)) {
+			return 0;
+		}
+		String key = getUsernameIdKey(name);
+		RMap<String, Long> map = RedisUtil.getRedis().getMap(key);
+		Long id = map.get(name);
+		return id == null ? 0 : id;
 	}
 
 	public CompletableFuture<Map<String, Long>> getPlayerIds(Set<String> names) {

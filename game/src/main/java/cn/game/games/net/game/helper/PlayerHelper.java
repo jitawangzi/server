@@ -36,6 +36,7 @@ import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.process.OffsetBatchQuery;
 import cn.game.core.task.BatchProcessResult;
+import cn.game.core.util.AsyncUtils;
 import cn.game.core.util.BatchQueryUtil;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.cache.entity.Hero;
@@ -1967,15 +1968,15 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return
 	 */
-	public static Future<SimplePlayer> searchPlayer(String playerName, long playerId) {
+	public static SimplePlayer searchPlayer(String playerName, long playerId) {
 		if (playerId > 0) {
-			return searchPlayer(playerId); 
+			return AsyncUtils.await(searchPlayer(playerId)) ; 
 		} else if (playerName != null) {
-			return PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-				return searchPlayer(r);
-			});
+			long playerId2 = PlayerNameManager.getInstance().getPlayerId(playerName); 
+			Future<SimplePlayer> searchPlayer = searchPlayer(playerId2);
+			return AsyncUtils.await(searchPlayer) ;
 		}
-		return Future.failedFuture("没有传入playerId或者playerName");
+		throw new IllegalArgumentException("playerName and playerId can not both be empty") ;
 	}
 	public static Future<SimplePlayer> searchPlayer(long playerId) {
 		if (PlayerManager.getInstance().isOnline(playerId)) {
