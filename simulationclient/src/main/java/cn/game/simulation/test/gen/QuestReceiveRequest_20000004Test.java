@@ -14,11 +14,12 @@ import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
 @Component
-public class QuestReceiveRequest_20000004Test extends ServerTest{
+public class QuestReceiveRequest_20000004Test extends ServerTest {
 
 	@Override
 	public Message getMessage(Client client) {
-		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.newBuilder() ; 
+		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004
+				.newBuilder();
 		List<QuestGroupInfo> questGroupsList = client.getPlayerAllInfo().getQuestGroupsList();
 		if (!questGroupsList.isEmpty()) {
 			QuestGroupInfo groupInfo = Rnd.randomElement(questGroupsList);
@@ -32,12 +33,13 @@ public class QuestReceiveRequest_20000004Test extends ServerTest{
 		} else {
 			builder.addIds(10301);
 		}
-		return builder.build() ; 
+		return builder.build();
 	}
-	
+
 	@Override
-public Message getMessagePressure(Client client) {
-		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.newBuilder() ; 
+	public Message getMessagePressure(Client client) {
+		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004
+				.newBuilder();
 		List<QuestGroupInfo> questGroupsList = client.getPlayerAllInfo().getQuestGroupsList();
 		if (!questGroupsList.isEmpty()) {
 			QuestGroupInfo groupInfo = Rnd.randomElement(questGroupsList);
@@ -51,12 +53,15 @@ public Message getMessagePressure(Client client) {
 		} else {
 			builder.addIds(10301);
 		}
-		return builder.build() ; 
+		if (builder.getIdsCount() == 0) {
+			return null;
+		}
+		return builder.build();
 	}
-	
+
 	public static void main(String args[]) throws Exception {
-	    QuestReceiveRequest_20000004Test instance = new QuestReceiveRequest_20000004Test();
-	    instance.start();
+		QuestReceiveRequest_20000004Test instance = new QuestReceiveRequest_20000004Test();
+		instance.start();
 	}
 
 }

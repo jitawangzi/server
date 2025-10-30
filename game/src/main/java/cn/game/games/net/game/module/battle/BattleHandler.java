@@ -1511,6 +1511,10 @@ public class BattleHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(playerId);
         BattleModule battleModule = player.getModule(BattleModule.class);
         LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+		if (battle == null) {
+			client.sendProtocol(resp, ErrorMsgEnum.func_not_open.getId());
+			return;
+		}
         resp.setLastCompleteFloor(battle.getLastCompleteFloor());
         resp.setBattleTimes(battle.getBattleTimes());
         resp.setPayTimes(battle.getPayTimes());

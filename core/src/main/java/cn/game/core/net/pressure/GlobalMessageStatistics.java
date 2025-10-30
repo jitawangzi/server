@@ -128,22 +128,26 @@ public class GlobalMessageStatistics {
 			try (CSVPrinter printer = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers));
 					CSVPrinter printerSlow = writerSlow != null ? new CSVPrinter(writerSlow, CSVFormat.DEFAULT.withHeader(headers))
 							: null) {
-
-				for (Map.Entry<String, NavigableMap<Long, MessageStats>> entry : messageStatsMap.entrySet()) {
-					String msgName = entry.getKey();
+				// 按 key 的自然顺序（String 的字典序）遍历
+				messageStatsMap.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> {
+					String messageName = entry.getKey();
+					NavigableMap<Long, MessageStats> timeWindowMap = entry.getValue();
 					List<Double> allTimes = new ArrayList<>();
 					long totalRequests = 0;
 
 					// 合并所有时间窗口的数据
-					for (MessageStats stats : entry.getValue().values()) {
+					for (MessageStats stats : timeWindowMap.values()) {
 						allTimes.addAll(stats.responseTimes);
 						totalRequests += stats.requestCount;
 					}
-
 					if (!allTimes.isEmpty()) {
-						printMessageStats(msgName, totalRequests, allTimes, printer, printerSlow);
+						try {
+							printMessageStats(messageName, totalRequests, allTimes, printer, printerSlow);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
-				}
+				});
 			}
 		}
 	}

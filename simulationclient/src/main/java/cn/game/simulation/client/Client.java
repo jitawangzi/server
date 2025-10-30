@@ -607,6 +607,11 @@ public class Client extends AbstractNetClient {
 		return promise;
 	}
 
+	/** 
+	 * 在发送成功后记录发送的消息
+	 * @param msg
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private ChannelFuture sendWsPackOld(Message msg) {
 		if (msg == null) {
