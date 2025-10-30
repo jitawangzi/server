@@ -26,13 +26,13 @@ public class CSVMessagesReader {
 	 * @param msgNameSend  上一次发送的消息名
 	 * @return
 	 */
-	public static CSVMessage randomGroupMessage(int sendingGroup, String msgNameSend) {
+	public static CSVMessage randomGroupMessage(int sendingGroup, int sendingGroupIndex) {
 
 		List<CSVMessage> list = null; 
 		if (sendingGroup > 0) {
 			list = groupMessageMap.get(sendingGroup);
 			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).msgName == msgNameSend && i != list.size() - 1) {
+				if (i == sendingGroupIndex && i != list.size() - 1) {
 //					return list.get(i + 1);
 					CSVMessage nextMsg = nextMessage(list, i + 1);
 					if (nextMsg != null) {
@@ -41,13 +41,14 @@ public class CSVMessagesReader {
 				}
 			}
 		}
-		// 没有发过消息，随机一个组开始发送
+		// 没有发过消息，或者上一个组消息都发完了，  重新随机一个组开始发送
 		CSVMessage randomMessage = Rnd.randomElement(messages, r -> r.weight);
 		list = groupMessageMap.get(randomMessage.group);
 //		return list.get(0);
 		return nextMessage(list, 0);
 	}
 	private static CSVMessage nextMessage(List<CSVMessage> list,int index) {
+		// 这个组的消息到头了， 先返回null，下次继续随机一个组
 		if (index >= list.size()) {
 			return null;
 		}

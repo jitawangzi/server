@@ -152,18 +152,13 @@ public class Client extends AbstractNetClient {
 //	public static final String defaultChannel = "wechat";
 //	public static final String defaultChannel = "steam";
 //	int seq = 0;
-
-	public AtomicInteger sendCount = new AtomicInteger(0);
-	public AtomicInteger recvCount = new AtomicInteger(0);
-	public AtomicInteger seq = new AtomicInteger(1);
-
-	private volatile int resendCount = 0;
 	public static boolean exitOnClientClose = true;
 
 	/** 发送中的消息组 */
 	public int sendingGroup;
-	/** 上一次发送的消息名 */
-	public String msgNameSend;
+	public int sendingGroupIndex;
+//	/** 上一次发送的消息名 */
+//	public String msgNameSend;
 
 	// 消息序号: 消息名，消息发送时间，纳秒
 //	public Map<Integer, Pair<String, Long>> sendMessages = new ConcurrentHashMap<>();
@@ -171,9 +166,6 @@ public class Client extends AbstractNetClient {
 //	public Map<Integer, Pair<String, Long>> recvMessages = new ConcurrentHashMap<>();
 
 	private static final EventLoopGroup group = new NioEventLoopGroup();
-
-	/** 玩家数据 **/
-	private PlayerAllInfo playerAllInfo;
 
 	private BattleMsg.BattlePvPTargetListResponse_13000112 targetListResponse;
 	private long inPvPBattlePid;
@@ -185,15 +177,26 @@ public class Client extends AbstractNetClient {
 	public static long startTime;
 	public static long startConnectTime;
 	public static long startLoginTime;
+	
+	// 消息发送相关记录
+	public AtomicInteger attemptSendCount = new AtomicInteger(0);
+	public AtomicInteger succeedSendCount = new AtomicInteger(0);
+	public AtomicInteger recvCount = new AtomicInteger(0);
+	public AtomicInteger seq = new AtomicInteger(1);
+
+	private volatile int resendCount = 0;
 	/** 最后一次发消息的时间 */
-	private long lastSendMessageTime;
-	/** 最后一次发消息的内容 */
-	private byte[] lastSendMessageContent;
-	public Message lastSendMessage;
+	private volatile long lastSendMessageTime;
+	/** 最后一次发消息的整个消息内容，用来重发 */
+	private volatile byte[] lastSendMessageContent;
+	/** 最后一次发的消息 */
+	public volatile Message lastSendMessage;
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
 
 	// 玩家的游戏数据
+	/** 玩家登陆返回数据 **/
+	private PlayerAllInfo playerAllInfo;
 	public int guideType = 1;
 	public int guideStep = 1;
 	/** 好友列表 */
@@ -209,7 +212,9 @@ public class Client extends AbstractNetClient {
 	public GuildMemberInfo guildMember;
 	public GuildPersonalInfo guildPersonalInfo;
 	public GuildAllInfo guildAllInfo;
-	public List<MailInfo> mailsList = new ArrayList<>(); 
+	public List<MailInfo> mailsList = new ArrayList<>();
+	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
+	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
 
 	// 保存一些临时数据，用在后续的测试模拟协议数据
 	public List<SimplePlayerInfo> recommendList = new ArrayList<>();;
@@ -218,8 +223,6 @@ public class Client extends AbstractNetClient {
 	// 踏碎凌霄 助战奖励信息
 	public List<BaseMsg.EquipTowerHelpRewardInfo> helpRewardList = new ArrayList<>();
 	
-	/** 玩家的一些数据，可以保存这个Map中，key:  value:自己根据key决定保存什么数据 */
-	public Map<String, Object> dataMap = new HashMap<String, Object>(); 
 
 	public static Client getClient(int callback) {
 		String string = callbacks.get(callback);
@@ -605,7 +608,7 @@ public class Client extends AbstractNetClient {
 	}
 
 	@SuppressWarnings("unchecked")
-	private ChannelFuture sendWsPack(Message msg) {
+	private ChannelFuture sendWsPackOld(Message msg) {
 		if (msg == null) {
 			throw new IllegalArgumentException("发送的消息不能为空！");
 		}
@@ -636,7 +639,7 @@ public class Client extends AbstractNetClient {
 					}
 					// 先不记录这个数据了
 //					sendingMessageMap.put(seqSend, msg);
-					sendCount.incrementAndGet();
+					succeedSendCount.incrementAndGet();
 					sendMessages.put(seqSend, Pair.of(msg.getClass().getSimpleName(), sendTime));
 					lastSendMessageContent = copiedBuffer.array();
 					resendCount = 0;
@@ -654,6 +657,74 @@ public class Client extends AbstractNetClient {
 		}
 
 	}
+	@SuppressWarnings("unchecked")
+	private ChannelFuture sendWsPack(Message msg) {
+	    if (msg == null) {
+	        throw new IllegalArgumentException("发送的消息不能为空！");
+	    }
+	    if (this.channel == null || !this.channel.isActive() || !this.channel.isWritable()) {
+	        logger.warn("player[{}] write message[{}] err, session[{}]", this, TextFormat.shortDebugString(msg), channel);
+	        return null;
+	    }
+
+	    // 1) 计算必要数据
+	    final String msgName = msg.getClass().getSimpleName();
+	    final int msgId = PbProtocol.getInstance().getMsgId(msgName);
+	    final byte[] body = msg.toByteArray();
+	    final int bodyLen = body.length;
+
+	    // 序号在此生成，确保和统计一致
+	    final int seqSend = seq.getAndIncrement();
+
+	    // 2) 组装 header（12 字节：len, seq, msgId），然后拼出完整 bytes
+	    final byte[] header = new byte[12];
+	    // 按大端序写入
+	    writeIntBE(header, 0, bodyLen);
+	    writeIntBE(header, 4, seqSend);
+	    writeIntBE(header, 8, msgId);
+
+	    final byte[] bytes = new byte[header.length + bodyLen];
+	    System.arraycopy(header, 0, bytes, 0, header.length);
+	    System.arraycopy(body, 0, bytes, header.length, bodyLen);
+
+	    // 3) 发送前：原子地记录“尝试发送”的状态
+	    final long sendTime = System.nanoTime();
+	    lastSendMessage = msg;
+	    lastSendMessageContent = bytes;           // 用于重发
+	    lastSendMessageTime = System.currentTimeMillis();
+	    sendMessages.put(seqSend, Pair.of(msgName, sendTime));
+	    attemptSendCount.incrementAndGet();
+	    // 4) 发送
+	    BinaryWebSocketFrame frame = new BinaryWebSocketFrame(Unpooled.wrappedBuffer(bytes));
+	    ChannelFuture future = this.channel.writeAndFlush(frame);
+
+	    // 5) 回调：只记录“成功发送”的统计与日志
+	    future.addListener(f -> {
+	        if (f.isSuccess()) {
+	            if (!"PlayerHeartbeatRequest_01000005".equals(msgName)) {
+	                netLogger.info("opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]",
+	                        playerId, name, msgName, TextFormat.shortDebugString(msg), seqSend);
+	            }
+	            succeedSendCount.incrementAndGet();
+	            resendCount = 0;
+	        } else {
+	            logger.error("消息发送失败： opType[send]playerId[{}]name[{}]msgName[{}]msgData[{}]seq[{}]cause[{}]",
+	                    playerId, name, msgName, TextFormat.shortDebugString(msg), seqSend, f.cause());
+	        }
+	    });
+
+	    return future;
+	}
+
+	/**
+	 * 将 int 以大端序写入 byte[]
+	 */
+	private static void writeIntBE(byte[] arr, int offset, int value) {
+	    arr[offset    ] = (byte) ((value >>> 24) & 0xFF);
+	    arr[offset + 1] = (byte) ((value >>> 16) & 0xFF);
+	    arr[offset + 2] = (byte) ((value >>>  8) & 0xFF);
+	    arr[offset + 3] = (byte) ( value         & 0xFF);
+	}
 
 	/** 
 	 * 一般是当消息没有收到回复时，用来重发某个消息
@@ -667,7 +738,7 @@ public class Client extends AbstractNetClient {
 		if (this.channel != null && this.channel.isActive() && this.channel.isWritable()) {
 			ChannelFuture future = this.channel.writeAndFlush(binaryWebSocketFrame);
 		}
-		logger.warn("[{}]resend message,count[{}]", this, resendCount);
+		logger.warn("[{}]resend message[{}]seq[{}],count[{}]", this,lastSendMessage,seq.get(), resendCount);
 		return true; 
 	}
 
