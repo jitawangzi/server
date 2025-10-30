@@ -20,7 +20,9 @@ public class GuildDissolveRequest_40000011Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildDissolveRequest_40000011.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildDissolveRequest_40000011.newBuilder() ; 
-		
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
 		
 		
 		return builder.build() ; 

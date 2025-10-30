@@ -26,6 +26,10 @@ public class GuildDonateRequest_40000067Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
+		
 		cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067.newBuilder() ; 
 		Collection<GuildDonateConfig> list = GuildDonateManager.instance().list(); 
 		GuildDonateConfig randomElement = Rnd.randomElement(list); 

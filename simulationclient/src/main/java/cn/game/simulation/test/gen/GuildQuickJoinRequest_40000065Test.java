@@ -21,8 +21,9 @@ public class GuildQuickJoinRequest_40000065Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildQuickJoinRequest_40000065.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildQuickJoinRequest_40000065.newBuilder() ; 
-		
-		
+		if (client.guildAllInfo != null) {
+			return null; 
+		}
 		
 		return builder.build() ; 
 	}

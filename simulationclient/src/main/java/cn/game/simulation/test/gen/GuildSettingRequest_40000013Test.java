@@ -20,6 +20,10 @@ public class GuildSettingRequest_40000013Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
+		
 		cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.newBuilder() ; 
 		builder.setAutoJoin(Rnd.nextBoolean() ? 1 : 2) ; 
 		

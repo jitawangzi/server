@@ -29,6 +29,9 @@ public class GuildMemberAuthRequest_40000041Test extends ServerTest{
 	
 	@Override
 	public Message getMessagePressure(Client client) {
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
 		cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthRequest_40000041.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthRequest_40000041.newBuilder() ; 
 		if (Rnd.nextBoolean()) {// 处理申请
 			List<SimplePlayerInfo> applyPlayerListList = client.guildAllInfo.getSharedInfo().getApplyPlayerListList(); 
