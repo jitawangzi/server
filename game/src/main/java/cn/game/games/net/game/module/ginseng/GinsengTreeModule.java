@@ -444,6 +444,14 @@ public class GinsengTreeModule extends BasePlayerModule {
 	public void setFirstFruit(boolean isFirstFruit) {
 		this.isFirstFruit = isFirstFruit;
 	}
+
+	public int getNextFruitTime() {
+		return nextFruitTime;
+	}
+
+	public void setNextFruitTime(int nextFruitTime) {
+		this.nextFruitTime = nextFruitTime;
+	}
 	
 
 }

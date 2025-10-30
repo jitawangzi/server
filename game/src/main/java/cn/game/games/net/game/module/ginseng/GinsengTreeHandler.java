@@ -281,7 +281,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
 		            resp.addAllRewards(resources);
 		        }
 		}
-        module.startFruitTask();
+        if (map.getMap().isEmpty()) {
+        	module.setNextFruitTime(0);
+        	module.startFruitTask();
+		}
         client.sendProtocol(resp.build());
     }
 
