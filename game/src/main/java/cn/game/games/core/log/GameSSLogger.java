@@ -604,7 +604,7 @@ public class GameSSLogger extends DeprecatedLogger {
     public void logMoney(Player player, int id, long count, OpType opType, boolean isIncrease) {
         Map<String, Object> event = teHeaderEvent(player, LoggerType.money, "8010");
         event.put("causeid", opType.name());
-        event.put("moneyid", count);
+        event.put("quantity", count);
         event.put("total", player.getCurrencyModule().getCount(id));
         event.put("typeid", id);
         event.put("subcauseid", BI_DEFAULT_STR);
