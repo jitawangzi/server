@@ -288,7 +288,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (member.getPosition() == GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			// 公会没人了 直接解散
 			if (guildInfo.getModule().menMemberMap.size() <= 1) {
-				guildInfo.dissolveGuild(2);
+				guildInfo.dissolveGuild(4);
 			} else {
 				// 公会有人存在 则不可退出 需要先把宗主转让出去
 				fail(ErrorMsgEnum.zong_men_permission_not_enough);

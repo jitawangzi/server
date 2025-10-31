@@ -141,9 +141,11 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 	 * @param quitType 0 自己退出 1 会长踢出 2 会长主动解散 3 公会活跃度低强制解散
 	 */
 	public void removeMember(long playerId,int quitType) {
-		menMemberMap.remove(playerId);
+		GuildMember member = menMemberMap.remove(playerId);
 //		RedisUtil.deleteAsync(CacheType.PLAYER_ID_ZONG_MEN_ID.key(playerId));
-		
+		if (member == null) {
+			return;
+		}
 		GuildHelper.notifyMsgToPlayer(playerId, GuildMsg.GuildQuitPush_40000024.newBuilder().setQuitType(quitType).build(),
 				PbProtocol.GuildQuitPush_40000024);
 		

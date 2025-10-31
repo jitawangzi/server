@@ -294,7 +294,7 @@ public class Guild {
 
 	/** 
 	 * 解散公会
-	 * @param quitType 2 会长主动解散 3 公会活跃度低强制解散
+	 * @param quitType 2 会长主动解散 3 公会活跃度低强制解散 4 只剩会长了，退出公会解散
 	 */
 	public void dissolveGuild(int quitType) {
 

@@ -231,7 +231,7 @@ public class GuildModule extends BasePlayerModule {
 		player.getCurrencyModule().setCount(Asset.GuildContribute.ID, 0);
 		this.disbandCount++; 
         // 第二次及后续退出时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
-        if (this.disbandCount > 1 && quitType == 0) {
+        if (this.disbandCount > 1 && quitType == 0 || quitType == 4) {
             setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildMemberCD * 1000);
         }
         
