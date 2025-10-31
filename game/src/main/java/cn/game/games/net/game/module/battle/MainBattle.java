@@ -73,7 +73,7 @@ public class MainBattle extends XiYouBattleHandler {
 		}
 		if(battleConfig.BattleType == 99)
 		{
-			GameLogger.serverEvent(player.getAccount(), 10022);
+			GameLogger.serverEvent(player, 10022);
 		}
 		chapter.setFinishTimes(chapter.getFinishTimes() + 1);
 

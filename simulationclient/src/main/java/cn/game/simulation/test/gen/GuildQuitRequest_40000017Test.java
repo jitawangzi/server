@@ -22,7 +22,9 @@ public class GuildQuitRequest_40000017Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.newBuilder() ; 
 		
-		
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
 		
 		return builder.build() ; 
 	}

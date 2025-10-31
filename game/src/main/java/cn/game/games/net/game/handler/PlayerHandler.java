@@ -312,18 +312,13 @@ public class PlayerHandler extends GameBaseHandler {
 		PlayerSearchResponse_0100000c.Builder resp = PlayerSearchResponse_0100000c.newBuilder();
 		String playerName = request.getPlayerName();
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
-		Future<SimplePlayer> future = PlayerHelper.searchPlayer(playerName, playerId);
-		future.onSuccess(r -> {
-			SimplePlayer simplePlayer = (SimplePlayer) r;
-			if (simplePlayer == null) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
-				return;
-			}
-			resp.setPlayer(simplePlayer.toSimplePlayerInfo());
-			client.sendProtocol(resp);
-		}).onFailure(t -> {
+		SimplePlayer simplePlayer = PlayerHelper.searchPlayer(playerName, playerId);
+		if (simplePlayer == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
-		});
+			return;
+		}
+		resp.setPlayer(simplePlayer.toSimplePlayerInfo());
+		client.sendProtocol(resp);
 	}
 
 	private void red(NetClient client, Object message) {
@@ -539,7 +534,7 @@ public class PlayerHandler extends GameBaseHandler {
 		client.sendProtocol(resp);
 		GameLogger.newstages(player, request.getType(), request.getStep());
 		if (request.getType() == 1001 && request.getStep() == 2) {
-			GameLogger.serverEvent(player.getAccount(), 10020);
+			GameLogger.serverEvent(player, 10020);
 		}
 	}
 
@@ -821,25 +816,13 @@ public class PlayerHandler extends GameBaseHandler {
 		PlayerShowResponse_0100003a.Builder resp = PlayerShowResponse_0100003a.newBuilder();
 		String playerName = request.getPlayerName();
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
-		PlayerNameManager.getInstance().getPlayerId(playerName).compose(r -> {
-			long searchPlayerId = 0;
-			if (r == null) {
-				searchPlayerId = playerId;
-			} else {
-				searchPlayerId = r;
-			}
-			return RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(searchPlayerId));
-		}).onSuccess(r -> {
-			SimplePlayer simplePlayer = (SimplePlayer) r;
-			if (simplePlayer == null) {
-				client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
-				return;
-			}
-			resp.setPlayer(simplePlayer.toShowInfo());
-			client.sendProtocol(resp);
-		}).onFailure(t -> {
+		SimplePlayer simplePlayer = PlayerHelper.searchPlayer(playerName,playerId); 
+		if (simplePlayer == null) {
 			client.sendProtocol(resp, ErrorMsgEnum.player_not_found.getId());
-		});
+			return;
+		}
+		resp.setPlayer(simplePlayer.toShowInfo());
+		client.sendProtocol(resp);
 	}
 
 	protected void head(NetClient client, Object message) {
@@ -1085,7 +1068,7 @@ public class PlayerHandler extends GameBaseHandler {
 		builder.setInfo(PbBuilder.buildPlayerInfo(player));
 		client.sendProtocol(builder.build());
 		GameClientManager.getInstance().broadcastOnlineToOtherServer(player.getPlayerId(), true, null);
-		GameLogger.serverEvent(player.getAccount(), 10016);
+		GameLogger.serverEvent(player, 10016);
 	}
 
 	protected void logout(NetClient client, Object message) {

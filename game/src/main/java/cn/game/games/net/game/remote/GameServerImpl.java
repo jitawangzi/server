@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import cn.game.games.core.log.GameSSLogger;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.cache.id.DistributedObjectType;
@@ -155,6 +156,7 @@ public class GameServerImpl implements GameServerInterface {
 						.thenCompose(rr -> PlayerHelper.saveSimplePlayer(player).toCompletionStage())
 						.thenAccept(rr -> {
 							player.getData().setName(newName);
+							GameSSLogger.getInstance().logrolename(player, newName);
 						});
 				;
 				return Future.fromCompletionStage(completionStage);

@@ -21,7 +21,9 @@ public class GuildBargainBuyRequest_40000062Test extends ServerTest{
 	@Override
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildBargainBuyRequest_40000062.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildBargainBuyRequest_40000062.newBuilder() ; 
-		
+		if (client.guildAllInfo == null) {
+			return null; 
+		}
 		
 		
 		return builder.build() ; 

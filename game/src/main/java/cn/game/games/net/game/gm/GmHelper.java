@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.game.games.cache.entity.GmMail;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.protobuf.BaseMsg;
@@ -22,16 +23,6 @@ import io.vertx.core.Promise;
  * @create: 2024-09-12 17:26 @Version 1.0
  */
 public class GmHelper {
-  public static Future<GmMsg.GmPlayerInfo> getPlayerInfo(String playerName, Long playerId) {
-    Promise<GmMsg.GmPlayerInfo> promise = Promise.promise();
-    PlayerHelper.searchPlayer(playerName, playerId)
-        .onSuccess(
-            row -> {
-              promise.complete(row.toGmPlayerInfo());
-            })
-        .onFailure(err -> promise.fail(err));
-    return promise.future();
-  }
 
   public static GmMsg.GmMailInfo toGmMailPb(GmMail gmMail) throws ParseException {
     GmMsg.GmMailInfo.Builder builder = GmMsg.GmMailInfo.newBuilder();

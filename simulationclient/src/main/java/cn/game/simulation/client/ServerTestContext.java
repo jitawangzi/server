@@ -14,6 +14,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import java.util.spi.LocaleServiceProvider;
 
 import javax.net.ssl.SSLException;
 
@@ -73,8 +74,8 @@ public class ServerTestContext {
 	public static int botRunTimeMax;
 	public static int msgGroup;
 	public static int singleMessage;
-	
-	 // 并发登录数
+
+	// 并发登录数
 	public static int loginConcurrency = 8;
 
 	public static boolean init = false;
@@ -84,30 +85,30 @@ public class ServerTestContext {
 	public static ConcurrentLinkedQueue<Client> clients = new ConcurrentLinkedQueue<Client>();
 
 	private static List<String> sourceIps;
-	
+
 	// 用于控制登录速率的信号量
 	private static Semaphore loginRateLimiter;
-	
+
 	// 用于并发登录的线程池
 	private static ExecutorService loginExecutor;
-	
+
 	// 记录登录统计信息
 	private static final AtomicInteger loginSuccessCount = new AtomicInteger(0);
 	private static final AtomicInteger loginFailCount = new AtomicInteger(0);
 	private static volatile boolean loginCompleted = false;
 
 	public static void main(String args[]) throws Exception {
-		Client.exitOnClientClose = false ; 
-		
+		Client.exitOnClientClose = false;
+
 		// 仅用于定位，生产环境谨慎使用内部API
 		try {
-		    sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
-		    sun.misc.Signal.handle(new sun.misc.Signal("INT"),  sig -> System.err.println("Java caught SIGINT"));
-		    sun.misc.Signal.handle(new sun.misc.Signal("HUP"),  sig -> System.err.println("Java caught SIGHUP"));
+			sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
+			sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> System.err.println("Java caught SIGINT"));
+			sun.misc.Signal.handle(new sun.misc.Signal("HUP"), sig -> System.err.println("Java caught SIGHUP"));
 		} catch (Throwable t) {
-		    System.err.println("Signal handlers not installed: " + t);
+			System.err.println("Signal handlers not installed: " + t);
 		}
-		
+
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
@@ -174,7 +175,7 @@ public class ServerTestContext {
 				try {
 					System.err.println("start shutdown hook at " + System.currentTimeMillis());
 					run = false;
-					
+
 					// 关闭登录线程池
 					if (loginExecutor != null && !loginExecutor.isShutdown()) {
 						loginExecutor.shutdown();
@@ -186,7 +187,7 @@ public class ServerTestContext {
 							loginExecutor.shutdownNow();
 						}
 					}
-					
+
 					List<ChannelFuture> futures = new ArrayList<>();
 					for (Client client : clients) {
 						ChannelFuture channelFuture = client.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
@@ -238,33 +239,34 @@ public class ServerTestContext {
 		beansRead.forEach((k, v) -> {
 			beansMap.put(k.substring(0, k.length() - 4).toLowerCase(), v);
 		});
-		
+
 		// 初始化登录相关组件
 		initLoginComponents();
-		
+
 		System.out.println();
 		System.out.println("start to run bots,id start : " + botIdStart + " , count : " + botCount);
 		System.out.println("login concurrency: " + loginConcurrency + ", login interval: " + loginInterval + "ms");
 
 		// 异步启动并发登录，不等待完成
 		startConcurrentLogin();
-		
+
 		// 启动登录进度监控线程
 		startLoginProgressMonitor();
-		
+
 		long startTime = System.currentTimeMillis();
 
 		long lastStatisticsTime = System.currentTimeMillis();
 		long lastSendTime = System.currentTimeMillis();
 		Iterator<Client> iterator = clients.iterator();
-		
+
 		// 主循环：边登录边发送请求
 		while (run) {
 			try {
 				if (botRunTimeMax > 0 && System.currentTimeMillis() - startTime > botRunTimeMax * 60 * 1000) {
 					// 到运行时间上限，该停止了
-					System.err.println("time to stop, runtime=" + (System.currentTimeMillis() - startTime) + "ms, botRunTimeMax=" + botRunTimeMax + "min");
-					run = false ; 
+					System.err.println("time to stop, runtime=" + (System.currentTimeMillis() - startTime) / 1000 / 60
+							+ "min, botRunTimeMax=" + botRunTimeMax + "min");
+					run = false;
 				}
 				if (System.currentTimeMillis() - lastStatisticsTime > messageStatisticsInterval * 60 * 1000) {
 					Thread.sleep(5000); // 先等待一下回复消息
@@ -276,13 +278,13 @@ public class ServerTestContext {
 					Thread.sleep(1);
 					continue;
 				}
-				
+
 				// 如果还没有任何客户端，等待一下
 				if (clients.isEmpty()) {
 					Thread.sleep(100);
 					continue;
 				}
-				
+
 				if (iterator.hasNext()) {
 					Client client = iterator.next();
 					// 只处理已经初始化的客户端
@@ -303,38 +305,48 @@ public class ServerTestContext {
 					if (singleMessage > 0) {
 						randomMessage = CSVMessagesReader.randomMessage();
 					} else if (singleMessage <= 0) { // 全消息混压
-						randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.msgNameSend);
+						randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.sendingGroupIndex);
+					}
+					if (randomMessage == null) {
+						// 这个组的消息都已经发送完了，没有消息了，重置消息组，重新随机消息
+						client.sendingGroup = 0;
+						client.sendingGroupIndex = 0;
+						continue;
 					}
 					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
 					if (serverTest == null) {
 						logger.warn("test message not found : " + randomMessage);
-						continue; 
+						continue;
 					}
 					Message message = null;
 					try {
 						message = serverTest.getMessagePressure(client);
 					} catch (Exception e) {
-						System.err.println("message is null : " + randomMessage +" "+ e);
-						// 生成消息内容失败，重置这个消息组，重新随机消息
-						client.sendingGroup = 0;
+						// 生成消息内容失败，数据填充有问题，尝试同组下一个消息
+						client.sendingGroupIndex++;
+						logger.error("getMessagePressure error, ServerTest :  " + serverTest.getClass().getSimpleName(), e);
 						continue;
 					}
-					if (message != null) {
+					if (message == null) {
+						// 当前这个消息不应该发送，可能条件不符合，继续下一个消息
+						client.sendingGroupIndex++;
+					} else {
+						// 正常发消息
 						client.sendProtocol(message);
 						client.sendingGroup = randomMessage.group;
-						client.msgNameSend = randomMessage.msgName;
+						client.sendingGroupIndex++;
 						lastSendTime = System.currentTimeMillis();
 					}
 				} else {
 					iterator = clients.iterator();
 				}
 			} catch (Throwable e) {
-				e.printStackTrace();
+				logger.error("main loop error", e);
 			}
 		}
 		System.err.println("Main loop exited. run=" + run);
 	}
-	
+
 	/**
 	 * 初始化登录相关组件
 	 */
@@ -360,7 +372,7 @@ public class ServerTestContext {
 		// 启动速率限制器补充线程
 		startRateLimiterRefiller(permitsPerSecond);
 	}
-	
+
 	/**
 	 * 启动速率限制器补充线程
 	 */
@@ -382,7 +394,7 @@ public class ServerTestContext {
 		refiller.setDaemon(true);
 		refiller.start();
 	}
-	
+
 	/**
 	 * 异步启动并发登录（不阻塞主线程）
 	 */
@@ -391,28 +403,28 @@ public class ServerTestContext {
 		if (sourceIps != null && !sourceIps.isEmpty()) {
 			ipIteratorRef.set(sourceIps.iterator());
 		}
-		
+
 		long overallStartTime = System.currentTimeMillis();
-		
+
 		// 在后台线程中提交所有登录任务
 		Thread loginScheduler = new Thread(() -> {
 			for (int i = botIdStart; i < botIdStart + botCount; i++) {
 				final int botId = i;
-				
+
 				try {
 					// 获取速率限制许可
 					loginRateLimiter.acquire();
-					
+
 					// 提交登录任务到线程池
 					loginExecutor.submit(() -> {
 						try {
 							long loginTimeStart = System.currentTimeMillis();
-							
+
 							Client client = new Client(botId + "", "", serverId, version);
-							
+
 							// 同步登陆账号服务器
 							client.loginPassportProto(loginServerUrl);
-							
+
 							String sourceIp = null;
 							Iterator<String> ipIterator = ipIteratorRef.get();
 							if (ipIterator != null) {
@@ -427,19 +439,19 @@ public class ServerTestContext {
 									}
 								}
 							}
-							
+
 							// 异步登陆游戏服务器
 							client.loginGateway(gateServerIp, gateServerPort, sourceIp);
 							clients.add(client);
-							
+
 							int currentSuccess = loginSuccessCount.incrementAndGet();
-							
+
 							long loginCost = System.currentTimeMillis() - loginTimeStart;
 							if (currentSuccess % 100 == 0) {
 								System.out.println(String.format("Login progress: %d/%d, success: %d, fail: %d, last login cost: %dms",
-									currentSuccess + loginFailCount.get(), botCount, currentSuccess, loginFailCount.get(), loginCost));
+										currentSuccess + loginFailCount.get(), botCount, currentSuccess, loginFailCount.get(), loginCost));
 							}
-							
+
 						} catch (Exception e) {
 							int currentFail = loginFailCount.incrementAndGet();
 							System.err.println("Bot " + botId + " login failed: " + e.getMessage());
@@ -453,16 +465,16 @@ public class ServerTestContext {
 					break;
 				}
 			}
-			
+
 			long totalTime = System.currentTimeMillis() - overallStartTime;
 			loginCompleted = true;
 			System.out.println(String.format("All login tasks submitted. Total submission time: %dms", totalTime));
-			
+
 		}, "LoginScheduler");
 		loginScheduler.setDaemon(true);
 		loginScheduler.start();
 	}
-	
+
 	/**
 	 * 启动登录进度监控线程
 	 */
@@ -476,18 +488,14 @@ public class ServerTestContext {
 					int fail = loginFailCount.get();
 					int total = success + fail;
 					long readyCount = clients.stream().filter(Client::getInit).count();
-					
+
 					System.out.println(String.format(
-						"[Login Monitor] Total: %d/%d (%.1f%%), Success: %d, Fail: %d, Ready: %d, Elapsed: %ds",
-						total, botCount, (total * 100.0 / botCount), success, fail, readyCount,
-						(System.currentTimeMillis() - startTime) / 1000
-					));
-					
+							"[Login Monitor] Total: %d/%d (%.1f%%), Success: %d, Fail: %d, Ready: %d, Elapsed: %ds", total, botCount,
+							(total * 100.0 / botCount), success, fail, readyCount, (System.currentTimeMillis() - startTime) / 1000));
+
 					if (total >= botCount) {
-						System.out.println(String.format(
-							"[Login Monitor] All login attempts completed! Success: %d, Fail: %d, Ready: %d",
-							success, fail, readyCount
-						));
+						System.out.println(String.format("[Login Monitor] All login attempts completed! Success: %d, Fail: %d, Ready: %d",
+								success, fail, readyCount));
 						break;
 					}
 				} catch (InterruptedException e) {
@@ -599,10 +607,11 @@ public class ServerTestContext {
 		messageStatisticsInterval = Integer.parseInt(initialProp.getProperty("messageStatisticsInterval"));
 		botRunTimeMax = Integer.parseInt(initialProp.getProperty("botRunTimeMax"));
 		msgGroup = initialProp.getProperty("msgGroup") == null ? 0 : Integer.parseInt(initialProp.getProperty("msgGroup"));
-		
+
 		// 读取登录并发数配置
-		loginConcurrency = initialProp.getProperty("loginConcurrency") == null ? 8 : Integer.parseInt(initialProp.getProperty("loginConcurrency"));
-		
+		loginConcurrency = initialProp.getProperty("loginConcurrency") == null ? 8
+				: Integer.parseInt(initialProp.getProperty("loginConcurrency"));
+
 		String sourceIpsString = initialProp.getProperty("sourceIps");
 		if (!StringUtils.isEmpty(sourceIpsString)) {
 			sourceIps = new ArrayList<>();

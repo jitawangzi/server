@@ -2,6 +2,7 @@ package cn.game.simulation.test.gen;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.google.protobuf.Message;
@@ -45,7 +46,9 @@ public class GemWearRequest_10000001Test extends ServerTest{
 				}
 			}
         }
-		
+		if (StringUtils.isEmpty(builder.getUid())) {
+			return null ; 
+		}
 		return builder.build() ; 
 	}
 	

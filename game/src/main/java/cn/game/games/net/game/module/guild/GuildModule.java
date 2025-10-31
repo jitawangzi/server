@@ -343,7 +343,7 @@ public class GuildModule extends BasePlayerModule {
 				return true;
 			}
 		}
-        int playerGuildLevel = GameCacheService.getInstance().getPlayerGuildLevel(getGuildId()); 
+        int playerGuildLevel = GameCacheService.getInstance().getPlayerGuildLevel(playerId); 
 		if (playerGuildLevel >= GlobalConst.GuildBargainLevel &&  player.getCurrencyModule().getCount(Asset.GuildBargain.ID) > 0) {
 			return true;
 		}

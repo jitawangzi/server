@@ -22,6 +22,7 @@ import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.ForbidAccount;
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.data.mapper.GmMailMapper;
 import cn.game.games.net.game.GameServer;
 import cn.game.games.net.game.constant.MapperConstant;
@@ -334,17 +335,11 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
 		String channel = request.getChannel();
 		String name = request.getName();
-		PlayerHelper.searchPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 : Long.parseLong(request.getPlayerId()))
-				.onSuccess(result -> {
-					if (result != null) {
-						response.setPlayer(result.toGmPlayerInfo());
-					}
-					sendAndRecordOpt(client, request, response.build(), "查询玩家");
-				})
-				.onFailure(err -> {
-					err.printStackTrace();
-					sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.player_data_not_found, err.getMessage());
-				});
+		SimplePlayer searchPlayer = PlayerHelper.searchPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 : Long.parseLong(request.getPlayerId()));
+		if (searchPlayer != null) {
+			response.setPlayer(searchPlayer.toGmPlayerInfo());
+		}
+		sendAndRecordOpt(client, request, response.build(), "查询玩家");
 	}
 
 	private void sendAndRecordOpt(NetClient client, Message request, Message response, String optMsg) {
