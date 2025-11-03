@@ -144,6 +144,7 @@ public class RankService {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
+			log.info("setScoreAsync: {}, {}, {}, {}, {}", serverId, type, playerId, primaryScore, secondaryScore);
 			if (v != null) {
 				v.printStackTrace();
 			}
@@ -815,11 +816,13 @@ public class RankService {
 						});
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
-						removeRank(rankType);
+
+						removeRank(RankType.DaShengLeiTaiSeason);
 						removeRank(RankType.DaShengLeiTaiDay);
 						// 准备NPC数据
-						setNpcToRank(serverId, rankType);
-						setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
+//						setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
+//						setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
+						setNpcToRankTest(serverId);
 					});
 				}
 			}else {
@@ -878,6 +881,23 @@ public class RankService {
 						log.info("NPC批量初始化成功: serverId={}, rankType={}, count={}", serverId, rankType, npcScores.size());
 					}
 				});
+	}
+	public CompletionStage<Void> setNpcToRankTest(String serverId) {
+		// 准备NPC数据
+		Map<Long, Long> npcScores = new HashMap<>();
+		List<DaShengNPCConfig> list2 = DaShengNPCManager.instance().list();
+		for (DaShengNPCConfig config : list2) {
+			npcScores.put((long)config.ID, (long) config.Integral);
+		}
+		Map<RankType, Map<Long, Long>> allScore = new HashMap<>();
+		allScore.put(RankType.DaShengLeiTaiDay, npcScores);
+		allScore.put(RankType.DaShengLeiTaiSeason, npcScores);
+		List<CompletionStage<Boolean>> futures = allScore.entrySet().stream()
+				.flatMap(entry -> entry.getValue().entrySet().stream()
+						.map(innerEntry -> setScoreAsync(serverId, entry.getKey(), innerEntry.getKey(), innerEntry.getValue())))
+				.collect(Collectors.toList());
+		return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
 	}
 	/**
 	 * 批量设置玩家分数
