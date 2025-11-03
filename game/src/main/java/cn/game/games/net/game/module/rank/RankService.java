@@ -816,13 +816,18 @@ public class RankService {
 						});
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
-
-						removeRank(RankType.DaShengLeiTaiSeason);
-						removeRank(RankType.DaShengLeiTaiDay);
+						log.error("removeRank1");
+						removeRankAsync(RankType.DaShengLeiTaiSeason);
+						log.error("removeRank2");
+						removeRankAsync(RankType.DaShengLeiTaiDay);
 						// 准备NPC数据
 //						setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
 //						setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
 						setNpcToRankTest(serverId);
+					}).exceptionally(t -> {
+						log.error("setNpcToRankTest failed: serverId={}, rankType={}", serverId, rankType);
+						log.error("e:" ,t);
+						return null;
 					});
 				}
 			}else {
