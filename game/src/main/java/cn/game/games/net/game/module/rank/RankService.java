@@ -144,7 +144,7 @@ public class RankService {
 		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
-			log.info("setScoreAsync: {}, {}, {}, {}, {}", serverId, type, playerId, primaryScore, secondaryScore);
+			//log.info("setScoreAsync: {}, {}, {}, {}, {}", serverId, type, playerId, primaryScore, secondaryScore);
 			if (v != null) {
 				v.printStackTrace();
 			}
@@ -816,9 +816,9 @@ public class RankService {
 						});
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
-						log.error("removeRank1");
+						log.info("removeRank1");
 						removeRankAsync(RankType.DaShengLeiTaiSeason);
-						log.error("removeRank2");
+						log.info("removeRank2");
 						removeRankAsync(RankType.DaShengLeiTaiDay);
 						// 准备NPC数据
 //						setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
