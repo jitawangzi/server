@@ -68,29 +68,8 @@ public abstract class AbstractActivityManager {
 					}
 					afterActivityOpen(activityBase);
 					
-					checkExpired(id);
-				}
-			}
-		}
-	}
-	/** 
-	 * 生成一个已经结束的活动实例
-	 * @param id
-	 * @param notify
-	 */
-	public void openEnd(int id, boolean notify) {
-		if (!activities.containsKey(id)) {
-			ActivityConfig activityConfig = ActivityManager.instance().get(id);
-			ActivityBase activityBase = createActivity(activityConfig);
-			if (activityBase != null) {
-				activityBase.setServerId(serverId);
-				ActivityBase old = activities.putIfAbsent(activityConfig.ID, activityBase); 
-				if (old == null) {
-					activityBase.init(activityConfig.ID);
-					activityBase.setState(ActivityState.CLOSE_VALUE);
-					if (notify) {
-						activityBase.syncActivityInfo();
-					}
+					endTimeTask(activityBase);
+					destroyTimeTask(activityBase);
 				}
 			}
 		}
@@ -195,29 +174,34 @@ public abstract class AbstractActivityManager {
 	 * 活动结束任务
 	 */
 	public void endTimeTask() {
-		long nowTime = System.currentTimeMillis();
+//		long nowTime = System.currentTimeMillis();
 		for (ActivityBase activityBase : activities.values()) {
-			int cid = activityBase.getId();
-			long endTime = activityBase.getEndTime();
-			if (endTime > 0) {
-				long remaining = endTime - nowTime;
-				if (remaining > 0) {
-					runDelayEndTask(cid, remaining);
-				}
-			}
+//			int cid = activityBase.getId();
+			endTimeTask(activityBase);
+		}
+	}
+
+	private void endTimeTask(ActivityBase activityBase) {
+		long nowTime = System.currentTimeMillis();
+		int cid = activityBase.getId();
+		long endTime = activityBase.getEndTime();
+		if (endTime > 0) {
+			long remaining = endTime - nowTime;
+			runDelayEndTask(cid, remaining);
 		}
 	}
 	public void destroyTimeTask() {
-		long nowTime = System.currentTimeMillis();
 		for (ActivityBase activityBase : activities.values()) {
-			int cid = activityBase.getId();
-			long endTime = activityBase.getDestroyTime();
-			if (endTime > 0) {
-				long remaining = endTime - nowTime;
-				if (remaining > 0) {
-					runDelayDestroyTask(cid, remaining);
-				}
-			}
+			destroyTimeTask(activityBase);
+		}
+	}
+	private void destroyTimeTask(ActivityBase activityBase) {
+		long nowTime = System.currentTimeMillis();
+		int cid = activityBase.getId();
+		long destroyTime = activityBase.getDestroyTime();
+		if (destroyTime > 0) {
+			long remaining = destroyTime - nowTime;
+			runDelayDestroyTask(cid, remaining);
 		}
 	}
 
