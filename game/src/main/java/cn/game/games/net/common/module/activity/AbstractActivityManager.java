@@ -68,8 +68,10 @@ public abstract class AbstractActivityManager {
 					}
 					afterActivityOpen(activityBase);
 					
-					endTimeTask(activityBase);
-					destroyTimeTask(activityBase);
+					checkExpired(id);
+					// 
+//					endTimeTask(activityBase);
+//					destroyTimeTask(activityBase);
 				}
 			}
 		}
