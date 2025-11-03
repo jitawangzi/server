@@ -810,20 +810,18 @@ public class RankService {
 					List<MailRankInfo> playerRank = new ArrayList<>();
 					CompletionStage<List<BaseMsg.PlayerRankInfo>> rankPagePlayerInfos = RankHelper.getRankPagePlayerInfos(serverId, RankType.DaShengLeiTaiSeason, 1, 5);
 
-					rankPagePlayerInfos.thenAccept(r -> {
+					rankPagePlayerInfos.thenCompose(r -> {
 						r.forEach(p -> {
 							playerRank.add(new MailRankInfo(p.getPlayer().getName(), p.getRank(), p.getPlayer().getFigure(), p.getPlayer().getId()));
 						});
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
 						log.info("removeRank1");
-						removeRankAsync(RankType.DaShengLeiTaiSeason);
-						log.info("removeRank2");
-						removeRankAsync(RankType.DaShengLeiTaiDay);
-						// 准备NPC数据
-//						setNpcToRank(serverId, RankType.DaShengLeiTaiSeason);
-//						setNpcToRank(serverId, RankType.DaShengLeiTaiDay);
-						setNpcToRankTest(serverId);
+						CompletableFuture<Void> removeRankFuture = removeRankAsync(RankType.DaShengLeiTaiSeason)
+								.thenCompose(v -> {return removeRankAsync(RankType.DaShengLeiTaiDay);}).thenCompose(
+										v -> {return setNpcToRankTest(serverId);}
+								);
+						return removeRankFuture;
 					}).exceptionally(t -> {
 						log.error("setNpcToRankTest failed: serverId={}, rankType={}", serverId, rankType);
 						log.error("e:" ,t);
