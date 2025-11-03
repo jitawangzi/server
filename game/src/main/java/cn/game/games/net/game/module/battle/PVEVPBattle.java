@@ -446,16 +446,19 @@ public class PVEVPBattle extends XiYouBattleHandler {
                         .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
                         .thenCompose(rankEntries -> {
                             String[] playerIds = rankEntries.stream().map(RankEntry::getId).map(String::valueOf).toArray(String[]::new);
+                            log.info(" pvevp getRadomPlayer playerIds:{}", playerIds.length);
                             Future<List<SimplePlayer>> ret = RedisLocalCache.getInstance().multiGetAsync(CacheType.PLAYER_SIMPLE, playerIds);
                             Future<Map<RankEntry,SimplePlayer>> ret2 = ret.map(simplePlayers -> {
                                 return rankEntries.stream().map(rankEntry -> {
                                     SimplePlayer simplePlayer = simplePlayers.stream().filter(p -> p.getId() == rankEntry.getId()).findFirst().orElse(null);
+                                    log.info(" pvevp getRadomPlayer SimplePlayer:{}",simplePlayer.getId());
                                     return new AbstractMap.SimpleEntry<>(rankEntry, simplePlayer);
                                 }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                             });
                             return ret2.toCompletionStage();
                         }).thenCompose(rankEntries -> {
                             rankEntries.keySet().forEach(entry -> {
+                                log.info(" pvevp getRadomPlayer entry key:{}",entry);
                                 PlayerRank playerRank = new PlayerRank(entry, rankEntries.get( entry));
                                 mainShowRank.put(entry.getRank(), playerRank);
                             });
