@@ -543,7 +543,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
     }
 
     public int getEndTime() {
-        return endTime;
+        return    (int)(DateUtil.addWeekBeginTimer(1)/ 1000);
     }
 
     public Map<Integer, PlayerRank> getMainShowRank() {
