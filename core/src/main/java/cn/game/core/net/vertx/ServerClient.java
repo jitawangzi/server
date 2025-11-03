@@ -79,4 +79,10 @@ public class ServerClient extends AbstractNetClient {
 //		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

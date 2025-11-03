@@ -52,9 +52,6 @@ public abstract class AbstractNetClient implements NetClient
 	public boolean isActive() {
 		return true;
 	}
-	@Override
-	public void close() {
-	}
 
 	@Override
 	public boolean needProcess(IProtocol<?> protocol) {

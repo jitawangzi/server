@@ -999,6 +999,15 @@ public class Client extends AbstractNetClient {
 		}
 		return false; 
 	}
+	
+	@Override
+	public void close() {
+		channel.close().addListener(r -> {
+//			if (exitOnClientClose) {
+//				System.exit(0);
+//			}
+		});
+	}
 
 	// @Override
 //	public String getIp() {

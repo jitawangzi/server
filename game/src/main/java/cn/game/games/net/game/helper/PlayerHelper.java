@@ -127,6 +127,8 @@ import cn.game.util.ByteHelp;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
+import cn.game.util.JolExclusiveSizeAnalyzer;
+import cn.game.util.JolExclusiveSizeAnalyzer.ModuleStat;
 import cn.game.util.JsonUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
@@ -1697,25 +1699,13 @@ public class PlayerHelper {
 			PlayerData data = player.getData();
 			if (ServerContext.getInstance().isSinglePlayerTable()) {
 				data.beforeSave();
-				String jsonString = JsonUtil.toJsonStringWithType(player.getModules()); 
+				String jsonString = JsonUtil.toJsonStringWithType(player.getModules());
 				data.setModules(jsonString);
-//				int sizeBytesEquip  = ByteHelp.estimateUtf8Bytes(JsonUtil.toJsonStringWithType(player.getEquipModule()));
-//				log.info("equip module size: playerId={}, equip size={} mb", playerId, sizeBytesEquip/1024.0/1024.0);
-				int sizeBytes  = ByteHelp.estimateUtf8Bytes(jsonString);
-			    // 预警
-			    if (sizeBytes >= APPROX_WARN_BYTES) {
-			        double mb = sizeBytes / 1024.0 / 1024.0;
-			        log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({}) MB",
-			                 playerId, sizeBytes, String.format("%.2f", mb));
-			    }else {
-			        if (log.isDebugEnabled()) {
-			            log.debug("saveClientCache: playerId={}, modules approx size={} bytes", playerId, sizeBytes);
-			        }
-			    }
+				debugModuleSize(player, jsonString);
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
 				return DAO.executeDbTaskList(dbTasks).onComplete(r -> {
-					data.setModules("{}") ; 
+					data.setModules("{}");
 				});
 			}
 			// 下面暂时用不到
@@ -1737,6 +1727,29 @@ public class PlayerHelper {
 			}
 		}
 		return Future.succeededFuture();
+	}
+
+	private static void debugModuleSize(Player player, String jsonString) {
+		if (ServerContext.getInstance().getRunMode().isDev()) {
+			Map<String, ModuleStat> stats = JolExclusiveSizeAnalyzer.analyzeExclusive(player.getModules(),null);
+			log.info("=== Player[{}] Module Memory Report (exclusive only; shared not counted) ===" ,player.getPlayerId());
+			long totalExclusiveBytes = 0;
+			for (ModuleStat s : stats.values()) {
+				log.info(String.format("Module=%s, exclusiveObjects=%d, exclusiveBytes=%,d B", s.name, s.exclusiveObjectCount,
+						s.exclusiveBytes));
+				totalExclusiveBytes += s.exclusiveBytes;
+			}
+			log.info("Player[{}] Modules Total exclusiveBytes=[{}] MB",player.getPlayerId(), totalExclusiveBytes / (1024f * 1024f)) ;
+			int sizeBytes = ByteHelp.estimateUtf8Bytes(jsonString);
+			// 预警
+			if (sizeBytes >= APPROX_WARN_BYTES) {
+				double mb = sizeBytes / 1024.0 / 1024.0;
+				log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({}) MB", player.getPlayerId(), sizeBytes,
+						String.format("%.2f", mb));
+			} else {
+				log.info("saveClientCache: playerId={}, modules approx size={} bytes", player.getPlayerId(), sizeBytes);
+			}
+		}
 	}
 
 	/** 
