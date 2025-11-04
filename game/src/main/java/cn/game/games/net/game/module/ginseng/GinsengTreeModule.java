@@ -158,10 +158,10 @@ public class GinsengTreeModule extends BasePlayerModule {
 		if (changeTimer || fruitTimer == 0) {
 			int delay = this.nextFruitTime - DateUtil.currentTimeSeconds();
 			if (delay <= 0) {
+				newFruit(rsgTreeLvConfig,this.nextFruitTime);
 				if (fruitMap.size() >= rsgTreeLvConfig.Num) {
 					return;
 				}
-				newFruit(rsgTreeLvConfig,this.nextFruitTime);
 				this.nextFruitTime += calcRemaningSeconds();
 				startFruitTask();
 			}else {
