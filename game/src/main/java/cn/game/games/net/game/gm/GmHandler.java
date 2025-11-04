@@ -250,7 +250,9 @@ public class GmHandler extends GmBaseHandler {
 			if (list != null) {
 				list.forEach(gmMail -> {
 					try {
-						res.addMails(GmHelper.toGmMailPb(gmMail));
+						if (gmMail.getMailopttype() <= 2) {
+							res.addMails(GmHelper.toGmMailPb(gmMail));
+						}
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
