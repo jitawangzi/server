@@ -485,6 +485,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             if (myRank != null) {
                 if(myRank.getRank()==-1)
                 {
+                    myRank = new RankEntry(-1, player.getPlayerId(), 1000);
                     return RankService.getInstance()
                             .getLastNAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, 4)
                             .thenCompose(rankEntries -> {
