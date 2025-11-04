@@ -119,4 +119,10 @@ public class GateClient extends AbstractNetClient {
 		return false;
 	}
 
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

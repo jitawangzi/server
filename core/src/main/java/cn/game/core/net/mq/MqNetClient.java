@@ -34,6 +34,11 @@ public class MqNetClient extends AbstractNetClient {
 	public void sendProtocol(Object message, int errorCode) {
 		throw new UnsupportedOperationException();
 	}
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
