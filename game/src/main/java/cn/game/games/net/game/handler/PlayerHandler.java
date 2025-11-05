@@ -1048,6 +1048,9 @@ public class PlayerHandler extends GameBaseHandler {
 		if (errorCode <= 0 && StringUtils.isNumeric(throwable.getMessage())) {
 			errorCode = Integer.parseInt(throwable.getMessage());
 		}
+		if (errorCode <= 0) {
+			errorCode = ErrorMsgEnum.unknown.getId();
+		}
 		client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), errorCode);
 		GameClientManager.getInstance().removeGameClient((GameClient) client, LogoutType.ClientLoginFail);
 		if (client.getPlayerId() > 0) {
