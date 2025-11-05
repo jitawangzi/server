@@ -326,10 +326,15 @@ public class Client extends AbstractNetClient {
 		HttpResult result = from.getResult();
 		systemOutLog.info("登陆返回: " + result);
 		systemOutLog.info(from.getResult().getErrorMsg());
+		// 账号不存在，则注册
 		if (from.hasResult() && from.getResult().getErrorCode() == AccountErrorCode.ACCOUNT_NOT_EXIST) {
 			registerProto(url, name, pwd);
 			loginPassportProto(url);
 			return;
+		}
+		// 其他错误则中断流程
+		if (from.hasResult() && from.getResult().getErrorCode() != null) {
+			throw new RuntimeException(name+ " 登陆失败： "+ from.getResult().getErrorCode())  ; 
 		}
 
 		String passport = from.getPassportSessionId();

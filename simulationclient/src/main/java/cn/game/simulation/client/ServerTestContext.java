@@ -181,7 +181,7 @@ public class ServerTestContext {
 					if (loginExecutor != null && !loginExecutor.isShutdown()) {
 						loginExecutor.shutdown();
 						try {
-							if (!loginExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
+							if (!loginExecutor.awaitTermination(3, TimeUnit.SECONDS)) {
 								loginExecutor.shutdownNow();
 							}
 						} catch (InterruptedException e) {
@@ -342,7 +342,7 @@ public class ServerTestContext {
 	        CSVMessage randomMessage;
 
 	        if (singleMessage > 0) {
-	            randomMessage = CSVMessagesReader.randomMessage();
+	            randomMessage = CSVMessagesReader.randomGroupMessage(msgGroup, client.sendingGroupIndex);
 	        } else {
 	            randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.sendingGroupIndex);
 	        }
