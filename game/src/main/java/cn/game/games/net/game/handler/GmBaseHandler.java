@@ -1,5 +1,6 @@
 package cn.game.games.net.game.handler;
 
+import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
@@ -11,6 +12,9 @@ public abstract class GmBaseHandler extends GameBaseHandler {
 
 	@Override
 	public boolean checkExt(NetClient client, IProtocol<?> protocol) {
+		if (!ServerContext.getInstance().getRunMode().isProduction()) {
+			return true; 
+		}
 		long playerId = client.getPlayerId();
 		if (playerId <= 0) {
 			return true;

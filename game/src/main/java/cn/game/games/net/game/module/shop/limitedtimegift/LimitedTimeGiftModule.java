@@ -90,7 +90,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 		Map<Integer, List<LimitedTimeGiftConfig>> map = LimitedTimeGiftManager.instance().getGroups();
 		map.forEach((k, list) -> {
 			// 倒序遍历list,先找符合的最高档位的
-			for (int i = 0; i < list.size(); i++) {
+			loop:for (int i = 0; i < list.size(); i++) {
 				LimitedTimeGiftConfig limitedTimeGiftConfig = list.get(i);
 				if (limitedTimeGiftConfig.PlayerLevelMin > player.getLevel() || limitedTimeGiftConfig.PlayerLevelMax < player.getLevel()) {
 					// 不符合等级要求
@@ -110,7 +110,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 					for (LimitedTimeGift old : limitedTimeGiftOldCollection) {
 						if (old.getId() == limitedTimeGiftConfig.ID) {
 							// 已经存在这个礼包了
-							continue;
+							continue loop;
 						}
 					}
 				}

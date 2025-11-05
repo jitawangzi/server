@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite.Builder;
 
@@ -1728,30 +1730,43 @@ public class PlayerHelper {
 		}
 		return Future.succeededFuture();
 	}
-
 	private static void debugModuleSize(Player player, String jsonString) {
-		if (ServerContext.getInstance().getRunMode().isDev()) {
-			Map<String, ModuleStat> stats = JolExclusiveSizeAnalyzer.analyzeExclusive(player.getModules(),null);
-			log.info("=== Player[{}] Module Memory Report (exclusive only; shared not counted) ===" ,player.getPlayerId());
-			long totalExclusiveBytes = 0;
-			for (ModuleStat s : stats.values()) {
-				log.info(String.format("Module=%s, exclusiveObjects=%d, exclusiveBytes=%,d B", s.name, s.exclusiveObjectCount,
-						s.exclusiveBytes));
-				totalExclusiveBytes += s.exclusiveBytes;
-			}
-			log.info("Player[{}] Modules Total exclusiveBytes=[{}] MB",player.getPlayerId(), totalExclusiveBytes / (1024f * 1024f)) ;
-			int sizeBytes = ByteHelp.estimateUtf8Bytes(jsonString);
-			// 预警
-			if (sizeBytes >= APPROX_WARN_BYTES) {
-				double mb = sizeBytes / 1024.0 / 1024.0;
-				log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({}) MB", player.getPlayerId(), sizeBytes,
-						String.format("%.2f", mb));
-			} else {
-				log.info("saveClientCache: playerId={}, modules approx size={} bytes", player.getPlayerId(), sizeBytes);
-			}
-		}
-	}
+	    if (ServerContext.getInstance().getRunMode().isDev()) {
+	        Map<String, ModuleStat> stats = JolExclusiveSizeAnalyzer.analyzeExclusive(player.getModules(), null);
+	        log.info("=== Player[{}] Module Memory Report (exclusive only; shared not counted) ===", player.getPlayerId());
 
+	        long totalExclusiveBytes = 0;
+
+	        // 按 exclusiveBytes 降序
+	        List<ModuleStat> sortedStats = new ArrayList<>(stats.values());
+	        sortedStats.sort(Comparator.comparingLong((ModuleStat s) -> s.exclusiveBytes).reversed());
+
+	        for (ModuleStat s : sortedStats) {
+	            totalExclusiveBytes += s.exclusiveBytes;
+	            double kb = s.exclusiveBytes / 1024.0;
+	            // 使用格式化保留两位小数
+	            String kbStr = String.format("%.2f", kb);
+
+	            log.info("Module={}, exclusiveObjects={}, exclusiveSize={} KB",
+	                    s.name, s.exclusiveObjectCount, kbStr);
+	        }
+
+	        double totalMb = totalExclusiveBytes / (1024.0 * 1024.0);
+	        log.info("Player[{}] Modules Total exclusiveSize=[{}] MB",
+	                player.getPlayerId(), String.format("%.2f", totalMb));
+
+	        int sizeBytes = ByteHelp.estimateUtf8Bytes(jsonString);
+	        if (sizeBytes >= APPROX_WARN_BYTES) {
+	            double mb = sizeBytes / 1024.0 / 1024.0;
+	            log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({} MB)",
+	                    player.getPlayerId(), sizeBytes, String.format("%.2f", mb));
+	        } else {
+	            double kb = sizeBytes / 1024.0;
+	            log.info("saveClientCache: playerId={}, modules approx size={} KB",
+	                    player.getPlayerId(), String.format("%.2f", kb));
+	        }
+	    }
+	}
 	/** 
 	 * 通用的升级逻辑
 	 * @param expId 经验id
