@@ -186,7 +186,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 createBattleRecord_Target(targetDelScore,false,rediskeyTarget);
                 createBattleRecord_My(simplePlayer, myAddScore, true,rediskeyMy);
             }
-            GameLogger.pvpfight(player,false,simplePlayer,false);
+            GameLogger.pvpfight(player,false,simplePlayer,true);
             resetCache();
             response.addParams((int)(myScore+myAddScore)   );
             response.addParams((int)myAddScore   );
