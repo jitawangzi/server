@@ -172,8 +172,9 @@ public class ServerTestContext {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
+				long start = System.currentTimeMillis();
 				try {
-					System.err.println("start shutdown hook at " + System.currentTimeMillis());
+					System.out.println("start shutdown hook at " + System.currentTimeMillis());
 					run = false;
 
 					// 关闭登录线程池
@@ -187,6 +188,7 @@ public class ServerTestContext {
 							loginExecutor.shutdownNow();
 						}
 					}
+					System.out.println("login executor shutdown completed in " + (System.currentTimeMillis() - start) + "ms");
 
 					List<ChannelFuture> futures = new ArrayList<>();
 					for (Client client : clients) {
@@ -201,17 +203,18 @@ public class ServerTestContext {
 
 					CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures);
 					try {
-						allFutures.get(30, TimeUnit.SECONDS);
-						System.err.println("All players logout requests completed successfully");
+						allFutures.get(10, TimeUnit.SECONDS);
+						System.out.println("All players logout requests completed successfully");
 					} catch (TimeoutException e) {
 						System.err.println("Some logout requests did not complete in time");
 					} catch (Exception e) {
 						System.err.println("Error occurred while waiting for logout requests");
 						e.printStackTrace();
 					}
+					System.out.println("logout requests processing completed in " + (System.currentTimeMillis() - start) + "ms");
 
 					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
-					System.err.println("shutdown hook execution completed");
+					System.out.println("shutdown hook execution completed, total time " + (System.currentTimeMillis() - start) + "ms");
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -264,7 +267,7 @@ public class ServerTestContext {
 			try {
 				if (botRunTimeMax > 0 && System.currentTimeMillis() - startTime > botRunTimeMax * 60 * 1000) {
 					// 到运行时间上限，该停止了
-					System.err.println("time to stop, runtime=" + (System.currentTimeMillis() - startTime) / 1000 / 60
+					System.out.println("time to stop, runtime=" + (System.currentTimeMillis() - startTime) / 1000 / 60
 							+ "min, botRunTimeMax=" + botRunTimeMax + "min");
 					run = false;
 				}
@@ -274,6 +277,7 @@ public class ServerTestContext {
 
 					lastStatisticsTime = System.currentTimeMillis();
 				}
+				  // 全局发送节流
 				if (System.currentTimeMillis() - lastSendTime < sendInterval) {
 					Thread.sleep(1);
 					continue;
@@ -284,69 +288,107 @@ public class ServerTestContext {
 					Thread.sleep(100);
 					continue;
 				}
+		        if (iterator.hasNext()) {
+		            Client client = iterator.next();
 
-				if (iterator.hasNext()) {
-					Client client = iterator.next();
-					// 只处理已经初始化的客户端
-					if (!client.getInit()) {
-						continue;
-					}
-					if (!client.isLastMessageReturn()) {
-						boolean resendLastMessage = client.resendLastMessage();
-						if (resendLastMessage) {
-							continue;
-						}
-					}
-					if (client.getLastSendMessageTime() > 0
-							&& System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
-						continue;
-					}
-					CSVMessage randomMessage = null;
-					if (singleMessage > 0) {
-						randomMessage = CSVMessagesReader.randomMessage();
-					} else if (singleMessage <= 0) { // 全消息混压
-						randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.sendingGroupIndex);
-					}
-					if (randomMessage == null) {
-						// 这个组的消息都已经发送完了，没有消息了，重置消息组，重新随机消息
-						client.sendingGroup = 0;
-						client.sendingGroupIndex = 0;
-						continue;
-					}
-					ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
-					if (serverTest == null) {
-						logger.warn("test message not found : " + randomMessage);
-						continue;
-					}
-					Message message = null;
-					try {
-						message = serverTest.getMessagePressure(client);
-					} catch (Exception e) {
-						// 生成消息内容失败，数据填充有问题，尝试同组下一个消息
-						client.sendingGroupIndex++;
-						logger.error("getMessagePressure error, ServerTest :  " + serverTest.getClass().getSimpleName(), e);
-						continue;
-					}
-					if (message == null) {
-						// 当前这个消息不应该发送，可能条件不符合，继续下一个消息
-						client.sendingGroupIndex++;
-					} else {
-						// 正常发消息
-						client.sendProtocol(message);
-						client.sendingGroup = randomMessage.group;
-						client.sendingGroupIndex++;
-						lastSendTime = System.currentTimeMillis();
-					}
-				} else {
-					iterator = clients.iterator();
-				}
+		            // 对该 client 在本轮就地尝试直到发出或确定无可发
+		            boolean	sent = trySendOneMessage(beansMap, client);
+		            if (sent) {
+		                lastSendTime = System.currentTimeMillis();
+		            }
+		            // 无论 sent 与否，都继续迭代到下一个 client
+		        } else {
+		            iterator = clients.iterator();
+		        }
 			} catch (Throwable e) {
 				logger.error("main loop error", e);
 			}
 		}
-		System.err.println("Main loop exited. run=" + run);
+		System.out.println("Main loop exited. run=" + run);
+	}
+	
+	/** 
+	 * 
+	 * @param beansMap
+	 * @param client
+	 * @return  是否成功发送了消息
+	 */
+	private static boolean trySendOneMessage(Map<String, ServerTest> beansMap,Client client) {
+	    // 只处理已初始化
+	    if (!client.getInit()) {
+	        return false;
+	    }
+
+	    // 若上条消息未返回，优先尝试重发；返回 true 表示已经发出一次，本轮结束
+	    if (!client.isLastMessageReturn()) {
+	        boolean resent = client.resendLastMessage();
+	        if (resent) {
+	            return true;
+	        }
+	        // 未重发成功则继续尝试新消息
+	    }
+
+	    // 发送频率限制：如果该 client 还未到间隔，直接返回本 client 本轮不发
+	    if (client.getLastSendMessageTime() > 0
+	            && System.currentTimeMillis() - client.getLastSendMessageTime() < botSendInterval) {
+	        return false;
+	    }
+
+	    // 在本轮内不断尝试找到可发的一条消息
+	    int guard = 0; // 防止异常情况下死循环
+	    final int maxProbe = 256;
+
+	    while (guard++ < maxProbe) {
+	        CSVMessage randomMessage;
+
+	        if (singleMessage > 0) {
+	            randomMessage = CSVMessagesReader.randomMessage();
+	        } else {
+	            randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.sendingGroupIndex);
+	        }
+
+	        if (randomMessage == null) {
+	            // 当前组消息用尽，重置组与索引，然后继续下一轮随机
+	            client.sendingGroup = 0;
+	            client.sendingGroupIndex = 0;
+	            continue;
+	        }
+
+	        ServerTest serverTest = beansMap.get(randomMessage.msgName.toLowerCase());
+	        if (serverTest == null) {
+	            logger.warn("test message not found : " + randomMessage);
+	            // 找不到，推进到组内下一条
+	            client.sendingGroupIndex++;
+	            continue;
+	        }
+
+	        Message messageObj = null;
+	        try {
+	            messageObj = serverTest.getMessagePressure(client);
+	        } catch (Exception e) {
+	            // 构造失败，推进到组内下一条继续
+	            client.sendingGroupIndex++;
+	            logger.error("getMessagePressure error, ServerTest :  " + serverTest.getClass().getSimpleName(), e);
+	            continue;
+	        }
+
+	        if (messageObj == null) {
+	            // 条件不满足，推进下一条
+	            client.sendingGroupIndex++;
+	            continue;
+	        }
+
+	        // 找到可发消息，立即发送并记录组与索引
+	        client.sendProtocol(messageObj);
+	        client.sendingGroup = randomMessage.group;
+	        client.sendingGroupIndex++;
+	        return true;
+	    }
+	    // 超过探测次数仍未发出，应该有错误
+	    throw new IllegalStateException("Unable to send message after " + maxProbe + " attempts for client " + client);
 	}
 
+	
 	/**
 	 * 初始化登录相关组件
 	 */
