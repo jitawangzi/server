@@ -27,7 +27,7 @@ public class SchedulerService {
 		this.taskScheduler.setThreadNamePrefix("SpringTaskScheduler-");
 		this.taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
 		this.taskScheduler.setAwaitTerminationSeconds(60);
-		this.taskScheduler.setErrorHandler(t -> log.error("Unexpected error occurred in spring scheduled task: " + t.getMessage()));
+		this.taskScheduler.setErrorHandler(t -> log.error("Unexpected error occurred in spring scheduled task: " ,t));
 		this.taskScheduler.initialize();
 	}
 

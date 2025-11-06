@@ -89,24 +89,11 @@ public class VxHolder {
 //	private static WebClientOptions webClientOption = new WebClientOptions().setSsl(true).setDefaultPort(443).setConnectTimeout(5000);
 	private static WebClientOptions webClientOption = new WebClientOptions().setDefaultPort(80).setConnectTimeout(5000);
 
-	private static volatile boolean inited = false;
-
 	private VxHolder() {
 	};
 
-	static {
-		try {
-			init();
-		} catch (Exception e) {
-			log.error("vertx init error", e);
-		}
-	}
-
 	public static synchronized void init() throws Exception {
 
-		if (inited) {
-			return;
-		}
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
 		EventBusOptions eventBusOptions = new EventBusOptions().setHost(IpUtil.defaultAddress());
@@ -161,7 +148,6 @@ public class VxHolder {
 		vertx.eventBus().registerCodec(universalMessageCodec);
 
 		deployVerticles();
-		inited = true;
 	}
 
 	
