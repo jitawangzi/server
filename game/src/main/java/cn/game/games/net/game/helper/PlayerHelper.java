@@ -136,6 +136,7 @@ import cn.game.util.SpringContextLoader;
 import cn.game.util.reflect.MethodUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 public class PlayerHelper {
@@ -2097,8 +2098,11 @@ public class PlayerHelper {
 			}
 			long unionId = playerData.getUnionId();
 			if (unionId > 0) {
-				GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(unionId);
-				guildProxy.quitGuild(unionId, playerId, playerData.getName());
+				VxHolder.vertx.executeBlocking(() -> {
+					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(unionId);
+					guildProxy.quitGuild(unionId, playerId, playerData.getName());
+					return null; 
+				});
 			}
 			// 简要数据
 			String key = CacheType.PLAYER_SIMPLE.key(playerId);
