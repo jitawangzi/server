@@ -343,7 +343,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * vip等级
 	 * 时区
 	 */
-	public static void shoptrade(Player player, int shopId, int shopItemId) {
+	public static void shoptrade(Player player, int shopId, int shopItemId,int count) {
 		try {
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItemId);
 			int itemId = shopItemConfig.Item[0][0];
@@ -362,7 +362,7 @@ public class GameLogger extends DeprecatedLogger {
 			}
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), itemType,
-					itemId, itemCount, costId, costCount, shopId, player.getVipLevel()};
+					itemId, itemCount*count, costId, costCount*count, shopId, player.getVipLevel()};
 			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
 			GameSSLogger.getInstance().logshoptrade(player,itemType, itemId, itemCount, costId, costCount, shopId);
 		} catch (Exception e) {
