@@ -19,14 +19,6 @@ public class ZkHelper {
 	private static final Logger log = LoggerFactory.getLogger(ZkHelper.class);
 	private static volatile boolean inited = false;
 	public static CuratorFramework curator;
-	static {
-		try {
-			init();
-		} catch (Exception e) {
-			log.error("zookeeper 初始化失败", e);
-			throw new ExceptionInInitializerError("zookeeper 初始化失败: " + e.getMessage());
-		}
-	}
 
 	private static void init(JsonObject conf) throws InterruptedException {
 
@@ -64,7 +56,7 @@ public class ZkHelper {
 		curator.blockUntilConnected(30, TimeUnit.SECONDS);  
 	}
 
-	private static void init() throws InterruptedException {
+	public static void init() throws InterruptedException {
 		if (inited) {
 			return;
 		}

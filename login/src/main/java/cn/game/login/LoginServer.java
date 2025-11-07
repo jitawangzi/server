@@ -58,8 +58,10 @@ public class LoginServer {
 		Log4j2ApolloLoader.getInstance().init();
 
 		LoggerType.Stdout.logger.info("正在启动登录服...");
-
+		
 		Config.load();
+		RedisUtil.init(); 
+		ZkHelper.init(); 
 //		RedisUtil.getInstance().init();
 		ServerContext.getInstance().init(serverId, ServerType.Login);
 

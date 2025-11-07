@@ -35,9 +35,11 @@ import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
 import cn.game.util.GameUtil;
 import cn.game.util.KryoUtils;
+import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringApolloLoader;
 import cn.game.util.SpringContextLoader;
+import cn.game.util.ZkHelper;
 import cn.game.util.file.WatchServiceManager;
 import cn.game.util.log.Log4j2ApolloLoader;
 import cn.game.util.log.LoggerType;
@@ -66,6 +68,9 @@ public class CrossServer {
 		Log4j2ApolloLoader.getInstance().init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动跨服。。");
+		RedisUtil.init();
+		ZkHelper.init(); 
+
 		IdUtil.init();
 		ActiveServerListManager.getInstance().start(ServerType.Cross);
 		ServerContext.getInstance().init(serverId, ServerType.Cross);
