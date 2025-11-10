@@ -101,13 +101,13 @@ public class ServerTestContext {
 		Client.exitOnClientClose = false;
 
 		// 仅用于定位，生产环境谨慎使用内部API
-		try {
-			sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
-			sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> System.err.println("Java caught SIGINT"));
-			sun.misc.Signal.handle(new sun.misc.Signal("HUP"), sig -> System.err.println("Java caught SIGHUP"));
-		} catch (Throwable t) {
-			System.err.println("Signal handlers not installed: " + t);
-		}
+//		try {
+//			sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
+//			sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> System.err.println("Java caught SIGINT"));
+//			sun.misc.Signal.handle(new sun.misc.Signal("HUP"), sig -> System.err.println("Java caught SIGHUP"));
+//		} catch (Throwable t) {
+//			System.err.println("Signal handlers not installed: " + t);
+//		}
 
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
