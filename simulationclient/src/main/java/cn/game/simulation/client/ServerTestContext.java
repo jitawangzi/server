@@ -181,7 +181,7 @@ public class ServerTestContext {
 					if (loginExecutor != null && !loginExecutor.isShutdown()) {
 						loginExecutor.shutdown();
 						try {
-							if (!loginExecutor.awaitTermination(3, TimeUnit.SECONDS)) {
+							if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
 								loginExecutor.shutdownNow();
 							}
 						} catch (InterruptedException e) {
@@ -203,7 +203,7 @@ public class ServerTestContext {
 
 					CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures);
 					try {
-						allFutures.get(10, TimeUnit.SECONDS);
+						allFutures.get(180, TimeUnit.SECONDS);
 						System.out.println("All players logout requests completed successfully");
 					} catch (TimeoutException e) {
 						System.err.println("Some logout requests did not complete in time");
