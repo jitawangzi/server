@@ -79,6 +79,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     //
     transient final int MAXFLOOR = 10;
     private Map<Integer, Boolean> floorData = new HashMap<>();
+    private  int cacheBattleId;
     public EquipTowerBattle() {
     }
 
@@ -117,6 +118,18 @@ public class EquipTowerBattle extends XiYouBattleHandler {
                 helpMap.put(helpId, 0);
             }
         });
+        if(cacheBattleId>0) {
+            BattleConfig battleConfig = BattleManager.instance().get(cacheBattleId);
+            PlayerHelper.addReward(player,battleConfig.FailRandom , OpType.BattleEnd);
+        }
+    }
+
+    @Override
+    public void reLogin() {
+        if(cacheBattleId>0) {
+            BattleConfig battleConfig = BattleManager.instance().get(cacheBattleId);
+            PlayerHelper.addReward(player,battleConfig.FailRandom , OpType.BattleEnd);
+        }
     }
 
     @Override
@@ -271,6 +284,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
 
     @Override
     public int battleStart(int id, int subId) {
+        cacheBattleId=id;
         return 0;
     }
 
@@ -280,6 +294,7 @@ public class EquipTowerBattle extends XiYouBattleHandler {
 
         int battlefloor = battleModule.getAttackingId() % 10;
         boolean newRecord = !isPass(battlefloor);
+        cacheBattleId=0;
         if (request.getWin()) {
             if (cacheHelpPlayerId > 0) {
                 addHelpRewards(cacheHelpPlayerId, battlefloor);
