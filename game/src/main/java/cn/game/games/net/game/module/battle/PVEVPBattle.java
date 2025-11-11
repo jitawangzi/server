@@ -92,6 +92,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
                createBattleRecord_Target(0,true,rediskeyTarget);
                createBattleRecord_My(simplePlayer, 0, false,rediskeyMy);
            }
+           PlayerHelper.addReward(player,1010001 , OpType.BattleEnd);
            GameLogger.pvpfight(player,false,simplePlayer,false);
            inBattleRankPlayerId = 0L;
            mainShowRank.clear();
@@ -114,6 +115,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
                 createBattleRecord_My(simplePlayer, 0, false,rediskeyMy);
             }
             GameLogger.pvpfight(player,false,simplePlayer,false);
+           PlayerHelper.addReward(player,1010001 , OpType.BattleEnd);
+
             inBattleRankPlayerId = 0L;
             mainShowRank.clear();
         }
