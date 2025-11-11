@@ -262,7 +262,8 @@ public class GinsengTreeHandler extends GameBaseHandler {
 		            }
 		        }
 		        List<RSGRewardConfig> list = RSGRewardManager.instance().list();
-		        int rewardCount = Rnd.randomInRange(GlobalConst.RSGTreeRewardNum);
+//		        int rewardCount = Rnd.randomInRange(GlobalConst.RSGTreeRewardNum);
+		        int rewardCount = rsgTreeLvConfig.CardNum;
 		        for (int i = 0; i < rewardCount; i++) {
 		            RSGRewardConfig rsgRewardConfig = null;
 		            if (fetterMap.isEmpty()) {

@@ -55,13 +55,13 @@ public class CSVMessagesReader {
         if (index < 0 || index >= list.size()) return null;
 
         CSVMessage csvMessage = list.get(index);
-        if (csvMessage.probability < 0 ) {
-			return null; 
-		}
         // 概率语义：0 或空（读入时已处理为 0）= 必发；>0 则按百分比命中
         if (csvMessage.probability == 0 || Rnd.hitPercentage(csvMessage.probability)) {
             return csvMessage;
         }
+//        if (csvMessage.probability < 0 ) {
+//        	return null; 
+//        }
         // 概率百分比没有命中，找下一个消息
         return nextMessage(list, index + 1);
     }
