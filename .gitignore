@@ -20,6 +20,5 @@ target
 
 # IDEA
 .idea/
-*.iml
 /init.log
 /player.json
