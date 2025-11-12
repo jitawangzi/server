@@ -6,14 +6,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import com.google.protobuf.Message;
-
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.net.client.NetClient;
@@ -82,13 +79,16 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.ThreadingModel;
 import io.vertx.core.Vertx;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardRequest_40000085;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
 
 @Component
 public class GuildHandler extends GameBaseHandler {
 
     static Logger log = LoggerFactory.getLogger(GuildHandler.class);
 
-    
     @Override
     protected void inititialize() {
         putInvoker(PbProtocol.GuildListRequest_40000001, this::guildList);
@@ -114,6 +114,8 @@ public class GuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildBountyRewardRequest_40000072, this::bountyReward);
         putInvoker(PbProtocol.GuildDonateRequest_40000067, this::donate);
         putInvoker(PbProtocol.GuildRankListRequest_40000081, this::rankList);
+        putInvoker(PbProtocol.GuildGVECardDataRequest_40000083, this::gVECardData);
+        putInvoker(PbProtocol.GuildGVEOpenCardRequest_40000085, this::gVEOpenCard);
     }
 
     @Override
@@ -168,7 +170,7 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildModule guildModule = player.getGuildModule();
         long joinTime = guildModule.getJoinTime();
-        if (guildModule.getDisbandCount() > 0 && (System.currentTimeMillis() - joinTime)  / 1000 < GlobalConst.GuildBargainCD) {
+        if (guildModule.getDisbandCount() > 0 && (System.currentTimeMillis() - joinTime) / 1000 < GlobalConst.GuildBargainCD) {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
@@ -193,7 +195,7 @@ public class GuildHandler extends GameBaseHandler {
         guildModule.setBargainCount(bargainCount + 1);
         client.sendProtocol(res.build());
         log.info("guild bargain BIBIBI 5");
-        GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]); 
+        GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]);
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -216,7 +218,7 @@ public class GuildHandler extends GameBaseHandler {
         guildModule.setBargainBuy(true);
         client.sendProtocol(res.build());
         log.info("guild buyBargain BIBIBI 3");
-        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID,bargainPrice[1]);
+        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID, bargainPrice[1]);
     }
 
     private void updateMemberAuth(NetClient client, Object o) {
@@ -230,7 +232,7 @@ public class GuildHandler extends GameBaseHandler {
         int optType = req.getOptType();
         // 不能审批自己
         List<Integer> targetPidListList = req.getTargetPidListList();
-		if (targetPidListList.contains(player.getPlayerId())) {
+        if (targetPidListList.contains(player.getPlayerId())) {
             client.sendProtocol(res.build(), ErrorMsgEnum.request_parameter_error.ID);
             return;
         }
@@ -239,7 +241,7 @@ public class GuildHandler extends GameBaseHandler {
             return;
         }
         List<Long> targetPidList = targetPidListList.stream().map(i -> i.longValue()).collect(Collectors.toList());
-        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId()); 
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         guildProxy.updateMemberAuth(player.getGuildId(), player.getPlayerId(), player.getPlayerName(), optType, targetPidList);
         client.sendProtocol(res.setResult(true).build());
     }
@@ -286,7 +288,6 @@ public class GuildHandler extends GameBaseHandler {
                     client.sendProtocol(callBack.response);
                 }
             }
-            
         }).onFailure(err -> {
             err.printStackTrace();
             client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
@@ -297,32 +298,31 @@ public class GuildHandler extends GameBaseHandler {
         GuildMsg.GuildQuitRequest_40000017 req = (GuildMsg.GuildQuitRequest_40000017) o;
         GuildMsg.GuildQuitResponse_40000018.Builder res = GuildMsg.GuildQuitResponse_40000018.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-
-        GuildModule guildModule = player.getGuildModule(); 
-        long guildId = guildModule.getGuildId(); 
-		if (guildId <= 0) {
-			player.fail(ErrorMsgEnum.zong_men_not_exist);
-		}
-        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId); 
+        GuildModule guildModule = player.getGuildModule();
+        long guildId = guildModule.getGuildId();
+        if (guildId <= 0) {
+            player.fail(ErrorMsgEnum.zong_men_not_exist);
+        }
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
         guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
         // 退出成功,在退出的推送协议里处理退出，这里先不处理了
-//        guildModule.quit(0);
+        //        guildModule.quit(0);
         client.sendProtocol(res.setResult(true).build());
     }
 
     private void setGuildMemberPosition(NetClient client, Object o) {
         GuildMsg.GuildMemberPositionSetRequest_40000015 req = (GuildMsg.GuildMemberPositionSetRequest_40000015) o;
         GuildMsg.GuildMemberPositionSetResponse_40000016.Builder res = GuildMsg.GuildMemberPositionSetResponse_40000016.newBuilder();
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId()); 
-        long guildId = player.getGuildId(); 
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        long guildId = player.getGuildId();
         if (guildId == 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
         autoForwardGuildServer(client, res, req, (result) -> {
-        	GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
-        	client.sendProtocol(response); 
-        	GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition()) ;
+            GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
+            client.sendProtocol(response);
+            GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition());
             return null;
         });
     }
@@ -347,11 +347,11 @@ public class GuildHandler extends GameBaseHandler {
                 return;
             }
             // 检查公会名称是否重复
-            boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(req.getName()); 
+            boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(req.getName());
             if (checkGuildNameRepeat) {
                 client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
                 return;
-    		}
+            }
             checkStrs.add(req.getName());
         }
         if (!StringUtils.isEmpty(req.getNotice())) {
@@ -392,7 +392,7 @@ public class GuildHandler extends GameBaseHandler {
                 }
                 res.setResult(true);
                 client.sendProtocol(res);
-				GameLogger.guildInfoChange(player, player.getGuildId(), req.getName() == null ? "null" : req.getName(), req.getIcon()) ; 
+                GameLogger.guildInfoChange(player, player.getGuildId(), req.getName() == null ? "null" : req.getName(), req.getIcon());
                 return null;
             });
         });
@@ -408,7 +408,7 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
-        long guildId = player.getGuildId(); 
+        long guildId = player.getGuildId();
         String guildName = player.getGuildName();
         sendMsgToGuildServer(player, req, "").onSuccess(callBack -> {
             if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
@@ -440,13 +440,13 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
-        GuildModule guildModule = player.getGuildModule(); 
-        List<Long> applyJoinList = guildModule.getApplyJoinList(); 
-//        if (applyJoinList.contains(id)) {
-//            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
-//            return;
-//		}
-        guildModule.checkJoinCd(); 
+        GuildModule guildModule = player.getGuildModule();
+        List<Long> applyJoinList = guildModule.getApplyJoinList();
+        //        if (applyJoinList.contains(id)) {
+        //            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_apply_exist.ID);
+        //            return;
+        //		}
+        guildModule.checkJoinCd();
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
         GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
         if (guild != null) {
@@ -456,7 +456,7 @@ public class GuildHandler extends GameBaseHandler {
             GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
             client.sendProtocol(res.setGuild(allInfo).build());
         } else {
-        	applyJoinList.add(id) ; 
+            applyJoinList.add(id);
             client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
         }
     }
@@ -464,19 +464,18 @@ public class GuildHandler extends GameBaseHandler {
     private void createGuild(NetClient client, Object o) {
         GuildMsg.GuildCreateRequest_40000005 req = (GuildMsg.GuildCreateRequest_40000005) o;
         GuildMsg.GuildCreateResponse_40000006.Builder res = GuildMsg.GuildCreateResponse_40000006.newBuilder();
-        GuildCreateResponse_40000006 defaultInstance = GuildCreateResponse_40000006.getDefaultInstance(); 
+        GuildCreateResponse_40000006 defaultInstance = GuildCreateResponse_40000006.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() != 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_exist.ID);
             return;
         }
         if (player.getVipLevel() < GlobalConst.GuildCreationVIP) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID); 
-            return ; 
-		}
-        GuildModule guildModule = player.getGuildModule(); 
-        guildModule.checkJoinCd(); 
-
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.level_not_enough.ID);
+            return;
+        }
+        GuildModule guildModule = player.getGuildModule();
+        guildModule.checkJoinCd();
         String name = req.getName();
         List<String> checkStrs = new ArrayList<>();
         if (!player.isEnough(GlobalConst.GuildCreationConsume[0], GlobalConst.GuildCreationConsume[1])) {
@@ -488,11 +487,11 @@ public class GuildHandler extends GameBaseHandler {
             return;
         }
         // 检查公会名称是否重复
-        boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(name); 
+        boolean checkGuildNameRepeat = GuildHelper.checkGuildNameRepeat(name);
         if (checkGuildNameRepeat) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_name_repeat.ID);
             return;
-		}
+        }
         if (!StringUtils.isEmpty(req.getNotice())) {
             checkStrs.add(req.getNotice());
         }
@@ -502,54 +501,47 @@ public class GuildHandler extends GameBaseHandler {
         checkStrs.add(name);
         Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, name);
         // 非法字符串检测
-     log.warn("start thread " + Thread.currentThread().getName());
-
-     List<Future<Boolean>> checks = new ArrayList<>(checkStrs.size());
-     for (String str : checkStrs) {
-       Future<Boolean> f = PlayerHelper.checkContextData(player, str); // 应为 Vert.x Future<Boolean>
-       checks.add(f);
-     }
-     checks.add(checkFuture);
-     Future.all(checks).compose(cf -> {
-       // 验证是否有 false
-       for (int i = 0; i < checks.size(); i++) {
-         Boolean ok = (Boolean) cf.resultAt(i);
-         if (Boolean.FALSE.equals(ok)) {
-           client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
-           return Future.failedFuture("context-check-fail");
-         }
-       }
-       // 通过校验，发起远程调用
-       GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
-       return guildProxy.createGuild(
-           player.getPlayerId(),
-           req.getName(),
-           req.getNotice(),
-           req.getDeclaration(),
-           req.getIcon(),
-           req.getAutoJoin()
-       );
-     }).onSuccess(r -> {
-    	 ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
-    		 log.warn("map exec" + Thread.currentThread().getName());
-    		 log.warn("thread=" + Thread.currentThread().getName());
-//    		 log.warn("isEventLoop=" + context.isEventLoopContext());
-//    		 log.warn("isWorker=" + context.isWorkerContext());
-//    		 log.warn("isVirtualThread=" + (context.threadingModel() == ThreadingModel.VIRTUAL_THREAD ? "true":"false"));
-    		 // 创建公会成功
-    		 // 创建公会成功的业务逻辑
-    		 PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
-    		 GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-    		 guildModule.join(simpleInfo.getId());
-    		 GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
-    		 res.setGuild(allInfo);
-    		 client.sendProtocol(res);
-    		 GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
-		}); 
-     }).onFailure(err -> {
-       // 如果是校验未通过，前面已返回相应协议；这里兜底
-       player.handleFail(err);
-     });
+        log.warn("start thread " + Thread.currentThread().getName());
+        List<Future<Boolean>> checks = new ArrayList<>(checkStrs.size());
+        for (String str : checkStrs) {
+            // 应为 Vert.x Future<Boolean>
+            Future<Boolean> f = PlayerHelper.checkContextData(player, str);
+            checks.add(f);
+        }
+        checks.add(checkFuture);
+        Future.all(checks).compose(cf -> {
+            // 验证是否有 false
+            for (int i = 0; i < checks.size(); i++) {
+                Boolean ok = (Boolean) cf.resultAt(i);
+                if (Boolean.FALSE.equals(ok)) {
+                    client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+                    return Future.failedFuture("context-check-fail");
+                }
+            }
+            // 通过校验，发起远程调用
+            GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
+            return guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(), req.getAutoJoin());
+        }).onSuccess(r -> {
+            ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+                log.warn("map exec" + Thread.currentThread().getName());
+                log.warn("thread=" + Thread.currentThread().getName());
+                //    		 log.warn("isEventLoop=" + context.isEventLoopContext());
+                //    		 log.warn("isWorker=" + context.isWorkerContext());
+                //    		 log.warn("isVirtualThread=" + (context.threadingModel() == ThreadingModel.VIRTUAL_THREAD ? "true":"false"));
+                // 创建公会成功
+                // 创建公会成功的业务逻辑
+                PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
+                GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
+                guildModule.join(simpleInfo.getId());
+                GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
+                res.setGuild(allInfo);
+                client.sendProtocol(res);
+                GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
+            });
+        }).onFailure(err -> {
+            // 如果是校验未通过，前面已返回相应协议；这里兜底
+            player.handleFail(err);
+        });
     }
 
     private void findGuild(NetClient client, Object o) {
@@ -563,8 +555,8 @@ public class GuildHandler extends GameBaseHandler {
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
         GuildShowInfo guildShowInfo = serviceInterface.getGuildShowInfo(guildId);
         if (guildShowInfo != null) {
-        	res.setGuild(guildShowInfo);
-		}
+            res.setGuild(guildShowInfo);
+        }
         client.sendProtocol(res.build());
     }
 
@@ -714,28 +706,24 @@ public class GuildHandler extends GameBaseHandler {
         GuildDonateResponse_40000068 defaultInstance = GuildDonateResponse_40000068.getDefaultInstance();
         GuildDonateResponse_40000068.Builder resp = GuildDonateResponse_40000068.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        
         if (player.getGuildId() == 0) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.illegal_request.ID);
             return;
         }
-        
         GuildDonateConfig guildDonateConfig = GuildDonateManager.instance().get(id);
         IntMapWrapper donateMap = player.getGuildModule().getDonateMap();
         if (donateMap.getValue(id) >= guildDonateConfig.DayCount) {
             client.sendProtocol(resp.build(), ErrorMsgEnum.times_limit.ID);
             return;
         }
-        player.pay(guildDonateConfig.Price,OpType.GuildDonate);
+        player.pay(guildDonateConfig.Price, OpType.GuildDonate);
         List<RewardInfo> resources = PlayerHelper.addResources(player, guildDonateConfig.Reward, OpType.GuildDonate);
         resp.addAllRewards(resources);
         donateMap.add(id);
-        player.handleEvent(EventTypeEnum.GuildDonate,id);
+        player.handleEvent(EventTypeEnum.GuildDonate, id);
         client.sendProtocol(resp);
-        
-        long guildContribute = RewardHelper.getRewardCount(resources, Asset.GuildContribute) ; 
-        
-        GameLogger.GuildDonate(player, id, donateMap.getValue(id), (int)guildContribute, player.getPlayerId());
+        long guildContribute = RewardHelper.getRewardCount(resources, Asset.GuildContribute);
+        GameLogger.GuildDonate(player, id, donateMap.getValue(id), (int) guildContribute, player.getPlayerId());
     }
 
     private void rankList(NetClient client, Object message) {
@@ -745,17 +733,17 @@ public class GuildHandler extends GameBaseHandler {
         GuildRankListResponse_40000082 defaultInstance = GuildRankListResponse_40000082.getDefaultInstance();
         GuildRankListResponse_40000082.Builder resp = GuildRankListResponse_40000082.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        
-		if (pageSize > 100) {
-			client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
-			return;
-		}
-		CompletionStage<GuildRankList> rankInfo = RankHelper.getGuildRankList(player, page, pageSize);
-		rankInfo.thenAccept(r -> {
-			resp.setRankList(r); 
-			client.sendProtocol(resp.build());
-		}).exceptionally(player::handleFailFunction);
+        if (pageSize > 100) {
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.request_parameter_error.ID);
+            return;
+        }
+        CompletionStage<GuildRankList> rankInfo = RankHelper.getGuildRankList(player, page, pageSize);
+        rankInfo.thenAccept(r -> {
+            resp.setRankList(r);
+            client.sendProtocol(resp.build());
+        }).exceptionally(player::handleFailFunction);
     }
+
     public static Future<GuildCallbackMsg> sendMsgToGuildServer(long guildId, Player player, Message req, String... params) {
         // 封装公会请求
         GuildMsgPush_41000045.Builder serverReq = GuildMsgPush_41000045.newBuilder();
@@ -816,4 +804,20 @@ public class GuildHandler extends GameBaseHandler {
         return sendMsgToGuildServer(player.getGuildId(), player, req, params);
     }
 
+    private void gVECardData(NetClient client, Object message) {
+        GuildGVECardDataRequest_40000083 req = (GuildGVECardDataRequest_40000083) message;
+        GuildGVECardDataResponse_40000084 defaultInstance = GuildGVECardDataResponse_40000084.getDefaultInstance();
+        GuildGVECardDataResponse_40000084.Builder resp = GuildGVECardDataResponse_40000084.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
+    }
+
+    private void gVEOpenCard(NetClient client, Object message) {
+        GuildGVEOpenCardRequest_40000085 req = (GuildGVEOpenCardRequest_40000085) message;
+        int cardId = req.getCardId();
+        GuildGVEOpenCardResponse_40000086 defaultInstance = GuildGVEOpenCardResponse_40000086.getDefaultInstance();
+        GuildGVEOpenCardResponse_40000086.Builder resp = GuildGVEOpenCardResponse_40000086.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
+    }
 }

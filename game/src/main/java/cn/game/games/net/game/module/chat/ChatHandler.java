@@ -74,7 +74,7 @@ public class ChatHandler extends GameBaseHandler {
 		case WORLD_CHAT: {
 			// 推送给所有在线玩家
 //			PushService.getInstance().pushMessage(notAtMeMessage, false, sendPlayer.getServerId());
-			PushService.getInstance().pushMessage(notAtMeMessage, false);
+			PushService.getInstance().pushMessage(notAtMeMessage, false,serverId);
 //			Collection<Player> players = PlayerManager.getInstance().getAllPlayer().values();
 //			for (Player player : players) {
 //				if (!player.getData().getServerId().equals(sendServerId)) {
@@ -156,6 +156,7 @@ public class ChatHandler extends GameBaseHandler {
 						break;
 					}
 					ServerChatMessagePush_31000010.Builder messageBuilder = ServerChatMessagePush_31000010.newBuilder();
+					messageBuilder.setServerId(sendPlayer.getServerId()); 
 					messageBuilder.setChatType(chatType);
 					messageBuilder.setContent(content);
 					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());

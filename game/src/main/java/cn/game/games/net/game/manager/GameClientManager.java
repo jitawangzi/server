@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -178,10 +179,9 @@ public class GameClientManager {
 	 * 同步持久化所有玩家的数据，一般用在服务器关闭时
 	 */
 	public void storeAllPlayers() {
-		final long perLogoutTimeoutSec = Math.min(10, Config.shutdownWaitTimeSeconds / 10); // 单个玩家登出超时
-		final long overallTimeoutSec = Config.shutdownWaitTimeSeconds; // 总体超时
+		final long perLogoutTimeoutSec = Math.min(10, Config.shutdownWaitTimeSeconds / 10);
+		final long overallTimeoutSec = Config.shutdownWaitTimeSeconds;
 
-		// 固定快照，避免并发修改导致 size 与提交数量不一致
 		final List<GameClient> snapshot = new ArrayList<>(players.values());
 		final int total = snapshot.size();
 
@@ -193,6 +193,10 @@ public class GameClientManager {
 			return;
 		}
 
+		// ===== 限制并发数 =====
+		final int maxConcurrent = 8; //
+		final Semaphore semaphore = new Semaphore(maxConcurrent);
+
 		AtomicInteger finished = new AtomicInteger(0);
 		AtomicInteger succeeded = new AtomicInteger(0);
 		AtomicInteger timeouts = new AtomicInteger(0);
@@ -200,15 +204,19 @@ public class GameClientManager {
 
 		Promise<Void> allDone = Promise.promise();
 
-		// 逐个提交到按 playerId 串行的 Processor，确保玩家内有序
 		for (GameClient gc : snapshot) {
 			long pid = gc.getPlayerId();
 			try {
+				// 获取许可，阻塞直到有空位
+				semaphore.acquire();
+				
 				ServerContext.getInstance().getProcessor().process(pid, () -> {
-					// 调用玩家登出逻辑，并为该 Future 增加单次超时
 					Future<?> f = logout(gc, LogoutType.ServerClose).timeout(perLogoutTimeoutSec, TimeUnit.SECONDS);
 
 					f.onComplete(ar -> {
+						// ===== 完成后释放许可 =====
+						semaphore.release();
+						
 						int done = finished.incrementAndGet();
 						if (ar.succeeded()) {
 							succeeded.incrementAndGet();
@@ -222,7 +230,6 @@ public class GameClientManager {
 							}
 						}
 
-						// 每处理一定数量打印一次进度
 						if (done % 50 == 0 || done == total) {
 							log.info("storeAllPlayers progress {}/{}", done, total);
 						}
@@ -233,7 +240,9 @@ public class GameClientManager {
 					});
 				});
 			} catch (Throwable t) {
-				// 提交到 Processor 失败，直接计为失败并继续，避免整体卡死
+				// 提交失败也要释放许可
+				semaphore.release();
+				
 				int done = finished.incrementAndGet();
 				failed.incrementAndGet();
 				log.warn("storeAllPlayers: schedule logout failed for player {}", pid, t);
@@ -243,11 +252,9 @@ public class GameClientManager {
 			}
 		}
 
-		// 等待总体完成，增加总超时，避免个别尾巴导致卡死
 		try {
 			AsyncUtils.await(allDone.future().timeout(overallTimeoutSec, TimeUnit.SECONDS));
 		} catch (Exception e) {
-			// 总体超时或异常，记录当下完成度，继续后续关闭流程
 			log.warn("storeAllPlayers overall wait ended with {}: finished={}/{} (ok={}, timeout={}, fail={})",
 					e.getClass().getSimpleName(), finished.get(), total, succeeded.get(), timeouts.get(), failed.get());
 		}

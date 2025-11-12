@@ -62,6 +62,7 @@ public class GameClient extends AbstractNetClient {
 			return size() > MAX_RECENT_MESSAGES;
 		}
 	};
+	private final Object recentLock = new Object();
 
 	public int packetMaxCountPerSecond = 0;
 	public long firstPacketTime = System.currentTimeMillis();
@@ -180,12 +181,14 @@ public class GameClient extends AbstractNetClient {
 			if (recored && seq > 0) {
 				// 记录seq对应下发的数据，相同的seq直接返回老数据
 				IProtocol<byte[]> protocol = new ByteArrayProtocol(msgId, data, seq, errorCode);
-				List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
-				if (list == null) {
-					list = new ArrayList<>();
-					this.recentMessages.put(seq, list);
+				synchronized (recentLock) {
+					List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
+					if (list == null) {
+						list = new ArrayList<>();
+						this.recentMessages.put(seq, list);
+					}
+					list.add(protocol);
 				}
-				list.add(protocol);
 			}
 
 			return true;
@@ -280,10 +283,16 @@ public class GameClient extends AbstractNetClient {
 		if (seq < 0) {
 			return true;
 		}
-		List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
-		// 这个seq的消息处理过了
-		if (list != null && !list.isEmpty()) {
-			for (IProtocol<byte[]> send : list) {
+		List<IProtocol<byte[]>> snapshot = null;
+		synchronized (recentLock) {
+			List<IProtocol<byte[]>> list = this.recentMessages.get(seq);
+//		// 这个seq的消息处理过了
+			if (list != null && !list.isEmpty()) {
+				snapshot = new ArrayList<>(list);
+			}
+		}
+		if (snapshot != null) {
+			for (IProtocol<byte[]> send : snapshot) {
 				sendProtocol(send.getMsgID(), send.getSeq(), send.getData(), send.getErrorCode(), false);
 				log.info("GameClient[{}]send processed messages msgId[{}] seq[{}]", this, send.getMsgID(), send.getSeq());
 			}
@@ -316,9 +325,10 @@ public class GameClient extends AbstractNetClient {
 	public int getCurMessageSeq() {
 		return curMessageSeq;
 	}
+
 	public void clearRecentMessages() {
-		this.recentMessages.clear();
+		synchronized (recentLock) {
+			this.recentMessages.clear();
+		}
 	}
-
-
 }

@@ -25,6 +25,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDissolveResponse_40000012;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
 import cn.game.protocol.protobuf.GuildMsg.GuildFindResponse_40000004;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVECardData;
 import cn.game.protocol.protobuf.GuildMsg.GuildInfoResponse_40000022;
 import cn.game.protocol.protobuf.GuildMsg.GuildJoinPush_40000044;
 import cn.game.protocol.protobuf.GuildMsg.GuildListResponse_40000002;
@@ -45,6 +46,8 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -87,6 +90,8 @@ public class ClientGuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildJoinPush_40000044, this::joinPush);
         putInvoker(PbProtocol.GuildRankListResponse_40000082, this::rankList);
         putInvoker(PbProtocol.GuildApplyProcessedPush_40100001, this::applyProcessedPush);
+        putInvoker(PbProtocol.GuildGVECardDataResponse_40000084, this::gVECardData);
+        putInvoker(PbProtocol.GuildGVEOpenCardResponse_40000086, this::gVEOpenCard);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -146,7 +151,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildAllInfo info = resp.getInfo();
         Client client = (Client) netClient;
         if (info != null) {
-        	client.guildAllInfo = info; 
+            client.guildAllInfo = info;
             client.guildPersonalInfo = info.getPersonalInfo();
             List<GuildMemberInfo> membersList = info.getShowInfo().getMembersList();
             for (GuildMemberInfo guildMemberInfo : membersList) {
@@ -187,7 +192,7 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildAllInfo info = resp.getGuild();
         Client client = (Client) netClient;
         if (info != null) {
-        	client.guildAllInfo = info;
+            client.guildAllInfo = info;
             client.guildPersonalInfo = info.getPersonalInfo();
             List<GuildMemberInfo> membersList = info.getShowInfo().getMembersList();
             for (GuildMemberInfo guildMemberInfo : membersList) {
@@ -270,6 +275,25 @@ public class ClientGuildHandler extends GameBaseHandler {
         GuildApplyProcessedPush_40100001 resp = (GuildApplyProcessedPush_40100001) message;
         long guildId = resp.getGuildId();
         long playerId = resp.getPlayerId();
+        Client client = (Client) netClient;
+    }
+
+    private void gVECardData(NetClient netClient, Object message) {
+        GuildGVECardDataResponse_40000084 resp = (GuildGVECardDataResponse_40000084) message;
+        List<GuildGVECardData> card1List = resp.getCard1List();
+        List<GuildGVECardData> card10List = resp.getCard10List();
+        List<GuildGVECardData> card100List = resp.getCard100List();
+        int myCount1 = resp.getMyCount1();
+        int myCount10 = resp.getMyCount10();
+        int myCount100 = resp.getMyCount100();
+        Client client = (Client) netClient;
+    }
+
+    private void gVEOpenCard(NetClient netClient, Object message) {
+        GuildGVEOpenCardResponse_40000086 resp = (GuildGVEOpenCardResponse_40000086) message;
+        List<RewardInfo> rewardsList = resp.getRewardsList();
+        GuildGVECardData cardData = resp.getCardData();
+        int result = resp.getResult();
         Client client = (Client) netClient;
     }
 }
