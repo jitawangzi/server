@@ -173,165 +173,177 @@ public class ServerTestContext {
 	    Runtime.getRuntime().addShutdownHook(new Thread() {
 	        @Override
 	        public void run() {
-	            long start = System.currentTimeMillis();
+	            long startTime = System.currentTimeMillis();
+	            System.out.println("开始优雅关闭流程...");
+	            
 	            try {
-	                System.out.println("start shutdown hook at " + System.currentTimeMillis());
 	                run = false;
-
-	                // 1) 优雅关闭登录线程池
-	                if (loginExecutor != null && !loginExecutor.isShutdown()) {
-	                    loginExecutor.shutdown();
-	                    try {
-	                        if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-	                            loginExecutor.shutdownNow();
-	                        }
-	                    } catch (InterruptedException e) {
-	                        loginExecutor.shutdownNow();
-	                        Thread.currentThread().interrupt();
-	                    }
-	                }
-	                System.out.println("login executor shutdown completed in " + (System.currentTimeMillis() - start) + "ms");
-
-	                // 2) 分批并发发送登出，批内用 isLastMessageReturn 轮询等待返回
-	                final int batchSize = 200;                 // 每批最大并发量
-	                final long perBatchTimeoutSeconds = 20;    // 每批等待超时（轮询等待时长上限）
-	                final long overallTimeoutSeconds = 180;    // 整体超时
-	                final long pollIntervalMillis = 20;        // 轮询间隔
-	                final long batchIntervalMillis = 100;      // 批间隔
-
-	                final long overallDeadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(overallTimeoutSeconds);
-
-	                Deque<Client> pending = new ArrayDeque<>(clients);
-
-	                int batchIndex = 0;
-	                int totalDispatched = 0;
-
-	                while (!pending.isEmpty()) {
-	                    // 整体超时检查
-	                    if (System.nanoTime() > overallDeadlineNanos) {
-	                        System.err.println("Overall logout timeout reached, stop sending further logout requests");
-	                        break;
-	                    }
-
-	                    batchIndex++;
-	                    List<Client> thisBatchClients = new ArrayList<>(batchSize);
-
-	                    // 2.1 选择本批可发送的客户端：仅当上一次请求已返回才发送
-	                    int scanLimit = pending.size(); // 防止本轮空转
-	                    while (!pending.isEmpty() && thisBatchClients.size() < batchSize && scanLimit-- > 0) {
-	                        Client c = pending.pollFirst();
-
-	                        boolean safeToSend = true;
-	                        try {
-	                            safeToSend = c.isLastMessageReturn();
-	                        } catch (Exception ignore) {
-	                            safeToSend = false;
-	                        }
-
-	                        if (!safeToSend) {
-	                            // 该客户端仍有未返回的先前请求，放回队尾，下批再试
-	                            pending.offerLast(c);
-	                            continue;
-	                        }
-
-	                        // 发送登出请求
-	                        try {
-	                            ChannelFuture nf = c.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
-	                            // 此处不依赖 nf 完成度来判断响应，仅用于发起发送
-	                            if (nf == null) {
-	                                System.err.println("Logout send returned null future for a client");
-	                            }
-	                        } catch (Exception ex) {
-	                            System.err.println("Failed to send logout for a client: " + ex.getMessage());
-	                        }
-
-	                        thisBatchClients.add(c);
-	                    }
-
-	                    if (thisBatchClients.isEmpty()) {
-	                        // 本批没有可发送的，稍作等待再试，避免忙等
-	                        try {
-	                            TimeUnit.MILLISECONDS.sleep(50);
-	                        } catch (InterruptedException e) {
-	                            Thread.currentThread().interrupt();
-	                            break;
-	                        }
-	                        continue;
-	                    }
-
-	                    totalDispatched += thisBatchClients.size();
-
-	                    // 2.2 轮询等待本批全部客户端“收到登出返回”或达到批次超时/整体超时
-	                    long batchDeadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(perBatchTimeoutSeconds);
-	                    int completed = 0;
-	                    boolean[] done = new boolean[thisBatchClients.size()];
-
-	                    while (completed < thisBatchClients.size()) {
-	                        // 整体超时
-	                        if (System.nanoTime() > overallDeadlineNanos) {
-	                            System.err.println("Overall logout timeout reached while waiting batch " + batchIndex);
-	                            break;
-	                        }
-	                        // 批次超时
-	                        if (System.nanoTime() > batchDeadlineNanos) {
-	                            System.err.println("Batch " + batchIndex + " timeout after " + perBatchTimeoutSeconds + "s (polling responses)");
-	                            break;
-	                        }
-
-	                        for (int i = 0; i < thisBatchClients.size(); i++) {
-	                            if (done[i]) continue;
-	                            Client c = thisBatchClients.get(i);
-	                            boolean returned = false;
-	                            try {
-	                                // 按你的语义：只有当“本客户端上一条请求”已经收到返回，才算完成
-	                                returned = c.isLastMessageReturn();
-	                            } catch (Exception ignore) {
-	                                // 视为未完成，继续轮询
-	                            }
-	                            if (returned) {
-	                                done[i] = true;
-	                                completed++;
-	                            }
-	                        }
-
-	                        if (completed < thisBatchClients.size()) {
-	                            try {
-	                                TimeUnit.MILLISECONDS.sleep(pollIntervalMillis);
-	                            } catch (InterruptedException e) {
-	                                Thread.currentThread().interrupt();
-	                                break;
-	                            }
-	                        }
-	                    }
-
-	                    int success = completed;
-	                    int timeoutOrUnfinished = thisBatchClients.size() - completed;
-
-	                    System.out.println("Batch " + batchIndex + " summary: dispatched=" + thisBatchClients.size()
-	                            + ", success=" + success + ", failOrTimeout=" + timeoutOrUnfinished
-	                            + ", elapsed=" + (System.currentTimeMillis() - start) + "ms");
-
-	                    // 批间隔，给服务器喘息
-	                    try {
-	                        TimeUnit.MILLISECONDS.sleep(batchIntervalMillis);
-	                    } catch (InterruptedException e) {
-	                        Thread.currentThread().interrupt();
-	                        break;
-	                    }
-	                }
-
-	                System.out.println("Logout dispatch finished. totalDispatched=" + totalDispatched
-	                        + ", totalElapsed=" + (System.currentTimeMillis() - start) + "ms");
-
+	                
+	                // 1) 关闭登录线程池
+	                shutdownLoginExecutor();
+	                
+	                // 2) 并发退出所有客户端
+	                logoutAllClients();
+	                
 	                // 3) 统计与收尾
 	                GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
-	                System.out.println("shutdown hook execution completed, total time " + (System.currentTimeMillis() - start) + "ms");
-
+	                
+	                long totalTime = System.currentTimeMillis() - startTime;
+	                System.out.println("优雅关闭流程完成,总耗时: " + totalTime + "ms" + ",保存玩家数："+ clients.size());
+	                
 	            } catch (Exception e) {
+	                System.err.println("关闭流程异常: " + e.getMessage());
 	                e.printStackTrace();
 	            }
 	        }
 	    });
+	}
+
+	/**
+	 * 关闭登录线程池
+	 */
+	private static void shutdownLoginExecutor() {
+	    if (loginExecutor == null || loginExecutor.isShutdown()) {
+	        return;
+	    }
+	    
+	    long start = System.currentTimeMillis();
+	    loginExecutor.shutdown();
+	    
+	    try {
+	        if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+	            loginExecutor.shutdownNow();
+	        }
+	        System.out.println("登录线程池关闭完成,耗时: " + (System.currentTimeMillis() - start) + "ms");
+	    } catch (InterruptedException e) {
+	        loginExecutor.shutdownNow();
+	        Thread.currentThread().interrupt();
+	    }
+	}
+
+	/**
+	 * 并发退出所有客户端
+	 */
+	private static void logoutAllClients() {
+	    final int CONCURRENT_LOGOUT = 8;           // 同时退出的客户端数
+	    final long OVERALL_TIMEOUT_SECONDS = 300;  // 整体超时时间
+	    final long RESPONSE_TIMEOUT_SECONDS = 10;  // 单个客户端响应超时
+	    
+	    if (clients == null || clients.isEmpty()) {
+	        System.out.println("没有需要退出的客户端");
+	        return;
+	    }
+	    
+	    long startTime = System.currentTimeMillis();
+	    System.out.println("开始退出 " + clients.size() + " 个客户端,并发度: " + CONCURRENT_LOGOUT);
+	    
+	    // 使用信号量控制并发数
+	    Semaphore semaphore = new Semaphore(CONCURRENT_LOGOUT);
+	    CountDownLatch latch = new CountDownLatch(clients.size());
+	    
+	    AtomicInteger successCount = new AtomicInteger(0);
+	    AtomicInteger failCount = new AtomicInteger(0);
+	    AtomicInteger timeoutCount = new AtomicInteger(0);
+	    
+	    // 为每个客户端创建退出任务
+	    ExecutorService logoutExecutor = Executors.newFixedThreadPool(CONCURRENT_LOGOUT);
+	    
+	    for (Client client : clients) {
+	        logoutExecutor.submit(() -> {
+	            try {
+	                // 获取信号量(阻塞直到有可用槽位)
+	                semaphore.acquire();
+	                
+	                // 执行退出逻辑
+	                boolean success = logoutSingleClient(client, RESPONSE_TIMEOUT_SECONDS);
+	                
+	                if (success) {
+	                    successCount.incrementAndGet();
+	                } else {
+	                    timeoutCount.incrementAndGet();
+	                }
+	                
+	            } catch (Exception e) {
+	                failCount.incrementAndGet();
+	                System.err.println("客户端退出异常: " + e.getMessage());
+	            } finally {
+	                semaphore.release(); // 释放信号量,允许下一个客户端开始退出
+	                latch.countDown();
+	            }
+	        });
+	    }
+	    
+	    // 等待所有客户端完成或整体超时
+	    try {
+	        boolean completed = latch.await(OVERALL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+	        
+	        if (!completed) {
+	            System.err.println("退出流程整体超时(" + OVERALL_TIMEOUT_SECONDS + "秒)");
+	        }
+	        
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        System.err.println("退出流程被中断");
+	    } finally {
+	        logoutExecutor.shutdown();
+	        try {
+	            logoutExecutor.awaitTermination(5, TimeUnit.SECONDS);
+	        } catch (InterruptedException e) {
+	            logoutExecutor.shutdownNow();
+	        }
+	    }
+	    
+	    long totalTime = System.currentTimeMillis() - startTime;
+	    System.out.println(String.format(
+	        "客户端退出完成 - 总数:%d, 成功:%d, 超时:%d, 失败:%d, 耗时:%dms",
+	        clients.size(), successCount.get(), timeoutCount.get(), failCount.get(), totalTime
+	    ));
+	}
+
+	/**
+	 * 退出单个客户端
+	 * @param client 客户端
+	 * @param timeoutSeconds 超时时间(秒)
+	 * @return 是否成功收到服务器响应
+	 */
+	private static boolean logoutSingleClient(Client client, long timeoutSeconds) {
+	    try {
+	        // 发送退出请求
+	        ChannelFuture future = client.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
+	        
+	        if (future == null) {
+	            System.err.println("发送退出请求失败: future为null");
+	            return false;
+	        }
+	        
+	        // 等待发送完成
+	        if (!future.await(2, TimeUnit.SECONDS)) {
+	            System.err.println("发送退出请求超时");
+	            return false;
+	        }
+	        
+	        // 轮询等待服务器响应
+	        long deadline = System.currentTimeMillis() + timeoutSeconds * 1000;
+	        
+	        while (System.currentTimeMillis() < deadline) {
+	            if (client.isLastMessageReturn()) {
+	                return true; // 收到响应
+	            }
+	            
+	            // 短暂休眠避免CPU空转
+	            Thread.sleep(20);
+	        }
+	        
+	        // 超时未收到响应
+	        return false;
+	        
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        return false;
+	    } catch (Exception e) {
+	        System.err.println("退出客户端异常: " + e.getMessage());
+	        return false;
+	    }
 	}
 	private static CompletableFuture<Void> toCompletableFuture(ChannelFuture channelFuture) {
 		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
