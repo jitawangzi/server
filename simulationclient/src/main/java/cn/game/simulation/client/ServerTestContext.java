@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -167,62 +169,170 @@ public class ServerTestContext {
 		thread.setDaemon(true);
 		thread.start();
 	}
-
 	private static void addShutdownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				long start = System.currentTimeMillis();
-				try {
-					System.out.println("start shutdown hook at " + System.currentTimeMillis());
-					run = false;
+	    Runtime.getRuntime().addShutdownHook(new Thread() {
+	        @Override
+	        public void run() {
+	            long start = System.currentTimeMillis();
+	            try {
+	                System.out.println("start shutdown hook at " + System.currentTimeMillis());
+	                run = false;
 
-					// 关闭登录线程池
-					if (loginExecutor != null && !loginExecutor.isShutdown()) {
-						loginExecutor.shutdown();
-						try {
-							if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
-								loginExecutor.shutdownNow();
-							}
-						} catch (InterruptedException e) {
-							loginExecutor.shutdownNow();
-						}
-					}
-					System.out.println("login executor shutdown completed in " + (System.currentTimeMillis() - start) + "ms");
+	                // 1) 优雅关闭登录线程池
+	                if (loginExecutor != null && !loginExecutor.isShutdown()) {
+	                    loginExecutor.shutdown();
+	                    try {
+	                        if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+	                            loginExecutor.shutdownNow();
+	                        }
+	                    } catch (InterruptedException e) {
+	                        loginExecutor.shutdownNow();
+	                        Thread.currentThread().interrupt();
+	                    }
+	                }
+	                System.out.println("login executor shutdown completed in " + (System.currentTimeMillis() - start) + "ms");
 
-					List<ChannelFuture> futures = new ArrayList<>();
-					for (Client client : clients) {
-						ChannelFuture channelFuture = client.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
-						if (channelFuture != null) {
-							futures.add(channelFuture);
-						}
-					}
-					CompletableFuture<Void>[] completableFutures = futures.stream()
-							.map(ServerTestContext::toCompletableFuture)
-							.toArray(CompletableFuture[]::new);
+	                // 2) 分批并发发送登出，批内用 isLastMessageReturn 轮询等待返回
+	                final int batchSize = 200;                 // 每批最大并发量
+	                final long perBatchTimeoutSeconds = 20;    // 每批等待超时（轮询等待时长上限）
+	                final long overallTimeoutSeconds = 180;    // 整体超时
+	                final long pollIntervalMillis = 20;        // 轮询间隔
+	                final long batchIntervalMillis = 100;      // 批间隔
 
-					CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures);
-					try {
-						allFutures.get(180, TimeUnit.SECONDS);
-						System.out.println("All players logout requests completed successfully");
-					} catch (TimeoutException e) {
-						System.err.println("Some logout requests did not complete in time");
-					} catch (Exception e) {
-						System.err.println("Error occurred while waiting for logout requests");
-						e.printStackTrace();
-					}
-					System.out.println("logout requests processing completed in " + (System.currentTimeMillis() - start) + "ms");
+	                final long overallDeadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(overallTimeoutSeconds);
 
-					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
-					System.out.println("shutdown hook execution completed, total time " + (System.currentTimeMillis() - start) + "ms");
+	                Deque<Client> pending = new ArrayDeque<>(clients);
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	                int batchIndex = 0;
+	                int totalDispatched = 0;
+
+	                while (!pending.isEmpty()) {
+	                    // 整体超时检查
+	                    if (System.nanoTime() > overallDeadlineNanos) {
+	                        System.err.println("Overall logout timeout reached, stop sending further logout requests");
+	                        break;
+	                    }
+
+	                    batchIndex++;
+	                    List<Client> thisBatchClients = new ArrayList<>(batchSize);
+
+	                    // 2.1 选择本批可发送的客户端：仅当上一次请求已返回才发送
+	                    int scanLimit = pending.size(); // 防止本轮空转
+	                    while (!pending.isEmpty() && thisBatchClients.size() < batchSize && scanLimit-- > 0) {
+	                        Client c = pending.pollFirst();
+
+	                        boolean safeToSend = true;
+	                        try {
+	                            safeToSend = c.isLastMessageReturn();
+	                        } catch (Exception ignore) {
+	                            safeToSend = false;
+	                        }
+
+	                        if (!safeToSend) {
+	                            // 该客户端仍有未返回的先前请求，放回队尾，下批再试
+	                            pending.offerLast(c);
+	                            continue;
+	                        }
+
+	                        // 发送登出请求
+	                        try {
+	                            ChannelFuture nf = c.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
+	                            // 此处不依赖 nf 完成度来判断响应，仅用于发起发送
+	                            if (nf == null) {
+	                                System.err.println("Logout send returned null future for a client");
+	                            }
+	                        } catch (Exception ex) {
+	                            System.err.println("Failed to send logout for a client: " + ex.getMessage());
+	                        }
+
+	                        thisBatchClients.add(c);
+	                    }
+
+	                    if (thisBatchClients.isEmpty()) {
+	                        // 本批没有可发送的，稍作等待再试，避免忙等
+	                        try {
+	                            TimeUnit.MILLISECONDS.sleep(50);
+	                        } catch (InterruptedException e) {
+	                            Thread.currentThread().interrupt();
+	                            break;
+	                        }
+	                        continue;
+	                    }
+
+	                    totalDispatched += thisBatchClients.size();
+
+	                    // 2.2 轮询等待本批全部客户端“收到登出返回”或达到批次超时/整体超时
+	                    long batchDeadlineNanos = System.nanoTime() + TimeUnit.SECONDS.toNanos(perBatchTimeoutSeconds);
+	                    int completed = 0;
+	                    boolean[] done = new boolean[thisBatchClients.size()];
+
+	                    while (completed < thisBatchClients.size()) {
+	                        // 整体超时
+	                        if (System.nanoTime() > overallDeadlineNanos) {
+	                            System.err.println("Overall logout timeout reached while waiting batch " + batchIndex);
+	                            break;
+	                        }
+	                        // 批次超时
+	                        if (System.nanoTime() > batchDeadlineNanos) {
+	                            System.err.println("Batch " + batchIndex + " timeout after " + perBatchTimeoutSeconds + "s (polling responses)");
+	                            break;
+	                        }
+
+	                        for (int i = 0; i < thisBatchClients.size(); i++) {
+	                            if (done[i]) continue;
+	                            Client c = thisBatchClients.get(i);
+	                            boolean returned = false;
+	                            try {
+	                                // 按你的语义：只有当“本客户端上一条请求”已经收到返回，才算完成
+	                                returned = c.isLastMessageReturn();
+	                            } catch (Exception ignore) {
+	                                // 视为未完成，继续轮询
+	                            }
+	                            if (returned) {
+	                                done[i] = true;
+	                                completed++;
+	                            }
+	                        }
+
+	                        if (completed < thisBatchClients.size()) {
+	                            try {
+	                                TimeUnit.MILLISECONDS.sleep(pollIntervalMillis);
+	                            } catch (InterruptedException e) {
+	                                Thread.currentThread().interrupt();
+	                                break;
+	                            }
+	                        }
+	                    }
+
+	                    int success = completed;
+	                    int timeoutOrUnfinished = thisBatchClients.size() - completed;
+
+	                    System.out.println("Batch " + batchIndex + " summary: dispatched=" + thisBatchClients.size()
+	                            + ", success=" + success + ", failOrTimeout=" + timeoutOrUnfinished
+	                            + ", elapsed=" + (System.currentTimeMillis() - start) + "ms");
+
+	                    // 批间隔，给服务器喘息
+	                    try {
+	                        TimeUnit.MILLISECONDS.sleep(batchIntervalMillis);
+	                    } catch (InterruptedException e) {
+	                        Thread.currentThread().interrupt();
+	                        break;
+	                    }
+	                }
+
+	                System.out.println("Logout dispatch finished. totalDispatched=" + totalDispatched
+	                        + ", totalElapsed=" + (System.currentTimeMillis() - start) + "ms");
+
+	                // 3) 统计与收尾
+	                GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
+	                System.out.println("shutdown hook execution completed, total time " + (System.currentTimeMillis() - start) + "ms");
+
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    });
 	}
-
 	private static CompletableFuture<Void> toCompletableFuture(ChannelFuture channelFuture) {
 		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 		channelFuture.addListener((ChannelFutureListener) future -> {

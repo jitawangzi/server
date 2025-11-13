@@ -125,7 +125,9 @@ import cn.game.util.BinarySearchUtil;
 import cn.game.util.ConversionUtil;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
+import cn.game.util.Rnd;
 import cn.game.util.ServerType;
+import cn.game.util.config.ConfigUtil;
 import io.vertx.core.Future;
 
 /**
@@ -1112,7 +1114,11 @@ public class PlayerHandler extends GameBaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-		playerData.setServerId(ServerHelper.getServerIdLatestAsync());
+		if (ConfigUtil.getBooleanConfig("randomPlayerServer")) {
+			playerData.setServerId("server"+Rnd.get(1,40));
+		}else {
+			playerData.setServerId(ServerHelper.getServerIdLatestAsync());
+		}
 		playerData.setPlayerId(id);
 		playerData.setUid(uid);
 		playerData.setGender(isMan);
