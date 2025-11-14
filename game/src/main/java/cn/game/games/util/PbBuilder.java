@@ -168,6 +168,9 @@ public class PbBuilder {
 	public static GoodsInfo buildGoodsInfo(int id, long count) {
 		return GoodsInfo.newBuilder().setId(id).setCount((int) count).build();
 	}
+	public static GoodsInfo buildGoodsUpdateInfo(int id, long count) {
+		return GoodsInfo.newBuilder().setId(id).setCount((int) count).build();
+	}
 
 	// List<Pair(goodsId,可买数量)> list ->Collection<StoreMsg.StoreGoodsInfo>
 	public static Collection<GoodsInfo> buildStoreGoodsInfo(List<Pair<Integer, Integer>> goodsList1) {

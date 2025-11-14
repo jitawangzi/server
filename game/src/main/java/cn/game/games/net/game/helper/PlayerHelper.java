@@ -117,6 +117,7 @@ import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginResponse_01000002;
 import cn.game.protocol.protobuf.RewardMsg;
+import cn.game.protocol.protobuf.RewardMsg.GoodsUpdatePush_55003501;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.SpendPush_55001501;
 import cn.game.protocol.protobuf.ServerMsg.GamePlayerPush_7d000100;
@@ -443,9 +444,14 @@ public class PlayerHelper {
 //			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
 //					consumeType == null ? "NO_DEFINE" : consumeType.getName());
 			if (notify) {
-				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
-				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
-				player.getGameClient().sendProtocol(spendPush.build());
+				GoodsUpdatePush_55003501.Builder updatePush = GoodsUpdatePush_55003501.newBuilder();
+				long curCount = goodsModule.getCount(id); 
+				updatePush.addUpdate(PbBuilder.buildGoodsInfo(id, curCount));
+				player.getGameClient().sendProtocol(updatePush.build());
+				
+//				SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+//				spendPush.addSpend(PbBuilder.buildGoodsInfo(id, value));
+//				player.getGameClient().sendProtocol(spendPush.build());
 			}
 			BIHelper.resourceUpdate(player, id, value, consumeType, false);
 			return;
@@ -465,18 +471,29 @@ public class PlayerHelper {
 			return;
 		}
 
+//		long curCount = goodsModule.getCount(id); 
+//		updatePush.addUpdate(PbBuilder.buildGoodsInfo(id, curCount));
+//		player.getGameClient().sendProtocol(updatePush.build());
+		
 		if (isEnough(player, list)) {
-			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+			
+			GoodsUpdatePush_55003501.Builder updatePush = GoodsUpdatePush_55003501.newBuilder();
+//			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (Entry<Integer, Integer> entry : list) {
 				if (entry.getValue() <= 0) {
 					continue;
 				}
 				delResources(player, entry.getKey(), entry.getValue(), consumeType, false);
-				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
+				GoodsModule goodsModule = player.getGoodsModule(entry.getKey());
+//				spendPush.addSpend(PbBuilder.buildGoodsInfo(entry.getKey(), entry.getValue()));
+				updatePush.addUpdate(PbBuilder.buildGoodsInfo(entry.getKey(), goodsModule.getCount(entry.getKey())));
 			}
-			if (spendPush.getSpendCount() > 0) {
-				player.getGameClient().sendProtocol(spendPush.build());
+			if (updatePush.getUpdateCount()> 0) {
+				player.getGameClient().sendProtocol(updatePush.build());
 			}
+//			if (spendPush.getSpendCount() > 0) {
+//				player.getGameClient().sendProtocol(spendPush.build());
+//			}
 			return;
 		}
 		player.fail(ErrorMsgEnum.resource_not_enough);
@@ -510,18 +527,24 @@ public class PlayerHelper {
 			return;
 		}
 		if (isEnough(player, list)) {
-			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+			GoodsUpdatePush_55003501.Builder updatePush = GoodsUpdatePush_55003501.newBuilder();
+//			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
 			for (int i = 0; i < list.length; i++) {
 				for (int j = 0; j < list[i].length; j += 2) {
 					if (list[i][j + 1] <= 0) {
 						continue;
 					}
 					delResources(player, list[i][j], list[i][j + 1], consumeType, false);
-					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
+//					spendPush.addSpend(PbBuilder.buildGoodsInfo(list[i][j], list[i][j + 1]));
+					GoodsModule goodsModule = player.getGoodsModule(list[i][j]);
+					updatePush.addUpdate(PbBuilder.buildGoodsInfo(list[i][j], goodsModule.getCount(list[i][j])));
 				}
 			}
-			if (spendPush.getSpendCount() > 0) {
-				player.getGameClient().sendProtocol(spendPush.build());
+//			if (spendPush.getSpendCount() > 0) {
+//				player.getGameClient().sendProtocol(spendPush.build());
+//			}
+			if (updatePush.getUpdateCount() > 0) {
+				player.getGameClient().sendProtocol(updatePush.build());
 			}
 			return;
 		}
@@ -541,16 +564,22 @@ public class PlayerHelper {
 			return;
 		}
 		if (isEnough(player, list)) {
-			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+//			SpendPush_55001501.Builder spendPush = SpendPush_55001501.newBuilder();
+			GoodsUpdatePush_55003501.Builder updatePush = GoodsUpdatePush_55003501.newBuilder();
 			for (int j = 0; j < list.length; j += 2) {
 				if (list[j + 1] <= 0) {
 					continue;
 				}
 				delResources(player, list[j], list[j + 1], consumeType, false);
-				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[j], list[j + 1]));
+//				spendPush.addSpend(PbBuilder.buildGoodsInfo(list[j], list[j + 1]));
+				GoodsModule goodsModule = player.getGoodsModule(list[j]);
+				updatePush.addUpdate(PbBuilder.buildGoodsInfo(list[j], goodsModule.getCount(list[j])));
 			}
-			if (spendPush.getSpendCount() > 0) {
-				player.getGameClient().sendProtocol(spendPush.build());
+//			if (spendPush.getSpendCount() > 0) {
+//				player.getGameClient().sendProtocol(spendPush.build());
+//			}
+			if (updatePush.getUpdateCount() > 0) {
+				player.getGameClient().sendProtocol(updatePush.build());
 			}
 			return;
 		}
