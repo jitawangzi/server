@@ -4,19 +4,24 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.spi.LocaleServiceProvider;
 
 import javax.net.ssl.SSLException;
 
@@ -31,13 +36,11 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
-import cn.game.simulation.test.gen.TestAddItemRequest_6f000008Test;
 import cn.game.simulation.util.CSVMessagesReader;
 import cn.game.simulation.util.CSVMessagesReader.CSVMessage;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerManager;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Promise;
 
 /**    
@@ -344,17 +347,6 @@ public class ServerTestContext {
 	        System.err.println("退出客户端异常: " + e.getMessage());
 	        return false;
 	    }
-	}
-	private static CompletableFuture<Void> toCompletableFuture(ChannelFuture channelFuture) {
-		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-		channelFuture.addListener((ChannelFutureListener) future -> {
-			if (future.isSuccess()) {
-				completableFuture.complete(null);
-			} else {
-				completableFuture.completeExceptionally(future.cause());
-			}
-		});
-		return completableFuture;
 	}
 
 	public static void run() throws Exception {
