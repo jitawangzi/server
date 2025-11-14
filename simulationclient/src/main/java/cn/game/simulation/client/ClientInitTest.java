@@ -16,8 +16,8 @@ import cn.game.util.log.LoggerManager;
  */
 public class ClientInitTest {
 
-	private static int idStart = 99998100 ; 
-	private static int count = 10 ; 
+	private static int idStart = 8501 ; 
+	private static int count = 9 ; 
 	private static String serverId = "SYQ" ; 
 //	private static String serverId = "game_test" ; 
 //	private static String serverId = "xy_game_1" ; 
