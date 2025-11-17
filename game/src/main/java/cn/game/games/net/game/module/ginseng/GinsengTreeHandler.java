@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.ginseng;
 
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,19 +117,39 @@ public class GinsengTreeHandler extends GameBaseHandler {
         if (oldLevel != newLevel) {
             // 升级了
             player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
-            RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
-            if (rsgTreeLvConfig != null) {
-                // 这里是升级的奖励
-                List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
-                resp.addAllRewards(rewards);
-            }
-        }
+		} 
+        List<RewardInfo> upLevelReward = upLevelReward(player, oldLevel, newLevel); 
+        if (upLevelReward != null) {
+			resp.addAllRewards(upLevelReward); 
+		}
         // 浇水奖励
         List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeWaterLeave, OpType.GinsengTreeWarter);
         resp.addAllRewards(resources);
         GameLogger.RSGTreeGrow(player, 1, 1);
         client.sendProtocol(resp.build());
     }
+    
+	private List<RewardInfo> upLevelReward(Player player, int oldLevel, int newLevel) {
+		if (oldLevel != newLevel) {
+			// 升级了
+			player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
+			RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
+			if (rsgTreeLvConfig != null) {
+				// 这里是升级的奖励
+				List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+				return rewards;
+			}
+		} else { // 没有升级，可能最高级升满了，也给升级奖励
+			RSGTreeLvConfig curRsgTreeLvConfig = RSGTreeLvManager.instance().get(newLevel);
+			RSGTreeLvConfig nextRsgTreeLvConfig = RSGTreeLvManager.instance().getNullable(newLevel + 1);
+			if (nextRsgTreeLvConfig == null && player.getCurrencyModule().get(Asset.RSGTreeExp) == curRsgTreeLvConfig.experience) {
+				// 已经最高级了，给升级奖励
+				List<RewardInfo> rewards = PlayerHelper.addResources(player, curRsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+				return rewards;
+			}
+		}
+		return null;
+	}
 
     private void bug(NetClient client, Object message) {
         GinsengTreeBugRequest_39000005 req = (GinsengTreeBugRequest_39000005) message;
@@ -203,13 +224,11 @@ public class GinsengTreeHandler extends GameBaseHandler {
         if (oldLevel != newLevel) {
             // 升级了
             player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
-            RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
-            if (rsgTreeLvConfig != null) {
-                // 这里是升级的奖励
-                List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
-                resp.addAllRewards(rewards);
-            }
         }
+        List<RewardInfo> upLevelReward = upLevelReward(player, oldLevel, newLevel); 
+        if (upLevelReward != null) {
+			resp.addAllRewards(upLevelReward); 
+		}
         List<RewardInfo> resources = PlayerHelper.addResources(player, GlobalConst.RSGTreeFertilizerLeave, OpType.GinsengTreeInsectic);
         resp.addAllRewards(resources);
         // 减少果实时间
