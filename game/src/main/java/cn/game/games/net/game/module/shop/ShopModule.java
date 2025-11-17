@@ -228,7 +228,7 @@ public class ShopModule extends BasePlayerModule {
 	 * @param refreshType 1天  2周  3月
 	 */
 	private void refreshShopItemBuyCount(int refreshType) {
-		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(4);
+		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(refreshType);
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
