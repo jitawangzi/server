@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
@@ -340,7 +341,34 @@ public class GinsengTreeModule extends BasePlayerModule {
 		BattleModule battleModule = player.getBattleModule(); 
 		return battleModule.getStoreStaminas().size() > 0 ;
 	}
-	
+  	public List<RewardInfo> addExp() {
+
+  	    int oldLevel = player.getLevel(Asset.RSGTreeExp);
+  	    long oldExp = player.getCurrencyModule().get(Asset.RSGTreeExp); 
+  	    // 加经验
+  	    PlayerHelper.addResources(player, Asset.RSGTreeExp.ID, GlobalConst.RSGTreeWaterExp);
+  	    int newLevel = player.getLevel(Asset.RSGTreeExp);
+  	    long newExp = player.getCurrencyModule().get(Asset.RSGTreeExp); 
+  	    if (oldLevel != newLevel) {
+  			// 升级了
+  			player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
+  			RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
+			// 这里是升级的奖励
+			List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+			return rewards;
+  		}else {
+  			if (oldExp != newExp) { // 没有升级，可能最高级升满了，也给升级奖励
+  	  			RSGTreeLvConfig curRsgTreeLvConfig = RSGTreeLvManager.instance().get(newLevel);
+  	  			RSGTreeLvConfig nextRsgTreeLvConfig = RSGTreeLvManager.instance().getNullable(newLevel + 1);
+  	  			if (nextRsgTreeLvConfig == null && player.getCurrencyModule().get(Asset.RSGTreeExp) == curRsgTreeLvConfig.experience) {
+  	  				// 已经最高级了，给升级奖励
+  	  				List<RewardInfo> rewards = PlayerHelper.addResources(player, curRsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);
+  	  				return rewards;
+  	  			}
+  	  		}
+  	    }
+  		return null;
+  	}
 
 	public IntMapWrapper getFruitMap() {
 		return fruitMap;
