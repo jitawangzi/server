@@ -15,8 +15,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import cn.game.core.util.IdUtil;
-import cn.game.core.util.IdUtil.IdType;
+import cn.game.core.id.IdUtil;
+import cn.game.core.id.IdUtil.IdType;
 import cn.game.games.cache.entity.Member;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.Union;

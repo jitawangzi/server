@@ -13,6 +13,7 @@ import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
@@ -23,7 +24,6 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.AsyncUtils;
-import cn.game.core.util.IdUtil;
 import cn.game.games.net.common.module.activity.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
@@ -71,7 +71,7 @@ public class CrossServer {
 		RedisUtil.init();
 		ZkHelper.init(); 
 
-		IdUtil.init();
+		IdUtil.init(serverId);
 		ActiveServerListManager.getInstance().start(ServerType.Cross);
 		ServerContext.getInstance().init(serverId, ServerType.Cross);
 		// init with apollo config

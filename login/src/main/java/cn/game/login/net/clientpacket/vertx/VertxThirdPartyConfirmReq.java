@@ -15,10 +15,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.steam.SteamAPI;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.sdk.ChangYouSdk;
-import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.wechat.WechatHelper;

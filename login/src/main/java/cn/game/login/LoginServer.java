@@ -11,6 +11,7 @@ import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerListManager;
 import cn.game.core.cache.CacheType;
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteGameServerInterface;
 import cn.game.core.net.rpc.CallType;
@@ -22,7 +23,6 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.AsyncUtils;
-import cn.game.core.util.IdUtil;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.login.net.clientpacket.vertx.gm.NoticeManger;
@@ -74,7 +74,7 @@ public class LoginServer {
 //		SpringContextLoader.main(args);
 
 		VxHolder.init();
-		IdUtil.init();
+		IdUtil.init(serverId);
 
 		SpringApolloLoader springApolloLoader = new SpringApolloLoader();
 		springApolloLoader.init();

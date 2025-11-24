@@ -34,6 +34,7 @@ import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteCrossServerInterface;
@@ -51,7 +52,6 @@ import cn.game.core.performance.evaluation.LoadState;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.task.TaskManager;
 import cn.game.core.util.AsyncUtils;
-import cn.game.core.util.IdUtil;
 import cn.game.core.zookeeper.ZkBackedCacheFactory;
 import cn.game.core.zookeeper.ZkToolInitializer;
 import cn.game.games.cache.entity.Player;
@@ -156,7 +156,7 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		VxHolder.init();
-		IdUtil.init();
+		IdUtil.init(serverId);
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init();

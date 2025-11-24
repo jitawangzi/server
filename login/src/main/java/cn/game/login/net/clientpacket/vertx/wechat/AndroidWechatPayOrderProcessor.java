@@ -2,8 +2,8 @@ package cn.game.login.net.clientpacket.vertx.wechat;
 
 import com.alibaba.fastjson2.JSONObject;
 
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;

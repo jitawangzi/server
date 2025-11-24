@@ -1,8 +1,8 @@
 package cn.game.login.net.clientpacket.vertx.wechat;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.id.IdUtil;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
 import cn.game.login.cache.entity.PayOrder;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.PayOrderMapper;

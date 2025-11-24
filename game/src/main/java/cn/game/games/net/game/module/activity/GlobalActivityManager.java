@@ -2,8 +2,8 @@ package cn.game.games.net.game.module.activity;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.game.core.id.IdUtil;
 import cn.game.core.task.SchedulerService;
-import cn.game.core.util.IdUtil;
 import cn.game.games.cache.entity.GameActivity;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.protocol.generated.config.ActivityConfig;

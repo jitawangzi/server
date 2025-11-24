@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import cn.game.core.util.IdUtil;
+import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.module.award.RewardHelper;
