@@ -16,18 +16,18 @@ import cn.game.util.log.LoggerManager;
  */
 public class ClientInitTest {
 
-	private static int idStart = 7050 ; 
-	private static int count = 10 ; 
+	private static int idStart = 9901 ; 
+	private static int count = 2 ; 
 //	private static String serverId = "SYQ" ; 
 //	private static String serverId = "xy_game_1" ; 
 	private static String serverId = "game_test" ; 
-	private static String loginServerUrl =  "http://test:9390" ;
+//	private static String loginServerUrl =  "http://test:9390" ;
 	// #西游QA外网
 //	private static String loginServerUrl =  "https://partyqaloginml.changyou.com:9390" ;
 	// 西游正式外网
-//	private static String loginServerUrl =  "https://partyloginml.changyou.com:9390" ;
+	private static String loginServerUrl =  "https://partyloginml.changyou.com:9390" ;
 	
-	private static boolean heartbeat = true; 
+	private static boolean keepalive = true; 
 	
 	public static ConcurrentLinkedQueue<Client> clients = new ConcurrentLinkedQueue<Client>();
 	
@@ -37,11 +37,13 @@ public class ClientInitTest {
 	}
 
 	public void start() throws Exception {
+		Client.exitOnClientClose = false;
+
 		LoggerManager.init();
 		
 		URL resource = Thread.currentThread().getContextClassLoader().getResource("applicationContext-gameserver.xml");
 		SpringContextLoader.loadWithFile(new String[] { resource.getPath()});
-		if (heartbeat) {
+		if (keepalive) {
 			startHeartbeat();
 		}
 		run();
@@ -55,11 +57,14 @@ public class ClientInitTest {
 				client.loginGateway("", 0, "");
 				client.waitInit();
 				client.sendProtocol(message());
+				if (!keepalive) {
+					client.close();
+				}
 				clients.add(client);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}         
+		}
 	}
 
 	private Message message() {

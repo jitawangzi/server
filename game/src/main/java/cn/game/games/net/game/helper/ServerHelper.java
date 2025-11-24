@@ -133,7 +133,13 @@ public class ServerHelper {
 	}
 	public static String getServerName(String serverId) {
 		VirtualServerView virtualServerView = getServerOpenMap().get(serverId); 
-		Objects.requireNonNull(virtualServerView, "无效的serverId=" + serverId);
+		if (virtualServerView == null) {
+			if (ServerContext.getInstance().getRunMode().isProduction()) {
+				Objects.requireNonNull(virtualServerView, "无效的serverId=" + serverId);
+			}else {
+				return " 默认服务器名[" + serverId + "]";
+			}
+		}
 		return virtualServerView.name;
 	}
 }

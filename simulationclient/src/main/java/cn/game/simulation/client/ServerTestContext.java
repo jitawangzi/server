@@ -10,11 +10,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.spi.LocaleServiceProvider;
 
 import javax.net.ssl.SSLException;
 
@@ -29,13 +36,11 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
-import cn.game.simulation.test.gen.TestAddItemRequest_6f000008Test;
 import cn.game.simulation.util.CSVMessagesReader;
 import cn.game.simulation.util.CSVMessagesReader.CSVMessage;
 import cn.game.util.SpringContextLoader;
 import cn.game.util.log.LoggerManager;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.util.concurrent.Promise;
 
 /**    
@@ -101,13 +106,13 @@ public class ServerTestContext {
 		Client.exitOnClientClose = false;
 
 		// 仅用于定位，生产环境谨慎使用内部API
-		try {
-			sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
-			sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> System.err.println("Java caught SIGINT"));
-			sun.misc.Signal.handle(new sun.misc.Signal("HUP"), sig -> System.err.println("Java caught SIGHUP"));
-		} catch (Throwable t) {
-			System.err.println("Signal handlers not installed: " + t);
-		}
+//		try {
+//			sun.misc.Signal.handle(new sun.misc.Signal("TERM"), sig -> System.err.println("Java caught SIGTERM"));
+//			sun.misc.Signal.handle(new sun.misc.Signal("INT"), sig -> System.err.println("Java caught SIGINT"));
+//			sun.misc.Signal.handle(new sun.misc.Signal("HUP"), sig -> System.err.println("Java caught SIGHUP"));
+//		} catch (Throwable t) {
+//			System.err.println("Signal handlers not installed: " + t);
+//		}
 
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
@@ -167,72 +172,181 @@ public class ServerTestContext {
 		thread.setDaemon(true);
 		thread.start();
 	}
-
 	private static void addShutdownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				long start = System.currentTimeMillis();
-				try {
-					System.out.println("start shutdown hook at " + System.currentTimeMillis());
-					run = false;
-
-					// 关闭登录线程池
-					if (loginExecutor != null && !loginExecutor.isShutdown()) {
-						loginExecutor.shutdown();
-						try {
-							if (!loginExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
-								loginExecutor.shutdownNow();
-							}
-						} catch (InterruptedException e) {
-							loginExecutor.shutdownNow();
-						}
-					}
-					System.out.println("login executor shutdown completed in " + (System.currentTimeMillis() - start) + "ms");
-
-					List<ChannelFuture> futures = new ArrayList<>();
-					for (Client client : clients) {
-						ChannelFuture channelFuture = client.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
-						if (channelFuture != null) {
-							futures.add(channelFuture);
-						}
-					}
-					CompletableFuture<Void>[] completableFutures = futures.stream()
-							.map(ServerTestContext::toCompletableFuture)
-							.toArray(CompletableFuture[]::new);
-
-					CompletableFuture<Void> allFutures = CompletableFuture.allOf(completableFutures);
-					try {
-						allFutures.get(10, TimeUnit.SECONDS);
-						System.out.println("All players logout requests completed successfully");
-					} catch (TimeoutException e) {
-						System.err.println("Some logout requests did not complete in time");
-					} catch (Exception e) {
-						System.err.println("Error occurred while waiting for logout requests");
-						e.printStackTrace();
-					}
-					System.out.println("logout requests processing completed in " + (System.currentTimeMillis() - start) + "ms");
-
-					GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
-					System.out.println("shutdown hook execution completed, total time " + (System.currentTimeMillis() - start) + "ms");
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	    Runtime.getRuntime().addShutdownHook(new Thread() {
+	        @Override
+	        public void run() {
+	            long startTime = System.currentTimeMillis();
+	            System.out.println("开始优雅关闭流程...");
+	            
+	            try {
+	                run = false;
+	                
+	                // 1) 关闭登录线程池
+	                shutdownLoginExecutor();
+	                
+	                // 2) 并发退出所有客户端
+	                logoutAllClients();
+	                
+	                // 3) 统计与收尾
+	                GlobalMessageStatistics.getInstance().calculateStatisticsAndSaveResult(clients);
+	                
+	                long totalTime = System.currentTimeMillis() - startTime;
+	                System.out.println("优雅关闭流程完成,总耗时: " + totalTime + "ms" + ",保存玩家数："+ clients.size());
+	                
+	            } catch (Exception e) {
+	                System.err.println("关闭流程异常: " + e.getMessage());
+	                e.printStackTrace();
+	            }
+	        }
+	    });
 	}
 
-	private static CompletableFuture<Void> toCompletableFuture(ChannelFuture channelFuture) {
-		CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-		channelFuture.addListener((ChannelFutureListener) future -> {
-			if (future.isSuccess()) {
-				completableFuture.complete(null);
-			} else {
-				completableFuture.completeExceptionally(future.cause());
-			}
-		});
-		return completableFuture;
+	/**
+	 * 关闭登录线程池
+	 */
+	private static void shutdownLoginExecutor() {
+	    if (loginExecutor == null || loginExecutor.isShutdown()) {
+	        return;
+	    }
+	    
+	    long start = System.currentTimeMillis();
+	    loginExecutor.shutdown();
+	    
+	    try {
+	        if (!loginExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+	            loginExecutor.shutdownNow();
+	        }
+	        System.out.println("登录线程池关闭完成,耗时: " + (System.currentTimeMillis() - start) + "ms");
+	    } catch (InterruptedException e) {
+	        loginExecutor.shutdownNow();
+	        Thread.currentThread().interrupt();
+	    }
+	}
+
+	/**
+	 * 并发退出所有客户端
+	 */
+	private static void logoutAllClients() {
+	    final int CONCURRENT_LOGOUT = 8;           // 同时退出的客户端数
+	    final long OVERALL_TIMEOUT_SECONDS = 300;  // 整体超时时间
+	    final long RESPONSE_TIMEOUT_SECONDS = 10;  // 单个客户端响应超时
+	    
+	    if (clients == null || clients.isEmpty()) {
+	        System.out.println("没有需要退出的客户端");
+	        return;
+	    }
+	    
+	    long startTime = System.currentTimeMillis();
+	    System.out.println("开始退出 " + clients.size() + " 个客户端,并发度: " + CONCURRENT_LOGOUT);
+	    
+	    // 使用信号量控制并发数
+	    Semaphore semaphore = new Semaphore(CONCURRENT_LOGOUT);
+	    CountDownLatch latch = new CountDownLatch(clients.size());
+	    
+	    AtomicInteger successCount = new AtomicInteger(0);
+	    AtomicInteger failCount = new AtomicInteger(0);
+	    AtomicInteger timeoutCount = new AtomicInteger(0);
+	    
+	    // 为每个客户端创建退出任务
+	    ExecutorService logoutExecutor = Executors.newFixedThreadPool(CONCURRENT_LOGOUT);
+	    
+	    for (Client client : clients) {
+	        logoutExecutor.submit(() -> {
+	            try {
+	                // 获取信号量(阻塞直到有可用槽位)
+	                semaphore.acquire();
+	                
+	                // 执行退出逻辑
+	                boolean success = logoutSingleClient(client, RESPONSE_TIMEOUT_SECONDS);
+	                
+	                if (success) {
+	                    successCount.incrementAndGet();
+	                } else {
+	                    timeoutCount.incrementAndGet();
+	                }
+	                
+	            } catch (Exception e) {
+	                failCount.incrementAndGet();
+	                System.err.println("客户端退出异常: " + e.getMessage());
+	            } finally {
+	                semaphore.release(); // 释放信号量,允许下一个客户端开始退出
+	                latch.countDown();
+	            }
+	        });
+	    }
+	    
+	    // 等待所有客户端完成或整体超时
+	    try {
+	        boolean completed = latch.await(OVERALL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+	        
+	        if (!completed) {
+	            System.err.println("退出流程整体超时(" + OVERALL_TIMEOUT_SECONDS + "秒)");
+	        }
+	        
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        System.err.println("退出流程被中断");
+	    } finally {
+	        logoutExecutor.shutdown();
+	        try {
+	            logoutExecutor.awaitTermination(5, TimeUnit.SECONDS);
+	        } catch (InterruptedException e) {
+	            logoutExecutor.shutdownNow();
+	        }
+	    }
+	    
+	    long totalTime = System.currentTimeMillis() - startTime;
+	    System.out.println(String.format(
+	        "客户端退出完成 - 总数:%d, 成功:%d, 超时:%d, 失败:%d, 耗时:%dms",
+	        clients.size(), successCount.get(), timeoutCount.get(), failCount.get(), totalTime
+	    ));
+	}
+
+	/**
+	 * 退出单个客户端
+	 * @param client 客户端
+	 * @param timeoutSeconds 超时时间(秒)
+	 * @return 是否成功收到服务器响应
+	 */
+	private static boolean logoutSingleClient(Client client, long timeoutSeconds) {
+	    try {
+	        // 发送退出请求
+	        ChannelFuture future = client.sendProtocol(PlayerLogoutRequest_01000003.getDefaultInstance());
+	        
+	        if (future == null) {
+	            System.err.println("发送退出请求失败: future为null");
+	            return false;
+	        }
+	        
+	        // 等待发送完成
+	        if (!future.await(2, TimeUnit.SECONDS)) {
+	            System.err.println("发送退出请求超时");
+	            return false;
+	        }
+	        
+	        // 轮询等待服务器响应
+	        long deadline = System.currentTimeMillis() + timeoutSeconds * 1000;
+	        
+	        while (System.currentTimeMillis() < deadline) {
+	            if (client.isLastMessageReturn()) {
+	                return true; // 收到响应
+	            }
+	            
+	            // 短暂休眠避免CPU空转
+	            Thread.sleep(20);
+	        }
+	        
+	        // 超时未收到响应
+	        return false;
+	        
+	    } catch (InterruptedException e) {
+	        Thread.currentThread().interrupt();
+	        return false;
+	    } catch (Exception e) {
+	        System.err.println("退出客户端异常: " + e.getMessage());
+	        return false;
+	    }
 	}
 
 	public static void run() throws Exception {
@@ -342,7 +456,7 @@ public class ServerTestContext {
 	        CSVMessage randomMessage;
 
 	        if (singleMessage > 0) {
-	            randomMessage = CSVMessagesReader.randomMessage();
+	            randomMessage = CSVMessagesReader.randomGroupMessage(msgGroup, client.sendingGroupIndex);
 	        } else {
 	            randomMessage = CSVMessagesReader.randomGroupMessage(client.sendingGroup, client.sendingGroupIndex);
 	        }

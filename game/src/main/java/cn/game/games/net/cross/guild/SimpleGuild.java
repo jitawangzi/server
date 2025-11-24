@@ -32,6 +32,8 @@ public class SimpleGuild {
     private String declaration; 
     private String creatorName; // 创建者名称
     private String masterName; // 会长名称
+    private String serverId; // 所属服务器ID
+    
 
 
     public GuildMsg.GuildSimpleInfo toProto() {
@@ -46,6 +48,7 @@ public class SimpleGuild {
         builder.setDeclaration(declaration); 
         builder.setCreatorName(creatorName); 
         builder.setMasterName(masterName); 
+        builder.setServerId(serverId); 
         return builder.build();
     }
 
@@ -133,7 +136,12 @@ public class SimpleGuild {
 	public void setMasterName(String masterName) {
 		this.masterName = masterName;
 	}
-	
-	
+	public String getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(String serverId) {
+		this.serverId = serverId;
+	}
     
 }

@@ -142,8 +142,10 @@ public class GameActivityService implements EventHandler<ServerEventTypeEnum, Se
 				}
 			}else {
 				AbstractActivityManager abstractActivityManager = serverActivitysMap.get(gameActivity.getServerId());
-				if (abstractActivityManager.canOpen(activityConfig)) {
-					abstractActivityManager.checkAndInitFromDb(activityConfig, gameActivity.getParams(), null);
+				if (abstractActivityManager != null) {
+					if (abstractActivityManager.canOpen(activityConfig)) {
+						abstractActivityManager.checkAndInitFromDb(activityConfig, gameActivity.getParams(), null);
+					}
 				}
 			}
 		}

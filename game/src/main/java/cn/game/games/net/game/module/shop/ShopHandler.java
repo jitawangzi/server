@@ -410,7 +410,7 @@ public class ShopHandler extends GameBaseHandler {
             player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
             resp.addAllRewards(resources);
             client.sendProtocol(resp);
-            GameLogger.shoptrade(player, shopId, itemId);
+            GameLogger.shoptrade(player, shopId, itemId,countTemp);
             if (shopId == 12 || shopId == 13 || shopId == 14) {
                 //				GameLogger.acti
             }

@@ -113,7 +113,7 @@ public class GlobalMessageStatistics {
 
 	private void calculateStatistics(String outputFilePath, String slowFilePath) throws IOException {
 		boolean pressureDev = Boolean.getBoolean("pressureDev");
-		String[] headers = { "消息号", "请求数量", "响应数量", "响应率", "最小响应", "最大响应", "平均响应", "50%分位", "75%分位", "90%分位" };
+		String[] headers = { "消息号", "请求数量", "响应数量", "响应率", "最小响应", "最大响应", "平均响应", "50%分位", "75%分位", "90%分位" , "99%分位" };
 
 		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFilePath), StandardCharsets.UTF_8);
 				OutputStreamWriter writerSlow = pressureDev
@@ -164,9 +164,10 @@ public class GlobalMessageStatistics {
 		double p50 = percentile(times, 50);
 		double p75 = percentile(times, 75);
 		double p90 = percentile(times, 90);
+		double p99 = percentile(times, 99);
 
 		printer.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), formatDecimal(minTime),
-				formatDecimal(maxTime), formatDecimal(avgTime), p50, p75, p90);
+				formatDecimal(maxTime), formatDecimal(avgTime), p50, p75, p90, p99);
 
 		if (printerSlow != null && (p50 > 10 || responseRate < 100)) {
 			printerSlow.printRecord(msgName, requestCount, responseCount, String.format("%.2f%%", responseRate), formatDecimal(minTime),

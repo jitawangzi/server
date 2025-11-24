@@ -17,7 +17,7 @@ public class EventLoopBlockingDetector {
                     for (StackTraceElement element : stack) {
                         String method = element.getMethodName();
                         if (method.equals("join") || 
-                            method.equals("get") || 
+                            method.equals("get") && element.getClassName().equals("cn.game.core.cache.SimpleCacheManager") || 
                             method.equals("await") ||
                             method.equals("waitingGet")) {
                             

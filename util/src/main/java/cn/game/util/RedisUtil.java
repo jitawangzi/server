@@ -43,15 +43,6 @@ public class RedisUtil {
 
 	}
 
-	static {
-		try {
-			init();
-		} catch (IOException e) {
-			logger.error("Redisson 初始化失败", e);
-			throw new ExceptionInInitializerError("Redisson 初始化失败: " + e.getMessage());
-		}
-	}
-
 	/**
 	 * 使用高级功能如集合等等，可以获取redis实例进行操作，一般的存储读取使用封装好的方法
 	 * @return
@@ -60,7 +51,7 @@ public class RedisUtil {
 		return redis;
 	}
 
-	private static void init() throws IOException {
+	public static void init() throws IOException {
 
 		Config redisConfig = ConfigService.getConfig("redisson");
 		String content = redisConfig.getProperty("redisson", "");
@@ -356,45 +347,44 @@ public class RedisUtil {
 	}
 	
 	private static void printConfig(org.redisson.config.Config config) {
-        System.out.println("--- Configuration ---");
+        logger.info("--- Configuration ---");
         if (config.isClusterConfig()) {
-            System.out.println("Mode: CLUSTER");
-            System.out.println("Nodes: " + config.useClusterServers().getNodeAddresses());
-            System.out.println("Master pool: " + config.useClusterServers().getMasterConnectionPoolSize());
-            System.out.println("Slave pool: " + config.useClusterServers().getSlaveConnectionPoolSize());
-            System.out.println("Read mode: " + config.useClusterServers().getReadMode());
+            logger.info("Mode: CLUSTER");
+            logger.info("Nodes: " + config.useClusterServers().getNodeAddresses());
+            logger.info("Master pool: " + config.useClusterServers().getMasterConnectionPoolSize());
+            logger.info("Slave pool: " + config.useClusterServers().getSlaveConnectionPoolSize());
+            logger.info("Read mode: " + config.useClusterServers().getReadMode());
         } else {
-            System.out.println("Mode: SINGLE");
-            System.out.println("Address: " + config.useSingleServer().getAddress());
-            System.out.println("Pool size: " + config.useSingleServer().getConnectionPoolSize());
+            logger.info("Mode: SINGLE");
+            logger.info("Address: " + config.useSingleServer().getAddress());
+            logger.info("Pool size: " + config.useSingleServer().getConnectionPoolSize());
         }
-        System.out.println();
     }
     
     private static void testBasicOps(RedissonClient redisson) {
-        System.out.println("--- Basic Operations ---");
+        logger.info("--- Basic Operations ---");
         
         String testKey = "test_" + System.currentTimeMillis();
         RBucket<String> bucket = redisson.getBucket(testKey);
         
         // 写入
         bucket.set("Hello Redisson 3.52.0");
-        System.out.println("✓ Write successful");
+        logger.info("✓ Write successful");
         
         // 读取
         String value = bucket.get();
-        System.out.println("✓ Read successful: " + value);
+        logger.info("✓ Read successful: " + value);
         
         // 删除
         bucket.delete();
-        System.out.println("✓ Delete successful\n");
+        logger.info("✓ Delete successful\n");
     }
     
     private static void stressTest(RedissonClient redisson, int usersPerSecond, int opsPerUser) 
             throws InterruptedException {
         
-        System.out.println("--- Stress Test ---");
-        System.out.println("Simulating: " + usersPerSecond + " users/sec × " + opsPerUser + " ops/user");
+        logger.info("--- Stress Test ---");
+        logger.info("Simulating: " + usersPerSecond + " users/sec × " + opsPerUser + " ops/user");
         
         ExecutorService executor = Executors.newFixedThreadPool(50);
         AtomicInteger successCount = new AtomicInteger(0);
@@ -434,44 +424,18 @@ public class RedisUtil {
         long duration = System.currentTimeMillis() - startTime;
         int totalOps = totalUsers * opsPerUser;
         
-        System.out.println("\nResults:");
-        System.out.println("  Total users: " + totalUsers);
-        System.out.println("  Total operations: " + totalOps);
-        System.out.println("  Success: " + successCount.get());
-        System.out.println("  Errors: " + errorCount.get());
-        System.out.println("  Duration: " + duration + "ms");
-        System.out.println("  QPS: " + (totalOps * 1000 / duration));
+        logger.info("\nResults:");
+        logger.info("  Total users: " + totalUsers);
+        logger.info("  Total operations: " + totalOps);
+        logger.info("  Success: " + successCount.get());
+        logger.info("  Errors: " + errorCount.get());
+        logger.info("  Duration: " + duration + "ms");
+        logger.info("  QPS: " + (totalOps * 1000 / duration));
         
         if (errorCount.get() > 0) {
             System.err.println("\n✗ Test failed with " + errorCount.get() + " errors!");
         } else {
-            System.out.println("\n✓ Stress test passed!");
+            logger.info("\n✓ Stress test passed!");
         }
     }
-
-	public static void main(String args[]) throws Exception {
-
-		set("a", 1);
-		set("b", 2);
-		set("c", 3);
-		
-//		setBatchAsync(List.of("a", "b", "c"), List.of("aa", "bb", "cc"));
-//		getBatchAsync(List.of("a", "b", "c"));
-		getAndRunAsyncBatch(r -> {
-			
-			for (Object string : r) {
-				System.out.println(string);
-			}
-		}, "a", "a", "c");
-
-
-//		getAndRunAsync("ff", r -> {
-//			System.out.println(2 / 0);
-//		});
-//		
-		
-		redis.shutdown();
-		Thread.currentThread().join();
-
-	}
 }

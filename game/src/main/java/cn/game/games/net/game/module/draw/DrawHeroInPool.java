@@ -44,7 +44,7 @@ public class DrawHeroInPool {
         }
         this.itemWeight =(  baseweight+ +shuiwei);
         quality = heroConfig.Quality;
-        System.out.println("抽卡日志--------------------当前物品随机概率-itemId=" +itemId +" itemWeight=" +itemWeight+" shuiwei:" + shuiwei);
+//        System.out.println("抽卡日志--------------------当前物品随机概率-itemId=" +itemId +" itemWeight=" +itemWeight+" shuiwei:" + shuiwei);
     }
 
     public int getItemWeight() {

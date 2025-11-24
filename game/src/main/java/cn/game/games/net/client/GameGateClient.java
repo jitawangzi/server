@@ -196,4 +196,10 @@ public class GameGateClient extends AbstractNetClient {
 		return false;
 	}
 
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

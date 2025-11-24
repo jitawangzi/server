@@ -343,7 +343,7 @@ public class GameLogger extends DeprecatedLogger {
 	 * vip等级
 	 * 时区
 	 */
-	public static void shoptrade(Player player, int shopId, int shopItemId) {
+	public static void shoptrade(Player player, int shopId, int shopItemId,int count) {
 		try {
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItemId);
 			int itemId = shopItemConfig.Item[0][0];
@@ -362,7 +362,7 @@ public class GameLogger extends DeprecatedLogger {
 			}
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.shoptrade.name(), LoggerType.shoptrade.version, "7010")), itemType,
-					itemId, itemCount, costId, costCount, shopId, player.getVipLevel()};
+					itemId, itemCount*count, costId, costCount*count, shopId, player.getVipLevel()};
 			LoggerType.shoptrade.logger.info(LoggerType.splice(array));
 			GameSSLogger.getInstance().logshoptrade(player,itemType, itemId, itemCount, costId, costCount, shopId);
 		} catch (Exception e) {
@@ -690,7 +690,7 @@ public class GameLogger extends DeprecatedLogger {
 
 			Object[] array = new Object[] {
 					LoggerType.splice(GameLogAssistant.buildLogCYPrefix(player, LoggerType.pvefight.name(), LoggerType.pvefight.version, "B4100")), stageId,
-					type,  "null",result?1:2, "null", subId>0?subId:"null", "null", time, player.getAttrModule().getPower(),
+					type,  "null",result?1:2,  subId>0?subId:"null","null", "null", time, player.getAttrModule().getPower(),
 					0,0,
 					heroList.size() > 0 ? heroList.get(0) : "null",
 					heroList.size() > 1 ? heroList.get(1) : "null", heroList.size() > 2 ? heroList.get(2) : "null",
@@ -732,7 +732,7 @@ public class GameLogger extends DeprecatedLogger {
 					targetPlayer.getCombatEffectiveness(), //对手战力
                     0, //对手战斗前排名
 					0, //对手战斗后排名
-					win, //战斗结果
+					win?1:2, //战斗结果
                     0, //持续时长
 
 			};

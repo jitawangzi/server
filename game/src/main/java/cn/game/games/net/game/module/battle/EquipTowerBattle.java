@@ -4,7 +4,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.cache.id.DistributedObjectType;
-import cn.game.core.util.IdUtil;
+import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.EquiptowerHelp;
 import cn.game.games.cache.entity.Friend;
 import cn.game.games.core.ResultObject;

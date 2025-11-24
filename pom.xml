@@ -817,7 +817,9 @@
 		<dependency>
 			<groupId>org.redisson</groupId>
 			<artifactId>redisson</artifactId>
-			<version>3.52.0</version>
+<!--			<version>3.52.0</version>-->
+<!--腾讯云 redis建议的版本-->
+			<version>3.24.3</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -969,6 +971,12 @@
 			<artifactId>awaitility</artifactId>
 			<version>4.2.0</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.openjdk.jol</groupId>
+		    <artifactId>jol-core</artifactId>
+		    <version>0.17</version>
 		</dependency>
 
 	</dependencies>

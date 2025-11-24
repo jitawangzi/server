@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import cn.game.core.util.IdUtil;
+import cn.game.core.id.IdUtil;
 import cn.game.games.cache.base.DbEntity;
 import cn.game.games.net.game.module.award.Goods;
 import cn.game.protocol.generated.config.MailConfig;

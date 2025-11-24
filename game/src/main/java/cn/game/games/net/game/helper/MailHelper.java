@@ -11,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.vertx.VxHolder;
-import cn.game.core.util.IdUtil;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.game.module.mail.MailRankInfo;
 import cn.game.games.net.game.module.rank.RankEntry;
@@ -24,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.GmMail;
 import cn.game.games.cache.entity.Mail;
 import cn.game.games.cache.entity.Player;

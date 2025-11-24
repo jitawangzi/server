@@ -7,7 +7,7 @@ import org.redisson.api.RFuture;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
-import cn.game.core.util.IdUtil;
+import cn.game.core.id.IdUtil;
 import cn.game.login.cache.entity.User;
 import cn.game.login.mapper.UserMapper;
 import cn.game.login.util.PasswordUtil;

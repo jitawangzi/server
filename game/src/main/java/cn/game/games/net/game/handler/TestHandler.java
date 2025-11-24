@@ -333,14 +333,15 @@ public class TestHandler extends GameBaseHandler {
                     break;
                 }
             case "playerdel":
-                {
-                    if (p1 == 0) {
-                        throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
-                    }
-                    // 将某人删档
-                    PlayerHelper.deletePlayerData(params.getLong(1));
-                    break;
-                }
+			{
+				long delId = p1 == 0 ? playerId : p1;
+				if (delId == 0) {
+					throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+				}
+				// 将某人删档
+				PlayerHelper.deletePlayerData(delId);
+				break;
+			}
             case "itemdel":
                 {
                 	long pid = p1; 
