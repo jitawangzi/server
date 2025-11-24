@@ -1,18 +1,37 @@
-::打包命令，一般不会单独使用 
+:: packet.bat
+@echo off
+chcp 65001 > nul
 
-:: 设置Maven编码相关环境变量
+rem ========================================================
+rem 参数检查
+rem ========================================================
+if "%workspace%"=="" (
+    echo [Packet错误] 环境变量 workspace 未定义。
+    exit /b 1
+)
+
+rem ========================================================
+rem 执行打包
+rem ========================================================
+echo [Maven] 切换工作目录: "%workspace%"
+cd /D "%workspace%"
+
+echo [Maven] 设置 Java 选项...
 set MAVEN_OPTS=-Dfile.encoding=UTF-8 -Duser.timezone=GMT+08
 set JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8
 
-cd /D %workspace%
-:: 指定assembly插件的描述文件xml 和服务器名
-mvn clean install %game.assembly.descriptor% %game.server%
+echo [Maven] 开始构建...
+echo   - Descriptor: %game.assembly.descriptor%
+echo   - Server:     %game.server%
 
-if %ERRORLEVEL% neq 0 goto :error
+rem 执行 Maven 命令
+call mvn clean install -f pom.xml %game.assembly.descriptor% %game.server%
 
-:error
-echo 执行过程中出现错误，批处理停止。
-goto :end
+if %ERRORLEVEL% neq 0 (
+    echo.
+    echo [Packet错误] Maven 构建失败！
+    exit /b 1
+)
 
-:end
-pause
+echo [Maven] 构建成功。
+exit /b 0
