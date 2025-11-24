@@ -212,6 +212,7 @@ public class Guild {
 		simpleGuild.setDeclaration(data.getNotification());
 		simpleGuild.setCreatorName(module.getCreatorName());
 		simpleGuild.setMasterName(module.getMasterMember().getName());
+		simpleGuild.setServerId(data.getServerId());
 		return simpleGuild;
 	}
 

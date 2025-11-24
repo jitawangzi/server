@@ -554,7 +554,7 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
         GuildShowInfo guildShowInfo = serviceInterface.getGuildShowInfo(guildId);
-        if (guildShowInfo != null) {
+        if (guildShowInfo != null && player.getServerId().equals(guildShowInfo.getSimpleInfo().getServerId())) {
             res.setGuild(guildShowInfo);
         }
         client.sendProtocol(res.build());
