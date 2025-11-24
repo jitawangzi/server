@@ -68,8 +68,9 @@ public abstract class AbstractActivityManager {
 					}
 					afterActivityOpen(activityBase);
 					
+					// 可能有些活动开了就结束了，处在结束状态
 					checkExpired(id);
-					// 
+					// TODO 活动开启后，启动结束任务
 //					endTimeTask(activityBase);
 //					destroyTimeTask(activityBase);
 				}
