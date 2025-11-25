@@ -236,18 +236,18 @@ public final class DateUtil {
 	}
 
 	/**
-	 * 获取指定日期的周数（相对于起始日期）
+	 * 获取当前日期的“全局周序号”
 	 */
 	public static int getWeek() {
-		return (int) ChronoUnit.WEEKS.between(DATE_START, LocalDate.now());
+		return WeekSequenceUtils.getCurrentWeekIndex();
 	}
 	
 	/** 
-	 * 获取指定日期的月数（相对于起始日期）
+	 * 获取当前日期的“全局月序号”
 	 * @return
 	 */
 	public static int getMonth() {
-		return (int) ChronoUnit.MONTHS.between(DATE_START, LocalDate.now());
+		return  MonthSequenceUtils.getCurrentMonthIndex();
 	}
 
 	/**

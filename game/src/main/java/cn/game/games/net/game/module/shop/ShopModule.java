@@ -214,7 +214,7 @@ public class ShopModule extends BasePlayerModule {
 	}
 
 	/** 
-	 * 按照商店的刷新类型  刷新整个商店
+	 * 按照商店的刷新类型  刷新整个商店的商品
 	 * @param refreshType 日、月、周
 	 */
 	private void refreshShopByRefreshType(int refreshType) {
@@ -225,10 +225,11 @@ public class ShopModule extends BasePlayerModule {
 	}
 	/** 
 	 * 不刷新整个商店，只重置商店中的商品购买次数
+	 * 只对Shop的Refresh=4的商店有效
 	 * @param refreshType 1天  2周  3月
 	 */
 	private void refreshShopItemBuyCount(int refreshType) {
-		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(refreshType);
+		List<ShopConfig> refreshList = ShopManager.instance().getRefreshList(4);
 		for (ShopConfig shopConfig : refreshList) {
 			List<ShopItem> shopItems = getShopItems(shopConfig.ID); 
 			for (ShopItem shopItem : shopItems) {
