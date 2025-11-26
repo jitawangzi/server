@@ -148,7 +148,7 @@ public class RankService {
      */
     public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long score) {
         // 获取当前秒数
-        long nowSeconds = System.currentTimeMillis() / 1000;
+        long nowSeconds = DateUtil.currentTimeSeconds();
         // 计算时间差作为次要权重
         long timeDelta = BASE_END_TIME_SECONDS - nowSeconds;
 
