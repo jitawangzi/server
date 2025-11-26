@@ -586,8 +586,9 @@ public class BattleModule extends BasePlayerModule  {
 			int itemId = event.getParameter(0);
 			int itemCount = event.getParameter(1);
 			if(itemId == 101002) {
+				long curCount = player.getCurrencyModule().get(101002).getCount() ; 
 				EquipTowerBattle towerBattle = getBattle(DungeonTypeEnum.EquipTower);
-				towerBattle.addRank(itemCount);
+				towerBattle.setRank(curCount);
 			}
 			break;
 		}

@@ -320,6 +320,9 @@ public class EquipTowerBattle extends XiYouBattleHandler {
     public void addRank(int addPoint) {
         RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.EquipTower, player.getPlayerId(), addPoint);
     }
+    public void setRank(long totalPoint) {
+    	RankService.getInstance().setScoreAsync(player.getServerId(), RankType.EquipTower, player.getPlayerId(), totalPoint);
+    }
 
     @Override
     public ResultObject<List<RewardInfo>> quickEnd(int id, int subId, boolean isWin) {
