@@ -65,11 +65,14 @@ public class RankService {
 	private static final Logger log = LoggerFactory.getLogger(RankService.class);
 
 	private static final RankService INSTANCE = new RankService();
-	/** 缩放次要分数 */
-	private static final double SECONDARY_SCORE_FACTOR = 1e-15;
-	private static final long TIME_END = 4093726323l;//2099-09-22 10:12:03
-
-
+    // 次要分数精度系数：5.0E-9 (0.000000005)
+    // 作用：将秒级的时间差压缩到小数点后9位，防止溢出整数部分
+    private static final double TIME_PRECISION_FACTOR = 5.0E-9;
+    // 2030-01-01 00:00:00 UTC 的秒级时间戳 (作为基准结束时间)
+    private static final long BASE_END_TIME_SECONDS = 1893427200L;
+    // 安全分数上限：2000万
+    // 原因：double 的精度有限，当整数部分超过约 2250万时，小数点后9位的精度会丢失，导致时间排序失效
+    private static final long MAX_SAFE_INTEGER_SCORE = 20000000L;
 	private static final int DEFAULT_PAGE_SIZE = 50;
 
 	private RankService() {
@@ -90,66 +93,105 @@ public class RankService {
 		return CacheType.SET_RANK.key("{" + serverId + "}", type.name());
 	}
 
-	/**
-	 * 设置玩家分数（仅主要分数）。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 * @param score 分数
-	 */
-	public void setScore(String serverId, RankType type, long playerId, long score) {
-		setScore(serverId, type, playerId, score, TIME_END - DateUtil.currentTimeSeconds());
-	}
+    /**
+     * 计算合成后的 Double 分数
+     * 统一了计算逻辑，避免重复代码
+     *
+     * @param primaryScore 主分数 (游戏得分)
+     * @param timeDelta    时间差 (基准时间 - 当前时间)
+     * @return 合成后的 Redis 分数
+     */
+    private double calculateCombinedScore(long primaryScore, long timeDelta) {
+        // 1. 安全检查：如果分数超过 2000万，打印警告日志
+        if (primaryScore > MAX_SAFE_INTEGER_SCORE) {
+            log.warn("警告: 玩家分数 [{}] 超过了安全精度阈值 [{}]。时间排序可能不再准确！",
+                    primaryScore, MAX_SAFE_INTEGER_SCORE);
+        }
 
-	/**
-	 * 设置玩家分数（主要分数和次要分数）。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 * @param primaryScore 主要分数
-	 * @param secondaryScore 次要分数
-	 */
-	public void setScore(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
-		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		rank.add(combinedScore, playerId);
-	}
+        // 2. 计算合成逻辑
+        // 逻辑：分数 + (剩余时间秒数 * 系数)
+        // 剩余时间越多(代表达成越早) -> 小数部分越大 -> 在同分情况下排名越靠前
+        return primaryScore + (timeDelta * TIME_PRECISION_FACTOR);
+    }
 
-	/**
-	 * 异步设置玩家分数（仅主要分数）。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 * @param score 分数
-	 * @return 异步操作的Future
-	 */
-	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long score) {
-		return setScoreAsync(serverId, type, playerId, score, TIME_END - DateUtil.currentTimeSeconds());
-	}
+    
+    /**
+     * 同步设置玩家分数
+     * 自动计算当前时间作为排序依据
+     *
+     * @param serverId     服务器ID
+     * @param type         排行榜类型
+     * @param playerId     玩家ID
+     * @param primaryScore 主要分数
+     */
+    public void setScore(String serverId, RankType type, long playerId, long primaryScore) {
+        // 计算时间差：2030年 - 当前秒
+        long nowSeconds = DateUtil.currentTimeSeconds();
+        long timeDelta = BASE_END_TIME_SECONDS - nowSeconds;
 
-	/**
-	 * 异步设置玩家分数（主要分数和次要分数）。
-	 *
-	 * @param serverId 服务器ID
-	 * @param type 排行榜类型
-	 * @param playerId 玩家ID
-	 * @param primaryScore 主要分数
-	 * @param secondaryScore 次要分数
-	 * @return 异步操作的Future
-	 */
-	public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
-		double combinedScore = primaryScore + secondaryScore * SECONDARY_SCORE_FACTOR;
-		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
-		return rank.addAsync(combinedScore, playerId).whenComplete((k, v) -> {
-			//log.info("setScoreAsync: {}, {}, {}, {}, {}", serverId, type, playerId, primaryScore, secondaryScore);
-			if (v != null) {
-				v.printStackTrace();
-			}
-		});
-	}
+        // 调用核心计算逻辑
+        double combinedScore = calculateCombinedScore(primaryScore, timeDelta);
+
+        RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+        rank.add(combinedScore, playerId);
+    }
+
+    /**
+     * 异步设置玩家分数（仅主要分数）
+     * 最常用的方法：自动使用当前时间计算“先到先得”
+     *
+     * @param serverId 服务器ID
+     * @param type     排行榜类型
+     * @param playerId 玩家ID
+     * @param score    分数
+     * @return 异步操作的Future
+     */
+    public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long score) {
+        // 获取当前秒数
+        long nowSeconds = System.currentTimeMillis() / 1000;
+        // 计算时间差作为次要权重
+        long timeDelta = BASE_END_TIME_SECONDS - nowSeconds;
+
+        return setScoreAsyncInternal(serverId, type, playerId, score, timeDelta);
+    }
+
+    /**
+     * 异步设置玩家分数（主要分数 + 自定义次要权重）
+     * 注意：这里的 secondaryScore 在你的上下文中通常就是 timeDelta
+     *
+     * @param serverId       服务器ID
+     * @param type           排行榜类型
+     * @param playerId       玩家ID
+     * @param primaryScore   主要分数
+     * @param secondaryScore 次要分数 (在这里通常指：基准时间 - 达成时间)
+     * @return 异步操作的Future
+     */
+    public CompletionStage<Boolean> setScoreAsync(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
+        return setScoreAsyncInternal(serverId, type, playerId, primaryScore, secondaryScore);
+    }
+    
+    /**
+     * 内部私有实现：执行真正的 Redis 异步写入
+     */
+    private CompletionStage<Boolean> setScoreAsyncInternal(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
+        // 统一计算
+        double combinedScore = calculateCombinedScore(primaryScore, secondaryScore);
+        
+        RScoredSortedSet<Long> rank = getRankSet(serverId, type);
+        return rank.addAsync(combinedScore, playerId).whenComplete((result, ex) -> {
+            // 异常处理优化：ex 不为空说明有错
+            if (ex != null) {
+                log.error("setScoreAsync 失败: serverId={}, type={}, playerId={}, score={}", 
+                          serverId, type, playerId, primaryScore, ex);
+            } else {
+                // 正常日志 (建议仅在调试模式开启，防止生产环境日志过多)
+                if (log.isDebugEnabled()) {
+                    log.debug("setScoreAsync 成功: playerId={}, combinedScore={}", playerId, combinedScore);
+                }
+            }
+        });
+    }
+    
 
 	/**
 	 * 增加或减少玩家某排行分数
