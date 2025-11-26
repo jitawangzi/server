@@ -215,7 +215,7 @@ public class ServerContext {
 	}
 
 	private void initHotUpdate() {
-		if (Config.hotUpdate) {
+		if (!Config.hotUpdate) {
 			return;
 		}
 		String className = ManagementFactory.getRuntimeMXBean().getName();
