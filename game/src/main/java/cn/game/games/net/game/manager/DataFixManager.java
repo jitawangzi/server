@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.redisson.api.RScoredSortedSet;
+import org.redisson.client.codec.StringCodec;
 import org.redisson.client.protocol.ScoredEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,101 +144,117 @@ public class DataFixManager {
 
 		PlayerHelper.loadAndProcessPlayers(function);
 	}
-	
+
 	@DataFix(description = "修复带小数时间的积分排名问题", deprecated = false)
 	public void fixRankSameScroeWithTime() {
-		String[] serverIds = new String[] {"server1","server2","server3","server4"}; 
-		RankType[] rankTypes = new RankType[] {RankType.Battle, RankType.Level, RankType.LingShanWenChan,
-				 RankType.GemTowerMain,RankType.GemTowerIce,RankType.GemTowerThunder,RankType.GemTowerFire,RankType.GemTowerPoison,RankType.XiangYaoFuMo};
-		for (String serverId : serverIds) {
-			for (RankType rankType : rankTypes) {
-				  String key = RankService.getInstance().getKey(serverId, rankType);
-				  log.info("开始修复排行榜数据: {}", key);
-			        RScoredSortedSet<Long> rankSet = RedisUtil.getRedis().getScoredSortedSet(key);
-			        
-			        // 1. 读取所有数据 (如果数据量极大，建议分批处理，但几千几万条直接读没问题)
-			        Collection<ScoredEntry<Long>> allEntries = rankSet.entryRange(0, -1);
+        String[] serverIds = new String[] { "server1", "server2", "server3", "server4" , "server5", "server6"};
+        // 请确保 RankType 枚举可用
+        RankType[] rankTypes = new RankType[] { RankType.Battle, RankType.Level, RankType.LingShanWenChan, RankType.GemTowerMain,
+                RankType.GemTowerIce, RankType.GemTowerThunder, RankType.GemTowerFire, RankType.GemTowerPoison, RankType.XiangYaoFuMo };
 
-			        if (allEntries.isEmpty()) {
-			            log.info("排行榜 {} 为空，无需修复。", key);
-			            return;
-			        }
+        int totalSuccess = 0;
+        int totalFail = 0;
 
-			        Map<Long, Double> updates = new HashMap<>();
-			        int count = 0;
+        log.info("========== 开始批量修复任务 (策略：旧数据整体 +0.9) ==========");
 
-			        for (ScoredEntry<Long> entry : allEntries) {
-			            long playerId = entry.getValue();
-			            double oldScore = entry.getScore();
+        for (String serverId : serverIds) {
+            for (RankType rankType : rankTypes) {
+                String key = null;
+                try {
+                    key = RankService.getInstance().getKey(serverId, rankType);
+                    log.info(">>> [开始] 修复排行榜: {}", key);
 
-			            // 2. 转换分数
-			            double newScore = convertOldToNew(oldScore);
+                    RScoredSortedSet<String> rankSet = RedisUtil.getRedis().getScoredSortedSet(key, StringCodec.INSTANCE);
 
-			            // 3. 存入待更新Map
-			            updates.put(playerId, newScore);
-			            
-			            count++;
-			            if (count % 100 == 0) {
-			                log.info("已处理 {} 条数据...", count);
-			            }
-			        }
+                    Collection<ScoredEntry<String>> allEntries;
+                    try {
+                        allEntries = rankSet.entryRange(0, -1);
+                    } catch (Exception e) {
+                        log.error("读取排行榜失败: {}", key, e);
+                        continue;
+                    }
 
-			        // 4. 批量写回 Redis (覆盖旧值)
-			        // addAll 相比一个一个 add 效率更高
-			        rankSet.addAll(updates);
-			        log.info("修复完成！Key: {}, 共更新 {} 条数据。", key, updates.size());
-			}
-		}
-	}
+                    if (allEntries == null || allEntries.isEmpty()) {
+                        continue;
+                    }
 
-    /**
-     * 核心算法：旧分数 -> 绝对时间 -> 新分数
-     */
-    private double convertOldToNew(double oldCombinedScore) {
-		// ============ 旧参数 (用于反推时间) ============
-		long OLD_BASE_END_TIME = 4093726323L;
-		double OLD_FACTOR = 1.0E-15;
+                    Map<String, Double> updates = new HashMap<>();
+                    List<String> dirtyMembers = new ArrayList<>();
 
-		// ============ 新参数 (用于生成新数据) ============
-		long NEW_BASE_END_TIME = 1893427200L; // 2030-01-01
-		double NEW_FACTOR = 5.0E-9;
-		
-        // 步骤 A: 提取整数部分 (玩家真实分数)
-        long rawScore = (long) oldCombinedScore;
+                    for (ScoredEntry<String> entry : allEntries) {
+                        String memberRaw = entry.getValue();
+                        double oldScore = entry.getScore();
 
-        // 步骤 B: 提取旧的小数部分
-        // 注意：直接减可能会有极微小的精度误差，但在 E-15 级别通常可控
-        double oldFraction = oldCombinedScore - rawScore;
+                        // 1. 识别脏数据
+                        if (memberRaw.contains("java.lang.Long") || memberRaw.startsWith("[")) {
+                            dirtyMembers.add(memberRaw);
+                            continue; 
+                        }
 
-        // 步骤 C: 反推达成该分数时的“绝对时间戳”
-        // 旧公式: fraction = (OLD_END - achievedTime) * OLD_FACTOR
-        // 变形: achievedTime = OLD_END - (fraction / OLD_FACTOR)
-        
-        // 这里的计算需要非常小心，因为 oldFraction 非常小
-        long timeDeltaOld = (long) (oldFraction / OLD_FACTOR);
-        long achievedTime = OLD_BASE_END_TIME - timeDeltaOld;
+                        // 2. 解析 PlayerID
+                        long playerId;
+                        try {
+                            playerId = Long.parseLong(memberRaw);
+                        } catch (NumberFormatException e) {
+                            log.error("无法解析 PlayerID: {}, 跳过", memberRaw);
+                            continue;
+                        }
 
-        // 校验反推的时间是否合理 (比如是否在 2020年-2025年之间)
-        // 如果数据异常(比如纯整数没有小数)，achievedTime 会变成 2099年
-        // 我们可以做一个修正，如果时间不合理，就按当前时间算
-        long now = System.currentTimeMillis() / 1000;
-        if (achievedTime > now + 86400 || achievedTime < 1577836800L) { // 2020-01-01
-            log.warn("检测到异常或无时间戳的数据: score={}, 推导时间={}. 重置为当前时间。", oldCombinedScore, achievedTime);
-            achievedTime = now;
+                        // 3. 【核心修改】直接给旧分数 +0.9
+                        // 逻辑：110021.000006 -> 110021.900006
+                        // 这样既保留了微小的历史差异，又把它们推到了新数据(0.89)的前面
+                        double newScore = convertOldToNew(oldScore);
+
+                        updates.put(String.valueOf(playerId), newScore);
+                    }
+
+                    // 4. 执行清理和更新
+                    if (!dirtyMembers.isEmpty()) {
+                        rankSet.removeAll(dirtyMembers);
+                        log.info("排行榜 [{}] 清理 {} 条脏数据", key, dirtyMembers.size());
+                    }
+
+                    if (!updates.isEmpty()) {
+                        rankSet.addAll(updates);
+                        log.info("排行榜 [{}] 修复 {} 条数据", key, updates.size());
+                        totalSuccess++;
+                    }
+
+                } catch (Exception e) {
+                    log.error("排行榜 {} 处理异常", key, e);
+                    totalFail++;
+                }
+            }
         }
-
-        // 步骤 D: 使用新参数计算新分数
-        // 新公式: score + (NEW_END - achievedTime) * NEW_FACTOR
-        long newTimeDelta = NEW_BASE_END_TIME - achievedTime;
-        
-        // 防止新时间差为负数 (如果达成时间超过了2030年，虽然理论上不可能)
-        if (newTimeDelta < 0) {
-            newTimeDelta = 0;
-        }
-
-        return rawScore + (newTimeDelta * NEW_FACTOR);
+        log.info("========== 修复结束: 成功 {}, 失败 {} ==========", totalSuccess, totalFail);
     }
 
+	/**
+     * 迁移算法：
+     * 1. 纯整数分数 -> 保持不变
+     * 2. 带小数分数 -> +0.9 (为了排在新数据前面)
+     */
+	private double convertOldToNew(double oldCombinedScore) {
+        long rawScore = (long) oldCombinedScore; // 提取整数部分，例如 110021
+        double fraction = oldCombinedScore - rawScore; // 提取小数部分
+
+        // 1. 纯整数判断 (精度容错)
+        if (fraction < 1.0E-9) {
+            return oldCombinedScore;
+        } 
+        
+        // 2. 进位防御 (Safety Net)
+        // 如果小数部分 >= 0.1，加 0.9 就会导致整数部分 +1。
+        // 这里用 > 0.09 作为阈值是非常安全的。
+        if (fraction > 0.09) {
+        	log.warn("发现异常数据: " + oldCombinedScore + "，小数部分过大，已强制修正防止进位。");
+            // 强制压缩到 0.9 边缘，放弃原有的时间排序，优先保住整数分
+            return rawScore + 0.9 + 0.000001; 
+        }
+
+        // 3. 正常迁移
+        return oldCombinedScore + 0.9;
+    }
 	/** 
 	 * 
 	 * ognl '@cn.game.games.net.game.manager.DataFixManager@getInstance().mergeServers(@array{"param1","param2"}, @array{@array{"source1","source2"},@array{"source3","source4"}})'
@@ -296,7 +313,7 @@ public class DataFixManager {
 	 */
 	public void runtimeFix() {
 		log.info("runtimeFix");
-		RankService.getInstance().setNpcToRank(); 
+		RankService.getInstance().setNpcToRank();
 	}
 
 	/** 
@@ -413,7 +430,7 @@ public class DataFixManager {
 	 */
 	public void deleteInactivePlayers() {
 		if (ServerContext.getInstance().getRunMode().isProduction()) {
-			return ; 
+			return;
 		}
 		int totalFailed = 0;
 
@@ -442,8 +459,8 @@ public class DataFixManager {
 						player.setOnline(false);
 						function.apply(player);
 					} catch (Exception e) {
-						totalFailed ++ ;
-						log.error("refreshSimplePlayers error for playerId: " + playerData.getPlayerId() +  e.getMessage());
+						totalFailed++;
+						log.error("refreshSimplePlayers error for playerId: " + playerData.getPlayerId() + e.getMessage());
 						if (e.getMessage() != null && e.getMessage().contains("json 反序列化异常")) {
 							PlayerHelper.deletePlayerData(playerData.getPlayerId());
 						}
