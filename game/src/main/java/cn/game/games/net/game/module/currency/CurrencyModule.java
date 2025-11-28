@@ -90,7 +90,10 @@ public class CurrencyModule extends GoodsModule<Currency> {
 
 	@Override
 	public boolean del(int configId, long count, OpType... args) {
-		if (count <= 0) {
+		if (count < 0) {
+			return false;
+		}
+		if (count == 0) {
 			return true;
 		}
 		return currencyMap.del(configId, count);

@@ -368,8 +368,11 @@ public class PlayerHelper {
 	 */
 	@Deprecated
 	public static void delResources(Player player, int id, int value, int mode, OpType consumeType) {
-		if (value <= 0) {
-			return;
+		if (value < 0) {
+			player.fail(ErrorMsgEnum.resource_not_enough);
+		}
+		if (value == 0) {
+			return ; 
 		}
 		if (mode != 0) {
 			if (value > 100) {
@@ -437,10 +440,12 @@ public class PlayerHelper {
 	 */
 	public static void delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
 
-		if (value <= 0) {
-			return;
+		if (value < 0) {
+			player.fail(ErrorMsgEnum.resource_not_enough);
 		}
-
+		if (value == 0) {
+			return ; 
+		}
 		// 公会贡献度
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		boolean ret = goodsModule.del(id, value, consumeType);

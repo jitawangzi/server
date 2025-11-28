@@ -129,7 +129,10 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 	}
 
 	public boolean isEnough(int configId, int count) {
-		if (count <= 0) {
+		if (count < 0) {// 非法数据
+			return false; 
+		}
+		if (count == 0) { // 业务合法数据，免费
 			return true;
 		}
 		return getCount(configId) >= count;

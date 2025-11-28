@@ -97,6 +97,9 @@ public abstract class AbstractBackpackGoodsModule<E extends Item> extends GoodsM
 
 	@Override
 	public boolean del(int configId, long count, OpType... args) {
+		if (count < 0) {
+			return false; 
+		}
 		// 根据物品ID确定背包类型
 //		BackpackType backpackType = getBackpackTypeForItem(configId);
 //		Backpack backpack = backpackSystem.getBackpack(backpackType);

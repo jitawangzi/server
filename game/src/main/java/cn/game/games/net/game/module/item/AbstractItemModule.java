@@ -77,6 +77,9 @@ public abstract class AbstractItemModule<E extends Item> extends GoodsModule<E> 
 	 */
 	@Override
 	public boolean del(int itemId, long count, OpType... args) {
+		if (count < 0) {
+			return false; 
+		}
 		E item = id_items.get(itemId);
 		if (item == null)
 			return false;
