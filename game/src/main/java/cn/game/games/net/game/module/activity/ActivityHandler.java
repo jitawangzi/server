@@ -667,7 +667,7 @@ public class ActivityHandler extends GameBaseHandler {
             }
         }
         for (int i = 0; i < rewardIndexList.size(); i++) {
-            List<RewardInfo> resources = PlayerHelper.addResources(player, activityWestLuckyProgressConfig.reward[i], OpType.ZhuanPanCountReward);
+            List<RewardInfo> resources = PlayerHelper.addResources(player, activityWestLuckyProgressConfig.reward[rewardIndexList.get(i)], OpType.ZhuanPanCountReward);
             resp.addAllReward(resources);
         }
         rewardIndexList2.addAll(rewardIndexList);
