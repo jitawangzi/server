@@ -13,6 +13,7 @@ import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -145,9 +146,10 @@ public class GinsengTreeHandler extends GameBaseHandler {
 
     private void insecticides(NetClient client, Object message) {
         GinsengTreeInsecticidesRequest_39000007 req = (GinsengTreeInsecticidesRequest_39000007) message;
-        int count = req.getCount();
         GinsengTreeInsecticidesResponse_39000008 defaultInstance = GinsengTreeInsecticidesResponse_39000008.getDefaultInstance();
+        int count = req.getCount();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        player.checkClientRequestCount(count);
         if (!player.isFuncOpen(InitialUI.RSGTree)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.ID);
             return;

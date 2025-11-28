@@ -10,6 +10,7 @@ import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.generated.config.ItemConfig;
 import cn.game.protocol.generated.enume.EntryEffectEnum;
@@ -49,10 +50,7 @@ public class ItemHandler extends GameBaseHandler {
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 
 		for (ItemUseInfo itemUseInfo : itemUseList) {
-			if (itemUseInfo.getCount() <= 0) {
-				client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
-				return;
-			}
+			player.checkClientRequestCount(itemUseInfo.getCount());
 			if (!PlayerHelper.isEnough(player, itemUseInfo.getId(), itemUseInfo.getCount())) {
 				client.sendProtocol(resp, ErrorMsgEnum.resource_not_enough.getId());
 				return;
@@ -98,6 +96,7 @@ public class ItemHandler extends GameBaseHandler {
 		for (int i = 0; i < idList.size(); i++) {
 			int id = idList.get(i);
 			int count = countList.get(i);
+			player.checkClientRequestCount(count);
 			ItemConfig item = ItemManager.instance().getNullable(id);
 			if (item == null) {
 				client.sendProtocol(defaultInstance, ErrorMsgEnum.config_data_not_found.getId());

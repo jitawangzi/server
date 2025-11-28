@@ -83,5 +83,8 @@ public class GameConstants {
     
 	/** 序章 */
 	public static final int INTRODUCTION = 21005;
+	
+	/** 客户端传递数量的最大值，例如购买数量，使用数量等 */
+	public static final int REQUEST_COUNT_MAX = 1000;
     
 }

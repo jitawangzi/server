@@ -36,6 +36,7 @@ import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.ServerHelper;
+import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.activity.ActivityModule;
@@ -760,6 +761,16 @@ public class Player {
 		throw new LogicException(errorMsgEnum.ID,errorMsg);
 	}
 
+	/** 
+	 * 检查客户端输入的数量范围，是否在合法范围内
+	 * @param count
+	 */
+	public void checkClientRequestCount(int count) {
+        if (count < 0 || count > GameConstants.REQUEST_COUNT_MAX) {
+            fail(ErrorMsgEnum.request_parameter_error);
+        }
+	}
+	
 	public long getPlayerId() {
 		return playerId;
 	}

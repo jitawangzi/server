@@ -94,6 +94,7 @@ public class DrawHandler extends GameBaseHandler {
         if (drawCount > GlobalConst.SpecialOfferGiftPackRaffle) {
             drawCount = GlobalConst.SpecialOfferGiftPackRaffle;
         }
+        player.checkClientRequestCount(drawCount);
         List<SimpleEntry<Integer, Integer>> costEntries = new ArrayList<>();
         if (!freeOnce) {
             int costItemId = drawConfig.DrawConsumeId[0];

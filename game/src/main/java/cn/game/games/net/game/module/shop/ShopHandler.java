@@ -14,6 +14,7 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.player.IdConstant;
@@ -377,6 +378,7 @@ public class ShopHandler extends GameBaseHandler {
             count = 1;
         }
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        player.checkClientRequestCount(count);
         ShopModule shopModule = player.getShopModule();
         ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
         if (shopItem == null) {
