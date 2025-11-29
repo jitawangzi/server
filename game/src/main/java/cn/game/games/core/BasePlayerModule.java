@@ -149,6 +149,8 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 
 	/** 
 	 * 玩家登陆后的一些业务逻辑,触发时机和LoginFinish事件一样
+	 * 这个时机在处理跨天逻辑之后
+	 * 这里面不要注册事件，只处理业务逻辑
 	 */
 	public void onLogin() {
 	}

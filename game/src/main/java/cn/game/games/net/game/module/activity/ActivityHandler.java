@@ -460,7 +460,7 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        if (activityWestLucky.getTotalNum() + drawNum > GlobalConst.ActivityWestLuckyDayCount) {
+        if (activityWestLucky.getTodayCount() + drawNum > GlobalConst.ActivityWestLuckyDayCount) {
             client.sendProtocol(resp, ErrorMsgEnum.times_limit.getId());
             return;
         }

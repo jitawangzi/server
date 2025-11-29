@@ -198,6 +198,11 @@ public class ActivityWestLucky extends PlayerActivityBase {
 	public List<Integer> getRewardIndexList() {
 		return rewardIndexList;
 	}
+	
+
+	public int getTodayCount() {
+		return todayCount;
+	}
 
 	@Override
 	public void afterDestroy() {
