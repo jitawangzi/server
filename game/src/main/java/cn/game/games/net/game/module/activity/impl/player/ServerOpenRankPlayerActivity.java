@@ -50,6 +50,7 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 			// 大圣积分变化，可能会影响排名
 			int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
 			ActivityServerOpenRankConfig config = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay); 
+			// TODO 开服第一天到当前这个榜的天数，都算开启活动排名
 			if (config != null && config.RankID == RankType.DaShengLeiTaiServerOpenActivity.ID) {
 				int score =  event.get(0) + event.get(1) ; 
 	            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiServerOpenActivity, player.getPlayerId(), score);
