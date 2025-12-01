@@ -26,11 +26,6 @@ public interface IpWhitelistMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(IpWhitelist row);
-
-	/**
-	 * @mbg.generated
-	 */
 	IpWhitelist selectByPrimaryKey(Integer id);
 
 	/**
@@ -57,4 +52,9 @@ public interface IpWhitelistMapper {
 	 * @mbg.generated
 	 */
 	List<IpWhitelist> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(IpWhitelist record);
 }

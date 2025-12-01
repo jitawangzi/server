@@ -36,6 +36,7 @@
     	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />    <plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
     	<plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
     	<plugin type="org.mybatis.generator.plugins.DynamicUpdatePlugin" />
+    	<plugin type="org.mybatis.generator.plugins.InsertOrUpdatePlugin" />
     	<!-- 自定义更新插件 -->
 	    <plugin type="org.mybatis.generator.plugins.CustomUpdatePlugin">
 	        <!-- 为 t_friend 表配置自定义更新方法 -->

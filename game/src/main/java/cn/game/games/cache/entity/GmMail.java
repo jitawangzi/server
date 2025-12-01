@@ -16,7 +16,7 @@ public class GmMail implements Serializable, DbEntity {
 	 */
 	private Date createTime;
 	/**
-	 * 邮件类型 0 个人邮件 1 全服邮件 2  全服公告
+	 * 邮件类型 0 个人邮件 1 全服邮件
 	 * @mbg.generated
 	 */
 	private byte mailopttype;

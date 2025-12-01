@@ -21,11 +21,6 @@ public interface InviteMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Invite row);
-
-	/**
-	 * @mbg.generated
-	 */
 	Invite selectByPrimaryKey(long id);
 
 	/**
@@ -92,6 +87,11 @@ public interface InviteMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Invite record);
 
 	int deletePlayerData(@Param("playerId") Long playerId);
 

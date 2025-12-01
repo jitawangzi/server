@@ -21,11 +21,6 @@ public interface GmMailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(GmMail row);
-
-	/**
-	 * @mbg.generated
-	 */
 	GmMail selectByPrimaryKey(long id);
 
 	/**
@@ -82,6 +77,11 @@ public interface GmMailMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(GmMail record);
 
 	List<GmMail> selectGlobalMailList();
 

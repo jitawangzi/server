@@ -21,11 +21,6 @@ public interface MailMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Mail row);
-
-	/**
-	 * @mbg.generated
-	 */
 	Mail selectByPrimaryKey(long id);
 
 	/**
@@ -92,6 +87,11 @@ public interface MailMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Mail record);
 
 	int deletePlayerData(@Param("playerId") Long playerId);
 

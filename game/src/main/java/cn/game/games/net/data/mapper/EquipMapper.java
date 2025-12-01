@@ -21,11 +21,6 @@ public interface EquipMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Equip row);
-
-	/**
-	 * @mbg.generated
-	 */
 	Equip selectByPrimaryKey(long id);
 
 	/**
@@ -92,6 +87,11 @@ public interface EquipMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Equip record);
 
 	int deleteByIds(ArrayList<Long> ids);
 }
