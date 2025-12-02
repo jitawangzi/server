@@ -227,6 +227,8 @@ public class GemHandler extends GameBaseHandler {
         resp.addAllRewards(rewardInfos);
         resp.setGemGacheFreeTimesHigh(gemModule.freeHigh);
         resp.setGemGacheFreeTimesNormal(gemModule.freeNormal);
+        resp.setGemGacheBaoDiNormal(gemModule.baoDiNormal);
+        resp.setGemGacheBaoDiHigh(gemModule.baoDiHigh);
         client.sendProtocol(resp.build());
     }
 }

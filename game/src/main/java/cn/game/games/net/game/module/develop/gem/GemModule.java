@@ -74,6 +74,8 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 			builder.addGems(obj.toGemInfo());
 			builder.setGemGacheFreeTimesHigh(freeHigh);
 			builder.setGemGacheFreeTimesNormal(freeNormal);
+			builder.setGemGacheBaoDiNormal(baoDiNormal);
+			builder.setGemGacheBaoDiHigh(baoDiHigh);
 		}
 	}
 
@@ -176,8 +178,8 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		return instance;
 	}
     //宝石抽奖保底
-	private int  baoDiNormal=0;
-	private int  baoDiHigh=0;
+	 int  baoDiNormal=0;
+	 int  baoDiHigh=0;
 	int  freeNormal=1;
 	int  freeHigh=1;
 	public List<RewardMsg.RewardInfo>  gemGache(int gemcount ,int pool,int costType)
