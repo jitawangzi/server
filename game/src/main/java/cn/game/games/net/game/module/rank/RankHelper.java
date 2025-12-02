@@ -63,7 +63,7 @@ public class RankHelper {
 		}
 		String scoreString = "0"; 
 		long score = entry.getRankEntry().getScore();
-		if (score < 0) {// 没有分数，使用玩家身上的分数
+		if (score <= 0) {// 没有分数，使用玩家身上的分数
 			scoreString = player.getModule(RankModule.class).getScore(rankType);
 		}else {
 			scoreString = score + "" ;
