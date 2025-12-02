@@ -109,7 +109,9 @@ public class RankModule extends BasePlayerModule {
 		case LingShanWenChanServerOpenActivity:
 		{
 			LingShanWenChanBattle battle = player.getBattleModule().getBattle(DungeonTypeEnum.LingShanWenChan); 
-			score = battle.getLastCompleteFloor(); 
+			if (battle != null) {
+				score = battle.getLastCompleteFloor(); 
+			}
 			break;
 		}
 		case GemTowerMain: 
@@ -117,31 +119,41 @@ public class RankModule extends BasePlayerModule {
 		{
 			BattleModule module = player.getModule(BattleModule.class);
 			TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-			score = battle.getCurFloor().get(DungeonTypeEnum.GemTower.getId()); 
+			if (battle != null) {
+				score = battle.getCurFloor().get(DungeonTypeEnum.GemTower.getId()); 
+			}
 			break;
 		}
 		case GemTowerIce: {
 			BattleModule module = player.getModule(BattleModule.class);
 			TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-			score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerIce.getId()); 
+			if (battle != null) {
+				score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerIce.getId()); 
+			}
 			break;
 		}
 		case GemTowerThunder: {
 			BattleModule module = player.getModule(BattleModule.class);
 			TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-			score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerThunder.getId()); 
+			if (battle != null) {
+				score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerThunder.getId()); 
+			}
 			break;
 		}
 		case GemTowerFire: {
 			BattleModule module = player.getModule(BattleModule.class);
 			TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-			score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerFire.getId()); 
+			if (battle != null) {
+				score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerFire.getId()); 
+			}
 			break;
 		}
 		case GemTowerPoison: {
 			BattleModule module = player.getModule(BattleModule.class);
 			TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-			score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerPoison.getId()); 
+			if (battle != null) {
+				score = battle.getCurFloor().get(DungeonTypeEnum.GemTowerPoison.getId()); 
+			}
 			break;
 		}
 		case EquipTower:
@@ -153,7 +165,9 @@ public class RankModule extends BasePlayerModule {
 		case XiangYaoFuMoServerOpenActivity:
 		{
 			XiangYaoFuMoBattle battle = player.getBattleModule().getBattle(DungeonTypeEnum.XiangYaoFuMo); 
-			score =  battle.getLastCompleteBattleId(); 
+			if (battle != null) {
+				score =  battle.getLastCompleteBattleId(); 
+			}
 			break;
 		}
 		case DaShengLeiTaiDay: {
