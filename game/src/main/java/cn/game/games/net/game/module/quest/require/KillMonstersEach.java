@@ -16,13 +16,15 @@ public class KillMonstersEach extends AbstractCondition {
 	public KillMonstersEach() {
 
 	}
+	
+	public void updateRequireCount(PlayerEvent event) {
+		int killCount = event.getIntParameter(3); 
+		finishCount += killCount;
+	}
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
-//		int id = event.getIntParameter(0);
-//		EquipConfig equipConfig = EquipManager.instance().get(id); 
-//		return equipConfig.quality >= getParam();
-		
-		return false;
+		int killCount = event.getIntParameter(3); 
+		return killCount > 0;
 	}
 }
