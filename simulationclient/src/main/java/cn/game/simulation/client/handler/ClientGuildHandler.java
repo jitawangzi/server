@@ -48,6 +48,10 @@ import cn.game.simulation.client.Client;
 import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenMapResponse_40000088;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleEndPush_40000089;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleStartPush_4000008a;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketResponse_40000091;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -92,6 +96,10 @@ public class ClientGuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildApplyProcessedPush_40100001, this::applyProcessedPush);
         putInvoker(PbProtocol.GuildGVECardDataResponse_40000084, this::gVECardData);
         putInvoker(PbProtocol.GuildGVEOpenCardResponse_40000086, this::gVEOpenCard);
+        putInvoker(PbProtocol.GuildGVEOpenMapResponse_40000088, this::gVEOpenMap);
+        putInvoker(PbProtocol.GuildGVEMapBattleEndPush_40000089, this::gVEMapBattleEndPush);
+        putInvoker(PbProtocol.GuildGVEMapBattleStartPush_4000008a, this::gVEMapBattleStartPush);
+        putInvoker(PbProtocol.GuildGVEBuyTicketResponse_40000091, this::gVEBuyTicket);
     }
 
     private void getList(NetClient netClient, Object message) {
@@ -294,6 +302,30 @@ public class ClientGuildHandler extends GameBaseHandler {
         List<RewardInfo> rewardsList = resp.getRewardsList();
         GuildGVECardData cardData = resp.getCardData();
         int result = resp.getResult();
+        Client client = (Client) netClient;
+    }
+
+    private void gVEOpenMap(NetClient netClient, Object message) {
+        GuildGVEOpenMapResponse_40000088 resp = (GuildGVEOpenMapResponse_40000088) message;
+        GuildGVEMap mapdata = resp.getMapdata();
+        Client client = (Client) netClient;
+    }
+
+    private void gVEMapBattleEndPush(NetClient netClient, Object message) {
+        GuildGVEMapBattleEndPush_40000089 resp = (GuildGVEMapBattleEndPush_40000089) message;
+        GuildGVEBattleEnd battleEndData = resp.getBattleEndData();
+        Client client = (Client) netClient;
+    }
+
+    private void gVEMapBattleStartPush(NetClient netClient, Object message) {
+        GuildGVEMapBattleStartPush_4000008a resp = (GuildGVEMapBattleStartPush_4000008a) message;
+        GuildGVEBattleStart battleStartData = resp.getBattleStartData();
+        Client client = (Client) netClient;
+    }
+
+    private void gVEBuyTicket(NetClient netClient, Object message) {
+        GuildGVEBuyTicketResponse_40000091 resp = (GuildGVEBuyTicketResponse_40000091) message;
+        int leftBuyCount = resp.getLeftBuyCount();
         Client client = (Client) netClient;
     }
 }

@@ -858,7 +858,7 @@ public class RankService {
 						});
 						String content = JsonUtil.toJsonStringWithType(playerRank);
 						MailHelper.addGlobalGmMail(content, serverId, start, end, (byte) MailType.DASHENG_XUN_SHAN.getValue());
-						log.info("removeRank1");
+						log.info("removeRank1 serverId:{}", serverId);
 						CompletableFuture<Void> removeRankFuture = removeRankAsync(RankType.DaShengLeiTaiSeason)
 								.thenCompose(v -> {return removeRankAsync(RankType.DaShengLeiTaiDay);}).thenCompose(
 										v -> {return setNpcToRankTest(serverId);}

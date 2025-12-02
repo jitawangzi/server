@@ -9,14 +9,17 @@ import java.util.Set;
 
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.equip.EquipPart;
 import cn.game.games.net.game.module.item.AbstractItemNoStackModule;
 import cn.game.protocol.generated.config.GemAttrConfig;
 import cn.game.protocol.generated.config.GemConfig;
+import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.manager.GemAttrManager;
 import cn.game.protocol.generated.manager.GemManager;
 import cn.game.protocol.manual.GoodsTypeEnum;
+import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import cn.game.util.Rnd;
 
@@ -105,5 +108,57 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * 随机宝石属性
+	 * @param uid
+	 */
+	public Gem gemXiLian(long uid)
+	{
+		// 随机宝石属性
+		Gem instance = get(uid);
+		if(instance==null) {
+			log.error("gem not exist uid:{}",uid);
+			return instance;
+		}
+		if(instance.isLock()) {
+			log.error("gem is lock uid:{}",uid);
+			return instance;
+		}
+		GemConfig gemConfig = GemManager.instance().get(instance.getConfigId());
+		if(gemConfig.quality<5) {
+			log.error("gem quality too low uid:{} quality:{}",uid,gemConfig.quality);
+			return  instance;
+		}
+		EquipModule equipModule = player.getEquipModule();
+		if(equipModule.getEquipPart(gemConfig.pos).getGemPosMap().containsKey(uid)) {
+			log.error("gem already exist uid:{}",uid);
+			return instance;
+		}
+		int index=gemConfig.quality-5;
+		if(index>=GlobalConst.GemRefreshCost.length)
+		{
+			log.error("gem quality too high uid:{} quality:{}",uid,gemConfig.quality);
+			return instance;
+		}
+		int cost =GlobalConst.GemRefreshCost[index][1];
+		int Id   =GlobalConst.GemRefreshCost[index][2];
+		if(!player.getCurrencyModule().isEnough(Id,cost)) {
+			log.error("gem refresh cost not enough uid:{} cost:{}",uid,cost);
+			return instance;
+		}
+		PlayerHelper.delResources(player, Id, cost, OpType.GemXilian);
+		List<GemAttrConfig> posqualityList = GemAttrManager.instance().getPosqualityList(gemConfig.pos, gemConfig.quality);
+		List<GemAttrConfig> posqualityListCopy= new ArrayList<>();
+		for (GemAttrConfig gemAttrConfig : posqualityList) {
+			if(gemAttrConfig.effectId!=instance.getEntryEffectList().get(0)) {
+				posqualityListCopy.add(gemAttrConfig);
+			}
+		}
+		GemAttrConfig config = Rnd.randomElement(posqualityListCopy, r -> r.weight);
+		instance.getEntryEffectList().clear();
+		instance.getEntryEffectList().add(config.effectId);
+		return instance;
 	}
 }
