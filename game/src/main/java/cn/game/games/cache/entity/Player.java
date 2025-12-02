@@ -878,7 +878,7 @@ public class Player {
 		// 体力恢复通知
 		addEnergyNotifyTask();
 		// 每日签到通知
-		addMonthSignNotifyTask();
+//		addMonthSignNotifyTask();
 		// 遨游12小时通知
 		addAoYouRewardNotifyTask();
 	}

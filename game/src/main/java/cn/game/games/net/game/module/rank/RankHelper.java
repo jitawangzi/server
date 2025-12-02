@@ -20,10 +20,8 @@ public class RankHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RankHelper.class);
 	
 	public static CompletionStage<RankInfo> getRankInfo(Player player, RankType rankType, int page, int pageSize) {
-		String key = RankService.getInstance().getKey(player.getServerId(), rankType); 
-		return getRankInfo(player, key, page, pageSize);
-	}
-	private static CompletionStage<RankInfo> getRankInfo(Player player, String rankKey, int page, int pageSize) {
+		String rankKey = RankService.getInstance().getKey(player.getServerId(), rankType); 
+
 //		String serverId = player.getServerId();
 //		RankModule rankModule = player.getModule(RankModule.class);
 		long playerId = player.getPlayerId();
@@ -38,7 +36,7 @@ public class RankHelper {
 			for (PlayerRank playerRank : rankEntries) {
 				rankInfo.addPlayers(toRankInfo(playerRank));
 			}
-			rankInfo.setMyRankInfo(toRankInfo(myPlayerRank));
+			rankInfo.setMyRankInfo(toMyRankInfo(player,rankType, myPlayerRank));
 			return rankInfo.build();
 		});
 	}
@@ -53,6 +51,24 @@ public class RankHelper {
 		}
 		long score = entry.getRankEntry().getScore();
 		rb.setScore((score < 0 ? 0 : score) + "");
+		return rb.build();
+	}
+	public static PlayerRankInfo toMyRankInfo(Player player, RankType rankType, PlayerRank entry) {
+		PlayerRankInfo.Builder rb = PlayerRankInfo.newBuilder();
+		rb.setRank(entry.getRankEntry().getRank());
+		if (entry.getPlayer() == null) {
+			LOGGER.warn("排行榜玩家信息为空, rankEntry={}", entry.getRankEntry());
+		}else {
+			rb.setPlayer(entry.getPlayer().toSimplePlayerInfo());
+		}
+		String scoreString = "0"; 
+		long score = entry.getRankEntry().getScore();
+		if (score < 0) {// 没有分数，使用玩家身上的分数
+			scoreString = player.getModule(RankModule.class).getScore(rankType);
+		}else {
+			scoreString = score + "" ;
+		}
+		rb.setScore(scoreString);
 		return rb.build();
 	}
 
