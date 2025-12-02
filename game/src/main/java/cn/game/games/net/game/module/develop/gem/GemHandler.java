@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import cn.game.protocol.protobuf.RewardMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.cache.entity.Player;
@@ -36,6 +38,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.GemMsg.GemXiLianRequest_10000010;
 import cn.game.protocol.protobuf.GemMsg.GemXiLianResponse_10000011;
 import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.protobuf.GemMsg.GemGacheRequest_10000012;
+import cn.game.protocol.protobuf.GemMsg.GemGacheResponse_10000013;
 
 @Component
 public class GemHandler extends GameBaseHandler {
@@ -52,6 +56,7 @@ public class GemHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GemLockRequest_10000005, this::lock);
         putInvoker(PbProtocol.GemComposeRequest_10000007, this::compose);
         putInvoker(PbProtocol.GemXiLianRequest_10000010, this::xiLian);
+        putInvoker(PbProtocol.GemGacheRequest_10000012, this::gache);
     }
 
     private void wear(NetClient client, Object message) {
@@ -200,6 +205,28 @@ public class GemHandler extends GameBaseHandler {
             return;
         }
         resp.setGem(gem.toGemInfo());
+        client.sendProtocol(resp.build());
+    }
+
+    private void gache(NetClient client, Object message) {
+        GemGacheRequest_10000012 req = (GemGacheRequest_10000012) message;
+        int gemPool = req.getGemPool();
+        int gemcount = req.getGemcount();
+        int gemType = req.getGemType();
+        GemGacheResponse_10000013 defaultInstance = GemGacheResponse_10000013.getDefaultInstance();
+        GemGacheResponse_10000013.Builder resp = GemGacheResponse_10000013.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+
+        GemModule gemModule = player.getModule(GemModule.class);
+        List<RewardMsg.RewardInfo> rewardInfos = gemModule.gemGache(gemcount, gemPool, gemType);
+        if (rewardInfos == null) {
+            // 检查条件失败
+            client.sendProtocol(defaultInstance, ErrorMsgEnum.condition_check_error.ID);
+            return;
+        }
+        resp.addAllRewards(rewardInfos);
+        resp.setGemGacheFreeTimesHigh(gemModule.freeHigh);
+        resp.setGemGacheFreeTimesNormal(gemModule.freeNormal);
         client.sendProtocol(resp.build());
     }
 }

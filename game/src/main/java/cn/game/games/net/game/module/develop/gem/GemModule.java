@@ -18,13 +18,15 @@ import cn.game.protocol.generated.config.GemConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.manager.GemAttrManager;
 import cn.game.protocol.generated.manager.GemManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
+import cn.game.protocol.protobuf.RewardMsg;
 import cn.game.util.Rnd;
 
 public class GemModule extends AbstractItemNoStackModule<Gem> {
-	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE };
+	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.NewDay};
 
 	@Override
 	public EventTypeEnum[] getEventTypes() {
@@ -34,6 +36,16 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {
+			case PLAYER_CREATE: {
+				freeHigh=1;
+				freeNormal=1;
+				break;
+			}
+			case NewDay: {
+				freeHigh=1;
+				freeNormal=1;
+				break;
+			}
 		}
 	}
 
@@ -60,6 +72,8 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 	public void buildPlayerAllInfo(Builder builder) {
 		for (Gem obj : list()) {
 			builder.addGems(obj.toGemInfo());
+			builder.setGemGacheFreeTimesHigh(freeHigh);
+			builder.setGemGacheFreeTimesNormal(freeNormal);
 		}
 	}
 
@@ -160,5 +174,95 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
 		instance.getEntryEffectList().clear();
 		instance.getEntryEffectList().add(config.effectId);
 		return instance;
+	}
+    //宝石抽奖保底
+	private int  baoDiNormal=0;
+	private int  baoDiHigh=0;
+	int  freeNormal=1;
+	int  freeHigh=1;
+	public List<RewardMsg.RewardInfo>  gemGache(int gemcount ,int pool,int costType)
+	{
+		if(!gemGache_Check(gemcount, pool, costType)) {
+			return null;
+		}
+		int dropId=0;
+		int dropIndex=0;// 处于保底状态是1  非保底状态是0
+		int costId=0;
+		if(pool==1) {
+			dropIndex=baoDiNormal==10?1:0;
+			dropId =GlobalConst.GemGachaNormalRandom[dropIndex];
+
+		}else if(pool==2){
+			dropIndex=baoDiHigh==10?1:0;
+			dropId =GlobalConst.GemGachaHighRandom[dropIndex];
+		}
+		List<RewardMsg.RewardInfo>  list= new ArrayList<>();
+		for (int i = 0; i < gemcount; i++)
+		{
+			list.addAll(PlayerHelper. addReward(player,dropId, OpType.GemGache));
+			// 保底处理
+			if(pool==1&&baoDiNormal==10) {
+				baoDiNormal=0 ;
+			}else if(pool==2&&baoDiHigh==10){
+				baoDiHigh=0 ;
+			}
+			if(pool==1) {
+				baoDiNormal++ ;
+				dropIndex=baoDiNormal==10?1:0;
+				dropId =GlobalConst.GemGachaNormalRandom[dropIndex];
+			}else if(pool==2){
+				baoDiHigh++ ;
+				dropIndex=baoDiHigh==10?1:0;
+				dropId =GlobalConst.GemGachaHighRandom[dropIndex];
+			}
+		}
+		return  list;
+	}
+
+	public boolean gemGache_Check(int gemcount ,int pool,int costType)
+	{
+		if(gemcount!=1&&gemcount!=10) {
+			return false;
+		}
+		if(pool!=1&&pool!=2) {
+			return false;
+		}
+		if(costType!=1&&costType!=2&&costType!=3) {
+			return false;
+		}
+		// 先检查消耗
+		if(costType==1) {
+			if(pool==1 && freeNormal==1) {
+				//普通池免费合法
+				freeNormal=0;
+			} else if (pool==2 && freeHigh==1) {
+				//高级池免费合法
+				freeHigh=0;
+			}else {
+				//其余都不合法
+				return false;
+			}
+		}else if (costType==2||costType==3) {
+			//2 扣钱
+			int uid =0;
+			int cost =0;
+			if(pool==1 ) {
+				uid =GlobalConst.GemGachaNormalCost[costType-2][0];
+				cost =GlobalConst.GemGachaNormalCost[costType-2][1];
+			} else if (pool==2 ) {
+				//高级池
+				uid =GlobalConst.GemGachaHighCost[costType-2][0];
+				cost =GlobalConst.GemGachaHighCost[costType-2][1];
+			}
+			cost=cost*gemcount;
+			if(!player.getCurrencyModule().isEnough(uid,cost)) {
+				log.error("gemGache refresh cost not enough uid:{} cost:{}",uid,cost);
+				return false;
+			}else {
+				PlayerHelper.delResources(player, uid, cost, OpType.GemGache);
+				return true;
+			}
+		}
+		return false;
 	}
 }
