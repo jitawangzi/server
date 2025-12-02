@@ -1,6 +1,8 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
+
+import cn.game.protocol.protobuf.GuildMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
@@ -307,19 +309,19 @@ public class ClientGuildHandler extends GameBaseHandler {
 
     private void gVEOpenMap(NetClient netClient, Object message) {
         GuildGVEOpenMapResponse_40000088 resp = (GuildGVEOpenMapResponse_40000088) message;
-        GuildGVEMap mapdata = resp.getMapdata();
+        GuildMsg.GuildGVEMap mapdata = resp.getMapdata();
         Client client = (Client) netClient;
     }
 
     private void gVEMapBattleEndPush(NetClient netClient, Object message) {
         GuildGVEMapBattleEndPush_40000089 resp = (GuildGVEMapBattleEndPush_40000089) message;
-        GuildGVEBattleEnd battleEndData = resp.getBattleEndData();
+        GuildMsg.GuildGVEBattleEnd battleEndData = resp.getBattleEndData();
         Client client = (Client) netClient;
     }
 
     private void gVEMapBattleStartPush(NetClient netClient, Object message) {
         GuildGVEMapBattleStartPush_4000008a resp = (GuildGVEMapBattleStartPush_4000008a) message;
-        GuildGVEBattleStart battleStartData = resp.getBattleStartData();
+        GuildMsg.GuildGVEBattleStart battleStartData = resp.getBattleStartData();
         Client client = (Client) netClient;
     }
 

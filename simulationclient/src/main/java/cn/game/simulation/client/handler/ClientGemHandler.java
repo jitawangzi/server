@@ -1,6 +1,8 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
+
+import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -55,7 +57,7 @@ public class ClientGemHandler extends BaseHandler {
 
     private void xiLian(NetClient netClient, Object message) {
         GemXiLianResponse_10000011 resp = (GemXiLianResponse_10000011) message;
-        GemInfo gem = resp.getGem();
+        BaseMsg.GemInfo gem = resp.getGem();
         Client client = (Client) netClient;
     }
 
