@@ -64,6 +64,9 @@ public class RewardHelper {
 		} else if (item instanceof DefenceSkin) {
 			DefenceSkin obj = (DefenceSkin) item;
 			builder.setDefenceSkin(obj.toProto());
+		}else if (item instanceof cn.game.games.net.game.module.player.headportrait.HeadPortrait) {
+			cn.game.games.net.game.module.player.headportrait.HeadPortrait obj = (cn.game.games.net.game.module.player.headportrait.HeadPortrait) item;
+			builder.setHeadPortrait(obj.getConfigId());
 		}else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}
