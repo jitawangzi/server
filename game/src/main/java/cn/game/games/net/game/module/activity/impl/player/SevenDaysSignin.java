@@ -144,7 +144,7 @@ public class SevenDaysSignin extends PlayerActivityBase {
                 drops.addAll(Goods.valueOf(config.Reward1));
               }
             });
-		MailHelper.sendMail(player.getPlayerId(), 20, drops, true);
+//		MailHelper.sendMail(player.getPlayerId(), 20, drops, true);
 	}
 
 	public int getSigninDay() {
