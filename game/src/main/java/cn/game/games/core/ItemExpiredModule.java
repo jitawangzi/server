@@ -29,9 +29,10 @@ public class ItemExpiredModule extends BasePlayerModule {
 					if (item.getExpiredTime() <= now) {
 						toRemove.add(item);
 					} else {
-						player.setTimerTask((item.getExpiredTime() - now) * 1000, r -> {
+						long expiredTimeTask =  player.setTimerTask((item.getExpiredTime() - now) * 1000, r -> {
 							goodsModule.delItem(item, OpType.Expired);
 						});
+						item.setExpiredTimeTask(expiredTimeTask);
 					}
 				}
 			}
