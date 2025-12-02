@@ -50,7 +50,7 @@ public class MonthCardModule extends BasePlayerModule {
 		MonthCard newCard = MonthCard.valueOf(this.playerId, cardId, buyTime, expireTime);
 		monthCards.put(cardId, newCard);
 		if (cardId == 1){//购买月卡， 检查是否有月卡签到
-			checkMothCardSignReward();
+//			checkMothCardSignReward();
 		}
 		return newCard;
 	}
