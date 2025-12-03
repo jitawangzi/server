@@ -1,6 +1,5 @@
 package cn.game.games.net.game.module.activity.impl.player;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.google.protobuf.Message;
@@ -51,20 +50,10 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 			// 大圣积分变化，可能会影响排名
 			int serverOpenDay = ServerHelper.getServerOpenDay(serverId); 
 			ActivityServerOpenRankConfig config = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay); 
-			// 开服第一天到当前这个榜的天数，都算开启活动排名
-			if (config != null) {
-				Collection<ActivityServerOpenRankConfig> list = ActivityServerOpenRankManager.instance().list(); 
-				int daShengActivityOpenDay = 0;
-				for (ActivityServerOpenRankConfig activityServerOpenRankConfig : list) {
-					if (activityServerOpenRankConfig.RewardRankId == RankType.DaShengLeiTaiServerOpenActivity.ID) {
-						daShengActivityOpenDay = activityServerOpenRankConfig.ID;
-						break;
-					}
-				}
-				if (daShengActivityOpenDay > 0 && serverOpenDay <= daShengActivityOpenDay) {
-					int score =  event.get(0) + event.get(1) ; 
-					RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiServerOpenActivity, player.getPlayerId(), score);
-				}
+			// 活动当天才更新积分。 
+			if (config != null && config.RankID == RankType.DaShengLeiTaiServerOpenActivity.ID) {
+				int score =  event.get(0) + event.get(1) ; 
+	            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiServerOpenActivity, player.getPlayerId(), score);
 			}
 			break;
 		default:

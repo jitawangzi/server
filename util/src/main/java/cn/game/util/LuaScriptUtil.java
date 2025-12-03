@@ -40,7 +40,8 @@ public class LuaScriptUtil {
 		ADD_LIST_WITH_FIFO_LIMIT("add_list_with_fifo_limit.lua", "向列表添加元素，如果超过大小限制则移除最老的元素", true),
 		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
 		TRY_SET_WITH_EXPECT("try_set_with_expect.lua", "条件设置键值对并指定过期时间，仅当键不存在或当前值与预期值相同时才设置", true),
-		ZSET_COPY_TOPN("zset_copy_topN.lua", "将源ZSET的前N名复制到目标ZSET，默认不清空目标", true),;
+        ZSET_COPY_TOPN("zset_copy_topN.lua", "将源ZSET的前N名复制到目标ZSET，默认不清空目标,支持按member值筛选", true),
+        ; 
 
 		private final String filename;
 		private final String description;
@@ -429,31 +430,67 @@ public class LuaScriptUtil {
 		});
 	}
 
-	/**
-	 * 将源ZSET的前 topN 名复制到目标ZSET（异步）
-	 * @param sourceKey 源ZSET
-	 * @param destKey   目标ZSET
-	 * @param topN      前N名(>0)
-	 * @param clearDest 是否清空目标(默认清空，传 null 则走默认 1)
-	 * @param expireSeconds 目标key过期秒数(<=0 不设置)
-	 * @return CompletionStage<CopyResult> 复制结果
-	 */
-	public static CompletionStage<CopyResult> copyZSetTopNAsync(String sourceKey, String destKey, int topN, Boolean clearDest,
-			int expireSeconds) {
-		int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
-		return executeLuaScriptAsync(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), topN, clear,
-				expireSeconds).thenApply(LuaScriptUtil::parseCopyResult);
-	}
+    /**
+     * 将源ZSET的前 topN 名复制到目标ZSET（异步）- 兼容旧版本
+     * 不进行 member 筛选
+     */
+    public static CompletionStage<CopyResult> copyZSetTopNAsync(String sourceKey, String destKey, int topN, Boolean clearDest,
+            int expireSeconds) {
+        // 调用新的重载方法，传 null 表示不筛选
+        return copyZSetTopNAsync(sourceKey, destKey, topN, clearDest, expireSeconds, null);
+    }
+    /**
+     * 将源ZSET的前 topN 名复制到目标ZSET（异步）
+     * @param sourceKey 源ZSET
+     * @param destKey   目标ZSET
+     * @param topN      前N名(>0)
+     * @param clearDest 是否清空目标(默认清空)
+     * @param expireSeconds 目标key过期秒数
+     * @param minMember 最小member值(只有>=此值的member才会被复制)。传 null 则不筛选。
+     * @return CompletionStage<CopyResult>
+     */
+    public static CompletionStage<CopyResult> copyZSetTopNAsync(String sourceKey, String destKey, int topN, Boolean clearDest,
+                                                                int expireSeconds, Long minMember) {
+        int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
+        
+        // 构造参数数组
+        Object[] args;
+        if (minMember != null) {
+            // 如果传了 minMember，则传递 4 个参数给 Lua
+            args = new Object[] { topN, clear, expireSeconds, minMember };
+        } else {
+            // 如果没传，只传 3 个参数，Lua 脚本中 ARGV[4] 将为 nil，保持旧逻辑
+            args = new Object[] { topN, clear, expireSeconds };
+        }
 
-	/**
-	 * 将源ZSET的前 topN 名复制到目标ZSET（同步）
-	 */
-	public static CopyResult copyZSetTopN(String sourceKey, String destKey, int topN, Boolean clearDest, int expireSeconds) {
-		int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
-		Object ret = executeLuaScript(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), topN, clear,
-				expireSeconds);
-		return parseCopyResult(ret);
-	}
+        return executeLuaScriptAsync(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), args)
+                .thenApply(LuaScriptUtil::parseCopyResult);
+    }
+
+    /**
+     * 将源ZSET的前 topN 名复制到目标ZSET（同步）- 兼容旧代码版本
+     */
+    public static CopyResult copyZSetTopN(String sourceKey, String destKey, int topN, Boolean clearDest, int expireSeconds) {
+        return copyZSetTopN(sourceKey, destKey, topN, clearDest, expireSeconds, null);
+    }
+
+    /**
+     * 将源ZSET的前 topN 名复制到目标ZSET（同步）- 新增支持 member 筛选
+     * @param minMember 最小member值。传 null 则不筛选。
+     */
+    public static CopyResult copyZSetTopN(String sourceKey, String destKey, int topN, Boolean clearDest, int expireSeconds, Long minMember) {
+        int clear = (clearDest == null ? 1 : (clearDest ? 1 : 0));
+        
+        Object[] args;
+        if (minMember != null) {
+            args = new Object[] { topN, clear, expireSeconds, minMember };
+        } else {
+            args = new Object[] { topN, clear, expireSeconds };
+        }
+
+        Object ret = executeLuaScript(LuaScript.ZSET_COPY_TOPN, StringCodec.INSTANCE, Arrays.asList(sourceKey, destKey), args);
+        return parseCopyResult(ret);
+    }
 
 	/**
 	 * 解析 {copiedCount, totalSourceSize} 返回
