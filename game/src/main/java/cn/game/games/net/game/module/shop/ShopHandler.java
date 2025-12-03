@@ -392,6 +392,10 @@ public class ShopHandler extends GameBaseHandler {
                 return;
             }
         }
+        if (!PlayerHelper.checkCondition(player, shopItemConfig.BuyCondition)) {
+			client.sendProtocol(resp, ErrorMsgEnum.condition_check_error.getId());
+			return;
+		}
         //公会不存在
         if (shopId == 17 && player.getGuildId() == 0) {
             client.sendProtocol(resp, ErrorMsgEnum.zong_men_not_exist.getId());
