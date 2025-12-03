@@ -217,6 +217,8 @@ public class GameServer implements GameServerMBean {
 		RankService.getInstance().setNpcToRank();
 		initLeaderTask();
 		GameSSLogger.getInstance().init();
+		// 最后在启动websocket服务器,防止服务器还没完全启动，客户端就重连了，导致某些问题
+		initWebsocketVerticle();
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
@@ -391,9 +393,9 @@ public class GameServer implements GameServerMBean {
 //			VxHolder.deployVerticleSync(verticle, new DeploymentOptions().setThreadingModel(ThreadingModel.VIRTUAL_THREAD));
 			VxHolder.deployVerticleSync(verticle);
 		}
-		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
-		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
-		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
+//		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
+//		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
+//		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
 
 		String serverId = ServerContext.getInstance().getServerId();
 		ServerType serverType = ServerContext.getInstance().getServerType();
@@ -402,6 +404,12 @@ public class GameServer implements GameServerMBean {
 		VertxRPCService verticle = new VertxRPCService(null, serverId, serverType, processor);
 		VxHolder.deployVerticleSync(verticle);
 
+	}
+	private void initWebsocketVerticle() throws Exception {
+		int numVerticles = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
+		DeploymentOptions options = new DeploymentOptions().setInstances(numVerticles);
+		options.setThreadingModel(ThreadingModel.VIRTUAL_THREAD);
+		wsVerticle = VxHolder.deployVerticleSync(WebSocketVerticle.class, options);
 	}
 
 	private void initQuartz() throws IOException {
