@@ -2,6 +2,9 @@ package cn.game.games.net.game.module.quest;
 
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 
@@ -19,6 +22,7 @@ import cn.game.protocol.generated.manager.ConditionManager;
  */
 public abstract class AbstractCondition implements Condition {
 
+	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 	/** 只序列化字段，不调用get()序列化 */
 	protected static final transient boolean fieldBased = true;
 	protected static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
@@ -197,6 +201,9 @@ public abstract class AbstractCondition implements Condition {
 		this.index = index;
 		this.playerId = playerId;
 		this.player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null) {
+			log.warn("初始化任务条件时，玩家不存在，playerId={}", playerId);
+		}
 		this.updateAction = updateAction;
 		this.achieveAction = achieveAction;
 	}
