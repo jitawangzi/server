@@ -6,11 +6,14 @@ import java.util.List;
 
 import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.Item;
+import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.ItemHelper;
+import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
+import cn.game.util.DateUtil;
 
 /**    
  * 代表玩家拥有的所有物品
@@ -93,6 +96,29 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 
 	public void setInstanceExt(E item) {
 
+	}
+
+	/** 
+	 * 给物品设置过期时间
+	 * @param expiredSeconds
+	 */
+	public void expired(Item item, int expiredSeconds) {
+		if (expiredSeconds <= 0) {
+			return ; // 不过期
+		}
+		if (item.getExpiredTime() > 0) { // 已有过期时间的，叠加过期时间
+			item.setExpiredTime(item.getExpiredTime() + expiredSeconds);
+		}else {
+			item.setExpiredTime(DateUtil.currentTimeSeconds() + expiredSeconds);
+		}
+		if (item.getExpiredTimeTask() > 0) {
+			player.cancelTimer(item.getExpiredTimeTask());
+		}
+//		物品过期
+		long expiredTimeTask =  player.setTimerTask((item.getExpiredTime() - DateUtil.currentTimeSeconds()) * 1000, r -> {
+			delItem(item, OpType.Expired);
+		});
+		item.setExpiredTimeTask(expiredTimeTask);
 	}
 
 	/** 
