@@ -101,10 +101,15 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	
 	@Override
 	public void onLogin() {
+		checkEnd();
 	}
 	
 	@Override
 	public void reLogin() {
+		checkEnd();
+	}
+
+	private void checkEnd() {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingSubId = battleModule.getAttackingSubId();
 		if (startFloor > 0 && attackingSubId > 0) {
