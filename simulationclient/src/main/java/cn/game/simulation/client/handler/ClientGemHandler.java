@@ -2,20 +2,19 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 
+import cn.game.protocol.protobuf.BaseMsg;
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.protocol.protobuf.BaseMsg.GemInfo;
 import cn.game.protocol.protobuf.GemMsg.GemComposeResponse_10000008;
-import cn.game.protocol.protobuf.GemMsg.GemGacheResponse_10000013;
 import cn.game.protocol.protobuf.GemMsg.GemLockResponse_10000006;
 import cn.game.protocol.protobuf.GemMsg.GemTeardownResponse_10000004;
 import cn.game.protocol.protobuf.GemMsg.GemWearResponse_10000002;
-import cn.game.protocol.protobuf.GemMsg.GemXiLianResponse_10000011;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.GemMsg.GemXiLianResponse_10000011;
+import cn.game.protocol.protobuf.GemMsg.GemGacheResponse_10000013;
 
 @Component
 public class ClientGemHandler extends BaseHandler {
@@ -58,7 +57,7 @@ public class ClientGemHandler extends BaseHandler {
 
     private void xiLian(NetClient netClient, Object message) {
         GemXiLianResponse_10000011 resp = (GemXiLianResponse_10000011) message;
-        GemInfo gem = resp.getGem();
+        BaseMsg.GemInfo gem = resp.getGem();
         Client client = (Client) netClient;
     }
 
@@ -67,8 +66,6 @@ public class ClientGemHandler extends BaseHandler {
         List<RewardInfo> rewardsList = resp.getRewardsList();
         int gemGacheFreeTimesNormal = resp.getGemGacheFreeTimesNormal();
         int gemGacheFreeTimesHigh = resp.getGemGacheFreeTimesHigh();
-        int gemGacheBaoDiNormal = resp.getGemGacheBaoDiNormal();
-        int gemGacheBaoDiHigh = resp.getGemGacheBaoDiHigh();
         Client client = (Client) netClient;
     }
 }

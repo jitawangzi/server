@@ -161,6 +161,9 @@ public class MonthCardModule extends BasePlayerModule {
 	public boolean hasMonthCard() {
 		return !monthCards.isEmpty();
 	}
+	public boolean hasMonthCard(int id) {
+		return monthCards.containsKey(id);
+	}
 
 	public boolean isDoubleBonus() {
 		return doubleBonus;

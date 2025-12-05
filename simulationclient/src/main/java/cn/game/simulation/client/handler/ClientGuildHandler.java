@@ -2,15 +2,14 @@ package cn.game.simulation.client.handler;
 
 import java.util.List;
 
+import cn.game.protocol.protobuf.GuildMsg;
 import org.springframework.stereotype.Component;
-
 import cn.game.core.net.client.NetClient;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinResponse_40000008;
-import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
 import cn.game.protocol.protobuf.GuildMsg.GuildBargainBuyResponse_40000063;
 import cn.game.protocol.protobuf.GuildMsg.GuildBargainResponse_40000061;
 import cn.game.protocol.protobuf.GuildMsg.GuildBountyAcceptResponse_40000071;
@@ -28,16 +27,7 @@ import cn.game.protocol.protobuf.GuildMsg.GuildCreateResponse_40000006;
 import cn.game.protocol.protobuf.GuildMsg.GuildDissolveResponse_40000012;
 import cn.game.protocol.protobuf.GuildMsg.GuildDonateResponse_40000068;
 import cn.game.protocol.protobuf.GuildMsg.GuildFindResponse_40000004;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEBattleEnd;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEBattleStart;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketResponse_40000091;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVECardData;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEMap;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleEndPush_40000089;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleStartPush_4000008a;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
-import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenMapResponse_40000088;
 import cn.game.protocol.protobuf.GuildMsg.GuildInfoResponse_40000022;
 import cn.game.protocol.protobuf.GuildMsg.GuildJoinPush_40000044;
 import cn.game.protocol.protobuf.GuildMsg.GuildListResponse_40000002;
@@ -57,6 +47,13 @@ import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
+import cn.game.protocol.protobuf.GuildMsg.GuildApplyProcessedPush_40100001;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenMapResponse_40000088;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleEndPush_40000089;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleStartPush_4000008a;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketResponse_40000091;
 
 @Component
 public class ClientGuildHandler extends GameBaseHandler {
@@ -312,19 +309,19 @@ public class ClientGuildHandler extends GameBaseHandler {
 
     private void gVEOpenMap(NetClient netClient, Object message) {
         GuildGVEOpenMapResponse_40000088 resp = (GuildGVEOpenMapResponse_40000088) message;
-        GuildGVEMap mapdata = resp.getMapdata();
+        GuildMsg.GuildGVEMap mapdata = resp.getMapdata();
         Client client = (Client) netClient;
     }
 
     private void gVEMapBattleEndPush(NetClient netClient, Object message) {
         GuildGVEMapBattleEndPush_40000089 resp = (GuildGVEMapBattleEndPush_40000089) message;
-        GuildGVEBattleEnd battleEndData = resp.getBattleEndData();
+        GuildMsg.GuildGVEBattleEnd battleEndData = resp.getBattleEndData();
         Client client = (Client) netClient;
     }
 
     private void gVEMapBattleStartPush(NetClient netClient, Object message) {
         GuildGVEMapBattleStartPush_4000008a resp = (GuildGVEMapBattleStartPush_4000008a) message;
-        GuildGVEBattleStart battleStartData = resp.getBattleStartData();
+        GuildMsg.GuildGVEBattleStart battleStartData = resp.getBattleStartData();
         Client client = (Client) netClient;
     }
 

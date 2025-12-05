@@ -81,6 +81,7 @@ import cn.game.games.net.game.module.develop.equip.EquipModule;
 import cn.game.games.net.game.module.develop.gem.GemModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.rank.RankService;
+import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.games.util.DAO;
@@ -1249,6 +1250,18 @@ public class PlayerHelper {
 				BattleModule module = player.getModule(BattleModule.class);
 				TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
 				yield battle == null ? 0 : battle.getCurFloor().get(DungeonTypeEnum.GemTower.getId()) - 1 >= extParam[0] ? 1 : 0;
+			}
+			case IsMonthCard -> {
+				// 是否有某个月卡
+				MonthCardModule module = player.getModule(MonthCardModule.class);
+				int ret = 0 ; 
+				for (int i : extParam) {
+					if (module.hasMonthCard(i)) {
+						ret = 1; 
+						break ; 
+					}
+				}
+				yield ret;
 			}
 			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
 			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);

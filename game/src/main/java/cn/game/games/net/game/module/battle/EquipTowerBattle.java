@@ -330,13 +330,35 @@ public class EquipTowerBattle extends XiYouBattleHandler {
         return ResultObject.success();
     }
     public boolean hasRed() {
-        if (DateUtil.currentTimeSeconds() < nextGetTicketTime) {
-            return false;
+        boolean hasRed1 = false;
+        boolean hasRed2 = false;
+        boolean hasRed3 = false;
+        if (DateUtil.currentTimeSeconds() >= nextGetTicketTime) {
+            hasRed1 =true;
         }
-        if (ticketCount > GlobalConst.TicketRefreshMax + player.getWelfareValue(WelfareTypeEnum.TaSuiLingXiaoAddTimes)) {
-            return false;
+        if (ticketCount <= GlobalConst.TicketRefreshMax + player.getWelfareValue(WelfareTypeEnum.TaSuiLingXiaoAddTimes)) {
+            hasRed2 =true;
         }
-        return true;
+        int received=0;
+        int canReceive=0;
+        for(var k : helpRewardMap.values() )
+        {
+            for(var j : k.values() )
+            {
+                if (j == 1) {
+                    received++;
+                }else {
+                    canReceive++;
+                }
+            }
+        }
+        if(canReceive>0) {
+            hasRed3= true;
+        }
+        if(received>=5) {
+            hasRed3= false;
+        }
+        return hasRed1||hasRed2||hasRed3;
     }
     @Override
     public int getType() {

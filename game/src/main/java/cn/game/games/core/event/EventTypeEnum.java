@@ -78,6 +78,8 @@ public enum EventTypeEnum {
     Hero("获得英雄"),
     /** 一场战斗结束，参数战役id，关卡id，输赢，杀怪数量 ,boss数量*/
     BattleEnd("一场战斗结束"),
+    /** 扫荡关卡 ，参数战役id */
+    BattleSweep("某关卡扫荡"),
     HCHero("获得合成英雄"),
     // 参数，id，value
     GetItem("获取资源"),
