@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.security.auth.login.LoginException;
+
 import cn.game.games.core.log.GameSSLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RFuture;
@@ -1273,7 +1275,52 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @return  是否重连了
 	 */
-	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId, Account account) {
+	public static boolean reconnect(GameClient newGameClient, boolean reconnect, long playerId, Account account){
+		if (playerId == 0) {
+			return false;
+		}
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null) {
+			return false;
+		}
+		if (PlayerManager.getInstance().isForbidAccount(player.getPlayerId())) {
+			throw new LogicException(ErrorMsgEnum.login_forbidden);
+		}
+		GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+		if (oldGameClient == null) {
+			log.warn("reconnect warn, oldGameClient is null playerId:" + playerId);
+			newGameClient.setPlayerId(playerId);
+		} else {
+			if (oldGameClient != newGameClient) {
+				// 可能不同设备登录同一账号,应该退出老的GameClient
+				if (reconnect) {
+					newGameClient.copy(oldGameClient);
+				} else {
+					newGameClient.copyClintLoign(oldGameClient);
+				}
+				GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
+			}
+		}
+		GameClientManager.getInstance().addGameClientSession(newGameClient);
+		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
+
+		player.setAccount(account);
+		player.setGameClient((GameClient) newGameClient);
+//		PlayerHelper.refresh(player);
+		if (reconnect) {
+			player.handleEvent(EventTypeEnum.Reconnect);
+		} else {
+			player.handleEvent(EventTypeEnum.Relogin);
+			player.handleEvent(EventTypeEnum.LoginSuccess);
+		}
+		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
+		resp2.setReconnect(reconnect);
+		resp2.setInfo(PbBuilder.buildPlayerInfo(player));
+		resp2.setTime(System.currentTimeMillis() + "");
+		newGameClient.sendProtocol(resp2);
+		return true;
+	}
+	public static boolean reconnectNew(GameClient newGameClient,boolean reconnect, long playerId) {
 		if (playerId == 0) {
 			return false;
 		}
@@ -1298,8 +1345,8 @@ public class PlayerHelper {
 		}
 		GameClientManager.getInstance().addGameClientSession(newGameClient);
 		GameClientManager.getInstance().addGameClientPlayer(newGameClient);
-
-		player.setAccount(account);
+		
+//		player.setAccount(account);
 		player.setGameClient((GameClient) newGameClient);
 //		PlayerHelper.refresh(player);
 		if (reconnect) {

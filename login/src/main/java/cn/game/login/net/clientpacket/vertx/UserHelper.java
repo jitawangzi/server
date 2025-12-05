@@ -23,12 +23,13 @@ public class UserHelper {
 //		int[] createUID = GlobalConst.CreateUID;
 //		long playerId = IdUtil.getIdAutoIncrease(IdType.PLAYER);
 //		playerId = playerId - 1 + createUID[0] + createUID[1];
-		long playerId = genPlayerId();
+//		long playerId = genPlayerId();
+		long userId = IdUtil.getId(); 
 
 		UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 
 		User user = new User();
-		user.setId(playerId);
+		user.setId(userId);
 		user.setUserType((byte) 1);
 		user.setUsername(account);
 		user.setChannelLabel(channelLabel);

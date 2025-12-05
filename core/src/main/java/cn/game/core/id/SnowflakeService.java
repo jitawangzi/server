@@ -31,6 +31,7 @@ public class SnowflakeService {
     private static final long HEARTBEAT_INTERVAL_MS = 3000L;
     private static final int DATACENTER_ID = 0;
 
+    // 唯一id
     private final String serverId;
     private IdWorker idWorker;
     private int workerId;

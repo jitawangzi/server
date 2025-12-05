@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 
 import javax.net.ssl.SSLException;
 
-import cn.game.protocol.protobuf.BaseMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -37,6 +36,8 @@ import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
 import cn.game.protocol.protobuf.Account.AccountChannelType;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
+import cn.game.protocol.protobuf.Account.AccountLogicServerList;
+import cn.game.protocol.protobuf.Account.AccountLogicServerListResponse;
 import cn.game.protocol.protobuf.Account.AccountLogin;
 import cn.game.protocol.protobuf.Account.AccountLoginResponse;
 import cn.game.protocol.protobuf.Account.AccountRegister;
@@ -44,22 +45,25 @@ import cn.game.protocol.protobuf.Account.AccountRegisterResponse;
 import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
+import cn.game.protocol.protobuf.Account.LogicServerInfo;
+import cn.game.protocol.protobuf.Account.MyServerInfo;
 import cn.game.protocol.protobuf.Account.ServerInfo;
+import cn.game.protocol.protobuf.BaseMsg;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
-import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
 import cn.game.protocol.protobuf.BattleMsg;
+import cn.game.protocol.protobuf.FriendMsg.FriendInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
+import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
+import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
-import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
-import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;
-import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
-import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
 import cn.game.util.HttpUtil;
@@ -130,6 +134,8 @@ public class Client extends AbstractNetClient {
 
 	/** 要登录的serverId */
 	private String serverId;
+	/** 要登录的logicServerId  分服： 1服  2服 等*/
+	private String logicServerId;
 	private String version;
 	/** 要登录的server ip */
 	private String serverIp;
@@ -347,6 +353,28 @@ public class Client extends AbstractNetClient {
 		systemOutLog.info(serverListResponse.toString());
 
 		chooseServer(serverListResponse.getServersList());
+		// 总服务器数量
+		int totalServerCount = serverListResponse.getTotalServerCount(); 
+		// 我进入过的逻辑服务器
+		List<MyServerInfo> myServerListList = serverListResponse.getMyServerListList(); 
+		if (!myServerListList.isEmpty()) {
+			myServerListList.sort((a, b) -> Long.compare(a.getLastEnterTime(), b.getLastEnterTime()));
+			logicServerId = myServerListList.getLast().getServerId();
+		}else {
+			// 如果没有进入过任何逻辑服务器，则选择最新的服务器
+			if (totalServerCount > 0) {
+				logicServerId = serverListResponse.getServersList().get(0).getServerId();
+				// 请求逻辑服务器列表
+				resp = HttpUtil.postBinary(url + "/account/logic_server_list",
+						AccountLogicServerList.newBuilder().setPassportSessionId(passport)
+						.setPageSize(10).setPage(totalServerCount/10 + 1)
+						.build().toByteArray());
+				AccountLogicServerListResponse logicServerListResponse = AccountLogicServerListResponse.parseFrom(resp);
+				List<LogicServerInfo> logicServerListList = logicServerListResponse.getLogicServerListList();
+				LogicServerInfo randomElement = Rnd.randomElement(logicServerListList); 
+				logicServerId = randomElement.getServerId(); 
+			}
+		}
 
 	}
 
@@ -603,6 +631,7 @@ public class Client extends AbstractNetClient {
 					builder.setClueToken("{}");
 					
 					builder.setAccountId(name) ; 
+					builder.setServerId(StringUtils.isEmpty(logicServerId) ? "" : logicServerId);
 
 					sendProtocol(builder.build());
 				}

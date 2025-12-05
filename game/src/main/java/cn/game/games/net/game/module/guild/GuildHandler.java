@@ -83,6 +83,10 @@ import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataResponse_40000084;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardRequest_40000085;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenCardResponse_40000086;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenMapRequest_40000087;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEOpenMapResponse_40000088;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketRequest_40000090;
+import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketResponse_40000091;
 
 @Component
 public class GuildHandler extends GameBaseHandler {
@@ -116,6 +120,8 @@ public class GuildHandler extends GameBaseHandler {
         putInvoker(PbProtocol.GuildRankListRequest_40000081, this::rankList);
         putInvoker(PbProtocol.GuildGVECardDataRequest_40000083, this::gVECardData);
         putInvoker(PbProtocol.GuildGVEOpenCardRequest_40000085, this::gVEOpenCard);
+        putInvoker(PbProtocol.GuildGVEOpenMapRequest_40000087, this::gVEOpenMap);
+        putInvoker(PbProtocol.GuildGVEBuyTicketRequest_40000090, this::gVEBuyTicket);
     }
 
     @Override
@@ -817,6 +823,22 @@ public class GuildHandler extends GameBaseHandler {
         int cardId = req.getCardId();
         GuildGVEOpenCardResponse_40000086 defaultInstance = GuildGVEOpenCardResponse_40000086.getDefaultInstance();
         GuildGVEOpenCardResponse_40000086.Builder resp = GuildGVEOpenCardResponse_40000086.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
+    }
+
+    private void gVEOpenMap(NetClient client, Object message) {
+        GuildGVEOpenMapRequest_40000087 req = (GuildGVEOpenMapRequest_40000087) message;
+        GuildGVEOpenMapResponse_40000088 defaultInstance = GuildGVEOpenMapResponse_40000088.getDefaultInstance();
+        GuildGVEOpenMapResponse_40000088.Builder resp = GuildGVEOpenMapResponse_40000088.newBuilder();
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        client.sendProtocol(resp.build());
+    }
+
+    private void gVEBuyTicket(NetClient client, Object message) {
+        GuildGVEBuyTicketRequest_40000090 req = (GuildGVEBuyTicketRequest_40000090) message;
+        GuildGVEBuyTicketResponse_40000091 defaultInstance = GuildGVEBuyTicketResponse_40000091.getDefaultInstance();
+        GuildGVEBuyTicketResponse_40000091.Builder resp = GuildGVEBuyTicketResponse_40000091.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         client.sendProtocol(resp.build());
     }

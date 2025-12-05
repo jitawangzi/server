@@ -34,12 +34,12 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PlayerData> selectByUid(@Param("uid") long uid);
+	PlayerData selectByUkUidServerid(@Param("uid") long uid, @Param("serverId") String serverId);
 
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByUid(@Param("uid") long uid);
+	int deleteByUkUidServerid(@Param("uid") long uid, @Param("serverId") String serverId);
 
 	/**
 	 * @mbg.generated
