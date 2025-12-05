@@ -358,8 +358,15 @@ public class Client extends AbstractNetClient {
 		// 我进入过的逻辑服务器
 		List<MyServerInfo> myServerListList = serverListResponse.getMyServerListList(); 
 		if (!myServerListList.isEmpty()) {
-			myServerListList.sort((a, b) -> Long.compare(a.getLastEnterTime(), b.getLastEnterTime()));
-			logicServerId = myServerListList.getLast().getServerId();
+			int lastEnterTime = 0; 
+			for (MyServerInfo myServerInfo : myServerListList) {
+				if (myServerInfo.getLastEnterTime() > lastEnterTime) {
+					lastEnterTime = myServerInfo.getLastEnterTime() ; 
+					logicServerId = myServerInfo.getServerId(); 
+				}
+			}
+//			myServerListList.sort((a, b) -> Long.compare(a.getLastEnterTime(), b.getLastEnterTime()));
+//			logicServerId = myServerListList.getLast().getServerId();
 		}else {
 			// 如果没有进入过任何逻辑服务器，则选择最新的服务器
 			if (totalServerCount > 0) {
