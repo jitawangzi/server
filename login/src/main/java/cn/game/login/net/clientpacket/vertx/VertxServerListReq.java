@@ -72,7 +72,7 @@ public class VertxServerListReq implements BaseVertxHandler {
 			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
 			return;
 		}
-		String myServerId  = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(user.getId())); 
+//		String myServerId  = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(user.getId())); 
 		// 所有配置的服务器
 		Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();
 		Collection<String> activeServerSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Game);
@@ -143,6 +143,7 @@ public class VertxServerListReq implements BaseVertxHandler {
 			myBuilder.setLevel(userServer.getPlayerLevel()); 
 			myBuilder.setName(userServer.getPlayerName());
 			myBuilder.setServerId(userServer.getServerId()); 
+			myBuilder.setPlayerId(userServer.getPlayerId()+""); 
 			resp.addMyServerList(myBuilder.build());
 		}
 		response.end(Buffer.buffer(resp.addAllServers(serverItems).build().toByteArray()));

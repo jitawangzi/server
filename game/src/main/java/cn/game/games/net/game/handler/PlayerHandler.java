@@ -955,8 +955,9 @@ public class PlayerHandler extends GameBaseHandler {
 		}
 //		uidFuture.map(uid -> {}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 	}
+
 	protected void login(NetClient client, Object message) {
-		
+
 		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
 			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
 			return;
@@ -970,43 +971,44 @@ public class PlayerHandler extends GameBaseHandler {
 //			handleLoginFailure(null, ErrorMsgEnum.version_mismatch.ID, (GameClient) client, passportSessionId);
 //			return;
 		}
-		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
+		long playerId = StringUtils.isEmpty(req.getPlayerId()) ? 0 : Long.parseLong(req.getPlayerId()); 
+//		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
+//		long playerId = oldGameClient == null ? 0 : oldGameClient.getPlayerId();
 		GameClient newGameClient = (GameClient) client;
-		
+
 		Account account = new Account(req);
-		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId)); 
-		long uid = uidResponse.getUid();
+		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId));
+		long userId = uidResponse.getUid();
 		// 使用sdk登陆，这两个参数都从客户端传递，不使用Login中获取的了
 //		account.accountId = uidResponse.getAccountId();
 //		account.deviceId = uidResponse.getDeviceId();
-		
+
 		try {
 			newGameClient.setSessionId(passportSessionId);
 			if (reconnect) { // 客户端主动重连
-				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect,
-						oldGameClient == null ? 0 : oldGameClient.getPlayerId(), account);
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, playerId, account);
 //			if (!isReallyReconnect) {
 //				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
 //				GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
 //			}
 				if (isReallyReconnect) {
-					return ;
+					return;
 				}
 			}
 			// 客户端新登陆,或者主动重连失败，都重新加载
-			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient,false, uid, account);
+			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, false, playerId, account);
 			if (!isReallyReconnect) {
-				checkOtherServer(uid).compose(r -> loadOrCreatePlayerData(uid, account, newGameClient))
-				.compose(playerData -> handlePlayerData(playerData,  account, newGameClient))
+				checkOtherServer(playerId).compose(r -> loadOrCreatePlayerData(userId, account, newGameClient))
+						.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
 //					.compose(PlayerHelper::saveSimplePlayer)
-				.compose(r -> {
-					return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
-						// 这里可能有阻塞操作
-						handleLoginSuccess(newGameClient, r);
-						return null;
-					}, null);
-				})
-				.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
+						.compose(r -> {
+							return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
+								// 这里可能有阻塞操作
+								handleLoginSuccess(newGameClient, r);
+								return null;
+							}, null);
+						})
+						.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 			}
 		} catch (Exception e) {
 			handleLoginFailure(e, 0, (GameClient) client, passportSessionId);
@@ -1068,6 +1070,9 @@ public class PlayerHandler extends GameBaseHandler {
 	 * @return
 	 */
 	private Future<Void> checkOtherServer(long playerId) {
+		if (playerId <= 0) {
+			return Future.succeededFuture();
+		}
 		return VxHolder.toVertxFuture(RedisUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
 			if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 				return notifyOtherServerLogout(serverId, playerId);
@@ -1140,6 +1145,8 @@ public class PlayerHandler extends GameBaseHandler {
 	public Future<PlayerData> createPlayerData(Account account, NetClient client, long userId, String name, boolean isMan, int head) {
 		PlayerData playerData = new PlayerData();
 
+		// 轻微阻塞
+//		long playerId = IdUtil.getIdByRedis(playerData.getServerId(), IdType.PLAYER);
 		long playerId = IdUtil.getIdBySegment(IdType.PLAYER);
 //		if (id == 0) {
 //			log.error("创建角色数量到达限制：" + passportSessionId);

@@ -99,8 +99,8 @@ public class IdUtil {
     }
 
     // ==========================================
-    // 2. Redis 模式 (指定逻辑服，连续)
-    // 适用于：玩家ID、英雄ID等必须归属于某个逻辑服的数据
+    // 2. Redis 模式 (指定逻辑服，严格连续,性能一般)
+    // 适用于：玩家ID,必须归属于某个逻辑服的数据
     // ==========================================
     public static long getIdByRedis(String logicalServerId, IdType idType) {
         checkInit();
@@ -116,7 +116,7 @@ public class IdUtil {
     }
 
     // ==========================================
-    // 3. 号段模式 (全局唯一，连续，最高性能，可能有空洞)
+    // 3. 号段模式 (全局唯一，最高性能，连续，但是可能有空洞)
     // ==========================================
     public static long getIdBySegment(IdType idType) {
         checkInit();

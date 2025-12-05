@@ -30,6 +30,7 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
     @Override
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request) {
         long playerId = request.getPlayerId();
+        long userId = request.getUserId(); 
         String sessionId = request.getSessionId();
         JSONObject signData = new JSONObject();
         // game?
@@ -55,7 +56,7 @@ public class AndroidWechatPayOrderProcessor extends BasePayOrderProcessor{
         payOrder.setPayState((byte) 1);
         payOrder.setPlayerId(playerId);
         payOrder.setPrice(request.getGoodsPrice());
-        payOrder.setUserId(playerId);
+        payOrder.setUserId(userId);
         payOrder.setThirdUid(user.getThirdUid());
 //		ObjUtil.setDefaultValue(payOrder);
 

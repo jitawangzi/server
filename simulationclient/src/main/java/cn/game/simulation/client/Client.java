@@ -136,6 +136,7 @@ public class Client extends AbstractNetClient {
 	private String serverId;
 	/** 要登录的logicServerId  分服： 1服  2服 等*/
 	private String logicServerId;
+	private String playerIdInLogicServer;
 	private String version;
 	/** 要登录的server ip */
 	private String serverIp;
@@ -352,17 +353,25 @@ public class Client extends AbstractNetClient {
 		AccountServerListResponse serverListResponse = AccountServerListResponse.parseFrom(resp);
 		systemOutLog.info(serverListResponse.toString());
 
-		chooseServer(serverListResponse.getServersList());
+		chooseServerConnect(serverListResponse.getServersList());
 		// 总服务器数量
 		int totalServerCount = serverListResponse.getTotalServerCount(); 
 		// 我进入过的逻辑服务器
 		List<MyServerInfo> myServerListList = serverListResponse.getMyServerListList(); 
+		chooseLogicServer(url, passport, totalServerCount, myServerListList);
+
+	}
+
+	private void chooseLogicServer(String url, String passport, int totalServerCount, List<MyServerInfo> myServerListList)
+			throws InvalidProtocolBufferException {
+		byte[] resp;
 		if (!myServerListList.isEmpty()) {
 			int lastEnterTime = 0; 
 			for (MyServerInfo myServerInfo : myServerListList) {
 				if (myServerInfo.getLastEnterTime() > lastEnterTime) {
 					lastEnterTime = myServerInfo.getLastEnterTime() ; 
 					logicServerId = myServerInfo.getServerId(); 
+					playerIdInLogicServer = myServerInfo.getPlayerId(); 
 				}
 			}
 //			myServerListList.sort((a, b) -> Long.compare(a.getLastEnterTime(), b.getLastEnterTime()));
@@ -390,10 +399,9 @@ public class Client extends AbstractNetClient {
 				}
 			}
 		}
-
 	}
 
-	private void chooseServer(List<cn.game.protocol.protobuf.Account.ServerInfo> list) {
+	private void chooseServerConnect(List<cn.game.protocol.protobuf.Account.ServerInfo> list) {
 
 		List<ServerInfo> ret = new ArrayList<>();
 		for (ServerInfo serverInfo : list) {
@@ -646,7 +654,8 @@ public class Client extends AbstractNetClient {
 					builder.setClueToken("{}");
 					
 					builder.setAccountId(name) ; 
-					builder.setServerId(StringUtils.isEmpty(logicServerId) ? "" : logicServerId);
+					builder.setServerId(logicServerId==null ? "" : logicServerId);
+					builder.setPlayerId(playerIdInLogicServer == null ? "" : playerIdInLogicServer);
 
 					sendProtocol(builder.build());
 				}

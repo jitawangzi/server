@@ -99,11 +99,11 @@ public class ChangYouShipPush implements BaseVertxHandler {
 				// 通知game发货
 				User user = UserHelper.getUserByName(payOrder.getThirdUid());
 				PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022.newBuilder()
-						.setPlayerId(user.getId())
+						.setPlayerId(payOrder.getPlayerId())
 						.setUid(payOrder.getId())
 						.setSdkOrderId(paymentNotification.getReceipt().getOrderId())
 						.build();
-				String serverId = UserHelper.getServerId(user.getId());
+				String serverId = UserHelper.getServerId(payOrder.getPlayerId());
 				Future<PaymentOrderShipResponse_7d000023> future;
 				if (StringUtils.isEmpty(serverId)) {
 					future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);

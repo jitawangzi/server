@@ -6,7 +6,9 @@ import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,6 +37,8 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.ServerEventTypeEnum;
 import cn.game.core.id.IdUtil;
+import cn.game.core.id.IdUtil.IdRangeConfig;
+import cn.game.core.id.IdUtil.IdType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.remote.RemoteCrossServerInterface;
@@ -156,7 +160,8 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		VxHolder.init();
-		IdUtil.init(serverId);
+//		IdUtil.init(serverId);
+		initAllServerPlayerId(serverId);
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init();
@@ -537,7 +542,24 @@ public class GameServer implements GameServerMBean {
 //		RocketMQRpcClient.request(getServerId(ServerType.Data), message, callback);
 //	}
 	
-	
+	private void initAllServerPlayerId(String serverId) throws Exception {
+		Map<IdType, List<IdRangeConfig>> redisConfigs = new HashMap<IdUtil.IdType, List<IdRangeConfig>>(); 
+		List<VirtualServerView> validServerList = ServerContext.getInstance().getValidGameService().getValidServerList();
+		for (int i = 0; i < validServerList.size() - 1; i++) {
+			VirtualServerView current = validServerList.get(i); 
+			VirtualServerView next = validServerList.get(i + 1); 
+			if (current.startId + current.playerMaxCount >= next.startId) {
+				throw new RuntimeException("player id error, Server ： "+ current.seq + " startId : "+ current.startId +  " maxCount : "+ current.playerMaxCount+ " nextStartId: "+ next.startId ) ; 
+			}
+		}
+		List<IdRangeConfig> rangeConfigs = new ArrayList<>();
+		for (VirtualServerView virtualServerView : validServerList) {
+			IdRangeConfig config = new IdRangeConfig(virtualServerView.ID,virtualServerView.startId,virtualServerView.playerMaxCount); 
+			rangeConfigs.add(config); 
+		}
+		redisConfigs.put(IdType.PLAYER, rangeConfigs); 
+		IdUtil.init(serverId, RedisUtil.getRedis(), redisConfigs);
+	}
 	private void initLeaderTask() throws Exception {
 		if (!ServerContext.getInstance().isLeader()) {
 			return;
@@ -550,7 +572,7 @@ public class GameServer implements GameServerMBean {
 		Collection<VirtualServerConfig> list = VirtualServerManager.instance().list(); 
 		List<VirtualServerView> views = new ArrayList<>();
 		for (VirtualServerConfig config : list) {
-			VirtualServerView view = new VirtualServerView(config.ID, config.name, config.playerMaxCount,
+			VirtualServerView view = new VirtualServerView(config.ID, config.name,config.startId, config.playerMaxCount,
 					config.seq,config.openTime);
 			views.add(view);
 		}
