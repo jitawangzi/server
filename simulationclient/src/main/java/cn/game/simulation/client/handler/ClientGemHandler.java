@@ -1,18 +1,21 @@
 package cn.game.simulation.client.handler;
 
 import java.util.List;
+
 import org.springframework.stereotype.Component;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
+import cn.game.protocol.protobuf.BaseMsg.GemInfo;
 import cn.game.protocol.protobuf.GemMsg.GemComposeResponse_10000008;
+import cn.game.protocol.protobuf.GemMsg.GemGacheResponse_10000013;
 import cn.game.protocol.protobuf.GemMsg.GemLockResponse_10000006;
 import cn.game.protocol.protobuf.GemMsg.GemTeardownResponse_10000004;
 import cn.game.protocol.protobuf.GemMsg.GemWearResponse_10000002;
+import cn.game.protocol.protobuf.GemMsg.GemXiLianResponse_10000011;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
-import cn.game.protocol.protobuf.GemMsg.GemXiLianResponse_10000011;
-import cn.game.protocol.protobuf.GemMsg.GemGacheResponse_10000013;
 
 @Component
 public class ClientGemHandler extends BaseHandler {

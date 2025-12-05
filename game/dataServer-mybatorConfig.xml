@@ -33,7 +33,7 @@
         <plugin type="org.mybatis.generator.plugins.BatchDeletePlugin" />
         <plugin type="org.mybatis.generator.plugins.MysqlBatchUpdatePlugin" />
         <plugin type="org.mybatis.generator.plugins.GetLastIdPlugin" />
-    	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />    <plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
+    	<plugin type="org.mybatis.generator.plugins.DisableSelectiveMethodPlugin" />
     	<plugin type="org.mybatis.generator.plugins.UpdateWithBlobPlugin" />
     	<plugin type="org.mybatis.generator.plugins.DynamicUpdatePlugin" />
     	<plugin type="org.mybatis.generator.plugins.InsertOrUpdatePlugin" />

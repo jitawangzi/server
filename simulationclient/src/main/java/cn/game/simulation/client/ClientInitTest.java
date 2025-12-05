@@ -16,12 +16,13 @@ import cn.game.util.log.LoggerManager;
  */
 public class ClientInitTest {
 
-	private static int idStart = 9951 ; 
-	private static int count = 2 ; 
+	private static int idStart = 19951 ; 
+	private static int count = 1 ; 
 	private static String serverId = "SYQ" ; 
 //	private static String serverId = "xy_game_1" ; 
 //	private static String serverId = "game_test" ; 
-	private static String loginServerUrl =  "http://test:9390" ;
+	private static String loginServerUrl =  "http://127.0.0.1:9390" ;
+//	private static String loginServerUrl =  "http://test:9390" ;
 	// #西游QA外网
 //	private static String loginServerUrl =  "https://partyqaloginml.changyou.com:9390" ;
 	// 西游正式外网

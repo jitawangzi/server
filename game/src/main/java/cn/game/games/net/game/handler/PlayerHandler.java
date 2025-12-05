@@ -13,6 +13,8 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.exception.LogicException;
+import cn.game.core.id.IdUtil;
+import cn.game.core.id.IdUtil.IdType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
@@ -895,7 +897,7 @@ public class PlayerHandler extends GameBaseHandler {
 		client.sendProtocol(resp);
 	}
 
-	protected void login(NetClient client, Object message) {
+	protected void loginOld(NetClient client, Object message) {
 
 		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
 			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
@@ -953,7 +955,7 @@ public class PlayerHandler extends GameBaseHandler {
 		}
 //		uidFuture.map(uid -> {}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 	}
-	protected void loginNew(NetClient client, Object message) {
+	protected void login(NetClient client, Object message) {
 		
 		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
 			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
@@ -1020,16 +1022,16 @@ public class PlayerHandler extends GameBaseHandler {
 				.compose(r -> DAO.execute(PlayerDataMapper.class, "selectByUkUidServerid", userId,account.serverId))
 				.compose(playerData -> {
 					if (playerData == null) {
-						return createNewPlayer(playerId, account, client);
+						return createNewPlayer(userId, account, client);
 					}
 					return Future.succeededFuture((PlayerData) playerData);
 				});
 	}
 
-	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
+	private Future<PlayerData> createNewPlayer(long userId, Account account, GameClient client) {
 		return PlayerNameManager.getInstance()
 				.createUserName()
-				.compose(name -> createPlayerData(account, client, playerId, name, true, 0))
+				.compose(name -> createPlayerData(account, client, userId, name, true, 0))
 				.compose(PlayerNameManager.getInstance()::saveName2Id);
 	}
 
@@ -1042,7 +1044,9 @@ public class PlayerHandler extends GameBaseHandler {
 			Player player = PlayerHelper.createPlayer(playerData, account, client);
 			return PlayerHelper.initPlayerData(player)
 					.compose(PlayerHelper::savePlayerToDb)
-					.compose(PlayerHelper::saveSimplePlayer);
+					.compose(PlayerHelper::saveSimplePlayer)
+					.compose(PlayerHelper::updateUserServer)
+					;
 		}
 		if (PlayerManager.getInstance().isForbidAccount(playerData.getPlayerId())) {
 			return Future.failedFuture(new LogicException(ErrorMsgEnum.login_forbidden)); 
@@ -1136,7 +1140,7 @@ public class PlayerHandler extends GameBaseHandler {
 	public Future<PlayerData> createPlayerData(Account account, NetClient client, long userId, String name, boolean isMan, int head) {
 		PlayerData playerData = new PlayerData();
 
-		long id = userId;
+		long playerId = IdUtil.getIdBySegment(IdType.PLAYER);
 //		if (id == 0) {
 //			log.error("创建角色数量到达限制：" + passportSessionId);
 //			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
@@ -1168,8 +1172,8 @@ public class PlayerHandler extends GameBaseHandler {
 				playerData.setServerId(ServerHelper.getServerIdLatestAsync());
 			}
 		}
-		playerData.setPlayerId(id);
-		playerData.setUid(uid);
+		playerData.setPlayerId(playerId);
+		playerData.setUid(userId);
 		playerData.setGender(isMan);
 		playerData.setCreateDate(DateUtil.getStringDate());
 //		player.getData().setName(create.getName());

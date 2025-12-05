@@ -36,6 +36,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.LogoutType;
+import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.process.OffsetBatchQuery;
@@ -1475,6 +1476,12 @@ public class PlayerHelper {
 		Future<Void> future = saveSimplePlayerToRedis(player);
 		return future.map(player);
 	}
+	public static Future<Player> updateUserServer(Player player) {
+		PlayerData data = player.getData(); 
+		RemoteLoginServerInterface remoteLoginInterfaceProxy = ServerHelper.getRemoteLoginInterfaceProxy(); 
+		Future<Void> future = remoteLoginInterfaceProxy.updateUserServer(data.getServerId(), data.getUid(), data.getPlayerId(), data.getName(),player.getLevel()); 
+		return future.map(player);
+	}
 
 	/** 
 	 * 创建新玩家，保存到数据库
@@ -1607,10 +1614,14 @@ public class PlayerHelper {
 		}).compose(v -> {
 			// 保存SimplePlayer 到redis。
 			return PlayerHelper.saveSimplePlayerToRedis(player);
+		}).compose(v -> {
+			// 更新最近的服务器
+			return PlayerHelper.updateUserServer(player);
 		}).mapEmpty().otherwise(e -> {
 			log.error("Error during logout cache process for playerId: " + playerId, e);
 			return null;
 		});
+		
 	}
 	
 	/**

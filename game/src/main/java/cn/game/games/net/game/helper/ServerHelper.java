@@ -17,6 +17,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
+import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.zookeeper.server.ValidServerService;
@@ -73,6 +74,15 @@ public class ServerHelper {
 		}
 		// 在其他服务器，通过远程调用
 		return RpcFactory.getImpl(clazz, ServerContext.getInstance().getRpcClient(), callType, serverId, serverType, targetId);
+	}
+	public static RemoteLoginServerInterface getRemoteLoginInterfaceProxy() {
+		
+		CallType callType = CallType.LoadBalancer;
+		if (ServerContext.getInstance().getServerType() == ServerType.Login) {
+			return ClassHelper.getSingletonInstance(RemoteLoginServerInterface.class);
+		}
+		// 在其他服务器，通过远程调用
+		return RpcFactory.getImpl(RemoteLoginServerInterface.class, ServerContext.getInstance().getRpcClient(), callType, "", ServerType.Login, 0);
 	}
 	
 	/** 

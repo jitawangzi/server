@@ -61,7 +61,7 @@ public class VertxLogicServerListReq implements BaseVertxHandler {
 		
 		ValidServerService validGameService = ServerContext.getInstance().getValidGameService(); 
 		List<VirtualServerView> validServers = validGameService.getValidServerList(); 
-		List<VirtualServerView> subList = validServers.subList((page - 1) * pageSize, pageSize);
+		List<VirtualServerView> subList = validServers.subList((page - 1) * pageSize, Math.min(validServers.size(), pageSize));
 		
 		int status = ServerList.STATUS_MAINTANCE; 
 		Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();

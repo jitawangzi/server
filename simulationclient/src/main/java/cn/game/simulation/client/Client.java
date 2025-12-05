@@ -363,7 +363,6 @@ public class Client extends AbstractNetClient {
 		}else {
 			// 如果没有进入过任何逻辑服务器，则选择最新的服务器
 			if (totalServerCount > 0) {
-				logicServerId = serverListResponse.getServersList().get(0).getServerId();
 				// 请求逻辑服务器列表
 				resp = HttpUtil.postBinary(url + "/account/logic_server_list",
 						AccountLogicServerList.newBuilder().setPassportSessionId(passport)
@@ -371,8 +370,17 @@ public class Client extends AbstractNetClient {
 						.build().toByteArray());
 				AccountLogicServerListResponse logicServerListResponse = AccountLogicServerListResponse.parseFrom(resp);
 				List<LogicServerInfo> logicServerListList = logicServerListResponse.getLogicServerListList();
-				LogicServerInfo randomElement = Rnd.randomElement(logicServerListList); 
-				logicServerId = randomElement.getServerId(); 
+				if (logicServerListList.isEmpty()) {
+					throw new IllegalArgumentException("没有可用的逻辑服务器");
+				}
+//				logicServerListList.sort((a, b) -> Integer.compare(b.getOpenTime(), a.getOpenTime()));
+				int openTime = 0; 
+				for (LogicServerInfo logicServerInfo : logicServerListList) {
+					if (logicServerInfo.getOpenTime() > openTime) {
+						openTime = logicServerInfo.getOpenTime() ; 
+						logicServerId = logicServerInfo.getServerId(); 
+					}
+				}
 			}
 		}
 
