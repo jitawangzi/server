@@ -897,7 +897,7 @@ public class PlayerHandler extends GameBaseHandler {
 		client.sendProtocol(resp);
 	}
 
-	protected void loginOld(NetClient client, Object message) {
+	protected void oldlogin(NetClient client, Object message) {
 
 		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
 			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
