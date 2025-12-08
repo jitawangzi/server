@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.game.games.net.game.module.player.headbox.ChatBox;
+import cn.game.games.net.game.module.player.headbox.Title;
 import com.google.protobuf.TextFormat;
 
 import cn.game.games.cache.entity.Equip;
@@ -64,6 +66,13 @@ public class RewardHelper {
 		} else if (item instanceof DefenceSkin) {
 			DefenceSkin obj = (DefenceSkin) item;
 			builder.setDefenceSkin(obj.toProto());
+		}
+		else if (item instanceof Title) {
+			Title obj = (Title) item;
+			builder.setTitle(obj.getConfigId());
+		}else if (item instanceof ChatBox) {
+			ChatBox obj = (ChatBox) item;
+			builder.setChatBox(obj.getConfigId());
 		}else {
 			throw new IllegalArgumentException("toRewardInfo not implement, item class is " + item.getClass().getName());
 		}

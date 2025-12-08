@@ -180,8 +180,8 @@ public class GemModule extends AbstractItemNoStackModule<Gem> {
     //宝石抽奖保底
 	 int  baoDiNormal=0;
 	 int  baoDiHigh=0;
-	int  freeNormal=1;
-	int  freeHigh=1;
+	 int  freeNormal=1;
+	 int  freeHigh=1;
 	public List<RewardMsg.RewardInfo>  gemGache(int gemcount ,int pool,int costType)
 	{
 		if(!gemGache_Check(gemcount, pool, costType)) {

@@ -67,7 +67,8 @@ public class SimplePlayer implements Serializable {
 	public int battleId;
 	/** 天道修为等级 */
 	private int tdLevel;
-
+	public int title; // 称号
+	public int chatBox; // 聊天框
 	public List<Hero> heros;
 	/**
 	 * 前端需要的战斗相关的属性
@@ -99,6 +100,8 @@ public class SimplePlayer implements Serializable {
 		this.combatEffectiveness = (int)player.getAttrModule().getPower();
 		this.head = player.getData().getHead();
 		this.headFrame = player.getData().getHeadFrame();
+		this.title = player.getData().getTitle();
+		this.chatBox = player.getData().getChatBox();
 		this.gender = (byte) (player.getData().getGender() == true ? 1 : 0);
 		this.offlineTime = player.getData().getOfflineTime();
 		this.online = player.isOnline();
@@ -191,6 +194,8 @@ public class SimplePlayer implements Serializable {
 		builder.setOfflineTime((int) (getOfflineTime() / 1000));
 		builder.setHead(head);
 		builder.setHeadFrame(headFrame);
+		builder.setTitle(title);
+		builder.setChatBox(chatBox);
 		builder.setServerId(serverId);
 		builder.setServerName(serverName);
 		builder.setTiandaoLevel(tdLevel);

@@ -159,6 +159,12 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private int gameTime;
 	/**
+	 * 聊天框id
+	 * @mbg.generated
+	 */
+	private int chatBox;
+	/**
+	/**
 	 * 所有模块的数据
 	 * @mbg.generated
 	 */
@@ -641,4 +647,12 @@ public class PlayerData implements Serializable, DbEntity {
 	public void setNew(boolean isNew) {
 		this.isNew = isNew;
 	}
+
+    public int getChatBox() {
+        return chatBox;
+    }
+
+    public void setChatBox(int chatBox) {
+        this.chatBox = chatBox;
+    }
 }
