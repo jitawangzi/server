@@ -112,7 +112,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 	private void checkEnd() {
 		BattleModule battleModule = player.getModule(BattleModule.class);
 		int attackingSubId = battleModule.getAttackingSubId();
-		if (startFloor > 0 && attackingSubId > 0) {
+		if (startFloor > 0) {
 			end(attackingSubId,false); 
 		}
 	}
