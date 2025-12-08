@@ -180,7 +180,8 @@ public class PlayerHandler extends GameBaseHandler {
 		putInvoker(PbProtocol.WechatSettingRequest_01100601, this::wechatSetting);
 		putInvoker(PbProtocol.PlayerAssetRecoverRequest_01000210, this::assetRecover);
 		putInvoker(PbProtocol.PlayerAdBIInfoRequest_01100603, this::biInfo);
-
+		putInvoker(PbProtocol.PlayerTitleRequest_01000701, this::title);
+		putInvoker(PbProtocol.PlayerChatBoxRequest_01000703, this::chatBox);
 	}
 
 	private void assetRecover(NetClient client, Object message) {
@@ -1159,4 +1160,20 @@ public class PlayerHandler extends GameBaseHandler {
 		return Future.succeededFuture(playerData);
 	}
 
+	protected void title(NetClient client, Object message) {
+		PlayerMsg.PlayerTitleRequest_01000701 req = (PlayerMsg.PlayerTitleRequest_01000701) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		PlayerMsg.PlayerTitleResponse_01000702.Builder resp = PlayerMsg.PlayerTitleResponse_01000702.newBuilder();
+		int title = req.getTitle();
+		player.getData().setTitle(title);
+		client.sendProtocol(resp);
+	}
+	protected void chatBox(NetClient client, Object message) {
+		PlayerMsg.PlayerChatBoxRequest_01000703 req = (PlayerMsg.PlayerChatBoxRequest_01000703) message;
+		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		PlayerMsg.PlayerChatBoxResponse_01000704.Builder resp = PlayerMsg.PlayerChatBoxResponse_01000704.newBuilder();
+		int chatbox = req.getChatbox();
+		player.getData().setChatBox(chatbox);
+		client.sendProtocol(resp);
+	}
 }
