@@ -180,8 +180,8 @@ public class PVEVPBattle extends XiYouBattleHandler {
 
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, player.getPlayerId(), myRank.getScore());
             RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId(), myRank.getScore());
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getId(), targetDelScore);
-            RankService.getInstance().updateScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getId(), targetDelScore);
+            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiSeason, inBattleRank.getRankEntry().getId(), targetScore+targetDelScore);
+            RankService.getInstance().setScoreAsync(player.getServerId(), RankType.DaShengLeiTaiDay, inBattleRank.getRankEntry().getId(), targetScore+targetDelScore);
             // 生成战报
             if (isRobot) {
                 createBattleRecord_Robot(simplePlayer, (int) myAddScore, true,rediskeyMy,1);
