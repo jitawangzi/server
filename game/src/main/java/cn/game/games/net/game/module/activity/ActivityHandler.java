@@ -610,11 +610,17 @@ public class ActivityHandler extends GameBaseHandler {
         if (type == RankType.TotalServerOpenActivity.ID) {
             rankType = RankType.TotalServerOpenActivity;
         } else {
-            if (curConfig ==null|| curConfig == targetConfig) {
-                rankType = RankType.get(targetConfig.RankID);
-            } else {
+        	if (curConfig == null) { // 在7天后封榜时间
                 rankType = RankType.get(targetConfig.RewardRankId);
-            }
+			}else {// 7天内的榜单活跃时间
+				// 当前活跃排行榜
+				if (curConfig == targetConfig) {
+	                rankType = RankType.get(targetConfig.RankID);
+				}else {
+					// 封榜
+	                rankType = RankType.get(targetConfig.RewardRankId);
+				}
+			}
         }
         CompletionStage<RankInfo> rankInfo = RankHelper.getRankInfo(player, rankType, page, pageSize);
         rankInfo.thenAccept(r -> {

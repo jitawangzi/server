@@ -15,11 +15,14 @@ import cn.game.games.net.game.module.activity.ActivityType;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.protocol.generated.config.ActivityWestLuckyPackConfig;
+import cn.game.protocol.generated.config.ActivityWestLuckyProgressConfig;
 import cn.game.protocol.generated.config.ActivityWestLuckyTurntableConfig;
 import cn.game.protocol.generated.config.GlobalConst;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityWestLuckyPackManager;
+import cn.game.protocol.generated.manager.ActivityWestLuckyProgressManager;
 import cn.game.protocol.generated.manager.ActivityWestLuckyTurntableManager;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg;
 import cn.game.protocol.protobuf.RewardMsg;
@@ -52,8 +55,23 @@ public class ActivityWestLucky extends PlayerActivityBase {
 
 	@Override
 	public boolean hasRed() {
-		return todayCount < GlobalConst.ActivityWestLuckyDayCount;
+		return todayCount < GlobalConst.ActivityWestLuckyDayCount || hasTotalNumReward();
 	}
+
+	public boolean hasTotalNumReward() {
+		ActivityWestLuckyProgressConfig activityWestLuckyProgressConfig = ActivityWestLuckyProgressManager.instance().get(id);
+
+	    int totalNum = getTotalNum();
+	    for (int i = 0; i < activityWestLuckyProgressConfig.count.length; i++) {
+			if (activityWestLuckyProgressConfig.count[i] <= totalNum) {
+				if (!rewardIndexList.contains(i)) {
+					return true; 
+				}
+			}
+		}
+	    return false; 
+	}
+
 	@Override
 	public void handleEvent(PlayerEvent event) {
 		switch (event.getType()) {

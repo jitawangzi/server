@@ -22,6 +22,9 @@ public class Item implements Serializable, DbEntity {
 
 	/** 过期时间（秒时间戳）  */
 	protected int expiredTime;
+	
+	/** 过期时间对应的删除任务 */
+	protected transient long expiredTimeTask;
 	/**
 	 * @mbg.generated
 	 */
@@ -81,6 +84,14 @@ public class Item implements Serializable, DbEntity {
 
 	public void setExpiredTime(int expiredTime) {
 		this.expiredTime = expiredTime;
+	}
+
+	public long getExpiredTimeTask() {
+		return expiredTimeTask;
+	}
+
+	public void setExpiredTimeTask(long expiredTimeTask) {
+		this.expiredTimeTask = expiredTimeTask;
 	}
 
 	/**

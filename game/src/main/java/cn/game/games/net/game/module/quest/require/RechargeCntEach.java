@@ -19,10 +19,6 @@ public class RechargeCntEach extends AbstractCondition {
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
-//		int id = event.getIntParameter(0);
-//		EquipConfig equipConfig = EquipManager.instance().get(id); 
-//		return equipConfig.quality >= getParam();
-		
-		return false;
+		return true;
 	}
 }

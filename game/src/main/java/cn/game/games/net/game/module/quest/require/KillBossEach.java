@@ -16,13 +16,15 @@ public class KillBossEach extends AbstractCondition {
 	public KillBossEach() {
 
 	}
+	
+	public void updateRequireCount(PlayerEvent event) {
+		int killBossCount = event.getIntParameter(4); 
+		finishCount += killBossCount;
+	}
 
 	@Override
 	public boolean checkEventParam(PlayerEvent event) {
-//		int id = event.getIntParameter(0);
-//		EquipConfig equipConfig = EquipManager.instance().get(id); 
-//		return equipConfig.quality >= getParam();
-		
-		return false;
+		int killBossCount = event.getIntParameter(4); 
+		return killBossCount > 0;
 	}
 }

@@ -50,9 +50,7 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 	@Override
 	public void setInstanceExt(Figure item) {
 		PlayerFigureConfig playerFigureConfig = PlayerFigureManager.instance().get(item.getConfigId());
-		if (playerFigureConfig.Times > 0) {
-			item.setExpiredTime(DateUtil.currentTimeSeconds() + playerFigureConfig.Times);
-		}
+		expired(item, playerFigureConfig.Times);
 	}
 
 	@Override
@@ -73,7 +71,7 @@ public class FigureModule extends AbstractItemOnlyOneModule<Figure> {
 	public Item addRepeated(int itemId) {
 		PlayerFigureConfig playerFigureConfig = PlayerFigureManager.instance().get(itemId);
 		Figure figure = get(itemId);
-		figure.setExpiredTime(figure.getExpiredTime() + playerFigureConfig.Times);
+		expired(figure, playerFigureConfig.Times);
 		return figure;
 	}
 

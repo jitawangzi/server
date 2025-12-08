@@ -86,5 +86,7 @@ public class GameConstants {
 	
 	/** 客户端传递数量的最大值，例如购买数量，使用数量等 */
 	public static final int REQUEST_COUNT_MAX = 1000;
+	/** 机器人id最大值 */
+	public static final long BOT_MAX_ID = 10000L;
     
 }

@@ -44,9 +44,7 @@ public class HeadBoxModule extends AbstractItemOnlyOneModule<HeadBox> {
 	@Override
 	public void setInstanceExt(HeadBox item) {
 		HeadBoxConfig config = HeadBoxManager.instance().get(item.getConfigId());
-		if (config.Time > 0) {
-			item.setExpiredTime(DateUtil.currentTimeSeconds() + config.Time);
-		}
+		expired(item, config.Time);
 	}
 
 	@Override
@@ -92,7 +90,7 @@ public class HeadBoxModule extends AbstractItemOnlyOneModule<HeadBox> {
 	public Item addRepeated(int itemId) {
 		HeadBoxConfig config = HeadBoxManager.instance().get(itemId);
 		HeadBox headBox = get(itemId);
-		headBox.setExpiredTime(headBox.getExpiredTime() + config.Time);
+		expired(headBox, config.Time);
 		return headBox;
 	}
 }
