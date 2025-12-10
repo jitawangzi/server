@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.exception.LogicException;
@@ -978,6 +979,13 @@ public class PlayerHandler extends GameBaseHandler {
 		GameClient newGameClient = (GameClient) client;
 
 		Account account = new Account(req);
+		String sererId = account.serverId; 
+		if (!StringUtils.isEmpty(sererId)) {
+			boolean checkValidServer = ServerContext.getInstance().getValidGameService().checkValidServer(sererId); 
+			if (!checkValidServer) {
+				throw new LogicException(ErrorMsgEnum.server_not_found);
+			}
+		}
 		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId));
 		long userId = uidResponse.getUid();
 		// 使用sdk登陆，这两个参数都从客户端传递，不使用Login中获取的了

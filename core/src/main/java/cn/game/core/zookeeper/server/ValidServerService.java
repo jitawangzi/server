@@ -108,6 +108,11 @@ public class ValidServerService implements AutoCloseable {
 				.sorted((a, b) -> a.getSeq().compareTo(b.getSeq()))
 				.collect(Collectors.toList());
 	}
+	
+	public boolean checkValidServer(String serverId) {
+		LocalDateTime now = nowLocal();
+		return cache.containsKey(serverId) && cache.getByKey(serverId).map(s -> isValidOpenTime(s.openTime) && !s.openTime.isAfter(now)).orElse(false);
+	}
 
 	
 	@Deprecated
