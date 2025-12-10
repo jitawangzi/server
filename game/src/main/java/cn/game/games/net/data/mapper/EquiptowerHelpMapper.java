@@ -19,11 +19,6 @@ public interface EquiptowerHelpMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(EquiptowerHelp row);
-
-	/**
-	 * @mbg.generated
-	 */
 	EquiptowerHelp selectByPrimaryKey(long id);
 
 	/**
@@ -90,4 +85,9 @@ public interface EquiptowerHelpMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(EquiptowerHelp record);
 }

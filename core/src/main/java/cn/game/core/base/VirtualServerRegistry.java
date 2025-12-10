@@ -96,7 +96,7 @@ public class VirtualServerRegistry implements Closeable {
 	}
 
 	private static VirtualServerView toView(VirtualServerConfig cfg) {
-		return new VirtualServerView(cfg.ID, cfg.name, cfg.playerMaxCount, cfg.seq, cfg.openTime);
+		return new VirtualServerView(cfg.ID, cfg.name,cfg.startId, cfg.playerMaxCount, cfg.seq, cfg.openTime);
 	}
 
 	// ============ 本地缓存：预热与读取 ============
@@ -479,6 +479,7 @@ public class VirtualServerRegistry implements Closeable {
 		public Integer playerMaxCount;
 		public Integer seq;
 		public LocalDateTime openTime;
+		public Integer startId; 
 
 		public String getID() {
 			return ID;
@@ -487,9 +488,10 @@ public class VirtualServerRegistry implements Closeable {
 		public VirtualServerView() {
 		}
 
-		public VirtualServerView(String ID, String name, Integer playerMaxCount, Integer seq, LocalDateTime openTime) {
+		public VirtualServerView(String ID, String name,Integer startId, Integer playerMaxCount, Integer seq, LocalDateTime openTime) {
 			this.ID = ID;
 			this.name = name;
+			this.startId = startId; 
 			this.playerMaxCount = playerMaxCount;
 			this.seq = seq;
 			this.openTime = openTime;
@@ -497,8 +499,8 @@ public class VirtualServerRegistry implements Closeable {
 
 		@Override
 		public String toString() {
-		    return String.format("VirtualServerView{ID='%s', name='%s', playerMaxCount=%d, seq=%d, openTime=%s}",
-		        ID, name, playerMaxCount, seq, openTime);
+		    return String.format("VirtualServerView{ID='%s', name='%s',startId=%d, playerMaxCount=%d, seq=%d, openTime=%s}",
+		        ID, name,startId, playerMaxCount, seq, openTime);
 		}
 
 		public String getName() {

@@ -96,7 +96,7 @@ public class LoginServer {
 
 		IOSPayOrderProcessor.startRefreshAccessTokenTask();
 
-		initPlayerMaxId();
+//		initPlayerMaxId();
 		System.gc();
 
 		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory()

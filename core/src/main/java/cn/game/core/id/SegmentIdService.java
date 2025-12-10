@@ -12,10 +12,7 @@ import cn.game.core.id.IdUtil.IdType;
 import cn.game.util.ZkHelper;
 
 /**
- * 号段模式服务
- * 职责：
- * 1. 管理所有 IdType 的生成器实例
- * 2. 处理 ZK 号段申请逻辑
+ * 号段模式服务，借助zookeeper
  */
 public class SegmentIdService {
     private static final Logger log = LoggerFactory.getLogger(SegmentIdService.class);
@@ -33,16 +30,13 @@ public class SegmentIdService {
         return generators.get(type).nextId();
     }
 
-    /**
-     * 单个类型的号段生成器 (原 IdUtil.IdGenarator)
-     */
     private class SegmentGenerator {
+        // 每个号段包含的ID数量
         private static final int ID_COUNT_PER_SEGMENT = 10000;
         private static final float CORDON_RATE = 0.5f;
 
         private final IdType idType;
         
-        // 运行时状态
         private int curIdSegment;
         private volatile int nextIdSegment;
         private long minId;
@@ -52,7 +46,6 @@ public class SegmentIdService {
 
         public SegmentGenerator(IdType idType) {
             this.idType = idType;
-            // 初始化时同步获取第一个号段
             this.curIdSegment = allocateIdSegmentNode(idType);
             reset();
         }
@@ -60,7 +53,6 @@ public class SegmentIdService {
         public synchronized long nextId() {
             long ret = currentId++;
             
-            // 达到警戒线，异步预加载下一段
             if (ret == cordon) {
                 CompletableFuture.supplyAsync(() -> allocateIdSegmentNode(idType))
                     .whenCompleteAsync((segment, ex) -> {
@@ -71,72 +63,104 @@ public class SegmentIdService {
                         }
                     });
             } 
-            // 达到最大值，切换号段
             else if (ret == maxId) {
                 changeSegment();
-                // 切换后，ret 应该是新号段的第一个值，而不是旧号段的 maxId
-                // 注意：原代码逻辑 ret++ 后返回 ret，如果 ret==maxId，返回的是 maxId (旧段最后值)
-                // 下一次调用才会用到新段。这里逻辑保持原样，但在高并发下 changeSegment 需要非常小心。
             }
             return ret;
         }
 
         private void changeSegment() {
-            // 自旋等待异步加载完成
             int retry = 0;
             while (nextIdSegment == 0 || nextIdSegment == curIdSegment) {
                 if (retry++ > 1000) {
-                    // 极端情况：ZK挂了或者网络断了，这里可以抛异常或降级
                     throw new RuntimeException("无法获取新的号段: " + idType);
                 }
                 try { Thread.sleep(10); } catch (InterruptedException e) {}
             }
-            
             this.curIdSegment = nextIdSegment;
             reset();
         }
 
-		private void reset() {
-			minId = (long) (this.curIdSegment - 1) * ID_COUNT_PER_SEGMENT + 1;
-			maxId = (long) this.curIdSegment * ID_COUNT_PER_SEGMENT;
-			cordon = (long) (maxId - ID_COUNT_PER_SEGMENT * CORDON_RATE);
-			currentId = minId;
-			log.info("号段切换完成 [{}]: {}-{}", idType, minId, maxId);
-		}
-    }
+        private void reset() {
+            // 公式：minId = (号段索引 - 1) * 步长 + 1
+            // 这样号段1 对应 1-10000，号段2 对应 10001-20000
+            minId = (long) (this.curIdSegment - 1) * ID_COUNT_PER_SEGMENT + 1;
+            maxId = (long) this.curIdSegment * ID_COUNT_PER_SEGMENT;
+            cordon = (long) (maxId - ID_COUNT_PER_SEGMENT * CORDON_RATE);
+            currentId = minId;
+            log.info("号段切换完成 [{}]: Segment={} Range={}-{}", idType, curIdSegment, minId, maxId);
+        }
 
-    /**
-     * ZK 交互：申请下一个号段序号
-     */
-    private int allocateIdSegmentNode(IdType idType) {
-        String pathBase = ZNODE_PATH + "/" + idType.name().toLowerCase() + "/id-";
-        try {
-            // 创建持久顺序节点
+        /**
+         * ZK 交互：申请下一个号段序号
+         * 增加了初始值检查逻辑
+         */
+        private int allocateIdSegmentNode(IdType idType) {
+            String pathBase = ZNODE_PATH + "/" + idType.name().toLowerCase() + "/id-";
+            
+            // 1. 计算目标最小号段索引
+            // 例如 initialId=100000, size=10000. 
+            // 我们希望生成的ID >= 100000。
+            // (target - 1) * 10000 + 1 >= 100000  => target >= 10.99 => target = 11
+            // 也就是第11个号段开始于 100001。
+            long initialId = idType.getInitialId();
+            int targetMinSegment = 0;
+            if (initialId > 0) {
+                 targetMinSegment = (int) ((initialId - 1) / ID_COUNT_PER_SEGMENT) + 1;
+            }
+
+            try {
+                // 2. 创建节点获取当前序号
+                int id = createNode(pathBase);
+
+                // 3. 兼容性检查与初始化（追赶模式）
+                // 如果当前ZK生成的序号 小于 目标序号，说明是新系统或者新配置了初始值
+                // 我们需要快速消耗掉中间的号段，直到 ZK 序号追上目标值
+                if (id < targetMinSegment) {
+                    log.warn("[初始化] 类型 {} 当前号段 {} 小于初始配置号段 {}, 开始执行追赶逻辑...", 
+                             idType, id, targetMinSegment);
+                    
+                    while (id < targetMinSegment) {
+                        // 删除刚才创建的旧节点（清理垃圾）
+                        deleteNode(pathBase, id);
+                        
+                        // 创建下一个
+                        id = createNode(pathBase);
+                    }
+                    log.info("[初始化] 类型 {} 追赶完成，当前号段: {}", idType, id);
+                }
+
+                // 4. 清理上一个节点 (常规逻辑)
+                if (id > 1) {
+                    deleteNode(pathBase, id - 1);
+                }
+                
+                return id;
+            } catch (Exception e) {
+                throw new RuntimeException("ZK号段申请失败: " + idType, e);
+            }
+        }
+
+        private int createNode(String pathBase) throws Exception {
             String path = ZkHelper.curator.create()
                     .creatingParentsIfNeeded()
                     .withMode(CreateMode.PERSISTENT_SEQUENTIAL)
                     .forPath(pathBase);
-            
-            int id = extractSequentialId(path);
-            
-            // 删除旧节点 (清理垃圾)
-            if (id > 1) {
-                try {
-                    String prevPath = pathBase + String.format("%010d", id - 1);
-                    ZkHelper.curator.delete().forPath(prevPath);
-                } catch (Exception e) {
-                    // 删除失败不影响主流程
-                    log.warn("清理旧号段节点失败", e);
-                }
-            }
-            return id;
-        } catch (Exception e) {
-            throw new RuntimeException("ZK号段申请失败", e);
+            return extractSequentialId(path);
         }
-    }
 
-    private int extractSequentialId(String nodePath) {
-        String[] parts = nodePath.split("-");
-        return Integer.parseInt(parts[parts.length - 1]);
+        private void deleteNode(String pathBase, int id) {
+            try {
+                String prevPath = pathBase + String.format("%010d", id);
+                ZkHelper.curator.delete().forPath(prevPath);
+            } catch (Exception e) {
+                // 忽略删除失败，可能是已经被其他进程删了，或者节点不存在
+            }
+        }
+
+        private int extractSequentialId(String nodePath) {
+            String[] parts = nodePath.split("-");
+            return Integer.parseInt(parts[parts.length - 1]);
+        }
     }
 }

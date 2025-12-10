@@ -1,24 +1,22 @@
 package cn.game.games.net.game.handler;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.game.games.net.game.module.battle.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
-import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.cache.id.DistributedObjectType;
+import cn.game.core.exception.LogicException;
+import cn.game.core.id.IdUtil;
+import cn.game.core.id.IdUtil.IdType;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
-import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.performance.DegradeStrategy;
 import cn.game.core.performance.LoadLimitTypeEnum;
@@ -26,7 +24,6 @@ import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.Item;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
-import cn.game.games.cache.entity.ShopItem;
 import cn.game.games.core.GameServerStatus;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -42,6 +39,15 @@ import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.account.Account;
 import cn.game.games.net.game.module.award.Goods;
+import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.battle.DaoHeartBattle;
+import cn.game.games.net.game.module.battle.EquipTowerBattle;
+import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
+import cn.game.games.net.game.module.battle.PVEVPBattle;
+import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
+import cn.game.games.net.game.module.battle.TowerBattle;
+import cn.game.games.net.game.module.battle.WorldBossBattle;
+import cn.game.games.net.game.module.battle.XiangYaoFuMoBattle;
 import cn.game.games.net.game.module.currency.MoneyRecoverModule;
 import cn.game.games.net.game.module.ginseng.GinsengTreeModule;
 import cn.game.games.net.game.module.guild.GuildModule;
@@ -59,12 +65,10 @@ import cn.game.games.util.DAO;
 import cn.game.games.util.PbBuilder;
 import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.config.GlobalConst;
-import cn.game.protocol.generated.config.HeishiConfig;
 import cn.game.protocol.generated.config.QuestionnaireConfig;
 import cn.game.protocol.generated.config.WorldBossRewardConfig;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
-import cn.game.protocol.generated.manager.HeishiManager;
 import cn.game.protocol.generated.manager.QuestionnaireManager;
 import cn.game.protocol.generated.manager.WorldBossRewardManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
@@ -719,41 +723,24 @@ public class PlayerHandler extends GameBaseHandler {
 //	}
 
 	
-	// 目前这个协议没有单独使用，先保留功能。 
-	@Deprecated
 	private void reconnect(NetClient client, Object message) {
 		PlayerReconnecRequest_01000065 req = (PlayerReconnecRequest_01000065) message;
 		PlayerReconnecResponse_01000066.Builder resp = PlayerReconnecResponse_01000066.newBuilder();
 		String passportSessionId = req.getSessionId();
-		long id = req.getPlayerId();
-//		boolean hasCache = PlayerManager.getInstance().hasCache(id); 
-//		if (hasCache) {
-//			Player player = PlayerManager.getInstance().getPlayer(id); 
-//			resp.setPlayerInfo(PbBuilder.buildPlayerInfo(player)) ; 
-//			resp.setTime(System.currentTimeMillis()+"") ; 
-//		}
-		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
-		GameClient newGameClient = (GameClient) client;
-		int errorCode = 0;
-		if (oldGameClient != null && oldGameClient.getPlayerId() > 0) {// 在线，重连,还是老的sessionId
-			newGameClient.setSessionId(passportSessionId);
-			newGameClient.copy(oldGameClient);
-
-			GameClientManager.getInstance().removeGameClient(oldGameClient, LogoutType.Reconnect);
-
-			GameClientManager.getInstance().addGameClientSession(newGameClient);
-			GameClientManager.getInstance().addGameClientPlayer(newGameClient);
-
-			Player p = PlayerManager.getInstance().getPlayer(newGameClient.getPlayerId());
-			PlayerHelper.refresh(p);
-//			p.setLoginDate(DateUtil.getStringDate());
-//			DAO.update(PlayerMapper.class, p);
-			resp.setPlayerInfo(PbBuilder.buildPlayerInfo(p));
-			resp.setTime(System.currentTimeMillis() + "");
-		} else {
-			errorCode = ErrorMsgEnum.reconnect_fail.getId();
+		long playerId = req.getPlayerId();
+		Player player = PlayerManager.getInstance().getPlayer(playerId); 
+		if (player == null) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.reconnect_fail.getId());
+			return;
 		}
-		client.sendProtocol(resp.build(), errorCode);
+		boolean reconnect = PlayerHelper.reconnectNew((GameClient)client, true, playerId); 
+		if (!reconnect) {
+			client.sendProtocol(resp.build(), ErrorMsgEnum.reconnect_fail.getId());
+			return;
+		}
+		resp.setPlayerInfo(PbBuilder.buildPlayerInfo(player));
+		resp.setTime(System.currentTimeMillis() + "");
+		client.sendProtocol(resp);
 	}
 	/**
 		private void spiritReceive(NetClient client, Object message) {
@@ -911,13 +898,12 @@ public class PlayerHandler extends GameBaseHandler {
 		client.sendProtocol(resp);
 	}
 
-	protected void login(NetClient client, Object message) {
+	protected void oldlogin(NetClient client, Object message) {
 
 		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
 			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
 			return;
 		}
-
 		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
 		String passportSessionId = req.getSessionId();
 //		String serverId = req.getServerId();
@@ -934,10 +920,6 @@ public class PlayerHandler extends GameBaseHandler {
 		Account account = new Account(req);
 		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId)); 
 		long uid = uidResponse.getUid();
-		if (checkPlayerUnlock(uid) == false) {
-			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
-			return;
-		}
 		if (PlayerManager.getInstance().isForbidAccount(newGameClient.getPlayerId())) {
 			handleLoginFailure(null, ErrorMsgEnum.login_forbidden.getId(), (GameClient) client, passportSessionId);
 			return ;
@@ -975,25 +957,84 @@ public class PlayerHandler extends GameBaseHandler {
 //		uidFuture.map(uid -> {}).onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
 	}
 
+	protected void login(NetClient client, Object message) {
+
+		if (DegradeStrategy.isLimited(LoadLimitTypeEnum.Login)) {
+			client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.system_overload.ID);
+			return;
+		}
+		PlayerMsg.PlayerLoginRequest_01000001 req = (PlayerLoginRequest_01000001) message;
+		String passportSessionId = req.getSessionId();
+		boolean reconnect = req.getReconnect();
+		log.info("passportSessionId : " + passportSessionId + " start login");
+		int canLogin = GameServerStatus.getInstance().canLogin(req.getVerstion());
+		if (canLogin > 0) {
+//			handleLoginFailure(null, ErrorMsgEnum.version_mismatch.ID, (GameClient) client, passportSessionId);
+//			return;
+		}
+		long playerId = StringUtils.isEmpty(req.getPlayerId()) ? 0 : Long.parseLong(req.getPlayerId()); 
+//		GameClient oldGameClient = GameClientManager.getInstance().getGameClient(passportSessionId);
+//		long playerId = oldGameClient == null ? 0 : oldGameClient.getPlayerId();
+		GameClient newGameClient = (GameClient) client;
+
+		Account account = new Account(req);
+		LoginPlayerUidResponse_7d000019 uidResponse = AsyncUtils.await(getPlayerUid(passportSessionId));
+		long userId = uidResponse.getUid();
+		// 使用sdk登陆，这两个参数都从客户端传递，不使用Login中获取的了
+//		account.accountId = uidResponse.getAccountId();
+//		account.deviceId = uidResponse.getDeviceId();
+
+		try {
+			newGameClient.setSessionId(passportSessionId);
+			if (reconnect) { // 客户端主动重连
+				boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, reconnect, playerId, account);
+//			if (!isReallyReconnect) {
+//				client.sendProtocol(PlayerLoginResponse_01000002.getDefaultInstance(), ErrorMsgEnum.reconnect_fail.getId());
+//				GameClientManager.getInstance().removeGameClient(newGameClient, LogoutType.WrongReconnection);
+//			}
+				if (isReallyReconnect) {
+					return;
+				}
+			}
+			// 客户端新登陆,或者主动重连失败，都重新加载
+			boolean isReallyReconnect = PlayerHelper.reconnect(newGameClient, false, playerId, account);
+			if (!isReallyReconnect) {
+				checkOtherServer(playerId).compose(r -> loadOrCreatePlayerData(userId, account, newGameClient))
+						.compose(playerData -> handlePlayerData(playerData, account, newGameClient))
+//					.compose(PlayerHelper::saveSimplePlayer)
+						.compose(r -> {
+							return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
+								// 这里可能有阻塞操作
+								handleLoginSuccess(newGameClient, r);
+								return null;
+							}, null);
+						})
+						.onFailure(t -> handleLoginFailure(t, 0, newGameClient, passportSessionId));
+			}
+		} catch (Exception e) {
+			handleLoginFailure(e, 0, (GameClient) client, passportSessionId);
+		}
+	}
+
 	private Future<LoginPlayerUidResponse_7d000019> getPlayerUid(String passportSessionId) {
 		return VxHolder.requestRemoteServer(ServerType.Login, LoginPlayerUidRequest_7d000018.newBuilder().setPassportSessionId(passportSessionId).build());
 	}
 
-	private Future<PlayerData> loadOrCreatePlayerData(long playerId, Account account, GameClient client) {
-		return PlayerHelper.getPlayerDistributedLock(playerId)
-				.compose(r -> DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId))
+	private Future<PlayerData> loadOrCreatePlayerData(long userId, Account account, GameClient client) {
+		return PlayerHelper.getPlayerDistributedLock(userId)
+				.compose(r -> DAO.execute(PlayerDataMapper.class, "selectByUkUidServerid", userId,account.serverId))
 				.compose(playerData -> {
 					if (playerData == null) {
-						return createNewPlayer(playerId, account, client);
+						return createNewPlayer(userId, account, client);
 					}
 					return Future.succeededFuture((PlayerData) playerData);
 				});
 	}
 
-	private Future<PlayerData> createNewPlayer(long playerId, Account account, GameClient client) {
+	private Future<PlayerData> createNewPlayer(long userId, Account account, GameClient client) {
 		return PlayerNameManager.getInstance()
 				.createUserName()
-				.compose(name -> createPlayerData(account, client, playerId, name, true, 0))
+				.compose(name -> createPlayerData(account, client, userId, name, true, 0))
 				.compose(PlayerNameManager.getInstance()::saveName2Id);
 	}
 
@@ -1006,7 +1047,12 @@ public class PlayerHandler extends GameBaseHandler {
 			Player player = PlayerHelper.createPlayer(playerData, account, client);
 			return PlayerHelper.initPlayerData(player)
 					.compose(PlayerHelper::savePlayerToDb)
-					.compose(PlayerHelper::saveSimplePlayer);
+					.compose(PlayerHelper::saveSimplePlayer)
+					.compose(PlayerHelper::updateUserServer)
+					;
+		}
+		if (PlayerManager.getInstance().isForbidAccount(playerData.getPlayerId())) {
+			return Future.failedFuture(new LogicException(ErrorMsgEnum.login_forbidden)); 
 		}
 		return handleExistingPlayer(playerData, account, client);
 	}
@@ -1018,10 +1064,6 @@ public class PlayerHandler extends GameBaseHandler {
 		}
 		return Future.succeededFuture(uidResponse);
 	}
-	private boolean checkPlayerUnlock(long uid) {
-		boolean checkUnlock = PlayerManager.getInstance().checkUnlock(uid);
-		return checkUnlock; 
-	}
 
 	/** 
 	 * 如果玩家在其他服务器，先通知其他服务器退出该玩家。 
@@ -1029,6 +1071,9 @@ public class PlayerHandler extends GameBaseHandler {
 	 * @return
 	 */
 	private Future<Void> checkOtherServer(long playerId) {
+		if (playerId <= 0) {
+			return Future.succeededFuture();
+		}
 		return VxHolder.toVertxFuture(RedisUtil.<String>getAsync(CacheType.PLAYER_SERVER_ID.key(playerId))).compose(serverId -> {
 			if (serverId != null && !serverId.equalsIgnoreCase(ServerContext.getInstance().getServerId())) {
 				return notifyOtherServerLogout(serverId, playerId);
@@ -1048,8 +1093,16 @@ public class PlayerHandler extends GameBaseHandler {
 	private void handleLoginFailure(Throwable throwable, int errorCode, GameClient client, String passportSessionId) {
 
 		log.error("player session  " + passportSessionId + " login error ", throwable);
-		if (errorCode <= 0 && StringUtils.isNumeric(throwable.getMessage())) {
-			errorCode = Integer.parseInt(throwable.getMessage());
+		// 没有手动指定错误码
+		if (errorCode <= 0) {
+			if (throwable instanceof LogicException) {
+				LogicException logicException = (LogicException) throwable;
+				errorCode = logicException.getErrorCode();
+			}else {
+				if (StringUtils.isNumeric(throwable.getMessage())) {
+					errorCode = Integer.parseInt(throwable.getMessage());
+				}
+			}
 		}
 		if (errorCode <= 0) {
 			errorCode = ErrorMsgEnum.unknown.getId();
@@ -1090,10 +1143,12 @@ public class PlayerHandler extends GameBaseHandler {
 		}
 	}
 
-	public Future<PlayerData> createPlayerData(Account account, NetClient client, long uid, String name, boolean isMan, int head) {
+	public Future<PlayerData> createPlayerData(Account account, NetClient client, long userId, String name, boolean isMan, int head) {
 		PlayerData playerData = new PlayerData();
 
-		long id = uid;
+		// 轻微阻塞
+//		long playerId = IdUtil.getIdByRedis(playerData.getServerId(), IdType.PLAYER);
+		long playerId = IdUtil.getIdBySegment(IdType.PLAYER);
 //		if (id == 0) {
 //			log.error("创建角色数量到达限制：" + passportSessionId);
 //			client.sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), ErrorMsgEnum.unknown.getId());
@@ -1115,13 +1170,18 @@ public class PlayerHandler extends GameBaseHandler {
 //		}
 		// player.getData().setSeq(seq) ;
 		// 这里先按照开服时间来设置区服，后续会改成按人数。
-		if (ConfigUtil.getBooleanConfig("randomPlayerServer")) {
-			playerData.setServerId("server"+Rnd.get(1,40));
+		// 玩家选服了
+		if (!StringUtils.isEmpty(account.serverId)) {
+			playerData.setServerId(account.serverId);
 		}else {
-			playerData.setServerId(ServerHelper.getServerIdLatestAsync());
+			if (ConfigUtil.getBooleanConfig("randomPlayerServer")) {
+				playerData.setServerId("server"+Rnd.get(1,40));
+			}else {
+				playerData.setServerId(ServerHelper.getServerIdLatestAsync());
+			}
 		}
-		playerData.setPlayerId(id);
-		playerData.setUid(uid);
+		playerData.setPlayerId(playerId);
+		playerData.setUid(userId);
 		playerData.setGender(isMan);
 		playerData.setCreateDate(DateUtil.getStringDate());
 //		player.getData().setName(create.getName());

@@ -9,7 +9,6 @@ import io.vertx.core.Future;
  * 2024年11月5日 10:16:01
  * @author SYQ
  */
-@Deprecated
 public interface RemoteLoginServerInterface extends RemoteProxy {
 	public boolean isAvailable();
 
@@ -29,7 +28,6 @@ public interface RemoteLoginServerInterface extends RemoteProxy {
 	 */
 	public long getUidByName(String name);
 
-	public void addUserServer(String serverId, long passportSessionId, long uid);
-
+	public Future<Void> updateUserServer(String serverId, long userId,long playerId,String name,int level);
 
 }

@@ -98,6 +98,16 @@ public class ValidServerService implements AutoCloseable {
 				.filter(s -> isValidOpenTime(s.openTime) && !s.openTime.isAfter(now))
 				.collect(Collectors.toMap(VirtualServerView::getID, s -> s, (a, b) -> a, LinkedHashMap::new));
 	}
+	
+	public List<VirtualServerView> getValidServerList() {
+		LocalDateTime now = nowLocal();
+		return cache.getAll()
+				.stream()
+				.filter(Objects::nonNull)
+				.filter(s -> isValidOpenTime(s.openTime) && !s.openTime.isAfter(now))
+				.sorted((a, b) -> a.getSeq().compareTo(b.getSeq()))
+				.collect(Collectors.toList());
+	}
 
 	
 	@Deprecated

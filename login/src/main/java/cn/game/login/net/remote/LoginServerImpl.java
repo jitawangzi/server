@@ -1,24 +1,29 @@
 package cn.game.login.net.remote;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import cn.game.core.id.IdUtil;
 import cn.game.login.cache.entity.User;
+import cn.game.login.cache.entity.UserServer;
 import cn.game.login.mapper.UserMapper;
+import cn.game.login.mapper.UserServerMapper;
 import cn.game.util.DateUtil;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 
-@Deprecated
 @Component
 public class LoginServerImpl implements LoginServerInterface {
-
 	/**  */
 	private static final Logger log = LoggerFactory.getLogger(LoginServerImpl.class);
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private UserServerMapper userServerMapper;
 
 	@Override
 	public boolean isAvailable() {
@@ -55,21 +60,6 @@ public class LoginServerImpl implements LoginServerInterface {
 //	}
 
 	@Override
-	public void addUserServer(String serverId, long passportSessionId, long uid) {
-
-		UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
-		User user = mapper.selectByPrimaryKey(uid);
-		user.setServers(user.getServers() == null ? serverId : user.getServers() + "," + serverId);
-		// HashMap<String, String> map = new HashMap<>() ;
-		// map.put("id", user.getId()+"") ;
-		// map.put("servers", user.getServers()) ;
-		User upUser = new User();
-		upUser.setId(user.getId());
-		upUser.setServers(user.getServers());
-		mapper.updateByPrimaryKeySelective(upUser);
-	}
-
-	@Override
 	public long getUidByName(String name) {
 		UserMapper mapper = SpringContextLoader.getContext().getBean(UserMapper.class);
 
@@ -94,5 +84,21 @@ public class LoginServerImpl implements LoginServerInterface {
 		mapper.insert(user);
 
 		return user.getId();
+	}
+
+	@Override
+	public Future<Void> updateUserServer(String serverId, long userId,long playerId,String name,int level) {
+		UserServer userServer = new UserServer(); 
+		userServer.setId(IdUtil.getId());
+		userServer.setPlayerId(playerId);
+		userServer.setServerId(serverId);
+		userServer.setUserId(userId);
+		userServer.setPlayerName(name);
+		userServer.setPlayerLevel(level);
+		userServer.setUpdatedAt( new Date());
+		
+		userServerMapper.insertOrUpdate(userServer); 
+		
+		return Future.succeededFuture();
 	}
 }

@@ -545,6 +545,7 @@ public class Player {
 
 			PaymentOrderCreateRequest_7d000020 paymentOrderCreate = PaymentOrderCreateRequest_7d000020.newBuilder()
 					.setPlayerId(getPlayerId())
+					.setUserId(getData().getUid())
 					.setPlatform(getAccount().platform + "")
 					.setSessionId(getGameClient().getSessionId())
 					.setGoodsPrice(rmbCost * 100)

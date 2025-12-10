@@ -21,11 +21,6 @@ public interface GuildDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(GuildData row);
-
-	/**
-	 * @mbg.generated
-	 */
 	GuildData selectByPrimaryKey(long id);
 
 	/**
@@ -82,6 +77,11 @@ public interface GuildDataMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(GuildData record);
 
 	List<Long> getBatchIdCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
 

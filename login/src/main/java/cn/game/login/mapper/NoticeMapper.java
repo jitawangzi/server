@@ -26,11 +26,6 @@ public interface NoticeMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Notice row);
-
-	/**
-	 * @mbg.generated
-	 */
 	Notice selectByPrimaryKey(Integer id);
 
 	/**
@@ -62,4 +57,9 @@ public interface NoticeMapper {
 	 * @mbg.generated
 	 */
 	List<Notice> getBatchCursor(@Param("lastId") Integer lastId, @Param("limit") int limit);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Notice record);
 }

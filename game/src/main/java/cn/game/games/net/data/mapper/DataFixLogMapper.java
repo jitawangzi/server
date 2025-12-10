@@ -19,11 +19,6 @@ public interface DataFixLogMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(DataFixLog row);
-
-	/**
-	 * @mbg.generated
-	 */
 	DataFixLog selectByPrimaryKey(int id);
 
 	/**
@@ -90,4 +85,9 @@ public interface DataFixLogMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") int id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(DataFixLog record);
 }

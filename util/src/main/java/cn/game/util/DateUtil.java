@@ -385,7 +385,11 @@ public final class DateUtil {
 		LocalDate date2 = toLocalDate(t2);
 		return date1.equals(date2);
 	}
-
+	public static boolean isSameDay(LocalDateTime t1, LocalDateTime t2){
+		LocalDate date1 = t1.toLocalDate();
+		LocalDate date2 = t2.toLocalDate();
+		return date1.equals(date2);
+	}
 
 	/**
 	 * 获取当天的指定小时 整分整秒的时间戳

@@ -25,11 +25,6 @@ public interface PayOrderMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(PayOrder row);
-
-	/**
-	 * @mbg.generated
-	 */
 	PayOrder selectByPrimaryKey(Long id);
 
 	/**
@@ -66,6 +61,11 @@ public interface PayOrderMapper {
 	 * @mbg.generated
 	 */
 	List<PayOrder> selectByThirdOrderId(@Param("thirdOrderId") String thirdOrderId);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(PayOrder record);
 
 	public List<PayOrder> selectOrderList(
 			@Param("playerId") Long playerId,

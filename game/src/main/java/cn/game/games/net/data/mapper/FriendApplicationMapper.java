@@ -21,11 +21,6 @@ public interface FriendApplicationMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(FriendApplication row);
-
-	/**
-	 * @mbg.generated
-	 */
 	FriendApplication selectByPrimaryKey(@Param("playerId") long playerId, @Param("applyPlayerId") long applyPlayerId);
 
 	/**
@@ -100,6 +95,11 @@ public interface FriendApplicationMapper {
 	 */
 	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("applyPlayerId") long applyPlayerId,
 			@Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(FriendApplication record);
 
 	int deletePlayerData(@Param("playerId") Long playerId);
 

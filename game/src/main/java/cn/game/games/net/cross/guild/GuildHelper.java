@@ -53,7 +53,7 @@ public class GuildHelper {
 //        long id = Integer.parseInt(ServerContext.getInstance().getServerId()) << 32 | size;
 //        return id;
 		// - 公会编号生成：888（默认前缀）0001（注册账号给的标签数）0001（创建顺序），举例：289服的第123个公会编号是88802890123；
-		long id = (DEFAULT_PREFIX * 10000000) + IdUtil.getIdAutoIncrease(IdType.GUILD);
+		long id = (DEFAULT_PREFIX * 10000000) + IdUtil.getIdBySegment(IdType.GUILD);
 		return id;
 
 	}

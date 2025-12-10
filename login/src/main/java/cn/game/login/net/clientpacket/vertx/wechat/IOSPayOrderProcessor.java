@@ -153,10 +153,10 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		}
 		payOrder.setTransactionId(transaction.getTransactionId());
 		payOrder.setMchOrderNo(payOrder.getId() + "");
-		String serverId = UserHelper.getServerId(user.getId());
+		String serverId = UserHelper.getServerId(payOrder.getPlayerId());
 		ServerMsg.PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = ServerMsg.PaymentOrderShipRequest_7d000022
 				.newBuilder()
-				.setPlayerId(user.getId())
+				.setPlayerId(payOrder.getPlayerId())
 				.setUid(payOrder.getId())
 				.build();
 		log.info(String.format("充值成功 通知 game：%s ", paymentOrderShipRequest_7d000022.toString()));
@@ -324,6 +324,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		final int goodPrice = req.getGoodsPrice();
 //        final  int goodPrice = 1;
 		long playerId = req.getPlayerId();
+        long userId = req.getUserId(); 
 		String sessionId = req.getSessionId();
 		User user = UserHelper.getUserBySessionId(sessionId);
 		long outTradeNo = IdUtil.genOrderId(playerId);
@@ -337,7 +338,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		payOrder.setPayState((byte) 1);
 		payOrder.setPrice(goodPrice);
 		payOrder.setPlayerId(playerId);
-		payOrder.setUserId(playerId);
+		payOrder.setUserId(userId);
 		payOrder.setThirdUid(user.getUsername());
 		return VxHolder.vertx.executeBlocking(() -> {
 			// 构建service

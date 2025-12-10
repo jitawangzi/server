@@ -275,7 +275,7 @@ public class UnionManager {
 		union.setName(name);
 		union.setLevel(1);
 		union.setCreateTime(System.currentTimeMillis());
-		union.setId(IdUtil.getIdAutoIncrease(IdType.UNION));
+		union.setId(IdUtil.getIdBySegment(IdType.UNION));
 
 		this.unionsMap.put(union.getId(), union);
 		unionsList.add(union);

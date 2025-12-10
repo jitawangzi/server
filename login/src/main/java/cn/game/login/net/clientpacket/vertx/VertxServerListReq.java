@@ -14,18 +14,24 @@ import cn.game.core.base.ActiveServerListManager;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.ServerList;
 import cn.game.core.base.ServerListManager;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
+import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.login.cache.entity.User;
+import cn.game.login.cache.entity.UserServer;
+import cn.game.login.mapper.UserServerMapper;
 import cn.game.login.net.clientpacket.vertx.gm.IpWhitelistManger;
 import cn.game.protocol.custom.ServerItem;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountServerList;
 import cn.game.protocol.protobuf.Account.AccountServerListResponse;
 import cn.game.protocol.protobuf.Account.HttpResult;
+import cn.game.protocol.protobuf.Account.MyServerInfo;
 import cn.game.protocol.protobuf.Account.ServerInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
+import cn.game.util.SpringContextLoader;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.net.SocketAddress;
@@ -56,95 +62,92 @@ public class VertxServerListReq implements BaseVertxHandler {
 		String passportSessionId = from.getPassportSessionId();
 		AccountServerListResponse.Builder resp = AccountServerListResponse.newBuilder();
 		// 查询用户
-		RedisUtil.getAndRunAsync(CacheType.PASSPORT_SESSION.key(passportSessionId), user -> {
-			if (user == null) {
-				HttpResult httpResult = HttpResult.newBuilder()
-						.setErrorMsg("可能未登陆")
-						.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR)
-						.build();
-				response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
-				return;
+		User user = UserHelper.getUserBySessionId(passportSessionId);
+
+		if (user == null) {
+			HttpResult httpResult = HttpResult.newBuilder()
+					.setErrorMsg("可能未登陆")
+					.setErrorCode(AccountErrorCode.PASSPORT_SESSION_ERROR)
+					.build();
+			response.end(Buffer.buffer(resp.setResult(httpResult).build().toByteArray()));
+			return;
+		}
+//		String myServerId  = RedisUtil.get(CacheType.PLAYER_SERVER_ID.key(user.getId())); 
+		// 所有配置的服务器
+		Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();
+		Collection<String> activeServerSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Game);
+
+		List<ServerInfo> serverItems = new ArrayList<>();
+//		List<ServerItem> myServerItems = new ArrayList<>();
+//		List<ServerList> myServerList = new ArrayList<>();
+		ServerInfo item;
+
+//		java.util.Collections.sort(serversList);
+		for (ServerList server : serversList) {
+//			if (type != server.getType()) {
+//				continue;
+//			}
+			// 检查开服时间：当前时间在开服时间之后的服务器才显示
+			Date openTime = DateUtil.parseDate(server.getServerOpenTime());
+			if (openTime.after(new Date())) {
+				continue;
 			}
-			User u = (User) user;
-			RedisUtil.getAndRunAsync(CacheType.PLAYER_SERVER_ID.key(u.getId()), serverId -> {
-				String myServerId = (String) serverId;
-				// 所有配置的服务器
-				Collection<ServerList> serversList = ServerListManager.getInstance().getServerList();
-				Collection<String> activeServerSet = ActiveServerListManager.getInstance().getServerSet(ServerType.Game);
-
-				List<ServerInfo> serverItems = new ArrayList<>();
-				List<ServerItem> myServerItems = new ArrayList<>();
-				List<ServerList> myServerList = new ArrayList<>();
-				if (u.getServers() != null && u.getServers().length() > 0) {
-					String[] split = u.getServers().split(",");
-					for (String string : split) {
-//						if (type != Integer.parseInt(string)) {
-//							continue;
-//						}
-//						myServerList.add();
-					}
+			int status = server.getStatus();
+			// 实际没有启动的服务器，不下发。
+			if (!activeServerSet.contains(server.getServerId())) {
+				if (ServerContext.getInstance().getRunMode().isTest()) {
+					status = ServerList.STATUS_SHUTDOWN;
+				} else {
+					continue;
 				}
-				ServerInfo item;
-
-//				java.util.Collections.sort(serversList);
-				for (ServerList server : serversList) {
-//					if (type != server.getType()) {
-//						continue;
-//					}
-					// 检查开服时间：当前时间在开服时间之后的服务器才显示
-					Date openTime = DateUtil.parseDate(server.getServerOpenTime());
-					if (openTime.after(new Date())) {
-						continue;
-					}
-					int status = server.getStatus();
-					// 实际没有启动的服务器，不下发。
-					if (!activeServerSet.contains(server.getServerId())) {
-						if (ServerContext.getInstance().getRunMode().isTest()) {
-							status = ServerList.STATUS_SHUTDOWN;
-						} else {
-							continue;
-						}
-					}
-					// 设置为停服状态的先不发下去
-					if (status == ServerList.STATUS_SHUTDOWN) {
-						continue;
-					}
-					if (server.getMaxOnline() != null && server.getMaxOnline() > 0 && status == ServerList.STATUS_RUN) {
-						int playerCount = ActiveServerListManager.getInstance().getPlayerCount(server.getServerId());
-						if (playerCount >= server.getMaxOnline()) {
-							status = ServerList.STATUS_FULL;
-							// 满了先不发下去。
-							continue;
-						}
-					}
-
-					// 设置为维护状态的，或者已满的， 仅ip白名单可进
-					if (status == ServerList.STATUS_MAINTANCE || status == ServerList.STATUS_FULL) {
-						if (!IpWhitelistManger.getInstance().isIpWhitelist(remoteAddress.hostAddress())) {
-							continue;
-						}
-					}
-					boolean isGm = false;
-					if (u != null) {
-						// 非gm跳过不开放的服务器
-//						if (u.getIsGm() == 0 && server.getStatus() != ServerList.STATUS_RUN) {
-//							continue;
-//						}
-						isGm = u.getIsGm();
-					}
-					item = formatProto(server, status, isGm);
-					serverItems.add(item);
-					// TODO我在哪个server
+			}
+			// 设置为停服状态的先不发下去
+			if (status == ServerList.STATUS_SHUTDOWN) {
+				continue;
+			}
+			if (server.getMaxOnline() != null && server.getMaxOnline() > 0 && status == ServerList.STATUS_RUN) {
+				int playerCount = ActiveServerListManager.getInstance().getPlayerCount(server.getServerId());
+				if (playerCount >= server.getMaxOnline()) {
+					status = ServerList.STATUS_FULL;
+					// 满了先不发下去。
+					continue;
 				}
+			}
 
-				if (myServerList != null) {
-					for (ServerList serverList : myServerList) {
-						myServerItems.add(format(serverList, true));
-					}
+			// 设置为维护状态的，或者已满的， 仅ip白名单可进
+			if (status == ServerList.STATUS_MAINTANCE || status == ServerList.STATUS_FULL) {
+				if (!IpWhitelistManger.getInstance().isIpWhitelist(remoteAddress.hostAddress())) {
+					continue;
 				}
-				response.end(Buffer.buffer(resp.addAllServers(serverItems).build().toByteArray()));
-			});
-		});
+			}
+			boolean isGm = false;
+			if (user != null) {
+				// 非gm跳过不开放的服务器
+//				if (u.getIsGm() == 0 && server.getStatus() != ServerList.STATUS_RUN) {
+//					continue;
+//				}
+				isGm = user.getIsGm();
+			}
+			item = formatProto(server, status, isGm);
+			serverItems.add(item);
+		}
+
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+		List<VirtualServerView> validServers = validGameService.getValidServerList();
+		resp.setTotalServerCount(validServers.size());
+		UserServerMapper bean = SpringContextLoader.getContext().getBean(UserServerMapper.class); 
+		List<UserServer> userServers = bean.selectByUserId(user.getId()); 
+		for (UserServer userServer : userServers) {
+			MyServerInfo.Builder myBuilder = MyServerInfo.newBuilder();
+			myBuilder.setLastEnterTime((int) (userServer.getUpdatedAt().getTime() /1000)) ;
+			myBuilder.setLevel(userServer.getPlayerLevel()); 
+			myBuilder.setName(userServer.getPlayerName());
+			myBuilder.setServerId(userServer.getServerId()); 
+			myBuilder.setPlayerId(userServer.getPlayerId()+""); 
+			resp.addMyServerList(myBuilder.build());
+		}
+		response.end(Buffer.buffer(resp.addAllServers(serverItems).build().toByteArray()));
+
 	}
 
 	private ServerItem format(ServerList server, boolean isGm) {

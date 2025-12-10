@@ -22,6 +22,7 @@
    	<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
    	<plugin type="org.mybatis.generator.plugins.BlobColumnTransformPlugin" />
    	<plugin type="org.mybatis.generator.plugins.SelectByIndexPlugin" />
+    <plugin type="org.mybatis.generator.plugins.InsertOrUpdatePlugin" />
    	
    	
 	<!-- 自定义生成的注释 -->

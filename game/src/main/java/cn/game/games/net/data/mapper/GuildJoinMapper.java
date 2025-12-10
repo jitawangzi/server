@@ -19,11 +19,6 @@ public interface GuildJoinMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(GuildJoin row);
-
-	/**
-	 * @mbg.generated
-	 */
 	GuildJoin selectByPrimaryKey(long playerId);
 
 	/**
@@ -80,4 +75,9 @@ public interface GuildJoinMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(GuildJoin record);
 }

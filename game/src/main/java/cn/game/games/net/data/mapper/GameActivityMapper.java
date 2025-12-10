@@ -19,11 +19,6 @@ public interface GameActivityMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(GameActivity row);
-
-	/**
-	 * @mbg.generated
-	 */
 	GameActivity selectByPrimaryKey(long id);
 
 	/**
@@ -90,4 +85,9 @@ public interface GameActivityMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(GameActivity record);
 }

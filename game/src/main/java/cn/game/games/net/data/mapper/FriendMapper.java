@@ -20,11 +20,6 @@ public interface FriendMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(Friend row);
-
-	/**
-	 * @mbg.generated
-	 */
 	Friend selectByPrimaryKey(@Param("playerId") long playerId, @Param("friendId") long friendId);
 
 	/**
@@ -89,6 +84,11 @@ public interface FriendMapper {
 	 */
 	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("friendId") long friendId,
 			@Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(Friend record);
 
 	/**
 	 * @mbg.generated

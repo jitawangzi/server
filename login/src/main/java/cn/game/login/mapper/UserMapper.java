@@ -26,11 +26,6 @@ public interface UserMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(User row);
-
-	/**
-	 * @mbg.generated
-	 */
 	User selectByPrimaryKey(Long id);
 
 	/**
@@ -62,6 +57,11 @@ public interface UserMapper {
 	 * @mbg.generated
 	 */
 	User selectByNameChannel(@Param("username") String username, @Param("channelLabel") String channelLabel);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(User record);
 
 	User selectByNameAndChannel(@Param("username") String username, @Param("channel") String channel);
 

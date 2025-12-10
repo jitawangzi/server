@@ -26,6 +26,7 @@ public class AndroidAppPayOrderProcessor extends BasePayOrderProcessor{
     public Future<PayOrder> createPayOrder(ServerMsg.PaymentOrderCreateRequest_7d000020 request) {
 		return VxHolder.vertx.executeBlocking(() -> {
 			long playerId = request.getPlayerId();
+			long userId = request.getUserId(); 
 			String sessionId = request.getSessionId();
 			long outTradeNo = IdUtil.genOrderId(playerId);
 
@@ -40,7 +41,7 @@ public class AndroidAppPayOrderProcessor extends BasePayOrderProcessor{
 			payOrder.setPayState((byte) 1);
 			payOrder.setPlayerId(playerId);
 			payOrder.setPrice(request.getGoodsPrice());
-			payOrder.setUserId(playerId);
+			payOrder.setUserId(userId);
 			payOrder.setThirdUid(user.getUsername());
 
 			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);

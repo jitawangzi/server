@@ -19,11 +19,6 @@ public interface OfflineActionMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(OfflineAction row);
-
-	/**
-	 * @mbg.generated
-	 */
 	OfflineAction selectByPrimaryKey(long id);
 
 	/**
@@ -90,4 +85,9 @@ public interface OfflineActionMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("id") long id, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(OfflineAction record);
 }

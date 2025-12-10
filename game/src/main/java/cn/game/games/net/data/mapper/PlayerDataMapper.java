@@ -24,11 +24,6 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(PlayerData row);
-
-	/**
-	 * @mbg.generated
-	 */
 	PlayerData selectByPrimaryKey(long playerId);
 
 	/**
@@ -39,12 +34,12 @@ public interface PlayerDataMapper {
 	/**
 	 * @mbg.generated
 	 */
-	List<PlayerData> selectByUid(@Param("uid") long uid);
+	PlayerData selectByUkUidServerid(@Param("uid") long uid, @Param("serverId") String serverId);
 
 	/**
 	 * @mbg.generated
 	 */
-	int deleteByUid(@Param("uid") long uid);
+	int deleteByUkUidServerid(@Param("uid") long uid, @Param("serverId") String serverId);
 
 	/**
 	 * @mbg.generated
@@ -95,6 +90,11 @@ public interface PlayerDataMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(PlayerData record);
 
 	List<Player> selectPlayersByUid(Long uid);
 

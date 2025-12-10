@@ -42,6 +42,8 @@ public class Account {
 	// 微信小程序专用
 	public String unionid ; 
 	public String openid ; 
+	
+	public String serverId; 
 
 	public Account(PlayerLoginRequest_01000001 req) {
 //        this.accountType = req.getAccountType();
@@ -61,6 +63,8 @@ public class Account {
         this.platform = req.getPlatform();
         this.sdkPayChannel = req.getSdkPayChannel();
 		this.system = req.getSystem();
+		this.serverId = req.getServerId(); 
+		
 		this.clue_token = req.getClueToken();
         if (req.getClueToken() != null &&  !req.getClueToken().isEmpty()){
             try {

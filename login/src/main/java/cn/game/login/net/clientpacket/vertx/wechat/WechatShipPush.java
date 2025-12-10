@@ -99,8 +99,8 @@ public class WechatShipPush implements BaseVertxHandler {
 		}
 		User user = UserHelper.getUserByName(wechatPushBean.MiniGame.PayloadObj.OpenId);
 		PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022
-				.newBuilder().setPlayerId(user.getId()).setUid(payOrder.getId()).build();
-		String serverId = UserHelper.getServerId(user.getId());
+				.newBuilder().setPlayerId(payOrder.getPlayerId()).setUid(payOrder.getId()).build();
+		String serverId = UserHelper.getServerId(payOrder.getPlayerId());
 		Future<PaymentOrderShipResponse_7d000023> future;
 		if (StringUtils.isEmpty(serverId)) {
 			future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);

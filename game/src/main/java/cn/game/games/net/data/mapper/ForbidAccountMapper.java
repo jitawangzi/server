@@ -21,11 +21,6 @@ public interface ForbidAccountMapper {
 	/**
 	 * @mbg.generated
 	 */
-	int insertOrUpdate(ForbidAccount row);
-
-	/**
-	 * @mbg.generated
-	 */
 	ForbidAccount selectByPrimaryKey(long playerId);
 
 	/**
@@ -82,5 +77,10 @@ public interface ForbidAccountMapper {
 	 * @mbg.generated
 	 */
 	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("params") java.util.Map<String, Object> params);
+
+	/**
+	 * @mbg.generated
+	 */
+	int insertOrUpdate(ForbidAccount record);
 
 }
