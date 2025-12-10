@@ -160,8 +160,8 @@ public class GameServer implements GameServerMBean {
 		Thread.setDefaultUncaughtExceptionHandler(new ThreadUncaughtExceptionHandler());
 //		instance.log.info("启动逻辑服。。");
 		VxHolder.init();
-//		IdUtil.init(serverId);
-		initAllServerPlayerId(serverId);
+		IdUtil.init(serverId);
+//		initAllServerPlayerId(serverId);
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init();
