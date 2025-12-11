@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.net.remote.RemoteLoginServerInterface;
+import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.DataFixLog;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
@@ -27,6 +29,7 @@ import cn.game.games.net.data.mapper.DataFixLogMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
@@ -42,6 +45,7 @@ import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.util.GameUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.SpringContextLoader;
+import io.vertx.core.Future;
 
 /**    
  * 数据修正管理器，需要执行的方法使用@DataFix注解标记（或者使用fix开头），
@@ -122,6 +126,20 @@ public class DataFixManager {
 			return fix;
 		};
 
+		PlayerHelper.loadAndProcessPlayers(function);
+	}
+	
+	@DataFix(description = "初始化玩家最近的服务器", deprecated = true)
+	public void fixUserServer() {
+		RemoteLoginServerInterface remoteLoginInterfaceProxy = ServerHelper.getRemoteLoginInterfaceProxy(); 
+		remoteLoginInterfaceProxy.isAvailable(); 
+		Function<Player, Boolean> function = player -> {
+			PlayerData data = player.getData(); 
+			Future<Void> updateUserServer = remoteLoginInterfaceProxy.updateUserServer(data.getServerId(), data.getUid(), data.getPlayerId(), data.getName(), player.getLevel());
+			AsyncUtils.await(updateUserServer); 
+			return false;
+		};
+		
 		PlayerHelper.loadAndProcessPlayers(function);
 	}
 

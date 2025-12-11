@@ -2080,20 +2080,18 @@ public class PlayerHelper {
 	}
 
 	private static Future<?> modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
-		try {
-			Boolean apply = function.apply(player);
-			// 修改完玩家数据后，需要从缓存中清除数据
-			PlayerHelper.clearPlayer(player.getPlayerId());
-			RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
+		return VxHolder.vertx.executeBlocking(() -> function.apply(player)).compose(apply -> {
 			if (apply != null && apply) {
 				log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
 				return PlayerHelper.saveClientCache(player.getPlayerId());
 			}
-		} catch (Exception e) {
-			log.error("modifyPlayerOffline error, playerId: " + player.getPlayerId(), e);
-			return Future.failedFuture(e);
-		}
-		return Future.succeededFuture();
+			return Future.succeededFuture();
+		}).compose(v -> {
+			// 修改完玩家数据后，需要从缓存中清除数据
+			PlayerHelper.clearPlayer(player.getPlayerId());
+			RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
+			return Future.succeededFuture();
+		});
 	}
 
 	/** 
