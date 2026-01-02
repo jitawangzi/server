@@ -284,3 +284,11 @@
 442,buyVipGiftRequest_34000005,0x34000005,,,,,,购买一次性礼包奖励请求
 443,getVipInfoRequest_34000001,0x34000001,,,,,,获取VIP 信息 请求
 444,rewardFreeVipGiftRequest_34000003,0x34000003,,,,,,领取每日免费奖励请求
+445,GemGacheRequest_10000012,0x10000012,,,,,,宝石抽奖
+446,GemXiLianRequest_10000010,0x10000010,,,,,,宝石洗练
+447,GuildGVEBuyTicketRequest_40000090,0x40000090,,,,,,买次数
+448,GuildGVECardDataRequest_40000083,0x40000083,,,,,,客户端与游戏服通信  请求数据
+449,GuildGVEOpenCardRequest_40000085,0x40000085,,,,,,客户端与游戏服通信  翻咔
+450,GuildGVEOpenMapRequest_40000087,0x40000087,,,,,,打开地图
+451,PlayerChatBoxRequest_01000703,0x01000703,,,,,,修改聊天框
+452,PlayerTitleRequest_01000701,0x01000701,,,,,,修改称号
