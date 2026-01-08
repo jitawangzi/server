@@ -13,6 +13,7 @@
 		<module>core</module>
 		<module>game</module>
 		<module>login</module>
+		<module>simulationclient</module>
 	</modules>
 
 	<url>http://maven.apache.org</url>

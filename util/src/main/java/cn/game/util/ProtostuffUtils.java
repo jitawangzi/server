@@ -10,6 +10,7 @@ import io.protostuff.runtime.RuntimeSchema;
  * 2020年9月11日 下午2:35:16
  * @author SYQ
  */
+@Deprecated
 public class ProtostuffUtils {
     /**
  * 把指定对象序列化成字节数组

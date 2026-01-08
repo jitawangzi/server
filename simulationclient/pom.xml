@@ -106,11 +106,11 @@
 			<artifactId>core</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>cn.game</groupId>
-			<artifactId>game</artifactId>
-			<version>1.0</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>cn.game</groupId>-->
+<!--			<artifactId>game</artifactId>-->
+<!--			<version>1.0</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 

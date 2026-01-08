@@ -853,7 +853,7 @@ public class Client extends AbstractNetClient {
 			}
 			return;
 		}
-		if (currentTime - lastHeartbeatTime > 15000) {
+		if (currentTime - lastHeartbeatTime > 15000 && isLastMessageReturn()) {
 			sendWsPack(PlayerHeartbeatRequest_01000005.getDefaultInstance());
 			lastHeartbeatTime = currentTime;
 		}

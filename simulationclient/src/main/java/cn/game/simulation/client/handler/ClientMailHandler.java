@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
-import cn.game.games.net.game.handler.GameBaseHandler;
+import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.protobuf.MailMsg.MailDeleteResponse_12000008;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
@@ -18,7 +18,7 @@ import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.simulation.client.Client;
 
 @Component
-public class ClientMailHandler extends GameBaseHandler {
+public class ClientMailHandler extends BaseHandler {
 
     @Override
     protected int getModule() {

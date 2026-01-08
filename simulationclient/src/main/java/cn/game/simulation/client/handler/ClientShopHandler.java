@@ -3,6 +3,7 @@ package cn.game.simulation.client.handler;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
+import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.PbProtocol;
@@ -32,7 +33,7 @@ import cn.game.protocol.protobuf.ShopMsg.XianShiLiBaoInfo;
 import cn.game.simulation.client.Client;
 
 @Component
-public class ClientShopHandler extends GameBaseHandler {
+public class ClientShopHandler extends BaseHandler {
 
     @Override
     protected int getModule() {
@@ -64,7 +65,7 @@ public class ClientShopHandler extends GameBaseHandler {
         ShopItemListResponse_15000002 resp = (ShopItemListResponse_15000002) message;
         List<ShopItemProto> itemsList = resp.getItemsList();
         Client client = (Client) netClient;
-		if (!itemsList.isEmpty() && client.lastSendMessage != null && client.lastSendMessage instanceof ShopItemListRequest_15000001) {
+		if (!itemsList.isEmpty()) {
 			client.shopItemMap.computeIfAbsent(((ShopItemListRequest_15000001) client.lastSendMessage).getShopId(), k -> itemsList);
 		}
     }

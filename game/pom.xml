@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<game.assembly.descriptor>package.xml</game.assembly.descriptor>
+		<game.assembly.descriptor>package_full.xml</game.assembly.descriptor>
 		<!-- 打全量包时，使用哪个服务器的配置文件 -->
 		<game.server>test</game.server>
 	</properties>

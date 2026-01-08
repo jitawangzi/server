@@ -18,7 +18,7 @@
 
 **Module（逻辑层）** 由 `Player` 持有，职责是维护玩家状态、状态机流转、事件处理。大部分 Module 数据由框架定时全量持久化，内存修改即视为保存。
 
-**Helper / Manager（工具层）** 包括 `PlayerHelper`（资源增删、消息推送）和 `xxxManager`（静态配置读取，通常为单例）。
+**Helper / Manager（工具层,工具生成）** 包括 `PlayerHelper`（资源增删、消息推送）和 `xxxManager`（静态配置读取，通常为单例）。
 
 ---
 
@@ -126,68 +126,6 @@
 
 ---
 
-## 8. 静态数据配置表
-
-### 8.1 配置表结构
-
-Excel 静态数据配置表定义功能的静态数据，每行代表一条记录。以任务模块为例，`Quest.xlsx` 定义了任务结构，工具会将其解析为 `QuestConfig` 类：
-
-    public class QuestConfig {
-        public final int ID;              // 任务ID
-        public final int Type;            // 任务类型，对应 QuestTypeEnum
-        public final int Condition;       // 任务完成条件，对应 Condition 表ID
-        public final int Reward;          // 任务奖励ID，掉落id
-        public final int Group;           // 分组，不同类型的任务分组不能相同
-        public final int[] OpenQuests;    // 完成时开启的新任务id
-        public final boolean IsDeleteOnFinish; // 完成时是否删除
-        // ...
-    }
-
-### 8.2 配置读取方式
-
-每个配置表都有对应的 Manager 类用于数据读取。第一列始终是数字类型的 ID，用于按 ID 获取数据。
-
-    // 按 ID 获取，不存在时抛出异常
-    QuestConfig config = QuestManager.instance().get(id);
-
-    // 按 ID 获取，允许返回 null
-    QuestConfig config = QuestManager.instance().getNullable(id);
-
-    // 获取所有数据
-    Collection<QuestConfig> allQuests = QuestManager.instance().list();
-
-    // 按索引字段获取列表（如果配置了索引）
-    List<QuestConfig> dailyQuests = QuestManager.instance().getTypeList(QuestTypeEnum.Daily.getId());
-
-    // 获取原始索引 Map
-    Map<Integer, List<QuestConfig>> typeMap = QuestManager.instance().getTypes();
-
-这些 Manager 类和方法由工具生成，不应手动修改。
-
-### 8.3 特殊配置类
-
-**常量表** 用于存储全局常量：
-
-    public class GlobalConst extends ResourceListener {
-        public volatile static int UpHeroID;          // 强制下阵霸波奔
-        public volatile static int[] CreateUID;       // UID创建取值参数
-        public volatile static int PayVIPExp;         // 充值1人民币兑换的VIP经验
-        public volatile static int[][] PlayerName;    // 修改名字花费
-        // ...
-    }
-
-**枚举类型表** 用于定义枚举常量：
-
-    public enum QuestTypeEnum {
-        Daily(1, "Daily", "日常任务"),
-        Weekly(2, "Weekly", "周常任务"),
-        Achievement(3, "Achievement", "成就任务"),
-        // ...
-    }
-
-这些类在 AI 编写代码前会由人工生成并提供。
-
----
 
 ## 9. 事件系统
 
