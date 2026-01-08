@@ -5,7 +5,7 @@ import java.util.List;
 import cn.game.protocol.protobuf.GuildMsg;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
-import cn.game.games.net.game.handler.GameBaseHandler;
+import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildAllInfo;
@@ -56,16 +56,11 @@ import cn.game.protocol.protobuf.GuildMsg.GuildGVEMapBattleStartPush_4000008a;
 import cn.game.protocol.protobuf.GuildMsg.GuildGVEBuyTicketResponse_40000091;
 
 @Component
-public class ClientGuildHandler extends GameBaseHandler {
+public class ClientGuildHandler extends BaseHandler {
 
     @Override
     protected int getModule() {
         return 0x40;
-    }
-
-    @Override
-    protected InitialUI getInitialUI() {
-        return InitialUI.Guild;
     }
 
     @Override

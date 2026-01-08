@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import cn.game.games.net.cross.guild.GuildConstants;
 import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.protobuf.GuildMsg.GuildMemberInfo;

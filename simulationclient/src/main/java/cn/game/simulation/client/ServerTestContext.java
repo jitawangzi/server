@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.Message;
 
 import cn.game.core.net.pressure.GlobalMessageStatistics;
-import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLogoutRequest_01000003;
 import cn.game.simulation.test.base.ServerTest;
@@ -117,7 +116,6 @@ public class ServerTestContext {
 		String filePath = System.getProperty("user.dir") + "/messages.csv";
 		CSVMessagesReader.read(filePath);
 		ManagerHelper.init();
-		ActivityStateManager.getInstance().start();
 
 		init();
 		initEnvFromArgs(args);

@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.socket.handler.BaseHandler;
-import cn.game.games.net.game.handler.GameBaseHandler;
+import cn.game.core.net.socket.handler.BaseHandler;
 import cn.game.protocol.protobuf.BaseMsg.PaymentOrderProto;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;

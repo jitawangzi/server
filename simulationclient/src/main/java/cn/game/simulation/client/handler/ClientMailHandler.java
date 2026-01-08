@@ -26,11 +26,6 @@ public class ClientMailHandler extends BaseHandler {
     }
 
     @Override
-    protected InitialUI getInitialUI() {
-        return InitialUI.Letter;
-    }
-
-    @Override
     protected void inititialize() {
         putInvoker(PbProtocol.MailListResponse_12000002, this::list);
         putInvoker(PbProtocol.MailSeeResponse_12000004, this::see);

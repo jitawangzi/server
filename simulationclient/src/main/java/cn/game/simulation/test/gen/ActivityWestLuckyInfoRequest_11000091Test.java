@@ -24,7 +24,7 @@ public class ActivityWestLuckyInfoRequest_11000091Test extends ServerTest{
 	public Message getMessagePressure(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyInfoRequest_11000091.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyInfoRequest_11000091.newBuilder() ; 
 		
-		builder.setActivityId(activityId(ActivityTypeEnum.ActivityZhuanPan)) ; 
+//		builder.setActivityId()) ; 
 		
 		return builder.build() ; 
 	}
