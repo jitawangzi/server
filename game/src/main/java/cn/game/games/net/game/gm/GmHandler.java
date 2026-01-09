@@ -48,7 +48,7 @@ import cn.game.protocol.protobuf.GmMsg.GmAccountUnblockResponse_77000008;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerDeleteRequest_77000052;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerDeleteResponse_77000053;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutRequest_77000009;
-import cn.game.protocol.protobuf.GmMsg.GmPlayerLogouttResponse_7700000a;
+import cn.game.protocol.protobuf.GmMsg.GmPlayerLogoutResponse_7700000a;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRenameResponse_77000051;
 import cn.game.protocol.protobuf.GmMsg.GmPlayerRequest_77000021;
@@ -467,7 +467,7 @@ public class GmHandler extends GmBaseHandler {
 	/** 踢玩家下线 */
 	private void playerLogout(NetClient client, Object message) {
 		GmPlayerLogoutRequest_77000009 request = (GmPlayerLogoutRequest_77000009) message;
-		GmPlayerLogouttResponse_7700000a.Builder response = GmPlayerLogouttResponse_7700000a.newBuilder();
+		GmPlayerLogoutResponse_7700000a.Builder response = GmPlayerLogoutResponse_7700000a.newBuilder();
 
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
 		PlayerHelper.addTask(playerId, () -> {

@@ -22,6 +22,7 @@ public class GTT {
 		String resIdHex = "0x11000001";
 		Integer.parseInt(resIdHex.substring(2), 16);
 		System.out.println(resIdHex);
+		System.out.println(Integer.toHexString(23));
 
 		
 	}
