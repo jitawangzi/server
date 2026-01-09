@@ -13,7 +13,7 @@ import cn.game.util.Rnd;
 public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
 		
 		builder.setIndex(Rnd.nextInt(3));
@@ -22,7 +22,7 @@ public class BattleDayChallengeReceiveActivePointRequest_13000070Test extends Se
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDayChallengeReceiveActivePointRequest_13000070.newBuilder() ; 
 		
 		builder.setIndex(Rnd.nextInt(3));

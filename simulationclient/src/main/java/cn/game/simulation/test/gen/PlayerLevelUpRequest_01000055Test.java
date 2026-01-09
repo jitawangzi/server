@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PlayerLevelUpRequest_01000055Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.newBuilder() ; 
 		builder.setId(Asset.CatalogPoints.ID);
 		
@@ -21,7 +21,7 @@ public class PlayerLevelUpRequest_01000055Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerLevelUpRequest_01000055.newBuilder() ; 
 		
 		

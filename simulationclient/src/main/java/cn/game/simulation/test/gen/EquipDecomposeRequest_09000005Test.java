@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class EquipDecomposeRequest_09000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipDecomposeRequest_09000005.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipDecomposeRequest_09000005.newBuilder() ; 
 		
 		List<EquipInfo> equipsList = client.getPlayerAllInfo().getEquipsList();
@@ -29,7 +29,7 @@ public class EquipDecomposeRequest_09000005Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipDecomposeRequest_09000005.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipDecomposeRequest_09000005.newBuilder() ; 
 		
 		List<EquipInfo> equipsList = client.getPlayerAllInfo().getEquipsList();

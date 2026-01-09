@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class QuestListRequest_20000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.newBuilder() ; 
 		builder.setType(5);
 		
@@ -21,7 +21,7 @@ public class QuestListRequest_20000001Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestListRequest_20000001.newBuilder() ; 
 		builder.setType(1);
 		

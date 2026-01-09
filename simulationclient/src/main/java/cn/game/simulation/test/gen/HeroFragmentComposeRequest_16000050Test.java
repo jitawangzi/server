@@ -17,7 +17,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HeroFragmentComposeRequest_16000050Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.newBuilder() ; 
 		
 		builder.addHeroId(331001);
@@ -26,7 +26,7 @@ public class HeroFragmentComposeRequest_16000050Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFragmentComposeRequest_16000050.newBuilder() ; 
 		
 		int heroId = 0 ; 

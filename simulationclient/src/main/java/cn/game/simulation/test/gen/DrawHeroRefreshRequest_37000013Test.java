@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DrawHeroRefreshRequest_37000013Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.newBuilder() ; 
 		
 		builder.setGold(50000);
@@ -20,7 +20,7 @@ public class DrawHeroRefreshRequest_37000013Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRefreshRequest_37000013.newBuilder() ; 
 		
 		builder.setGold(50000);

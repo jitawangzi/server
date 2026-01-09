@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class HeroBattleRequest_16000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.newBuilder() ; 
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
@@ -30,7 +30,7 @@ public class HeroBattleRequest_16000005Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleRequest_16000005.newBuilder() ; 
 		
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();

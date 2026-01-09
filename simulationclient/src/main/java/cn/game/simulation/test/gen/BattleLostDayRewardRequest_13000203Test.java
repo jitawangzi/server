@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleLostDayRewardRequest_13000203Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203
 				.newBuilder();
 
@@ -18,7 +18,7 @@ public class BattleLostDayRewardRequest_13000203Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLostDayRewardRequest_13000203
 				.newBuilder();
 

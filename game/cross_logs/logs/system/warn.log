@@ -1,0 +1,1 @@
+2026-01-09 10:30:10.524 [main] WARN  com.ctrip.framework.foundation.internals.provider.DefaultApplicationProvider - app.label is not available from System Property and /META-INF/app.properties. It is set to null

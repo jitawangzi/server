@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class TestPlayerDeleteRequest_6f000044Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.newBuilder() ; 
 		
 		builder.setPlayerId(240201711);
@@ -20,7 +20,7 @@ public class TestPlayerDeleteRequest_6f000044Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerDeleteRequest_6f000044.newBuilder() ; 
 		
 		builder.setPlayerId(240200002);

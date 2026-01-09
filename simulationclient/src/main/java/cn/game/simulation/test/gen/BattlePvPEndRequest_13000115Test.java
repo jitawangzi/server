@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattlePvPEndRequest_13000115Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.newBuilder() ;
 
 		if (client.isInPvPBattle()){
@@ -28,7 +28,7 @@ public class BattlePvPEndRequest_13000115Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPEndRequest_13000115.newBuilder() ;
 
 		if (client.isInPvPBattle()){

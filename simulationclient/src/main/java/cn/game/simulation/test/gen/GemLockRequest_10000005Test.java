@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class GemLockRequest_10000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemLockRequest_10000005.Builder builder = cn.game.protocol.protobuf.GemMsg.GemLockRequest_10000005.newBuilder() ;
 		List<BaseMsg.GemInfo> list = client.getPlayerAllInfo().getGemsList();
 		BaseMsg.GemInfo gemInfo = Rnd.randomElement(list);
@@ -28,7 +28,7 @@ public class GemLockRequest_10000005Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemLockRequest_10000005.Builder builder = cn.game.protocol.protobuf.GemMsg.GemLockRequest_10000005.newBuilder() ;
 		List<BaseMsg.GemInfo> list = client.getPlayerAllInfo().getGemsList();
 		BaseMsg.GemInfo gemInfo = Rnd.randomElement(list);

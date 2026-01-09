@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PlayerAdBIInfoRequest_01100603Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerAdBIInfoRequest_01100603.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerAdBIInfoRequest_01100603.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class PlayerAdBIInfoRequest_01100603Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerAdBIInfoRequest_01100603.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerAdBIInfoRequest_01100603.newBuilder() ; 
 		
 		

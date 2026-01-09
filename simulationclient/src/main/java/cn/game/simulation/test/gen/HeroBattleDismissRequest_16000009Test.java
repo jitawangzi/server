@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class HeroBattleDismissRequest_16000009Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009
 				.newBuilder();
 
@@ -29,7 +29,7 @@ public class HeroBattleDismissRequest_16000009Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroBattleDismissRequest_16000009
 				.newBuilder();
 

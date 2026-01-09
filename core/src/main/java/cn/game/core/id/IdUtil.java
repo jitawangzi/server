@@ -23,12 +23,12 @@ public class IdUtil {
      * 可以在这里配置号段模式的初始值
      */
     public static enum IdType {
-        PLAYER(340200000L), 
+        PLAYER(10001L), 
         HERO(0), 
         ITEM(0), 
         UNION(0), 
         ORDER(0), 
-        GUILD(890000001L);
+        GUILD(900001L);
 
         private final long initialId;
 

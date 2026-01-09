@@ -476,7 +476,7 @@ public class ServerTestContext {
 
 	        Message messageObj = null;
 	        try {
-	            messageObj = serverTest.getMessagePressure(client);
+	            messageObj = serverTest.tryBuildSimulationRequest(client);
 	        } catch (Exception e) {
 	            // 构造失败，推进到组内下一条继续
 	            client.sendingGroupIndex++;
@@ -678,15 +678,12 @@ public class ServerTestContext {
 
 	public static void send(Client client, Supplier<Message> supplier) throws Exception {
 
-		if (login) {
+		if (!client.getInit()) {
 			client.loginPassportProto(loginServerUrl);
 			client.loginGateway(gateServerIp, gateServerPort);
 			client.sendProtocolAfterInit(supplier, true);
 		} else {
-			Promise<Client> connect = client.connect(gateServerIp, gateServerPort, false);
-			connect.addListener(r -> {
-				client.sendProtocol(supplier.get());
-			});
+			client.sendProtocol(supplier.get());
 		}
 	}
 

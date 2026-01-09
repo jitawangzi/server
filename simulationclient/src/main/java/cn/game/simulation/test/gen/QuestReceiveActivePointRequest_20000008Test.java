@@ -13,7 +13,7 @@ import cn.game.util.Rnd;
 public class QuestReceiveActivePointRequest_20000008Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008.newBuilder() ; 
 		builder.setType(Rnd.nextInt(1, 2));
 		builder.addIndex(Rnd.get(0, 3));
@@ -22,7 +22,7 @@ public class QuestReceiveActivePointRequest_20000008Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveActivePointRequest_20000008.newBuilder() ; 
 		builder.setType(Rnd.nextInt(1, 2));
 		builder.addIndex(Rnd.get(0, 3));

@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class DefenceSkinChangeRequest_25000035Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DefenceSkinChangeRequest_25000035.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DefenceSkinChangeRequest_25000035.newBuilder() ; 
 		List<DefenceSkinInfo> defenceSkinsList = client.getPlayerAllInfo().getDefenceSkinsList(); 
 		DefenceSkinInfo randomElement = Rnd.randomElement(defenceSkinsList); 
@@ -27,7 +27,7 @@ public class DefenceSkinChangeRequest_25000035Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DefenceSkinChangeRequest_25000035.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DefenceSkinChangeRequest_25000035.newBuilder() ; 
 		List<DefenceSkinInfo> defenceSkinsList = client.getPlayerAllInfo().getDefenceSkinsList(); 
 		DefenceSkinInfo randomElement = Rnd.randomElement(defenceSkinsList); 

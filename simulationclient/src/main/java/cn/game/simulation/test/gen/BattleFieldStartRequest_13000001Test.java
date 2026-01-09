@@ -16,7 +16,7 @@ import cn.game.util.Rnd;
 public class BattleFieldStartRequest_13000001Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001
 				.newBuilder();
 		builder.setType(1);
@@ -28,7 +28,7 @@ public class BattleFieldStartRequest_13000001Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldStartRequest_13000001
 				.newBuilder();
 		builder.setType(1);

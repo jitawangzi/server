@@ -15,7 +15,7 @@ import java.util.List;
 public class BattleDaoHeartSweepBatchRequest_13000062Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062
 				.newBuilder();
 
@@ -34,7 +34,7 @@ public class BattleDaoHeartSweepBatchRequest_13000062Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepBatchRequest_13000062
 				.newBuilder();
 

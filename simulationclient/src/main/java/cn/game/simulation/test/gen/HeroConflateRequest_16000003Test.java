@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class HeroConflateRequest_16000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
@@ -33,7 +33,7 @@ public class HeroConflateRequest_16000003Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroConflateRequest_16000003.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();

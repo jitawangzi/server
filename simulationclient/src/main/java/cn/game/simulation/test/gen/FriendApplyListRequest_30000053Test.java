@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class FriendApplyListRequest_30000053Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendApplyListRequest_30000053.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplyListRequest_30000053
 				.newBuilder();
 
@@ -19,7 +19,7 @@ public class FriendApplyListRequest_30000053Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendApplyListRequest_30000053.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendApplyListRequest_30000053
 				.newBuilder();
 		return builder.build();

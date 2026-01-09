@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattlePVEVPRecordRequest_13000550Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordRequest_13000550.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordRequest_13000550.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattlePVEVPRecordRequest_13000550Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordRequest_13000550.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePVEVPRecordRequest_13000550.newBuilder() ; 
 		
 		

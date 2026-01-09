@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GmPlayerRenameRequest_77000050Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.Builder builder = cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.newBuilder() ; 
 		
 		builder.setPlayerId("240201750");
@@ -21,7 +21,7 @@ public class GmPlayerRenameRequest_77000050Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.Builder builder = cn.game.protocol.protobuf.GmMsg.GmPlayerRenameRequest_77000050.newBuilder() ; 
 		
 		

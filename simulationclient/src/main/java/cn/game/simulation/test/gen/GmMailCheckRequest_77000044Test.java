@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GmMailCheckRequest_77000044Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.newBuilder() ; 
 		
 		builder.addUid("3");
@@ -20,7 +20,7 @@ public class GmMailCheckRequest_77000044Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailCheckRequest_77000044.newBuilder() ; 
 		
 		builder.addUid("3");

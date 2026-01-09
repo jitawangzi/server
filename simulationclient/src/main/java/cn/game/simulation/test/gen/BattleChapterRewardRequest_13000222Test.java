@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class BattleChapterRewardRequest_13000222Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000222.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000222.newBuilder() ; 
 		
 		
@@ -26,7 +26,7 @@ public class BattleChapterRewardRequest_13000222Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000222.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleChapterRewardRequest_13000222.newBuilder() ; 
 		List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.BattleChapter.getId()); 
 		BattleConfig randomElement = Rnd.randomElement(battleTypeList); 

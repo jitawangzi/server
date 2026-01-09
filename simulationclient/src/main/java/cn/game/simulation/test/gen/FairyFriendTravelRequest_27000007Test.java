@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class FairyFriendTravelRequest_27000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.newBuilder() ; 
 		
 		builder.setCount(10);
@@ -20,7 +20,7 @@ public class FairyFriendTravelRequest_27000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.Builder builder = cn.game.protocol.protobuf.FairyFriendMsg.FairyFriendTravelRequest_27000007.newBuilder() ; 
 		
 		builder.setCount(10);

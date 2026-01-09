@@ -10,14 +10,14 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattlePVEVPChallengeRequest_13000552Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552.newBuilder() ;
 		builder.setType(1);
 		return builder.build() ; 
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePVEVPChallengeRequest_13000552.newBuilder() ;
 		builder.setType(1);
 		

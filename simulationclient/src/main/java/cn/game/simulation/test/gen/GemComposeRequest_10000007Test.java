@@ -14,7 +14,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GemComposeRequest_10000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemComposeRequest_10000007.Builder builder = cn.game.protocol.protobuf.GemMsg.GemComposeRequest_10000007.newBuilder() ;
 		List<BaseMsg.GemInfo> gemsList = client.getPlayerAllInfo().getGemsList();
 		if (gemsList.isEmpty()) {
@@ -27,7 +27,7 @@ public class GemComposeRequest_10000007Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemComposeRequest_10000007.Builder builder = cn.game.protocol.protobuf.GemMsg.GemComposeRequest_10000007.newBuilder() ;
 		List<BaseMsg.GemInfo> gemsList = client.getPlayerAllInfo().getGemsList();
 		if (gemsList.isEmpty()) {

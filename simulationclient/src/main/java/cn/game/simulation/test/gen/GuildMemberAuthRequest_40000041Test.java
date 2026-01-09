@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class GuildMemberAuthRequest_40000041Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthRequest_40000041.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildMemberAuthRequest_40000041.newBuilder() ; 
 		
 		builder.setOptType(1);
@@ -28,7 +28,7 @@ public class GuildMemberAuthRequest_40000041Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		if (client.guildAllInfo == null) {
 			return null; 
 		}

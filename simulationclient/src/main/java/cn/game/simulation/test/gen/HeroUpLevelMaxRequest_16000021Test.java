@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class HeroUpLevelMaxRequest_16000021Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
@@ -28,7 +28,7 @@ public class HeroUpLevelMaxRequest_16000021Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelMaxRequest_16000021.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();

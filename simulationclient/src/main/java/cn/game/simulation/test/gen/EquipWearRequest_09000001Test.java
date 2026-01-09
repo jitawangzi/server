@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class EquipWearRequest_09000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
 		builder.setUid("301619302048487206");
@@ -24,7 +24,7 @@ public class EquipWearRequest_09000001Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipWearRequest_09000001.newBuilder() ; 
 		
 		List<EquipInfo> equipsList = client.getPlayerAllInfo().getEquipsList();

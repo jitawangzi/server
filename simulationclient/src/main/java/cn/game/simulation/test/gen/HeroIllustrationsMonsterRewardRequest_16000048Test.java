@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class HeroIllustrationsMonsterRewardRequest_16000048Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterRewardRequest_16000048.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterRewardRequest_16000048.newBuilder() ; 
 		
 		
@@ -24,7 +24,7 @@ public class HeroIllustrationsMonsterRewardRequest_16000048Test extends ServerTe
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterRewardRequest_16000048.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterRewardRequest_16000048.newBuilder() ; 
 		
 		List<Integer> list = (List<Integer>) client.dataMap.computeIfAbsent("HeroIllustrationsMonsterAddRequest_16000046_id", k -> new ArrayList<Integer>());

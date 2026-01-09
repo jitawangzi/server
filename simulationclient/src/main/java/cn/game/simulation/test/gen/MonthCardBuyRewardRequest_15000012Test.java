@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class MonthCardBuyRewardRequest_15000012Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012
 				.newBuilder();
 		builder.setId(1);
@@ -21,7 +21,7 @@ public class MonthCardBuyRewardRequest_15000012Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012.Builder builder = cn.game.protocol.protobuf.ShopMsg.MonthCardBuyRewardRequest_15000012
 				.newBuilder();
 		builder.setId(1);

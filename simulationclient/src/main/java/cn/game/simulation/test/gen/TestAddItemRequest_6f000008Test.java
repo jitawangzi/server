@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class TestAddItemRequest_6f000008Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008
 				.newBuilder();
 //		builder.setId(Asset.playerExp.ID);
@@ -27,7 +27,7 @@ public class TestAddItemRequest_6f000008Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008.Builder builder = cn.game.protocol.protobuf.TestMsg.TestAddItemRequest_6f000008
 				.newBuilder();
 

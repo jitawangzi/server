@@ -14,7 +14,7 @@ import cn.game.util.Rnd;
 public class RankListRequest_35000001Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.Builder builder = cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001
 				.newBuilder();
 		// 随机一个排行榜
@@ -32,7 +32,7 @@ public class RankListRequest_35000001Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001.Builder builder = cn.game.protocol.protobuf.RankMsg.RankListRequest_35000001
 				.newBuilder();
 		// 随机一个排行榜

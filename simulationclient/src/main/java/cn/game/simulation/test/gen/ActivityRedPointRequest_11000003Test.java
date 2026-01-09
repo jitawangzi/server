@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityRedPointRequest_11000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.newBuilder() ; 
 		builder.addIds(10);
 		
@@ -21,7 +21,7 @@ public class ActivityRedPointRequest_11000003Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityRedPointRequest_11000003.newBuilder() ; 
 		builder.addIds(10);
 		

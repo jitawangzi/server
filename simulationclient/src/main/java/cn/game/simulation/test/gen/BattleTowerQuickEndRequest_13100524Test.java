@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleTowerQuickEndRequest_13100524Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.newBuilder() ;
 
 		builder.setBattleId(230001);
@@ -19,7 +19,7 @@ public class BattleTowerQuickEndRequest_13100524Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleTowerQuickEndRequest_13100524.newBuilder() ;
 		builder.setBattleId(230001);
 		builder.setQuickCount(1);

@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DrawHeroRecruitRequest_37000015Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitRequest_37000015.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitRequest_37000015.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class DrawHeroRecruitRequest_37000015Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitRequest_37000015.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroRecruitRequest_37000015.newBuilder() ; 
 		
 		builder.setMultiple(1); 

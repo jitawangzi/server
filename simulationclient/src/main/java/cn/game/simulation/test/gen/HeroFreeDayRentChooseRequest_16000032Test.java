@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class HeroFreeDayRentChooseRequest_16000032Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();
@@ -28,7 +28,7 @@ public class HeroFreeDayRentChooseRequest_16000032Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroFreeDayRentChooseRequest_16000032.newBuilder() ; 
 
 		PlayerAllInfo playerAllInfo = client.getPlayerAllInfo();

@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class SecretscriptFusionRequest_38000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionRequest_38000007.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionRequest_38000007.newBuilder() ; 
 		
 		builder.setId(101);
@@ -21,7 +21,7 @@ public class SecretscriptFusionRequest_38000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionRequest_38000007.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionRequest_38000007.newBuilder() ; 
 		
 		builder.setId(101);

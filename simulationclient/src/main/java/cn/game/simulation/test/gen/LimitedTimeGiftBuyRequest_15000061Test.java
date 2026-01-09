@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class LimitedTimeGiftBuyRequest_15000061Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyRequest_15000061.Builder builder = cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyRequest_15000061.newBuilder() ; 
 		
 		
@@ -24,7 +24,7 @@ public class LimitedTimeGiftBuyRequest_15000061Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyRequest_15000061.Builder builder = cn.game.protocol.protobuf.ShopMsg.LimitedTimeGiftBuyRequest_15000061.newBuilder() ; 
 		
 		List<LimitedTimeGiftInfo> limitedTimeGiftList = client.getPlayerAllInfo().getLimitedTimeGiftList(); 

@@ -56,7 +56,7 @@ public class SequentialMessageTest {
 			if (serverTest == null) {
 				throw new IllegalArgumentException("test message not found : " + csvMessage);
 			}
-			Message message = serverTest.getMessage(client);
+			Message message = serverTest.tryBuildSimulationRequest(client);
 			if (message != null) {
 				client.sendProtocol(message);
 				client.waitLastMessageReturn();

@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ShopHeishiRefreshRequest_15000005Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005
 				.newBuilder();
 
@@ -22,7 +22,7 @@ public class ShopHeishiRefreshRequest_15000005Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopHeishiRefreshRequest_15000005
 				.newBuilder();
 

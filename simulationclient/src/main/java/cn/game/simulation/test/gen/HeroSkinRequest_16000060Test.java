@@ -14,7 +14,7 @@ import cn.game.util.Rnd;
 public class HeroSkinRequest_16000060Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroSkinRequest_16000060.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroSkinRequest_16000060.newBuilder() ; 
 		
 		
@@ -23,7 +23,7 @@ public class HeroSkinRequest_16000060Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroSkinRequest_16000060.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroSkinRequest_16000060.newBuilder() ; 
 		List<Integer> heroSkinIdsList = client.getPlayerAllInfo().getHeroSkinIdsList(); 
 		if (heroSkinIdsList.isEmpty()) {

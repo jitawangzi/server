@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DrawHeroWishRequest_37000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.newBuilder() ; 
 		
 		builder.setHeroId(331001);
@@ -20,7 +20,7 @@ public class DrawHeroWishRequest_37000005Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawHeroWishRequest_37000005.newBuilder() ; 
 		
 		builder.setHeroId(331001);

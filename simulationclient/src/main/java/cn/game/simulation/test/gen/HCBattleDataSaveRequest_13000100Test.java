@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HCBattleDataSaveRequest_13000100Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.Builder builder = cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.newBuilder() ; 
 		
 		builder.setData("test");
@@ -21,7 +21,7 @@ public class HCBattleDataSaveRequest_13000100Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.Builder builder = cn.game.protocol.protobuf.BattleMsg.HCBattleDataSaveRequest_13000100.newBuilder() ; 
 		
 		builder.setData("test");

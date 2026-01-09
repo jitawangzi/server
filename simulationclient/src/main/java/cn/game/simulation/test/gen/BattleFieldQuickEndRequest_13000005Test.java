@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleFieldQuickEndRequest_13000005Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005
 				.newBuilder();
 		builder.setType(22);
@@ -22,7 +22,7 @@ public class BattleFieldQuickEndRequest_13000005Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleFieldQuickEndRequest_13000005
 				.newBuilder();
 		builder.setType(22);

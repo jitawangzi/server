@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityWestLuckyDrawRequest_11000093Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.newBuilder() ; 
 		
 		builder.setActivityId(1001); 
@@ -20,7 +20,7 @@ public class ActivityWestLuckyDrawRequest_11000093Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyDrawRequest_11000093.newBuilder() ; 
 		builder.setActivityId(1001); 
 		builder.setDrawNum(1); 

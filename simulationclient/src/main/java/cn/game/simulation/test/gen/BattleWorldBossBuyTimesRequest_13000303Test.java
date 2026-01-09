@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleWorldBossBuyTimesRequest_13000303Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class BattleWorldBossBuyTimesRequest_13000303Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleWorldBossBuyTimesRequest_13000303.newBuilder() ; 
 		
 		

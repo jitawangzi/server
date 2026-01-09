@@ -16,7 +16,7 @@ import cn.game.util.Rnd;
 public class ShopItemListRequest_15000001Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001
 				.newBuilder();
 
@@ -26,7 +26,7 @@ public class ShopItemListRequest_15000001Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopItemListRequest_15000001
 				.newBuilder();
 

@@ -15,7 +15,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityWestLuckyBuyRequest_11000095Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.newBuilder() ; 
 		
 		builder.setActivityId(1001); 
@@ -25,7 +25,7 @@ public class ActivityWestLuckyBuyRequest_11000095Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyBuyRequest_11000095.newBuilder() ; 
 		
 		Collection<ActivityWestLuckyPackConfig> list = ActivityWestLuckyPackManager.instance().list(); 

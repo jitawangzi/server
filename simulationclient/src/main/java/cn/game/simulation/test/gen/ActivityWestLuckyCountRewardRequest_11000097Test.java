@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityWestLuckyCountRewardRequest_11000097Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.newBuilder() ; 
 		
 		builder.setActivityId(1001); 
@@ -20,7 +20,7 @@ public class ActivityWestLuckyCountRewardRequest_11000097Test extends ServerTest
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityWestLuckyCountRewardRequest_11000097.newBuilder() ; 
 		
 		builder.setActivityId(1001); 

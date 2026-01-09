@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleNightmareRealmRequest_13000080Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class BattleNightmareRealmRequest_13000080Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleNightmareRealmRequest_13000080.newBuilder() ; 
 		
 		

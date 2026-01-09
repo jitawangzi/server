@@ -18,7 +18,13 @@ public class GTT {
 	public static int x = 0;
 	public static long firstTime = System.currentTimeMillis();
 
-	public static void main(String[] args) {}
+	public static void main(String[] args) {
+		String resIdHex = "0x11000001";
+		Integer.parseInt(resIdHex.substring(2), 16);
+		System.out.println(resIdHex);
+
+		
+	}
 
 	
 	

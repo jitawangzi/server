@@ -15,7 +15,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PlayerHeadRequest_01000013Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013
 				.newBuilder();
 		builder.setHead(1);
@@ -23,7 +23,7 @@ public class PlayerHeadRequest_01000013Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerHeadRequest_01000013
 				.newBuilder();
 		Collection<HeadPortraitConfig> list = HeadPortraitManager.instance().list();

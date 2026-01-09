@@ -15,7 +15,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class EquipTeardownRequest_09000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.newBuilder() ;
 		builder.setUid("301619302048487206");
 
@@ -23,7 +23,7 @@ public class EquipTeardownRequest_09000003Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.Builder builder = cn.game.protocol.protobuf.EquipMsg.EquipTeardownRequest_09000003.newBuilder() ; 
 		
 		List<EquipPartInfo> equipsList = client.getPlayerAllInfo().getEquipPartsList();

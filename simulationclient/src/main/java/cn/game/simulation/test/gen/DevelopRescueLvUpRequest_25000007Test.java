@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DevelopRescueLvUpRequest_25000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.newBuilder() ; 
 		
 		builder.setId(4001);
@@ -20,7 +20,7 @@ public class DevelopRescueLvUpRequest_25000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopRescueLvUpRequest_25000007.newBuilder() ; 
 		
 		builder.setId(4001);

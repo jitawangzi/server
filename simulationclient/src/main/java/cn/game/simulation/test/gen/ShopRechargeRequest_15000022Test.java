@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class ShopRechargeRequest_15000022Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022
 				.newBuilder();
 		builder.setId(1);
@@ -26,7 +26,7 @@ public class ShopRechargeRequest_15000022Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopRechargeRequest_15000022
 				.newBuilder();
 		Collection<RechargeConfig> list = RechargeManager.instance().list(); 

@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PlayerReconnecRequest_01000065Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class PlayerReconnecRequest_01000065Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerReconnecRequest_01000065.newBuilder() ; 
 		
 		

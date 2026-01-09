@@ -11,7 +11,7 @@ import cn.game.util.Rnd;
 public class GuildSettingRequest_40000013Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildSettingRequest_40000013.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class GuildSettingRequest_40000013Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		if (client.guildAllInfo == null) {
 			return null; 
 		}

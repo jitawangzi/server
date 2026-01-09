@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class FriendRecommendRequest_30000003Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003
 				.newBuilder();
 
@@ -19,7 +19,7 @@ public class FriendRecommendRequest_30000003Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendRecommendRequest_30000003
 				.newBuilder();
 

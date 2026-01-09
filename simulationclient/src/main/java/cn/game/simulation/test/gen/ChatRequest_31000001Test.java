@@ -21,7 +21,7 @@ public class ChatRequest_31000001Test extends ServerTest {
 			"无人问津舟自横，古渡平沙秋草生。", "溪云初起日沉阁，山雨欲来风满楼。", "蒹葭苍苍，白露为霜。", "燕山雪花大如席，片片吹落轩辕台。", "昨夜西风凋碧树，独上高楼，望尽天涯路。" };
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001
 				.newBuilder();
 
@@ -34,7 +34,7 @@ public class ChatRequest_31000001Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001
 				.newBuilder();
 

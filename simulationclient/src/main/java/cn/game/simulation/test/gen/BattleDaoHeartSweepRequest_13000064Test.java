@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleDaoHeartSweepRequest_13000064Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064
 				.newBuilder();
 
@@ -21,7 +21,7 @@ public class BattleDaoHeartSweepRequest_13000064Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleDaoHeartSweepRequest_13000064
 				.newBuilder();
 

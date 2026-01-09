@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DevelopHeavenlyDaoLvUpRequest_25000010Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class DevelopHeavenlyDaoLvUpRequest_25000010Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DevelopHeavenlyDaoLvUpRequest_25000010.newBuilder() ; 
 		
 		

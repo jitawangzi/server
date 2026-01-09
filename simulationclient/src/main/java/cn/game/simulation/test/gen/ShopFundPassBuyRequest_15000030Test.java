@@ -19,7 +19,7 @@ import cn.game.util.Rnd;
 public class ShopFundPassBuyRequest_15000030Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030
 				.newBuilder();
 		builder.setId(2);
@@ -28,7 +28,7 @@ public class ShopFundPassBuyRequest_15000030Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassBuyRequest_15000030
 				.newBuilder();
 		Collection<FundPassConfig> list = FundPassManager.instance().list(); 

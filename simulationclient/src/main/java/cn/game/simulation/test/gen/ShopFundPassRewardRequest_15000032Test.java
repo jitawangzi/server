@@ -19,7 +19,7 @@ import cn.game.util.Rnd;
 public class ShopFundPassRewardRequest_15000032Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032
 				.newBuilder();
 		builder.addId(1);
@@ -28,7 +28,7 @@ public class ShopFundPassRewardRequest_15000032Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032.Builder builder = cn.game.protocol.protobuf.ShopMsg.ShopFundPassRewardRequest_15000032
 				.newBuilder();
 		List<Integer> buyList = (List<Integer>) client.dataMap.computeIfAbsent("fundPassId", k -> new ArrayList<>());

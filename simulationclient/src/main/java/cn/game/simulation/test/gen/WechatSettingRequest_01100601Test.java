@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class WechatSettingRequest_01100601Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.WechatSettingRequest_01100601.Builder builder = cn.game.protocol.protobuf.PlayerMsg.WechatSettingRequest_01100601.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class WechatSettingRequest_01100601Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.WechatSettingRequest_01100601.Builder builder = cn.game.protocol.protobuf.PlayerMsg.WechatSettingRequest_01100601.newBuilder() ; 
 		
 		

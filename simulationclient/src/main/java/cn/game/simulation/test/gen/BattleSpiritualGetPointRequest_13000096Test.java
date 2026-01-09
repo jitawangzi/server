@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleSpiritualGetPointRequest_13000096Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class BattleSpiritualGetPointRequest_13000096Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualGetPointRequest_13000096.newBuilder() ; 
 		
 		

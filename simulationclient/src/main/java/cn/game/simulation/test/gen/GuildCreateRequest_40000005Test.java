@@ -12,7 +12,7 @@ import cn.game.util.Rnd;
 public class GuildCreateRequest_40000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildCreateRequest_40000005.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildCreateRequest_40000005.newBuilder() ; 
 		
 		builder.setName(client.getPlayerAllInfo().getPlayer().getName());
@@ -21,7 +21,7 @@ public class GuildCreateRequest_40000005Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildCreateRequest_40000005.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildCreateRequest_40000005.newBuilder() ; 
 		builder.setName(client.getPlayerAllInfo().getPlayer().getName());
 		return builder.build() ; 

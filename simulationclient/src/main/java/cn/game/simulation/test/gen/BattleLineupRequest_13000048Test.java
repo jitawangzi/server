@@ -13,7 +13,7 @@ import cn.game.util.Rnd;
 public class BattleLineupRequest_13000048Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048
 				.newBuilder();
 
@@ -27,7 +27,7 @@ public class BattleLineupRequest_13000048Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLineupRequest_13000048
 				.newBuilder();
 

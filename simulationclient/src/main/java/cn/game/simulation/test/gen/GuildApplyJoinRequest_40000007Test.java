@@ -11,7 +11,7 @@ import cn.game.util.Rnd;
 public class GuildApplyJoinRequest_40000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.newBuilder() ; 
 		builder.setId(894990001); 
 		
@@ -19,7 +19,7 @@ public class GuildApplyJoinRequest_40000007Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildApplyJoinRequest_40000007.newBuilder() ; 
 		if (client.guildIds.isEmpty()) {
 			return null; 

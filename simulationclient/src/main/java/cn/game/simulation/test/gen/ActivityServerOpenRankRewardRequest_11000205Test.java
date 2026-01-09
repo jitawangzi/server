@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityServerOpenRankRewardRequest_11000205Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.newBuilder() ; 
 		
 		builder.setId(42); 
@@ -19,7 +19,7 @@ public class ActivityServerOpenRankRewardRequest_11000205Test extends ServerTest
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankRewardRequest_11000205.newBuilder() ; 
 		
 		builder.setId(42); 

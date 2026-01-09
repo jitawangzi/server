@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PlayerQuestionnaireRequest_01000300Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRequest_01000300.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRequest_01000300
 				.newBuilder();
 
@@ -19,7 +19,7 @@ public class PlayerQuestionnaireRequest_01000300Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRequest_01000300.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerQuestionnaireRequest_01000300
 				.newBuilder();
 

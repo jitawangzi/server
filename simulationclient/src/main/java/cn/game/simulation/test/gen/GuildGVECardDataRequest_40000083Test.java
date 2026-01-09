@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GuildGVECardDataRequest_40000083Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class GuildGVECardDataRequest_40000083Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildGVECardDataRequest_40000083.newBuilder() ; 
 		
 		

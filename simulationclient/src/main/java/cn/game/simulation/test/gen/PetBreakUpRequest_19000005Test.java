@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class PetBreakUpRequest_19000005Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.Builder builder = cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.newBuilder() ; 
 		
 		builder.setId(640001);
@@ -21,7 +21,7 @@ public class PetBreakUpRequest_19000005Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.Builder builder = cn.game.protocol.protobuf.PetMsg.PetBreakUpRequest_19000005.newBuilder() ; 
 		
 		builder.setId(640001);

@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattlePvPTargetListRequest_13000111Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.newBuilder() ; 
 		
 		builder.setRefreshFlag(RandomUtils.nextBoolean());
@@ -22,7 +22,7 @@ public class BattlePvPTargetListRequest_13000111Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattlePvPTargetListRequest_13000111.newBuilder() ; 
 		
 		builder.setRefreshFlag(RandomUtils.nextBoolean());

@@ -13,7 +13,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HCHeroUpLevelRequest_26000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.newBuilder() ; 
 		
 		HCHeroInfo hcHeros = client.getPlayerAllInfo().getHcHeros(0);
@@ -24,7 +24,7 @@ public class HCHeroUpLevelRequest_26000001Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroUpLevelRequest_26000001.newBuilder() ; 
 		
 		HCHeroInfo hcHeros = client.getPlayerAllInfo().getHcHeros(0);

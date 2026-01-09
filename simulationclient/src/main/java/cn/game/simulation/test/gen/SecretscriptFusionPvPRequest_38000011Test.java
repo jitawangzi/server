@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class SecretscriptFusionPvPRequest_38000011Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.newBuilder() ; 
 		builder.putSecretscriptMap(2, 3);
 		
@@ -20,7 +20,7 @@ public class SecretscriptFusionPvPRequest_38000011Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.Builder builder = cn.game.protocol.protobuf.SecretscriptMsg.SecretscriptFusionPvPRequest_38000011.newBuilder() ; 
 		
 		

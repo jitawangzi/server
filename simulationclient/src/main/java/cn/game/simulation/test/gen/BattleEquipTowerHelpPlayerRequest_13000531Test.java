@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleEquipTowerHelpPlayerRequest_13000531Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattleEquipTowerHelpPlayerRequest_13000531Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerHelpPlayerRequest_13000531.newBuilder() ;
 		builder.setFloor(1);
 		return builder.build() ; 

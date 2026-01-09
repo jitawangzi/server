@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--级别:TRACE > DEBUG > INFO > WARN > ERROR > FATAL-->
+<Configuration status="ERROR" shutdownHook="disable" monitorInterval="60">
+    <Properties>
+        <Property name="path_system">logs/</Property>
+        <Property name="date_suffix">%d{yyyy-MM-dd}</Property>
+        <Property name="extension">.log</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- 控制台输出 -->
+        <Console name="Console">
+            <PatternLayout charset="UTF-8" pattern="%-5p|%d{yyyy-MM-dd HH:mm:ss,SSS Z}|%-6c|%m%n"/>
+        </Console>
+        <Console name="SystemOut">
+            <PatternLayout charset="UTF-8" pattern="%m%n"/>
+        </Console>
+        
+        <!-- 按天滚动文件输出 -->
+        <RollingRandomAccessFile name="Stdout" fileName="${path_system}/stdout.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/stdout.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        
+        <!-- 按天滚动的错误日志文件输出 -->
+        <RollingRandomAccessFile name="Error" fileName="${path_system}/err.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/err.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+        
+        <!-- 按天滚动的警告日志文件输出 -->
+        <RollingRandomAccessFile name="Warn" fileName="${path_system}/warn.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/warn.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <Filters>
+                <!-- 使用 LevelRangeFilter 来限制只记录 WARN 级别的日志 -->
+                <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingRandomAccessFile>
+        
+                <!-- 按天滚动的错误日志文件输出 -->
+        <RollingRandomAccessFile name="Net" fileName="${path_system}/net.log"
+                                 filePattern="${path_system}/%d{yyyy-MM-dd}/net.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        
+        <!-- 异步处理 -->
+        <Async name="AsyncStdout">
+            <AppenderRef ref="Stdout"/>
+        </Async>
+        <Async name="AsyncError">
+            <AppenderRef ref="Error"/>
+        </Async>
+        <Async name="AsyncWarn">
+            <AppenderRef ref="Warn"/>
+        </Async>
+        <Async name="AsyncNet">
+            <AppenderRef ref="Net"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+   	 <logger name="cn.game.core.net.socket.handler" level="FATAL"/>
+   	 <logger name="cn.game.simulation.client" level="FATAL"/>
+        <!-- 根日志记录器 -->
+        <Root level="warn" includeLocation="false" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncStdout"/>
+            <AppenderRef ref="AsyncError"/>
+            <AppenderRef ref="AsyncWarn" additivity="false"/>
+        </Root>
+        <AsyncLogger name="Net" level="info" includeLocation="false" additivity="true">
+            <AppenderRef ref="Net"/>
+        </AsyncLogger>
+        <AsyncLogger name="SystemOut" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="SystemOut"/>
+        </AsyncLogger>
+    </Loggers>
+</Configuration>

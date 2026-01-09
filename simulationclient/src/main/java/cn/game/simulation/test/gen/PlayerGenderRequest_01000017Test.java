@@ -13,7 +13,7 @@ import cn.game.util.Rnd;
 public class PlayerGenderRequest_01000017Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017
 				.newBuilder();
 
@@ -23,7 +23,7 @@ public class PlayerGenderRequest_01000017Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerGenderRequest_01000017
 				.newBuilder();
 

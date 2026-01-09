@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleHandCardRequest_13000600Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleHandCardRequest_13000600.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleHandCardRequest_13000600.newBuilder() ; 
 		builder.setId(215001); 
 		
@@ -19,7 +19,7 @@ public class BattleHandCardRequest_13000600Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleHandCardRequest_13000600.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleHandCardRequest_13000600.newBuilder() ; 
 		builder.setId(215001); 
 		

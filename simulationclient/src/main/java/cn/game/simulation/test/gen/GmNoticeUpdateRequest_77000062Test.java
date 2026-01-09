@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GmNoticeUpdateRequest_77000062Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateRequest_77000062.Builder builder = cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateRequest_77000062.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class GmNoticeUpdateRequest_77000062Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateRequest_77000062.Builder builder = cn.game.protocol.protobuf.GmMsg.GmNoticeUpdateRequest_77000062.newBuilder() ; 
 		
 		

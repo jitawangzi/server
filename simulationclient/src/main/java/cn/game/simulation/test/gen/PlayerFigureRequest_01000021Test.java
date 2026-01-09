@@ -14,7 +14,7 @@ import cn.game.util.Rnd;
 public class PlayerFigureRequest_01000021Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.newBuilder() ; 
 		
 		
@@ -23,7 +23,7 @@ public class PlayerFigureRequest_01000021Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerFigureRequest_01000021.newBuilder() ; 
 		
 		Map<Integer, Integer> figureMap = client.getPlayerAllInfo().getFigureMapMap(); 

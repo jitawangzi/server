@@ -17,7 +17,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleSweepRequest_13000024Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.newBuilder() ; 
 		Collection<BattleConfig> list = BattleManager.instance().getBattleTypeList(1);
 		if (list != null) {
@@ -35,7 +35,7 @@ public class BattleSweepRequest_13000024Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSweepRequest_13000024.newBuilder() ; 
 		Collection<BattleConfig> list = BattleManager.instance().getBattleTypeList(1);
 		if (list != null) {

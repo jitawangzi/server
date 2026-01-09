@@ -16,7 +16,7 @@ import io.netty.handler.codec.quic.QuicPathEvent.New;
 public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.newBuilder() ; 
 		
 		
@@ -25,7 +25,7 @@ public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.newBuilder() ; 
 		int id = Rnd.nextInt(100); 
 		List<Integer> list = (List<Integer>) client.dataMap.computeIfAbsent("HeroIllustrationsMonsterAddRequest_16000046_id", k -> new ArrayList<Integer>());

@@ -1,6 +1,5 @@
 /logs
-/login_logs
-/client_logs
+/target
 /bin
 /dist
 /bin/*

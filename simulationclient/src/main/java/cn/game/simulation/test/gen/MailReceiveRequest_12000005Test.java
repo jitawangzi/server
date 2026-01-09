@@ -12,7 +12,7 @@ import cn.game.util.Rnd;
 public class MailReceiveRequest_12000005Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005
 				.newBuilder();
 
@@ -20,7 +20,7 @@ public class MailReceiveRequest_12000005Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005.Builder builder = cn.game.protocol.protobuf.MailMsg.MailReceiveRequest_12000005
 				.newBuilder();
 //		if (client.mailsList.isEmpty()) {

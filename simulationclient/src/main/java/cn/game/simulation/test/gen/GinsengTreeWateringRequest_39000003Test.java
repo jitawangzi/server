@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GinsengTreeWateringRequest_39000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringRequest_39000003.Builder builder = cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringRequest_39000003.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class GinsengTreeWateringRequest_39000003Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringRequest_39000003.Builder builder = cn.game.protocol.protobuf.GinsengTreeMsg.GinsengTreeWateringRequest_39000003.newBuilder() ; 
 		
 		

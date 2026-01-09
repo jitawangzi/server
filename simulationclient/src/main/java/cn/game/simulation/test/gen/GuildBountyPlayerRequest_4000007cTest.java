@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GuildBountyPlayerRequest_4000007cTest extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class GuildBountyPlayerRequest_4000007cTest extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.newBuilder() ; 
 		
 		

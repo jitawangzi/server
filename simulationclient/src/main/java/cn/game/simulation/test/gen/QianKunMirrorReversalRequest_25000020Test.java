@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class QianKunMirrorReversalRequest_25000020Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class QianKunMirrorReversalRequest_25000020Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorReversalRequest_25000020.newBuilder() ; 
 		
 		

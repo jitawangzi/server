@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GmServerStatusRequest_77000032Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032.Builder builder = cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032.newBuilder() ; 
 		builder.setServerId("game_test");
 		builder.setStatus(2);
@@ -20,7 +20,7 @@ public class GmServerStatusRequest_77000032Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032.Builder builder = cn.game.protocol.protobuf.GmMsg.GmServerStatusRequest_77000032.newBuilder() ; 
 		
 		

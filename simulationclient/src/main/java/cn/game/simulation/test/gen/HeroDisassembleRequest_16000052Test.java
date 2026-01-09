@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HeroDisassembleRequest_16000052Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroDisassembleRequest_16000052.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroDisassembleRequest_16000052.newBuilder() ; 
 		builder.setUid("8316022495425885696");
 		
@@ -20,7 +20,7 @@ public class HeroDisassembleRequest_16000052Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroDisassembleRequest_16000052.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroDisassembleRequest_16000052.newBuilder() ; 
 		
 		

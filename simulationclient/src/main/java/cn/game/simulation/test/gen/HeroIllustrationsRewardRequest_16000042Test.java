@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HeroIllustrationsRewardRequest_16000042Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.newBuilder() ; 
 		builder.setHeroId(333003);
 		
@@ -20,7 +20,7 @@ public class HeroIllustrationsRewardRequest_16000042Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsRewardRequest_16000042.newBuilder() ; 
 		
 		

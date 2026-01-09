@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleEquipTowerFindHelpRewardRequest_13000537Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattleEquipTowerFindHelpRewardRequest_13000537Test extends ServerTe
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleEquipTowerFindHelpRewardRequest_13000537.newBuilder() ; 
 		
 		

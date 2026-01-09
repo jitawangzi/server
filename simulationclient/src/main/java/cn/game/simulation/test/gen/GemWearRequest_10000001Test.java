@@ -19,7 +19,7 @@ import cn.game.util.Rnd;
 public class GemWearRequest_10000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.Builder builder = cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.newBuilder() ; 
 		List<GemInfo> gemsList = client.getPlayerAllInfo().getGemsList();
 
@@ -30,7 +30,7 @@ public class GemWearRequest_10000001Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.Builder builder = cn.game.protocol.protobuf.GemMsg.GemWearRequest_10000001.newBuilder() ; 
 		
 		List<GemInfo> gemsList = client.getPlayerAllInfo().getGemsList();

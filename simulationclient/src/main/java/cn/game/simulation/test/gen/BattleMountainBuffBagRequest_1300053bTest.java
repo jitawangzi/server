@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleMountainBuffBagRequest_1300053bTest extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattleMountainBuffBagRequest_1300053bTest extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleMountainBuffBagRequest_1300053b.newBuilder() ; 
 		
 		

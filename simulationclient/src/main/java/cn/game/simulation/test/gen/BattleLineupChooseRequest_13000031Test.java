@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleLineupChooseRequest_13000031Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031.newBuilder() ; 
 		
 		builder.setBattleType(1); 
@@ -20,7 +20,7 @@ public class BattleLineupChooseRequest_13000031Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLineupChooseRequest_13000031.newBuilder() ; 
 		builder.setBattleType(1); 
 		builder.setSeq(0); 

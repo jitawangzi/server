@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class GuildFindRequest_40000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		GuildFindRequest_40000003.Builder builder = GuildFindRequest_40000003.newBuilder() ; 
 		
 		builder.setId(894990001);
@@ -24,7 +24,7 @@ public class GuildFindRequest_40000003Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildFindRequest_40000003.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildFindRequest_40000003.newBuilder() ; 
 		List<Integer> guildIds = client.guildIds; 
 		if (guildIds.isEmpty()) {

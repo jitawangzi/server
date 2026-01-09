@@ -16,7 +16,7 @@ import cn.game.util.Rnd;
 public class PlayerShowRequest_01000039Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.newBuilder() ; 
 		List<SimplePlayerInfo> recommendList = client.recommendList;
 		if (recommendList != null && recommendList.size() > 0) {
@@ -29,7 +29,7 @@ public class PlayerShowRequest_01000039Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerShowRequest_01000039
 				.newBuilder();
 		List<SimplePlayerInfo> recommendList = client.recommendList;

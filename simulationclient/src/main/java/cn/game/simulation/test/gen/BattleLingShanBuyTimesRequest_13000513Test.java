@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleLingShanBuyTimesRequest_13000513Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_13000513.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_13000513.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattleLingShanBuyTimesRequest_13000513Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_13000513.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanBuyTimesRequest_13000513.newBuilder() ; 
 		
 		

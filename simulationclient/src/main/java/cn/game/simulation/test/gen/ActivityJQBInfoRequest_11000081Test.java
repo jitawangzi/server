@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityJQBInfoRequest_11000081Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.newBuilder() ; 
 		
 		builder.setActivityId(22);
@@ -21,7 +21,7 @@ public class ActivityJQBInfoRequest_11000081Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityJQBInfoRequest_11000081.newBuilder() ; 
 		
 		builder.setActivityId(22);

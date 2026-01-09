@@ -69,10 +69,7 @@
 			</plugin>
 
 			<!-- 这个也用不到了，直接打全量包就行， 也先不启用这个插件，容易提示出错 -->
-			<!--				<plugin>-->
-			<!--				<groupId>org.apache.maven.plugins</groupId>-->
-			<!--				<artifactId>maven-dependency-plugin</artifactId>-->
-			<!--				</plugin>-->
+
 		</plugins>
 
 		<pluginManagement>

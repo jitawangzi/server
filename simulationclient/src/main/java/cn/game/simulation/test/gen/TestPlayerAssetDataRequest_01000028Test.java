@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class TestPlayerAssetDataRequest_01000028Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029
 				.newBuilder();
 		
@@ -22,7 +22,7 @@ public class TestPlayerAssetDataRequest_01000028Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029.Builder builder = cn.game.protocol.protobuf.TestMsg.TestPlayerAssetDataResponse_6f000029
 				.newBuilder();
 		

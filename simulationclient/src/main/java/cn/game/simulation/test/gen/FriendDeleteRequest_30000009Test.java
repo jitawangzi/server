@@ -12,7 +12,7 @@ import cn.game.util.Rnd;
 public class FriendDeleteRequest_30000009Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009
 				.newBuilder();
 		builder.setId("2342323");
@@ -21,7 +21,7 @@ public class FriendDeleteRequest_30000009Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendDeleteRequest_30000009
 				.newBuilder();
 		if (client.friendsList.isEmpty()) {

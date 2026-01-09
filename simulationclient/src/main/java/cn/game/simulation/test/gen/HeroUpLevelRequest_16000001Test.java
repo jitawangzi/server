@@ -16,7 +16,7 @@ import cn.game.util.Rnd;
 public class HeroUpLevelRequest_16000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.newBuilder() ; 
 		List<HeroInfo> herosList = client.getPlayerAllInfo().getHerosList();
 		
@@ -26,7 +26,7 @@ public class HeroUpLevelRequest_16000001Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroUpLevelRequest_16000001.newBuilder() ; 
 		List<HeroInfo> herosList = client.getPlayerAllInfo().getHerosList();
 		

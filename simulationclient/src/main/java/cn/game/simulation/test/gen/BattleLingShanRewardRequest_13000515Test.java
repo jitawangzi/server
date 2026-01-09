@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleLingShanRewardRequest_13000515Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class BattleLingShanRewardRequest_13000515Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleLingShanRewardRequest_13000515.newBuilder() ; 
 		
 		builder.setIndex(0); 

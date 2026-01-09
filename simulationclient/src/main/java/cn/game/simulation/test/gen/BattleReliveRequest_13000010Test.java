@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleReliveRequest_13000010Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010
 				.newBuilder();
 
@@ -21,7 +21,7 @@ public class BattleReliveRequest_13000010Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleReliveRequest_13000010
 				.newBuilder();
 

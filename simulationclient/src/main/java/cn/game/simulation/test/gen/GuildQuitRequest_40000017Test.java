@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GuildQuitRequest_40000017Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class GuildQuitRequest_40000017Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildQuitRequest_40000017.newBuilder() ; 
 		
 		if (client.guildAllInfo == null) {

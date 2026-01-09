@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityServerOpenRankListRequest_11000203Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.newBuilder() ; 
 		builder.setType(RankType.LevelServerOpenActivity.ID); 
 		builder.setPage(1); 
@@ -21,7 +21,7 @@ public class ActivityServerOpenRankListRequest_11000203Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankListRequest_11000203.newBuilder() ; 
 		builder.setType(RankType.LevelServerOpenActivity.ID); 
 		builder.setPage(1); 

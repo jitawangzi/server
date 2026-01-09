@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GuildListRequest_40000001Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.newBuilder() ; 
 
 		builder.setPage(0);
@@ -19,7 +19,7 @@ public class GuildListRequest_40000001Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildListRequest_40000001.newBuilder() ; 
 		
 		builder.setPage(1);

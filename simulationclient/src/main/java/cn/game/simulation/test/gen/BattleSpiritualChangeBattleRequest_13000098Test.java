@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class BattleSpiritualChangeBattleRequest_13000098Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.newBuilder() ; 
 		
 		builder.setBattleId(31002);
@@ -20,7 +20,7 @@ public class BattleSpiritualChangeBattleRequest_13000098Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.Builder builder = cn.game.protocol.protobuf.BattleMsg.BattleSpiritualChangeBattleRequest_13000098.newBuilder() ; 
 		
 		builder.setBattleId(31002);

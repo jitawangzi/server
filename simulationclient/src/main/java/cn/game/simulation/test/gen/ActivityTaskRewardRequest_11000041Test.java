@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityTaskRewardRequest_11000041Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.newBuilder() ; 
 		builder.setActivityId(23);
 		
@@ -21,7 +21,7 @@ public class ActivityTaskRewardRequest_11000041Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityTaskRewardRequest_11000041.newBuilder() ; 
 		builder.setActivityId(23);
 		

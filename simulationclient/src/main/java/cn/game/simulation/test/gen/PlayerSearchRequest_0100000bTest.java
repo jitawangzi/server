@@ -15,7 +15,7 @@ import cn.game.util.Rnd;
 public class PlayerSearchRequest_0100000bTest extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b
 				.newBuilder();
 
@@ -35,7 +35,7 @@ public class PlayerSearchRequest_0100000bTest extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b.Builder builder = cn.game.protocol.protobuf.PlayerMsg.PlayerSearchRequest_0100000b
 				.newBuilder();
 

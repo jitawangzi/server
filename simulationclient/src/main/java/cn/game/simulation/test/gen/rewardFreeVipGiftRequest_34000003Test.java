@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class rewardFreeVipGiftRequest_34000003Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftRequest_34000003.Builder builder = cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftRequest_34000003.newBuilder() ; 
 		
 		
@@ -20,7 +20,7 @@ public class rewardFreeVipGiftRequest_34000003Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftRequest_34000003.Builder builder = cn.game.protocol.protobuf.VipMsg.rewardFreeVipGiftRequest_34000003.newBuilder() ; 
 		
 		

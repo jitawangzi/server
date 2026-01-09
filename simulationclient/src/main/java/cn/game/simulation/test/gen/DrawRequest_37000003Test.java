@@ -12,7 +12,7 @@ import cn.game.util.Rnd;
 public class DrawRequest_37000003Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003
 				.newBuilder();
 		builder.setId(3);
@@ -23,7 +23,7 @@ public class DrawRequest_37000003Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003.Builder builder = cn.game.protocol.protobuf.DrawMsg.DrawRequest_37000003
 				.newBuilder();
 		builder.setId(Rnd.get(1, 2));

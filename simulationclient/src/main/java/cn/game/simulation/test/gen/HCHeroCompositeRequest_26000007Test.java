@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class HCHeroCompositeRequest_26000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007.newBuilder() ; 
 		
 		builder.setId(900001);
@@ -21,7 +21,7 @@ public class HCHeroCompositeRequest_26000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007.Builder builder = cn.game.protocol.protobuf.HCHeroMsg.HCHeroCompositeRequest_26000007.newBuilder() ; 
 		
 		builder.setId(900001);

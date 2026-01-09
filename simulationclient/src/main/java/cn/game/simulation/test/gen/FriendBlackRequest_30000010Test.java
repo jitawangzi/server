@@ -12,7 +12,7 @@ import cn.game.util.Rnd;
 public class FriendBlackRequest_30000010Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010
 				.newBuilder();
 		builder.setId(240200679 + "");
@@ -21,7 +21,7 @@ public class FriendBlackRequest_30000010Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010.Builder builder = cn.game.protocol.protobuf.FriendMsg.FriendBlackRequest_30000010
 				.newBuilder();
 		if (client.friendsList.isEmpty()) {

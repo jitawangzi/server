@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class QianKunMirrorSpiritualRootUnlockRequest_25000024Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.newBuilder() ; 
 		
 		builder.setId(1001002);
@@ -21,7 +21,7 @@ public class QianKunMirrorSpiritualRootUnlockRequest_25000024Test extends Server
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.Builder builder = cn.game.protocol.protobuf.DevelopMsg.QianKunMirrorSpiritualRootUnlockRequest_25000024.newBuilder() ; 
 		
 		builder.setId(1001002);

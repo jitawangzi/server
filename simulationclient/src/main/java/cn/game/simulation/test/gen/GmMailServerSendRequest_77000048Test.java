@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class GmMailServerSendRequest_77000048Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmMailServerSendRequest_77000048.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailServerSendRequest_77000048.newBuilder() ; 
 
 		int now = (int) (System.currentTimeMillis()/1000L);
@@ -34,7 +34,7 @@ public class GmMailServerSendRequest_77000048Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GmMsg.GmMailServerSendRequest_77000048.Builder builder = cn.game.protocol.protobuf.GmMsg.GmMailServerSendRequest_77000048.newBuilder() ; 
 
 		int now = (int) (System.currentTimeMillis()/1000L);

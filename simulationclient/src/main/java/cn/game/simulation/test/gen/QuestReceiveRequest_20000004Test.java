@@ -17,7 +17,7 @@ import cn.game.util.Rnd;
 public class QuestReceiveRequest_20000004Test extends ServerTest {
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004
 				.newBuilder();
 		List<QuestGroupInfo> questGroupsList = client.getPlayerAllInfo().getQuestGroupsList();
@@ -37,7 +37,7 @@ public class QuestReceiveRequest_20000004Test extends ServerTest {
 	}
 
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004.Builder builder = cn.game.protocol.protobuf.QuestMsg.QuestReceiveRequest_20000004
 				.newBuilder();
 		List<QuestGroupInfo> questGroupsList = client.getPlayerAllInfo().getQuestGroupsList();

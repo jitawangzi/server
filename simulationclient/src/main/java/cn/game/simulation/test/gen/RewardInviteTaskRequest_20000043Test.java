@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class RewardInviteTaskRequest_20000043Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.RewardInviteTaskRequest_20000043.Builder builder = cn.game.protocol.protobuf.QuestMsg.RewardInviteTaskRequest_20000043.newBuilder() ; 
 		
 		
@@ -19,7 +19,7 @@ public class RewardInviteTaskRequest_20000043Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.QuestMsg.RewardInviteTaskRequest_20000043.Builder builder = cn.game.protocol.protobuf.QuestMsg.RewardInviteTaskRequest_20000043.newBuilder() ; 
 		
 		

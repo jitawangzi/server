@@ -16,7 +16,7 @@ import cn.game.util.Rnd;
 public class GuildDonateRequest_40000067Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildDonateRequest_40000067.newBuilder() ; 
 		
 		
@@ -25,7 +25,7 @@ public class GuildDonateRequest_40000067Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		if (client.guildAllInfo == null) {
 			return null; 
 		}

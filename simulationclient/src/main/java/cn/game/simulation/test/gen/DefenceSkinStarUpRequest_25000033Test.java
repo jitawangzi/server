@@ -14,7 +14,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class DefenceSkinStarUpRequest_25000033Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DefenceSkinStarUpRequest_25000033.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DefenceSkinStarUpRequest_25000033.newBuilder() ; 
 		
 		List<DefenceSkinInfo> defenceSkinsList = client.getPlayerAllInfo().getDefenceSkinsList(); 
@@ -29,7 +29,7 @@ public class DefenceSkinStarUpRequest_25000033Test extends ServerTest{
 	}
 	
 	@Override
-	public Message getMessagePressure(Client client) {
+	public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.DevelopMsg.DefenceSkinStarUpRequest_25000033.Builder builder = cn.game.protocol.protobuf.DevelopMsg.DefenceSkinStarUpRequest_25000033.newBuilder() ; 
 		
 		List<DefenceSkinInfo> defenceSkinsList = client.getPlayerAllInfo().getDefenceSkinsList(); 

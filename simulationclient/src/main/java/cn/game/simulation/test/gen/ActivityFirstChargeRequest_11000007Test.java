@@ -11,7 +11,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityFirstChargeRequest_11000007Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.newBuilder() ;
 
 		builder.setId(10);
@@ -20,7 +20,7 @@ public class ActivityFirstChargeRequest_11000007Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityFirstChargeRequest_11000007.newBuilder() ;
 
 		builder.setId(10);

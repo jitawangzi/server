@@ -34,6 +34,7 @@ import com.google.protobuf.TextFormat;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
+import cn.game.core.util.AsyncUtils;
 import cn.game.protocol.protobuf.Account.AccountChannelType;
 import cn.game.protocol.protobuf.Account.AccountErrorCode;
 import cn.game.protocol.protobuf.Account.AccountLogicServerList;
@@ -96,6 +97,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Promise;
+import io.vertx.core.Future;
 
 /**
  * 模拟的客户端数据
@@ -178,8 +180,7 @@ public class Client extends AbstractNetClient {
 	private long inPvPBattlePid;
 
 	private Map<Integer, Message> sendingMessageMap = new HashMap<>();
-	/** 当前处理的消息序号 */
-	private volatile int curMessageSeq;
+
 
 	public static long startTime;
 	public static long startConnectTime;
@@ -192,12 +193,16 @@ public class Client extends AbstractNetClient {
 	public AtomicInteger seq = new AtomicInteger(1);
 
 	private volatile int resendCount = 0;
+	/** 当前处理的消息序号 */
+	private volatile int lastMessageSeq;
 	/** 最后一次发消息的时间 */
 	private volatile long lastSendMessageTime;
 	/** 最后一次发消息的整个消息内容，用来重发 */
 	private volatile byte[] lastSendMessageContent;
 	/** 最后一次发的消息 */
 	public volatile Message lastSendMessage;
+	
+	private volatile io.vertx.core.Promise respPromise;
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
 
@@ -761,6 +766,7 @@ public class Client extends AbstractNetClient {
 	    BinaryWebSocketFrame frame = new BinaryWebSocketFrame(Unpooled.wrappedBuffer(bytes));
 	    ChannelFuture future = this.channel.writeAndFlush(frame);
 
+	    this.lastMessageSeq = seqSend;
 	    // 5) 回调：只记录“成功发送”的统计与日志
 	    future.addListener(f -> {
 	        if (f.isSuccess()) {
@@ -807,7 +813,7 @@ public class Client extends AbstractNetClient {
 
 	@Override
 	public boolean needProcess(IProtocol<?> protocol) {
-		this.curMessageSeq = protocol.getSeq();
+//		this.curMessageSeq = protocol.getSeq();
 		return true;
 	}
 
@@ -907,6 +913,21 @@ public class Client extends AbstractNetClient {
 		setLastSendMessageTime(System.currentTimeMillis());
 		return sendWsPack(message);
 	}
+	public <T> T sendProtocolAndWait(Message message) {
+		io.vertx.core.Promise promise = io.vertx.core.Promise.promise();
+		respPromise = promise ;
+		Future future = promise.future(); 
+		Object resp = AsyncUtils.await(future);
+		return (T) resp; 
+	}
+//	public boolean checkResponse(pri) {
+//		
+//		
+//	}
+	public void onResponse(int id,int seq ,Message respMessage) {
+		
+		
+	}
 
 	public void sendProtocolAfterInit(Message message) {
 		sendProtocolAfterInit(message, false);
@@ -934,7 +955,7 @@ public class Client extends AbstractNetClient {
 			return;
 		}
 		if (supplier != null) {
-			sendWsPack(supplier.get());
+			sendProtocol(supplier.get());
 		}
 	}
 
@@ -994,10 +1015,10 @@ public class Client extends AbstractNetClient {
 		this.lastSendMessageTime = lastSendMessageTime;
 	}
 
-	public Message getCurRequest() {
-
-		return this.sendingMessageMap.get(curMessageSeq);
-	}
+//	public Message getCurRequest() {
+//
+//		return this.sendingMessageMap.get(curMessageSeq);
+//	}
 
 	@Override
 	public String toString() {

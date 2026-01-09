@@ -12,7 +12,7 @@ import cn.game.simulation.test.base.ServerTest;
 public class ActivityQingShenInfoRequest_11000071Test extends ServerTest{
 
 	@Override
-	public Message getMessage(Client client) {
+	public Message buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.newBuilder() ; 
 		builder.setActivityId(25);
 		
@@ -21,7 +21,7 @@ public class ActivityQingShenInfoRequest_11000071Test extends ServerTest{
 	}
 	
 	@Override
-public Message getMessagePressure(Client client) {
+public Message tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.Builder builder = cn.game.protocol.protobuf.ActivityMsg.ActivityQingShenInfoRequest_11000071.newBuilder() ; 
 		builder.setActivityId(25);
 		
