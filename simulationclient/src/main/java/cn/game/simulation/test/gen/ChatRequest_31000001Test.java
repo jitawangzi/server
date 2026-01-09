@@ -10,7 +10,7 @@ import cn.game.simulation.test.base.ServerTest;
 import cn.game.util.Rnd;
 
 @Component
-public class ChatRequest_31000001Test extends ServerTest {
+public class ChatRequest_31000001Test extends ServerTest<cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001, cn.game.protocol.protobuf.ChatMsg.ChatResponse_31000002> {
 	static String[] poems = new String[] { "床前明月光，疑是地上霜。", "举头望明月，低头思故乡。", "春眠不觉晓，处处闻啼鸟。", "夜来风雨声，花落知多少。", "白日依山尽，黄河入海流。", "欲穷千里目，更上一层楼。",
 			"孤帆远影碧空尽，唯见长江天际流。", "两个黄鹂鸣翠柳，一行白鹭上青天。", "忽如一夜春风来，千树万树梨花开。", "无边落木萧萧下，不尽长江滚滚来。", "月落乌啼霜满天，江枫渔火对愁眠。", "海内存知己，天涯若比邻。",
 			"劝君更尽一杯酒，西出阳关无故人。", "醉卧沙场君莫笑，古来征战几人回？", "会当凌绝顶，一览众山小。", "东风不与周郎便，铜雀春深锁二乔。", "人生自古谁无死？留取丹心照汗青。", "生当作人杰，死亦为鬼雄。", "千山鸟飞绝，万径人踪灭。",
@@ -21,7 +21,7 @@ public class ChatRequest_31000001Test extends ServerTest {
 			"无人问津舟自横，古渡平沙秋草生。", "溪云初起日沉阁，山雨欲来风满楼。", "蒹葭苍苍，白露为霜。", "燕山雪花大如席，片片吹落轩辕台。", "昨夜西风凋碧树，独上高楼，望尽天涯路。" };
 
 	@Override
-	public Message buildDebugRequest(Client client) {
+	public cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001 buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001
 				.newBuilder();
 
@@ -34,7 +34,7 @@ public class ChatRequest_31000001Test extends ServerTest {
 	}
 
 	@Override
-	public Message tryBuildSimulationRequest(Client client) {
+	public cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001 tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001.Builder builder = cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001
 				.newBuilder();
 
@@ -45,6 +45,24 @@ public class ChatRequest_31000001Test extends ServerTest {
 
 		return builder.build();
 	}
+	/**
+	 * 校验响应数据的正确性,这里默认服务器已经成功返回消息，并且消息没有错误
+	 * <p>
+	 * 作用：检查服务器返回的 response 中的数据值是否符合预期。
+	 * 检查逻辑：
+	 *      1. 如果某字段必须有值，那么是否有值？
+	 *      2. 如果字段有值，那么这个值是否在合理范围内？
+	 *
+	 * @param client   当前客户端对象（包含最新状态）
+	 * @param request  刚才发送的请求消息（用于上下文对比）,必定不是null
+	 * @param response 服务器返回的响应消息,必定不是null
+	 * @return 错误描述，如果为null或者空字符串表示没有错误
+	 */
+	public String verifyResponse(Client client, cn.game.protocol.protobuf.ChatMsg.ChatRequest_31000001 requestMessage, cn.game.protocol.protobuf.ChatMsg.ChatResponse_31000002 responseMessage) {
+		
+		return null; 
+	}
+
 
 	public static void main(String args[]) throws Exception {
 		ChatRequest_31000001Test instance = new ChatRequest_31000001Test();

@@ -7,10 +7,10 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class GuildBountyPlayerRequest_4000007cTest extends ServerTest{
+public class GuildBountyPlayerRequest_4000007cTest extends ServerTest<cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c, cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerResponse_4000007d> {
 
 	@Override
-	public Message buildDebugRequest(Client client) {
+	public cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.newBuilder() ; 
 		
 		
@@ -19,13 +19,31 @@ public class GuildBountyPlayerRequest_4000007cTest extends ServerTest{
 	}
 	
 	@Override
-	public Message tryBuildSimulationRequest(Client client) {
+	public cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.Builder builder = cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c.newBuilder() ; 
 		
 		
 		
 		return builder.build() ; 
 	}
+	/**
+	 * 校验响应数据的正确性,这里默认服务器已经成功返回消息，并且消息没有错误
+	 * <p>
+	 * 作用：检查服务器返回的 response 中的数据值是否符合预期。
+	 * 检查逻辑：
+	 *      1. 如果某字段必须有值，那么是否有值？
+	 *      2. 如果字段有值，那么这个值是否在合理范围内？
+	 *
+	 * @param client   当前客户端对象（包含最新状态）
+	 * @param request  刚才发送的请求消息（用于上下文对比）,必定不是null
+	 * @param response 服务器返回的响应消息,必定不是null
+	 * @return 错误描述，如果为null或者空字符串表示没有错误
+	 */
+	public String verifyResponse(Client client, cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerRequest_4000007c requestMessage, cn.game.protocol.protobuf.GuildMsg.GuildBountyPlayerResponse_4000007d responseMessage) {
+		
+		return null; 
+	}
+
 	
 	public static void main(String args[]) throws Exception {
 	    GuildBountyPlayerRequest_4000007cTest instance = new GuildBountyPlayerRequest_4000007cTest();

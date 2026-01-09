@@ -10,7 +10,7 @@ import cn.game.simulation.client.Client;
 import cn.game.simulation.test.base.ServerTest;
 
 @Component
-public class ItemUseRequest_0b000003Test extends ServerTest{
+public class ItemUseRequest_0b000003Test extends ServerTest<cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003, cn.game.protocol.protobuf.ItemMsg.ItemUseResponse_0b000004> {
 
     /**
      * 构建调试用的固定请求。
@@ -19,7 +19,7 @@ public class ItemUseRequest_0b000003Test extends ServerTest{
      * 特点：参数写死(Hardcoded)，强制返回非空消息。
      */
     @Override
-    public Message buildDebugRequest(Client client) {
+    public cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003 buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.Builder builder = cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.newBuilder() ; 
 		ItemUseInfo itemUseInfo = ItemUseInfo.newBuilder().setId(204011).setCount(2).setParam(0).build();
 		builder.addItemUse(itemUseInfo);
@@ -33,7 +33,7 @@ public class ItemUseRequest_0b000003Test extends ServerTest{
      *      如果当前状态不符合业务逻辑(如等级不足)，则返回 null (模拟玩家此时不会点击该按钮)。
      */
 	@Override
-	public Message tryBuildSimulationRequest(Client client) {
+	public cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003 tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.Builder builder = cn.game.protocol.protobuf.ItemMsg.ItemUseRequest_0b000003.newBuilder() ; 
 
 		ItemUseInfo itemUseInfo = ItemUseInfo.newBuilder().setId(200000).setCount(1).build();

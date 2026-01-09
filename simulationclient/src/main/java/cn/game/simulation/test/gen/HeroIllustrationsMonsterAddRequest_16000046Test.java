@@ -13,10 +13,10 @@ import cn.game.util.Rnd;
 import io.netty.handler.codec.quic.QuicPathEvent.New;
 
 @Component
-public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest{
+public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest<cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddResponse_16000047> {
 
 	@Override
-	public Message buildDebugRequest(Client client) {
+	public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046 buildDebugRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.newBuilder() ; 
 		
 		
@@ -25,7 +25,7 @@ public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest{
 	}
 	
 	@Override
-	public Message tryBuildSimulationRequest(Client client) {
+	public cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046 tryBuildSimulationRequest(Client client) {
 		cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.Builder builder = cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046.newBuilder() ; 
 		int id = Rnd.nextInt(100); 
 		List<Integer> list = (List<Integer>) client.dataMap.computeIfAbsent("HeroIllustrationsMonsterAddRequest_16000046_id", k -> new ArrayList<Integer>());
@@ -33,6 +33,24 @@ public class HeroIllustrationsMonsterAddRequest_16000046Test extends ServerTest{
         builder.addId(id);		
 		return builder.build() ; 
 	}
+	/**
+	 * 校验响应数据的正确性,这里默认服务器已经成功返回消息，并且消息没有错误
+	 * <p>
+	 * 作用：检查服务器返回的 response 中的数据值是否符合预期。
+	 * 检查逻辑：
+	 *      1. 如果某字段必须有值，那么是否有值？
+	 *      2. 如果字段有值，那么这个值是否在合理范围内？
+	 *
+	 * @param client   当前客户端对象（包含最新状态）
+	 * @param request  刚才发送的请求消息（用于上下文对比）,必定不是null
+	 * @param response 服务器返回的响应消息,必定不是null
+	 * @return 错误描述，如果为null或者空字符串表示没有错误
+	 */
+	public String verifyResponse(Client client, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddRequest_16000046 requestMessage, cn.game.protocol.protobuf.HeroMsg.HeroIllustrationsMonsterAddResponse_16000047 responseMessage) {
+		
+		return null; 
+	}
+
 	
 	public static void main(String args[]) throws Exception {
 	    HeroIllustrationsMonsterAddRequest_16000046Test instance = new HeroIllustrationsMonsterAddRequest_16000046Test();
