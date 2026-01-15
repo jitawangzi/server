@@ -92,7 +92,7 @@ public class FuncModule extends BasePlayerModule {
 	void setFuncOpen(InitialUI type) {
 		if (funcOpenMap.containsKey(type) && funcOpenMap.get(type) == false) {
 			funcOpenMap.put(type, true);
-			player.handleEvent(EventTypeEnum.FuncOpen, type);
+			player.fireAndHandleEvent(EventTypeEnum.FuncOpen, type);
 		}
 	}
 

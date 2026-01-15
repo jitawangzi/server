@@ -56,7 +56,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 			itemId = Asset.gold.ID ; 
 			int gold = BattleHelper.calcPatrolGoldAdd(player, itemConfig.Para[0] * 60, false);
 			count *= gold;
-			player.handleEvent(EventTypeEnum.GetItem, itemId, count);
+			player.fireAndHandleEvent(EventTypeEnum.GetItem, itemId, count);
 			return player.getCurrencyModule().add(itemId, count, opType);
 		} else if (itemConfig.ItemType == 5) {
 			// 给经验
@@ -71,7 +71,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 				int item = Rnd.randomInt(itemConfig.Para);
 				GoodsModule<? extends Item> goodsModule = player.getGoodsModule(item);
 				Object object = goodsModule.add(item, 1, opType);
-				player.handleEvent(EventTypeEnum.GetItem, item, 1);
+				player.fireAndHandleEvent(EventTypeEnum.GetItem, item, 1);
 				ret.add(object);
 			}
 			return ret;
@@ -84,7 +84,7 @@ public class ItemModule extends AbstractItemModule<Item> {
 						GoodsModule<? extends Item> goodsModule = player.getGoodsModule(goods.getId());
 						Object object = goodsModule.add(goods.getId(), goods.getCount(), opType);
 						ret.add(object);
-						player.handleEvent(EventTypeEnum.GetItem, goods.getId(), goods.getCount());
+						player.fireAndHandleEvent(EventTypeEnum.GetItem, goods.getId(), goods.getCount());
 					}
 				}
 			}

@@ -495,7 +495,7 @@ public class TestHandler extends GameBaseHandler {
                         } catch (IOException e) {
                             logger.error("写入文件失败", e);
                         }
-                        player.handleEvent(EventTypeEnum.HeroRecruit);
+                        player.fireAndHandleEvent(EventTypeEnum.HeroRecruit);
                     }
 
                 }
@@ -541,23 +541,23 @@ public class TestHandler extends GameBaseHandler {
             		}
             	}
 				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-					player.handleEvent(EventTypeEnum.SystemTimeChange);
+					player.fireAndHandleEvent(EventTypeEnum.SystemTimeChange);
 				});
 				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.SystemTimeChange);
             	if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.WEEKS) > 0) {
     				ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewWeek);
     				PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-    					player.handleEvent(EventTypeEnum.NewWeek);
+    					player.fireAndHandleEvent(EventTypeEnum.NewWeek);
     				});
 				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.MONTHS) > 0) {
 					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewMonth);
 					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-						player.handleEvent(EventTypeEnum.NewMonth);
+						player.fireAndHandleEvent(EventTypeEnum.NewMonth);
 					});
 				}else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.DAYS) > 0) {
 					ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
 					PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-						player.handleEvent(EventTypeEnum.NewDay);
+						player.fireAndHandleEvent(EventTypeEnum.NewDay);
 					});
 				}
             	break;

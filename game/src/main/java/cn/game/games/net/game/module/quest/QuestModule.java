@@ -249,7 +249,7 @@ public class QuestModule extends BasePlayerModule {
 			open(questConfig.OpenQuests, true);
 		}
 		// 发起完成任务事件
-		player.handleEvent(EventTypeEnum.QuestReward, quest.getId());
+		player.fireAndHandleEvent(EventTypeEnum.QuestReward, quest.getId());
 		return PlayerHelper.addReward(player, questConfig.Reward, OpType.Quest);
 
 	}

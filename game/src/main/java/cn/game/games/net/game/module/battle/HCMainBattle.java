@@ -66,13 +66,13 @@ public class HCMainBattle extends XiYouBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 11) {
 				battleModule.setMainBattleHighest(battleId);
-				player.handleEvent(EventTypeEnum.HCChapterFirstWin, battleConfig.ID);
+				player.fireAndHandleEvent(EventTypeEnum.HCChapterFirstWin, battleConfig.ID);
 			}
 		}
 		// 发送奖励
 		List<RewardInfo> allRewards = new ArrayList<RewardInfo>();
 		if (win) {
-			player.handleEvent(EventTypeEnum.HCChapterWin, battleConfig.ID);
+			player.fireAndHandleEvent(EventTypeEnum.HCChapterWin, battleConfig.ID);
 			List<RewardInfo> reward = PlayerHelper.addReward(player, battleConfig.WinRandom, OpType.BattleEnd);
 			allRewards.addAll(reward);
 		} else {

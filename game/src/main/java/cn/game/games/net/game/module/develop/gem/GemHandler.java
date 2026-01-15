@@ -103,7 +103,7 @@ public class GemHandler extends GameBaseHandler {
             }
         }
         gemPosMap.put(uid, pos);
-        player.handleEvent(EventTypeEnum.GemWear, gem.getConfigId());
+        player.fireAndHandleEvent(EventTypeEnum.GemWear, gem.getConfigId());
         client.sendProtocol(defaultInstance);
     }
 

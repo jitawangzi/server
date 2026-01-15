@@ -67,7 +67,7 @@ public class MainBattle extends XiYouBattleHandler {
 			chapter.setPass(true);
 			if (battleConfig.BattleType == 1) {
 				battleModule.setMainBattleHighest(chapter.getBattleId());
-				player.handleEvent(EventTypeEnum.ChapterFirstWin, chapter.getBattleId());
+				player.fireAndHandleEvent(EventTypeEnum.ChapterFirstWin, chapter.getBattleId());
 				allRewards.addAll(PlayerHelper.addReward(player, battleConfig.FirstPassReward, OpType.BattleEnd));
 			}
 		}

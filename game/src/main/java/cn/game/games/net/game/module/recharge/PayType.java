@@ -103,7 +103,7 @@ public enum PayType {
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
 			PlayerHelper.addResources(player, shopItemConfig.Item, OpType.ShopTrade);
 			shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
-			player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
+			player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
 			GameLogger.shoptrade(player, shopId, itemId,1);
 			return true;
 		}

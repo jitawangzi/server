@@ -193,7 +193,7 @@ public class PVEVPBattle extends XiYouBattleHandler {
             resetCache();
             response.addParams((int)(myScore+myAddScore)   );
             response.addParams((int)myAddScore   );
-            player.handleEvent(EventTypeEnum.DaShengPointsAdd,myScore,myAddScore);
+            player.fireAndHandleEvent(EventTypeEnum.DaShengPointsAdd,myScore,myAddScore);
            //  int rank = RankService.getInstance().getRank(player.getServerId(), RankType.DaShengLeiTaiDay, player.getPlayerId());
            // return ResultObject.success();
         } else { // 失败了，最终结算

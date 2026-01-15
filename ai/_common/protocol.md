@@ -104,7 +104,7 @@ package cn.game.protocol.protobuf;
 ## 5. 开发工作流
 
 1.  **编写协议**：修改或新增 `.proto` 文件。
-2.  **生成代码**：运行 `PbProtocolGenerator` 工具。
+2.  **生成代码**：运行`protocol.bat`会运行 `PbProtocolGenerator` 。
 3.  **产出物检查**：
     *   **服务端**：
         *   `.proto` 文件被编译为 Java 代码。

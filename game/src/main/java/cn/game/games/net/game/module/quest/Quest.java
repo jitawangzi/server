@@ -266,7 +266,7 @@ public class Quest implements Serializable, DbEntity {
 			QuestModule questModule = player.getModule(QuestModule.class);
 			if (this.getState() == QuestHelper.ACCEPTED) {
 				questModule.setState(this, QuestHelper.CAN_GIVEWARD, true);
-				player.handleEvent(EventTypeEnum.QuestFinish,getId());
+				player.fireAndHandleEvent(EventTypeEnum.QuestFinish,getId());
 			}
 		};
 		if (conditionContainer == null) {

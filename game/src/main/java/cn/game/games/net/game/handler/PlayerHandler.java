@@ -565,7 +565,7 @@ public class PlayerHandler extends GameBaseHandler {
 			client.sendProtocol(resp, ErrorMsgEnum.player_check_error.getId());
 			return;
 		}
-		player.handleEvent(EventTypeEnum.WatchAds);
+		player.fireAndHandleEvent(EventTypeEnum.WatchAds);
 		List<RewardInfo> goods = PlayerHelper.addGoods(player, cloudBox, OpType.CloudBox);
 		resp.addAllRewards(goods);
 		client.sendProtocol(resp);

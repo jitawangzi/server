@@ -251,7 +251,7 @@ public class DevelopHandler extends GameBaseHandler {
         PlayerHelper.delResources(player, consumeList, OpType.PotentialLvUp);
         developModule.getPotentiaLvMap().add(id, 1);
         developModule.setIsPotentiaBreak(id, false);
-        player.handleEvent(EventTypeEnum.QianLi);
+        player.fireAndHandleEvent(EventTypeEnum.QianLi);
         client.sendProtocol(resp.build());
     }
 
@@ -313,7 +313,7 @@ public class DevelopHandler extends GameBaseHandler {
         }
         PlayerHelper.delResources(player, consumeList, OpType.RescueLvUp);
         developModule.getPotentiaLvMap().add(id, 1);
-        player.handleEvent(EventTypeEnum.QiangYuan);
+        player.fireAndHandleEvent(EventTypeEnum.QiangYuan);
         client.sendProtocol(resp.build());
     }
 
@@ -349,7 +349,7 @@ public class DevelopHandler extends GameBaseHandler {
         }
         resp.addAllRewards(PlayerHelper.addResources(player, nextConfig.Reward, OpType.TianDaoLvUp)); 
         developModule.setHeavenlyDaoLevel(heavenlyDaoLevel + 1);
-        player.handleEvent(EventTypeEnum.CultivatesImmortals);
+        player.fireAndHandleEvent(EventTypeEnum.CultivatesImmortals);
         client.sendProtocol(resp.build());
     }
 
@@ -366,7 +366,7 @@ public class DevelopHandler extends GameBaseHandler {
         }
         PlayerHelper.delResources(player, curDefenceLevelUpConfig.Material, curDefenceLevelUpConfig.Point, OpType.DefenceLevelUp);
         player.getDevelopModule().setDefenceLevel(defenceLevel + 1);
-        player.handleEvent(EventTypeEnum.DefenceLevelUp,defenceLevel + 1);
+        player.fireAndHandleEvent(EventTypeEnum.DefenceLevelUp,defenceLevel + 1);
         client.sendProtocol(defaultInstance);
     }
 

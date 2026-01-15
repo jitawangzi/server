@@ -173,7 +173,7 @@ public class CurrencyModule extends GoodsModule<Currency> {
 			curExp -= expConfig.experience;
 			levelsMap.add(id, 1);
 
-			player.handleEvent(EventTypeEnum.LevelUp, id, levelsMap.getValue(id), curExp);
+			player.fireAndHandleEvent(EventTypeEnum.LevelUp, id, levelsMap.getValue(id), curExp);
 
 			expConfig = PlayerHelper.getExpConfig(id, (int) levelsMap.getValue(id), 0);
 			nextExpConfig = PlayerHelper.getExpConfig(id, (int) (levelsMap.getValue(id) + 1), 0);

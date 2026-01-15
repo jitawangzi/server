@@ -133,7 +133,7 @@ public class LingShanWenChanBattle extends XiYouBattleHandler {
 		lastCompleteFloor = floor; // 记录最后通关的层数
 		RankService.getInstance().setScoreAsync(player.getServerId(), RankType.LingShanWenChan, player.getPlayerId(), floor);
 		
-		player.handleEvent(EventTypeEnum.LingShanSkipFloor,floor);
+		player.fireAndHandleEvent(EventTypeEnum.LingShanSkipFloor,floor);
 		
 		return end(floor,true); // 直接结算
 	}

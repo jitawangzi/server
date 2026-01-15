@@ -342,7 +342,7 @@ public class PlayerHelper {
 			GoodsModule goodsModule = player.getGoodsModule(id);
 			rewards = goodsModule.addReward(id, value, opType);
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
-			player.handleEvent(EventTypeEnum.GetItem, id, value);
+			player.fireAndHandleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resourceUpdate(player, id, value, opType, true);
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
@@ -454,7 +454,7 @@ public class PlayerHelper {
 		GoodsModule goodsModule = player.getGoodsModule(id);
 		boolean ret = goodsModule.del(id, value, consumeType);
 		if (ret) {
-			player.handleEvent(EventTypeEnum.CostItem, id, (int) value);
+			player.fireAndHandleEvent(EventTypeEnum.CostItem, id, (int) value);
 //			resourceDelLog.info("opType[resourceDel]playerId[{}]resourceId[{}]value[{}]consumeType[{}]", player.getPlayerId(), id, value,
 //					consumeType == null ? "NO_DEFINE" : consumeType.getName());
 			if (notify) {
@@ -696,12 +696,12 @@ public class PlayerHelper {
 	public static void initNewPlayerData(Player player) {
 		Long playerId = player.getData().getPlayerId();
 		log.info("首次初始化角色playerId={}", playerId);
-		player.handleEvent(EventTypeEnum.PLAYER_INIT);
+		player.fireAndHandleEvent(EventTypeEnum.PLAYER_INIT);
 
 		// 对模块数据初始化顺序有要求的，其他模块需要的， 一些基础数据尽量放到这里初始化。
 		player.getPlayerModule().initLevel();
 
-		player.handleEvent(EventTypeEnum.PLAYER_CREATE);
+		player.fireAndHandleEvent(EventTypeEnum.PLAYER_CREATE);
 
 		if (ServerContext.getInstance().getRunMode().isPressure()) {
 			TestHelper.setMaxCurrency(player, OpType.PressureTest);
@@ -716,7 +716,7 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
-		player.handleEvent(EventTypeEnum.LoginStart);
+		player.fireAndHandleEvent(EventTypeEnum.LoginStart);
 
 		long playerId = player.getData().getPlayerId();
 		player.getData().setLoginDate(DateUtil.getStringDate());
@@ -741,8 +741,8 @@ public class PlayerHelper {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		player.handleEvent(EventTypeEnum.LoginFinish);
-		player.handleEvent(EventTypeEnum.LoginSuccess);
+		player.fireAndHandleEvent(EventTypeEnum.LoginFinish);
+		player.fireAndHandleEvent(EventTypeEnum.LoginSuccess);
 		Collection<BasePlayerModule> allModule = player.getAllModule();
 		for (BasePlayerModule basePlayerModule : allModule) {
 			basePlayerModule.onLogin();
@@ -768,7 +768,7 @@ public class PlayerHelper {
 		long playerId = player.getData().getPlayerId();
 		log.info("new day refresh player:" + playerId);
 		// 各个模块各自刷新
-		player.handleEvent(EventTypeEnum.NewDay);
+		player.fireAndHandleEvent(EventTypeEnum.NewDay);
 
 		player.getData().setRefreshDay(nowDay);
 
@@ -786,7 +786,7 @@ public class PlayerHelper {
 		long playerId = player.getData().getPlayerId();
 		log.info("new week refresh player:" + playerId);
 
-		player.handleEvent(EventTypeEnum.NewWeek);
+		player.fireAndHandleEvent(EventTypeEnum.NewWeek);
 
 		player.getData().setRefreshWeek(nowWeek);
 
@@ -806,7 +806,7 @@ public class PlayerHelper {
 		}
 		long playerId = player.getData().getPlayerId();
 		log.info("new month refresh player:" + playerId);
-		player.handleEvent(EventTypeEnum.NewMonth);
+		player.fireAndHandleEvent(EventTypeEnum.NewMonth);
 
 		player.getData().setRefreshMonth(nowMonth);
 		log.info("new month refresh player:" + playerId + " succ");
@@ -837,7 +837,7 @@ public class PlayerHelper {
 				return;
 			}
 		}
-		player.handleEvent(EventTypeEnum.NewDay5);
+		player.fireAndHandleEvent(EventTypeEnum.NewDay5);
 
 		player.getData().setRefreshFiveDay(refTime);
 
@@ -1322,10 +1322,10 @@ public class PlayerHelper {
 		player.setGameClient((GameClient) newGameClient);
 //		PlayerHelper.refresh(player);
 		if (reconnect) {
-			player.handleEvent(EventTypeEnum.Reconnect);
+			player.fireAndHandleEvent(EventTypeEnum.Reconnect);
 		} else {
-			player.handleEvent(EventTypeEnum.Relogin);
-			player.handleEvent(EventTypeEnum.LoginSuccess);
+			player.fireAndHandleEvent(EventTypeEnum.Relogin);
+			player.fireAndHandleEvent(EventTypeEnum.LoginSuccess);
 		}
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 		resp2.setReconnect(reconnect);
@@ -1364,10 +1364,10 @@ public class PlayerHelper {
 		player.setGameClient((GameClient) newGameClient);
 //		PlayerHelper.refresh(player);
 		if (reconnect) {
-			player.handleEvent(EventTypeEnum.Reconnect);
+			player.fireAndHandleEvent(EventTypeEnum.Reconnect);
 		} else {
-			player.handleEvent(EventTypeEnum.Relogin);
-			player.handleEvent(EventTypeEnum.LoginSuccess);
+			player.fireAndHandleEvent(EventTypeEnum.Relogin);
+			player.fireAndHandleEvent(EventTypeEnum.LoginSuccess);
 		}
 		PlayerLoginResponse_01000002.Builder resp2 = PlayerLoginResponse_01000002.newBuilder();
 		resp2.setReconnect(reconnect);

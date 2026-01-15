@@ -18,7 +18,9 @@
 
 **Module（逻辑层）** 由 `Player` 持有，职责是维护玩家状态、状态机流转、事件处理。大部分 Module 数据由框架定时全量持久化，内存修改即视为保存。
 
-**Helper / Manager（工具层,工具生成）** 包括 `PlayerHelper`（资源增删、消息推送）和 `xxxManager`（静态配置读取，通常为单例）。
+**Helper（逻辑层）** 这个是可选的，封装一些模块级别的静态方法，方便跨模块调用。 例如 `PlayerHelper`（资源增删、消息推送） `TestHelper`（测试代码，可以用在gm指令中）
+
+**Manager（工具层,工具生成）** 包括 `xxxManager`（静态配置读取，单例）。
 
 ---
 
@@ -49,6 +51,13 @@
 
 禁止直接使用 Quartz 或 ScheduledExecutorService 修改玩家数据。必须使用 `Player#setTimerTask(...)`（一次性）或 `Player#setPeriodicTask(...)`（周期性），这些 API 保证回调在玩家队列中执行。
 
+### 2.5 默认业务逻辑线程
+
+通常处理玩家请求时，也就是Handler类的逻辑入口，已经让玩家处在正常的队列中了，默认就是单线程并且线程安全的，通常不需要考虑并发模型。 
+
+### 2.6 禁止手动初始化线程
+普通业务中，禁止直接声明新的线程或者线程池，应该使用已有的线程模型。 
+
 ---
 
 ## 3. 资源与道具操作规范（PlayerHelper）
@@ -69,7 +78,7 @@
 
 ### 3.3 检查资源
 
-如果仅需检查而不扣除，或不希望抛出异常，使用 `PlayerHelper.isEnough(...)`。
+如果仅需检查而不扣除，使用 `PlayerHelper.isEnough(...)`。
 
 ---
 
@@ -83,7 +92,7 @@
         // 1. 获取玩家
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());// ---- 会由代码生成器生成
         
-        // 2. 基础校验（参数、前置条件）
+        // 2. 基础校验（参数合法性、前置条件(如果有的化)）
         // 方式A：业务逻辑错误，推荐用 fail 抛出，由框架统一处理,会返回一个通用的错误协议给客户端
         if (req.getCount() <= 0) {
             player.fail(ErrorMsgEnum.param_error);
@@ -116,9 +125,11 @@
 
 ## 6. 模块（Module）与持久化
 
-通过 `player.getModule(XxxModule.class)` 或 `player.getXxxModule()` 获取数据。默认情况下无需手动 `save()` 或 `update()`，框架会定时全量保存 Module 数据。例外情况是当 Module 声明了 `alwaysStoreDataInStandaloneTable()`（如邮件系统），则需通过生成的 Mapper/DAO 进行 `insert/update`。
+通过 `player.getModule(XxxModule.class)` 或 `player.getXxxModule()` 获取数据。默认情况下无需手动 `save()` 或 `update()`，框架会定时全量保存 Module 数据。例外情况是当 Module 声明了 `alwaysStoreDataInStandaloneTable()`（如邮件系统），则需通过Mybatis-Generator生成的java类（实现了DbEntity接口）， 使用DbEntity接口的`insert/update`等方法进行数据库操作。
 
-事件监听通过实现 `getEventTypes()` 和 `handleEvent(PlayerEvent event)` 完成。事件处理仍在玩家线程中，是同步安全的。
+事件监听通过 `getEventTypes()` 方法注册需要监听的事件类型。  
+
+通过`player.fireAndHandleEvent(EventTypeEnum eventType, Object... params)` 发起事件并处理，事件处理仍在当前线程中，是线程安全的。
 
 ---
 
@@ -190,16 +201,93 @@ Excel 静态数据配置表定义功能的静态数据，每行代表一条记�
 这些类在 AI 编写代码前会由人工生成并提供。
 
 ---
-
 ## 9. 事件系统
 
-事件类型在 `EventTypeEnum` 中预先定义，新需求可能需要手动添加。常用事件包括：
+游戏事件系统主要分为两个层级：系统级事件与玩家级事件。实际开发中，绝大多数业务逻辑围绕**玩家事件**展开。
 
-**玩家生命周期事件**：`PLAYER_INIT`（创建新玩家，优先级高）、`PLAYER_CREATE`（创建新玩家）、`LoginStart`（开始登录）、`LoginFinish`（登录完成，一般用这个）、`Relogin`（客户端重新登录，内存数据还在）、`Reconnect`（重连，通常不需要处理）、`LoginSuccess`（任何登录都会触发，不推荐使用）。
+### 9.1 事件分类
 
-**时间事件**：`NewDay5`（早5点跨天）、`NewDay`（晚12点跨天）、`NewWeek`（跨周）、`NewMonth`（跨月）。
+* **系统级事件 (`ServerEvent`)**
+    * **作用范围**：全局，影响整个服务器系统。
+    * **典型场景**：修改系统时间、服务器状态变更等。
+* **玩家级事件 (`PlayerEvent`)**
+    * **作用范围**：仅在当前玩家对象范围内触发和处理。
+    * **定义位置**：所有类型均在 `EventTypeEnum` 枚举中预先定义。如有新需求，需手动在该枚举中添加。
 
-**业务事件**：`Charge`（充值，参数为充值数量 RMB）、`FuncOpen`（功能开启）、`ResourceAdd`（新增资源）、`ResourceRemove`（移除资源）、`LevelUp`（升级，参数为经验和等级）、`Level`（通关关卡，参数为关卡id、回合数、剩余人数）等。
+---
+
+### 9.2 常用玩家事件详解
+
+以下是 `EventTypeEnum` 中常用的事件类型分类：
+
+#### A. 玩家生命周期事件
+
+| 事件枚举 | 说明 | 备注 |
+| :--- | :--- | :--- |
+| **`PLAYER_INIT`** | 创建新玩家 | 优先级高，用于初始化核心数据 |
+| **`PLAYER_CREATE`** | 创建新玩家 | 常规创建流程 |
+| **`LoginFinish`** | **登录完成** | **最常用**，一般数据加载完毕后处理逻辑放在此处 |
+
+#### B. 时间触发事件
+用于处理定时刷新、周期性重置的逻辑。
+
+* **`NewDay`**：午夜 0:00 跨天。
+* **`NewWeek`**：跨周事件。
+* **`NewMonth`**：跨月事件。
+
+#### C. 业务行为事件
+当玩家进行特定游戏行为时触发。
+
+* **`Charge`**：充值。（参数：充值金额 RMB）
+* **`FuncOpen`**：功能开启。
+* **`GetItem`**：获得资源、道具等。（参数，id，value）
+* **`LevelUp`**：角色升级。（参数：经验值、等级）
+* **`Level`**：通关关卡。（参数：关卡 ID、回合数、剩余人数）
+
+---
+
+### 9.3 开发使用指南
+
+#### 1. 定义事件
+在 `EventTypeEnum` 中添加新事件时，**必须**添加详细注释，明确参数规范。
+
+> **注释规范**：明确说明参数的数量、顺序以及每个参数的物理含义。
+
+#### 2. 发起事件 (Fire)
+根据业务场景，传入对应的事件类型及参数。
+
+```java
+// 方法签名
+player.fireAndHandleEvent(EventTypeEnum eventType, Object... params);
+```
+// 调用示例
+// 假设 GetItem 事件定义为：参数0=道具id, 参数1=道具数量
+player.fireAndHandleEvent(EventTypeEnum.GetItem, id, count);
+
+#### 3. 监听事件 (Fire)
+在功能模块中实现 handleEvent 方法，通过 switch-case 结构处理特定事件。
+```
+@Override
+public void handleEvent(PlayerEvent event) {
+    switch (event.getType()) {
+        case GetItem: {
+            // 根据定义好的顺序获取参数
+            int itemId = event.getParameter(0);
+            int itemCount = event.getParameter(1);
+            
+            // TODO: 执行获得物品后的业务逻辑
+            break;
+        }
+        case LevelUp: {
+            // 处理升级逻辑
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+```
 
 ---
 

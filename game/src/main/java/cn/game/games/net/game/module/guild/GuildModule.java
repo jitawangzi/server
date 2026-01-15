@@ -267,7 +267,7 @@ public class GuildModule extends BasePlayerModule {
 			player.getData().setUnionId(guildId);
 		}
         GameLogger.guildJoin(player, guildId, 1);
-		player.handleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
+		player.fireAndHandleEvent(EventTypeEnum.GuildJoin, guildId, isFirstJoin);
 	}
 
 	public List<Long> getApplyJoinList() {

@@ -351,7 +351,7 @@ public class GinsengTreeModule extends BasePlayerModule {
   	    long newExp = player.getCurrencyModule().get(Asset.RSGTreeExp); 
   	    if (oldLevel != newLevel) {
   			// 升级了
-  			player.handleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
+  			player.fireAndHandleEvent(EventTypeEnum.LevelUp, Asset.RSGTreeExp.ID, newLevel);
   			RSGTreeLvConfig rsgTreeLvConfig = RSGTreeLvManager.instance().get(oldLevel);
 			// 这里是升级的奖励
 			List<RewardInfo> rewards = PlayerHelper.addResources(player, rsgTreeLvConfig.Box, OpType.GinsengTreeLevelUp);

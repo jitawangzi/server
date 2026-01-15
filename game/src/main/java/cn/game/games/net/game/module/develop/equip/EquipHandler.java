@@ -64,7 +64,7 @@ public class EquipHandler extends GameBaseHandler {
 		EquipPart equipPart = module.getEquipPart(equipConfig.pos);
 		equipPart.setEquipUid(uid);
 		
-		player.handleEvent(EventTypeEnum.EquipWear, equipConfig.ID);
+		player.fireAndHandleEvent(EventTypeEnum.EquipWear, equipConfig.ID);
 
         client.sendProtocol(defaultInstance);
     }
@@ -106,7 +106,7 @@ public class EquipHandler extends GameBaseHandler {
 		PlayerHelper.delResources(player, curConfig.cost, OpType.EquipPartStrength);
 
 		equipPart.setStrength(equipPart.getStrength() + 1);
-		player.handleEvent(EventTypeEnum.EquipPartStrength,type,equipPart.getStrength());
+		player.fireAndHandleEvent(EventTypeEnum.EquipPartStrength,type,equipPart.getStrength());
 
 		client.sendProtocol(defaultInstance);
     }

@@ -217,7 +217,7 @@ public class HeroModule extends AbstractItemNoStackModule<Hero> {
 		hero.setSkin(heroConfig.HeroSkinID);
 		player.getPlayerModule().addId(IdConstant.HERO_SKIN, heroConfig.HeroSkinID);
 
-		player.handleEvent(EventTypeEnum.Hero, heroConfig.ID);
+		player.fireAndHandleEvent(EventTypeEnum.Hero, heroConfig.ID);
 	}
 
 	@Override

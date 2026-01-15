@@ -81,7 +81,7 @@ public class HCHeroModule extends AbstractItemNoStackModule<HCHero> {
 
 		// 拥有新英雄，奖励固定元宝
 //		PlayerHelper.addResources(player, Asset.gold.ID, GlobalConst.HCHeroBookAward, OpType.NewHCHeroReward);
-		player.handleEvent(EventTypeEnum.HCHero, heroConfig.ID);
+		player.fireAndHandleEvent(EventTypeEnum.HCHero, heroConfig.ID);
 	}
 
 	@Override

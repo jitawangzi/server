@@ -98,7 +98,7 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 		if (updateDb && alwaysStoreDataInStandaloneTable()) {
 			item.delete();
 		}
-		player.handleEvent(EventTypeEnum.CostUidItem, uid, item.getConfigId());
+		player.fireAndHandleEvent(EventTypeEnum.CostUidItem, uid, item.getConfigId());
 		return item;
 	}
 

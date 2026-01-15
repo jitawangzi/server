@@ -302,7 +302,7 @@ public class BattleHandler extends GameBaseHandler {
         //			return;
         //		}
         //		battleModule.setAdReliveCount(battleModule.getAdReliveCount() + 1);
-        player.handleEvent(EventTypeEnum.WatchAds);
+        player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         client.sendProtocol(resp);
     }
 
@@ -542,7 +542,7 @@ public class BattleHandler extends GameBaseHandler {
             return;
         }
         lingPoBattle.setAdsGetBattleTimes(false);
-        player.handleEvent(EventTypeEnum.WatchAds);
+        player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         client.sendProtocol(resp);
     }
 
@@ -612,7 +612,7 @@ public class BattleHandler extends GameBaseHandler {
                 return;
             }
             battleModule.setAdReliveCount(battleModule.getAdReliveCount() + 1);
-            player.handleEvent(EventTypeEnum.WatchAds);
+            player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         } else if (type == 3) {
             PlayerHelper.delResources(player, GlobalConst.ResurrectionConsume, OpType.Relive);
         }
@@ -1017,7 +1017,7 @@ public class BattleHandler extends GameBaseHandler {
             return;
         }
         if (battleModule.getDaySweepCount() >= GlobalConst.SweepNum) {
-            player.handleEvent(EventTypeEnum.WatchAds);
+            player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         }
         PlayerHelper.delResourcesWithConsume(player, battleConfig.cost, OpType.BattleSweep);
         battleModule.setDaySweepCount(battleModule.getDaySweepCount() + 1);
@@ -1076,7 +1076,7 @@ public class BattleHandler extends GameBaseHandler {
                     return;
                 }
                 battleModule.setAdPatrolCount(quickPatrolCount + 1);
-                player.handleEvent(EventTypeEnum.WatchAds);
+                player.fireAndHandleEvent(EventTypeEnum.WatchAds);
             } else {
                 int quickPatrolCount = battleModule.getQuickPatrolCount();
                 if (!player.hasWelfare(WelfareTypeEnum.TravelTimeMultiple)) {
@@ -1126,7 +1126,7 @@ public class BattleHandler extends GameBaseHandler {
         if (!isFast) {
             battleModule.setPatrolRewardTime();
         }
-        player.handleEvent(EventTypeEnum.Patrol, isFast);
+        player.fireAndHandleEvent(EventTypeEnum.Patrol, isFast);
         client.sendProtocol(resp);
     }
 
@@ -1289,10 +1289,10 @@ public class BattleHandler extends GameBaseHandler {
             battleModule.setAttackingData(0, type, id, subId, 0, 0);
             if (battleHandler instanceof HCBattleHandler) {
                 // 触发事件
-                player.handleEvent(EventTypeEnum.HCBattleStart, id, 0);
+                player.fireAndHandleEvent(EventTypeEnum.HCBattleStart, id, 0);
             } else if (battleHandler instanceof XiYouBattleHandler) {
                 // 触发事件
-                player.handleEvent(EventTypeEnum.BattleStart, id, 0);
+                player.fireAndHandleEvent(EventTypeEnum.BattleStart, id, 0);
             }
             AttrModule module = player.getModule(AttrModule.class);
             module.calcAllAttr();
@@ -1343,7 +1343,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, result.getErrorCode());
             return;
         }
-        player.handleEvent(EventTypeEnum.BattleEnd, typeId, subId, win, 0, 0);
+        player.fireAndHandleEvent(EventTypeEnum.BattleEnd, typeId, subId, win, 0, 0);
         if (result.getValue() != null) {
             resp.addAllRewards(result.getValue());
         }
@@ -1379,7 +1379,7 @@ public class BattleHandler extends GameBaseHandler {
             client.sendProtocol(resp, result.getErrorCode());
             return;
         }
-        player.handleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
+        player.fireAndHandleEvent(EventTypeEnum.BattleEnd, attackingId, attackingSubId, win, killMonsterCount, killMonsterBossCount);
         List<RewardInfo> allRewards = new ArrayList<>();
         if (result.getValue() != null) {
             allRewards.addAll(result.getValue());
@@ -1418,7 +1418,7 @@ public class BattleHandler extends GameBaseHandler {
             }
         }
         if (req.getWin()) {
-            player.handleEvent(EventTypeEnum.ChapterWin, attackingId, attackingSubId);
+            player.fireAndHandleEvent(EventTypeEnum.ChapterWin, attackingId, attackingSubId);
         }
         battleModule.setAttackingData(0, 0, 0, 0, 0, 0);
         resp.addAllRewards(allRewards);

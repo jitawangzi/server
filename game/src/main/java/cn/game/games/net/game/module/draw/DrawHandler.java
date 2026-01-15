@@ -128,13 +128,13 @@ public class DrawHandler extends GameBaseHandler {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
                 return;
             }
-            player.handleEvent(EventTypeEnum.WatchAds);
+            player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         } else {
 			PlayerHelper.delResources(player, costEntries, OpType.Draw);
         }
         List<List<RewardInfo>> allRewards = drawModule.draw(id, drawCount, freeOnce);
         for (int i = 0; i < drawCount; i++) {
-            player.handleEvent(EventTypeEnum.Draw, 1, id);
+            player.fireAndHandleEvent(EventTypeEnum.Draw, 1, id);
         }
         resp.addAllRewards(allRewards.get(0));
         resp.addAllHeros(allRewards.get(1));
@@ -301,7 +301,7 @@ public class DrawHandler extends GameBaseHandler {
 			heroRecruit.refresh();
 		}
 
-		player.handleEvent(EventTypeEnum.HeroRecruit);
+		player.fireAndHandleEvent(EventTypeEnum.HeroRecruit);
 
 		resp.setDrawHeroInfo(heroRecruit.buildDrawHeroInfo());
 

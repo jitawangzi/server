@@ -40,7 +40,7 @@ public class HCCommonHandler extends GameBaseHandler {
 			hcCommonModule.setBattleSpeedUnlock(true);
 			varModule.clearVar(VarConstant.BATTLE_SPEED_ADS_COUNT);
 		}
-		player.handleEvent(EventTypeEnum.WatchAds);
+		player.fireAndHandleEvent(EventTypeEnum.WatchAds);
 		client.sendProtocol(resp.build());
 	}
 }

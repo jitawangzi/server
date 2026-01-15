@@ -90,7 +90,7 @@ public class HCHeroHandler extends GameBaseHandler {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.request_parameter_error.getId());
 			return;
 		}
-		player.handleEvent(EventTypeEnum.WatchAds);
+		player.fireAndHandleEvent(EventTypeEnum.WatchAds);
 		boolean useHeroSelfCount = count < GlobalConst.ADStarCnt;
 		if (useHeroSelfCount) {
 			heroItemTimesMap.add(id, 1);

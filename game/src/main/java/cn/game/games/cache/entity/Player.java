@@ -227,15 +227,15 @@ public class Player {
 	 * 尽量不要使用这个方法
 	 * @param gameEvent
 	 */
-	public void handleEvent(PlayerEvent gameEvent) {
+	public void fireAndHandleEvent(PlayerEvent gameEvent) {
 		eventBus.dispatch(gameEvent);
 	}
 
-	public void handleEvent(EventTypeEnum eventType) {
+	public void fireAndHandleEvent(EventTypeEnum eventType) {
 		eventBus.dispatch(new PlayerEvent(eventType, this));
 	}
 
-	public void handleEvent(EventTypeEnum eventType, Object... params) {
+	public void fireAndHandleEvent(EventTypeEnum eventType, Object... params) {
 		eventBus.dispatch(new PlayerEvent(eventType, this, params));
 	}
 
@@ -522,7 +522,7 @@ public class Player {
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
 			if (Boolean.getBoolean("DisableRecharge")) {
-				handleEvent(EventTypeEnum.Charge, cost[1]);
+				fireAndHandleEvent(EventTypeEnum.Charge, cost[1]);
 				return Future.succeededFuture(true);
 			}
 //			String platform = "Android";
@@ -539,7 +539,7 @@ public class Player {
 			long vouchersCount = getCurrencyModule().get(Asset.Vouchers);
 			if (vouchersCount >= rmbCost) {
 				PlayerHelper.delResources(this, Asset.Vouchers.ID, rmbCost, OpType.BuyGoods);
-				handleEvent(EventTypeEnum.Charge, rmbCost);
+				fireAndHandleEvent(EventTypeEnum.Charge, rmbCost);
 				return Future.succeededFuture(true);
 			}
 
@@ -585,7 +585,7 @@ public class Player {
 				promise.complete(false);
 			});
 		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
-			handleEvent(EventTypeEnum.WatchAds);
+			fireAndHandleEvent(EventTypeEnum.WatchAds);
 			promise.complete(true);
 		}
 		return promise.future();
@@ -604,7 +604,7 @@ public class Player {
 		if (costType == ShopHelper.COST_TYPE_RESOURCE) {
 			PlayerHelper.delResources(this, cost[1], cost[2], OpType.BuyGoods);
 		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
-			handleEvent(EventTypeEnum.WatchAds);
+			fireAndHandleEvent(EventTypeEnum.WatchAds);
 		} else {
 			throw new LogicException(ErrorMsgEnum.unknown.getId(), "未知的支付类型：" + costType);
 		}

@@ -96,7 +96,7 @@ public class FairyFriendHandler extends GameBaseHandler {
 			resp.addFavorabilityCount(v);
 			resp.addFairyFriend(k.toProto());
 		});
-		player.handleEvent(EventTypeEnum.FairyFriendsTravel, count);
+		player.fireAndHandleEvent(EventTypeEnum.FairyFriendsTravel, count);
 		client.sendProtocol(resp.build());
 	}
 
@@ -177,7 +177,7 @@ public class FairyFriendHandler extends GameBaseHandler {
 		fairyFriend.setExp(exp[0]);
 		fairyFriend.setLevel(exp[1]);
 		resp.setFairyFriendInfo(fairyFriend.toProto());
-		player.handleEvent(EventTypeEnum.FairyFriendsGift, count);
+		player.fireAndHandleEvent(EventTypeEnum.FairyFriendsGift, count);
 
 		client.sendProtocol(resp.build());
 	}

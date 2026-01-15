@@ -356,7 +356,7 @@ public class HeroHandler extends GameBaseHandler {
 				hero.setLevel(curLevel + 1);
 				updateHeros.add(hero);
 				// upCount++;
-				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				player.fireAndHandleEvent(EventTypeEnum.HeroLevelUp, hero);
 				isAllHeroMaxLevel = false;
 				isAllHeroItemNotEnough = false;
 				continue loop;
@@ -444,7 +444,7 @@ public class HeroHandler extends GameBaseHandler {
 				hero.setLevel(curLevel + 1);
 				updateHeros.add(hero);
 				// upCount++;
-				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				player.fireAndHandleEvent(EventTypeEnum.HeroLevelUp, hero);
 				isAllHeroMaxLevel = false;
 				isAllHeroItemNotEnough = false;
 			}
@@ -510,7 +510,7 @@ public class HeroHandler extends GameBaseHandler {
 				hero.setLevel(curLevel + 1);
 				updateHeros.add(hero);
 				// upCount++;
-				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				player.fireAndHandleEvent(EventTypeEnum.HeroLevelUp, hero);
 				isAllHeroMaxLevel = false;
 			}
 			if (isAllHeroMaxLevel) {
@@ -567,7 +567,7 @@ public class HeroHandler extends GameBaseHandler {
 		if (maxLevel != curLevel) {
 			for (int i = curLevel + 1; i <= maxLevel; i++) {
 				hero.setLevel(i);
-				player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+				player.fireAndHandleEvent(EventTypeEnum.HeroLevelUp, hero);
 			}
 			PlayerHelper.delResources(player, costArray, OpType.HeroLevelUp);
 		}
@@ -652,7 +652,7 @@ public class HeroHandler extends GameBaseHandler {
 		Map<Long, Integer> battleHeros = heroModule.getBattleHeros();
 		Integer remove = battleHeros.remove(uid);
 		if (remove != null) {
-			player.handleEvent(EventTypeEnum.HeroBattleDismiss, hero);
+			player.fireAndHandleEvent(EventTypeEnum.HeroBattleDismiss, hero);
 		}
 		client.sendProtocol(resp.build());
 	}
@@ -709,7 +709,7 @@ public class HeroHandler extends GameBaseHandler {
 			}
 		}
 		battleHeros.put(uid, pos);
-		player.handleEvent(EventTypeEnum.HeroBattle, hero);
+		player.fireAndHandleEvent(EventTypeEnum.HeroBattle, hero);
 		client.sendProtocol(resp.build());
 	}
 
@@ -792,9 +792,9 @@ public class HeroHandler extends GameBaseHandler {
 			}
 			if (oldQuality != newQuality) {
 				GameLogger.heroraise(player, hero, 2, 1, newQuality, beforeCombat, afterCombat);
-				player.handleEvent(EventTypeEnum.HeroQuality, hero);
+				player.fireAndHandleEvent(EventTypeEnum.HeroQuality, hero);
 			}
-			player.handleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
+			player.fireAndHandleEvent(EventTypeEnum.HeroBreak, hero.getStar(), hero.getQuality());
 			resp.addHero(hero.toHeroInfo());
 		}
 		client.sendProtocol(resp.build());
@@ -884,7 +884,7 @@ public class HeroHandler extends GameBaseHandler {
 		PlayerHelper.delResources(player, costArray, OpType.HeroLevelUp);
 		int oldCombat = BattleHelper.calcHeroCombat(hero);
 		hero.setLevel(hero.getLevel() + 1);
-		player.handleEvent(EventTypeEnum.HeroLevelUp, hero);
+		player.fireAndHandleEvent(EventTypeEnum.HeroLevelUp, hero);
 		int newCombat = BattleHelper.calcHeroCombat(hero);
 		GameLogger.heroraise(player, hero, 1, 1, hero.getLevel(), oldCombat, newCombat);
 		client.sendProtocol(resp.build());

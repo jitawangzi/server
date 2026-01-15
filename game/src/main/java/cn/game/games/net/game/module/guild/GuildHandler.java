@@ -196,7 +196,7 @@ public class GuildHandler extends GameBaseHandler {
         res.addAllRewards(resources);
         res.setCount(ret[1]);
         log.info("guild bargain BIBIBI 3");
-        player.handleEvent(EventTypeEnum.GuildBargain);
+        player.fireAndHandleEvent(EventTypeEnum.GuildBargain);
         log.info("guild bargain BIBIBI 4");
         guildModule.setBargainCount(bargainCount + 1);
         client.sendProtocol(res.build());
@@ -726,7 +726,7 @@ public class GuildHandler extends GameBaseHandler {
         List<RewardInfo> resources = PlayerHelper.addResources(player, guildDonateConfig.Reward, OpType.GuildDonate);
         resp.addAllRewards(resources);
         donateMap.add(id);
-        player.handleEvent(EventTypeEnum.GuildDonate, id);
+        player.fireAndHandleEvent(EventTypeEnum.GuildDonate, id);
         client.sendProtocol(resp);
         long guildContribute = RewardHelper.getRewardCount(resources, Asset.GuildContribute);
         GameLogger.GuildDonate(player, id, donateMap.getValue(id), (int) guildContribute, player.getPlayerId());

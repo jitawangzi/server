@@ -459,7 +459,7 @@ public class ServerHandler extends GameBaseHandler {
 	    if (callbackOk) {
 	    	// 完成订单、事件与日志
 	    	payItem.finish();
-	    	player.handleEvent(EventTypeEnum.Charge, payItem.getRmb());
+	    	player.fireAndHandleEvent(EventTypeEnum.Charge, payItem.getRmb());
 	    	GameLogger.recharge(player, payItem);
 		}
 	    return callbackOk;

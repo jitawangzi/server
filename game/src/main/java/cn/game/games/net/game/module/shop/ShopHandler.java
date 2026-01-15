@@ -195,7 +195,7 @@ public class ShopHandler extends GameBaseHandler {
             }
             shopModule.setLastFreeOpenBoxTime(DateUtil.currentTimeSeconds());
             shopModule.setFreeOpenBoxCount(shopModule.getFreeOpenBoxCount() + 1);
-            player.handleEvent(EventTypeEnum.WatchAds);
+            player.fireAndHandleEvent(EventTypeEnum.WatchAds);
         } else {
             PlayerHelper.delResources(player, GlobalConst.BoSpend, OpType.BoxOpen);
         }
@@ -413,7 +413,7 @@ public class ShopHandler extends GameBaseHandler {
             shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + countTemp);
             //				shopItem.update();
             //			}
-            player.handleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
+            player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
             resp.addAllRewards(resources);
             client.sendProtocol(resp);
             GameLogger.shoptrade(player, shopId, itemId,countTemp);
