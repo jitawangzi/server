@@ -1,3 +1,4 @@
+*.log
 /logs
 /cross_logs
 /bin
