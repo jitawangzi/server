@@ -922,10 +922,11 @@ public class Client extends AbstractNetClient {
 	}
 	public <T> T sendProtocolAndWait(Message message) {
 		io.vertx.core.Promise promise = io.vertx.core.Promise.promise();
-		respPromise = promise ;
-		Future future = promise.future().timeout(5, TimeUnit.SECONDS); 
+		respPromise = promise;
+		sendProtocol(message);
+		Future future = promise.future().timeout(5, TimeUnit.SECONDS);
 		Object resp = AsyncUtils.await(future);
-		return (T) resp; 
+		return (T) resp;
 	}
 //	public boolean checkResponse(pri) {
 //		

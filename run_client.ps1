@@ -1,43 +1,53 @@
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 <#
 .SYNOPSIS
     Compiles and Runs a specific simulation client test case.
     Example: .\run_client.ps1 cn.game.simulation.test.EquipForgeTest
 #>
 
+# 1. Param å—å¿…é¡»æ”¾åœ¨ç¬¬ä¸€ä½ï¼ˆæ³¨é‡Šé™¤å¤–ï¼‰
 param (
     [Parameter(Mandatory=$true, Position=0)]
     [string]$TestClass
 )
 
+# 2. è®¾ç½®ç¼–ç ç§»åˆ° param ä¹‹å
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 $ErrorActionPreference = "Stop"
 $ClientModule = "simulationclient"
 
-# ================= 1. ×Ô¶¯±àÒë (Auto Compile) =================
+# ================= 1. è‡ªåŠ¨ç¼–è¯‘ (Auto Compile) =================
 Write-Host ">>> [Step 1] Compiling Client Module..." -ForegroundColor Cyan
 
-# -pl: Ö»¹¹½¨ simulationclient Ä£¿é
-# -am: Í¬Ê±¹¹½¨ËüÒÀÀµµÄÄ£¿é (Èç¹û core ¸ÄÁËÒ²ÄÜÉúĞ§)
-# -DskipTests: Ìø¹ıµ¥Ôª²âÊÔ£¬Ö»±àÒë´úÂë
-$mvnCmd = "mvn compile process-resources dependency:copy-dependencies -pl $ClientModule -am -DskipTests"
+# -pl: åªæ„å»º simulationclient æ¨¡å—
+# -am: åŒæ—¶æ„å»ºå®ƒä¾èµ–çš„æ¨¡å— (å¦‚æœ core æ”¹äº†ä¹Ÿèƒ½ç”Ÿæ•ˆ)
+# -DskipTests: è·³è¿‡å•å…ƒæµ‹è¯•ï¼Œåªç¼–è¯‘ä»£ç 
+$compileCmd = "mvn compile process-resources -pl $ClientModule -am -DskipTests"
+$copyDepsCmd = "mvn dependency:copy-dependencies -pl $ClientModule -DskipTests"
 
-# Ö´ĞĞ±àÒë£¬Èç¹ûÓĞ´íÎóÖ±½ÓÍ£Ö¹
-cmd /c $mvnCmd | Out-Null 
+# æ‰§è¡Œç¼–è¯‘ï¼Œå¦‚æœæœ‰é”™è¯¯ç›´æ¥åœæ­¢
+cmd.exe /c $compileCmd
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error ">>> COMPILATION FAILED! The AI generated code has syntax errors."
 }
 
-# ================= 2. ÔËĞĞ²âÊÔ (Run Java) =================
+cmd.exe /c $copyDepsCmd
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error ">>> DEPENDENCY COPY FAILED! Please inspect the Maven logs above."
+}
+
+# ================= 2. è¿è¡Œæµ‹è¯• (Run Java) =================
 Write-Host ">>> [Step 2] Running Test: $TestClass" -ForegroundColor Cyan
 
-# ¹¹Ôì Classpath
-# °üº¬µ±Ç°Ä£¿éµÄ classes£¬ÒÔ¼° lib ÏÂµÄËùÓĞ jar
+# æ„é€  Classpath
+# åŒ…å«å½“å‰æ¨¡å—çš„ classesï¼Œä»¥åŠ lib ä¸‹çš„æ‰€æœ‰ jar
 $TargetDir = "$ClientModule\target"
 $ClassPath = ".;$TargetDir\classes;$TargetDir\lib\*"
 
-# Èç¹ûÄãµÄ simulationclient ÒÀÀµÁËÆäËûĞÖµÜÄ£¿é(core, game)µÄÔ´Âë£¬
-# ÇÒ²»Ïë´ò³Éjar°ü£¬¿ÉÒÔ°ÑËüÃÇµÄ classes Ä¿Â¼Ò²¼Ó½øÀ´£¬ÀıÈç£º
+# å¦‚æœä½ çš„ simulationclient ä¾èµ–äº†å…¶ä»–å…„å¼Ÿæ¨¡å—(core, game)çš„æºç ï¼Œ
+# ä¸”ä¸æƒ³æ‰“æˆjaråŒ…ï¼Œå¯ä»¥æŠŠå®ƒä»¬çš„ classes ç›®å½•ä¹ŸåŠ è¿›æ¥ï¼Œä¾‹å¦‚ï¼š
 $ClassPath += ";core\target\classes;game\target\classes;protocol\target\classes"
 
 $javaArgs = @(
@@ -45,16 +55,16 @@ $javaArgs = @(
     $TestClass
 )
 
-# Æô¶¯ Java ½ø³Ì
-# Wait: ½Å±¾±ØĞëµÈ´ı²âÊÔÅÜÍê
-# NoNewWindow: Ö±½ÓÔÚµ±Ç°¿ØÖÆÌ¨Êä³öÈÕÖ¾£¬·½±ã AI ¶ÁÈ¡
+# å¯åŠ¨ Java è¿›ç¨‹
+# Wait: è„šæœ¬å¿…é¡»ç­‰å¾…æµ‹è¯•è·‘å®Œ
+# NoNewWindow: ç›´æ¥åœ¨å½“å‰æ§åˆ¶å°è¾“å‡ºæ—¥å¿—ï¼Œæ–¹ä¾¿ AI è¯»å–
 $process = Start-Process -FilePath "java" `
     -ArgumentList $javaArgs `
     -NoNewWindow `
     -PassThru `
     -Wait
 
-# ================= 3. ½á¹ûÅĞ¶Ï (Check Exit Code) =================
+# ================= 3. ç»“æœåˆ¤æ–­ (Check Exit Code) =================
 if ($process.ExitCode -eq 0) {
     Write-Host "`n========================================" -ForegroundColor Green
     Write-Host "   TEST PASSED: $TestClass" -ForegroundColor Green
@@ -65,6 +75,6 @@ if ($process.ExitCode -eq 0) {
     Write-Host "   TEST FAILED: $TestClass" -ForegroundColor Red
     Write-Host "   Exit Code: $($process.ExitCode)" -ForegroundColor Red
     Write-Host "========================================"
-    # ¸æËß AI È¥¼ì²éÉÏÃæµÄÈÕÖ¾
+    # å‘Šè¯‰ AI å»æ£€æŸ¥ä¸Šé¢çš„æ—¥å¿—
     Write-Error "Test execution failed. Please analyze the logs above."
 }
