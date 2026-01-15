@@ -44,7 +44,7 @@ public class PetAttrCalc extends PlayerAttrCalc {
 
 	@Override
 	public InitialUI getFunction() {
-		return InitialUI.SoulPets;
+		return InitialUI.Pet;
 	}
 
 	@Override

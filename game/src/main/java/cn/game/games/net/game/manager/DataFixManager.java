@@ -30,6 +30,7 @@ import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.QuestHelper;
 import cn.game.games.net.game.helper.ServerHelper;
+import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.module.battle.LingPoBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.quest.Condition;
@@ -480,7 +481,7 @@ public class DataFixManager {
 						totalFailed++;
 						log.error("refreshSimplePlayers error for playerId: " + playerData.getPlayerId() + e.getMessage());
 						if (e.getMessage() != null && e.getMessage().contains("json 反序列化异常")) {
-							PlayerHelper.deletePlayerData(playerData.getPlayerId());
+							TestHelper.deletePlayerData(playerData.getPlayerId());
 						}
 					}
 

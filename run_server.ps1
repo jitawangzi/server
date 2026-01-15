@@ -1,3 +1,4 @@
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 <#
 .SYNOPSIS
     Automated Build & Launch Script for Game Server (Windows/AI Agent Optimized)
@@ -11,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 # ================= Configuration =================
 
-# 1. Global JVM Args (From your Linux script)
+# 1. Global JVM Args
 $GlobalJvmArgs = @(
     "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=oom.dump",
     "-Xmx4g", "-Xms256m", "-Xss256k",
@@ -21,7 +22,6 @@ $GlobalJvmArgs = @(
     "-verbose:gc",
     "-XX:+PrintCommandLineFlags",
     "-XX:+ExplicitGCInvokesConcurrent",
-    # 注意：Windows下路径分隔符调整，且去掉了 log 的时间戳文件名以简化清理，如有需要可加回
     "-Xlog:gc*,safepoint:gc.log:time,uptime:filecount=100,filesize=50M",
     "-Djdk.attach.allowAttachSelf=true",
     "-Dio.netty.tryReflectionSetAccessible=true",
@@ -33,7 +33,7 @@ $GlobalJvmArgs = @(
 $ApolloArgs = "-Dapp.id={0} -Denv=dev -Dapollo.cluster=default -Dapollo.meta=http://test:8080"
 $RunModuleArg = "-Dserver.run.mode=test"
 
-# 3. Service Definitions
+# 3. Service Definitions (paths are now relative to module directory)
 $Services = @(
     @{
         Name = "GameServer"
@@ -41,18 +41,18 @@ $Services = @(
         MainClass = "cn.game.games.net.game.GameServer"
         UniqueId = "game_test"
         DebugPort = "8011"
-        LogDir = "game/logs"
-        ErrLogFile = "game/logs/out.log"
+        LogDir = "logs"
+        ErrLogFile = "logs/out.log"
         AppId = "game"
     },
     @{
         Name = "CrossServer"
-        ModuleDir = "game" # Cross code is in game module
+        ModuleDir = "game"
         MainClass = "cn.game.games.net.cross.CrossServer"
         UniqueId = "cross_test"
         DebugPort = "8012"
-        LogDir = "game/cross_logs"
-        ErrLogFile = "game/cross_logs/out.log"
+        LogDir = "cross_logs"
+        ErrLogFile = "cross_logs/out.log"
         AppId = "cross"
     },
     @{
@@ -61,11 +61,14 @@ $Services = @(
         MainClass = "cn.game.login.LoginServer"
         UniqueId = "login_test"
         DebugPort = "9490"
-        LogDir = "login/logs"
-        ErrLogFile = "login/logs/out.log"
+        LogDir = "logs"
+        ErrLogFile = "logs/out.log"
         AppId = "login"
     }
 )
+
+# Save project root directory
+$ProjectRoot = Get-Location
 
 # ================= Phase 1: Cleanup Old Processes =================
 Write-Host ">>> [Phase 1] Cleaning up old processes..." -ForegroundColor Cyan
@@ -107,25 +110,28 @@ Write-Host ">>> [Phase 3] Starting Services Parallelly..." -ForegroundColor Cyan
 $StartedProcesses = @()
 
 foreach ($svc in $Services) {
-    # 1. Prepare Paths
-    $modulePath = Resolve-Path $svc.ModuleDir
-    $logDir = "$modulePath\$($svc.LogDir -replace '^\./','' -replace '/','\')" # Fix path slashes
-    $errLog = "$modulePath\$($svc.ErrLogFile -replace '^\./','' -replace '/','\')"
+    # 1. Prepare Paths (relative to module directory)
+    $modulePath = Resolve-Path (Join-Path $ProjectRoot $svc.ModuleDir)
+    $logDir = Join-Path $modulePath ($svc.LogDir -replace '/', '\')
+    $errLog = Join-Path $modulePath ($svc.ErrLogFile -replace '/', '\')
     
     # Create Log Directory if missing
-    if (!(Test-Path $logDir)) { New-Item -ItemType Directory -Force -Path $logDir | Out-Null }
+    if (!(Test-Path $logDir)) { 
+        New-Item -ItemType Directory -Force -Path $logDir | Out-Null 
+    }
     
-    # Clear old error log (Crucial for monitoring!)
-    if (Test-Path $errLog) { Clear-Content $errLog }
+    # Clear old error log
+    if (Test-Path $errLog) { 
+        Clear-Content $errLog 
+    }
 
-    # 2. Construct Classpath
-    # Windows uses ';' separator. Wildcard '*' works for jars in lib.
-    $classPath = ".;.\$($svc.ModuleDir)\target\classes;.\$($svc.ModuleDir)\target\lib\*"
+    # 2. Construct Classpath (relative to module directory)
+    $classPath = ".;.\target\classes;.\target\lib\*"
 
     # 3. Construct Arguments
     $debugArg = "-agentlib:jdwp=transport=dt_socket,address=*:$($svc.DebugPort),server=y,suspend=n"
     $apolloActual = $ApolloArgs -f $svc.AppId
-    $logPathArg = "-DSEVER_PATH=./$($svc.LogDir -replace '\\','/')" # Java prefers forward slashes in props sometimes
+    $logPathArg = "-DSEVER_PATH=./$($svc.LogDir)"
     
     # Assemble full argument list
     $javaArgs = @()
@@ -133,23 +139,27 @@ foreach ($svc in $Services) {
     $javaArgs += $GlobalJvmArgs
     $javaArgs += $RunModuleArg
     $javaArgs += $logPathArg
-    $javaArgs += $apolloActual.Split(" ") # Split string into array for Start-Process
+    $javaArgs += $apolloActual.Split(" ")
     $javaArgs += "-cp", $classPath
     $javaArgs += $svc.MainClass
-    $javaArgs += $svc.UniqueId # APP_ARGS
+    $javaArgs += $svc.UniqueId
 
-    Write-Host "    Starting $($svc.Name)..."
+    Write-Host "    Starting $($svc.Name) in directory: $modulePath"
     
-    # 4. Start Process
-    # -RedirectStandardError mimics "2>logs/out.log"
-    # -WindowStyle Hidden keeps it clean, remove if you want to see empty windows
+    # 4. Start Process with WorkingDirectory set to module path
     $p = Start-Process -FilePath "java" `
         -ArgumentList $javaArgs `
+        -WorkingDirectory $modulePath `
         -RedirectStandardError $errLog `
         -WindowStyle Hidden `
         -PassThru
 
-    $StartedProcesses += @{ Process = $p; Config = $svc; Finished = $false }
+    $StartedProcesses += @{ 
+        Process = $p
+        Config = $svc
+        ErrLogPath = $errLog
+        Finished = $false 
+    }
 }
 
 # ================= Phase 4: Monitor (The Watchdog) =================
@@ -167,15 +177,12 @@ while ((Get-Date) -lt $StartTime.AddSeconds($TimeoutSeconds)) {
 
         # Check if process died
         if ($item.Process.HasExited) {
-            Write-Error "Service $($item.Config.Name) crashed unexpectedly! Check $($item.Config.ErrLogFile)"
+            Write-Error "Service $($item.Config.Name) crashed unexpectedly! Check $($item.ErrLogPath)"
         }
 
-        # Check log file for specific string
-        $logPath = "$($item.Config.ModuleDir)\$($item.Config.ErrLogFile -replace '^\./','' -replace '/','\')"
-        
-        if (Test-Path $logPath) {
-            # Read last 20 lines to find the success message
-            $logContent = Get-Content $logPath -Tail 20 -ErrorAction SilentlyContinue
+        # Check log file for success message
+        if (Test-Path $item.ErrLogPath) {
+            $logContent = Get-Content $item.ErrLogPath -Tail 20 -Encoding UTF8 -ErrorAction SilentlyContinue
             if ($logContent -match "Server startup complete") {
                 Write-Host "    [SUCCESS] $($item.Config.Name) is ready." -ForegroundColor Green
                 $item.Finished = $true

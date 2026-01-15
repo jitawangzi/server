@@ -52,7 +52,7 @@ public class PetHandler extends GameBaseHandler {
 
 	@Override
 	protected InitialUI getInitialUI() {
-		return InitialUI.SoulPets;
+		return InitialUI.Pet;
 	}
 
     @Override
@@ -72,7 +72,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetCompositeResponse_19000002 defaultInstance = PetCompositeResponse_19000002.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -95,7 +95,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetUpLevelResponse_19000004 defaultInstance = PetUpLevelResponse_19000004.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -137,7 +137,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetBreakUpResponse_19000006 defaultInstance = PetBreakUpResponse_19000006.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -177,7 +177,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetRefineResponse_19000008 defaultInstance = PetRefineResponse_19000008.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -216,7 +216,7 @@ public class PetHandler extends GameBaseHandler {
 		int id = req.getId();
         PetRefineSaveResponse_1900000a defaultInstance = PetRefineSaveResponse_1900000a.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -242,7 +242,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetBattleResponse_19000012 defaultInstance = PetBattleResponse_19000012.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -264,7 +264,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetBondsActivateResponse_19000014 defaultInstance = PetBondsActivateResponse_19000014.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }
@@ -293,7 +293,7 @@ public class PetHandler extends GameBaseHandler {
         int id = req.getId();
         PetBondsUpLevelResponse_19000016 defaultInstance = PetBondsUpLevelResponse_19000016.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (!player.isFuncOpen(InitialUI.SoulPets)) {
+        if (!player.isFuncOpen(InitialUI.Pet)) {
             client.sendProtocol(defaultInstance, ErrorMsgEnum.func_not_open.getId());
             return;
         }

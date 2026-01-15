@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +32,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
 
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.controller.Dispatcher;
@@ -61,12 +63,14 @@ import cn.game.protocol.protobuf.GuildMsg.GuildPersonalInfo;
 import cn.game.protocol.protobuf.MailMsg.MailInfo;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
 import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
+import cn.game.util.HexUtil;
 import cn.game.util.HttpUtil;
 import cn.game.util.IdWorker;
 import cn.game.util.Rnd;
@@ -201,6 +205,8 @@ public class Client extends AbstractNetClient {
 	private volatile byte[] lastSendMessageContent;
 	/** 最后一次发的消息 */
 	public volatile Message lastSendMessage;
+	/** 最后一次发的消息id */
+	public volatile int lastSendMessageId;
 	
 	private volatile io.vertx.core.Promise respPromise;
 	// 上一次心跳时间
@@ -758,6 +764,7 @@ public class Client extends AbstractNetClient {
 	    // 3) 发送前：原子地记录“尝试发送”的状态
 	    final long sendTime = System.nanoTime();
 	    lastSendMessage = msg;
+	    lastSendMessageId = msgId;
 	    lastSendMessageContent = bytes;           // 用于重发
 	    lastSendMessageTime = System.currentTimeMillis();
 	    sendMessages.put(seqSend, Pair.of(msgName, sendTime));
@@ -916,7 +923,7 @@ public class Client extends AbstractNetClient {
 	public <T> T sendProtocolAndWait(Message message) {
 		io.vertx.core.Promise promise = io.vertx.core.Promise.promise();
 		respPromise = promise ;
-		Future future = promise.future(); 
+		Future future = promise.future().timeout(5, TimeUnit.SECONDS); 
 		Object resp = AsyncUtils.await(future);
 		return (T) resp; 
 	}
@@ -924,9 +931,24 @@ public class Client extends AbstractNetClient {
 //		
 //		
 //	}
-	public void onResponse(int id,int seq ,Message respMessage) {
-		
-		
+	public void onResponse(int id,int seq ,int errorCode, Message respMessage) {
+		if (respPromise == null) {
+			return ; 
+		}
+		// 服务器主动推送的
+		if (seq == 0) {
+			return; 
+		}
+		if (id <= 0) {
+			respPromise.fail(new LogicException(errorCode, "Response id is " + id));
+		}
+		if (errorCode > 0 ||  respMessage instanceof PlayerErrorPush_01000099) {
+			respPromise.fail(new LogicException(errorCode, "Response id:"+HexUtil.toHexString(id)+" fail,errorCode:" + errorCode));
+		}
+		if (id - 1 == lastSendMessageId) {// 请求对应的返回包
+			respPromise.tryComplete(respMessage); 
+		}
+		// 返回包之前的一些推送
 	}
 
 	public void sendProtocolAfterInit(Message message) {

@@ -30,6 +30,7 @@ import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.handler.GmBaseHandler;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.Goods;
@@ -120,7 +121,7 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerDeleteRequest_77000052 req = (GmPlayerDeleteRequest_77000052) o;
 		GmPlayerDeleteResponse_77000053 resp = GmPlayerDeleteResponse_77000053.getDefaultInstance();
 
-		PlayerHelper.deletePlayerData(Long.parseLong(req.getPlayerId()));
+		TestHelper.deletePlayerData(Long.parseLong(req.getPlayerId()));
 		client.sendProtocol(resp);
 
 	}

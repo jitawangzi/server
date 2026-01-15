@@ -1,0 +1,13 @@
+// 这里的类是安全的，可以直接调用
+[Managers]
+ItemManager.instance() : 物品配置读取
+PetManager.instance() : 宠物配置读取
+QuestManager.instance() : 任务配置读取
+
+[Utils]
+DateUtil : 时间工具
+Rnd : 随机数工具
+AsyncUtils : 异步转同步工具
+
+[Helpers]
+PlayerHelper : 资源增删、通用推送

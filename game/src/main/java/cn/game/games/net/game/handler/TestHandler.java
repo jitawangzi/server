@@ -339,7 +339,7 @@ public class TestHandler extends GameBaseHandler {
 					throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
 				}
 				// 将某人删档
-				PlayerHelper.deletePlayerData(delId);
+				TestHelper.deletePlayerData(delId);
 				break;
 			}
             case "itemdel":
@@ -1059,7 +1059,7 @@ public class TestHandler extends GameBaseHandler {
         TestPlayerDeleteRequest_6f000044 req = (TestPlayerDeleteRequest_6f000044) message;
         long playerId = req.getPlayerId();
         TestPlayerDeleteResponse_6f000045 defaultInstance = TestPlayerDeleteResponse_6f000045.getDefaultInstance();
-        PlayerHelper.deletePlayerData(playerId);
+        TestHelper.deletePlayerData(playerId);
         client.sendProtocol(defaultInstance);
     }
 

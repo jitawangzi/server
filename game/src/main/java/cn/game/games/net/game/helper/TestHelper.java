@@ -8,16 +8,29 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.cache.CacheType;
+import cn.game.core.cache.RedisLocalCache;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
+import cn.game.games.net.data.mapper.EquiptowerHelpMapper;
+import cn.game.games.net.data.mapper.ForbidAccountMapper;
+import cn.game.games.net.data.mapper.FriendApplicationMapper;
+import cn.game.games.net.data.mapper.FriendMapper;
+import cn.game.games.net.data.mapper.GuildJoinMapper;
+import cn.game.games.net.data.mapper.InviteMapper;
+import cn.game.games.net.data.mapper.MailMapper;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.constant.MapperConstant;
+import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.gm.GmHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
+import cn.game.games.net.game.manager.PlayerNameManager;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.currency.CurrencyModule;
 import cn.game.games.net.game.module.develop.hero.HeroModule;
@@ -269,5 +282,70 @@ public class TestHelper {
 		// 最后解锁所有功能
 		player.getFuncModule().gmUnlockFunc((byte) 0);
 
+	}
+	
+
+	/** 
+	 * 删除玩家数据，一般只给gm使用
+	 * @param playerId
+	 */
+	public static void deletePlayerData(long playerId) {
+		Player playerDelete = PlayerManager.getInstance().getPlayer(playerId);
+		if (playerDelete != null) {
+			GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
+			if (gameClientByPlayer != null) {
+				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
+			}
+			PlayerHelper.clearPlayer(playerId);
+			// 删除微信推送的任务
+			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
+		}
+
+		// 删除数据库
+		List<DbTask> tasks = new ArrayList<>();
+		tasks.add(new DbTask(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(FriendMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(FriendApplicationMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(InviteMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(ForbidAccountMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+		tasks.add(new DbTask(MailMapper.class, MapperConstant.deletePlayerData, playerId));
+		tasks.add(new DbTask(EquiptowerHelpMapper.class, MapperConstant.deleteByPlayerId, playerId));
+		tasks.add(new DbTask(GuildJoinMapper.class, MapperConstant.deleteByPrimaryKey, playerId));
+
+		DAO.execute(PlayerDataMapper.class, MapperConstant.selectByPrimaryKey, playerId).toCompletionStage().thenCompose(r -> {
+			PlayerData playerData = (PlayerData) r;
+			// 名字
+			PlayerNameManager.getInstance().removeName(playerData.getName());
+			// 排行榜
+			for (RankType rankType : RankType.values()) {
+				RankService.getInstance().removeRankAsync(rankType, playerData.getServerId(), playerData.getPlayerId());
+			}
+			long unionId = playerData.getUnionId();
+			if (unionId > 0) {
+				VxHolder.vertx.executeBlocking(() -> {
+					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(unionId);
+					guildProxy.quitGuild(unionId, playerId, playerData.getName());
+					return null; 
+				});
+			}
+			// 简要数据
+			String key = CacheType.PLAYER_SIMPLE.key(playerId);
+			return RedisLocalCache.getInstance().deleteAsync(key).thenApply(result -> playerData);
+		})
+				.thenCompose(playerData -> DAO.executeDbTaskList(tasks).toCompletionStage().thenApply(result -> playerData))
+				.thenCompose(playerData -> {
+					// 删除login账号,这里可以使用传递下来的playerData
+					return VxHolder
+							.requestRemoteServer(ServerType.Login,
+									LoginPlayerDeleteRequest_7d000080.newBuilder()
+											.setPlayerId(playerData.getPlayerId())
+											.setAccount(playerData.getDeviceId())
+											.build())
+							.toCompletionStage();
+				})
+				.exceptionally(e -> {
+					log.error("", e);
+					return null;
+				});
 	}
 }

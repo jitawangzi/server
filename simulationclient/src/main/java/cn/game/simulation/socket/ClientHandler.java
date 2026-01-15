@@ -64,6 +64,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<BinaryWebSocketFr
 				ProtobufProtocol p = new ProtobufProtocol(id, parseFrom, seq);
 				dispatcher.dispatch(client, p);
 			}
+			client.onResponse(id, seq, errorCode, parseFrom);
 			String resp = MessageFormat.format("opType[recv]player[{5}]errorCode[{0}]id[{1}]name[{2}]content[{3}]seq[{4}]", errorCode,
 					HexUtil.toHexString(id),
 					parseFrom.getClass().getSimpleName(), TextFormat.shortDebugString(parseFrom), seq, client);

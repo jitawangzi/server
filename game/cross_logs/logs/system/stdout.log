@@ -1,18 +1,36 @@
-2026-01-09 10:30:10.251 [main] INFO  System - null
-2026-01-09 10:30:10.254 [main] INFO  Info - null
-2026-01-09 10:30:10.254 [main] INFO  Net - null
-2026-01-09 10:30:10.254 [main] INFO  Elapsed - null
-2026-01-09 10:30:10.254 [main] INFO  Combat - null
-2026-01-09 10:30:10.254 [main] INFO  NetCheck - null
-2026-01-09 10:30:10.254 [main] INFO  SystemOut - null
-2026-01-09 10:30:10.254 [main] INFO  Stdout - null
-2026-01-09 10:30:10.254 [main] INFO  patrolmountainend - null
-2026-01-09 10:30:10.254 [main] INFO  guilddisband - null
-2026-01-09 10:30:10.254 [main] INFO  guildexit - null
-2026-01-09 10:30:10.255 [main] INFO  guildshop - null
-2026-01-09 10:30:10.255 [main] INFO  guildquest - null
-2026-01-09 10:30:10.524 [main] INFO  c.c.f.f.i.p.DefaultApplicationProvider - App ID is set to cross by app.id property from System Property
-2026-01-09 10:30:10.524 [main] WARN  c.c.f.f.i.p.DefaultApplicationProvider - app.label is not available from System Property and /META-INF/app.properties. It is set to null
-2026-01-09 10:30:10.526 [main] INFO  c.c.f.f.i.p.DefaultServerProvider - Environment is set to [dev] by JVM system property 'env'.
-2026-01-09 10:30:10.559 [main] INFO  c.c.f.a.i.DefaultMetaServerProvider - Located meta services from apollo.meta configuration: http://test:8080!
-2026-01-09 10:30:10.562 [main] INFO  c.c.f.a.c.MetaDomainConsts - Located meta server address http://test:8080 for env DEV from com.ctrip.framework.apollo.internals.DefaultMetaServerProvider
+2026-01-10 08:23:44.907 [main] INFO  System - null
+2026-01-10 08:23:44.914 [main] INFO  Info - null
+2026-01-10 08:23:44.914 [main] INFO  Net - null
+2026-01-10 08:23:44.914 [main] INFO  Elapsed - null
+2026-01-10 08:23:44.914 [main] INFO  Combat - null
+2026-01-10 08:23:44.914 [main] INFO  NetCheck - null
+2026-01-10 08:23:44.914 [main] INFO  SystemOut - null
+2026-01-10 08:23:44.914 [main] INFO  Stdout - null
+2026-01-10 08:23:44.914 [main] INFO  patrolmountainend - null
+2026-01-10 08:23:44.914 [main] INFO  guilddisband - null
+2026-01-10 08:23:44.914 [main] INFO  guildexit - null
+2026-01-10 08:23:44.914 [main] INFO  guildshop - null
+2026-01-10 08:23:44.914 [main] INFO  guildquest - null
+2026-01-10 08:23:45.197 [main] INFO  c.c.f.f.i.p.DefaultApplicationProvider - App ID is set to cross by app.id property from System Property
+2026-01-10 08:23:45.197 [main] WARN  c.c.f.f.i.p.DefaultApplicationProvider - app.label is not available from System Property and /META-INF/app.properties. It is set to null
+2026-01-10 08:23:45.198 [main] INFO  c.c.f.f.i.p.DefaultServerProvider - Environment is set to [dev] by JVM system property 'env'.
+2026-01-10 08:23:45.250 [main] INFO  c.c.f.a.i.DefaultMetaServerProvider - Located meta services from apollo.meta configuration: http://test:8080!
+2026-01-10 08:23:45.253 [main] INFO  c.c.f.a.c.MetaDomainConsts - Located meta server address http://test:8080 for env DEV from com.ctrip.framework.apollo.internals.DefaultMetaServerProvider
+2026-01-10 08:28:46.592 [main] INFO  System - null
+2026-01-10 08:28:46.595 [main] INFO  Info - null
+2026-01-10 08:28:46.595 [main] INFO  Net - null
+2026-01-10 08:28:46.595 [main] INFO  Elapsed - null
+2026-01-10 08:28:46.595 [main] INFO  Combat - null
+2026-01-10 08:28:46.595 [main] INFO  NetCheck - null
+2026-01-10 08:28:46.595 [main] INFO  SystemOut - null
+2026-01-10 08:28:46.595 [main] INFO  Stdout - null
+2026-01-10 08:28:46.596 [main] INFO  patrolmountainend - null
+2026-01-10 08:28:46.596 [main] INFO  guilddisband - null
+2026-01-10 08:28:46.596 [main] INFO  guildexit - null
+2026-01-10 08:28:46.596 [main] INFO  guildshop - null
+2026-01-10 08:28:46.596 [main] INFO  guildquest - null
+2026-01-10 08:28:46.865 [main] INFO  c.c.f.f.i.p.DefaultApplicationProvider - App ID is set to cross by app.id property from System Property
+2026-01-10 08:28:46.865 [main] WARN  c.c.f.f.i.p.DefaultApplicationProvider - app.label is not available from System Property and /META-INF/app.properties. It is set to null
+2026-01-10 08:28:46.866 [main] INFO  c.c.f.f.i.p.DefaultServerProvider - Environment is set to [dev] by JVM system property 'env'.
+2026-01-10 08:28:46.908 [main] INFO  c.c.f.a.i.DefaultMetaServerProvider - Located meta services from apollo.meta configuration: http://test:8080!
+2026-01-10 08:28:46.910 [main] INFO  c.c.f.a.c.MetaDomainConsts - Located meta server address http://test:8080 for env DEV from com.ctrip.framework.apollo.internals.DefaultMetaServerProvider
