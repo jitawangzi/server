@@ -100,6 +100,7 @@ import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
+import cn.game.util.ai.annotation.AiExport;
 import cn.game.util.reflect.ClassHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
@@ -151,6 +152,7 @@ public class Player {
 	private List<Long> timerTask = new ArrayList<>();
 	private boolean isOnline = true;
 
+	@AiExport
 	public <T extends BasePlayerModule> T getModule(Class<T> clazz) {
 		return clazz.cast(this.modules.get(clazz.getName()));
 	}
@@ -161,6 +163,7 @@ public class Player {
 	 * @param handler
 	 * @return
 	 */
+	@AiExport
 	public long setPeriodicTask(long delay, Handler<Player> handler) {
 		long timer = VxHolder.vertx.setPeriodic(delay, r -> {
 			ServerContext.getInstance().getProcessor().process(playerId, () -> {
@@ -177,6 +180,7 @@ public class Player {
 	 * @param handler
 	 * @return
 	 */
+	@AiExport
 	public long setTimerTask(long delay, Handler<Player> handler) {
 		if (delay <= 0) {
 			ServerContext.getInstance().getProcessor().process(playerId,()-> handler.handle(this), false);
@@ -198,12 +202,13 @@ public class Player {
 //		});
 //	}
 
+	@AiExport
 	public void cancelTimer(long id) {
 //		log.info("player : " + playerId + "取消定时器：" + id);
 		timerTask.remove(id);
 		VxHolder.vertx.cancelTimer(id);
 	}
-
+	@AiExport
 	public void cancelAllTimer() {
 		for (Long id : timerTask) {
 //			log.info("player : " + playerId + "取消定时器：" + id);
@@ -215,30 +220,25 @@ public class Player {
 	/**
 	 * 注册事件处理器
 	 */
+	@AiExport
 	public void registerEventHandler(PlayerEventHandler handler) {
 		eventBus.register(handler);
 	}
-
+	@AiExport
 	public void registerEventHandler(EventTypeEnum eventType, EventProcessor<PlayerEvent> handler) {
 		eventBus.register(eventType, handler);
 	}
 
-	/** 
-	 * 尽量不要使用这个方法
-	 * @param gameEvent
-	 */
-	public void fireAndHandleEvent(PlayerEvent gameEvent) {
-		eventBus.dispatch(gameEvent);
-	}
-
+	@AiExport
 	public void fireAndHandleEvent(EventTypeEnum eventType) {
 		eventBus.dispatch(new PlayerEvent(eventType, this));
 	}
-
+	@AiExport
 	public void fireAndHandleEvent(EventTypeEnum eventType, Object... params) {
 		eventBus.dispatch(new PlayerEvent(eventType, this, params));
 	}
 
+	@AiExport
 	public PlayerEventBus getPlayerEventBus() {
 		return eventBus;
 	}
@@ -417,6 +417,7 @@ public class Player {
 		return ret;
 	}
 
+	@AiExport
 	public boolean isEnough(int id, int count) {
 		return getGoodsModule(id).isEnough(id, count);
 	}
@@ -503,7 +504,8 @@ public class Player {
 	 * @param cost   费用，第一个是支付类型，第二个是支付的id，第三个是支付的数量
 	 * @param otherId   其他id,例如活动id等
 	 * @return
-	 */
+	 */ 
+	@AiExport
 	public Future<Boolean> pay(PayType payType, int id, int[] cost, int... otherId) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return Future.succeededFuture(true);
@@ -595,6 +597,7 @@ public class Player {
 	 * @param cost
 	 * @return
 	 */
+	@AiExport
 	public void pay(int[] cost,OpType opType) {
 		if (cost == null || cost.length == 0 || (cost.length == 1 && cost[0] == 0)) {
 			return;
@@ -615,6 +618,7 @@ public class Player {
 	 * @param type
 	 * @return
 	 */
+	@AiExport
 	public int getWelfareValue(WelfareTypeEnum type) {
 		int ret = 0;
 		// 月卡加成
@@ -655,6 +659,7 @@ public class Player {
 	 * @param type
 	 * @return
 	 */
+	@AiExport
 	public boolean hasWelfare(WelfareTypeEnum type) {
 		return getWelfareValue(type) > 0;
 	}
@@ -664,6 +669,7 @@ public class Player {
 	 * @param type
 	 * @return
 	 */
+	@AiExport
 	public boolean isFuncOpen(InitialUI type) {
 		if (type == null) {
 			return true;
@@ -696,6 +702,7 @@ public class Player {
 	 * 获取玩家等级
 	 * @return
 	 */
+	@AiExport
 	public int getLevel() {
 		return getLevel(Asset.playerExp);
 	}
@@ -709,6 +716,7 @@ public class Player {
 		return getPlayerModule().getExpLevelMap().getValue(exp.ID);
 	}
 
+	@AiExport
 	public void handleFail(Throwable t) {
 		handleFail(PlayerErrorPush_01000099.getDefaultInstance(), t);
 	}
@@ -719,6 +727,7 @@ public class Player {
 	 * @param response 发生错误时的返回消息
 	 * @param t  异常
 	 */
+	@AiExport
 	public void handleFail(Message response, Throwable t) {
 		// 逻辑错误，非法逻辑
 		if (t instanceof LogicException) {
@@ -741,6 +750,7 @@ public class Player {
 	 * @param t 异常
 	 * @return null
 	 */
+	@AiExport
 	public <T> T handleFailFunction(Throwable t) {
 		handleFail(t);
 		return null;
@@ -750,6 +760,7 @@ public class Player {
 	 * 主动抛出一个错误，中断当前流程。 
 	 * @param errorMsgEnum
 	 */
+	@AiExport
 	public void fail(ErrorMsgEnum errorMsgEnum) {
 		throw new LogicException(errorMsgEnum.ID);
 	}
@@ -766,6 +777,7 @@ public class Player {
 	 * 检查客户端输入的数量范围，是否在合法范围内
 	 * @param count
 	 */
+	@AiExport
 	public void checkClientRequestCount(int count) {
         if (count < 0 || count > GameConstants.REQUEST_COUNT_MAX) {
             fail(ErrorMsgEnum.request_parameter_error);
@@ -780,6 +792,7 @@ public class Player {
 		this.playerId = playerId;
 	}
 
+	@AiExport
 	public PlayerData getData() {
 		return data;
 	}
@@ -800,6 +813,7 @@ public class Player {
 		this.islogouting = islogouting;
 	}
 
+	@AiExport
 	public GameClient getGameClient() {
 		return gameClient;
 	}
@@ -816,6 +830,7 @@ public class Player {
 		this.islogining = islogining;
 	}
 
+	@AiExport
 	public Account getAccount() {
 		return account == null ? getPlayerModule().getAccount() : account;
 	}

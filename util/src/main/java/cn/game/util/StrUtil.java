@@ -13,7 +13,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.alibaba.fastjson.JSONObject;
+import cn.game.util.ai.annotation.AiExport;
 
 public class StrUtil {
 
@@ -254,10 +254,6 @@ public class StrUtil {
 		return new int[][] { ret1, ret2 };
 	}
 	
-	public static <T> String toJsonStr(T t) {
-		return JSONObject.toJSONString(t);
-	}
-
 	public static Map<String, String> parseKv(String kvString, boolean urlDecode) {
 		Map<String, String> map = new LinkedHashMap<>();
 		if (kvString == null || kvString.isEmpty())

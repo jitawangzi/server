@@ -976,6 +976,13 @@
 		    <artifactId>jol-core</artifactId>
 		    <version>0.17</version>
 		</dependency>
+<!-- https://mvnrepository.com/artifact/com.github.javaparser/javaparser-core -->
+<dependency>
+    <groupId>com.github.javaparser</groupId>
+    <artifactId>javaparser-core</artifactId>
+    <version>3.25.10</version>
+</dependency>
+
 
 	</dependencies>
 

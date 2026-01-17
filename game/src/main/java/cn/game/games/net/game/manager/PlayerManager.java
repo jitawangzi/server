@@ -34,6 +34,7 @@ import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
+import cn.game.util.ai.annotation.AiExport;
 import io.vertx.core.Future;
 
 //@Component
@@ -173,6 +174,7 @@ public class PlayerManager {
 	 * @param playerId
 	 * @return
 	 */
+	@AiExport
 	public Player getPlayer(long playerId) {
 		return id_players.get(playerId);
 	}
@@ -212,6 +214,7 @@ public class PlayerManager {
 		return id_players.remove(id);
 	}
 	
+	@AiExport
 	public ConcurrentHashMap<Long, Player> getAllPlayer() {
 
 		return this.id_players;

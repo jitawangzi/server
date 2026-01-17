@@ -1,6 +1,7 @@
 package cn.game.games.cache.base;
 
 import cn.game.games.util.DAO;
+import cn.game.util.ai.annotation.AiExport;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
@@ -12,6 +13,7 @@ import io.vertx.core.Future;
  * 2024年4月8日 下午6:45:47
  * @author SYQ
  */
+@AiExport
 public interface DbEntity {
 
 	public default Future<@Nullable Object> insert() {

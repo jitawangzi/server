@@ -6,9 +6,7 @@ import java.util.List;
 
 import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.Item;
-import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.helper.ItemHelper;
-import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.award.RewardHelper;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -47,9 +45,9 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 	 * 检查配置表id是否合法。 
 	 * @param id
 	 */
-	public abstract void checkConfig(int id);
+	protected abstract void checkConfig(int id);
 
-	public abstract E newInstance();
+	protected abstract E newInstance();
 
 	/** 
 	 * 初始化指定的物品流程
@@ -57,7 +55,7 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 	 * @param count
 	 * @return
 	 */
-	public E initAdd(int configId, int count) {
+	protected E initAdd(int configId, int count) {
 
 		E item = newInstance();
 		setInstance(item, configId, count);
@@ -69,7 +67,7 @@ public abstract class GoodsModule<E extends Item> extends BasePlayerModule {
 		return item;
 	}
 
-	public long genUid() {
+	protected long genUid() {
 		return IdUtil.getId();
 	}
 

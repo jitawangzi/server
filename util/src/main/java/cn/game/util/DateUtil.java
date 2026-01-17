@@ -12,11 +12,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import cn.game.util.ai.annotation.AiExport;
+
 /**   
  * 
  * 2016-7-8 下午4:46:08
  * @author SYQ
  */
+@AiExport
 public final class DateUtil {
 	/** 固定的起始日期,判断天数、周数等，避免跨年、月等问题 */
 	private static final LocalDate DATE_START = LocalDate.of(2025, 1, 1);

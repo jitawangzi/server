@@ -136,6 +136,7 @@ import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import cn.game.util.JolExclusiveSizeAnalyzer;
 import cn.game.util.JolExclusiveSizeAnalyzer.ModuleStat;
+import cn.game.util.ai.annotation.AiExport;
 import cn.game.util.JsonUtil;
 import cn.game.util.RedisUtil;
 import cn.game.util.Rnd;
@@ -175,6 +176,7 @@ public class PlayerHelper {
 	 * @param list entry key:物品id,entry value:数量
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, Collection<? extends Entry<Integer, Integer>> list) {
 
 		if (list == null || list.isEmpty()) {
@@ -194,6 +196,7 @@ public class PlayerHelper {
 	 * @param map key:物品id, value:数量
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, Map<Integer, Integer> map) {
 		if (map == null || map.isEmpty()) {
 			return true;
@@ -227,6 +230,7 @@ public class PlayerHelper {
 	 * @param list ，数组0是id，1是数量
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, int[][] list) {
 
 		if (list == null || list.length == 0) {
@@ -246,6 +250,7 @@ public class PlayerHelper {
 	 * @param list ，数组0是id，1是数量，也可以向后扩展，例如 2是id，3是数量
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, int[] list) {
 		if (list == null || list.length == 0) {
 			return true;
@@ -267,15 +272,17 @@ public class PlayerHelper {
 	 * @param count
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, int id, int count) {
 		return player.getGoodsModule(id).isEnough(id, count);
 	}
 
 	/** 
 	 * @param player
-	 * @param consumeId
+	 * @param consumeId : {@link ConsumeConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static boolean isEnough(Player player, int consumeId) {
 
 		if (consumeId == 0) {
@@ -333,6 +340,7 @@ public class PlayerHelper {
 	 * @param notify   增加后，是否通知客户端
 	 * @return
 	 */
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType, boolean notify) {
 		if (value < 0) {
 			return Collections.EMPTY_LIST;
@@ -353,10 +361,11 @@ public class PlayerHelper {
 		return rewards;
 	}
 
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType) {
 		return addResources(player, id, value, opType, false);
 	}
-
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int id, int value) {
 		return addResources(player, id, value, OpType.None, false);
 	}
@@ -397,6 +406,7 @@ public class PlayerHelper {
 	 * @param value       减少的数量
 	 * @param consumeType 消耗类型
 	 */
+	@AiExport
 	public static void delResources(Player player, int id, long value, OpType consumeType) {
 		delResources(player, id, value, consumeType, true);
 	}
@@ -408,6 +418,7 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
+	@AiExport
 	public static void delResourcesWithConsume(Player player, int consumeId, OpType consumeType) {
 		if (consumeId == 0) {
 			return;
@@ -424,6 +435,7 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @return
 	 */
+	@AiExport
 	public static void delResourcesWithConsume(Player player, int consumeId, int multiple, OpType consumeType) {
 		if (consumeId == 0) {
 			return;
@@ -442,6 +454,7 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @param notify      是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
 	 */
+	@AiExport
 	public static void delResources(Player player, int id, long value, OpType consumeType, boolean notify) {
 
 		if (value < 0) {
@@ -479,6 +492,7 @@ public class PlayerHelper {
 	 * @param list，entry key:物品id,entry value:数量
 	 * @param consumeType 消耗类型
 	 */
+	@AiExport
 	public static void delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType) {
 
 		if (list == null || list.isEmpty()) {
@@ -520,6 +534,7 @@ public class PlayerHelper {
 	 * @param consumeType 消耗类型
 	 * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
 	 */
+	@AiExport
 	public static void delResources(Player player, Map<Integer, Integer> map, OpType consumeType) {
 
 		if (map == null || map.isEmpty()) {
@@ -535,6 +550,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @return
 	 */
+	@AiExport
 	public static void delResources(Player player, int[][] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
@@ -572,6 +588,7 @@ public class PlayerHelper {
 	 * @param consumeType
 	 * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
 	 */
+	@AiExport
 	public static void delResources(Player player, int[] list, OpType consumeType) {
 
 		if (list == null || list.length == 0) {
@@ -606,6 +623,7 @@ public class PlayerHelper {
 	 * @param randomRewardId  {@link RandomGivenConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static List<RewardInfo> addReward(Player player, int randomRewardId, OpType opType) {
 		return addReward(player, randomRewardId, 0, opType);
 	}
@@ -617,7 +635,7 @@ public class PlayerHelper {
 	 * @param additionValue,额外增加的数量加成， 除以10000
 	 * @return
 	 */
-
+	@AiExport
 	public static List<RewardInfo> addReward(Player player, int randomRewardId, int additionValue, OpType opType) {
 		List<Goods> randomReward = randomReward(randomRewardId);
 		if (additionValue > 0) {
@@ -634,6 +652,7 @@ public class PlayerHelper {
 	 * @param randomRewardId {@link RandomGivenConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static List<Goods> randomReward(int randomRewardId) {
 		if (randomRewardId <= 0) {
 			return Collections.EMPTY_LIST;
@@ -850,6 +869,7 @@ public class PlayerHelper {
 	 * @param goods
 	 * @return
 	 */
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, List<Goods> goods, OpType opType) {
 		List<RewardInfo> rewardItems = new ArrayList<>();
 		if (goods != null && goods.size() > 0) {
@@ -863,10 +883,11 @@ public class PlayerHelper {
 		return rewardItems;
 	}
 
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType) {
 		return addResources(player, rewards, opType, false);
 	}
-
+	@AiExport
 	public static List<RewardInfo> addGoods(Player player, List<Goods> goods, OpType opType) {
 		if (goods == null || goods.isEmpty()) {
 			return Collections.EMPTY_LIST;
@@ -877,7 +898,7 @@ public class PlayerHelper {
 		}
 		return ret;
 	}
-
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType, boolean notify) {
 		if (rewards != null && rewards.length > 0) {
 			List<RewardInfo> rewardItems = new ArrayList<>();
@@ -895,6 +916,7 @@ public class PlayerHelper {
 		return Collections.EMPTY_LIST;
 	}
 
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, int[] rewards, OpType opType) {
 
 		if (rewards == null || rewards.length == 0) {
@@ -916,6 +938,7 @@ public class PlayerHelper {
 	 * @param rewards
 	 * @return
 	 */
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, Collection<? extends Entry<Integer, Integer>> rewards, OpType opType) {
 		if (rewards != null && rewards.size() > 0) {
 			List<RewardInfo> rewardItems = new ArrayList<>();
@@ -929,6 +952,7 @@ public class PlayerHelper {
 		return Collections.EMPTY_LIST;
 	}
 
+	@AiExport
 	public static List<RewardInfo> addResources(Player player, Map<Integer, Integer> map, OpType opType) {
 		if (map == null || map.isEmpty()) {
 			return Collections.EMPTY_LIST;
@@ -941,6 +965,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param message
 	 */
+	@AiExport
 	public static void sendProtocol(long playerId, Object message) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
@@ -954,6 +979,7 @@ public class PlayerHelper {
 	 * @param message 消息
 	 * @param errorCode 错误码
 	 */
+	@AiExport
 	public static void sendProtocol(long playerId, Object message, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
@@ -966,6 +992,7 @@ public class PlayerHelper {
 	 * @param playerId
 	 * @param errorCode 	    错误码
 	 */
+	@AiExport
 	public static void sendErrorProtocol(long playerId, int errorCode) {
 		GameClient gameClientByPlayer = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (gameClientByPlayer != null) {
@@ -1064,6 +1091,7 @@ public class PlayerHelper {
 	 * @param serverId
 	 *            目标服务器id
 	 */
+	@AiExport
 	public static void sendToRemotePlayer(long playerId, String serverId, Message message) {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 		GamePlayerPush_7d000100.Builder builder = GamePlayerPush_7d000100.newBuilder();
@@ -1082,6 +1110,7 @@ public class PlayerHelper {
 	 * @param playerIds
 	 * @param serverIds
 	 */
+	@AiExport
 	public static void sendToRemotePlayers(Message message, List<Long> playerIds, List<String> serverIds) {
 		int msgId = PbProtocol.getInstance().getMsgId(message.getClass().getSimpleName());
 
@@ -1101,6 +1130,7 @@ public class PlayerHelper {
 	 * @param conditions 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static boolean checkCondition(Player player, int... conditions) {
 
 		return checkCondition(player, false, conditions);
@@ -1114,6 +1144,7 @@ public class PlayerHelper {
 	 *            
 	 * @return true,如果满足任意条件
 	 */
+	@AiExport
 	public static boolean checkCondition(Player player, boolean or, int... conditions) {
 
 		if (conditions == null || conditions.length == 0) {
@@ -1142,6 +1173,7 @@ public class PlayerHelper {
 	 * @param condition 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static boolean checkCondition(Player player, int condition) {
 		if (condition == 0) { // 一般认为没有配置条件，默认符合。
 			return true;
@@ -1157,6 +1189,7 @@ public class PlayerHelper {
 	 * @param condition 待检查条件，  {@link ConditionConfig#ID}
 	 * @return
 	 */
+	@AiExport
 	public static long getConditionCount(Player player, int condition) {
 		if (condition == 0) {
 			return 0;
@@ -1931,6 +1964,7 @@ public class PlayerHelper {
 	 * @param subId	子id，如果同一类型下有多个配置，用这个区分。
 	 * @return
 	 */
+	@AiExport
 	public static ExpConfig getExpConfig(int id, int level, int subId) {
 		if (id == Asset.playerExp.ID) {
 			return UserUpgradeManager.instance().getNullable(level);
@@ -1966,6 +2000,12 @@ public class PlayerHelper {
 		return simplePlayer.map(SimplePlayer::getServerId);
 	}
 
+	/** 
+	 * 获取玩家的逻辑服务器id
+	 * @param playerId
+	 * @return
+	 */
+	@AiExport
 	public static String getServerId(long playerId) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		if (player != null) {

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.util.ai.annotation.AiExport;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -92,6 +93,7 @@ public class AsyncUtils {
 	 * @return 结果
 	 * @throws 原始异常
 	 */
+	@AiExport
 	public static <T> T awaitWithException(Future<T> future, long timeout, TimeUnit unit)
 			throws InterruptedException, TimeoutException, ExecutionException {
 		checkEventLoop();
@@ -111,6 +113,7 @@ public class AsyncUtils {
 	 * @throws RuntimeException 如果发生异常则抛出运行时异常
 	 * 通过getCause()获取具体异常信息
 	 */
+	@AiExport
 	public static <T> T await(Future<T> future, long timeout, TimeUnit unit) {
 		try {
 			return awaitWithException(future, timeout, unit);
@@ -138,6 +141,7 @@ public class AsyncUtils {
 	 * @param future
 	 * @return
 	 */
+	@AiExport
 	public static <T> T await(Future<T> future) {
 		return await(future, 30, TimeUnit.SECONDS); // 默认超时 30 秒
 	}

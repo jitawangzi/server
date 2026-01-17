@@ -35,6 +35,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import cn.game.util.ai.annotation.AiExport;
+
 /**    
  * 对jackson的一个封装
  * 2024年3月1日 下午5:14:33
@@ -95,6 +97,7 @@ public class JsonUtil {
 	 * @param value
 	 * @return
 	 */
+	@AiExport
 	public static String toJsonString(Object value) {
 		try {
 			String json = objectMapper.writeValueAsString(value);
@@ -110,6 +113,7 @@ public class JsonUtil {
 	 * @param value
 	 * @return
 	 */
+	@AiExport
 	public static String toJsonStringWithType(Object value) {
 		try {
 			String json = objectMapperWithType.writeValueAsString(value);
@@ -133,6 +137,7 @@ public class JsonUtil {
 	 * @param valueType
 	 * @return
 	 */
+	@AiExport
 	public static <T> T parseObject(String value, Class<T> valueType) {
 		try {
 			return objectMapper.readValue(value, valueType);
@@ -165,6 +170,7 @@ public class JsonUtil {
 	 * @return 反序列化后的对象
 	 */
 	@SuppressWarnings("unchecked")
+	@AiExport
 	public static <T> T parseObjectWithType(String value) {
 		try {
 			return (T) objectMapperWithType.readValue(value, Object.class);

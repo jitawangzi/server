@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
+import cn.game.util.ai.annotation.AiExport;
+
 
 /**
  * @ClassName: Rnd
@@ -19,6 +21,7 @@ import java.util.function.Function;
  * @author luopeihuai luopeihuai@126.com
  * 2010-12-17 下午02:02:48
  */
+@AiExport
 public final class Rnd {
 //	private static final ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(Random::new);
 

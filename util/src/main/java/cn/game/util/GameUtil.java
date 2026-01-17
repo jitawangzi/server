@@ -13,11 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
 
+import cn.game.util.ai.annotation.AiExport;
+
 /**    
  * 一些常用方法
  * 2022年4月12日 下午12:12:57
  * @author SYQ
  */
+@AiExport
 public class GameUtil {
 	private static final int[] EMPTY_INT_ARRAY = new int[] {};
 

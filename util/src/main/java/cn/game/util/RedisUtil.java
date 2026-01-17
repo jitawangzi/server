@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
+import cn.game.util.ai.annotation.AiExport;
+
 
 /**
  * Redisson操作工具类，封装常用方法
@@ -47,6 +49,7 @@ public class RedisUtil {
 	 * 使用高级功能如集合等等，可以获取redis实例进行操作，一般的存储读取使用封装好的方法
 	 * @return
 	 */
+	@AiExport
 	public static RedissonClient getRedis() {
 		return redis;
 	}
