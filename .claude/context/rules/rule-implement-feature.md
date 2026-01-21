@@ -13,12 +13,12 @@ STAGE: DEV (开发)
 
 ## 输入 (运行前必须存在)
 - .claude/context/ai-coding.md
-- specs/features/<feature>/06_design_contract.md
+- .claude/specs/features/<feature>/06_design_contract.md
 - 协议定义 (.proto) (仓库中已实施的)
 
 ## 输出 (必须创建/更新)
 - 此功能所需的服务端代码变更,直接创建或者修改已有的项目文件。 
-- (可选) 开发笔记：specs/features/<feature>/07_dev_report.md
+- (可选) 开发笔记：.claude/specs/features/<feature>/07_dev_report.md
 
 ## 允许的修改 (硬性约束)
 - 允许：

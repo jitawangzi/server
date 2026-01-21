@@ -6,7 +6,7 @@
 **你的目标是明确“业务逻辑”，而非“代码实现”。** 你不需要思考数据库表结构或协议名称。你需要告诉架构师：服务端需要处理哪些逻辑，维护哪些状态，以及**真正**需要下发哪些**不可推导**的数据。
 
 ## Input
-- **Source**: `specs/features/<FeatureName>/` 目录下的原始策划文档。
+- **Source**: `.claude/specs/features/<FeatureName>/` 目录下的原始策划文档。
 
 ## Output
 - **Target File**: 同级目录下的 `01_server_rules.md`。
@@ -75,7 +75,7 @@
 ### 4. Multimodal Processing (多模态处理)
 如果输入源是 `.docx` 等包含图片的文档，必须执行以下流程：
 1.  **Extract (提取)**: 将文档解压，定位 `word/media/` 目录下的所有图片。
-    *   *PowerShell Command*: `Expand-Archive -Path "specs/features/<FeatureName>/<DocName>.docx" -DestinationPath "specs/features/<FeatureName>/temp" -Force`
+    *   *PowerShell Command*: `Expand-Archive -Path ".claude/specs/features/<FeatureName>/<DocName>.docx" -DestinationPath ".claude/specs/features/<FeatureName>/temp" -Force`
 2.  **Analyze (视觉分析)**: 使用 `read_file` 工具逐个查看关键图片（如 UI 布局图、流程图、数值表截图）。
 3.  **Integrate (整合)**: 将视觉获取的信息与文本描述交叉验证。
     *   *例如*: 文本未提及“等级加成按钮”，但 UI 图左下角明显有一个该按钮 -> **必须**在规则中补充相关逻辑。

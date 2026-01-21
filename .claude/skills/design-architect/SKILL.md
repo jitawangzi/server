@@ -49,4 +49,4 @@ description: 激活首席架构师模式。用于项目初期，负责将模糊�
 *   **禁止加载**：具体的代码实现细节，以免过早陷入细节。
 
 ## 交付物标准 (Artifacts)
-所有产出物必须保存到 `specs/features/<FeatureName>/` 目录下。
+所有产出物必须保存到 `.claude/specs/features/<FeatureName>/` 目录下。

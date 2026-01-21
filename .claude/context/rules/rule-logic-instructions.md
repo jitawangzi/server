@@ -12,14 +12,14 @@ STAGE: DESIGN (设计)
 - .claude/context/ai-coding.md
 
 ## 输入 (运行前必须存在)
-- specs/features/<feature>/01_server_rules.md
-- specs/features/<feature>/02_config_design.md
-- specs/features/<feature>/03_protocol_design.md
+- .claude/specs/features/<feature>/01_server_rules.md
+- .claude/specs/features/<feature>/02_config_design.md
+- .claude/specs/features/<feature>/03_protocol_design.md
 - .claude/context/ai-coding.md
 - .claude/context/api-whitelist.md
 
 ## 输出 (必须创建/更新)
-- specs/features/<feature>/04_logic_instructions.md
+- .claude/specs/features/<feature>/04_logic_instructions.md
 需包含类的设计，以及一些接口和方法的定义，及简单实现。 
 
 ## 约束：
@@ -40,7 +40,7 @@ STAGE: DESIGN (设计)
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - specs/features/<feature>/04_logic_instructions.md
+  - .claude/specs/features/<feature>/04_logic_instructions.md
 - 禁止：
   - 任何代码或 proto 更改
 

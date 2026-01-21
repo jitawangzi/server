@@ -9,21 +9,21 @@ STAGE: DESIGN (stage gate into DEV/TEST) (设计 [进入开发/测试的关卡])
 冻结一份权威的“契约”，后续阶段将加载此契约，而不是重新阅读冗长的讨论或规则文档。
 
 ## 必需上下文包 (必须加载)
-- .claude/context/_common/ctx/ctx_design.md
+- .claude/context/ai-coding.md
 
 ## 输入 (运行前必须存在)
-- specs/features/<feature>/01_server_rules.md
-- specs/features/<feature>/02_config_design.md
-- specs/features/<feature>/03_protocol_design.md
-- specs/features/<feature>/04_logic_instructions.md
-- specs/features/<feature>/05_test_plan.md
+- .claude/specs/features/<feature>/01_server_rules.md
+- .claude/specs/features/<feature>/02_config_design.md
+- .claude/specs/features/<feature>/03_protocol_design.md
+- .claude/specs/features/<feature>/04_logic_instructions.md
+- .claude/specs/features/<feature>/05_test_plan.md
 
 ## 输出 (必须创建/更新)
-- specs/features/<feature>/06_design_contract.md
+- .claude/specs/features/<feature>/06_design_contract.md
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - specs/features/<feature>/06_design_contract.md
+  - .claude/specs/features/<feature>/06_design_contract.md
 - 禁止：
   - 任何代码更改
   - 任何 proto 更改 (此技能仅总结/冻结)

@@ -12,16 +12,16 @@ STAGE: DESIGN (设计)
 - .claude/context/config-rules.md (静态表设计规则)
 
 ## 输入 (运行前必须存在)
-- specs/features/<feature>/01_server_rules.md
+- .claude/specs/features/<feature>/01_server_rules.md
 
 ## 输出 (必须创建/更新)
 配置表提案文档：
-   - specs/features/<feature>/02_config_design.md (静态配置表结构、 索引定义,新增常量)
-   - specs/features/<feature>/<feature>.xlsx (第一次创建配置表时，同时生成xlsx，方便人类使用，以后不用更新维护)
+   - .claude/specs/features/<feature>/02_config_design.md (静态配置表结构、 索引定义,新增常量)
+   - .claude/specs/features/<feature>/<feature>.xlsx (第一次创建配置表时，同时生成xlsx，方便人类使用，以后不用更新维护)
 ## 允许的修改 (硬性约束)
 - 允许修改：
-  - specs/features/<feature>/<feature>.xlsx
-  - specs/features/<feature>/02_config_design.md (创建/更新)
+  - .claude/specs/features/<feature>/<feature>.xlsx
+  - .claude/specs/features/<feature>/02_config_design.md (创建/更新)
 - 禁止：
   - 任何无关的 .proto
   - 任何服务端代码

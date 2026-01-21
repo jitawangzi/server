@@ -12,15 +12,15 @@ STAGE: DESIGN (设计)
 - .claude/context/client-test.md
 
 ## 输入 (运行前必须存在)
-- specs/features/<feature>/01_server_rules.md
+- .claude/specs/features/<feature>/01_server_rules.md
 - 协议定义 (.proto 或 03_protocol_design.md)
 
 ## 输出 (必须创建/更新)
-- specs/features/<feature>/05_test_plan.md
+- .claude/specs/features/<feature>/05_test_plan.md
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - specs/features/<feature>/05_test_plan.md
+  - .claude/specs/features/<feature>/05_test_plan.md
 - 禁止：
   - 任何代码/proto 更改
 
