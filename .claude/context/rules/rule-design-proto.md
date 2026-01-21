@@ -10,22 +10,22 @@ STAGE: DESIGN (设计)
 此技能是唯一应该重点参考协议规则文档的地方。
 
 ## 必需上下文包 (必须加载)
-- context/proto-rules.md (协议规则、ID 分配规则、命名规则)
+- .claude/context/proto-rules.md (协议规则、ID 分配规则、命名规则)
 
 ## 输入 (运行前必须存在)
-- features/<feature>/01_server_rules.md
+- specs/features/<feature>/01_server_rules.md
 - 现有的 .proto 文件 (仓库中)
 
 ## 输出 (必须创建/更新)
 选择一项 (团队偏好)：
 A) 更新仓库中实际的 .proto (如果工作流允许，建议首选)，和/或
 B) 生成协议提案文档：
-   - features/<feature>/03_protocol_design.md (proto 代码片段 + ID 表)
+   - specs/features/<feature>/03_protocol_design.md (proto 代码片段 + ID 表)
 
 ## 允许的修改 (硬性约束)
 - 允许修改：
   - 属于此功能/服务的 .proto 文件,以及可能需要的一些通用的proto
-  - features/<feature>/03_protocol_design.md (创建/更新)
+  - specs/features/<feature>/03_protocol_design.md (创建/更新)
 - 禁止：
   - 任何无关的 .proto
   - 任何服务端代码

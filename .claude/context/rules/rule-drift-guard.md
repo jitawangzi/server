@@ -9,19 +9,18 @@ STAGE: DEV or TEST (gate) (开发或测试 [关卡])
 检测实施变更与冻结的设计契约之间的漂移 (drift)。
 
 ## 必需上下文包 (必须加载)
-- _common/ctx/ctx_dev.md (如果在测试后运行，则为 ctx_test.md)
 
 ## 输入
-- features/<feature>/05_design_contract.md
+- features/<feature>/06_design_contract.md
 - 当前 diff / git 工作树中的已更改文件
 - 协议文件 (.proto) (如果相关)
 
 ## 输出
-- features/<feature>/07_drift_report.md
+- features/<feature>/09_drift_report.md
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - features/<feature>/07_drift_report.md
+  - features/<feature>/09_drift_report.md
 - 禁止：
   - 任何代码/proto 更改 (此技能仅作分析/报告)
 
@@ -40,26 +39,5 @@ STAGE: DEV or TEST (gate) (开发或测试 [关卡])
    - 如果存在漂移：列出所需的具体契约更新或需要回滚的代码更改。
 
 ## 验收 / 完成标准
-- 07_drift_report.md 已存在并明确说明 PASS/FAIL (通过/失败)。
+- 09_drift_report.md 已存在并明确说明 PASS/FAIL (通过/失败)。
 - 如果为 FAIL，则包含具体的补救计划。
-
----
-
-## PROMPT (copy/paste)
-你是一个执行 Agent。
-
-阅读：
-- 相关的上下文包 (_common/ctx/ctx_dev.md 或 _common/ctx/ctx_test.md)
-- features/<feature>/05_design_contract.md
-- 当前 git diff / 已更改文件列表
-- 相关 .proto 文件
-
-任务：
-创建 features/<feature>/07_drift_report.md，检查实施是否偏离了契约。
-
-约束：
-- 不要修改代码或 proto。
-- 明确：PASS/FAIL (通过/失败)，并提供逐项证据。
-
-交付：
-- 完整的 07_drift_report.md 内容

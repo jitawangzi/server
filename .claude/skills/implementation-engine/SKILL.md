@@ -12,8 +12,8 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
 你应根据用户指令，参考 `context/rules` 中的详细规则，执行以下步骤：
 
 1.  **实现功能** (规则: `.claude/context/rules/rule-implement-feature.md`)
-    - 任务: 根据 `03_design` 系列文档实现逻辑。
-    - 要求: 必须遵循 `.claude/context/rules/rule-ai-coding.md`。
+    - 任务: 根据 `.claude/features/<feature>/06_design_contract.md` 文档实现逻辑。
+    - 要求: 必须遵循 `.claude/context/ai-coding.md`。
 
 2.  **故障修复 (Debug & Fix)** (规则: `.claude/context/rules/rule-fix-failures.md`)
     - 任务: 当接收到 QA 的故障报告 (IMPL 类别) 时，修复业务逻辑。
@@ -27,7 +27,7 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
     - 产出: `DRIFT_REPORT.md`。
 
 ## 输入约束
-*   **真理来源**：`.claude/specs/design/<feature>/DESIGN_CONTRACT.md`。
+*   **真理来源**：`.claude/specs/design/<feature>/06_design_contract.md`。
 *   **禁止设计**：如果发现设计漏洞，**不要擅自修复**。请生成 `// FIXME: Design Flaw` 或报错。
 
 ## 上下文加载策略

@@ -9,22 +9,22 @@ STAGE: DESIGN (设计)
 创建一个完整的测试计划，使 Agent 无需进一步解释即可实施。
 
 ## 必需上下文包 (必须加载)
-- context/client-test.md
+- .claude/context/client-test.md
 
 ## 输入 (运行前必须存在)
-- features/<feature>/01_server_rules.md
+- specs/features/<feature>/01_server_rules.md
 - 协议定义 (.proto 或 03_protocol_design.md)
 
 ## 输出 (必须创建/更新)
-- features/<feature>/05_test_plan.md
+- specs/features/<feature>/05_test_plan.md
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - features/<feature>/05_test_plan.md
+  - specs/features/<feature>/05_test_plan.md
 - 禁止：
   - 任何代码/proto 更改
 
-## 输出要求 (04_test_plan.md)
+## 输出要求 (05_test_plan.md)
 - 测试环境假设 (Fixtures, 种子数据)
 - 测试矩阵涵盖：
   - 快乐路径 (Happy path)

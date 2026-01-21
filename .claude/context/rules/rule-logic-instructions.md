@@ -9,21 +9,21 @@ STAGE: DESIGN (设计)
 生成与现有架构和 API 边界一致的、可实施的逐步逻辑指令。
 
 ## 必需上下文包 (必须加载)
-- content/ai-coding.md
+- .claude/context/ai-coding.md
 
 ## 输入 (运行前必须存在)
-- features/<feature>/01_server_rules.md
-- features/<feature>/02_config_design.md
-- features/<feature>/03_protocol_design.md
-- content/ai-coding.md
-- content/api-whitelist.md
+- specs/features/<feature>/01_server_rules.md
+- specs/features/<feature>/02_config_design.md
+- specs/features/<feature>/03_protocol_design.md
+- .claude/context/ai-coding.md
+- .claude/context/api-whitelist.md
 
 ## 输出 (必须创建/更新)
-- features/<feature>/04_logic_instructions.md
+- specs/features/<feature>/04_logic_instructions.md
 需包含类的设计，以及一些接口和方法的定义，及简单实现。 
 
 ## 约束：
-- 使用 content/api-whitelist.md；如果缺失，列出“所需的新助手/API”。
+- 使用 .claude/context/api-whitelist.md；如果缺失，列出“所需的新助手/API”。
 - 风险/模糊点的简短列表 (如果有)
 
 ## 逻辑设计 (指令化描述)
@@ -40,7 +40,7 @@ STAGE: DESIGN (设计)
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - features/<feature>/04_logic_instructions.md
+  - specs/features/<feature>/04_logic_instructions.md
 - 禁止：
   - 任何代码或 proto 更改
 
