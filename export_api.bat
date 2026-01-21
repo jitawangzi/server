@@ -22,7 +22,7 @@ if not exist "%TOOL_JAR%" (
 REM 执行 Java 工具                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 REM 我们不需要 -Dworkspace，因为 System.getenv 也能读到上面的 set workspace
 REM %* 代表传递所有参数 (例如: game login -o context.txt)
-java -cp .;%workspace%\tools\* cn.game.util.ai.AiContextExporter game login util -o %workspace%\ai\_common\api_index.txt
+java -cp .;%workspace%\tools\* cn.game.util.ai.AiContextExporter game login util -o %workspace%\.claude\context\api-whitelist.md
 
 :end
 endlocal

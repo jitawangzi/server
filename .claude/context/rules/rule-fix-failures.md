@@ -5,53 +5,26 @@ SKILL_ID: 32_fix_with_contract_update
 VERSION: 0.2
 STAGE: TEST (fix loop) (测试 [修复循环])
 
+## 角色职责 (Role Responsibilities)
+- **QA 角色**: 仅在 `09_test_run_report.md` 分类为 **TEST** 时，使用此规则修复测试代码。
+- **开发角色**: 在分类为 **IMPL** 时，使用此规则根据 Bug Report 修复业务逻辑。
+
 ## 意图 (Intent)
-应用最小的修复以使测试通过，同时防止无声的契约漂移 (silent contract drift)。
-如果必须更改外部可见行为，请先更新 05_design_contract.md。
-
-## 必需上下文包 (必须加载)
-- _common/ctx/ctx_test.md
-
-## 输入
-- features/<feature>/05_design_contract.md
-- features/<feature>/09_test_run_report.md (或原始失败日志)
-- 相关代码和测试
-
-## 输出
-- 代码/测试修复 (最小化)
-- 更新的 features/<feature>/05_design_contract.md (如果行为发生变化)
-- features/<feature>/10_fix_report.md
-
-## 允许的修改 (硬性约束)
-协调员必须指定以下模式之一：
-
-模式 A (仅实施修复 - MODE A):
-- 允许：
-  - 契约范围内的生产代码文件
-  - 测试
-- 禁止：
-  - 协议更改
-  - 契约更改
-
-模式 B (允许更新契约 - MODE B):
-- 允许：
-  - features/<feature>/05_design_contract.md
-  - 范围内的生产代码
-  - 测试
-- 禁止：
-  - 协议更改 (除非明确授权)
+应用最小的修复以使测试通过，同时保持设计与代码的一致性。
+如果修复过程发现设计契约 (`03_design` 系列) 存在错误，必须同步更新文档。
 
 ## 执行检查清单
-1) 识别失败的测试和根本原因类别。
-2) 决定 模式 A vs 模式 B：
-   - 如果修复更改了契约未描述的行为 => 模式 B，先更新契约。
-3) 实施最小补丁。
-4) 重新运行失败的测试。
-5) 编写 10_fix_report.md：
-   - 根本原因
-   - 补丁摘要
-   - 契约更改 (如果有)
-   - 验证结果
+1) 识别故障分类 (来自 `09_test_run_report.md`)。
+2) 如果是开发角色修复 IMPL Bug：
+   - 分析 QA 提供的输入/预期/实际对比。
+   - 在代码中增加必要的日志或断点定位（如果需要）。
+3) 决定 模式 A vs 模式 B：
+   - 模式 A：修复代码实现，使其符合设计。
+   - 模式 B：代码实现是对的，但设计写错了。必须先修改 `03_design` 系列文档。
+4) 实施最小补丁。
+5) 验证修复：
+   - 开发角色：重新执行编译/启动。
+   - QA 角色：重新运行失败的测试用例。
 
 ## 验收 / 完成标准
 - 失败的测试通过。

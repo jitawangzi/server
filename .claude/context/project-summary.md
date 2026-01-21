@@ -1,4 +1,4 @@
-﻿# 项目概览 (Project Summary)
+# 项目概览 (Project Summary)
 
 ## 1. 项目背景
 本项目是一个基于 Java (JDK 21) 的高性能游戏服务端。核心目标是提供**安全**、**一致**与**高效**的开发体验。
@@ -19,3 +19,12 @@
 - **时间**: 必须用 `DateUtil.currentTimeMillis()`，禁用 `System`。
 - **随机**: 必须用 `Rnd` 类。
 - **日志**: 使用 `log.info/error`，禁用 `System.out.println`。
+
+## 5. 详细规范文档 (Detailed Rules)
+> 详情请参阅以下文档：
+- **开发流程 SOP**: [SOP](human-sop.md)
+- **AI 编码上下文规范**: [Coding Rules](ai-coding.md)
+- **通讯协议规范**: [Protocol Rules](proto-rules.md)
+- **静态配置数据规范**: [Config Rules](config-rules.md)
+- **测试指南**: [Test Rules](client-test.md)
+- **API 白名单**: [API Whitelist](api-whitelist.md)

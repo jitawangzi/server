@@ -1,4 +1,4 @@
-﻿# SKILL: Create Test Plan (创建测试计划) (04_test_plan.md)
+﻿# SKILL: Create Test Plan (创建测试计划) (05_test_plan.md)
 
 ## 技能标识 (Skill ID)
 SKILL_ID: 13_plan_tests
@@ -9,20 +9,18 @@ STAGE: DESIGN (设计)
 创建一个完整的测试计划，使 Agent 无需进一步解释即可实施。
 
 ## 必需上下文包 (必须加载)
-- _common/ctx/ctx_design.md
+- context/client-test.md
 
 ## 输入 (运行前必须存在)
-- features/<feature>/02_biz_spec.md
-- features/<feature>/03_logic_instructions.md
+- features/<feature>/01_server_rules.md
 - 协议定义 (.proto 或 03_protocol_design.md)
-- _common/client.md (客户端测试约定，如有)
 
 ## 输出 (必须创建/更新)
-- features/<feature>/04_test_plan.md
+- features/<feature>/05_test_plan.md
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - features/<feature>/04_test_plan.md
+  - features/<feature>/05_test_plan.md
 - 禁止：
   - 任何代码/proto 更改
 
@@ -48,24 +46,3 @@ STAGE: DESIGN (设计)
 - 每个错误码至少有一个测试。
 - 测试用例无需猜测即可实施。
 
----
-
-## PROMPT (copy/paste)
-你是一个执行 Agent。
-
-阅读：
-- _common/ctx/ctx_design.md
-- _common/client.md
-- features/<feature>/02_biz_spec.md
-- features/<feature>/03_logic_instructions.md
-- 协议定义
-
-任务：
-创建/更新 features/<feature>/04_test_plan.md，包含一个完整的、可实施的测试矩阵。
-
-约束：
-- 不要更改任何代码或 proto。
-
-交付：
-- 04_test_plan.md 的完整内容
-- 业务规则 -> 测试用例 ID 的可追溯性表

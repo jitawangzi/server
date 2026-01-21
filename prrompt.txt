@@ -1,0 +1,1 @@
+"请使用 requirement-analyst 技能分析 specs/features/Pet 下的策划文档。"

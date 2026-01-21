@@ -23,16 +23,23 @@ STAGE: TEST (测试)
 ## 允许的修改 (硬性约束)
 - 允许：
   - features/<feature>/09_test_run_report.md
+  - 仅当分类为 TEST 时：允许修改测试类文件以修复测试 bug。
 - 禁止：
-  - 任何代码更改
+  - **严禁修改业务逻辑代码 (src/main/...)**。
 
-## 分类类别 (用于报告) (Triage Categories)
-- ENV: 环境/基础设施/配置问题
-- TEST: 测试 bug 或不稳定的测试 (flaky test)
-- IMPL: 实施 bug
-- CONTRACT: 契约/设计不匹配或规格缺失
-- PROTO: 协议不匹配
-- DATA: 测试数据/Fixtures 问题
+## 分类类别与下一步行动 (Triage Categories)
+- **ENV**: 环境问题。行动：检查配置或环境。
+- **TEST**: 测试代码 bug。行动：QA 角色立即根据 `rule-fix-failures.md` 修复测试代码。
+- **IMPL**: 业务逻辑 bug。行动：记录详细 Bug Report，移交给开发角色修复。
+- **CONTRACT**: 契约/设计问题。行动：联系设计师审核并更新设计文档。
+
+## 故障报告规范 (Bug Report Section)
+如果是 IMPL 或 CONTRACT 故障，报告必须包含：
+1. **失败描述**: 哪个协议/方法失败了。
+2. **输入参数**: 发送请求的具体数据。
+3. **预期结果**: 设计文档中的预期。
+4. **实际结果**: 服务器返回的错误码或错误数据。
+5. **日志线索**: 提取服务器日志中的 Exception 或关键字。
 
 ## 验收 / 完成标准
 - 报告包含：

@@ -9,27 +9,43 @@ STAGE: DESIGN (设计)
 生成与现有架构和 API 边界一致的、可实施的逐步逻辑指令。
 
 ## 必需上下文包 (必须加载)
-- _common/ctx/ctx_design.md
+- content/ai-coding.md
 
 ## 输入 (运行前必须存在)
-- features/<feature>/02_biz_spec.md
-- features/<feature>/03_protocol_design.md 或相关 .proto (如果协议已更新)
-- _common/project_context.md
-- _common/context_brief.md
+- features/<feature>/01_server_rules.md
+- features/<feature>/02_config_design.md
+- features/<feature>/03_protocol_design.md
+- content/ai-coding.md
+- content/api-whitelist.md
 
 ## 输出 (必须创建/更新)
-- features/<feature>/03_logic_instructions.md
-- (可选) features/<feature>/03_design_full.md (链接到逻辑指令)
+- features/<feature>/04_logic_instructions.md
+需包含类的设计，以及一些接口和方法的定义，及简单实现。 
+
+## 约束：
+- 使用 content/api-whitelist.md；如果缺失，列出“所需的新助手/API”。
+- 风险/模糊点的简短列表 (如果有)
+
+## 逻辑设计 (指令化描述)
+* **严禁**使用模糊的自然语言（如“检查一下钱够不够”）。
+* **必须**使用**指令化伪代码**，明确调用哪个 Manager 或 Helper。
+* **示例**：
+    > **Function**: `upgrade()`
+    > 1. **Check**: `PlayerHelper.checkResource(player, 1001, cost)`
+    > 2. **Action**: `PlayerHelper.delResources(player, 1001, cost, OpType.Upgrade)` (Allow exception throw)
+    > 3. **Logic**: `data.setLevel(lv + 1)`
+    > 4. **Response**: Send `UpgradeResponse`
+
+---
 
 ## 允许的修改 (硬性约束)
 - 允许：
-  - features/<feature>/03_logic_instructions.md
-  - features/<feature>/03_design_full.md (仅链接/部分)
+  - features/<feature>/04_logic_instructions.md
 - 禁止：
   - 任何代码或 proto 更改
 
-## 输出要求 (03_logic_instructions.md)
-对于每个端点/处理程序 (endpoint/handler)：
+## 输出要求 (04_logic_instructions.md)
+对于每个协议/处理程序 (proto/handler)：
 - 前置条件和验证
 - 授权检查
 - 数据加载顺序
@@ -46,26 +62,3 @@ STAGE: DESIGN (设计)
 ## 验收 / 完成标准
 - 每一条业务规则都由至少一个步骤实现。
 - 没有任何步骤需要批准边界之外的 API；如果需要，列出所需的“新 API”。
-
----
-
-## PROMPT (copy/paste)
-你是一个执行 Agent。
-
-阅读：
-- _common/ctx/ctx_design.md
-- _common/project_context.md
-- _common/context_brief.md
-- features/<feature>/02_biz_spec.md
-- 协议定义 (03_protocol_design.md 或 .proto)
-
-任务：
-创建 features/<feature>/03_logic_instructions.md，包含每个处理程序/端点的可实施逐步逻辑。
-
-约束：
-- 不要更改任何代码或 proto。
-- 使用 project_context.md 中的现有模块边界；如果缺失，列出“所需的新助手/API”。
-
-交付：
-- 03_logic_instructions.md 的完整内容
-- 风险/模糊点的简短列表 (如果有)

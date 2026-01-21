@@ -12,10 +12,14 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
 你应根据用户指令，参考 `context/rules` 中的详细规则，执行以下步骤：
 
 1.  **实现功能** (规则: `.claude/context/rules/rule-implement-feature.md`)
-    - 任务: 根据 `api.proto` 和 `SPECIFICATION.md` 实现逻辑。
-    - 要求: 必须遵循 `.claude/context/coding-style.md`。
+    - 任务: 根据 `03_design` 系列文档实现逻辑。
+    - 要求: 必须遵循 `.claude/context/rules/rule-ai-coding.md`。
 
-2.  **静态检查** (规则: `.claude/context/rules/rule-static-checks.md`)
+2.  **故障修复 (Debug & Fix)** (规则: `.claude/context/rules/rule-fix-failures.md`)
+    - 任务: 当接收到 QA 的故障报告 (IMPL 类别) 时，修复业务逻辑。
+    - 要求: 深入分析堆栈跟踪 (Stack Trace)，定位源文件，确保修复不破坏设计契约。
+
+3.  **静态检查** (规则: `.claude/context/rules/rule-static-checks.md`)
     - 任务: 运行编译检查，记录结果到 `DEV_REPORT.md`。
 
 3.  **漂移防护** (规则: `.claude/context/rules/rule-drift-guard.md`)
