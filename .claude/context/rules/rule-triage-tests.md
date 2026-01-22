@@ -1,14 +1,15 @@
-﻿# SKILL: Run Tests and Triage Failures (运行测试并分类失败)
+# SKILL: Run Tests and Triage Failures (运行测试并分类失败)
 
 ## 技能标识 (Skill ID)
 SKILL_ID: 31_run_tests_and_triage
-VERSION: 0.1
+VERSION: 0.2
 STAGE: TEST (测试)
 
 ## 意图 (Intent)
 运行测试套件，捕获失败，并分类根本原因以进行有效修复。
 
 ## 必需上下文包 (必须加载)
+- .claude/context/client-test.md (用于理解测试日志格式)
 - features/<feature>/06_design_contract.md
 
 ## 输入
@@ -35,11 +36,12 @@ STAGE: TEST (测试)
 
 ## 故障报告规范 (Bug Report Section)
 如果是 IMPL 或 CONTRACT 故障，报告必须包含：
-1. **失败描述**: 哪个协议/方法失败了。
-2. **输入参数**: 发送请求的具体数据。
-3. **预期结果**: 设计文档中的预期。
-4. **实际结果**: 服务器返回的错误码或错误数据。
-5. **日志线索**: 提取服务器日志中的 Exception 或关键字。
+1. **复现命令**: PowerShell 运行指令。
+2. **失败描述**: 哪个协议/方法失败了。
+3. **输入参数**: 发送请求的具体数据。
+4. **预期结果**: 设计文档中的预期。
+5. **实际结果**: 服务器返回的错误码或错误数据 (Json Diff)。
+6. **日志线索**: 提取服务器日志中的 Exception 或关键字。
 
 ## 验收 / 完成标准
 - 报告包含：

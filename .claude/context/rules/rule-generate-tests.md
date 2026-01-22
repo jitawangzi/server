@@ -1,15 +1,15 @@
-﻿# SKILL: Generate/Update Tests From Test Plan (根据测试计划生成/更新测试)
+# SKILL: Generate/Update Tests From Test Plan (根据测试计划生成/更新测试)
 
 ## 技能标识 (Skill ID)
 SKILL_ID: 30_generate_tests_from_plan
-VERSION: 0.2
+VERSION: 0.3
 STAGE: TEST (测试)
 
 ## 意图 (Intent)
 完全按照测试计划中的规定实施测试，使用最终协议和客户端约定。
 
 ## 必需上下文包 (必须加载)
-- context/client-test.md
+- .claude/context/client-test.md
 
 ## 输入 (必须存在)
 - features/<feature>/05_test_plan.md
@@ -18,7 +18,7 @@ STAGE: TEST (测试)
 - 仓库中已实施的服务端代码
 
 ## 输出
-- 客户端测试java class
+- 客户端测试 Java 类 (位于 `simulationclient/src/main/java/cn/game/simulation/test/ai/`)
 - (可选) features/<feature>/10_test_impl_report.md
 
 ## 允许的修改 (硬性约束)
