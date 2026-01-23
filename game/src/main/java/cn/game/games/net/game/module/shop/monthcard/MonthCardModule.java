@@ -137,7 +137,7 @@ public class MonthCardModule extends BasePlayerModule {
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		for (MonthCard monthCard : monthCards.values()) {
-			builder.addMonthCards(monthCard.toProto());
+//			builder.addMonthCards(monthCard.toProto());
 		}
 		if (doubleBonus) {
 			builder.setMonthCardDoubleBonus(false);

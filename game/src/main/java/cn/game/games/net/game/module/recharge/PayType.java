@@ -11,14 +11,14 @@ import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.log.GameLogger;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.module.activity.impl.player.FirstChargeActivity;
-import cn.game.games.net.game.module.activity.impl.player.FundPassSignActivity;
+//import cn.game.games.net.game.module.activity.impl.player.FundPassSignActivity;
 import cn.game.games.net.game.module.player.IdConstant;
 import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.quest.Quest;
-import cn.game.games.net.game.module.shop.ShopModule;
-import cn.game.games.net.game.module.shop.limitedtimegift.LimitedTimeGiftModule;
+//import cn.game.games.net.game.module.shop.ShopModule;
+//import cn.game.games.net.game.module.shop.limitedtimegift.LimitedTimeGiftModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
-import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
+//import cn.game.games.net.game.module.shop.xianshilibao.XianShiLiBaoModule;
 import cn.game.games.net.game.module.vip.VipModule;
 import cn.game.protocol.generated.config.ActivityJQBConfig;
 import cn.game.protocol.generated.config.ActivityXianShiLiBaoConfig;
@@ -98,13 +98,13 @@ public enum PayType {
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int itemId = payItem.getPayId();
 			int shopId = payItem.getPaySubIds().get(0);
-			ShopModule shopModule = player.getShopModule();
-			ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
-			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
-			PlayerHelper.addResources(player, shopItemConfig.Item, OpType.ShopTrade);
-			shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
-			player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
-			GameLogger.shoptrade(player, shopId, itemId,1);
+//			ShopModule shopModule = player.getShopModule();
+//			ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
+//			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
+//			PlayerHelper.addResources(player, shopItemConfig.Item, OpType.ShopTrade);
+//			shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
+//			player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
+//			GameLogger.shoptrade(player, shopId, itemId,1);
 			return true;
 		}
 	},
@@ -114,9 +114,9 @@ public enum PayType {
 		@Override
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int id = payItem.getPayId();
-			ShopModule shopModule = player.getShopModule();
-			Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
-			fundPassRewardsMap.put(id, new ArrayList<Integer>());
+//			ShopModule shopModule = player.getShopModule();
+//			Map<Integer, List<Integer>> fundPassRewardsMap = shopModule.getFundPassRewardsMap();
+//			fundPassRewardsMap.put(id, new ArrayList<Integer>());
 			return true;
 		}
 	},
@@ -149,8 +149,8 @@ public enum PayType {
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int id = payItem.getPayId();
 			ActivityXianShiLiBaoConfig activityXianShiLiBaoConfig = ActivityXianShiLiBaoManager.instance().get(id);
-			XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
-			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
+//			XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
+//			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
 			return true;
 		}
 	},
@@ -169,12 +169,13 @@ public enum PayType {
 	LimitedTimeGift(11) {
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int id = payItem.getPayId();
-			LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class);
-			Future<List<RewardInfo>> buy = module.buy(id,false);
-			buy.onFailure(err -> {
-				LoggerType.Stdout.logger.error("玩家"+player.getPlayerId()+"离线充值购买限时礼包失败", err);
-			});
-			return AsyncUtils.await(buy)!=null;
+//			LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class);
+//			Future<List<RewardInfo>> buy = module.buy(id,false);
+//			buy.onFailure(err -> {
+//				LoggerType.Stdout.logger.error("玩家"+player.getPlayerId()+"离线充值购买限时礼包失败", err);
+//			});
+//			return AsyncUtils.await(buy)!=null;
+			return false;
 		}
 	},
 	/**基金通行证签到*/
@@ -182,8 +183,8 @@ public enum PayType {
 
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int id = payItem.getPayId();
-			FundPassSignActivity fundPassSignActivityModule = player.getActivityModule().get(id);
-			fundPassSignActivityModule.buy(id);
+//			FundPassSignActivity fundPassSignActivityModule = player.getActivityModule().get(id);
+//			fundPassSignActivityModule.buy(id);
 			return true;
 		}
 	},

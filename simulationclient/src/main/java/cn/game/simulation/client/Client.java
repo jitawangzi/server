@@ -67,7 +67,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerHeartbeatRequest_01000005;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
-import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
+//import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 import cn.game.simulation.client.handler.WebSocketClientHandler;
 import cn.game.simulation.socket.ClientHandler;
 import cn.game.util.HexUtil;
@@ -224,7 +224,7 @@ public class Client extends AbstractNetClient {
 	/** 好友申请列表 */
 	public List<String> applicationList = new ArrayList<>();
 	// 商店
-	public Map<Integer, List<ShopItemProto>> shopItemMap = new HashMap<>();
+//	public Map<Integer, List<ShopItemProto>> shopItemMap = new HashMap<>();
 
 	/** 自己在工会中的成员数据 */
 	public GuildMemberInfo guildMember;

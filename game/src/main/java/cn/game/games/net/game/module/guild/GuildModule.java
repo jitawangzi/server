@@ -188,7 +188,7 @@ public class GuildModule extends BasePlayerModule {
 	private void initFirstTime() {
 
 		initGuildTask();
-		player.getShopModule().refreshShopByShopType(17);
+//		player.getShopModule().refreshShopByShopType(17);
 	}
 
 	/** 

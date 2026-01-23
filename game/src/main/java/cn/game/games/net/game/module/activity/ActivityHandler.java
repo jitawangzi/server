@@ -692,12 +692,12 @@ public class ActivityHandler extends GameBaseHandler {
         Future<Boolean> pay = player.pay(PayType.FundPassSignActivity, id, fundPassConfig.Price);
         pay.onComplete(t -> {
             if (t.result()) {
-                FundPassSignActivity activity = player.getActivityModule().get(activityId);
-                if (activity == null) {
-                    client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-                    return;
-                }
-                client.sendProtocol(activity.buy(id));
+//                FundPassSignActivity activity = player.getActivityModule().get(activityId);
+//                if (activity == null) {
+//                    client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+//                    return;
+//                }
+//                client.sendProtocol(activity.buy(id));
             } else {
                 client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
             }
@@ -712,12 +712,12 @@ public class ActivityHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         int id = req.getActivityId();
 
-        FundPassSignActivity activity = player.getActivityModule().get(id);
-        if (activity == null) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-            return;
-        }
-        client.sendProtocol(activity.buildActivityShowInfo());
+//        FundPassSignActivity activity = player.getActivityModule().get(id);
+//        if (activity == null) {
+//            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+//            return;
+//        }
+//        client.sendProtocol(activity.buildActivityShowInfo());
 
 
     }
@@ -729,11 +729,11 @@ public class ActivityHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         int activityId = req.getActivityId();
         int id = req.getId();
-        FundPassSignActivity activity = player.getActivityModule().get(activityId);
-        if (activity == null) {
-            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-            return;
-        }
-        client.sendProtocol(activity.receive(id));
+//        FundPassSignActivity activity = player.getActivityModule().get(activityId);
+//        if (activity == null) {
+//            client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+//            return;
+//        }
+//        client.sendProtocol(activity.receive(id));
     }
 }

@@ -3,7 +3,7 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 
 import cn.game.games.cache.base.DbEntity;
-import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
+//import cn.game.protocol.protobuf.ShopMsg.ShopItemProto;
 
 /**
  * 商品表
@@ -74,13 +74,13 @@ public class ShopItem implements Serializable, DbEntity {
 		return id;
 	}
 
-	public ShopItemProto toProto() {
-		ShopItemProto.Builder builder = ShopItemProto.newBuilder();
-		builder.setBuyTimes(itemBuyTimes);
-		builder.setItemId(itemId);
-//		builder.setConfigId(itemId);
-//		builder.setDiscount(itemDiscount);
-//		builder.setId(id+"");
-		return builder.build();
-	}
+//	public ShopItemProto toProto() {
+//		ShopItemProto.Builder builder = ShopItemProto.newBuilder();
+//		builder.setBuyTimes(itemBuyTimes);
+//		builder.setItemId(itemId);
+////		builder.setConfigId(itemId);
+////		builder.setDiscount(itemDiscount);
+////		builder.setId(id+"");
+//		return builder.build();
+//	}
 }

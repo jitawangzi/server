@@ -71,7 +71,6 @@ import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.games.net.game.module.shop.ShopHelper;
-import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.module.shop.monthcard.MonthCardModule;
 import cn.game.games.net.game.module.vip.VipModule;
 import cn.game.protocol.generated.config.FairyFriendFavorabilityConfig;
@@ -96,7 +95,7 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateRequest_7d000020;
 import cn.game.protocol.protobuf.ServerMsg.PaymentOrderCreateResponse_7d000021;
-import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
+//import cn.game.protocol.protobuf.ShopMsg.PaymentOrderPush_15010020;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
@@ -276,9 +275,9 @@ public class Player {
 		return getModule(ItemModule.class);
 	}
 
-	public ShopModule getShopModule() {
-		return getModule(ShopModule.class);
-	}
+//	public ShopModule getShopModule() {
+//		return getModule(ShopModule.class);
+//	}
 
 	public VarModule getVarModule() {
 		return getModule(VarModule.class);
@@ -558,16 +557,16 @@ public class Player {
 			requestRemoteServer.map(r -> {
 				PaymentOrderCreateResponse_7d000021 body = r;
 				if (body.getOrderId() == 0) {
-					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(),
-							ErrorMsgEnum.payment_order_create_fail.getId());
+//					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(),
+//							ErrorMsgEnum.payment_order_create_fail.getId());
 					promise.complete(false);
 				} else {
-					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
-							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
-							.setOrderId(body.getOrderId() + "")
-							.setSdkGoodsId(cost[2]+"")
-							.setServerId(ServerContext.getInstance().getServerId())
-							.build());
+//					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
+//							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
+//							.setOrderId(body.getOrderId() + "")
+//							.setSdkGoodsId(cost[2]+"")
+//							.setServerId(ServerContext.getInstance().getServerId())
+//							.build());
 					getPlayerModule().addPayCallback(body.getOrderId(), promise);
 					PayItem payItem = new PayItem();
 					payItem.setOrderId(body.getOrderId());

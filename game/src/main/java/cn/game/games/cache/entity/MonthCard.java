@@ -3,7 +3,7 @@ package cn.game.games.cache.entity;
 import java.io.Serializable;
 
 import cn.game.games.cache.base.DbEntity;
-import cn.game.protocol.protobuf.ShopMsg.MonthCardProto;
+//import cn.game.protocol.protobuf.ShopMsg.MonthCardProto;
 
 public class MonthCard implements Serializable, DbEntity {
 
@@ -164,8 +164,8 @@ public class MonthCard implements Serializable, DbEntity {
 		return card;
 	}
 
-	public MonthCardProto toProto() {
-		return MonthCardProto.newBuilder().setId(monthCardId).setExpireTime((int) (expireTime/1000)).setIsBuyRewards(isBuyRewards)
-				.setIsDayRewards(isDayRewards).build();
-	}
+//	public MonthCardProto toProto() {
+//		return MonthCardProto.newBuilder().setId(monthCardId).setExpireTime((int) (expireTime/1000)).setIsBuyRewards(isBuyRewards)
+//				.setIsDayRewards(isDayRewards).build();
+//	}
 }

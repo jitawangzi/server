@@ -59,7 +59,6 @@ import cn.game.games.net.game.module.player.VarConstant;
 import cn.game.games.net.game.module.player.figure.FigureModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardModule;
 import cn.game.games.net.game.module.player.pointreward.PointRewardType;
-import cn.game.games.net.game.module.shop.ShopModule;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.AddressUtil;
 import cn.game.games.util.DAO;
@@ -488,8 +487,8 @@ public class PlayerHandler extends GameBaseHandler {
 					if (!player.isFuncOpen(InitialUI.Shop)) {
 						continue;
 					}
-					ShopModule shopModule = player.getShopModule();
-					ret = shopModule.hasHeishiRed(); 
+//					ShopModule shopModule = player.getShopModule();
+//					ret = shopModule.hasHeishiRed(); 
 					break;
 				}
 				case RSGTree: {
