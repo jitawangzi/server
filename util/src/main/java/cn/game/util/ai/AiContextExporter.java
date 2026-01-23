@@ -1,6 +1,7 @@
 package cn.game.util.ai;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ParserConfiguration.LanguageLevel;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -117,6 +118,8 @@ public class AiContextExporter {
 
     private static void processFile(File file) {
         try {
+    		// 首先设置语言级别
+    		StaticJavaParser.getConfiguration().setLanguageLevel(LanguageLevel.JAVA_17);
             CompilationUnit cu = StaticJavaParser.parse(file);
             cu.findAll(ClassOrInterfaceDeclaration.class).forEach(clazz -> {
                 boolean isClassAnnotated = clazz.isAnnotationPresent(ANNOTATION_NAME);
@@ -156,7 +159,8 @@ public class AiContextExporter {
                 }
             });
         } catch (Exception e) {
-            // 忽略解析错误
+        	System.err.println("[ERROR] Failed to process file: " + file.getAbsolutePath());
+			e.printStackTrace();
         }
     }
 

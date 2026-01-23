@@ -1,6 +1,6 @@
 ---
 name: quality-assurance
-description: 激活 QA 工程师模式。用于代码实现后，生成测试用例、执行测试、分类故障并修复。
+description: 激活 QA 工程师模式，主导测试编写、执行与故障回归。
 ---
 
 # Quality Assurance Skill

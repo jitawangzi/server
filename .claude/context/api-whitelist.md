@@ -174,6 +174,316 @@ public class Player {
 
 }
 
+// --- Class: PlayerHelper ---
+public class PlayerHelper {
+    /**
+     * 判断玩家是否有足够的物品
+     * 
+     * @param player
+     * @param list entry key:物品id,entry value:数量
+     * @return
+     */
+    public static boolean isEnough(Player player, Collection<? extends Entry<Integer, Integer>> list);
+
+    /**
+     * 判断玩家是否有足够的物品
+     * 
+     * @param player
+     * @param map key:物品id, value:数量
+     * @return
+     */
+    public static boolean isEnough(Player player, Map<Integer, Integer> map);
+
+    /**
+     * 判断玩家是否有足够的物品
+     * 
+     * @param player
+     * @param list ，数组0是id，1是数量
+     * @return
+     */
+    public static boolean isEnough(Player player, int[][] list);
+
+    /**
+     * 判断玩家是否有足够的物品
+     * 
+     * @param player
+     * @param list ，数组0是id，1是数量，也可以向后扩展，例如 2是id，3是数量
+     * @return
+     */
+    public static boolean isEnough(Player player, int[] list);
+
+    /**
+     * 判断玩家是否有足够的物品
+     * 
+     * @param player
+     * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+     * 通过物品id的规则，计算出属于什么物品类型
+     * 所有物品类型 : {@link GoodsTypeEnum#getId()}
+     * @param count
+     * @return
+     */
+    public static boolean isEnough(Player player, int id, int count);
+
+    /**
+     * 
+     * @param player
+     * @param consumeId : {@link ConsumeConfig#ID}
+     * @return
+     */
+    public static boolean isEnough(Player player, int consumeId);
+
+    /**
+     * 给某玩家增加物品
+     * 
+     * @param player
+     * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+     * @param value 增加数量
+     * @param opType 操作类型
+     * @param notify 增加后，是否通知客户端
+     * @return
+     */
+    public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType, boolean notify);
+
+    public static List<RewardInfo> addResources(Player player, int id, int value, OpType opType);
+
+    public static List<RewardInfo> addResources(Player player, int id, int value);
+
+    /**
+     * 扣除玩家的物品
+     * 
+     * @param player
+     * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+     * @param value 减少的数量
+     * @param consumeType 消耗类型
+     */
+    public static void delResources(Player player, int id, long value, OpType consumeType);
+
+    /**
+     * 通过消耗表的id，来扣除玩家的物品
+     * 
+     * @param player
+     * @param consumeId 消耗表的id  {@link ConsumeConfig#ID}
+     * @param consumeType 消耗类型
+     * @return
+     */
+    public static void delResourcesWithConsume(Player player, int consumeId, OpType consumeType);
+
+    /**
+     * 通过消耗表的id，来扣除玩家的物品
+     * 
+     * @param player
+     * @param consumeId 消耗表的id  {@link ConsumeConfig#ID}
+     * @param multiple 倍数
+     * @param consumeType 消耗类型
+     * @return
+     */
+    public static void delResourcesWithConsume(Player player, int consumeId, int multiple, OpType consumeType);
+
+    /**
+     * 进行某操作时扣除资源，包括所有大类型
+     * 
+     * @param player
+     * @param id 物品id，可能是({@link Asset#ID}) 或者是({@link ItemConfig#ID}) ({@link HeroConfig#ID})等等的id
+     * @param value 减少的数量
+     * @param consumeType 消耗类型
+     * @param notify 是否通知客户端  如果直接调用该方法不涉及合并问题则传true, 如果涉及合并则传false，合并后需要推送协议SpendPush_55001501
+     */
+    public static void delResources(Player player, int id, long value, OpType consumeType, boolean notify);
+
+    /**
+     * 进行某操作时扣除资源，包括所有大类型
+     * 
+     * @param player 玩家
+     * @param list，entry key:物品id,entry value:数量
+     * @param consumeType 消耗类型
+     */
+    public static void delResources(Player player, Collection<? extends Entry<Integer, Integer>> list, OpType consumeType);
+
+    /**
+     * 进行某操作时扣除资源，包括所有大类型
+     * 
+     * @param player
+     * @param map，key:物品id,value:数量
+     * @param consumeType 消耗类型
+     * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
+     */
+    public static void delResources(Player player, Map<Integer, Integer> map, OpType consumeType);
+
+    /**
+     * 进行某操作时扣除资源，包括所有大类型
+     * 
+     * @param player
+     * @param list ，数组0是id，1是数量
+     * @param consumeType
+     * @return
+     */
+    public static void delResources(Player player, int[][] list, OpType consumeType);
+
+    /**
+     * 进行某操作时扣除资源，包括所有大类型
+     * 
+     * @param player
+     * @param list ，数组0是id，1是数量,也可以向后扩展，例如 2是id，3是数量
+     * @param consumeType
+     * @throws LogicException 当资源不足时，默认抛出异常中断当前流程，如果不想出现异常，需要先调用isEnough 方法进行判断
+     */
+    public static void delResources(Player player, int[] list, OpType consumeType);
+
+    /**
+     * 根据奖励id，增加所有物品
+     * 
+     * @param player
+     * @param randomRewardId {@link RandomGivenConfig#ID}
+     * @return
+     */
+    public static List<RewardInfo> addReward(Player player, int randomRewardId, OpType opType);
+
+    /**
+     * 根据奖励id，增加所有物品,带加成
+     * 
+     * @param player
+     * @param randomRewardId {@link RandomGivenConfig#ID}
+     * @param additionValue,额外增加的数量加成， 除以10000
+     * @return
+     */
+    public static List<RewardInfo> addReward(Player player, int randomRewardId, int additionValue, OpType opType);
+
+    /**
+     * 只是随机出来具体的奖励，不加到玩家身上,较少直接用到
+     * 
+     * @param randomRewardId {@link RandomGivenConfig#ID}
+     * @return
+     */
+    public static List<Goods> randomReward(int randomRewardId);
+
+    /**
+     * 一次性增加多个奖励
+     * 
+     * @param player
+     * @param goods
+     * @return
+     */
+    public static List<RewardInfo> addResources(Player player, List<Goods> goods, OpType opType);
+
+    public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType);
+
+    public static List<RewardInfo> addGoods(Player player, List<Goods> goods, OpType opType);
+
+    public static List<RewardInfo> addResources(Player player, int[][] rewards, OpType opType, boolean notify);
+
+    public static List<RewardInfo> addResources(Player player, int[] rewards, OpType opType);
+
+    /**
+     * 一次性增加多个奖励，增加完奖励后推送给客户端一次。
+     * 
+     * @param player
+     * @param rewards
+     * @return
+     */
+    public static List<RewardInfo> addResources(Player player, Collection<? extends Entry<Integer, Integer>> rewards, OpType opType);
+
+    public static List<RewardInfo> addResources(Player player, Map<Integer, Integer> map, OpType opType);
+
+    /**
+     * 主动给玩家发送消息
+     * 
+     * @param playerId
+     * @param message
+     */
+    public static void sendProtocol(long playerId, Object message);
+
+    /**
+     * 给玩家发消息，带错误码
+     * 
+     * @param playerId
+     * @param message 消息
+     * @param errorCode 错误码
+     */
+    public static void sendProtocol(long playerId, Object message, int errorCode);
+
+    /**
+     * 给玩家发默认的错误消息，带错误码
+     * 
+     * @param playerId
+     * @param errorCode 错误码
+     */
+    public static void sendErrorProtocol(long playerId, int errorCode);
+
+    /**
+     * 将消息发送给指定服务器的玩家，不需要返回消息
+     * 
+     * @param playerId 目标玩家id
+     * @param message
+     * @param serverId 目标服务器id
+     */
+    public static void sendToRemotePlayer(long playerId, String serverId, Message message);
+
+    /**
+     * 将消息广播给跨服玩家
+     * 
+     * @param message
+     * @param playerIds
+     * @param serverIds
+     */
+    public static void sendToRemotePlayers(Message message, List<Long> playerIds, List<String> serverIds);
+
+    /**
+     * 是否满足所有条件
+     * 
+     * @param player
+     * @param conditions 待检查条件，  {@link ConditionConfig#ID}
+     * @return
+     */
+    public static boolean checkCondition(Player player, int... conditions);
+
+    /**
+     * 是否满足所有条件
+     * 
+     * @param player
+     * @param conditions 待检查条件，  {@link ConditionConfig#ID}
+     * @param or 是否满足任意条件即可
+     * @return true,如果满足任意条件
+     */
+    public static boolean checkCondition(Player player, boolean or, int... conditions);
+
+    /**
+     * 基础的条件检查
+     * 
+     * @param player
+     * @param condition 待检查条件，  {@link ConditionConfig#ID}
+     * @return
+     */
+    public static boolean checkCondition(Player player, int condition);
+
+    /**
+     * 获取某条件的计数，一般是根据当前数据直接可以获得的，或者是累计计数等，不需要额外条件的。
+     * 
+     * @param player
+     * @param condition 待检查条件，  {@link ConditionConfig#ID}
+     * @return
+     */
+    public static long getConditionCount(Player player, int condition);
+
+    /**
+     * 获取某个升级配置。
+     * 
+     * @param id 经验id
+     * @param level 等级
+     * @param subId 子id，如果同一类型下有多个配置，用这个区分。
+     * @return
+     */
+    public static ExpConfig getExpConfig(int id, int level, int subId);
+
+    /**
+     * 获取玩家的逻辑服务器id
+     * 
+     * @param playerId
+     * @return
+     */
+    public static String getServerId(long playerId);
+
+}
+
 // --- Class: PlayerManager ---
 public class PlayerManager {
     /**
