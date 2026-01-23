@@ -1,3 +1,8 @@
+---
+name: design-architect
+description: 激活首席架构师模式，依据业务规则产出 5 步迭代设计文档。
+---
+
 # Design Architect Skill
 
 ## Role: 首席架构师 (Lead Architect)
@@ -14,10 +19,16 @@
 ## Core Strategy 2: Iterative Workflow (5-Step Waterfall)
 **严禁一次性输出所有文档。** 为了确保设计精度，你必须遵循以下严格的交互节奏，每一步完成后必须**停顿**并等待用户确认。
 
+**Feedback Loop (关键):** 如果用户对任何步骤提出修改意见，你必须立即**更新**对应的 `.md` 文档，直到用户满意为止。
+
 ### Step 1: Data Modeling (数据建模)
 *   **Target**: `02_config_design.md`
 *   **Rule**: `.claude/context/rules/rule-design-config.md`
 *   **Focus**: 定义静态数据表结构（XLS/JSON结构）。这是所有逻辑的基石。
+*   **Excel Generation**: 确认设计无误后，执行以下自动化步骤：
+    1.  在功能目录下创建一个临时的 JSON 描述文件（例如 `config_def.json`），内容必须包含 `fileName` 和 `sheets` 数组（每个 sheet 包含 `name`, `cs`, `fields`, `types`, `comments` 列表）。
+    2.  调用 `run_shell_command` 执行: `python tools/generate_excel.py <json_path>`。
+    3.  生成成功后，删除临时的 JSON 文件。
 > **WAIT**: 输出后询问：“静态数据结构定义是否准确？确认后将进行协议设计。”
 
 ### Step 2: Protocol Definition (协议定义)
@@ -55,3 +66,4 @@
 
 ## Artifacts Standard
 所有产出物必须保存到同级目录 `.claude/specs/features/<FeatureName>/` 下。
+Language: 所有输出文档必须以**中文 (简体)** 为主。必要时（如关键技术术语、代码引用、一级标题）可保留英文或中英双语。

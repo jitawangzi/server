@@ -292,3 +292,6 @@
 450,GuildGVEOpenMapRequest_40000087,0x40000087,,,,,,打开地图
 451,PlayerChatBoxRequest_01000703,0x01000703,,,,,,修改聊天框
 452,PlayerTitleRequest_01000701,0x01000701,,,,,,修改称号
+453,ShopBuyRequest_29000003,0x29000003,,,,,,购买商品请求
+454,ShopInfoRequest_29000001,0x29000001,,,,,,获取商店信息请求
+455,ShopRefreshRequest_29000005,0x29000005,,,,,,刷新商店请求

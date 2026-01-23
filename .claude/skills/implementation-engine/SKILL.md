@@ -30,6 +30,9 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
 ## 输入约束
 *   **真理来源**：`.claude/specs/features/<feature>/06_design_contract.md`。
 *   **禁止设计**：如果发现设计漏洞，**不要擅自修复**。请生成 `// FIXME: Design Flaw` 或报错。
+*   **工具生成类 (Tool-Generated Classes)**：
+    *   **Config/Manager 类**：严禁手动创建或修改。这些类应由 Excel 工具生成。如果代码依赖这些类但项目中不存在，**必须暂停并提示用户**，等待用户提供或执行同步操作。
+    *   **Handler 类**：严禁手动创建文件。必须调用 `protocol.bat` (或相应工具) 自动生成基础桩代码，然后在此基础上进行逻辑填充。
 
 ## 上下文加载策略
 *   **必须加载**：`.claude/context/ai-coding.md` (核心实现指南)。

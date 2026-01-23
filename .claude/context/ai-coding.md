@@ -22,6 +22,16 @@
 
 **Manager（工具层,工具生成）** 包括 `xxxManager`（静态配置读取，单例）。
 
+### 1.3 常用基类与命名规范 (Base Classes & Naming)
+
+*   **Module 基类**：
+    *   **`BasePlayerModule`**：**默认基类**。绝大多数通用业务模块（如 Shop, Quest, Social）都必须继承此可以通过 `player.getModule(XxxModule.class)` 获取。
+    *   **`GoodsModule`**：如果模块的主要功能是管理某种“类物品/背包容器”（如宝石包、卡牌包、特殊的碎片本），应继承此基类，它提供了标准的 `add/del/count` 接口。
+*   **数据模型命名**：
+    *   模块持有的核心数据对象（POJO），**不需要**添加 `Player` 前缀，因为它们本身就存在于 Player 的上下文中。
+    *   *推荐*: `Shop` (对应的 Module 是 `ShopModule`), `Pet`, `Task`.
+    *   *不推荐*: `PlayerShop`, `PlayerPet`.
+
 ---
 
 ## 2. 线程模型与并发契约（⭐ 最高优先级）
@@ -60,21 +70,36 @@
 
 ---
 
-## 3. 资源与道具操作规范（PlayerHelper）
+## 3. 资源与道具操作规范 (PlayerHelper)
 
-### 3.1 增加资源
+**核心原则**：所有产出（资源/道具/奖励）的发放，必须通过 `PlayerHelper`。**严禁**直接调用 `RewardHelper` 或手动修改 `GoodsModule` 数据。
 
-使用 `PlayerHelper.addResources` 增加资源并处理相关逻辑（如任务触发）。该方法返回 `List<RewardInfo>`（Protobuf 类型），必须将其放入 Response 返回给客户端用于展示。参数需指定 `OpType`（操作类型枚举）和 `notify`（是否推送）。
+### 3.1 增加资源 (发放奖励)
 
+使用 `PlayerHelper.addResources` 增加资源并处理相关逻辑（如任务触发、日志记录）。该方法返回 `List<RewardInfo>`（Protobuf 类型），必须将其放入 Response 返回给客户端用于展示。
+
+    // 参数：player, configId, count, OpType, notify(是否推送)
     List<RewardInfo> rewards = PlayerHelper.addResources(player, itemId, count, OpType.GM, true);
+    
+    // 如果是列表形式的配置 (int[][])
+    // List<RewardInfo> rewards = PlayerHelper.addResources(player, costs, OpType.ShopBuy);
+    
     respBuilder.addAllRewards(rewards);
 
 ### 3.2 扣除资源
 
-使用 `PlayerHelper.delResources` 扣除资源。如果资源不足，方法内部会直接抛出异常。编码时不需要在外部判断 `if (count < need)`，也不需要 `try-catch`（除非有特殊逻辑），让异常冒泡中断流程即可：
+使用 `PlayerHelper.delResources` 扣除资源。如果资源不足，方法内部会直接抛出异常。
 
-    // 直接调用，若不足会自动抛错并返回错误码给客户端
+*   **原子性**: 如果消耗是多个物品 (`int[][]`), **必须**直接调用支持 `int[][]` 的重载方法，**严禁**使用 `for` 循环逐个扣除（会导致部分扣除的原子性问题）。
+
+```java
+    // 单个扣除
     PlayerHelper.delResources(player, costId, costNum, OpType.LevelUp);
+    
+    // 混合/批量扣除 (原子性保证)
+    // costArray 格式: {{ItemId, Count}, {ItemId, Count}...}
+    PlayerHelper.delResources(player, costArray, OpType.ShopBuy);
+```
 
 ### 3.3 检查资源
 
@@ -84,6 +109,11 @@
 
 ## 4. 协议 Handler 编写模板
 
+**职责划分**：
+*   **Handler**: 负责协议解析、参数校验、调用 Module 核心逻辑、**构建响应包 (Response Builder)**、**发送回包 (sendProtocol)**。尽量避免将网络协议类 (`Request/Response`) 直接传递给 Module。
+*   **Module**: 负责核心业务逻辑、状态变更、数据持久化。返回值应为 POJO 或通用数据结构 (如 `List<RewardInfo>`)，供 Handler 组装协议。
+
+```java
     private void handleProcess(NetClient client, Object message) {
         XxxRequest req = (XxxRequest) message;  // ---- 会由代码生成器生成
 	// 声明回包   ---- 会由代码生成器生成
@@ -212,7 +242,7 @@ Excel 静态数据配置表定义功能的静态数据，每行代表一条记�
     * **典型场景**：修改系统时间、服务器状态变更等。
 * **玩家级事件 (`PlayerEvent`)**
     * **作用范围**：仅在当前玩家对象范围内触发和处理。
-    * **定义位置**：所有类型均在 `EventTypeEnum` 枚举中预先定义。如有新需求，需手动在该枚举中添加。
+    * **定义位置**：所有类型均在 `EventTypeEnum` 枚举中预先定义 (`cn.game.games.core.event.EventTypeEnum`)。如有新需求，需手动在该枚举中添加。
 
 ---
 
@@ -293,17 +323,22 @@ public void handleEvent(PlayerEvent event) {
 
 ## 10. 工具类使用规范
 
-### 10.1 时间相关
+### 10.1 时间相关 (`DateUtil`)
 
-禁止直接使用 `System.currentTimeMillis()`，统一使用 `cn.game.util.DateUtil` 中的方法：
+**严禁**直接使用 `System.currentTimeMillis()` 或 `new Date()`。必须使用 `cn.game.util.DateUtil`：
 
     DateUtil.currentTimeSeconds()  // 当前时间戳（秒）
     DateUtil.currentTimeMillis()   // 当前时间戳（毫秒）
-    // 其他时间相关便捷方法也在 DateUtil 中
+    DateUtil.checkCrossTime(...)   // 检查是否跨越特定时间点
+    DateUtil.isSameDay(...)        // 检查是否同一天
 
-### 10.2 随机相关
+### 10.2 随机相关 (`Rnd`)
 
-随机相关方法统一使用 `cn.game.util.Rnd` 类。
+**严禁**使用 Java 原生 `Random` 或 `RandomUtil`。必须使用 `cn.game.util.Rnd` 类：
+
+    Rnd.nextInt(min, max)            // 范围随机
+    Rnd.randomElement(list)          // 列表随机
+    Rnd.randomWeighableIndex(list)   // 权重随机
 
 ### 10.3 日志规范
 
