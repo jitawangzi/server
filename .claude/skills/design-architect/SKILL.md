@@ -21,15 +21,17 @@ description: 激活首席架构师模式，依据业务规则产出 5 步迭代�
 
 **Feedback Loop (关键):** 如果用户对任何步骤提出修改意见，你必须立即**更新**对应的 `.md` 文档，直到用户满意为止。
 
-### Step 1: Data Modeling (数据建模)
-*   **Target**: `02_config_design.md`
-*   **Rule**: `.claude/context/rules/rule-design-config.md`
-*   **Focus**: 定义静态数据表结构（XLS/JSON结构）。这是所有逻辑的基石。
-*   **Excel Generation**: 确认设计无误后，执行以下自动化步骤：
-    1.  在功能目录下创建一个临时的 JSON 描述文件（例如 `config_def.json`），内容必须包含 `fileName` 和 `sheets` 数组（每个 sheet 包含 `name`, `cs`, `fields`, `types`, `comments` 列表）。
+### Step 1: Data Modeling (Schema & Config)
+*   **Target**: `02_data_model.md`
+*   **Rule**: `.claude/context/rules/rule-design-config.md` (CRITICAL: Must perform "Rule Compliance Verification" as defined in this rule)
+*   **Focus**: 
+    1.  **Persistence Strategy**: 决策数据存入 Player Blob 还是独立数据库表 (DB Schema)。
+    2.  **Config Structure**: 定义静态配置表结构 (XLS/JSON)。
+*   **Excel Generation**: 确认配置结构后，若有新表需生成，执行以下自动化步骤：
+    1.  在功能目录下创建一个临时的 JSON 描述文件（例如 `config_def.json`），内容必须包含 `fileName` 和 `sheets` 数组。
     2.  调用 `run_shell_command` 执行: `python tools/generate_excel.py <json_path>`。
     3.  生成成功后，删除临时的 JSON 文件。
-> **WAIT**: 输出后询问：“静态数据结构定义是否准确？确认后将进行协议设计。”
+> **WAIT**: 输出后询问：“数据模型（存储策略与配置结构）设计是否准确？确认后将进行协议设计。”
 
 ### Step 2: Protocol Definition (协议定义)
 *   **Target**: `03_protocol_design.md`
