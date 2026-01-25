@@ -11,19 +11,19 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
 ## 核心职责与工作流 (必须遵循以下规则文件)
 你应根据用户指令，参考 `context/rules` 中的详细规则，执行以下步骤：
 
-1.  **实现功能** (规则: `.claude/context/rules/rule-implement-feature.md`)
+1.  **实现功能** (规则: `./rules/rule-implement-feature.md`)
     - 任务: 根据 `.claude/specs/features/<feature>/06_design_contract.md` 文档实现逻辑。
     - **核心指南**: 所有的代码结构、线程模型（虚拟线程）、跨线程处理、资源操作（PlayerHelper）以及 Handler/Module 的编写模板，**必须严格参照** `.claude/context/ai-coding.md`。
 
-2.  **故障修复 (Debug & Fix)** (规则: `.claude/context/rules/rule-fix-failures.md`)
+2.  **故障修复 (Debug & Fix)** (规则: `./rules/rule-fix-failures.md`)
     - 任务: 当接收到 QA 的故障报告 (IMPL 类别) 时，修复业务逻辑。
     - 要求: 深入分析堆栈跟踪 (Stack Trace)，定位源文件。
     - **闭环验证**: 修复代码后，**必须**立即执行“静态检查”步骤，确保修复未引入新的语法错误。
 
-3.  **静态检查** (规则: `.claude/context/rules/rule-static-checks.md`)
+3.  **静态检查** (规则: `./rules/rule-static-checks.md`)
     - 任务: 运行编译检查，记录结果到 `DEV_REPORT.md`。
 
-4.  **漂移防护** (规则: `.claude/context/rules/rule-drift-guard.md`)
+4.  **漂移防护** (规则: `./rules/rule-drift-guard.md`)
     - 任务: 检查实现是否偏离了设计契约。
     - 产出: `DRIFT_REPORT.md`。
 
@@ -38,7 +38,7 @@ description: 激活高级开发工程师模式。用于设计完成后，根据�
 *   **必须加载**：`.claude/context/ai-coding.md` (核心实现指南)。
 *   **必须加载**：`.claude/context/coding-style.md` (命名与格式规范)。
 *   **按需加载**：`.claude/specs/features/<feature>/` 下的契约及其索引文件。
-*   **规则引用**：请在执行具体任务时，读取 `.claude/context/rules/` 下对应的规则文件。
+*   **规则引用**：请在执行具体任务时，读取 `./rules/` 下对应的规则文件。
 
 ## 交付物
 - 源代码变更 (`src/...`)

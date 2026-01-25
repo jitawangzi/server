@@ -23,7 +23,7 @@ description: 激活首席架构师模式，依据业务规则产出 5 步迭代�
 
 ### Step 1: Data Modeling (Schema & Config)
 *   **Target**: `02_data_model.md`
-*   **Rule**: `.claude/context/rules/rule-design-config.md` (CRITICAL: Must perform "Rule Compliance Verification" as defined in this rule)
+*   **Rule**: `./rules/rule-design-config.md` (CRITICAL: Must perform "Rule Compliance Verification" as defined in this rule)
 *   **Focus**: 
     1.  **Persistence Strategy**: 决策数据存入 Player Blob 还是独立数据库表 (DB Schema)。
     2.  **Config Structure**: 定义静态配置表结构 (XLS/JSON)。
@@ -35,27 +35,27 @@ description: 激活首席架构师模式，依据业务规则产出 5 步迭代�
 
 ### Step 2: Protocol Definition (协议定义)
 *   **Target**: `03_protocol_design.md`
-*   **Rule**: `.claude/context/rules/rule-design-proto.md`
+*   **Rule**: `./rules/rule-design-proto.md`
 *   **Context**: 必须依据 Step 1 确定的数据结构。
 *   **Env Check**: 使用 `codebase_investigator` 或 `grep` 检查 `protocol` 模块，确保 ID 不冲突，优先复用现有枚举。
 > **WAIT**: 输出后询问：“通信协议定义是否满足需求？确认后将进行逻辑拆解。”
 
 ### Step 3: Logic Decomposition (逻辑拆解)
 *   **Target**: `04_logic_instructions.md`
-*   **Rule**: `.claude/context/rules/rule-logic-instructions.md`
+*   **Rule**: `./rules/rule-logic-instructions.md`
 *   **Focus**: 将业务规则转化为伪代码或详细的处理流程。
 *   **Reuse**: 优先复用 `core/util` 模块中的现有功能（如扣费、发奖、红点机制）。
 > **WAIT**: 输出后询问：“业务逻辑拆解是否无误？确认后将制定测试计划。”
 
 ### Step 4: Test Planning (测试计划)
 *   **Target**: `05_test_plan.md`
-*   **Rule**: `.claude/context/rules/rule-test-plan.md`
+*   **Rule**: `./rules/rule-test-plan.md`
 *   **Focus**: 定义覆盖核心路径和边界条件的测试用例。
 > **WAIT**: 输出后询问：“测试计划是否完善？确认后将生成最终设计契约。”
 
 ### Step 5: Final Contract (设计契约)
 *   **Target**: `06_design_contract.md`
-*   **Rule**: `.claude/context/rules/rule-design-contract.md`
+*   **Rule**: `./rules/rule-design-contract.md`
 *   **Requirement**: 该文档必须是**自包含的汇总文件**。它不仅是设计过程的终点，更是下一步 `implementation-engine` 执行的唯一输入。它必须包含最终的文件列表、核心技术决策、关键状态机定义以及对前置文档的精确索引。
 
 ## Context Strategy (上下文策略)
@@ -63,7 +63,7 @@ description: 激活首席架构师模式，依据业务规则产出 5 步迭代�
     - `.claude/context/ai-coding.md` (AI 编程总览)
     - `.claude/context/config-rules.md` (静态数据规范)
     - `.claude/context/proto-rules.md` (协议语法规范)
-*   **核心规则引用**: 必须在执行每一 Step 时，强制读取 `.claude/context/rules/` 下对应的 `rule-*.md` 文件。
+*   **核心规则引用**: 必须在执行每一 Step 时，强制读取 `./rules/` 下对应的 `rule-*.md` 文件。
 *   **严禁引用**: 根目录下的 `ai/` 文件夹（已废弃）。
 
 ## Artifacts Standard
