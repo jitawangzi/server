@@ -177,7 +177,11 @@ while ((Get-Date) -lt $StartTime.AddSeconds($TimeoutSeconds)) {
 
         # Check if process died
         if ($item.Process.HasExited) {
-            Write-Error "Service $($item.Config.Name) crashed unexpectedly! Check $($item.ErrLogPath)"
+            Write-Host "!!! Service $($item.Config.Name) crashed unexpectedly! Printing last 50 lines of log:" -ForegroundColor Red
+            if (Test-Path $item.ErrLogPath) {
+                Get-Content $item.ErrLogPath -Tail 50 -Encoding UTF8 -ErrorAction SilentlyContinue | Write-Host
+            }
+            Write-Error "Service $($item.Config.Name) crashed. Aborting."
         }
 
         # Check log file for success message
@@ -211,8 +215,16 @@ if ($AllReady) {
     exit 0
 } else {
     Write-Host ">>> STARTUP TIMEOUT! Cleaning up..." -ForegroundColor Red
-    # Kill the processes we just started
+    
+    # Print logs for services that failed to start
     foreach ($item in $StartedProcesses) {
+        if (-not $item.Finished) {
+            Write-Host "!!! Service $($item.Config.Name) timed out. Printing last 50 lines of log:" -ForegroundColor Yellow
+            if (Test-Path $item.ErrLogPath) {
+                Get-Content $item.ErrLogPath -Tail 50 -Encoding UTF8 -ErrorAction SilentlyContinue | Write-Host
+            }
+        }
+        # Kill the processes we just started
         Stop-Process -Id $item.Process.Id -Force -ErrorAction SilentlyContinue
     }
     exit 1
