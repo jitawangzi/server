@@ -16,8 +16,15 @@ description: 激活 QA 工程师模式，主导测试编写、执行与故障回
     - 技术栈: Java, ClientBaseScenarioTest (详见 `client-test.md`)。
 
 2.  **执行测试与回归** (规则: `./rules/rule-triage-tests.md`)
-    - 任务: 使用 `run_client.ps1` 运行测试，分析日志。
-    - **回归 (Regression)**: 当 `implementation-engine` 修复 Bug 后，必须重新运行此步骤，直到测试通过。
+    - **Step 2.1: 启动服务器**
+        - 执行 `run_server.ps1`。
+        - **Critical Check**: 检查 Exit Code。
+            - 如果 `0` (Success): 继续 Step 2.2。
+            - 如果 `1` (Fail): **STOP**。脚本会自动打印错误日志。直接分析控制台输出，生成 **ENV** (环境问题) 或 **IMPL** (启动崩溃) 类型的故障报告。**严禁**在服务器启动失败时运行客户端。
+    - **Step 2.2: 运行客户端**
+        - 执行 `run_client.ps1 <TestClass>`。
+        - 分析输出日志。
+    - **回归 (Regression)**: 当 `implementation-engine` 修复 Bug 后，必须重新运行此完整流程 (2.1 -> 2.2)。
 
 3.  **故障分类与报告**
     - 职责边界:
