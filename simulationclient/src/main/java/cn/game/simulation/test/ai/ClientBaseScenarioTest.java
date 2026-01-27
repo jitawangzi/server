@@ -1,5 +1,6 @@
 package cn.game.simulation.test.ai;
 
+import cn.game.protocol.protobuf.TestMsg.TestGmCmdRequest_6f000001;
 import com.google.protobuf.Message;
 
 import cn.game.core.exception.LogicException;
@@ -44,6 +45,18 @@ public abstract class ClientBaseScenarioTest {
 				throw new RuntimeException("请求协议:"+request.getClass().getSimpleName() + " 返回错误",e.getCause()) ; 
 			}
 		} 
+    }
+
+    /** 
+     * 发送 GM 指令并等待结果
+     * @param cmd GM 指令内容，例如 "item 100001 10"
+     * @return GM 指令响应包
+     */
+    protected Message sendGmCmd(String cmd) {
+        TestGmCmdRequest_6f000001 gmReq = TestGmCmdRequest_6f000001.newBuilder()
+                .setCmd(cmd)
+                .build();
+        return sendAndWait(gmReq);
     }
     /** 
      * 从服务器同步最新的数据

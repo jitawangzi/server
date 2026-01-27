@@ -364,6 +364,105 @@ public void handleEvent(PlayerEvent event) {
 
 ---
 
-## 12. 暂不涉及的内容
+## 12. GM 指令架构 (GM Command Architecture)
+
+为了避免 `TestHandler`过于臃肿，GM 指令采用**命令模式 + 注册表**的方式进行模块化管理。
+
+### 12.1 架构说明
+
+*   **`GmRegistry`**: 核心注册表，负责指令的分发 (`dispatch`)。
+*   **`AbstractGm`**: GM 指令类的基类，提供参数解析辅助方法 (`getInt`, `getLong`) 和注册方法 (`register`)。
+*   **`GmCommand`**: 函数式接口，定义具体的指令处理逻辑。
+*   **指令类位置**: `cn.game.games.net.game.gm.command` 包下。
+
+### 12.2 新增 GM 指令流程
+
+1.  **创建/修改指令类**:
+    *   在 `cn.game.games.net.game.gm.command` 包下找到相关模块的类（如 `BattleGm`, `ItemGm`）。
+    *   如果是新模块，新建继承自 `AbstractGm` 的类，并添加 `@Component` 注解。
+
+2.  **实现处理方法**:
+    *   方法签名：`private void myCommand(Player player, String[] params)`
+    *   **参数说明**: `params[0]` 是指令本身，`params[1]` 是第一个参数，以此类推。
+    *   使用 `getInt(params, index)` 或 `getLong(params, index)` 安全获取参数。
+
+3.  **注册指令**:
+    *   在类的 `init()` 方法中调用 `register("cmdName", this::myCommand)`。
+
+### 12.3 代码示例
+
+```java
+@Component
+public class MyModuleGm extends AbstractGm {
+    @Override
+    public void init() {
+        register("mycmd", this::handleMyCmd);
+    }
+
+    private void handleMyCmd(Player player, String[] params) {
+        // params[0] == "mycmd"
+        int value = getInt(params, 1); // 获取第一个参数
+        // 业务逻辑...
+        player.getModule(MyModule.class).doSomething(value);
+    }
+}
+```
+
+### 12.4 现有指令参考
+
+*   **`BattleGm`**: 关卡、副本相关 (`ly`, `zxgk`, `slzj`)
+*   **`ItemGm`**: 物品相关 (`item`, `itemdel`)
+*   **`HeroGm`**: 英雄相关 (`hero`, `herolv`)
+*   **`PlayerGm`**: 玩家基础 (`newday`, `time`)
+
+---
+
+## 13. 物品系统架构 (Item System Architecture)
+
+### 13.1 物品类型定义
+
+所有物品（资源、道具、装备等）的类型由 `GoodsTypeEnum` 定义。类型 ID 与 物品 ID 存在固定映射关系：
+*   **计算公式**: `ItemType = ConfigId / 100000`
+*   **映射举例**:
+    *   ID `100001` -> Type `1` (资源/Asset)
+    *   ID `200001` -> Type `2` (道具/Item)
+
+### 13.2 核心物品类型
+
+#### 13.2.1 资源类 (GoodsType = 1, Asset)
+玩家拥有的数值型资源，存储在 `CurrencyModule` 中。
+*   **Type 1 (普通货币)**: 金币、钻石、代币等，通常用于消耗。
+*   **Type 2 (经验)**: 玩家经验、果树经验等。**特殊逻辑**: 添加此类资源时会自动触发升级逻辑。
+*   **Type 3 (体力)**: 可自动恢复，有上限。
+*   **Type 4 (积分)**: 任务积分、活动积分。
+*   **Type 5 (次数)**: 如砍价次数等特殊计数。
+
+#### 13.2.2 道具类 (GoodsType = 2, Item)
+可堆叠的物品，存储在 `ItemModule` 中。无唯一实例 ID，仅有 ConfigId。
+细分类型 (`ItemType`):
+*   `1`: 英雄突破通用道具
+*   `2`: 英雄升级
+*   `3`: 请神道具
+*   `4`: 任选宝箱
+*   `7`: 随机道具
+*   `8`: 掉落包 (自动开启)
+*   `11`: 神将碎片
+*   `12`: 灵宠碎片
+
+#### 13.2.3 实体类物品
+拥有独立实例或特定业务逻辑的物品，通常每个大类对应一个 `GoodsModule` 子类。
+*   **装备 (Equipment)**
+*   **英雄 (Hero)**
+*   **灵宠 (Pet)**
+*   **皮肤 (Skin)**
+*   **宝石 (Gem)**
+
+### 13.3 模块化设计
+
+每个大类物品通常由 `GoodsModule` 的特定子类管理（如 `ItemModule`, `HeroModule`）。通用操作（增删改查）在 `GoodsModule` 抽象基类中定义，但具体业务逻辑（如使用效果、属性计算）在子类中实现。
+
+---
+
+## 14. 暂不涉及的内容
 
 全局/社交系统处理（Global/Guild/Rank）暂时较少，先由人工开发。其并发模型与玩家系统相同，都是通过 ID 分配到不同队列实现串行化。
