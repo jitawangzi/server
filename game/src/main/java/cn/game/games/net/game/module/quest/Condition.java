@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.PlayerEventHandler;
+import cn.game.protocol.generated.config.ConditionConfig;
 
 public interface Condition extends PlayerEventHandler {
 
