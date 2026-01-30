@@ -1,11 +1,14 @@
 package cn.game.games.net.game.module.quest.require;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
-import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
+import cn.game.protocol.generated.manager.ConditionManager;
 
 /**    
  * 通关某章节次数
@@ -25,7 +28,7 @@ public class ChapterFinish extends AbstractCondition {
 
 	@Override
 	public long getFinishCount() {
-		return PlayerHelper.getConditionCount(player, condition);
+		return getValue(player, ConditionManager.instance().get(condition));
 	}
 
 	@Override
@@ -35,5 +38,11 @@ public class ChapterFinish extends AbstractCondition {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public long getValue(Player player, ConditionConfig config) {
+		BattleModule battleModule = player.getModule(BattleModule.class);
+		return battleModule.isBattlePass(config.idParam) ? 1 : 0;
 	}
 }

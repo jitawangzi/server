@@ -227,4 +227,9 @@ public abstract class AbstractCondition implements Condition {
 		updateAction();
 		isAchieve();
 	}
+
+	@Override
+	public long getValue(Player player, ConditionConfig config) {
+		return 0;
+	}
 }

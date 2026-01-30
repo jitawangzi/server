@@ -346,11 +346,11 @@ public class GameLogger extends DeprecatedLogger {
 	public static void shoptrade(Player player, int shopId, int shopItemId,int count) {
 		try {
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItemId);
-			int itemId = shopItemConfig.Item[0][0];
-			long itemCount = shopItemConfig.Item[0][1];
+			int itemId = shopItemConfig.Rewards[0][0];
+			long itemCount = shopItemConfig.Rewards[0][1];
 			int itemType = ItemHelper.getGoodsType(itemId);
 
-			int[] buyParam = shopItemConfig.PurchaseParameter;
+			int[] buyParam = shopItemConfig.Cost[0];
 			int costId = 0;
 			int costCount = 0;
 			if (buyParam.length == 0 || buyParam.length == 1) {

@@ -1,9 +1,11 @@
 package cn.game.games.net.game.module.quest.require;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
+import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 
@@ -25,7 +27,7 @@ public class PlayerLevelCondition extends AbstractCondition {
 
 	@Override
 	public long getFinishCount() {
-		return player.getLevel();
+		return getValue(player, null);
 	}
 
 	@Override
@@ -37,5 +39,10 @@ public class PlayerLevelCondition extends AbstractCondition {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public long getValue(Player player, ConditionConfig config) {
+		return player.getLevel();
 	}
 }

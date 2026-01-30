@@ -1,6 +1,8 @@
 package cn.game.games.net.game.module.quest;
 
-import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.cache.entity.Player;
+import cn.game.protocol.generated.config.ConditionConfig;
+import cn.game.protocol.generated.manager.ConditionManager;
 
 /**    
  * 累计计数的条件，累计的计数一般存在某个统一的地方，不在任务里
@@ -11,6 +13,11 @@ public abstract class AbstractCumulativeCondition extends AbstractCondition {
 
 	@Override
 	public long getFinishCount() {
-		return PlayerHelper.getConditionCount(player, condition);
+		return getValue(player, ConditionManager.instance().get(condition));
+	}
+
+	@Override
+	public long getValue(Player player, ConditionConfig config) {
+		return player.getCountingModule().getCount(config.ID);
 	}
 }
