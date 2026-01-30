@@ -109,5 +109,13 @@ public interface Condition extends PlayerEventHandler {
 	 * @param count
 	 */
 	void addCount(int count);
+	
+	/**
+	 * 获取条件当前的数值 (Stateless check)
+	 * @param player
+	 * @param config
+	 * @return
+	 */
+	long getValue(Player player, ConditionConfig config);
 
 }

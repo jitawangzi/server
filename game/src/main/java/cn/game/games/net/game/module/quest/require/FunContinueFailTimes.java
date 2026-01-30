@@ -1,10 +1,12 @@
 package cn.game.games.net.game.module.quest.require;
 
+import cn.game.games.cache.entity.Player;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.net.game.module.quest.AbstractCumulativeCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.ConditionConfig;
 import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.manager.BattleManager;
 
@@ -25,5 +27,10 @@ public class FunContinueFailTimes extends AbstractCumulativeCondition {
 	public boolean checkEventParam(PlayerEvent event) {
 		BattleConfig battleConfig = BattleManager.instance().get(event.get(0));
 		return !event.getBoolParameter(2) && getParam() == 0 || getParam() > 0 && getParam() == battleConfig.BattleType;
+	}
+
+	@Override
+	public long getValue(Player player, ConditionConfig config) {
+		return player.getBattleModule().getConsecutiveFailures(config.extParam.length == 0 ? 0 : config.extParam[0]);
 	}
 }

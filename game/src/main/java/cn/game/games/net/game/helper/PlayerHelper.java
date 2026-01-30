@@ -1,5 +1,7 @@
 package cn.game.games.net.game.helper;
 
+import cn.game.games.core.clazz.ClassManager;
+import cn.game.games.net.game.module.quest.AbstractCondition;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -1200,105 +1202,15 @@ public class PlayerHelper {
 		if (type.countType == 0) {
 			throw new IllegalArgumentException(condition + " 计数类型是0，只能从任务处获取数据");
 		}
-		int id = conditionConfig.idParam;
-		int numParam = conditionConfig.numParam;
-		int[] extParam = conditionConfig.extParam;
+		
+		AbstractCondition conditionInstance = ClassManager.getInstance().getCachedConditionClassInstance(type.ID);
+		if (conditionInstance != null) {
+			return conditionInstance.getValue(player, conditionConfig);
+		}
 
 		if (type.countType == 2) {
-			switch (type) {
-			// 特殊的保存位置
-			case FunContinueFailTimes: {
-				return player.getBattleModule().getConsecutiveFailures(extParam.length == 0 ? 0 : extParam[0]);
-			}
-			default:
-				// 默认从通用计数中获取
-				return player.getCountingModule().getCount(condition);
-			}
-
-		}
-		if (type.countType == 1) {
-			// 直接根据当前数据获取的：
-			return switch (type) {
-			case PlayerLevel -> player.getLevel();
-			case VIPLevel -> player.getVipLevel();
-			case RemainMatiarialNow -> player.getCurrencyModule().get(id).getCount();
-			case DefencelineLevelLowerThan -> player.getDevelopModule().getDefenceLevel();
-			case RSGTreeLevel -> player.getLevel(Asset.RSGTreeExp);
-			case GuildLevel -> GameCacheService.getInstance().getPlayerGuildLevel(player.getPlayerId());
-			case ChapterFinish -> {
-				BattleModule battleModule = player.getModule(BattleModule.class);
-				yield battleModule.isBattlePass(id) ? 1 : 0;
-			}
-			case EquipQualityNum -> {
-				EquipModule module = player.getModule(EquipModule.class);
-				yield module.getEquipCountGTQuality(extParam[0]);
-			}
-			case EquipEnhanceLevel -> {
-				EquipModule module = player.getModule(EquipModule.class);
-				yield module.getEquipPartCountGTlevel(extParam[0]);
-			}
-			case EquipEnhanceLevelLowerThan -> {
-				EquipModule module = player.getModule(EquipModule.class);
-				yield module.getEquipPartCountLTlevel(extParam[0]);
-			}
-			case GemWearNum -> {
-				GemModule module = player.getModule(GemModule.class);
-				yield module.getCountGTQualityWearCount(extParam[0],true);
-			}
-			case GemWearNumLowerThan -> {
-				GemModule module = player.getModule(GemModule.class);
-				yield module.getCountGTQualityWearCount(extParam[0],false);
-			}
-			case HeroNumLowerThan -> {
-				HeroModule heroModule = player.getHeroModule(); 
-				yield heroModule.list().size(); 
-			}
-			case HeroRatioLowerThan -> {
-				HeroModule heroModule = player.getHeroModule(); 
-				yield heroModule.getHeroRateInAllHeros(); 
-			}
-			case HeroIDAndLevel -> {
-				boolean ret = false;
-				Collection<Hero> byConfigId = player.getHeroModule().getByConfigId(id); 
-				for (Hero hero : byConfigId) {
-					if (hero.getLevel() >= extParam[0] && hero.getLevel() <= extParam[1]) {
-						ret = true; 
-						break; 
-					}
-				}
-				yield ret ? 1 : 0;
-			}
-			case LingShanLevel -> {
-				BattleModule module = player.getModule(BattleModule.class);
-				LingShanWenChanBattle battle = module.getBattle(DungeonTypeEnum.LingShanWenChan);
-				yield battle == null ? 0 : battle.getLastCompleteFloor() >= extParam[0] ? 1 : 0;
-			}
-			case DaShengPoints -> {
-				BattleModule module = player.getModule(BattleModule.class);
-				PVEVPBattle battle = module.getBattle(DungeonTypeEnum.PVEVPBattle);
-				yield battle != null ? (int) battle.getMyRank().getScore() : 0;
-			}
-			case LongYuanLevel -> {
-				// 龙渊密藏-中间塔达到层数
-				BattleModule module = player.getModule(BattleModule.class);
-				TowerBattle battle = module.getBattle(DungeonTypeEnum.GemTower);
-				yield battle == null ? 0 : battle.getCurFloor().get(DungeonTypeEnum.GemTower.getId()) - 1 >= extParam[0] ? 1 : 0;
-			}
-			case IsMonthCard -> {
-				// 是否有某个月卡
-				MonthCardModule module = player.getModule(MonthCardModule.class);
-				int ret = 0 ; 
-				for (int i : extParam) {
-					if (module.hasMonthCard(i)) {
-						ret = 1; 
-						break ; 
-					}
-				}
-				yield ret;
-			}
-			case CultivatesImmortals -> player.getDevelopModule().getHeavenlyDaoLevel();
-			default -> throw new IllegalArgumentException(" not suport countType1 condition  " + type);
-			};
+			// 默认从通用计数中获取
+			return player.getCountingModule().getCount(condition);
 		}
 		throw new IllegalArgumentException(" not suport condition  " + type);
 	}
