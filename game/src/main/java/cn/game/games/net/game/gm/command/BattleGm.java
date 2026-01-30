@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import cn.game.core.exception.LogicException;
+import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.gm.AbstractGm;
-import cn.game.games.net.game.manager.BattleManager;
 import cn.game.games.net.game.module.battle.BattleModule;
-import cn.game.games.net.game.module.battle.Chapter;
 import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
 import cn.game.games.net.game.module.battle.ShiLuoZhenJingBattle;
 import cn.game.games.net.game.module.battle.TowerBattle;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.core.exception.LogicException;
 
 @Component
 public class BattleGm extends AbstractGm {
