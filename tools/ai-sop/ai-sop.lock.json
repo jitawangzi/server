@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "sourceUrl": "https://github.com/jitawangzi/agent-sop.git",
+  "commit": "69181cf3a2315711bd9b1a97b27d76b855da7542",
+  "manifest": {
+    "path": "distribution/project-manifest.json",
+    "blobSha256": "fa50252291a506cde5fae3fbe535b410d572c85693ac4cfcce51d57503e2ce9c"
+  },
+  "core": {
+    "path": "distribution/install-ai-sop-core.ps1",
+    "blobSha256": "34750fbbf9e3c433fc1a700bf25597bff470fad16798cff8418944521209e430"
+  },
+  "bootstrap": {
+    "path": "distribution/bootstrap/install-ai-sop.ps1",
+    "blobSha256": "aa08e0537485e20aa1b417cd848494eace743a2f6c52b5612027f68404304600"
+  },
+  "certification": {
+    "path": "distribution/harness-certification.json",
+    "blobSha256": "41c9114e1f2e32e67505aff16c4365d4357dc6c0b75e95615b45080669d7be4a"
+  }
+}

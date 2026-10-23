@@ -1,0 +1,3 @@
+[submodule ".ai-sop"]
+	path = .ai-sop
+	url = https://github.com/jitawangzi/agent-sop.git

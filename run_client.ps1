@@ -44,11 +44,8 @@ Write-Host ">>> [Step 2] Running Test: $TestClass" -ForegroundColor Cyan
 # 构造 Classpath
 # 包含当前模块的 classes，以及 lib 下的所有 jar
 $TargetDir = "$ClientModule\target"
-$ClassPath = ".;$TargetDir\classes;$TargetDir\lib\*;$TargetDir\dependency\*"
-
-# 如果你的 simulationclient 依赖了其他兄弟模块(core, game)的源码，
-# 且不想打成jar包，可以把它们的 classes 目录也加进来，例如：
-$ClassPath += ";core\target\classes;game\target\classes;protocol\target\classes"
+# 本轮 reactor 编译结果必须先于历史依赖 JAR，确保兄弟模块修改实际生效。
+$ClassPath = ".;$TargetDir\classes;util\target\classes;core\target\classes;game\target\classes;protocol\target\classes;$TargetDir\lib\*;$TargetDir\dependency\*"
 
 $javaArgs = @(
     "-cp", $ClassPath,

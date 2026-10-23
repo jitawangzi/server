@@ -249,7 +249,7 @@ public class PlayerManager {
 			Collections.sort(ret, (a, b) -> {
 				return (int) (b.offlineTime - a.offlineTime);
 			});
-			List<SimplePlayer> subList = ret.subList(0, 8);
+			List<SimplePlayer> subList = ret.subList(0, Math.min(ret.size(), 8));
 			// 设置本次刷新的记录
 			List<Long> idList = subList.stream().map(p -> p.getId()).collect(Collectors.toList());
 			friendModule.setLastRefreshPlayers(idList);
