@@ -161,7 +161,7 @@ public class TestHelper {
 			if (gameClientByPlayer != null) {
 				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.Delete);
 			}
-			PlayerHelper.clearPlayer(deletePlayerId);
+			if (!PlayerHelper.clearPlayer(playerDelete)) { throw new IllegalStateException("保存未决或身份变化，禁止删档"); }
 		}
 		// 删除数据库
 		DAO.execute(PlayerDataMapper.class, MapperConstant.deleteByPrimaryKey, deletePlayerId);
@@ -296,7 +296,7 @@ public class TestHelper {
 			if (gameClientByPlayer != null) {
 				GameClientManager.getInstance().removeGameClient(gameClientByPlayer, LogoutType.TestRequest);
 			}
-			PlayerHelper.clearPlayer(playerId);
+			if (!PlayerHelper.clearPlayer(playerDelete)) { throw new IllegalStateException("保存未决或身份变化，禁止删档"); }
 			// 删除微信推送的任务
 			PlayerManager.getInstance().delOfflineScheduleTask(playerId);
 		}

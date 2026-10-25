@@ -190,20 +190,20 @@ public class PlayerSaveSnapshotTest {
         Assertions.assertEquals("original", source.getModules());
     }
 
-    /** 保留玩家缺失、不活跃、独立表与空任务分支，不增加独立表写入或绕过原钩子。 */
+    /** 玩家缺失、不活跃及空任务明确失败；独立表不增加写入或绕过原钩子。 */
     @Test
     void independentTableAndNoOpBranchesStayUnchanged() {
         DeferredWrites writes = new DeferredWrites();
         Future<List<Object>> missing = PlayerHelper.saveClientCache(9, id -> null,
                 () -> { throw new AssertionError("missing player queried storage mode"); }, writes::update);
-        Assertions.assertTrue(missing.succeeded());
+        Assertions.assertTrue(missing.failed());
         Assertions.assertNull(missing.result());
         FixturePlayer player = player(1);
         player.setActive(false);
         Assertions.assertTrue(PlayerHelper.saveClientCache(9, id -> player,
-                () -> { throw new AssertionError("inactive player queried storage mode"); }, writes::update).succeeded());
+                () -> { throw new AssertionError("inactive player queried storage mode"); }, writes::update).failed());
         player.setActive(true);
-        Assertions.assertTrue(PlayerHelper.saveClientCache(9, id -> player, () -> false, writes::update).succeeded());
+        Assertions.assertTrue(PlayerHelper.saveClientCache(9, id -> player, () -> false, writes::update).failed());
         Assertions.assertTrue(writes.rows.isEmpty());
         HookData independent = new HookData();
         player.module.entities.add(independent);

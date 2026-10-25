@@ -1119,14 +1119,11 @@ public class PlayerHandler extends GameBaseHandler {
 		GameClientManager.getInstance().removeGameClient((GameClient) client, LogoutType.ClientLoginFail);
 		if (client.getPlayerId() > 0) {
 			Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-			if (player != null) {
+			// 旧连接的失败回调不得清理新连接玩家；未知创建结果时也不能提前回收角色名。
+			if (player != null && player.getGameClient() == client && PlayerHelper.clearPlayer(player)) {
 				PlayerData data = player.getData();
-				if (data != null && data.isNew()) {
-					// 新创建的角色失败了，回收名字
-					PlayerNameManager.getInstance().removeName(data.getName());
-				}
+				if (data != null && data.isNew()) { PlayerNameManager.getInstance().removeName(data.getName()); }
 			}
-			PlayerHelper.clearPlayer(client.getPlayerId());
 		}
 	}
 

@@ -1446,10 +1446,16 @@ public class PlayerHelper {
 	/** 
 	 * 创建新玩家，在其串行执行上下文封存参数后提交数据库。
 	 * @param player 已初始化模块的玩家，捕获期间不得并发修改
-	 * @return 成功返回原玩家；失败沿用 DAO 原因，不提供跨次写入保序保证
+	 * @return 成功返回原玩家；失败保留原因；超时不代表写入停止，同玩家写入按提交顺序执行
 	 */
 	public static Future<Player> savePlayerToDb(Player player) {
-		return savePlayerToDb(player, data -> DAO.execute(PlayerDataMapper.class, MapperConstant.insert, data));
+		return savePlayerToDb(player, PlayerSaveCoordinator.shared());
+	}
+
+	/** @param player 已初始化玩家 @param saves 统一保存通道 @return 绑定本代真实提交的原玩家 */
+	static Future<Player> savePlayerToDb(Player player, PlayerSaveCoordinator saves) {
+		saves.preparing(player, player.getPlayerId());
+		return savePlayerToDb(player, data -> saves.submit(player, data, true).result().map(receipt -> (Object) receipt));
 	}
 
 	/**
@@ -1568,14 +1574,15 @@ public class PlayerHelper {
 		data.setOfflineTime(System.currentTimeMillis());
 		data.setGameTime(data.getGameTime() + (int) ((data.getOfflineTime() - DateUtil.parseDate(data.getLoginDate()).getTime()) / 1000));
 
-		return saveClientCache(playerId).onSuccess(r -> {
-			clearPlayer(playerId);
+		return saveClientCache(playerId).compose(r -> {
+			if (!clearPlayer(player)) { throw new IllegalStateException("保存仍有风险或玩家身份已变，禁止退出清理"); }
 
 			// 推送玩家离线的微信通知
 			player.addWechatOfflineNotifyTask();
 
 			GameLogger.logout(player);
 			PushService.getInstance().delPlayerTags(playerId);
+			return Future.succeededFuture();
 		}).compose(v -> {
 			RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
 			return Future.fromCompletionStage(deleteAsync);
@@ -1585,9 +1592,9 @@ public class PlayerHelper {
 		}).compose(v -> {
 			// 更新最近的服务器
 			return PlayerHelper.updateUserServer(player);
-		}).mapEmpty().otherwise(e -> {
+		}).mapEmpty().recover(e -> {
 			log.error("Error during logout cache process for playerId: " + playerId, e);
-			return null;
+			return Future.failedFuture(e);
 		});
 		
 	}
@@ -1645,11 +1652,11 @@ public class PlayerHelper {
 	    timing.tPrepareDataEnd = System.nanoTime();
 
 	    // 步骤3：保存客户端缓存
-	    return saveClientCache(playerId).onSuccess(r -> {
+	    return saveClientCache(playerId).compose(r -> {
 	        timing.tSaveClientCacheEnd = System.nanoTime();
 
 	        // 步骤4：清理玩家
-	        clearPlayer(playerId);
+	        if (!clearPlayer(player)) { throw new IllegalStateException("保存仍有风险或玩家身份已变，禁止退出清理"); }
 	        timing.tClearPlayerEnd = System.nanoTime();
 
 	        // 步骤5：推送玩家离线微信通知
@@ -1676,6 +1683,7 @@ public class PlayerHelper {
 	                ms(timing.tGameLoggerEnd, timing.tDelTagsEnd),
 	                ms(timing.tStart, timing.tDelTagsEnd)
 	        ));
+	        return Future.succeededFuture();
 	    }).compose(v -> {
 	        // 步骤8：删除 Redis 中的 PLAYER_SERVER_ID
 	        RFuture<Boolean> deleteAsync = RedisUtil.deleteAsync(CacheType.PLAYER_SERVER_ID.key(playerId));
@@ -1704,7 +1712,7 @@ public class PlayerHelper {
 	                    ms(timing.tStart, timing.tAllDone)
 	            ));
 	        });
-	    }).mapEmpty().otherwise(e -> {
+	    }).mapEmpty().recover(e -> {
 	        long errNow = System.nanoTime();
 	        // 尽可能输出已采集的各阶段耗时
 	        log.error(String.format(
@@ -1722,7 +1730,7 @@ public class PlayerHelper {
 	                safeMs(timing.tDeleteRedisKeyEnd, timing.tSaveSimplePlayerEnd),
 	                ms(timing.tStart, errNow)
 	        ), e);
-	        return null;
+	        return Future.failedFuture(e);
 	    });
 	}
 
@@ -1741,22 +1749,40 @@ public class PlayerHelper {
 	 * 清除玩家缓存数据
 	 */
 	public static void clearPlayer(long playerId) {
-		Player player = PlayerManager.getInstance().deletePlayer(playerId);
-		if (player == null) {
-			return;
-		}
-		player.cancelAllTimer();
+		clearPlayer(PlayerManager.getInstance().getPlayer(playerId));
+	}
+
+	/** @param expected 原玩家身份 @return 仅原对象健康且移除成功时为 true；风险对象继续驻留 */
+	public static boolean clearPlayer(Player expected) {
+		if (expected == null) { return false; }
+		Player removed = PlayerManager.getInstance().deletePlayer(expected);
+		if (removed == null) { return false; }
+		removed.cancelAllTimer();
+		return true;
 	}
 
 	/**
 	 * 在玩家所属串行执行上下文保存 PlayerManager 中的权威在线数据。
-	 * 单表分支提交独立参数，捕获期间不得并发修改；本入口尚不保证跨次写入顺序。
+	 * 单表分支提交独立参数并进入统一串行通道，捕获期间不得并发修改。
 	 * @param playerId 需要保存的玩家 ID
-	 * @return 原 DAO 批量结果；玩家缺失、不活跃或无任务时正常返回不表示已落库
+	 * @return 本次保存结果；缺失、不活跃或空任务明确失败，不能当作已持久化
 	 */
 	public static Future<List<Object>> saveClientCache(long playerId) {
 		return saveClientCache(playerId, PlayerManager.getInstance()::getPlayer,
-				ServerContext.getInstance()::isSinglePlayerTable, DAO::executeDbTaskList);
+				ServerContext.getInstance()::isSinglePlayerTable, PlayerSaveCoordinator.shared(), DAO::executeDbTaskList);
+	}
+
+	/** @param playerId 玩家 @param players 权威查找 @param singlePlayerTable 模式 @param saves 统一通道 @param standalone 原独立表执行器 @return 本次保存结果 */
+	static Future<List<Object>> saveClientCache(long playerId, LongFunction<Player> players,
+			BooleanSupplier singlePlayerTable, PlayerSaveCoordinator saves,
+			Function<List<DbTask>, Future<List<Object>>> standalone) {
+		Player player = players.apply(playerId);
+		boolean single = player != null && player.isActive() && singlePlayerTable.getAsBoolean();
+		if (single) { saves.preparing(player, playerId); }
+		return saveClientCache(playerId, id -> player, () -> single, tasks -> {
+			PlayerData data = (PlayerData) tasks.getFirst().getArg();
+			return saves.submit(player, data, false).result().map(receipt -> List.of((Object) receipt));
+		}, standalone);
 	}
 
 	/**
@@ -1765,14 +1791,21 @@ public class PlayerHelper {
 	 * @param players 权威玩家查找入口
 	 * @param singlePlayerTable 是否使用玩家聚合表，仅对活跃玩家读取
 	 * @param execute 接收数据库任务的提交器，提交后不得改写参数
-	 * @return 原批量保存结果；玩家缺失、不活跃或没有任务时沿用空操作结果
+	 * @return 原批量保存结果；玩家缺失、不活跃或没有任务时明确失败
 	 */
 	static Future<List<Object>> saveClientCache(long playerId, LongFunction<Player> players,
 			BooleanSupplier singlePlayerTable,
 			Function<List<DbTask>, Future<List<Object>>> execute) {
+		return saveClientCache(playerId, players, singlePlayerTable, execute, execute);
+	}
+
+	/** @param playerId 玩家 @param players 权威查找 @param singlePlayerTable 模式 @param execute 单表提交 @param standalone 独立表提交 @return 本次保存结果 */
+	private static Future<List<Object>> saveClientCache(long playerId, LongFunction<Player> players,
+			BooleanSupplier singlePlayerTable, Function<List<DbTask>, Future<List<Object>>> execute,
+			Function<List<DbTask>, Future<List<Object>>> standalone) {
 		Player player = players.apply(playerId);
 		if (player == null) {
-			return Future.succeededFuture();
+			return Future.failedFuture(new PlayerSaveCoordinator.SaveFailure("PLAYER_MISSING", playerId, 0, null));
 		}
 		if (player.isActive()) {
 			if (singlePlayerTable.getAsBoolean()) {
@@ -1796,11 +1829,11 @@ public class PlayerHelper {
 				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKey, dbEntity));
 			}
 			if (!dbTasks.isEmpty()) {
-				Future<List<Object>> updateFuture = execute.apply(dbTasks);
+				Future<List<Object>> updateFuture = standalone.apply(dbTasks);
 				return updateFuture;
 			}
 		}
-		return Future.succeededFuture();
+		return Future.failedFuture(new PlayerSaveCoordinator.SaveFailure("SAVE_SKIPPED", playerId, 0, null));
 	}
 	private static void debugModuleSize(Player player, String jsonString) {
 	    if (ServerContext.getInstance().getRunMode().isDev()) {
@@ -2061,7 +2094,7 @@ public class PlayerHelper {
 			return Future.succeededFuture();
 		}).compose(v -> {
 			// 修改完玩家数据后，需要从缓存中清除数据
-			PlayerHelper.clearPlayer(player.getPlayerId());
+			if (!PlayerHelper.clearPlayer(player)) { return Future.failedFuture("玩家保存未决，保留离线对象与路由"); }
 			RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));
 			return Future.succeededFuture();
 		});

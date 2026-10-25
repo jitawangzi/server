@@ -31,6 +31,7 @@ import cn.game.games.core.SimplePlayer;
 import cn.game.games.net.data.mapper.ForbidAccountMapper;
 import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.PlayerSaveCoordinator;
 import cn.game.games.net.game.module.friend.FriendModule;
 import cn.game.games.net.game.module.player.OfflineScheduleTask;
 import cn.game.games.util.DAO;
@@ -163,8 +164,12 @@ public class PlayerManager {
     return future;
   }
 
+	/** @param p 权威玩家；旧对象仍驻留时不得以新对象覆盖未决保存状态 */
 	public void initAdd(Player p) {
-		id_players.put(p.getPlayerId(), p);
+		PlayerSaveCoordinator.shared().register(p.getPlayerId(), p, () -> {
+			Player previous = id_players.putIfAbsent(p.getPlayerId(), p);
+			if (previous != null && previous != p) { throw new IllegalStateException("玩家对象已存在: " + p.getPlayerId()); }
+		});
 		//取消玩家离线推送微信任务
 		delOfflineScheduleTask(p.getPlayerId());
 	}
@@ -210,8 +215,25 @@ public class PlayerManager {
 		return id_players.size();
 	}
 
-	public Player deletePlayer(long id) {
-		return id_players.remove(id);
+	/** @param id 玩家 ID，异步调用者必须改用带原对象身份的重载 @return 实际删除对象，保留时返回 null */
+	public Player deletePlayer(long id) { return deletePlayer(id_players.get(id)); }
+
+	/** @param expected 原玩家身份 @return 仅无未决或已观察脏状态且身份一致时删除 */
+	public Player deletePlayer(Player expected) {
+		if (expected == null) { return null; }
+		boolean removed = PlayerSaveCoordinator.shared().release(expected.getPlayerId(), expected,
+				() -> id_players.remove(expected.getPlayerId(), expected));
+		if (!removed) { log.warn("保留玩家缓存：保存未决、已观察未保存状态或身份已变化 playerId={}", expected.getPlayerId()); }
+		return removed ? expected : null;
+	}
+
+	/** @return 已断线但仍驻留、存在已观察保存风险的玩家，不依赖活跃连接列表 */
+	public List<PlayerSaveCoordinator.Status> getDisconnectedSaveRisks() {
+		return PlayerSaveCoordinator.shared().disconnectedDirtyPlayers(id -> {
+			Player player = id_players.get(id);
+			return player != null && (!player.isOnline() || player.getGameClient() == null
+					|| player.getGameClient().getChannel() == null || player.getGameClient().getChannel().isClosed());
+		});
 	}
 	
 	@AiExport

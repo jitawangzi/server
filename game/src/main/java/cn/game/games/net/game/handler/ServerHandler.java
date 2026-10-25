@@ -263,8 +263,8 @@ public class ServerHandler extends GameBaseHandler {
 			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer -> {
 				if (offlinePlayer != null) {
 					consumer.accept(offlinePlayer);
-					PlayerHelper.saveClientCache(playerId).onComplete(r -> {
-						PlayerManager.getInstance().deletePlayer(playerId);
+					PlayerHelper.saveClientCache(playerId).onSuccess(r -> {
+						PlayerManager.getInstance().deletePlayer(offlinePlayer);
 					});
 				}
 			}).onFailure(err -> {
@@ -479,7 +479,7 @@ public class ServerHandler extends GameBaseHandler {
 	            player.handleFail(t);
 	        }
 	        sendResult(client, false);
-	        cleanupIfOffline(player, online);
+	        // 保存未确认时保留离线对象，供后续核对和恢复，不能因失败丢弃内存状态。
 	    });
 	}
 
@@ -488,7 +488,7 @@ public class ServerHandler extends GameBaseHandler {
 	 */
 	private void cleanupIfOffline(Player player, boolean online) {
 	    if (!online) {
-	        PlayerHelper.clearPlayer(player.getPlayerId());
+	        PlayerHelper.clearPlayer(player);
 	    }
 	}
 
