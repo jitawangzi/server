@@ -1,0 +1,14 @@
+[
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#dayGiftFalseNeverAwardsSingleOrPackage",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#dayGiftSuccessAwardsOnlyAfterPayment",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#limitedGiftFalseReturnsOnlyFailure",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#limitedGiftSuccessKeepsOriginalRewardPath",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#fundPendingAndFalseNeverSendSuccess",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#fundSuccessRepliesExactlyOnce",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#failedPaymentFutureNeverAwardsOrSendsSuccess",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#nullPaymentResultIsExplicitFailure",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#businessPaymentFailurePreservesErrorCode",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#rewardCallbackFailureReturnsOneError",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#lateFailureDoesNotReplyToReplacementConnection",
+  "cn.game.games.net.game.module.PaymentFailureResponseTest#delayedRepliesKeepOriginalSequenceAndCache"
+]

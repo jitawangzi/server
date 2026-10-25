@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.shop;
 
+import cn.game.games.net.game.module.recharge.PaymentReply;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -112,6 +114,7 @@ public class ShopHandler extends GameBaseHandler {
         putInvoker(PbProtocol.LimitedTimeGiftBuyRequest_15000061, this::limitedTimeGiftBuy);
     }
 
+    /** @param client 原购买连接 @param message 限时礼包购买请求；支付失败不得回报成功 */
     private void BuyXianShiLiBao(NetClient client, Object message) {
         ShopMsg.BuyXianShiLiBaoRequest_15000052 req = (ShopMsg.BuyXianShiLiBaoRequest_15000052) message;
         ShopMsg.BuyXianShiLiBaoResponse_15000053.Builder resp = ShopMsg.BuyXianShiLiBaoResponse_15000053.newBuilder();
@@ -143,15 +146,20 @@ public class ShopHandler extends GameBaseHandler {
             client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_num_is_max.getId());
             return;
         }
-        player.pay(PayType.XianShiLiBao, req.getId(), config.Price).onSuccess(handleSuccess -> {
-            if (handleSuccess) {
-                resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
-                resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
+        PaymentReply reply = new PaymentReply(client);
+        player.pay(PayType.XianShiLiBao, req.getId(), config.Price).map(handleSuccess -> {
+            if (!Boolean.TRUE.equals(handleSuccess)) {
+                reply.send(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+                return null;
             }
-            client.sendProtocol(resp);
+            // 由派生 Future 接住购买模块异常，不能只监听原支付 Future。
+            resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
+            resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
+            reply.send(resp.build());
+            return null;
         }).onFailure(e -> {
-            e.printStackTrace();
-            client.sendProtocol(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
+            reply.fail(ShopMsg.BuyXianShiLiBaoResponse_15000053.getDefaultInstance(), e,
+                    ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
         });
     }
 

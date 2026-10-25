@@ -1,6 +1,7 @@
 package cn.game.games.net.game.module.activity;
 
 import cn.game.games.net.game.helper.PlayerWriteGuard;
+import cn.game.games.net.game.module.recharge.PaymentReply;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -540,6 +541,7 @@ public class ActivityHandler extends GameBaseHandler {
         client.sendProtocol(activity.buildActivityShowInfo());
     }
 
+    /** @param client 原购买连接 @param message 每日礼包请求；支付成功前不推进购买和奖励 */
     private void dayGiftBuy(NetClient client, Object message) {
         ActivityDayGiftBuyRequest_11000102 req = (ActivityDayGiftBuyRequest_11000102) message;
         int id = req.getId();
@@ -556,8 +558,14 @@ public class ActivityHandler extends GameBaseHandler {
         if (activity.getBuyCount(giftId) >= meiRiTeHuiConfig.Quota) {
             player.fail(ErrorMsgEnum.times_limit);
         }
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.DayGift, giftId, meiRiTeHuiConfig.PurchaseParameter, id);
         pay.map(r -> {
+            // false 或缺失结果都不是支付成功，必须在普通/打包发奖之前终止。
+            if (!Boolean.TRUE.equals(r)) {
+                reply.send(defaultInstance, ErrorMsgEnum.unknown.getId());
+                return null;
+            }
             List<RewardInfo> rewardInfos;
             if (giftId == 99) {
                 rewardInfos = activity.packageBuy();
@@ -565,10 +573,10 @@ public class ActivityHandler extends GameBaseHandler {
                 rewardInfos = activity.buy(giftId);
             }
             resp.addAllRewards(rewardInfos);
-            client.sendProtocol(resp.build());
+            reply.send(resp.build());
             GameLogger.activity(player, id, giftId);
             return null;
-        }).onFailure(player::handleFail);
+        }).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void serverOpenRank(NetClient client, Object message) {
@@ -681,6 +689,7 @@ public class ActivityHandler extends GameBaseHandler {
         client.sendProtocol(resp.build());
     }
 
+    /** @param client 原购买连接 @param message 基金签到购买请求；只在支付终态回复 */
     private void fundPassSignBuy(NetClient client, Object message) {
         FundPassSignBuyRequest_11000301 req = (FundPassSignBuyRequest_11000301) message;
         int id = req.getId();
@@ -690,20 +699,22 @@ public class ActivityHandler extends GameBaseHandler {
 
         int activityId = req.getActivityId();
         FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.FundPassSignActivity, id, fundPassConfig.Price);
-        pay.onComplete(t -> {
-            if (t.result()) {
+        // map 的失败包含支付异常及业务回调异常，onComplete 不会捕获回调自身抛出的异常。
+        pay.map(paid -> {
+            if (Boolean.TRUE.equals(paid)) {
                 FundPassSignActivity activity = player.getActivityModule().get(activityId);
                 if (activity == null) {
-                    client.sendProtocol(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-                    return;
+                    reply.send(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
+                    return null;
                 }
-                client.sendProtocol(activity.buy(id));
+                reply.send(activity.buy(id));
             } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+                reply.send(resp.build(), ErrorMsgEnum.unknown.getId());
             }
-        });
-        client.sendProtocol(resp.build());
+            return null;
+        }).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void fundPassSignAll(NetClient client, Object message) {
