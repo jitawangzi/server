@@ -35,6 +35,7 @@ import cn.game.games.net.client.GameClient;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.GameConstants;
 import cn.game.games.net.game.manager.PlayerManager;
@@ -150,6 +151,10 @@ public class Player {
 	/** 玩家的网络连接 */
 	private transient GameClient gameClient;
 	private List<Long> timerTask = new ArrayList<>();
+    /** 取消timer后，已经进入邮箱但尚未开始的旧回调也必须失效。 */
+    private final java.util.concurrent.atomic.AtomicLong timerEpoch = new java.util.concurrent.atomic.AtomicLong();
+    /** 单个timer取消标记，延期后的回调也检查同一标记。 */
+    private final java.util.concurrent.ConcurrentHashMap<Long, java.util.concurrent.atomic.AtomicBoolean> timerTokens = new java.util.concurrent.ConcurrentHashMap<>();
 	private boolean isOnline = true;
 
 	@AiExport
@@ -165,12 +170,15 @@ public class Player {
 	 */
 	@AiExport
 	public long setPeriodicTask(long delay, Handler<Player> handler) {
+        long epoch = timerEpoch.get();
+        var token = new java.util.concurrent.atomic.AtomicBoolean(true);
 		long timer = VxHolder.vertx.setPeriodic(delay, r -> {
 			ServerContext.getInstance().getProcessor().process(playerId, () -> {
-				handler.handle(this);
+				runBusinessTimer(epoch, token, handler, false);
 			}, false);
 		});
-		timerTask.add(timer);
+		timerTokens.put(timer, token);
+        timerTask.add(timer);
 		return timer;
 	}
 
@@ -182,15 +190,18 @@ public class Player {
 	 */
 	@AiExport
 	public long setTimerTask(long delay, Handler<Player> handler) {
+        long epoch = timerEpoch.get();
+        var token = new java.util.concurrent.atomic.AtomicBoolean(true);
 		if (delay <= 0) {
-			ServerContext.getInstance().getProcessor().process(playerId,()-> handler.handle(this), false);
+			ServerContext.getInstance().getProcessor().process(playerId,()-> runBusinessTimer(epoch, token, handler, true), false);
 		} else {
 			long timer = VxHolder.vertx.setTimer(delay, r -> {
 				ServerContext.getInstance().getProcessor().process(playerId, () -> {
-					handler.handle(this);
+					runBusinessTimer(epoch, token, handler, true);
 				}, false);
 			});
-			timerTask.add(timer);
+			timerTokens.put(timer, token);
+        timerTask.add(timer);
 			return timer;
 		}
 		return 0;
@@ -204,12 +215,24 @@ public class Player {
 
 	@AiExport
 	public void cancelTimer(long id) {
+        var token = timerTokens.remove(id); if (token != null) { token.set(false); }
 //		log.info("player : " + playerId + "取消定时器：" + id);
 		timerTask.remove(id);
 		VxHolder.vertx.cancelTimer(id);
 	}
-	@AiExport
+    /** 在实际执行时同时校验取消代次；一次性动作可因写保护延期。 */
+    private void runBusinessTimer(long epoch, java.util.concurrent.atomic.AtomicBoolean token, Handler<Player> handler, boolean once) {
+        if (timerEpoch.get() != epoch || !token.get()) { return; }
+        Runnable action = () -> { if (timerEpoch.get() == epoch && token.get()) { handler.handle(this); } };
+        if (once) { PlayerWriteGuard.runTimer(this, action); }
+        else { PlayerWriteGuard.run(this, action); }
+    }
+
+    @AiExport
 	public void cancelAllTimer() {
+        timerEpoch.incrementAndGet();
+        timerTokens.values().forEach(token -> token.set(false)); timerTokens.clear();
+        cn.game.games.net.game.helper.PlayerSaveCoordinator.shared().cancelDeferredTimers(playerId, this);
 		for (Long id : timerTask) {
 //			log.info("player : " + playerId + "取消定时器：" + id);
 			VxHolder.vertx.cancelTimer(id);
@@ -520,7 +543,7 @@ public class Player {
 				promise.complete(true);
 			} else {
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.resource_not_enough.getId());
-				promise.complete(false);
+				promise.tryComplete(false);
 			}
 		} else if (costType == ShopHelper.COST_TYPE_RECHARGE) {
 			if (Boolean.getBoolean("DisableRecharge")) {
@@ -555,12 +578,12 @@ public class Player {
 					.build();
 			Future<PaymentOrderCreateResponse_7d000021> requestRemoteServer = VxHolder.requestRemoteServer(ServerType.Login,
 					paymentOrderCreate);
-			requestRemoteServer.map(r -> {
+			requestRemoteServer.compose(r -> PlayerWriteGuard.submit(this, () -> {
 				PaymentOrderCreateResponse_7d000021 body = r;
 				if (body.getOrderId() == 0) {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.getDefaultInstance(),
 							ErrorMsgEnum.payment_order_create_fail.getId());
-					promise.complete(false);
+					promise.tryComplete(false);
 				} else {
 					getGameClient().sendProtocol(PaymentOrderPush_15010020.newBuilder()
 							.setOrder(body.getOrder() == null ? PaymentOrderProto.getDefaultInstance() : body.getOrder())
@@ -580,11 +603,10 @@ public class Player {
 					}
 					getPlayerModule().addPayItems(payItem);
 				}
-				return null;
-			}).onFailure(r -> {
+            })).onFailure(r -> {
 				log.error("登录服创建充值订单失败： ", r);
 				PlayerHelper.sendErrorProtocol(getPlayerId(), ErrorMsgEnum.unknown.getId());
-				promise.complete(false);
+				promise.tryComplete(false);
 			});
 		} else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {
 			fireAndHandleEvent(EventTypeEnum.WatchAds);

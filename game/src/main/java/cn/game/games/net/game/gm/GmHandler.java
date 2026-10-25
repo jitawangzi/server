@@ -471,9 +471,9 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerLogoutResponse_7700000a.Builder response = GmPlayerLogoutResponse_7700000a.newBuilder();
 
 		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
-		PlayerHelper.addTask(playerId, () -> {
-			GameClientManager.getInstance().logout(playerId, LogoutType.GMKick);
-			client.sendProtocol(response);
-		});
+		PlayerHelper.submitRecovery(playerId, () -> GameClientManager.getInstance().logout(playerId, LogoutType.GMKick))
+                .onSuccess(result -> client.sendProtocol(response))
+                .onFailure(failure -> { log.warn("GM退出保存失败 playerId={}", playerId, failure);
+                    client.sendProtocol(response, ErrorMsgEnum.unknown.ID); });
 	}
 }

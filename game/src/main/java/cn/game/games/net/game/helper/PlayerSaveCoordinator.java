@@ -3,6 +3,10 @@ package cn.game.games.net.game.helper;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +31,7 @@ import io.vertx.core.Promise;
  * 按玩家 ID 保持单个真实写入在途，等待超时不释放写入权；结果不明时隔离后继。
  * 状态独立于连接与 Player 生命周期，所有状态转换在按 ID 的短临界区完成。
  * IO、等待者通知均在临界区外，不依赖玩家邮箱，允许玩家任务同步等待保存。
- * 此处只跟踪已观察的保存与显式 markDirty，不宣称覆盖所有业务变更或跨进程恢复。
+ * 业务入口按保守变更作用域跟踪风险；确认仅清除快照覆盖的版本，不提供跨进程恢复证明。
  */
 public final class PlayerSaveCoordinator {
     /** 保存状态和恢复裁决日志。 */
@@ -37,12 +41,14 @@ public final class PlayerSaveCoordinator {
         /** 独立等待计时器，不执行数据库工作。 */
         private static final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor(
                 Thread.ofPlatform().daemon(true).name("player-save-timeout").factory());
+        /** 以墙钟建立诊断时间原点，运行时用单调时长，避免校时回拨冻结五分钟风险计时。 */
+        private static final long timeOrigin = DateUtil.currentTimeMillis(), nanoOrigin = System.nanoTime();
         /** 每玩家最多 16 个排队快照；所有请求都不合并，默认等待 30 秒。 */
         private static final PlayerSaveCoordinator instance = new PlayerSaveCoordinator(16, 30_000,
                 new PlayerSnapshotWriter()::write, (action, delay) -> {
                     var scheduled = timer.schedule(action, delay, TimeUnit.MILLISECONDS);
                     return () -> scheduled.cancel(false);
-                }, DateUtil::currentTimeMillis);
+                }, () -> timeOrigin + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - nanoOrigin));
     }
     /** @return 进程内统一通道，不能以新实例绕过 UNKNOWN */
     public static PlayerSaveCoordinator shared() { return Shared.instance; }
@@ -80,7 +86,9 @@ public final class PlayerSaveCoordinator {
     public record Status(String coordinatorId, long playerId, String state, long generation, int queued,
             long lastConfirmedGeneration, long lastConfirmedAt, long confirmedSnapshotAt,
             boolean observedDirty, Long earliestUnsavedChangeAt, Long riskFirstObservedSnapshotAt,
-            boolean waiterTimedOut, boolean workerExited, String failure) {}
+            boolean waiterTimedOut, boolean workerExited, String failure, long lastAttemptAt,
+            long riskAgeMillis, boolean warning, boolean writeProtected, int consecutiveFailures,
+            long retryAt, boolean automaticBlocked, int deferredTimers) {}
     /** 受信运维核对后的裁决，不提供强制跳过 UNKNOWN 的选项。 */
     public enum Resolution { COMMITTED, NOT_COMMITTED }
     /**
@@ -113,6 +121,51 @@ public final class PlayerSaveCoordinator {
     private final Timer timer;
     /** 可控毫秒时钟。 */
     private final LongSupplier clock;
+    /** 墙钟回拨不得缩短已观察风险。 */
+    private final java.util.concurrent.atomic.AtomicInteger automaticOutstanding = new java.util.concurrent.atomic.AtomicInteger();
+    /** 墙钟观察上界。 */
+    private final AtomicLong monotonicTime = new AtomicLong();
+    /** 固定五分钟预算；预留一分钟数据库处理余量。 */
+    private final RiskPolicy policy;
+    /** 可验证的风险与重试边界；不得将预算配置为超过用户允许的五分钟。 */
+    record RiskPolicy(long saveAfter, long warnAfter, long budget, int maxRetries, long backoff, int dispatchLimit) {
+        RiskPolicy {
+            if (saveAfter <= 0 || saveAfter >= warnAfter || warnAfter >= budget || budget > 300_000
+                    || maxRetries < 0 || maxRetries > 8 || backoff <= 0 || dispatchLimit <= 0) {
+                throw new IllegalArgumentException("保存阈值必须满足 0 < 提前保存 < 告警 < 预算 <= 300000");
+            }
+        }
+        /** @return 默认提前240秒、270秒告警、300秒保护，最多三次自动重试 */
+        static RiskPolicy defaults() { return new RiskPolicy(240_000, 270_000, 300_000, 3, 1_000, 128); }
+    }
+    /** 每次延期都有独立身份，取消后重新登记同一Runnable不能被旧投递误执行。 */
+    private record DeferredTimer(Runnable action) {}
+    /** 一段尚未确认的变化；只在接受快照时封段，内存受保存队列容量约束。 */
+    private static final class Change {
+        long version, at;
+        Change(long version, long at) { this.version = version; this.at = at; }
+    }
+    /** 捕获开始时点和覆盖版本，不能用序列化完成时点冒充覆盖起点。 */
+    record Capture(long version, long at) {}
+    /** 同步业务作用域；跨快照的活动作用域始终保留原始风险时间。 */
+    public final class Mutation implements AutoCloseable {
+        private final long id, version, at;
+        private final Object owner;
+        private boolean closed;
+        private Mutation(long id, Object owner, long version, long at) {
+            this.id = id; this.owner = owner; this.version = version; this.at = at;
+        }
+        @Override
+        public void close() {
+            lanes.computeIfPresent(id, (key, lane) -> {
+                if (!closed && lane.owner == owner && lane.mutations.remove(this)) {
+                    if (lane.sealedVersion >= version) { changed(lane, at); }
+                    closed = true;
+                }
+                return lane;
+            });
+        }
+    }
     /** 一个玩家的已观察状态，仅在该键的 compute 内访问。 */
     private static final class Lane {
         /** 当前权威对象身份，不让旧对象提交覆盖新对象。 */
@@ -129,12 +182,21 @@ public final class PlayerSaveCoordinator {
         Receipt confirmed;
         /** 未明确埋点时保持 null，避免伪造最早业务变更时点。 */
         Long dirtyAt;
+        /** 封存边界之后的变更合并在同一段，避免逐请求保留日志。 */
+        long sealedVersion, captureVersion, lastAttemptAt, retryAt, terminalSequence;
+        final ArrayDeque<Change> changes = new ArrayDeque<>();
+        final Set<Mutation> mutations = new HashSet<>();
+        /** 已到期但因保护尚未执行的一次性任务，最多64个，不重放业务异常。 */
+        final ArrayDeque<DeferredTimer> deferredTimers = new ArrayDeque<>();
+        boolean timerPending;
+        boolean protectedWrite, warned, automaticPending, automaticBlocked;
+        int failures;
         /** 当前风险期间首次观察到快照的时点；部分确认不将其伪装为当前最早未确认快照。 */
         Long snapshotAt;
         /** 最近失败信息。 */
         String failure;
         /** @return 是否必须保留权威对象 */
-        boolean risky() { return active != null || !queue.isEmpty() || version > confirmedVersion; }
+        boolean risky() { return active != null || !queue.isEmpty() || version > confirmedVersion || !mutations.isEmpty(); }
     }
     /** 一次请求独占的快照、代次与等待视图。 */
     private static final class Job {
@@ -158,25 +220,40 @@ public final class PlayerSaveCoordinator {
     }
     /** @param capacity 排队上限 @param waitMillis 等待期限 @param writer 真实写入器 @param timer 独立计时器 @param clock 毫秒时钟 */
     PlayerSaveCoordinator(int capacity, long waitMillis, Writer writer, Timer timer, LongSupplier clock) {
+        this(capacity, waitMillis, writer, timer, clock, RiskPolicy.defaults());
+    }
+    /** 测试注入策略和时钟，生产使用固定预算。 */
+    PlayerSaveCoordinator(int capacity, long waitMillis, Writer writer, Timer timer, LongSupplier clock, RiskPolicy policy) {
         if (capacity < 1 || waitMillis < 1) { throw new IllegalArgumentException("保存容量和等待期限必须为正"); }
         this.capacity = capacity; this.waitMillis = waitMillis;
         this.writer = Objects.requireNonNull(writer); this.timer = Objects.requireNonNull(timer);
-        this.clock = Objects.requireNonNull(clock);
+        this.clock = Objects.requireNonNull(clock); this.policy = Objects.requireNonNull(policy);
     }
     /** @param owner 权威对象 @param id 玩家；捕获前登记风险，准备失败也不能清理玩家 */
-    void preparing(Object owner, long id) {
+    Capture preparing(Object owner, long id) {
+        AtomicReference<Capture> result = new AtomicReference<>();
         lanes.compute(id, (key, lane) -> {
-            if (lane == null) { throw new SaveFailure("PLAYER_NOT_REGISTERED", id, 0, null); }
-            if (lane.owner != owner) { throw new SaveFailure("OWNER_CHANGED", id, 0, null); }
-            lane.version++;
+            requireOwner(lane, owner, id);
+            long at = now();
+            // beforeSave 也可能修改聚合字段，捕获失败仍保留原始风险。
+            changed(lane, at);
+            lane.lastAttemptAt = at;
+            lane.captureVersion = lane.version;
+            lane.sealedVersion = Math.max(lane.sealedVersion, lane.version);
+            result.set(new Capture(lane.version, at));
             return lane;
         });
+        return result.get();
     }
     /**
      * 接收已经捕获的参数，不在 IO 回调中访问在线 Player；拒绝也保留已观察未保存状态。
      * @param owner 权威玩家身份 @param data 独占参数 @param insert 是否创建 @return 本代等待视图
      */
     Submission submit(Object owner, PlayerData data, boolean insert) {
+        return submit(owner, data, insert, null);
+    }
+    /** 带捕获边界的生产入口；旧测试/手工快照入口按提交时观察到的变化保守登记。 */
+    Submission submit(Object owner, PlayerData data, boolean insert, Capture capture) {
         long id = data.getPlayerId();
         long generation = generations.incrementAndGet();
         AtomicReference<Job> accepted = new AtomicReference<>();
@@ -188,15 +265,18 @@ public final class PlayerSaveCoordinator {
                 rejected.set(new SaveFailure("OWNER_CHANGED", id, generation, null));
                 return lane;
             }
-            lane.version++;
-            if (lane.snapshotAt == null) { lane.snapshotAt = clock.getAsLong(); }
+            if (capture == null) { changed(lane, now()); }
+            lane.lastAttemptAt = now();
+            if (lane.snapshotAt == null) { lane.snapshotAt = capture == null ? now() : capture.at(); }
             if (lane.unknown || lane.queue.size() >= capacity) {
                 String code = lane.unknown ? "UNKNOWN_BLOCKED" : "QUEUE_FULL";
                 lane.failure = code;
                 rejected.set(new SaveFailure(code, id, generation, null));
                 return lane;
             }
-            Job job = new Job(data, insert, generation, clock.getAsLong(), lane.version);
+            Job job = new Job(data, insert, generation, capture == null ? now() : capture.at(),
+                    capture == null ? lane.version : capture.version());
+            lane.sealedVersion = Math.max(lane.sealedVersion, job.version);
             accepted.set(job);
             if (lane.active == null) { lane.active = job; start.set(job); }
             else { lane.queue.addLast(job); }
@@ -241,10 +321,12 @@ public final class PlayerSaveCoordinator {
         AtomicReference<Receipt> receipt = new AtomicReference<>();
         lanes.computeIfPresent(id, (key, lane) -> {
             if (lane.active != job || lane.unknown) { return lane; }
+            lane.terminalSequence++;
             if (result.outcome() == Outcome.COMMITTED) { receipt.set(confirm(id, lane, job)); }
-            else { lane.failure = String.valueOf(result.cause()); }
+            else { failed(lane, result.cause(), result.outcome() == Outcome.NOT_WRITTEN); }
             if (result.outcome() == Outcome.UNKNOWN) { lane.unknown = true; }
             else { lane.active = lane.queue.pollFirst(); next.set(lane.active); }
+            refreshRisk(id, lane);
             return lane;
         });
         if (next.get() != null) { start(id, next.get()); }
@@ -260,10 +342,12 @@ public final class PlayerSaveCoordinator {
     }
     /** @param id 玩家 @param lane 所属状态 @param job 已确认请求 @return 本代提交回执 */
     private Receipt confirm(long id, Lane lane, Job job) {
-        Receipt receipt = new Receipt(id, job.generation, job.capturedAt, clock.getAsLong());
+        Receipt receipt = new Receipt(id, job.generation, job.capturedAt, now());
         lane.confirmed = receipt; lane.confirmedVersion = job.version;
-        if (lane.version == job.version) { lane.dirtyAt = null; lane.snapshotAt = null; lane.failure = null; }
-        else { lane.dirtyAt = null; } // 未保留全业务变更日志，部分确认后无法推知剩余变更的精确起点。
+        while (!lane.changes.isEmpty() && lane.changes.peekFirst().version <= job.version) { lane.changes.removeFirst(); }
+        lane.failures = 0; lane.retryAt = 0; lane.automaticBlocked = false;
+        if (lane.version == job.version) { lane.snapshotAt = null; lane.failure = null; }
+        updateDirtyAt(lane);
         return receipt;
     }
     /**
@@ -283,6 +367,7 @@ public final class PlayerSaveCoordinator {
             if (resolution == Resolution.COMMITTED) { confirm(id, lane, lane.active); }
             lane.unknown = false;
             lane.active = lane.queue.pollFirst(); next.set(lane.active);
+            refreshRisk(id, lane);
             return lane;
         });
         if (next.get() != null) { start(id, next.get()); }
@@ -292,11 +377,13 @@ public final class PlayerSaveCoordinator {
     public Status status(long id) {
         AtomicReference<Status> value = new AtomicReference<>();
         lanes.computeIfPresent(id, (key, lane) -> {
+            refreshRisk(id, lane);
             Receipt c = lane.confirmed;
             value.set(new Status(identity, id, lane.unknown ? "UNKNOWN" : lane.active != null ? "IN_FLIGHT" : "IDLE",
                     lane.active == null ? 0 : lane.active.generation, lane.queue.size(), c == null ? 0 : c.generation(),
-                    c == null ? 0 : c.committedAt(), c == null ? 0 : c.capturedAt(), lane.version > lane.confirmedVersion,
-                    lane.dirtyAt, lane.snapshotAt, lane.active != null && lane.active.timedOut, lane.unknown, lane.failure));
+                    c == null ? 0 : c.committedAt(), c == null ? 0 : c.capturedAt(), lane.version > lane.confirmedVersion || !lane.mutations.isEmpty(),
+                    lane.dirtyAt, lane.snapshotAt, lane.active != null && lane.active.timedOut, lane.unknown, lane.failure,
+                    lane.lastAttemptAt, age(lane), lane.warned, lane.protectedWrite, lane.failures, lane.retryAt, lane.automaticBlocked, lane.deferredTimers.size()));
             return lane;
         });
         return value.get();
@@ -315,11 +402,213 @@ public final class PlayerSaveCoordinator {
     /** @param id 玩家 @param changedAt 首次已知变更时间；调用者负责真实变更埋点，不能用保存尝试时间代替 */
     public void markDirty(long id, long changedAt) {
         lanes.computeIfPresent(id, (key, lane) -> {
-            if (lane.version == lane.confirmedVersion) { lane.dirtyAt = changedAt; }
-            else if (lane.dirtyAt != null) { lane.dirtyAt = Math.min(lane.dirtyAt, changedAt); }
-            lane.version++;
+            changed(lane, Math.min(now(), changedAt));
             return lane;
         });
+    }
+    /** @return 单调观察时钟；回拨期间风险不会变年轻 */
+    private long now() { return monotonicTime.accumulateAndGet(clock.getAsLong(), Math::max); }
+    /** 验证权威对象，不能用旧回调或未登记对象重新建通道。 */
+    private void requireOwner(Lane lane, Object owner, long id) {
+        if (lane == null) { throw new SaveFailure("PLAYER_NOT_REGISTERED", id, 0, null); }
+        if (lane.owner != owner) { throw new SaveFailure("OWNER_CHANGED", id, 0, null); }
+    }
+    /** 登记保守业务变更；同一未封存区段只保留最早时间。 */
+    private void changed(Lane lane, long at) {
+        lane.version++;
+        compactChanges(lane);
+        Change tail = lane.changes.peekLast();
+        if (tail != null && tail.version > lane.sealedVersion) { tail.version = lane.version; tail.at = Math.min(tail.at, at); }
+        else { lane.changes.addLast(new Change(lane.version, at)); }
+        updateDirtyAt(lane);
+    }
+    /** 已终结且无快照引用的区段重新合并；显式失败保存也不能让风险日志无限增长。 */
+    private void compactChanges(Lane lane) {
+        java.util.TreeSet<Long> boundaries = new java.util.TreeSet<>();
+        if (lane.active != null) { boundaries.add(lane.active.version); }
+        for (Job job : lane.queue) { boundaries.add(job.version); }
+        if (lane.captureVersion > lane.confirmedVersion) { boundaries.add(lane.captureVersion); }
+        ArrayDeque<Change> compact = new ArrayDeque<>();
+        for (Change change : lane.changes) {
+            Change tail = compact.peekLast();
+            Long boundary = tail == null ? null : boundaries.ceiling(tail.version);
+            if (tail != null && (boundary == null || boundary >= change.version)) {
+                tail.version = change.version; tail.at = Math.min(tail.at, change.at);
+            } else { compact.addLast(change); }
+        }
+        lane.changes.clear(); lane.changes.addAll(compact);
+    }
+    /** 测试有界风险日志，不公开可修改的内部集合。 */
+    int changeSegments(long id) {
+        AtomicReference<Integer> size = new AtomicReference<>(0);
+        lanes.computeIfPresent(id, (key, lane) -> { compactChanges(lane); size.set(lane.changes.size()); return lane; });
+        return size.get();
+    }
+    /** 活动业务不能因中途保存成功而短暂变干净。 */
+    private void updateDirtyAt(Lane lane) {
+        lane.dirtyAt = null;
+        for (Change change : lane.changes) { lane.dirtyAt = lane.dirtyAt == null ? change.at : Math.min(lane.dirtyAt, change.at); }
+        for (Mutation mutation : lane.mutations) { lane.dirtyAt = lane.dirtyAt == null ? mutation.at : Math.min(lane.dirtyAt, mutation.at); }
+    }
+    /** @return 最早尚未覆盖的保守业务变更年龄 */
+    private long age(Lane lane) { return lane.dirtyAt == null ? 0 : Math.max(0, now() - lane.dirtyAt); }
+    /** 保护一旦触发，只在所有风险被确认消除后解除。 */
+    private void refreshRisk(long id, Lane lane) {
+        updateDirtyAt(lane);
+        long age = age(lane);
+        if (!lane.warned && age >= policy.warnAfter()) { log.warn("玩家保存风险接近预算 playerId={} ageMs={}", id, age); lane.warned = true; }
+        if (lane.unknown || age >= policy.budget()) { lane.protectedWrite = true; }
+        if (!lane.risky() && !lane.unknown) { lane.protectedWrite = false; lane.warned = false; }
+    }
+    /** 在实际执行业务前检查，排队时的检查不能替代此处检查。 */
+    public Mutation beginMutation(long id, Object owner) {
+        AtomicReference<Mutation> result = new AtomicReference<>();
+        lanes.compute(id, (key, lane) -> {
+            requireOwner(lane, owner, id); refreshRisk(id, lane);
+            if (lane.protectedWrite) { throw new SaveFailure("WRITE_PROTECTED", id, 0, null); }
+            if (lane.mutations.size() >= 64) { throw new SaveFailure("MUTATION_CAPACITY", id, 0, null); }
+            long at = now(); changed(lane, at);
+            Mutation mutation = new Mutation(id, owner, lane.version, at);
+            lane.mutations.add(mutation); result.set(mutation);
+            return lane;
+        });
+        return result.get();
+    }
+    /** 只对明确尚未写入且暂时不可受理的错误重试；配置/行数错误不得热循环。 */
+    private boolean retryable(Throwable cause) {
+        for (Throwable c = cause; c != null; c = c.getCause()) {
+            if (c instanceof cn.game.core.execute.TaskNotExecutedException || c instanceof java.util.concurrent.RejectedExecutionException || c instanceof java.sql.SQLTransientException
+                    || c instanceof org.springframework.jdbc.CannotGetJdbcConnectionException) { return true; }
+        }
+        return false;
+    }
+    /** 实际失败不改变最早业务变化时间；重试次数不因新业务变化重置。 */
+    private void failed(Lane lane, Throwable cause, boolean knownNotWritten) {
+        lane.failure = String.valueOf(cause); lane.failures++;
+        lane.automaticBlocked = !knownNotWritten || !retryable(cause) || lane.failures > policy.maxRetries();
+        lane.retryAt = now() + Math.min(30_000, policy.backoff() * (1L << Math.min(8, lane.failures - 1)));
+    }
+    /** @return 无在途/不明/排队/活动业务时才能自动捕获新的快照 */
+    private boolean automaticEligible(Lane lane) {
+        return lane.version > lane.confirmedVersion && lane.active == null && lane.queue.isEmpty() && !lane.unknown
+                && lane.mutations.isEmpty() && !lane.automaticBlocked && now() >= lane.retryAt
+                && (lane.failures > 0 || age(lane) >= policy.saveAfter());
+    }
+    /** 一次性业务timer到期时执行；只有明确开始前的保护拒绝才延期。 */
+    public void runOrDeferTimer(long id, Object owner, Runnable action) {
+        Mutation mutation;
+        try { mutation = beginMutation(id, owner); }
+        catch (SaveFailure failure) {
+            if (!"WRITE_PROTECTED".equals(failure.code)) { throw failure; }
+            lanes.compute(id, (key, lane) -> {
+                requireOwner(lane, owner, id);
+                if (lane.deferredTimers.size() >= 64) { throw new SaveFailure("TIMER_BACKLOG_FULL", id, 0, failure); }
+                lane.deferredTimers.addLast(new DeferredTimer(action)); return lane;
+            });
+            return;
+        }
+        try (mutation) { action.run(); }
+    }
+    /** 玩家取消全部timer时同时取消尚未开始的延期任务。 */
+    public void cancelDeferredTimers(long id, Object owner) {
+        lanes.computeIfPresent(id, (key, lane) -> { if (lane.owner == owner) { lane.deferredTimers.clear(); } return lane; });
+    }
+    /** 健康恢复后在相同玩家邮箱执行一次，出队与门禁原子化；旧owner/取消的任务不再执行。 */
+    private void sweepTimers(BiFunction<Long, Supplier<Future<?>>, Future<?>> dispatch) {
+        int dispatched = 0;
+        for (long id : lanes.keySet()) {
+            if (automaticOutstanding.get() >= policy.dispatchLimit()) { break; }
+            AtomicReference<Lane> reserved = new AtomicReference<>(); AtomicReference<DeferredTimer> action = new AtomicReference<>();
+            lanes.computeIfPresent(id, (key, lane) -> {
+                refreshRisk(id, lane);
+                if (!lane.protectedWrite && !lane.timerPending && !lane.deferredTimers.isEmpty()) {
+                    if (automaticOutstanding.incrementAndGet() <= policy.dispatchLimit()) {
+                        lane.timerPending = true; reserved.set(lane); action.set(lane.deferredTimers.peekFirst());
+                    } else { automaticOutstanding.decrementAndGet(); }
+                }
+                return lane;
+            });
+            Lane reservation = reserved.get(); if (reservation == null) { continue; }
+            Future<?> result;
+            try {
+                result = dispatch.apply(id, () -> {
+                    AtomicReference<Mutation> scope = new AtomicReference<>();
+                    lanes.computeIfPresent(id, (key, lane) -> {
+                        refreshRisk(id, lane);
+                        if (lane == reservation && !lane.protectedWrite && lane.deferredTimers.peekFirst() == action.get()) {
+                            lane.deferredTimers.removeFirst(); long at = now(); changed(lane, at);
+                            Mutation mutation = new Mutation(id, lane.owner, lane.version, at);
+                            lane.mutations.add(mutation); scope.set(mutation);
+                        }
+                        return lane;
+                    });
+                    if (scope.get() != null) { try (Mutation ignored = scope.get()) { action.get().action().run(); } }
+                    return Future.succeededFuture();
+                });
+            } catch (RuntimeException failure) { log.warn("延期timer投递失败 playerId={}", id, failure); result = Future.failedFuture(failure); }
+            result.onComplete(done -> {
+                automaticOutstanding.decrementAndGet();
+                lanes.computeIfPresent(id, (key, lane) -> { if (lane == reservation) { lane.timerPending = false; } return lane; });
+                if (done.failed()) { log.warn("延期timer未完成，已开始的业务不重放 playerId={}", id, done.cause()); }
+            });
+            if (++dispatched >= policy.dispatchLimit()) { break; }
+        }
+    }
+    /**
+     * 独立维护扫描，连接/玩家业务定时器取消后仍运行。每玩家最多一个待派发任务，每轮有上限。
+     * dispatch 必须将传入任务放入玩家邮箱；save 仅在真正执行时调用，不在扫描线程捕获数据。
+     */
+    public void sweep(BiFunction<Long, Supplier<Future<?>>, Future<?>> dispatch, BiFunction<Long, Object, Future<?>> save) {
+        sweepTimers(dispatch);
+        int dispatched = 0;
+        for (long id : lanes.keySet()) {
+            if (automaticOutstanding.get() >= policy.dispatchLimit()) { break; }
+            AtomicReference<Lane> reserved = new AtomicReference<>();
+            lanes.computeIfPresent(id, (key, lane) -> {
+                refreshRisk(id, lane);
+                if (!lane.automaticPending && automaticEligible(lane)) {
+                    int count = automaticOutstanding.incrementAndGet();
+                    if (count <= policy.dispatchLimit()) { lane.automaticPending = true; reserved.set(lane); }
+                    else { automaticOutstanding.decrementAndGet(); }
+                }
+                return lane;
+            });
+            Lane reservation = reserved.get();
+            if (reservation == null) { continue; }
+            AtomicLong terminalBefore = new AtomicLong(-1);
+            try {
+                dispatch.apply(id, () -> {
+                    AtomicReference<Boolean> allowed = new AtomicReference<>(false);
+                    lanes.computeIfPresent(id, (key, lane) -> {
+                        allowed.set(lane == reservation && lane.automaticPending && automaticEligible(lane));
+                        if (allowed.get()) { terminalBefore.set(lane.terminalSequence); }
+                        return lane;
+                    });
+                    return allowed.get() ? save.apply(id, reservation.owner) : Future.succeededFuture();
+                }).onComplete(result -> {
+                    automaticOutstanding.decrementAndGet();
+                    lanes.computeIfPresent(id, (key, lane) -> {
+                        if (lane == reservation) {
+                            lane.automaticPending = false;
+                            // 实际写入的失败由 finish 处理，等待超时不创建重试；此处分派/捕获异常有界停住。
+                            if (result.failed() && lane.active == null
+                                    && (terminalBefore.get() < 0 || lane.terminalSequence == terminalBefore.get())) {
+                                failed(lane, result.cause(), true);
+                            }
+                        }
+                        return lane;
+                    });
+                });
+            } catch (RuntimeException failure) {
+                log.warn("自动保存派发失败 playerId={}", id, failure);
+                automaticOutstanding.decrementAndGet();
+                lanes.computeIfPresent(id, (key, lane) -> {
+                    if (lane == reservation) { lane.automaticPending = false; failed(lane, failure, true); }
+                    return lane;
+                });
+            }
+            if (++dispatched >= policy.dispatchLimit()) { break; }
+        }
     }
     /** @param id 玩家 @param owner 待登记对象 @param register 原子登记动作，有旧对象时必须拒绝替换 */
     public void register(long id, Object owner, Runnable register) {

@@ -223,6 +223,7 @@ public class GameServer implements GameServerMBean {
 		initLeaderTask();
 		GameSSLogger.getInstance().init();
 		// 最后在启动websocket服务器,防止服务器还没完全启动，客户端就重连了，导致某些问题
+		cn.game.games.net.game.helper.PlayerHelper.startSaveRiskMonitor();
 		initWebsocketVerticle();
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);

@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.pvp;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -209,9 +210,8 @@ public class OfflineBattleHandler {
         module.getRankList(player.getPlayerId(), Long.parseLong(req.getTargetId()));
     Future<Void> updateFuture =
         module.updateScore(req.getWin(), Long.parseLong(req.getTargetId()), res);
-    rankListFuture.thenCombine(
-        updateFuture.toCompletionStage(),
-        (rankResultList, v) -> {
+    rankListFuture.thenCombine(updateFuture.toCompletionStage(), (rankResultList, v) -> rankResultList)
+        .thenCompose(rankResultList -> PlayerWriteGuard.submit(player, () -> {
           final int selfRank = rankResultList.get(0);
           final int targetRank = rankResultList.get(1);
           if (req.getWin()) {
@@ -252,8 +252,7 @@ public class OfflineBattleHandler {
 //                              req.getWin());
                   });
 
-          return null;
-        });
+        }).toCompletionStage()).exceptionally(failure -> { player.handleFail(failure); return null; });
   }
 
   /** 获取大道争锋信息 */

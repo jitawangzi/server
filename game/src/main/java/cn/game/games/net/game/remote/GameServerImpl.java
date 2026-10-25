@@ -1,5 +1,6 @@
 package cn.game.games.net.game.remote;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -39,11 +40,15 @@ public class GameServerImpl implements GameServerInterface {
 	@Override
 	public boolean addFriend(long playerId, long friendId, String serverId) {
 
-		boolean ret = FriendHelper.addFriend(playerId, friendId, serverId, Friend.FRIEND);
+        Player player = PlayerManager.getInstance().getPlayer(playerId);
+        java.util.function.Supplier<Boolean> apply = () -> {
+        boolean ret = FriendHelper.addFriend(playerId, friendId, serverId, Friend.FRIEND);
 
 		FriendHelper.removeMyApplication(playerId, friendId);
 		FriendHelper.removeApplication(playerId, friendId);
 		return ret;
+        };
+        return player == null ? apply.get() : PlayerWriteGuard.call(player, apply);
 	}
 
 	@Override
@@ -100,7 +105,7 @@ public class GameServerImpl implements GameServerInterface {
 		if (PlayerManager.getInstance().hasCache(receiverId)) { // 在线，或者服务器中还有玩家缓存
 			Player player = PlayerManager.getInstance().getPlayer(receiverId);
 			MailModule mailModule = player.getMailModule();
-			return mailModule.sendOnline(mail, notify);
+			return PlayerWriteGuard.call(player, () -> mailModule.sendOnline(mail, notify));
 		}
 		return mail.insert();
 	}
@@ -137,39 +142,30 @@ public class GameServerImpl implements GameServerInterface {
 
 	@Override
 	public Future<?> rename(long playerId, String newName) {
-		return PlayerManager.getInstance().getPlayerAsync(playerId).compose(player -> {
-
-			String oldName = player.getData().getName();
-			Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, newName);
-			return checkFuture.compose(b -> {
-				if (!b) {
-					return Future.failedFuture(new LogicException(ErrorMsgEnum.player_name_illegal.ID));
-				}
-				return Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName));
-			}).compose(r -> {
-				if (!r) {
-					throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
-				}
-				CompletionStage<Void> completionStage = PlayerNameManager.getInstance()
-						.saveName2Id(newName, player.getData().getPlayerId())
-						.thenCompose(rr -> PlayerNameManager.getInstance().removeName(oldName))
-						.thenCompose(rr -> PlayerHelper.saveSimplePlayer(player).toCompletionStage())
-						.thenAccept(rr -> {
-							player.getData().setName(newName);
-							GameSSLogger.getInstance().logrolename(player, newName);
-						});
-				;
-				return Future.fromCompletionStage(completionStage);
-			});
-		});
+        return PlayerManager.getInstance().getPlayerAsync(playerId).compose(player ->
+                PlayerWriteGuard.submitValue(player, () -> {
+                    // 同一玩家邮箱内等待外部校验；外部回调不再直接修改玩家字段。
+                    String oldName = player.getData().getName();
+                    if (!cn.game.core.util.AsyncUtils.await(PlayerHelper.checkContextData(player, newName))) {
+                        throw new LogicException(ErrorMsgEnum.player_name_illegal.ID);
+                    }
+                    if (!cn.game.core.util.AsyncUtils.await(Future.fromCompletionStage(PlayerNameManager.getInstance().tryCreateUser(newName)))) {
+                        throw new LogicException(ErrorMsgEnum.player_name_repeat.ID);
+                    }
+                    cn.game.core.util.AsyncUtils.await(Future.fromCompletionStage(PlayerNameManager.getInstance().saveName2Id(newName, playerId)));
+                    cn.game.core.util.AsyncUtils.await(Future.fromCompletionStage(PlayerNameManager.getInstance().removeName(oldName)));
+                    player.getData().setName(newName);
+                    cn.game.core.util.AsyncUtils.await(PlayerHelper.saveSimplePlayer(player));
+                    GameSSLogger.getInstance().logrolename(player, newName);
+                    return null;
+                }));
 	}
 
 	@Override
 	public Future<Void> addEquipTowerHelp(long playerId, EquiptowerHelp help) {
 		Player player = PlayerManager.getInstance().getPlayer(playerId);
 		EquipTowerBattle equipTower = player.getBattleModule().getBattle(DungeonTypeEnum.EquipTower);
-		equipTower.addHelpReward_onLine(help);
-		return Future.succeededFuture();
+        return PlayerWriteGuard.submit(player, () -> equipTower.addHelpReward_onLine(help));
 
 	}
 

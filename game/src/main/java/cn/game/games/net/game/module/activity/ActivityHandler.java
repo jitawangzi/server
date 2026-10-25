@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -341,11 +342,11 @@ public class ActivityHandler extends GameBaseHandler {
         if (activityBase instanceof ActivityJQB) {
             List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
             int taskId = req.getTaskIds(0);
-            activityBase.asyncReceive(taskId).onSuccess(reward -> {
+            activityBase.asyncReceive(taskId).compose(reward -> PlayerWriteGuard.submit(player, () -> {
                 res.addAllRewards((Iterable<? extends RewardInfo>) reward);
                 activityBase.checkRefreshActivity();
                 client.sendProtocol(res.build());
-            });
+            })).onFailure(player::handleFail);
         } else {
             // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
             List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());

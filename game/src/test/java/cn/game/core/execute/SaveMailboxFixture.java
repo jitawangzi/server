@@ -8,9 +8,11 @@ public final class SaveMailboxFixture {
     /** 工具类不实例化。 */
     private SaveMailboxFixture() {}
     /** @return 调用方负责关闭的真实执行服务 */
-    public static TaskExecutorService create() {
-        return new TaskExecutorService(TaskExecutionConfig.builder().defaultTaskTimeoutMs(0).build(),
-                new OneToOneMailboxManager(8), Executors.newVirtualThreadPerTaskExecutor(),
+    public static TaskExecutorService create() { return create(8); }
+    /** @param capacity 测试邮箱容量，用于真实满队列恢复验证 */
+    public static TaskExecutorService create(int capacity) {
+        return new TaskExecutorService(TaskExecutionConfig.builder().maxQueueSize(capacity).defaultTaskTimeoutMs(0).build(),
+                new OneToOneMailboxManager(capacity), Executors.newVirtualThreadPerTaskExecutor(),
                 (action, delay, unit) -> { throw new IllegalStateException("本测试不安排任务重试"); }, DateUtil::currentTimeMillis);
     }
 }

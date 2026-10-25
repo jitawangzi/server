@@ -1,5 +1,6 @@
 package cn.game.games.net.game.manager;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -446,7 +447,7 @@ public class ActivityStateManager {
 			if (!activityConfig.isMultiplayer) {
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
-					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+					PlayerWriteGuard.submit(player, () -> {
 						ActivityModule activityModule = player.getActivityModule();
 						activityModule.open(id, true);
 					});
@@ -481,7 +482,7 @@ public class ActivityStateManager {
 
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
-					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+					PlayerWriteGuard.submit(player, () -> {
 						// 关闭活动
 						ActivityModule activityModule = player.getActivityModule();
 						activityModule.end(id);
@@ -509,7 +510,7 @@ public class ActivityStateManager {
 			if (!activityConfig.isMultiplayer) {
 				ConcurrentHashMap<Long, Player> allPlayer = PlayerManager.getInstance().getAllPlayer();
 				for (Player player : allPlayer.values()) {
-					ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+					PlayerWriteGuard.submit(player, () -> {
 						ActivityModule activityModule = player.getActivityModule();
 						activityModule.destroy(id);
 					});

@@ -1,5 +1,6 @@
 package cn.game.games.net.game.handler;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -729,11 +730,12 @@ public class PlayerHandler extends GameBaseHandler {
 		PlayerReconnecResponse_01000066.Builder resp = PlayerReconnecResponse_01000066.newBuilder();
 		String passportSessionId = req.getSessionId();
 		long playerId = req.getPlayerId();
-		Player player = PlayerManager.getInstance().getPlayer(playerId); 
+		Player player = findPlayer(playerId);
 		if (player == null) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.reconnect_fail.getId());
 			return;
 		}
+        submitPlayerMutation(player, () -> {
 		boolean reconnect = PlayerHelper.reconnectNew((GameClient)client, true, playerId); 
 		if (!reconnect) {
 			client.sendProtocol(resp.build(), ErrorMsgEnum.reconnect_fail.getId());
@@ -742,6 +744,8 @@ public class PlayerHandler extends GameBaseHandler {
 		resp.setPlayerInfo(PbBuilder.buildPlayerInfo(player));
 		resp.setTime(System.currentTimeMillis() + "");
 		client.sendProtocol(resp);
+        }).onFailure(failure -> { log.warn("重连因玩家保存风险或调度失败被拒绝 playerId={}", playerId, failure);
+            client.sendProtocol(resp.build(), ErrorMsgEnum.reconnect_fail.getId()); });
 	}
 	/**
 		private void spiritReceive(NetClient client, Object message) {
@@ -871,13 +875,12 @@ public class PlayerHandler extends GameBaseHandler {
 
 		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, playerId);
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
-		renameFuture.map(r -> {
+		renameFuture.compose(r -> submitPlayerMutation(player, () -> {
 			PlayerHelper.delResources(player, cost, OpType.Rename);
 			player.getVarModule().addVar(VarConstant.RANAME_COUNT);
 			client.sendProtocol(resp);
-			return null;
 
-		}).onFailure(e -> player.handleFail(e));
+		})).onFailure(e -> player.handleFail(e));
 	}
 
 	protected void gender(NetClient client, Object message) {
@@ -948,7 +951,7 @@ public class PlayerHandler extends GameBaseHandler {
 						.compose(r -> {
 							return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
 								// 这里可能有阻塞操作
-								handleLoginSuccess(newGameClient, r);
+								PlayerWriteGuard.run(r, () -> handleLoginSuccess(newGameClient, r));
 								return null;
 							}, null);
 						})
@@ -1013,7 +1016,7 @@ public class PlayerHandler extends GameBaseHandler {
 						.compose(r -> {
 							return ServerContext.getInstance().getProcessor().process(r.getPlayerId(), () -> {
 								// 这里可能有阻塞操作
-								handleLoginSuccess(newGameClient, r);
+								PlayerWriteGuard.run(r, () -> handleLoginSuccess(newGameClient, r));
 								return null;
 							}, null);
 						})

@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.guild;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -284,7 +285,7 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
-        sendMsgToGuildServer(player, req, player.getPlayerName()).onSuccess(callBack -> {
+        sendMsgToGuildServer(player, req, player.getPlayerName()).compose(callBack -> PlayerWriteGuard.submit(player, () -> {
             if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
                 client.sendProtocol(res.build(), callBack.errorCode);
             } else {
@@ -294,7 +295,7 @@ public class GuildHandler extends GameBaseHandler {
                     client.sendProtocol(callBack.response);
                 }
             }
-        }).onFailure(err -> {
+        })).onFailure(err -> {
             err.printStackTrace();
             client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
         });
@@ -416,7 +417,7 @@ public class GuildHandler extends GameBaseHandler {
         }
         long guildId = player.getGuildId();
         String guildName = player.getGuildName();
-        sendMsgToGuildServer(player, req, "").onSuccess(callBack -> {
+        sendMsgToGuildServer(player, req, "").compose(callBack -> PlayerWriteGuard.submit(player, () -> {
             if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
                 client.sendProtocol(res.build(), callBack.errorCode);
             } else {
@@ -431,7 +432,7 @@ public class GuildHandler extends GameBaseHandler {
                 GameLogger.guildDisband(player, guildId, guildName);
                 client.sendProtocol(callBack.response);
             }
-        }).onFailure(err -> {
+        })).onFailure(err -> {
             err.printStackTrace();
             client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
         });
@@ -527,8 +528,7 @@ public class GuildHandler extends GameBaseHandler {
             // 通过校验，发起远程调用
             GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
             return guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(), req.getAutoJoin());
-        }).onSuccess(r -> {
-            ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+        }).compose(r -> PlayerWriteGuard.submit(player, () -> {
                 log.warn("map exec" + Thread.currentThread().getName());
                 log.warn("thread=" + Thread.currentThread().getName());
                 //    		 log.warn("isEventLoop=" + context.isEventLoopContext());
@@ -543,8 +543,7 @@ public class GuildHandler extends GameBaseHandler {
                 res.setGuild(allInfo);
                 client.sendProtocol(res);
                 GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
-            });
-        }).onFailure(err -> {
+        })).onFailure(err -> {
             // 如果是校验未通过，前面已返回相应协议；这里兜底
             player.handleFail(err);
         });

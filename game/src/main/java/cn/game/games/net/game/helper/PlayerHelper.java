@@ -165,6 +165,35 @@ public class PlayerHelper {
 	private static final int MB = 1024 * 1024;
 	private static final int APPROX_WARN_BYTES = 8 * MB;  // 8 MB 预警
 
+    /** 保存/退出维护的专用投递，不建立业务变更作用域；不得用于绕过普通业务写保护。 */
+    public static <T> Future<T> submitRecovery(long id, java.util.function.Supplier<Future<T>> action) {
+        return submitRecovery(ServerContext.getInstance().getProcessor(), id, action);
+    }
+    /** 真实processAsync桥接：保留开始前拒绝标记，并跟踪内部Future实际终态。 */
+    static <T> Future<T> submitRecovery(cn.game.core.net.process.Processor processor, long id,
+            java.util.function.Supplier<Future<T>> action) {
+        Promise<T> result = Promise.promise();
+        processor.processAsync(id, () -> action.get().onComplete(result), false).onFailure(result::tryFail);
+        return result.future();
+    }
+    /** 独立保存巡检，不依赖玩家登录timer；业务邮箱只负责捕获，事务完成独立推进。 */
+    public static long startSaveRiskMonitor() {
+        return VxHolder.vertx.setPeriodic(1_000, timerId -> {
+            if (!ServerContext.getInstance().isSinglePlayerTable()) { return; }
+            sweepSaveRisks(PlayerSaveCoordinator.shared(), ServerContext.getInstance().getProcessor(),
+                    PlayerManager.getInstance()::getPlayer, PlayerHelper::saveClientCache);
+        });
+    }
+
+    /** 生产巡检回调的依赖接缝，按驻留对象而非连接状态恢复保存。 */
+    static void sweepSaveRisks(PlayerSaveCoordinator saves, cn.game.core.net.process.Processor processor,
+            LongFunction<Player> players, LongFunction<Future<?>> save) {
+        saves.sweep((id, task) -> submitRecovery(processor, id, () -> task.get().mapEmpty()), (id, owner) -> {
+            if (players.apply(id) != owner) { return Future.failedFuture("OWNER_CHANGED"); }
+            return save.apply(id);
+        });
+    }
+
 	/** 
 	 * 判断某个id是不是机器人
 	 * @param id
@@ -739,6 +768,10 @@ public class PlayerHelper {
 	 * @param player
 	 */
 	public static void initAfterLogin(Player player) {
+        PlayerWriteGuard.run(player, () -> initAfterLoginGuarded(player));
+    }
+    /** 已进入玩家写入作用域的登录初始化。 */
+    private static void initAfterLoginGuarded(Player player) {
 		player.fireAndHandleEvent(EventTypeEnum.LoginStart);
 
 		long playerId = player.getData().getPlayerId();
@@ -753,9 +786,12 @@ public class PlayerHelper {
 //			}) ;
 //		}, Config.ONELINE_SAVE, Config.ONELINE_SAVE);
 		player.setPeriodicTask(Config.ONLINE_SAVE * 1000, r -> {
-			saveClientCache(player.getPlayerId());
 			AttrModule attrModule = player.getAttrModule();
 			attrModule.calcPower();
+            // 独立表仍沿用原有定时保存；聚合表由独立风险巡检提前保存。
+            if (!ServerContext.getInstance().isSinglePlayerTable()) {
+                saveClientCache(player.getPlayerId()).onFailure(failure -> log.warn("独立表定时保存失败 playerId={}", playerId, failure));
+            }
 			PlayerHelper.saveSimplePlayerToRedis(player);
 		});
 		// 上线后生成自己的简单信息
@@ -1244,6 +1280,10 @@ public class PlayerHelper {
 		if (player == null) {
 			return false;
 		}
+        return PlayerWriteGuard.call(player, () -> reconnectGuarded(newGameClient, reconnect, playerId, account, player));
+    }
+    /** 已检查写保护的重连流程，必须由玩家邮箱调用。 */
+    private static boolean reconnectGuarded(GameClient newGameClient, boolean reconnect, long playerId, Account account, Player player) {
 		if (PlayerManager.getInstance().isForbidAccount(player.getPlayerId())) {
 			throw new LogicException(ErrorMsgEnum.login_forbidden);
 		}
@@ -1289,6 +1329,10 @@ public class PlayerHelper {
 		if (player == null) {
 			return false;
 		}
+        return PlayerWriteGuard.call(player, () -> reconnectNewGuarded(newGameClient, reconnect, playerId, player));
+    }
+    /** 已检查写保护的旧重连协议实现，只能在玩家邮箱内调用。 */
+    private static boolean reconnectNewGuarded(GameClient newGameClient, boolean reconnect, long playerId, Player player) {
 		GameClient oldGameClient = GameClientManager.getInstance().getGameClientByPlayer(playerId);
 		if (oldGameClient == null) {
 			log.warn("reconnect warn, oldGameClient is null playerId:" + playerId);
@@ -1387,13 +1431,16 @@ public class PlayerHelper {
 
 	public static Future<Player> initPlayerData(Player player) {
 
+
+		// 这个地方可能有异步操作，所以先特殊处理一下
+		return ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+            PlayerWriteGuard.run(player, () -> {
 		if (player.getData().isNew()) {
 			// 初始的资源
 			PlayerHelper.addResources(player, GlobalConst.initItems, OpType.Init);
 			PlayerHelper.initNewPlayerData(player);
 		}
-		// 这个地方可能有异步操作，所以先特殊处理一下
-		return ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+            });
 			PlayerHelper.initAfterLogin(player);
 			return player; 
 		},null);
@@ -1454,8 +1501,8 @@ public class PlayerHelper {
 
 	/** @param player 已初始化玩家 @param saves 统一保存通道 @return 绑定本代真实提交的原玩家 */
 	static Future<Player> savePlayerToDb(Player player, PlayerSaveCoordinator saves) {
-		saves.preparing(player, player.getPlayerId());
-		return savePlayerToDb(player, data -> saves.submit(player, data, true).result().map(receipt -> (Object) receipt));
+		PlayerSaveCoordinator.Capture capture = saves.preparing(player, player.getPlayerId());
+		return savePlayerToDb(player, data -> saves.submit(player, data, true, capture).result().map(receipt -> (Object) receipt));
 	}
 
 	/**
@@ -1519,9 +1566,15 @@ public class PlayerHelper {
 	}
 
 	public static Future<Player> initPlayerModuleFromDb(Player player, List<Object> list) {
+        return initPlayerModuleFromDb(player, list, ServerContext.getInstance().isSinglePlayerTable(), PlayerWriteGuard::submitValue);
+    }
+    /** 纯行读取之后的初始化hook也可能变化；统一在实际执行时建立业务作用域。 */
+    static Future<Player> initPlayerModuleFromDb(Player player, List<Object> list, boolean single,
+            java.util.function.BiFunction<Player, java.util.function.Supplier<Player>, Future<Player>> dispatch) {
+        return dispatch.apply(player, () -> {
 
 		ListIterator<?> listIterator = list.listIterator();
-		if (ServerContext.getInstance().isSinglePlayerTable()) {
+		if (single) {
 			for (BasePlayerModule module : player.getModuleSorted()) {
 				if (module.alwaysStoreDataInStandaloneTable()) {
 					module.loadFromDb(listIterator);
@@ -1534,7 +1587,8 @@ public class PlayerHelper {
 				module.loadFromDb(listIterator);
 			}
 		}
-		return Future.succeededFuture(player);
+		return player;
+        });
 	}
 
 	/**
@@ -1556,7 +1610,9 @@ public class PlayerHelper {
 //		if (gameClient != null) {
 //			gameClient.getContext().runOnContext(action);
 //		}
-		ServerContext.getInstance().getProcessor().process(playerId, task);
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+        if (player == null) { throw new IllegalStateException("业务任务玩家不存在 playerId=" + playerId); }
+        PlayerWriteGuard.submit(player, task).onFailure(failure -> log.warn("玩家业务任务未完成 playerId={}", playerId, failure));
 	}
 
 	/** 
@@ -1778,10 +1834,10 @@ public class PlayerHelper {
 			Function<List<DbTask>, Future<List<Object>>> standalone) {
 		Player player = players.apply(playerId);
 		boolean single = player != null && player.isActive() && singlePlayerTable.getAsBoolean();
-		if (single) { saves.preparing(player, playerId); }
+		PlayerSaveCoordinator.Capture capture = single ? saves.preparing(player, playerId) : null;
 		return saveClientCache(playerId, id -> player, () -> single, tasks -> {
 			PlayerData data = (PlayerData) tasks.getFirst().getArg();
-			return saves.submit(player, data, false).result().map(receipt -> List.of((Object) receipt));
+			return saves.submit(player, data, false, capture).result().map(receipt -> List.of((Object) receipt));
 		}, standalone);
 	}
 
@@ -2079,20 +2135,18 @@ public class PlayerHelper {
 				log.error("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 				return Future.failedFuture("modifyPlayer gameClient is null, playerId: " + player.getPlayerId());
 			}
-			return ServerContext.getInstance().getProcessor().process(modify.getPlayerId(), () -> function.apply(modify), null);
+			return ServerContext.getInstance().getProcessor().process(modify.getPlayerId(), () -> PlayerWriteGuard.call(modify, () -> function.apply(modify)), null);
 		} else {
 			return modifyPlayerOffline(function, modify);
 		}
 	}
 
 	private static Future<?> modifyPlayerOffline(Function<Player, Boolean> function, Player player) {
-		return VxHolder.vertx.executeBlocking(() -> function.apply(player)).compose(apply -> {
-			if (apply != null && apply) {
-				log.info("修改离线玩家数据，准备保存: " + player.getPlayerId());
-				return PlayerHelper.saveClientCache(player.getPlayerId());
-			}
-			return Future.succeededFuture();
-		}).compose(v -> {
+        return ServerContext.getInstance().getProcessor().process(player.getPlayerId(), () -> {
+            PlayerWriteGuard.call(player, () -> function.apply(player));
+            // 保守作用域即使业务返回false也可能有变化，统一保存后才能释放离线对象。
+            return PlayerHelper.saveClientCache(player.getPlayerId());
+        }, result -> result).compose(v -> {
 			// 修改完玩家数据后，需要从缓存中清除数据
 			if (!PlayerHelper.clearPlayer(player)) { return Future.failedFuture("玩家保存未决，保留离线对象与路由"); }
 			RedisUtil.delete(CacheType.PLAYER_SERVER_ID.key(player.getPlayerId()));

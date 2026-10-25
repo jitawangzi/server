@@ -1,5 +1,6 @@
 package cn.game.games.net.game.handler;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -144,6 +145,7 @@ public class ServerHandler extends GameBaseHandler {
 				log.error("guildMsgNotify player is null");
 				return;
 			}
+            submitPlayerMutation(player, () -> {
 			switch (msgId){
 				//玩家 退出 公会
 				case PbProtocol.GuildQuitPush_40000024 -> {
@@ -158,7 +160,8 @@ public class ServerHandler extends GameBaseHandler {
 					GuildApplyProcessedPush_40100001 push = (GuildApplyProcessedPush_40100001)message; 
 					Player player2 = PlayerManager.getInstance().getPlayer(push.getPlayerId()); 
 					if (player2 != null) {
-						player2.getGuildModule().getApplyJoinList().remove(push.getGuildId()) ; 
+						submitPlayerMutation(player2, () -> player2.getGuildModule().getApplyJoinList().remove(push.getGuildId()))
+                                .onFailure(failure -> log.warn("公会申请变化失败 playerId={}", player2.getPlayerId(), failure));
 					}else {
 						// TODO 离线稍后处理
 					}
@@ -167,6 +170,7 @@ public class ServerHandler extends GameBaseHandler {
 					log.error(String.format("guildMsgNotify msgId:%d is error",req.getMsgId()));
 				}
 			}
+            }).onFailure(failure -> log.warn("公会推送玩家变化失败 playerId={}", pid, failure));
 		});
 	}
 
@@ -182,12 +186,15 @@ public class ServerHandler extends GameBaseHandler {
 	private void InviteLvChange(NetClient client, Object o) {
 		ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041 req = (ServerMsg.NotifyInviteBindAndLvUpRequest_7d000041) o;
 		Player player = PlayerManager.getInstance().getPlayer(req.getPid());
-		if (player != null && player.isOnline()){
-			player.getInviteModule().updateTargetLv(req.getTargetPid(),req.getLv());
-			player.getInviteModule().checkRedHot();
-		}
-		log.info(String.format("InviteLvChange req:%s",req));
-		client.sendProtocol(ServerMsg.NotifyInviteBindAndLvUpResponse_7d000042.newBuilder().setResult(true).build());
+        if (player != null && player.isOnline()) {
+            submitPlayerMutation(player, () -> {
+                player.getInviteModule().updateTargetLv(req.getTargetPid(), req.getLv());
+                player.getInviteModule().checkRedHot();
+            }).onComplete(result -> {
+                if (result.failed()) { log.warn("邀请等级变化失败 playerId={}", req.getPid(), result.cause()); }
+                client.sendProtocol(ServerMsg.NotifyInviteBindAndLvUpResponse_7d000042.newBuilder().setResult(result.succeeded()).build());
+            });
+        } else { client.sendProtocol(ServerMsg.NotifyInviteBindAndLvUpResponse_7d000042.newBuilder().setResult(true).build()); }
 
 	}
 
@@ -256,21 +263,9 @@ public class ServerHandler extends GameBaseHandler {
 			idsSet.add(id);
 			MailHelper.sendMail(playerId, questionnaireConfig.MailID, true);
 		};
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
-		if (player != null) {
-			consumer.accept(player);
-		} else {
-			PlayerHelper.loadPlayerFromDb(playerId).onSuccess(offlinePlayer -> {
-				if (offlinePlayer != null) {
-					consumer.accept(offlinePlayer);
-					PlayerHelper.saveClientCache(playerId).onSuccess(r -> {
-						PlayerManager.getInstance().deletePlayer(offlinePlayer);
-					});
-				}
-			}).onFailure(err -> {
-				log.error("", err);
-			});
-		}
+        PlayerHelper.modifyPlayer(playerId, p -> { consumer.accept(p); return true; })
+                .onFailure(failure -> log.warn("问卷玩家变更失败 playerId={}", playerId, failure));
+
 	}
 	private void objectMessageTest(NetClient client, Object o) {
 		ItemModule itemModule = (ItemModule) o;
@@ -366,7 +361,9 @@ public class ServerHandler extends GameBaseHandler {
 	                sendResult(client, false);
 	                return null;
 	            }
-	            handlePaymentForPlayer(client, offlinePlayer, uid,sdkOrderId, false);
+	            PlayerHelper.submitRecovery(playerId, () -> { handlePaymentForPlayer(client, offlinePlayer, uid,sdkOrderId, false); return Future.succeededFuture(); })
+                    .onFailure(failure -> { log.warn("离线充值写保护拒绝 playerId={}", playerId, failure);
+                        sendResult(client, false); });
 	            return offlinePlayer;
 	        }).onFailure(err -> {
 	            log.error("PayItem offline ship fail: playerId={}, uid={}", playerId, uid, err);
@@ -374,23 +371,26 @@ public class ServerHandler extends GameBaseHandler {
 	        });
 	    } else {
 	        // 在线流程：串行任务队列
-	        PlayerHelper.addTask(playerId, () -> handlePaymentForPlayer(client, onlinePlayer, uid,sdkOrderId, true));
+	        PlayerHelper.submitRecovery(playerId, () -> { handlePaymentForPlayer(client, onlinePlayer, uid,sdkOrderId, true); return Future.succeededFuture(); })
+                    .onFailure(failure -> { log.warn("在线充值写保护拒绝 playerId={}", playerId, failure); sendResult(client, false); });
 	    }
 	}
 
 	/**
 	 * 统一处理一个玩家的一笔订单（在线/离线通用）
 	 */
-	private void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
+	protected void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
 	    try {
 	        PayItem payItem = findAndValidatePayItem(player, uid, online);
 	        if (payItem == null) {
 	            sendResult(client, false);
 	            return;
 	        }
-	        payItem.setSdkOrderId(sdkOrderId);
-
-	        boolean ok = processPayment(player, payItem, online);
+            boolean ok;
+            try (PlayerWriteGuard.Scope ignored = beginPaymentMutation(player)) {
+                payItem.setSdkOrderId(sdkOrderId);
+                ok = processPayment(player, payItem, online);
+            }
 	        if (!ok) {
 	            // processPayment 内部已做必要日志
 	            sendResult(client, false);
@@ -409,10 +409,13 @@ public class ServerHandler extends GameBaseHandler {
 	    }
 	}
 
+    /** 充值业务变化先结束作用域，再由persistAndReply捕获最终快照。 */
+    protected PlayerWriteGuard.Scope beginPaymentMutation(Player player) { return PlayerWriteGuard.begin(player); }
+
 	/**
 	 * 查找订单并进行幂等校验
 	 */
-	private PayItem findAndValidatePayItem(Player player, long uid, boolean online) {
+	protected PayItem findAndValidatePayItem(Player player, long uid, boolean online) {
 	    PayItem payItem = player.getPlayerModule().getPayItems(uid);
 	    if (payItem == null) {
 	        if (online) {
@@ -436,7 +439,7 @@ public class ServerHandler extends GameBaseHandler {
 	/**
 	 * 执行支付后回调/补单、finish、事件与日志
 	 */
-	private boolean processPayment(Player player, PayItem payItem, boolean online) {
+	protected boolean processPayment(Player player, PayItem payItem, boolean online) {
 	    boolean callbackOk = true;
 	    if (online) {
 	        // 如果是老订单，可能没有 callback，需要走离线补单逻辑
@@ -468,7 +471,7 @@ public class ServerHandler extends GameBaseHandler {
 	/**
 	 * 持久化并统一回复
 	 */
-	private void persistAndReply(NetClient client, Player player, boolean online) {
+	protected void persistAndReply(NetClient client, Player player, boolean online) {
 	    long playerId = player.getPlayerId();
 	    PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
 	        sendResult(client, true);
@@ -486,16 +489,16 @@ public class ServerHandler extends GameBaseHandler {
 	/**
 	 * 离线玩家处理完后清理缓存
 	 */
-	private void cleanupIfOffline(Player player, boolean online) {
+	protected void cleanupIfOffline(Player player, boolean online) {
 	    if (!online) {
-	        PlayerHelper.clearPlayer(player);
+            if (!PlayerHelper.clearPlayer(player)) { log.warn("离线玩家仍有未确认变化，保留内存 playerId={}", player.getPlayerId()); }
 	    }
 	}
 
 	/**
 	 * 统一发送结果
 	 */
-	private void sendResult(NetClient client, boolean success) {
+	protected void sendResult(NetClient client, boolean success) {
 	    PaymentOrderShipResponse_7d000023.Builder resp = PaymentOrderShipResponse_7d000023.newBuilder();
 	    resp.setSuccess(success);
 	    client.sendProtocol(resp.build());
@@ -524,13 +527,8 @@ public class ServerHandler extends GameBaseHandler {
 	protected void playerLogout(NetClient client, Object message) {
 		GamePlayerLogoutRequest_7d000101 request = (GamePlayerLogoutRequest_7d000101) message;
 		long playerId = request.getPlayerId();
-		PlayerHelper.addTask(playerId, () -> {
-			Future<?> logout = GameClientManager.getInstance().logout(playerId, LogoutType.ClientRequest);
-			logout.onComplete(r -> {
-				Throwable cause = r.cause();
-				client.sendProtocol(cause != null ? cause : GamePlayerLogoutResponse_7d000102.getDefaultInstance());
-			});
-		});
+        PlayerHelper.submitRecovery(playerId, () -> GameClientManager.getInstance().logout(playerId, LogoutType.ClientRequest))
+                .onComplete(result -> client.sendProtocol(result.failed() ? result.cause() : GamePlayerLogoutResponse_7d000102.getDefaultInstance()));
 
 	}
 
@@ -661,10 +659,8 @@ public class ServerHandler extends GameBaseHandler {
 				Future<GamePlayerLogoutResponse_7d000102> requestRemoteServer = VxHolder.requestRemoteServer(serverId,
 						GamePlayerLogoutRequest_7d000101.newBuilder().setPlayerId(playerId).build());
 				requestRemoteServer.onFailure(ee -> {
-					PlayerHelper.addTask(playerId, () -> {
-						log.warn("multi player found, notify other fail, logout current " + playerId) ; 
-						GameClientManager.getInstance().logout(playerId, LogoutType.LoginOtherServer);
-					});
+					PlayerHelper.submitRecovery(playerId, () -> GameClientManager.getInstance().logout(playerId, LogoutType.LoginOtherServer))
+                            .onFailure(failure -> log.warn("本服退出保存失败 playerId={}", playerId, failure));
 				}).onSuccess(r -> {
 					TaskManager.getInstance().scheduleGeneral(() -> {
 						// 重新广播在线信息

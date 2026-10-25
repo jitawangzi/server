@@ -360,9 +360,8 @@ public class PlayerManager {
 		// 玩家在线
 		if (hasCache(playerId)) {
 			Player player = id_players.get(playerId);
-			PlayerHelper.addTask(playerId, () -> {
-				GameClientManager.getInstance().logout(playerId, LogoutType.ForbidAccount);
-			});
+			PlayerHelper.submitRecovery(playerId, () -> GameClientManager.getInstance().logout(playerId, LogoutType.ForbidAccount))
+                    .onFailure(failure -> log.warn("封号退出保存失败 playerId={}", playerId, failure));
 			ForbidAccount insert = ForbidAccount.valueOf(player, reason, unblock);
 			insert.updateType(type);
 			DAO.insert(insert);

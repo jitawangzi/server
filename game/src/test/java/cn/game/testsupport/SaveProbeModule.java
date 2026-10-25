@@ -14,6 +14,13 @@ public final class SaveProbeModule extends BasePlayerModule {
     public List<String> values = new ArrayList<>(List.of("first module"));
     /** 独立表实体沿用独立存储排除约定。 */
     public transient List<DbEntity> entities = new ArrayList<>();
+    /** 加载后的业务hook测试开关，不参与聚合序列化。 */
+    public transient boolean failOnInit;
+    public transient int initCalls;
+    @Override public void initFromDbAfter() {
+        initCalls++; values.add("initialized");
+        if (failOnInit) { throw new IllegalStateException("initialization failed after mutation"); }
+    }
     /** 公开构造供带类型 JSON 恢复使用。 */
     public SaveProbeModule() {}
     @Override

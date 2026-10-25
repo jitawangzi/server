@@ -235,18 +235,29 @@ public class FriendHandler extends GameBaseHandler {
 		long applyPlayerId = request.getApplyPlayerId();
 		String applyPlayerServer = request.getApplyPlayerServer();
 
-		FriendHelper.receiveApplication(playerId, applyPlayerId, applyPlayerServer);
+        Player target = findPlayer(playerId);
+        if (target != null) {
+            submitPlayerMutation(target, () -> FriendHelper.receiveApplication(playerId, applyPlayerId, applyPlayerServer))
+                    .onFailure(failure -> log.warn("跨服好友申请写入失败 playerId={}", playerId, failure));
+        } else { FriendHelper.receiveApplication(playerId, applyPlayerId, applyPlayerServer); }
 	}
 	protected void remoteAdd(NetClient client, Object message) {
 		FriendAddPush_30000023 request = (FriendAddPush_30000023) message;
 		long playerId = request.getPlayerId();
 		long friendId = request.getFriendId();
 		String friendServer = request.getFriendServer();
+        Runnable apply = () -> {
 		boolean ret = FriendHelper.addFriend(playerId, friendId, friendServer, Friend.FRIEND);
 		if (ret) {
 			FriendHelper.removeMyApplication(playerId, friendId);
 			FriendHelper.removeApplication(playerId, friendId);
 		}
+        };
+        Player target = findPlayer(playerId);
+        if (target != null) {
+            submitPlayerMutation(target, apply).onFailure(failure -> log.warn("跨服添加好友写入失败 playerId={}", playerId, failure));
+        } else { apply.run(); }
+
 	}
 
 	protected void application(NetClient client, Object message) {

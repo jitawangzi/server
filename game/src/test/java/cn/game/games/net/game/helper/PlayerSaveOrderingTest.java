@@ -152,7 +152,7 @@ class PlayerSaveOrderingTest {
         Assertions.assertEquals(200, confirmed.lastConfirmedAt());
         Assertions.assertNull(confirmed.earliestUnsavedChangeAt());
         h.submit(owner, 1, "B");
-        Assertions.assertNull(h.saves.status(1).earliestUnsavedChangeAt(), "未接业务变更埋点时必须明确未知");
+        Assertions.assertEquals(200L, h.saves.status(1).earliestUnsavedChangeAt(), "手工快照按观察时点保守登记");
     }
     /** 使用真实邮箱执行保存并 await，独立完成不回投该邮箱。 */
     @Test
@@ -246,7 +246,7 @@ class PlayerSaveOrderingTest {
         h.clock.set(200); h.saves.markDirty(1, 150); var b = h.submit(owner, 1, "B");
         h.writer.commit(0); await(a.result());
         Assertions.assertEquals(100L, h.saves.status(1).riskFirstObservedSnapshotAt());
-        Assertions.assertNull(h.saves.status(1).earliestUnsavedChangeAt());
+        Assertions.assertEquals(150L, h.saves.status(1).earliestUnsavedChangeAt());
         h.writer.commit(1); await(b.result());
         Assertions.assertNull(h.saves.status(1).riskFirstObservedSnapshotAt());
     }

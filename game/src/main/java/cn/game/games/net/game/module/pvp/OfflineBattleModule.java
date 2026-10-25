@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.pvp;
 
+import cn.game.games.net.game.helper.PlayerWriteGuard;
 import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.SimplePlayer;
 import cn.game.games.core.event.EventTypeEnum;
@@ -231,21 +232,18 @@ public class OfflineBattleModule extends BasePlayerModule {
               final int finalScore = score;
               return getMatchPidMapFuture(scoreRange, finalScore);
             })
-        .thenAccept(
-            mapResult -> {
-              processMatchResults(mapResult, resultList, promise);
-            })
+        .thenCompose(mapResult -> PlayerWriteGuard.submit(player,
+            () -> processMatchResults(mapResult, resultList, promise)).toCompletionStage())
         .thenCompose(
             msg -> {
                return  getSerachTargetScoreList(resultList, scoreList);
             })
-        .thenAccept(
-            action -> {
+        .thenCompose(action -> PlayerWriteGuard.submit(player, () -> {
               if (resultList.size() >= GlobalConst.DaDaoOpponentPicking.length) {
                 tempRefreshList.addAll(resultList);
               }
-              promise.complete(resultList);
-            })
+              promise.tryComplete(resultList);
+            }).toCompletionStage())
         .exceptionally(
             err -> {
               err.printStackTrace();
