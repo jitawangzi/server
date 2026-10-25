@@ -1,0 +1,6 @@
+[
+  "cn.game.core.net.rpc.vertx.RpcRejectionOriginTest#completedNestedRejectionIsExecutionFailure",
+  "cn.game.core.net.rpc.vertx.RpcRejectionOriginTest#pendingNestedRejectionIsExecutionFailure",
+  "cn.game.core.net.rpc.vertx.RpcRejectionOriginTest#outerSubmissionRejectionStillReportsNotExecuted",
+  "cn.game.core.execute.TaskAdmissionTest#nestedRejectionDoesNotImpersonateCurrentSubmission"
+]

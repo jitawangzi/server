@@ -47,7 +47,7 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 	public Future<Void> processAsync(long objectId, Runnable task, boolean fast) {
 		TaskSubmission<Void> submission = executor.get().submitTaskWithResult(objectId, task, fast, "processor task");
 		return submission.result().recover(failure -> Future.failedFuture(submission.hasStarted()
-				? failure : new TaskNotExecutedException(failure)));
+				? Processor.executionFailure(objectId, failure) : new TaskNotExecutedException(failure)));
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.execute.TaskNotExecutedException;
+import cn.game.core.execute.TaskExecutionException;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import io.vertx.core.Future;
@@ -49,14 +50,26 @@ public interface Processor {
 					result.tryComplete();
 				} catch (Throwable failure) {
 					LoggerFactory.getLogger(Processor.class).error("Task execution failed for {}", objectId, failure);
-					result.tryFail(failure);
+					result.tryFail(executionFailure(objectId, failure));
 				}
 			}, fast);
 		} catch (RuntimeException failure) {
 			LoggerFactory.getLogger(Processor.class).warn("Task submission failed for {}", objectId, failure);
-			result.tryFail(started.get() ? failure : new TaskNotExecutedException(failure));
+			result.tryFail(started.get() ? executionFailure(objectId, failure) : new TaskNotExecutedException(failure));
 		}
 		return result.future();
+	}
+
+	/**
+	 * 已开始的外层任务不能继承内层任务的未执行标记，原始原因仍保留在异常链中。
+	 * @param objectId 当前任务归属 ID
+	 * @param failure 当前任务执行时的异常
+	 * @return 只在内层拒绝标记冲突时包装的执行异常
+	 */
+	static Throwable executionFailure(long objectId, Throwable failure) {
+		return failure instanceof TaskNotExecutedException
+				? new TaskExecutionException("Task executed before nested submission failed", failure, objectId, "processor task")
+				: failure;
 	}
 
 	/** 

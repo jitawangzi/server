@@ -80,6 +80,23 @@ class TaskAdmissionTest {
         Assertions.assertEquals(3, calls.get(), "每次提交只运行一次，不自动重试");
     }
 
+    /** 已经执行的任务抛出内层未执行标记时，两个处理器都必须保留当前任务已执行事实。 */
+    @Test
+    void nestedRejectionDoesNotImpersonateCurrentSubmission() {
+        Worker worker = new Worker();
+        worker.inline = true;
+        TaskExecutorService service = service(worker, new OneToOneMailboxManager(2));
+        for (cn.game.core.net.process.Processor processor : List.of(new DirectProcessor(), new IdVirtualThreadProcessor(service))) {
+            AtomicInteger effects = new AtomicInteger();
+            TaskNotExecutedException inner = new TaskNotExecutedException(new RejectedExecutionException("nested"));
+            Future<Void> result = processor.processAsync(1, () -> { effects.incrementAndGet(); throw inner; }, false);
+            Assertions.assertEquals(1, effects.get());
+            Assertions.assertTrue(result.failed());
+            Assertions.assertInstanceOf(TaskExecutionException.class, result.cause());
+            Assertions.assertSame(inner, result.cause().getCause());
+        }
+    }
+
     /** 返回受理后关闭，排队任务得到未执行终态；旧处理器不再运行其业务。 */
     @Test
     void acceptedPendingTaskReportsLaterShutdown() {

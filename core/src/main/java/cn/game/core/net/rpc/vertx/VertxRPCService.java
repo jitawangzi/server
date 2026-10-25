@@ -1,5 +1,7 @@
 package cn.game.core.net.rpc.vertx;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +51,8 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 		}
 		// 回复 Promise 在入队之前建立，未执行拒绝与实际业务结果共用一个终态出口。
 		Promise<Object> promise = Promise.promise();
+		// 业务 Future 的失败也进入同一出口，须以本次调用的开始事实判定拒绝归属。
+		AtomicBoolean invocationStarted = new AtomicBoolean();
 		promise.future().onComplete(r -> {
 				if (r.failed() || r.cause() != null|| r.result() instanceof Exception) {
 					String errString = r.result() == null ? "" : ((Exception) r.result()).getMessage();
@@ -58,7 +62,7 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 							message.reply(cause, VxHolder.universalOptions);
 						} else {
 							log.error("Error invoking RPC method", r.cause());
-							int code = r.cause() instanceof TaskNotExecutedException
+							int code = !invocationStarted.get() && r.cause() instanceof TaskNotExecutedException
 									? ErrorMsgEnum.system_overload.getId() : ReplyFailure.ERROR.toInt();
 							message.fail(code, r.cause().getMessage());
 						}
@@ -82,15 +86,26 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 				}
 		});
 		processor.processAsync(objectId, () -> {
+			invocationStarted.set(true);
 			Object result;
 			try {
-				result = rpcService.invokeWithCache(command);
+				result = invokeCommand(command);
 			} catch (Exception e) {
 				log.warn("RPC invocation failed for object {}, command {}", objectId, command, e);
 				result = new RPCServiceImpl.RPCException("Error invoking RPC method", e);
 			}
 			rpcService.handleResult(result, promise);
 		}, true).onFailure(promise::tryFail);
+	}
+
+	/**
+	 * 调用已解析的业务命令，默认沿用既有服务查找与反射入口。
+	 * @param command 请求中的业务方法与参数
+	 * @return 业务结果或异步结果
+	 * @throws Exception 业务查找或执行失败
+	 */
+	protected Object invokeCommand(Command command) throws Exception {
+		return rpcService.invokeWithCache(command);
 	}
 
 	@Override
