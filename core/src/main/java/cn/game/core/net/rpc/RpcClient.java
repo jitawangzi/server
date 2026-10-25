@@ -17,6 +17,7 @@ import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.ExceptionHelper;
 import cn.game.util.Config;
+import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -117,7 +118,7 @@ public interface RpcClient {
 	 * @return
 	 */
 	private Object send(CallType callType, Command command, Class<?> returnType, String targetAddr) {
-		long startLong = System.currentTimeMillis();
+		long startLong = DateUtil.currentTimeMillis();
 		// 先判断异步方式
 		// vertx的Future方式
 		if (Future.class.isAssignableFrom(returnType)) {
@@ -136,10 +137,18 @@ public interface RpcClient {
 		return handleSyncCall(command, targetAddr);
 	}
 
+	/**
+	 * 将响应体中的远端异常转为失败结果，传输失败保留原始原因。
+	 * @param callType 请求或广播方式
+	 * @param command 远端调用载荷
+	 * @param targetAddr 目标服务地址
+	 * @param startLong 请求开始的毫秒时间
+	 * @return 请求结果；广播仅代表本地已发送
+	 */
 	private Future<?> handleVertxFuture(CallType callType, Command command, String targetAddr, long startLong) {
 		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
 			Future<Message<Object>> request = request(targetAddr, command, VxHolder.universalOptions);
-			return request.map(r -> r.body())
+			return request.map(r -> decodeResponse(r.body()))
 					.onFailure(t -> logError(targetAddr, command, startLong, t));
 		} else if (callType == CallType.Broadcast) {
 			broadcast(targetAddr, command, VxHolder.universalOptions);
@@ -149,19 +158,17 @@ public interface RpcClient {
 		return Future.failedFuture(new IllegalArgumentException("Unsupported call type: " + callType));
 	}
 
+	/**
+	 * 复用相同响应解码规则后适配 JDK 异步接口，不另行解释业务异常。
+	 * @param callType 请求或广播方式
+	 * @param command 远端调用载荷
+	 * @param targetAddr 目标服务地址
+	 * @param startLong 请求开始的毫秒时间
+	 * @return 保留响应失败原因的 JDK Future
+	 */
 	private CompletableFuture<?> handleCompletionStage(CallType callType, Command command, String targetAddr,
 			long startLong) {
-		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
-			Future<Message<Object>> request = request(targetAddr, command, VxHolder.universalOptions);
-			return request.map(r -> r.body())
-					.onFailure(t -> logError(targetAddr, command, startLong, t))
-					.toCompletionStage()
-					.toCompletableFuture();
-		} else if (callType == CallType.Broadcast) {
-			broadcast(targetAddr, command, VxHolder.universalOptions);
-			return CompletableFuture.completedFuture(null);
-		}
-		return CompletableFuture.failedFuture(new IllegalArgumentException("Unsupported call type: " + callType));
+		return handleVertxFuture(callType, command, targetAddr, startLong).toCompletionStage().toCompletableFuture();
 	}
 
 	private java.util.concurrent.Future<?> handleJdkFuture(CallType callType, Command command, String targetAddr,
@@ -169,6 +176,12 @@ public interface RpcClient {
 		return handleCompletionStage(callType, command, targetAddr, startLong);
 	}
 
+	/**
+	 * 在允许阻塞的调用线程等待远端结果，并沿用统一的响应异常语义。
+	 * @param command 远端调用载荷
+	 * @param targetAddr 目标服务地址
+	 * @return 正常响应体，业务或传输失败时抛出异常
+	 */
 	private Object handleSyncCall(Command command, String targetAddr) {
 		// 下面是同步方式调用，尽量少用
 		// vertx中一般只允许在worker线程中调用
@@ -181,16 +194,7 @@ public interface RpcClient {
 		try {
 			Future<Message<Object>> request = request(targetAddr, command, options);
 			Message<Object> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
-			Object result = message.body();
-		    if (result instanceof Throwable) {
-		        Throwable t = (Throwable) result;
-		        // 远端返回的 Error 只是数据，不是本地致命错误，可以包装成 RuntimeException 再抛
-		        if (t instanceof Error) {
-		            throw new RuntimeException("remote error: " + t.getClass().getName(), t);
-		        }
-		        throw (t instanceof RuntimeException) ? (RuntimeException) t : new RuntimeException(t);
-		    }
-			return result;
+			return decodeResponse(message.body());
 		} catch (Exception e) {
 		    String scene = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]",
 		            targetAddr, command, Thread.currentThread().getName());
@@ -206,9 +210,32 @@ public interface RpcClient {
 		// never reach
 	}
 
+	/**
+	 * 解码既有 RPC 响应约定：Throwable 响应体表示远端失败，不能作为成功数据返回。
+	 * @param result 传输成功后的响应体，可为空
+	 * @return 普通响应体；业务异常保留错误码，远端 Error 包装为运行时异常
+	 */
+	private Object decodeResponse(Object result) {
+		if (!(result instanceof Throwable failure)) { return result; }
+		LogicException businessFailure = ExceptionHelper.findCause(failure, LogicException.class);
+		if (businessFailure != null) { throw businessFailure; }
+		if (failure instanceof RuntimeException runtimeFailure) { throw runtimeFailure; }
+		if (failure instanceof Error) {
+			throw new RuntimeException("remote error: " + failure.getClass().getName(), failure);
+		}
+		throw new RuntimeException(failure);
+	}
+
+	/**
+	 * 记录异步调用失败及耗时，保留业务、传输和远端异常的原因链。
+	 * @param targetAddr 目标服务地址
+	 * @param command 调用载荷
+	 * @param startLong 请求开始的毫秒时间
+	 * @param t 失败原因
+	 */
 	private void logError(String targetAddr, Command command, long startLong, Throwable t) {
 		log.error(MessageFormat.format("request message to targetAddr[{0}] failed ,command[{1}]usetime[{2}]", targetAddr, command,
-				(System.currentTimeMillis() - startLong) / 1000), t);
+				(DateUtil.currentTimeMillis() - startLong) / 1000), t);
 	}
 
 }

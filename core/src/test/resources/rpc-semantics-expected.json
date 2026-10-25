@@ -1,0 +1,9 @@
+[
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#normalAndNullResponsesRemainSuccessful",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#businessErrorsFailEveryReturnType",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#remoteExceptionsRetainTheirCause",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#remoteErrorsAreWrappedConsistently",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#transportFailuresRemainFailures",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#lateBusinessFailureCompletesPendingCall",
+  "cn.game.core.net.rpc.RpcClientSemanticsTest#broadcastDoesNotPretendToReceiveRemoteResult"
+]
