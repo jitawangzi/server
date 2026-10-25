@@ -2,11 +2,9 @@ package cn.game.core.execute;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Level;
@@ -112,32 +111,39 @@ class TaskExecutorServiceTest {
 	}
 
 	@Test
-	@DisplayName("确保 entityId=0 的任务并行执行")
-	void testParallelExecution_forEntityIdZero() {
-		final long entityId = 0L;
-		final int taskCount = 10;
-		final long sleepTimeMs = 200;
-		final AtomicInteger completedTasks = new AtomicInteger(0);
-		final CountDownLatch latch = new CountDownLatch(taskCount);
-
-		Callable<Void> task = () -> {
-			Thread.sleep(sleepTimeMs);
-			completedTasks.incrementAndGet();
-			latch.countDown();
-			return null;
-		};
-
-		// 在限定时间内执行，如果任务是串行的，总耗时会远超 (taskCount * sleepTimeMs)
-		// 如果是并行的，总耗时会约等于 sleepTimeMs
-		assertTimeoutPreemptively(Duration.ofMillis(sleepTimeMs * 2), () -> {
-			for (int i = 0; i < taskCount; i++) {
-				taskExecutorService.execute(entityId, task);
-			}
-			assertTrue(latch.await(sleepTimeMs + 100, TimeUnit.MILLISECONDS), "任务未在预期时间内完成");
-		}, "并行任务执行超时");
-
-		assertEquals(taskCount, completedTasks.get());
-	}
+	@DisplayName("确保 entityId=0 分配到不同邮箱时并行执行")
+	void testParallelExecution_forEntityIdZero() throws Exception {
+        // 生产在128个邮箱中随机选择，碰撞时允许串行；固定随机来源才能单独验证并行能力。
+        final AtomicLong mailboxIds = new AtomicLong(Long.MAX_VALUE - 128);
+        OneToOneMailboxManager mailboxes = new OneToOneMailboxManager(32) {
+            @Override protected long mapToMailboxId0() { return mailboxIds.incrementAndGet(); }
+        };
+        taskExecutorService.close();
+        taskExecutorService = new TaskExecutorService(TaskExecutionConfig.getDefault(), mailboxes);
+        final int taskCount = 10;
+        final CountDownLatch entered = new CountDownLatch(taskCount);
+        final CountDownLatch release = new CountDownLatch(1);
+        final AtomicInteger completed = new AtomicInteger();
+        final List<Future<Void>> futures = new ArrayList<>();
+        try {
+            for (int i = 0; i < taskCount; i++) {
+                futures.add(taskExecutorService.execute(0L, () -> {
+                    entered.countDown();
+                    // 释放前所有任务都须进入；串行执行时第一条任务会挡住其余任务。
+                    Assertions.assertTrue(release.await(10, TimeUnit.SECONDS), "测试未释放并行任务");
+                    completed.incrementAndGet();
+                    return null;
+                }, false, "并行栅栏验证", 15_000, null));
+            }
+            Assertions.assertTrue(entered.await(5, TimeUnit.SECONDS), "entityId=0任务未同时进入执行区");
+            Assertions.assertEquals(0, completed.get(), "栅栏释放前不得完成任务");
+        } finally {
+            // 断言失败也释放真实任务，避免测试清理被自身栅栏阻塞。
+            release.countDown();
+        }
+        AsyncUtils.await(Future.all(futures), 5, TimeUnit.SECONDS);
+        Assertions.assertEquals(taskCount, completed.get());
+    }
 
 	@Test
 	@DisplayName("从平台线程提交任务后，应在虚拟线程中执行")
