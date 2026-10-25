@@ -1,13 +1,19 @@
 package cn.game.core.execute;
 
 import java.util.Deque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.LongSupplier;
+
+import cn.game.util.DateUtil;
 
 /**
- * Actor模型的邮箱，用于存储和管理特定实体ID的任务队列
+ * 同一实际邮箱的入队、退役和消费权代次在实例锁下协调，业务任务始终在锁外执行。
+ * 已退役实例拒绝新任务；延迟回调携带消费权代次，不能复活已经完成的消费者。
  */
 public class ActorMailbox {
     private final long entityId;
@@ -16,10 +22,38 @@ public class ActorMailbox {
     private final MailboxStats stats = new MailboxStats();
     private final int maxQueueSize ;
     private final AtomicReference<Throwable> lastError = new AtomicReference<>(null);
-    private final AtomicLong lastAccessTime = new AtomicLong(System.currentTimeMillis());
+    /** 用于空闲时间和阻塞诊断的毫秒时钟。 */
+    private final LongSupplier clock;
+    /** 最近一次队列访问时间，单位为毫秒。 */
+    private final AtomicLong lastAccessTime;
+    /** 已退役实例不能再次入队或获取消费权。 */
+    private boolean retired;
+    /** 每次取得、交接或释放消费权时推进的代次。 */
+    private long processingGeneration;
+    /** 实际执行线程；延迟等待期间为空。 */
+    private volatile Thread processingThread;
+    /** 当前消费者开始执行的毫秒时间，不随新任务入队刷新。 */
+    private volatile long processingStartedAt;
     
+    /**
+     * 使用项目时间源创建邮箱。
+     * @param entityId 实际邮箱 ID
+     * @param maxQueueSize 队列容量，非正数表示不限容量
+     */
     public ActorMailbox(long entityId, int maxQueueSize) {
+        this(entityId, maxQueueSize, DateUtil::currentTimeMillis);
+    }
+
+    /**
+     * 为管理器创建带统一时钟的邮箱。
+     * @param entityId 已完成映射的实际邮箱 ID
+     * @param maxQueueSize 队列容量，非正数保持既有不限容量语义
+     * @param clock 返回毫秒时间的时钟
+     */
+    ActorMailbox(long entityId, int maxQueueSize, LongSupplier clock) {
         this.entityId = entityId;
+        this.clock = clock;
+        this.lastAccessTime = new AtomicLong(clock.getAsLong());
 		this.maxQueueSize = maxQueueSize <= 0 ? Integer.MAX_VALUE : maxQueueSize;
 		// 保持任务的FIFO顺序，有界,两级优先级
 		this.taskQueue = new LinkedBlockingDeque<>(this.maxQueueSize);
@@ -28,7 +62,7 @@ public class ActorMailbox {
     /**
      * 尝试添加任务到队列尾部
      * @param taskWrapper 要添加的任务包装器
-     * @return 如果成功添加返回true，队列已满返回false
+     * @return 入队成功为 true；队列满或实例已退役为 false
      */
     public boolean offerTask(TaskWrapper<?> taskWrapper) {
         return offerTask(taskWrapper, false);
@@ -37,10 +71,11 @@ public class ActorMailbox {
      * 尝试添加任务到队列
      * @param taskWrapper 要添加的任务包装器
      * @param fast 是否快速添加到队列头部
-     * @return 如果成功添加返回true，队列已满返回false
+     * @return 入队成功为 true；队列满或实例已退役为 false
      */
-    public boolean offerTask(TaskWrapper<?> taskWrapper,boolean fast) {
-    	lastAccessTime.set(System.currentTimeMillis());
+    public synchronized boolean offerTask(TaskWrapper<?> taskWrapper,boolean fast) {
+        if (retired) { return false; }
+        lastAccessTime.set(clock.getAsLong());
     	
     	if (taskQueue.size() >= maxQueueSize) {
     		stats.rejectedTasks.incrementAndGet();
@@ -57,10 +92,11 @@ public class ActorMailbox {
     /**
      * 尝试添加任务到队列头部 (用于重试)
      * @param taskWrapper 要添加的任务包装器
-     * @return 如果成功添加返回true，队列已满返回false
+     * @return 入队成功为 true；队列满或实例已退役为 false
      */
-    public boolean offerTaskFirstRetry(TaskWrapper<?> taskWrapper) {
-        lastAccessTime.set(System.currentTimeMillis());
+    public synchronized boolean offerTaskFirstRetry(TaskWrapper<?> taskWrapper) {
+        if (retired) { return false; }
+        lastAccessTime.set(clock.getAsLong());
 
         if (taskQueue.size() >= maxQueueSize) {
             stats.rejectedTasks.incrementAndGet();
@@ -79,7 +115,7 @@ public class ActorMailbox {
     public TaskWrapper<?> pollTask() {
 		TaskWrapper<?> task = taskQueue.pollFirst(); // 从头部获取
         if (task != null) {
-            lastAccessTime.set(System.currentTimeMillis());
+            lastAccessTime.set(clock.getAsLong());
         }
         return task;
     }
@@ -93,22 +129,106 @@ public class ActorMailbox {
     }
     
     /**
-     * 设置处理状态
+     * 兼容的消费权入口；不得从其他线程释放正在运行的消费者，退役实例不再变更。
      * @param processing 处理状态
      */
     public void setProcessing(boolean processing) {
-        this.processing.set(processing);
+        compareAndSetProcessing(!processing, processing);
     }
     
     /**
      * 尝试将处理状态从预期值设置为新值
      * @param expect 预期的当前值
      * @param update 要设置的新值
-     * @return 如果成功则返回true
+     * @return 状态匹配且允许转换时为 true；不能夺走其他运行线程的消费权
      */
-    public boolean compareAndSetProcessing(boolean expect, boolean update) {
-        return this.processing.compareAndSet(expect, update);
+    public synchronized boolean compareAndSetProcessing(boolean expect, boolean update) {
+        if (retired || processing.get() != expect) { return false; }
+        if (!update && processingThread != null && processingThread != Thread.currentThread()) { return false; }
+        if (expect != update) {
+            processingGeneration++;
+            if (!update) { processingThread = null; }
+        }
+        processing.set(update);
+        return true;
     }
+
+    /** @return 当前消费权代次，仅供处理器捕获和校验。 */
+    synchronized long processingGeneration() { return processingGeneration; }
+
+    /**
+     * 绑定本代次的实际消费者，拒绝重复提交和过期回调。
+     * @param generation 调度时捕获的消费权代次
+     * @return 是否取得本次实际执行权
+     */
+    synchronized boolean enterProcessing(long generation) {
+        if (!ownsProcessing(generation) || processingThread != null) { return false; }
+        processingThread = Thread.currentThread();
+        processingStartedAt = clock.getAsLong();
+        return true;
+    }
+
+    /**
+     * 结束本次执行；延迟重试保留消费权但更换代次，阻止新入队提前唤醒。
+     * @param generation 当前消费者代次
+     * @param delayed 是否需要等待延迟重试
+     * @return 延迟回调的新代次；零表示已释放消费权
+     */
+    synchronized long finishProcessing(long generation, boolean delayed) {
+        if (!ownsProcessing(generation) || processingThread != Thread.currentThread()) { return 0; }
+        processingThread = null;
+        processingGeneration++;
+        if (delayed && !taskQueue.isEmpty()) { return processingGeneration; }
+        processing.set(false);
+        return 0;
+    }
+
+    /**
+     * 检查调度动作仍持有有效代次。
+     * @param generation 调度动作捕获的代次
+     * @return 该动作是否仍有消费权
+     */
+    synchronized boolean ownsProcessing(long generation) {
+        return !retired && processing.get() && processingGeneration == generation;
+    }
+
+    /**
+     * 取出未开始的任务，调用者必须在实例锁外完成其 Promise。
+     * @param generation 被拒绝的消费权代次；关停时不以此限制
+     * @param shutdown 是否为停止受理后的全队列收尾
+     * @return 需要明确失败的未执行任务，不包括正在执行的任务
+     */
+    synchronized List<TaskWrapper<?>> drainPending(long generation, boolean shutdown) {
+        if (!shutdown && (!ownsProcessing(generation) || processingThread != null)) { return List.of(); }
+        List<TaskWrapper<?>> pending = new ArrayList<>();
+        TaskWrapper<?> task;
+        while ((task = taskQueue.pollFirst()) != null) { pending.add(task); }
+        if (processingThread == null) {
+            processing.set(false);
+            processingGeneration++;
+        }
+        return pending;
+    }
+
+    /**
+     * 在管理器的实际邮箱键协调区域中退役空闲实例。
+     * @param now 当前毫秒时间
+     * @param idleTimeoutMs 空闲门槛；负数表示显式移除时不检查时长
+     * @return 是否已标记退役
+     */
+    synchronized boolean retireIfIdle(long now, long idleTimeoutMs) {
+        if (retired || processing.get() || !taskQueue.isEmpty()) { return false; }
+        if (idleTimeoutMs >= 0 && now - lastAccessTime.get() <= idleTimeoutMs) { return false; }
+        retired = true;
+        processingGeneration++;
+        return true;
+    }
+
+    /** @return 当前实际执行线程，空值表示未执行或正在等待重试。 */
+    Thread processingThread() { return processingThread; }
+
+    /** @return 当前消费者实际开始执行的毫秒时间。 */
+    long processingStartedAt() { return processingStartedAt; }
     
     /**
      * 获取当前处理状态

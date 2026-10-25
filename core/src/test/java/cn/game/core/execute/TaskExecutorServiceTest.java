@@ -17,7 +17,14 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -238,35 +245,47 @@ class TaskExecutorServiceTest {
 		});
 	}
 
+	/** 当前检测契约只告警；同时验证消费者仍建立正确的 ID 上下文，不改成仅检查成功返回。 */
 	@Test
-	@DisplayName("检查某个id的任务，阻塞等待另外一个id的结果")
-	void testDeadlockCheck_whenEntitiesWaitForEachOther() {
+	@DisplayName("跨 ID 同步等待沿用只告警策略，并保留消费者上下文")
+	void testDeadlockCheck_whenEntitiesWaitForEachOther() throws Exception {
 		final long entityId1 = 101L;
 		final long entityId2 = 102L;
-		DeadlockGuard.enable();
-
-		final long taskTimeout = 5000; // 设置一个较短的超时时间来检测死锁
-		// Task A 在 entityId1 上运行, 它会调用并等待 entityId2 上的一个任务
-		Callable<String> taskA = () -> {
-			String result = "Task A result";
-			// 先执行自己的一个任务
-			// 这里会阻塞当前虚拟线程，直到entityId2上的任务完成
-			// 非法用法，直接抛出异常
-			String resultFromB = taskExecutorService.executeAndAwait(entityId2, () -> {
-				System.out.println("Executing subtask on " + entityId2);
-				Thread.sleep(100); // 模拟耗时
-				return "Result from subtask on 2";
-			},false, "Subtask from A", taskTimeout);
-			return result + " and " + resultFromB;
+		boolean previouslyEnabled = DeadlockGuard.isEnabled();
+		List<String> warnings = Collections.synchronizedList(new ArrayList<>());
+		Logger logger = (Logger) LogManager.getLogger(DeadlockGuard.class);
+		Level previousLevel = logger.getLevel();
+		AbstractAppender appender = new AbstractAppender("guard-contract-test", null,
+				PatternLayout.createDefaultLayout(), false, Property.EMPTY_ARRAY) {
+			@Override
+			public void append(LogEvent event) {
+				if (event.getLevel().isMoreSpecificThan(Level.WARN)) {
+					warnings.add(event.getMessage().getFormattedMessage());
+				}
+			}
 		};
-
-		Future<String> futureA = taskExecutorService.execute(entityId1, taskA);
-		TaskExecutionException exception = assertThrows(TaskExecutionException.class, () -> AsyncUtils
-				.awaitWithException(futureA, taskTimeout + 5000, TimeUnit.MILLISECONDS),
-				"应该抛出 TaskExecutionException");
-
-		assertTrue(ExceptionUtils.indexOfThrowable(exception, CrossIdSyncWaitException.class) > -1, "Cause 应为 CrossIdSyncWaitException");
-
+		appender.start();
+		logger.addAppender(appender);
+		try {
+			// 独立测试没有业务日志配置，默认 ERROR 会过滤待验证的 WARN。
+			logger.setLevel(Level.WARN);
+			DeadlockGuard.enable();
+			Future<String> future = taskExecutorService.execute(entityId1, () -> {
+				Assertions.assertEquals(entityId1, DeadlockGuard.getCurrentId());
+				return taskExecutorService.executeAndAwait(entityId2, () -> {
+					Assertions.assertEquals(entityId2, DeadlockGuard.getCurrentId());
+					return "cross-id completed";
+				}, false, "guard contract", 5000);
+			});
+			Assertions.assertEquals("cross-id completed", AsyncUtils.awaitWithException(future, 5, TimeUnit.SECONDS));
+			Assertions.assertTrue(warnings.stream().anyMatch(message -> message.contains("cross-id sync wait")
+					&& message.contains("101") && message.contains("102")), "必须记录跨 ID 等待诊断");
+		} finally {
+			logger.setLevel(previousLevel);
+			logger.removeAppender(appender);
+			appender.stop();
+			if (!previouslyEnabled) { DeadlockGuard.disable(); }
+		}
 	}
 
 	@Test

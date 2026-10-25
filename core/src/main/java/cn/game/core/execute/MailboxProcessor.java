@@ -1,13 +1,13 @@
 package cn.game.core.execute;
 
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.RejectedExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.execute.error.ErrorPolicy;
 import cn.game.core.execute.error.RetryContext;
-import cn.game.core.task.SchedulerService;
 
 /**
  * 邮箱处理器，负责处理单个邮箱中的任务
@@ -17,19 +17,35 @@ public class MailboxProcessor implements Runnable {
 
 	private final ActorMailbox mailbox;
 	private final TaskExecutorService executorService;
-	private final TaskExecutionConfig config;
+	/** 调度时取得的消费权代次，拒绝旧回调或重复 Runnable。 */
+	private final long generation;
 
+	/**
+	 * 捕获已取得的消费权，调用前须成功设置邮箱处理状态。
+	 * @param mailbox 已取得消费权的邮箱
+	 * @param executorService 后续调度所属服务
+	 * @param config 既有执行配置
+	 */
 	public MailboxProcessor(ActorMailbox mailbox, TaskExecutorService executorService, TaskExecutionConfig config) {
+		this(mailbox, executorService, config, mailbox.processingGeneration());
+	}
+
+	/**
+	 * 将消费者绑定至调度时的消费权，而非运行时重新读取状态。
+	 * @param mailbox 需要处理的邮箱
+	 * @param executorService 负责后续调度的服务
+	 * @param config 既有构造入口的执行配置
+	 * @param generation 本次取得的消费权代次
+	 */
+	MailboxProcessor(ActorMailbox mailbox, TaskExecutorService executorService, TaskExecutionConfig config, long generation) {
 		this.mailbox = mailbox;
 		this.executorService = executorService;
-		this.config = config;
+		this.generation = generation;
 	}
 
 	@Override
 	public void run() {
-		if (mailbox.isEmpty()) {
-			return;
-		}
+		if (!mailbox.enterProcessing(generation)) { return; }
 		long entityId = mailbox.getEntityId();
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Start processing mailbox for entity {}", entityId);
@@ -41,44 +57,17 @@ public class MailboxProcessor implements Runnable {
 		try {
 			// 处理循环现在在需要延迟重试时，会返回一个策略。
 			delayedRetryPolicy = processMailboxTasks();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			// 在此级别捕获异常是一种安全措施，以防万一。
 			// 单个任务的异常应在 processTask 内部处理。
 			LOGGER.error("Uncaught exception occurred while processing mailbox for entity {}", entityId, e);
-			mailbox.setProcessing(false);
 		} finally {
-			if (delayedRetryPolicy != null) {
-				// 请求了延迟重试。任务已经返回到队列头部。
-				// 释放处理锁，并安排下一次运行。
-				mailbox.setProcessing(false);
-				SchedulerService.getInstance().scheduleTask(() -> {
-					if (executorService.isShutdown().getAsBoolean()) {
-						return;
-					}
-					// 尝试获取处理锁，成功后提交新的处理器
-					if (mailbox.compareAndSetProcessing(false, true)) {
-						executorService.submitProcessor(mailbox);
-					}
-				}, delayedRetryPolicy.getDelay(), delayedRetryPolicy.getTimeUnit());
-
-			} else if (mailbox.isEmpty()) {
-				// 队列为空，且没有待处理的延迟。释放锁。
-				mailbox.setProcessing(false);
-
-				// 双重检查以防止在 isEmpty() 检查之后、setProcessing(false) 之前添加新任务时发生竞态条件。
-				if (!mailbox.isEmpty() && mailbox.compareAndSetProcessing(false, true)) {
-					executorService.submitProcessor(mailbox);
-				}
-			} else {
-				// 队列不为空，且没有请求延迟。
-				// 这意味着可能发生了立即重试，或者有新任务到达。应立即继续处理。
-				executorService.submitProcessor(mailbox);
-			}
-
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Finished processing mailbox for entity {}", entityId);
 			}
 			DeadlockGuard.exit(entityId);
+			// 包括空队列和异常路径，消费权始终在同一出口归还或交给带代次的延迟回调。
+			executorService.finishProcessor(mailbox, generation, delayedRetryPolicy);
 		}
 	}
 
@@ -114,6 +103,7 @@ public class MailboxProcessor implements Runnable {
 			mailbox.getStats().completedTasks.incrementAndGet();
 		} catch (Throwable e) {
 			// 任务失败，应用错误处理策略。
+			LOGGER.warn("Task {} failed for mailbox {}", taskDescription, mailbox.getEntityId(), e);
 			return handleTaskFailure(taskWrapper, e);
 		} finally {
 			long duration = System.nanoTime() - startTime;
@@ -140,37 +130,55 @@ public class MailboxProcessor implements Runnable {
 		long entityId = mailbox.getEntityId();
 
 		RetryContext context = new RetryContext(task, e, taskWrapper.getAttempts());
-		ErrorPolicy policy = task.getErrorHandler().apply(context);
+		ErrorPolicy policy;
+		try {
+			policy = task.getErrorHandler().apply(context);
+			if (policy == null || policy.getType() == null) { throw new IllegalStateException("Error handler returned no policy"); }
+		} catch (Throwable handlerFailure) {
+			LOGGER.error("Error handler failed for task {} in mailbox {}", task.getDescription(), entityId, handlerFailure);
+			if (handlerFailure != e) { handlerFailure.addSuppressed(e); }
+			failTask(taskWrapper, handlerFailure);
+			return null;
+		}
 
 		switch (policy.getType()) {
 		case RETRY_HEAD_IMMEDIATELY:
-			LOGGER.warn("Task [{}] (entity [{}]) failed, will retry immediately (attempt {}). Error: {}", task.getDescription(), entityId,
-					context.getAttemptCount(), e.getMessage());
-			mailbox.offerTaskFirstRetry(taskWrapper);
-			break;
-
 		case RETRY_HEAD_WITH_DELAY:
-			LOGGER.warn("Task [{}] (entity [{}]) failed, will retry in {} {} (attempt {}). Error: {}", task.getDescription(), entityId,
-					policy.getDelay(), policy.getTimeUnit().toString().toLowerCase(), context.getAttemptCount(), e.getMessage());
-			mailbox.offerTaskFirstRetry(taskWrapper);
-			return policy; // 返回策略以表示需要延迟。
+			if (executorService.isShutdown().getAsBoolean()) {
+				failTask(taskWrapper, new RejectedExecutionException("Task executor service is shutting down", e));
+				return null;
+			}
+			if (!mailbox.offerTaskFirstRetry(taskWrapper)) {
+				QueueFullException rejected = new QueueFullException("Retry queue is full for mailbox " + entityId);
+				rejected.initCause(e);
+				LOGGER.warn("Retry rejected for task {} in mailbox {}", task.getDescription(), entityId, rejected);
+				failTask(taskWrapper, rejected);
+				return null;
+			}
+			LOGGER.warn("Retry queued for task {} in mailbox {}, attempt {}, delay {} {}", task.getDescription(), entityId,
+					context.getAttemptCount(), policy.getDelay(), policy.getTimeUnit(), e);
+			return policy.getType() == ErrorPolicy.PolicyType.RETRY_HEAD_WITH_DELAY ? policy : null;
 
 		case DISCARD:
 		default:
-			if (e instanceof TimeoutException) {
-				// 任务超时
-				mailbox.getStats().timeoutTasks.incrementAndGet();
-			} else {
-				// 任务执行失败
-				mailbox.getStats().failedTasks.incrementAndGet();
-			}
 			LOGGER.warn("Task [{}] (entity [{}]) permanently failed after {} attempts and will be discarded. Error: {}",
 					task.getDescription(), entityId, context.getAttemptCount(), e.getMessage(), e);
-			taskWrapper.fail(e); // 使用原始异常使Promise失败
-			mailbox.setLastError(e);
+			failTask(taskWrapper, e);
 			break;
 		}
 		// 对于“放弃”或“立即重试”，不需要由上层方法进行延迟处理。
 		return null;
+	}
+
+	/**
+	 * 将不可重试的实际结果交还等待者，同时记录失败类型。
+	 * @param taskWrapper 当前已经结束执行的任务
+	 * @param cause 终态失败原因
+	 */
+	private void failTask(TaskWrapper<?> taskWrapper, Throwable cause) {
+		if (cause instanceof TimeoutException) { mailbox.getStats().timeoutTasks.incrementAndGet(); }
+		else { mailbox.getStats().failedTasks.incrementAndGet(); }
+		mailbox.setLastError(cause);
+		taskWrapper.fail(cause);
 	}
 }

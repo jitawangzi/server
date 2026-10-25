@@ -17,6 +17,23 @@ public interface MailboxManager {
 	ActorMailbox getOrCreateMailbox(long entityId);
 
 	/**
+	 * 按实际邮箱键协调获取和入队，业务执行不得进入协调区域。
+	 * @param entityId 业务实体 ID，仅在本次提交开始时映射一次
+	 * @param task 要受理的任务
+	 * @param fast 是否插入队列头部
+	 * @return 已入队的邮箱；容量不足时返回 null
+	 */
+	ActorMailbox enqueueTask(long entityId, TaskWrapper<?> task, boolean fast);
+
+	/**
+	 * 仅移除仍为当前实例的空闲邮箱，不再次映射实际邮箱 ID。
+	 * @param mailbox 清理扫描捕获的实例
+	 * @param idleTimeoutMs 空闲门槛，负数表示不检查时长
+	 * @return 是否成功退役该实例
+	 */
+	boolean removeMailbox(ActorMailbox mailbox, long idleTimeoutMs);
+
+	/**
 	
 	获取邮箱
 	@param entityId 实体ID

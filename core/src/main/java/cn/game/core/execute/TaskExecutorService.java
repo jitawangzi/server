@@ -6,18 +6,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
+import java.util.function.LongSupplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.execute.error.ErrorHandler;
+import cn.game.core.execute.error.ErrorPolicy;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.AsyncUtils;
+import cn.game.util.DateUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -46,9 +48,20 @@ public class TaskExecutorService implements AutoCloseable {
 	// 服务状态
 	private final AtomicBoolean running = new AtomicBoolean(true);
 
-	// Vertx实例，用于创建Future
-	// 这里有点耦合，不过方便初始化
-	private final Vertx vertx = VxHolder.vertx;
+	/** 延迟重试的调度入口；测试可使用自有调度器，生产仍使用既有调度服务。 */
+	private final RetryScheduler retryScheduler;
+
+	/** 只提交延迟动作，不在调用线程等待或执行该动作。 */
+	@FunctionalInterface
+	interface RetryScheduler {
+		/**
+		 * 安排延迟动作，拒绝时向调用方抛出异常。
+		 * @param action 到期后执行的动作
+		 * @param delay 等待时长
+		 * @param unit 等待时长的单位
+		 */
+		void schedule(Runnable action, long delay, TimeUnit unit);
+	}
 
 	// 邮箱定期清理参数
 	private static final long MAILBOX_IDLE_TIMEOUT_MS = TimeUnit.MINUTES.toMillis(30); // 邮箱最大空闲时间
@@ -67,18 +80,45 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param mailboxManager 邮箱管理器
 	 */
 	public TaskExecutorService(TaskExecutionConfig config, MailboxManager mailboxManager) {
+		this(config, mailboxManager,
+				Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("vt-", 0).factory()),
+				(action, delay, unit) -> SchedulerService.getInstance().scheduleTask(action, delay, unit),
+				DateUtil::currentTimeMillis, true);
+	}
+
+	/**
+	 * 使用隔离资源创建服务，供确定性时序测试使用，不启动全局定时任务。
+	 * @param config 执行配置
+	 * @param mailboxManager 本服务的邮箱管理器
+	 * @param executor 本服务负责关闭的执行器
+	 * @param retryScheduler 由调用者管理的重试调度器
+	 * @param clock 监控使用的毫秒时钟
+	 */
+	TaskExecutorService(TaskExecutionConfig config, MailboxManager mailboxManager, ExecutorService executor,
+			RetryScheduler retryScheduler, LongSupplier clock) {
+		this(config, mailboxManager, executor, retryScheduler, clock, false);
+	}
+
+	/**
+	 * 统一装配资源，业务任务始终在执行器中运行。
+	 * @param config 执行配置
+	 * @param mailboxManager 邮箱管理器
+	 * @param executor 本服务负责关闭的执行器
+	 * @param retryScheduler 延迟调度入口
+	 * @param clock 监控的毫秒时钟
+	 * @param background 是否启动生产监控和空闲清理
+	 */
+	private TaskExecutorService(TaskExecutionConfig config, MailboxManager mailboxManager, ExecutorService executor,
+			RetryScheduler retryScheduler, LongSupplier clock, boolean background) {
 		this.config = config;
 		this.mailboxManager = mailboxManager;
-
-		// 设置线程名，不然可能是空字符串
-		ThreadFactory factory = Thread.ofVirtual().name("vt-", 0).factory();
-		this.executor = Executors.newThreadPerTaskExecutor(factory);
-
-		this.monitor = new ExecutionMonitor(this, config);
-		this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(60));
-
-		// 启动定期清理邮箱任务
-		startMailboxCleaner();
+		this.executor = executor;
+		this.retryScheduler = retryScheduler;
+		this.monitor = new ExecutionMonitor(this, config, clock);
+		if (background) {
+			this.monitor.startPeriodicMonitoring(TimeUnit.SECONDS.toMillis(60));
+			startMailboxCleaner();
+		}
 	}
 
 	/**
@@ -177,12 +217,12 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param entityId 实体ID
 	 * @param task 要执行的任务
 	 * @param description 任务描述
-	 * @param priority 任务优先级,默认0，高优先级先执行
+	 * @param fast 是否插入队列头部
 	 * @param <T> 结果类型
 	 * @return 包含任务结果的Future
 	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description) {
-		return execute(entityId, task, false, description, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
+		return execute(entityId, task, fast, description, config.getDefaultTaskTimeoutMs(), ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -249,12 +289,9 @@ public class TaskExecutorService implements AutoCloseable {
 
 		TaskWrapper<T> taskWrapper = new TaskWrapper<>(wrappedTask, resultPromise);
 
-		// 获取或创建邮箱
-		ActorMailbox mailbox = mailboxManager.getOrCreateMailbox(entityId);
-
-		// 将任务添加到邮箱
-		boolean offered = mailbox.offerTask(taskWrapper,fast);
-		if (!offered) {
+		// 获取与入队在实际邮箱键下协调，执行消费者放在协调区域外。
+		ActorMailbox mailbox = mailboxManager.enqueueTask(entityId, taskWrapper, fast);
+		if (mailbox == null) {
 			return Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId));
 		}
 
@@ -293,7 +330,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @throws Exception 如果任务执行失败
 	 */
 	public <T> T executeAndAwait(long entityId, Callable<T> task,boolean fast) throws Exception {
-		return executeAndAwait(entityId, task,false, "Anonymous Task", 0, ErrorHandler.DISCARD_HANDLER);
+		return executeAndAwait(entityId, task,fast, "Anonymous Task", 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 	/**
@@ -386,19 +423,62 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param mailbox 要处理的邮箱
 	 */
 	public void submitProcessor(ActorMailbox mailbox) {
+		submitProcessor(mailbox, mailbox.processingGeneration());
+	}
+
+	/**
+	 * 只提交仍持有消费权的代次；拒绝时完成未开始任务，不伪报运行任务已取消。
+	 * @param mailbox 待运行邮箱
+	 * @param generation 调度时持有的消费权代次
+	 */
+	private void submitProcessor(ActorMailbox mailbox, long generation) {
+		if (!mailbox.ownsProcessing(generation)) { return; }
 		if (!running.get()) {
-			mailbox.setProcessing(false);
+			rejectProcessor(mailbox, generation, new RejectedExecutionException("Task executor service is shutting down"));
 			return;
 		}
-
-		Runnable processor = new MailboxProcessor(mailbox, this, config);
-		// 始终提交到虚拟线程执行器,启用新的虚拟线程执行
 		try {
-			executor.submit(processor);
+			executor.execute(new MailboxProcessor(mailbox, this, config, generation));
 		} catch (RejectedExecutionException e) {
-			mailbox.setProcessing(false);
 			LOGGER.error("Failed to submit mailbox processor", e);
+			rejectProcessor(mailbox, generation, e);
 		}
+	}
+
+	/**
+	 * 消费者退出后的唯一调度入口，延迟等待期间保留消费权并携带新代次。
+	 * @param mailbox 已结束本次执行的邮箱
+	 * @param generation 本次消费者代次
+	 * @param delayedPolicy 延迟策略；空值表示正常释放后检查新入队任务
+	 */
+	void finishProcessor(ActorMailbox mailbox, long generation, ErrorPolicy delayedPolicy) {
+		long delayedGeneration = mailbox.finishProcessing(generation, delayedPolicy != null);
+		if (delayedGeneration != 0) {
+			if (!running.get()) {
+				rejectProcessor(mailbox, delayedGeneration, new RejectedExecutionException("Task executor service is shutting down"));
+				return;
+			}
+			try {
+				retryScheduler.schedule(() -> submitProcessor(mailbox, delayedGeneration),
+						delayedPolicy.getDelay(), delayedPolicy.getTimeUnit());
+			} catch (RuntimeException e) {
+				LOGGER.error("Failed to schedule mailbox retry for {}", mailbox.getEntityId(), e);
+				rejectProcessor(mailbox, delayedGeneration, e);
+			}
+		} else if (!mailbox.isEmpty() && mailbox.compareAndSetProcessing(false, true)) {
+			submitProcessor(mailbox);
+		}
+	}
+
+	/**
+	 * 拒绝未开始的消费者，锁外完成结果，避免业务回调在邮箱协调区域内执行。
+	 * @param mailbox 对应邮箱
+	 * @param generation 被拒绝的代次
+	 * @param cause 拒绝原因
+	 */
+	private void rejectProcessor(ActorMailbox mailbox, long generation, Throwable cause) {
+		for (TaskWrapper<?> pending : mailbox.drainPending(generation, false)) { pending.fail(cause); }
+		mailbox.setLastError(cause);
 	}
 
 	/**
@@ -442,14 +522,18 @@ public class TaskExecutorService implements AutoCloseable {
 	public void close() {
 		if (running.compareAndSet(true, false)) {
 			LOGGER.info("Shutting down TaskExecutorService..." + Thread.currentThread().getName());
+			monitor.stopPeriodicMonitoring();
 
 			// 停止邮箱清理任务
 			if (mailboxCleanFuture != null) {
 				mailboxCleanFuture.cancel(false);
 			}
 
-			// 关闭邮箱管理器
-			mailboxManager.close();
+			// 未开始任务明确失败；正在执行的任务仍由真实执行结果收尾。
+			RejectedExecutionException closed = new RejectedExecutionException("Task executor service is shutting down");
+			for (ActorMailbox mailbox : mailboxManager.getMailboxes().values()) {
+				for (TaskWrapper<?> pending : mailbox.drainPending(0, true)) { pending.fail(closed); }
+			}
 
 			// 等待所有任务完成或超时
 			executor.shutdown();
@@ -461,9 +545,11 @@ public class TaskExecutorService implements AutoCloseable {
 					}
 				}
 			} catch (InterruptedException e) {
+				LOGGER.warn("Interrupted while waiting for mailbox consumers to stop", e);
 				executor.shutdownNow();
 				Thread.currentThread().interrupt();
 			}
+			mailboxManager.close();
 
 			LOGGER.info("TaskExecutorService shutdown complete " + Thread.currentThread().getName());
 		}
@@ -474,7 +560,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return Vertx实例
 	 */
 	public Vertx getVertx() {
-		return vertx;
+		return VxHolder.vertx;
 	}
 
 	public BooleanSupplier isShutdown() {

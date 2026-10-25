@@ -1,0 +1,19 @@
+[
+  "cn.game.core.execute.MailboxLifecycleTest#emptyConsumerReleasesOwnership",
+  "cn.game.core.execute.MailboxLifecycleTest#throwingErrorHandlerCompletesOriginalTask",
+  "cn.game.core.execute.MailboxLifecycleTest#fullImmediateRetryCompletesOriginalTask",
+  "cn.game.core.execute.MailboxLifecycleTest#rejectedProcessorCompletesQueuedTasks",
+  "cn.game.core.execute.MailboxLifecycleTest#monitorDoesNotCreateSecondConsumer",
+  "cn.game.core.execute.MailboxLifecycleTest#delayedRetryKeepsOwnershipAndRejectsStaleCallbacks",
+  "cn.game.core.execute.MailboxLifecycleTest#fullDelayedRetryCompletesOriginalTask",
+  "cn.game.core.execute.MailboxLifecycleTest#rejectedRetrySchedulerCompletesWaitingTasks",
+  "cn.game.core.execute.MailboxLifecycleTest#rejectedDelayedProcessorCompletesWaitingTasks",
+  "cn.game.core.execute.MailboxLifecycleTest#closeRejectsPendingRetryAndInvalidatesCallback",
+  "cn.game.core.execute.MailboxLifecycleTest#retiredReferenceCannotAcceptOrRemoveReplacement",
+  "cn.game.core.execute.MailboxLifecycleTest#bothCleanersUseActualSharedMailboxId",
+  "cn.game.core.execute.MailboxLifecycleTest#zeroIdMappingOccursOncePerSubmission",
+  "cn.game.core.execute.MailboxLifecycleTest#fifoAndFastOrderingRemainExplicit",
+  "cn.game.core.execute.MailboxLifecycleTest#enqueueAndRetirementShareTheSameMailboxBoundary",
+  "cn.game.core.execute.MailboxLifecycleTest#blockedMailboxDoesNotBlockOthersOrFakeRunningCancellation",
+  "cn.game.core.execute.MailboxLifecycleTest#waitingTimeoutDoesNotReleaseRunningConsumer"
+]

@@ -1,9 +1,12 @@
 package cn.game.core.execute;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.LongSupplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.game.util.DateUtil;
 
 /**
 * SharedMailboxManager
@@ -28,7 +31,17 @@ public class SharedMailboxManager extends OneToOneMailboxManager {
 	@param bucketCount 邮箱数量（桶数）
 	*/
 	public SharedMailboxManager(int maxQueueSize, int bucketCount) {
-		super(maxQueueSize);
+		this(maxQueueSize, bucketCount, DateUtil::currentTimeMillis);
+	}
+
+	/**
+	 * 使用同一时钟创建共享邮箱，保证监控和清理的测试边界一致。
+	 * @param maxQueueSize 单邮箱容量
+	 * @param bucketCount 共享桶数，最少为一
+	 * @param clock 返回毫秒时间的时钟
+	 */
+	SharedMailboxManager(int maxQueueSize, int bucketCount, LongSupplier clock) {
+		super(maxQueueSize, clock);
 		this.bucketCount = Math.max(1, bucketCount); // 至少1个桶
 		LOGGER.info("Created SharedMailboxManager with {} buckets", this.bucketCount);
 	}

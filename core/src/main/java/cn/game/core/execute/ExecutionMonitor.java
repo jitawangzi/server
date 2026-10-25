@@ -1,6 +1,7 @@
 package cn.game.core.execute;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,10 +9,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.game.util.DateUtil;
 
 /**
  * 执行监控，收集和报告执行统计信息
@@ -27,14 +31,36 @@ public class ExecutionMonitor {
     private final AtomicLong totalCompletedTasks = new AtomicLong(0);
     private final AtomicLong totalFailedTasks = new AtomicLong(0);
     private final AtomicLong totalTimeoutTasks = new AtomicLong(0);
-    private final AtomicLong lastCleanupTime = new AtomicLong(System.currentTimeMillis());
+    /** 清理与阻塞诊断使用同一时钟，测试通过推进时钟进入真实扫描分支。 */
+    private final LongSupplier clock;
+    /** 上次清理开始时间，单位为毫秒。 */
+    private final AtomicLong lastCleanupTime;
+    /** 本监控器创建的后台线程，服务关闭时结束，避免遗留扫描旧邮箱。 */
+    private volatile Thread monitorThread;
     
     // 监听器
     private final List<Consumer<MonitorSnapshot>> snapshotListeners = new ArrayList<>();
     
+    /**
+     * 使用项目时间源创建监控器。
+     * @param executorService 被监控的执行服务
+     * @param config 清理周期与告警阈值
+     */
     public ExecutionMonitor(TaskExecutorService executorService, TaskExecutionConfig config) {
+        this(executorService, config, DateUtil::currentTimeMillis);
+    }
+
+    /**
+     * 注入监控时钟，不改变业务任务的执行方式。
+     * @param executorService 被监控的执行服务
+     * @param config 扫描与告警配置
+     * @param clock 返回毫秒时间的时钟
+     */
+    ExecutionMonitor(TaskExecutorService executorService, TaskExecutionConfig config, LongSupplier clock) {
         this.executorService = executorService;
         this.config = config;
+        this.clock = clock;
+        this.lastCleanupTime = new AtomicLong(clock.getAsLong());
     }
     
     /**
@@ -42,7 +68,7 @@ public class ExecutionMonitor {
      * @param intervalMs 监控间隔（毫秒）
      */
     public void startPeriodicMonitoring(long intervalMs) {
-        Thread monitorThread = new Thread(() -> {
+        monitorThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     // 检查邮箱状态并清理闲置邮箱
@@ -58,6 +84,7 @@ public class ExecutionMonitor {
                     // 等待下一个监控周期
                     Thread.sleep(intervalMs);
                 } catch (InterruptedException e) {
+                    LOGGER.warn("Execution monitor interrupted; stopping monitoring", e);
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
@@ -69,12 +96,18 @@ public class ExecutionMonitor {
         monitorThread.setDaemon(true);
         monitorThread.start();
     }
+
+    /** 停止本实例的后台监控，不影响共享调度器或其他服务。 */
+    public void stopPeriodicMonitoring() {
+        Thread thread = monitorThread;
+        if (thread != null) { thread.interrupt(); }
+    }
     
     /**
      * 检查邮箱状态，清理闲置邮箱，检测死锁
      */
     public void checkMailboxes() {
-        long now = System.currentTimeMillis();
+        long now = clock.getAsLong();
         long idleTimeout = config.getIdleTimeoutMs();
         long deadlockThreshold = config.getDeadlockDetectionThresholdMs();
         
@@ -88,36 +121,31 @@ public class ExecutionMonitor {
             
             // 检查每个邮箱
             for (ActorMailbox mailbox : mailboxes.values()) {
-                long lastAccess = mailbox.getLastAccessTime();
-                long processingTime = now - lastAccess;
+                long idleTime = now - mailbox.getLastAccessTime();
+                long processingTime = now - mailbox.processingStartedAt();
                 
                 // 检测闲置邮箱
-                if (mailbox.isEmpty() && !mailbox.isProcessing() && processingTime > idleTimeout) {
+                if (mailbox.isEmpty() && !mailbox.isProcessing() && idleTime > idleTimeout) {
                     toRemove.add(mailbox);
                 }
                 
                 // 检测潜在死锁
-                if (mailbox.isProcessing() && processingTime > deadlockThreshold) {
+                Thread activeThread = mailbox.processingThread();
+                if (mailbox.isProcessing() && activeThread != null && processingTime > deadlockThreshold) {
 					LOGGER.warn(String.format(
                         "Potential deadlock detected for entity %d - processing for %d ms with %d tasks in queue",
                         mailbox.getEntityId(), processingTime, mailbox.getQueueSize()
                     ));
                     
-                    // 重置处理状态，允许其他线程尝试处理
-                    if (mailbox.compareAndSetProcessing(true, false)) {
-						LOGGER.info("Reset processing state for potentially deadlocked entity " + mailbox.getEntityId());
-                        
-                        // 尝试重新提交处理器
-                        if (!mailbox.isEmpty() && mailbox.compareAndSetProcessing(false, true)) {
-                            executorService.submitProcessor(mailbox);
-                        }
-                    }
+                    // 超时只说明需要诊断，不能证明原任务已经终止或允许另一消费者进入。
+                    LOGGER.warn("Mailbox {} blocked on thread {}: {}", mailbox.getEntityId(), activeThread.getName(),
+                            Arrays.toString(activeThread.getStackTrace()));
                 }
             }
             
             // 移除闲置邮箱
             for (ActorMailbox mailbox : toRemove) {
-                if (executorService.removeMailbox(mailbox.getEntityId())) {
+                if (executorService.getMailboxManager().removeMailbox(mailbox, idleTimeout)) {
 					LOGGER.info("Removed idle mailbox for entity " + mailbox.getEntityId());
                 }
             }
