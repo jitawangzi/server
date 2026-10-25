@@ -7,8 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Collections;
+import java.util.WeakHashMap;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import org.springframework.stereotype.Component;
@@ -18,6 +22,8 @@ import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolStringList;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.util.AsyncUtils;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.core.net.client.LogoutType;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
@@ -35,6 +41,7 @@ import cn.game.games.net.data.remote.DataGameServerInterface;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.games.net.game.helper.MailHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.OfflinePlayerInitializationFailure;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.item.ItemModule;
@@ -81,12 +88,18 @@ import cn.game.util.KryoUtils;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 
 /**
  * 服务器之间的消息处理器
  */
 @Component
 public class ServerHandler extends GameBaseHandler {
+
+    /** 同一实例的离线发货共用正在初始化的加载结果，不能消费尚未初始化完的驻留对象。 */
+    private final ConcurrentHashMap<Long, Future<Player>> paymentLoads = new ConcurrentHashMap<>();
+    /** 已观察到加载失败的驻留实例必须隔离；弱键不延长已安全释放玩家的生命周期。 */
+    private final Map<Player, Boolean> failedPaymentLoads = Collections.synchronizedMap(new WeakHashMap<>());
 
 	@Override
 	protected int getModule() {
@@ -337,53 +350,99 @@ public class ServerHandler extends GameBaseHandler {
 		client.sendProtocol(resp.build());
 	}
 	
-	protected void ship(NetClient client, Object message) {
-	    PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
-	    long playerId = request.getPlayerId();
-	    long uid = request.getUid();
-	    String sdkOrderId = request.getSdkOrderId(); 
-	    log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, uid);
+    /** @param client 本次 Login RPC 的连接 @param message 发货请求；加载异步完成后再进入玩家邮箱 */
+    protected void ship(NetClient client, Object message) {
+        PaymentOrderShipRequest_7d000022 request = (PaymentOrderShipRequest_7d000022) message;
+        long playerId = request.getPlayerId();
+        log.info("PaymentOrder ship push, playerId={}, uid={}", playerId, request.getUid());
+        try {
+            Future<Player> loading = paymentLoads.get(playerId);
+            Player resident = paymentPlayer(playerId);
+            // 加载会先登记对象再回投初始化；重查在途加载，避免使用这个中间态。
+            if (loading == null) { loading = paymentLoads.get(playerId); }
+            Future<Player> selected = loading != null ? loading : resident != null
+                    ? Future.succeededFuture(resident) : sharedPaymentLoad(playerId);
+            selected.compose(player -> {
+                if (player == null) { return Future.failedFuture("PAYMENT_PLAYER_MISSING"); }
+                return submitPayment(playerId, () -> handlePaymentForPlayer(client, player,
+                        request.getUid(), request.getSdkOrderId(), player.isOnline()));
+            }).onFailure(failure -> {
+                log.warn("充值加载或邮箱受理失败 playerId={} uid={}", playerId, request.getUid(), failure);
+                replyPayment(client, false, playerId);
+            });
+        } catch (Exception failure) {
+            log.warn("充值投递失败 playerId={} uid={}", playerId, request.getUid(), failure);
+            replyPayment(client, false, playerId);
+        }
+    }
 
-	    Player onlinePlayer = PlayerManager.getInstance().getPlayer(playerId);
+    /** @param playerId 玩家 ID @return 只在本 Handler 内共用的加载结果；不得在玩家邮箱同步等待它 */
+    private Future<Player> sharedPaymentLoad(long playerId) {
+        Promise<Player> pending = Promise.promise();
+        Future<Player> previous = paymentLoads.putIfAbsent(playerId, pending.future());
+        if (previous != null) { return previous; }
+        try {
+            // 初次查找与登记之间可能已有完整驻留对象；仍须在实际执行时核对其身份。
+            Player resident = paymentPlayer(playerId);
+            Future<Player> load = resident == null ? loadPaymentPlayer(playerId) : Future.succeededFuture(resident);
+            load.onComplete(result -> {
+                if (result.failed()) { quarantinePaymentLoad(playerId, result.cause()); }
+                pending.handle(result);
+                paymentLoads.remove(playerId, pending.future());
+            });
+        } catch (Exception failure) {
+            log.warn("离线充值加载启动失败 playerId={}", playerId, failure);
+            quarantinePaymentLoad(playerId, failure);
+            pending.tryFail(failure);
+            paymentLoads.remove(playerId, pending.future());
+        }
+        return pending.future();
+    }
 
-	    // 玩家正在登出，直接拒绝（仅对在线玩家生效）
-	    if (onlinePlayer != null && onlinePlayer.isIslogouting()) {
-	        log.error("PayItem[{}] ship fail, player[{}] logouting", uid, playerId);
-	        sendResult(client, false);
-	        return;
-	    }
+    /** @param playerId 加载失败的玩家 @param failure 失败原因；没有完整初始化证据时不得消费当前驻留实例 */
+    private void quarantinePaymentLoad(long playerId, Throwable failure) {
+        OfflinePlayerInitializationFailure initialization = ExceptionHelper.findCause(failure, OfflinePlayerInitializationFailure.class);
+        Player resident = initialization == null ? null : initialization.player();
+        if (resident != null && resident.getPlayerId() == playerId && paymentPlayer(playerId) == resident) {
+            failedPaymentLoads.put(resident, true);
+            log.warn("充值加载失败后仍有驻留对象，隔离本实例后续发货，需核对初始化与归属 playerId={}", playerId, failure);
+        }
+    }
 
-	    if (onlinePlayer == null) {
-	        // 离线流程：加载 -> 处理 -> 保存 -> 清理
-	        PlayerHelper.loadPlayerFromDb(playerId).map(offlinePlayer -> {
-	            if (offlinePlayer == null) {
-	                log.warn("PayItem[{}] offline ship fail, player not found", uid);
-	                sendResult(client, false);
-	                return null;
-	            }
-	            PlayerHelper.submitRecovery(playerId, () -> { handlePaymentForPlayer(client, offlinePlayer, uid,sdkOrderId, false); return Future.succeededFuture(); })
-                    .onFailure(failure -> { log.warn("离线充值写保护拒绝 playerId={}", playerId, failure);
-                        sendResult(client, false); });
-	            return offlinePlayer;
-	        }).onFailure(err -> {
-	            log.error("PayItem offline ship fail: playerId={}, uid={}", playerId, uid, err);
-	            sendResult(client, false);
-	        });
-	    } else {
-	        // 在线流程：串行任务队列
-	        PlayerHelper.submitRecovery(playerId, () -> { handlePaymentForPlayer(client, onlinePlayer, uid,sdkOrderId, true); return Future.succeededFuture(); })
-                    .onFailure(failure -> { log.warn("在线充值写保护拒绝 playerId={}", playerId, failure); sendResult(client, false); });
-	    }
-	}
+    /** @param playerId 玩家 ID @return 本进程权威驻留对象，缺失返回 null */
+    protected Player paymentPlayer(long playerId) { return PlayerManager.getInstance().getPlayer(playerId); }
 
+    /** @param playerId 玩家 ID @return 完成模块初始化的离线对象；初始化内部需要玩家邮箱 */
+    protected Future<Player> loadPaymentPlayer(long playerId) { return PlayerHelper.loadPlayerFromDb(playerId); }
+
+    /** @param playerId 玩家 ID @param action 发货及保存收尾 @return 实际任务终态，包括开始前拒绝 */
+    protected Future<Void> submitPayment(long playerId, Runnable action) {
+        return ServerContext.getInstance().getProcessor().processAsync(playerId, action, false);
+    }
+
+    /** @param player 原实例；离线加载沿用默认 login 标记，只允许没有真实通道的临时连接 */
+    protected void requirePaymentOwner(Player player) {
+        if (!singlePaymentStorage()) { throw new IllegalStateException("PAYMENT_REQUIRES_AGGREGATE_STORAGE"); }
+        GameClient connection = player.getGameClient();
+        if (paymentPlayer(player.getPlayerId()) != player || failedPaymentLoads.containsKey(player) || !player.isActive() || player.isIslogouting()
+                || (player.isOnline() && player.isIslogining())
+                || (!player.isOnline() && (connection == null || connection.getChannel() != null))) {
+            throw new IllegalStateException("PAYMENT_PLAYER_LIFECYCLE_CHANGED playerId=" + player.getPlayerId());
+        }
+    }
+
+    /** @return 当前存储是否能以一份玩家快照确认本次订单与奖励；独立表不具备该回执 */
+    protected boolean singlePaymentStorage() { return ServerContext.getInstance().isSinglePlayerTable(); }
 	/**
 	 * 统一处理一个玩家的一笔订单（在线/离线通用）
 	 */
 	protected void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
 	    try {
+            requirePaymentOwner(player);
+            online = player.isOnline();
 	        PayItem payItem = findAndValidatePayItem(player, uid, online);
 	        if (payItem == null) {
-	            sendResult(client, false);
+                replyPayment(client, false, player.getPlayerId());
 	            return;
 	        }
             boolean ok;
@@ -393,19 +452,15 @@ public class ServerHandler extends GameBaseHandler {
             }
 	        if (!ok) {
 	            // processPayment 内部已做必要日志
-	            sendResult(client, false);
-	            cleanupIfOffline(player, online);
+                replyPayment(client, false, player.getPlayerId());
 	            return;
 	        }
 
 	        persistAndReply(client, player, online);
 	    } catch (Exception e) {
 	        log.error("ship unexpected error, playerId={}, uid={}", player.getPlayerId(), uid, e);
-	        if (online) {
-	            player.handleFail(e);
-	        }
-	        sendResult(client, false);
-	        cleanupIfOffline(player, online);
+            // 未确认业务及保存终态时保留原对象；错误只回本次 Login RPC，不能发给重连后的购买请求。
+            replyPayment(client, false, player.getPlayerId());
 	    }
 	}
 
@@ -468,32 +523,56 @@ public class ServerHandler extends GameBaseHandler {
 	    return callbackOk;
 	}
 
-	/**
-	 * 持久化并统一回复
-	 */
+    /** 在所属邮箱内关闭业务作用域后保存；只有本次提交确认且原对象仍有效才回成功。
+     * @param client 本次 Login RPC @param player 原权威对象 @param online 业务执行时是否在线 */
 	protected void persistAndReply(NetClient client, Player player, boolean online) {
 	    long playerId = player.getPlayerId();
-	    PlayerHelper.saveClientCache(playerId).onSuccess(rr -> {
-	        sendResult(client, true);
-	        cleanupIfOffline(player, online);
-	    }).onFailure(t -> {
-	        log.error("充值发货持久化失败: playerId={}", playerId, t);
-	        if (online) {
-	            player.handleFail(t);
-	        }
-	        sendResult(client, false);
-	        // 保存未确认时保留离线对象，供后续核对和恢复，不能因失败丢弃内存状态。
-	    });
+        GameClient originalConnection = player.getGameClient();
+        try {
+            requirePaymentOwner(player);
+            // 保存通知在独立线程完成；仅等待保存，不能等待包含邮箱初始化的离线加载。
+            List<Object> results = AsyncUtils.await(savePayment(player));
+            if (results == null || results.stream().noneMatch(value -> value instanceof
+                    cn.game.games.net.game.helper.PlayerSaveCoordinator.Receipt receipt && receipt.playerId() == playerId)) {
+                throw new IllegalStateException("PAYMENT_SAVE_NOT_CONFIRMED playerId=" + playerId);
+            }
+            requirePaymentOwner(player);
+        } catch (Exception failure) {
+            log.warn("充值保存未确认或原实例已失效，保留驻留状态 playerId={}", playerId, failure);
+            replyPayment(client, false, playerId);
+            return;
+        }
+
+        // 提交后的发送和清理失败不改写已确认结果，也不追加第二个相反响应。
+        replyPayment(client, true, playerId);
+        if (!online && player.getGameClient() == originalConnection) {
+            try { cleanupIfOffline(player, false); }
+            catch (Exception failure) { log.warn("充值确认后离线清理失败，保留对象 playerId={}", playerId, failure); }
+        }
 	}
+
+    /** @param player 当前邮箱中的原玩家 @return 本次统一保存通道的结果，禁止用空任务或任意 DAO 成功代替回执 */
+    protected Future<List<Object>> savePayment(Player player) { return PlayerHelper.saveClientCache(player.getPlayerId()); }
 
 	/**
 	 * 离线玩家处理完后清理缓存
 	 */
 	protected void cleanupIfOffline(Player player, boolean online) {
-	    if (!online) {
-            if (!PlayerHelper.clearPlayer(player)) { log.warn("离线玩家仍有未确认变化，保留内存 playerId={}", player.getPlayerId()); }
+        GameClient connection = player.getGameClient();
+	    if (!online && !player.isOnline() && !player.isIslogouting() && player.isActive()
+                && paymentPlayer(player.getPlayerId()) == player && connection != null && connection.getChannel() == null) {
+            if (!removePaymentPlayer(player)) { log.warn("离线玩家仍有未确认变化，保留内存 playerId={}", player.getPlayerId()); }
 	    }
 	}
+
+    /** @param player 已确认且仍属于本次临时离线连接的玩家 @return 是否按原对象身份安全删除 */
+    protected boolean removePaymentPlayer(Player player) { return PlayerHelper.clearPlayer(player); }
+
+    /** @param client 本次 Login RPC @param success 已确定的结果 @param playerId 日志身份；发送异常不补发相反结果 */
+    private void replyPayment(NetClient client, boolean success, long playerId) {
+        try { sendResult(client, success); }
+        catch (Exception failure) { log.warn("充值结果发送失败 playerId={} success={}", playerId, success, failure); }
+    }
 
 	/**
 	 * 统一发送结果

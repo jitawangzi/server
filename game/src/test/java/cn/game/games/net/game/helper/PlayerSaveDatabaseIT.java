@@ -25,6 +25,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +45,39 @@ import io.vertx.core.Future;
  * 显式选择的真实库验收；S2_DB_CONFIG 指向本地凭据文件，不随普通单测运行。
  * 仅创建本轮唯一玩家行，不注册账号、不启动服务，也不把存储层验收冒充登录端到端。
  */
+@Isolated
 class PlayerSaveDatabaseIT {
     /** 记录精确测试归属和清理结果，不记录连接凭据。 */
     private static final Logger log = LoggerFactory.getLogger(PlayerSaveDatabaseIT.class);
 
     /** 准备生产模块类型，避免启动服务器和共享连接池。 */
     @BeforeAll static void metadata() { ClassManager.getInstance().init(); }
+
+    /** 实际离线发货在真实事务确认后才回成功并清理；冷读核对订单与本例奖励标记。 */
+    @Test void offlineDeliveryCommitsBeforeReplyAndCleanup() throws Exception {
+        PaymentDeliveryLifecycleTest.metadata();
+        try {
+            for (boolean spring : List.of(false, true)) {
+                try (DatabaseFixture db = new DatabaseFixture(spring)) {
+                    db.seed(); db.gate.hold = true;
+                    try (var f = new PaymentDeliveryLifecycleTest.Fixture(db.player().getData(), false, db.writer::write)) {
+                        f.ship(); f.captured(); Assertions.assertTrue(db.gate.entered.await(10, TimeUnit.SECONDS));
+                        Assertions.assertTrue(f.replies.isEmpty()); Assertions.assertSame(f.player, f.owner);
+                        db.gate.release.countDown(); f.flush();
+                        Assertions.assertEquals(List.of(true), f.replies); Assertions.assertNull(f.owner);
+                        Assertions.assertEquals(1, f.awards.get()); Assertions.assertEquals(1, f.charges.get());
+                        Player cold = db.reloadFresh();
+                        Assertions.assertEquals(1, cold.getPlayerModule().getGuideMap().get(700));
+                        PayItem order = cold.getPlayerModule().getPayItems(91);
+                        Assertions.assertNotNull(order); Assertions.assertTrue(order.isFinish());
+                        Assertions.assertEquals("sdk-91", order.getSdkOrderId());
+                        Assertions.assertFalse(cold.getPlayerModule().execPayCallback(91));
+                    }
+                    db.clean();
+                }
+            }
+        } finally { PaymentDeliveryLifecycleTest.restore(); }
+    }
 
     /** 真实发布器经生产保存通道和事务写入器确认后推单，新 Player 必须恢复完整付款关联。 */
     @Test void payableOrderPublicationColdReloadsAssociation() throws Exception {

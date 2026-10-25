@@ -369,7 +369,12 @@ class PlayerSaveRiskTest {
     private static final class PaymentHandler extends cn.game.games.net.game.handler.ServerHandler {
         final FixturePlayer player; final Harness h; final boolean immediate; final Promise<Void> done = Promise.promise();
         volatile boolean removed; volatile int replies;
-        PaymentHandler(FixturePlayer player, Harness h, boolean immediate) { this.player = player; this.h = h; this.immediate = immediate; }
+        PaymentHandler(FixturePlayer player, Harness h, boolean immediate) {
+            this.player = player; this.h = h; this.immediate = immediate;
+            player.setOnline(false); player.setGameClient(new GameClient(null));
+        }
+        @Override protected Player paymentPlayer(long id) { return player; }
+        @Override protected boolean singlePaymentStorage() { return true; }
         void payment() { handlePaymentForPlayer(new RecordingClient(), player, 1, "order", false); }
         @Override protected PlayerWriteGuard.Scope beginPaymentMutation(Player value) { return new PlayerWriteGuard.Scope(h.saves.beginMutation(1, value)); }
         @Override protected cn.game.games.net.game.module.recharge.PayItem findAndValidatePayItem(Player value, long uid, boolean online) {

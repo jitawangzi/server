@@ -5,5 +5,6 @@
   "cn.game.games.net.game.helper.PlayerTimerCancellationTest#individualCancellationInvalidatesAlreadyQueuedCallback",
   "cn.game.games.net.game.helper.PlayerTimerCancellationTest#cancelAllInvalidatesImmediateAndDelayedCallbacks",
   "cn.game.games.net.game.helper.PlayerTimerCancellationTest#cancellationAfterDeferralSurvivesRecoveryAndUncancelledControlRunsOnce",
-  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#payableOrderPublicationColdReloadsAssociation"
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#payableOrderPublicationColdReloadsAssociation",
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#offlineDeliveryCommitsBeforeReplyAndCleanup"
 ]

@@ -1,0 +1,20 @@
+[
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#onlineDeliveryWaitsForCommitInsideMailbox",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#residentOfflineUsesOfflinePayAndCleansAfterCommit",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#concurrentOfflineRequestsShareLoadingWithoutMailboxDeadlock",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#queuedLifecycleChangesRejectBeforeBusiness",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#replacedOwnerAfterLoadingIsRejected",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#failedUnknownAndTimedOutSavesKeepResident",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#sameObjectReconnectSurvivesOldSaveCompletion",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#staleOwnerOrLoginDuringSaveCannotAcknowledge",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#changedTemporaryConnectionIsRetained",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#sendAndCleanupExceptionsNeverProduceOppositeReply",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#queuedReconnectRunsAfterOfflineCleanup",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#unsupportedOrFinishedOrdersDoNotExecuteBusiness",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#captureFailureAndEmptySaveReceiptFailClosed",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#failedChargeIsNotUpgradedToSuccessOnReplay",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#loadAndMailboxFailuresAreObservable",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#failedRegisteredLoadCannotBecomeReadyOnRetry",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#failedOldLoadDoesNotQuarantineSuccessfulLogin",
+  "cn.game.games.net.game.helper.PaymentDeliveryLifecycleTest#offlineInitializationFailureCarriesOnlyRegisteredIdentity"
+]

@@ -1385,9 +1385,27 @@ public class PlayerHelper {
 		Player player = new Player(playerData);
 		player.setGameClient(gameClient);
 		player.setOnline(false);
-		PlayerManager.getInstance().initAdd(player);
-		return selectPlayerModuleData(player);
+        return initializeOfflinePlayer(player, PlayerManager.getInstance()::initAdd,
+                PlayerHelper::selectPlayerModuleData, PlayerManager.getInstance()::getPlayer);
 	}
+
+    /** 登记成功后的初始化失败必须携带原对象，登记竞争失败不能推断当前同 ID 对象有问题。
+     * @param player 本次构造的离线对象 @param register 权威登记动作 @param initialize 需要邮箱的异步模块初始化
+     * @param owners 权威查询，用于区分同步登记失败与登记后失败 @return 初始化完成的原对象或带身份的失败 */
+    static Future<Player> initializeOfflinePlayer(Player player, Consumer<Player> register,
+            Function<Player, Future<Player>> initialize, LongFunction<Player> owners) {
+        try {
+            register.accept(player);
+            return initialize.apply(player).recover(failure -> {
+                log.warn("离线模块初始化失败，保留原实例身份 playerId={}", player.getPlayerId(), failure);
+                return Future.failedFuture(new OfflinePlayerInitializationFailure(player, failure));
+            });
+        } catch (Exception failure) {
+            log.warn("离线对象登记或初始化启动失败 playerId={}", player.getPlayerId(), failure);
+            return Future.failedFuture(owners.apply(player.getPlayerId()) == player
+                    ? new OfflinePlayerInitializationFailure(player, failure) : failure);
+        }
+    }
 
 	/** 
 	 * 从数据库中查询并构造出player对象，一般在操作玩家离线数据时使用
