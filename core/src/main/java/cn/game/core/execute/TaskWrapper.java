@@ -8,6 +8,10 @@ import io.vertx.core.Promise;
 public class TaskWrapper<T>{
     private final Task<T> task;
     private final Promise<T> resultPromise;
+    /** 至少开始一次执行后保持为 true，避免将重试拒绝误认为业务从未执行。 */
+    private volatile boolean started;
+    /** 调度或关闭在首次执行前拒绝，独立于业务结果是否快速失败。 */
+    private volatile boolean rejectedBeforeStart;
 	/** 记录重试次数 */
 	private int attempts = 0;
 
@@ -46,6 +50,21 @@ public class TaskWrapper<T>{
      */
     public void fail(Throwable cause) {
         resultPromise.tryFail(cause);
+    }
+
+    /** 消费者已取出任务后，在调用业务代码前记录实际开始。 */
+    void markStarted() { started = true; }
+
+    /** @return 是否至少进入过一次业务执行 */
+    boolean hasStarted() { return started; }
+
+    /** @return 是否已在首次执行前被调度或关闭拒绝 */
+    boolean wasRejectedBeforeStart() { return rejectedBeforeStart; }
+
+    /** @param cause 从待执行队列移除后的明确失败原因；调用时必须已经取得该任务 */
+    void reject(Throwable cause) {
+        if (!started) { rejectedBeforeStart = true; }
+        fail(cause);
     }
 
     /**

@@ -1,6 +1,7 @@
 package cn.game.core.net.client;
 
 import cn.game.core.net.protocol.IProtocol;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import io.vertx.core.Context;
 import io.vertx.core.internal.ContextInternal;
 
@@ -18,6 +19,15 @@ public interface NetClient {
 	void sendProtocol(Object message);
 
 	void sendProtocol(Object message, int errorCode);
+
+	/**
+	 * 在业务尚未开始时回复拒绝；有请求序号的实现必须绑定原请求，且不得记录业务成功缓存。
+	 * @param request 未执行的原请求
+	 * @param errorCode 既有协议错误码
+	 */
+	default void rejectProtocol(IProtocol<?> request, int errorCode) {
+		sendProtocol(PlayerErrorPush_01000099.getDefaultInstance(), errorCode);
+	}
 
 	long getPlayerId();
 

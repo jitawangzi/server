@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
+import cn.game.core.execute.TaskNotExecutedException;
 import cn.game.core.net.message.AbstractMessageHandlerService;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.RPCService;
@@ -14,6 +15,7 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.ExceptionHelper;
 import cn.game.util.GameUtil;
 import cn.game.util.ServerType;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.DeliveryOptions;
@@ -45,20 +47,9 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 		if (log.isDebugEnabled()) {
 			log.debug("Received RPC command: {}, objectId: {},replyAddress: {} , traceId: {}", command, objectId, replyAddress,traceId == null ? "null" : traceId);
 		}
-		Command commandFinal = command;
-		processor.process(objectId, () -> {
-			Object result = null;
-			Promise<Object> promise = Promise.promise();
-			try {
-				result = rpcService.invokeWithCache(commandFinal);
-			} catch (Exception e) {
-				// 这里先不记录异常堆栈了， 在处理异常时，根据异常类型选择记录
-//				log.error("Error invoking RPC method", r.cause());
-				// 异常包装，稍后 reply
-				result = new RPCServiceImpl.RPCException("Error invoking RPC method", e);
-			}
-			rpcService.handleResult(result, promise);
-			promise.future().onComplete(r -> {
+		// 回复 Promise 在入队之前建立，未执行拒绝与实际业务结果共用一个终态出口。
+		Promise<Object> promise = Promise.promise();
+		promise.future().onComplete(r -> {
 				if (r.failed() || r.cause() != null|| r.result() instanceof Exception) {
 					String errString = r.result() == null ? "" : ((Exception) r.result()).getMessage();
 					if (r.cause() != null) {
@@ -67,7 +58,9 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 							message.reply(cause, VxHolder.universalOptions);
 						} else {
 							log.error("Error invoking RPC method", r.cause());
-							message.fail(ReplyFailure.ERROR.toInt(), errString);
+							int code = r.cause() instanceof TaskNotExecutedException
+									? ErrorMsgEnum.system_overload.getId() : ReplyFailure.ERROR.toInt();
+							message.fail(code, r.cause().getMessage());
 						}
 					} else {
 						if (r.result() != null && r.result() instanceof Exception) {
@@ -87,8 +80,17 @@ public class VertxRPCService<T> extends AbstractMessageHandlerService implements
 						});
 					}
 				}
-			});
-		},true);
+		});
+		processor.processAsync(objectId, () -> {
+			Object result;
+			try {
+				result = rpcService.invokeWithCache(command);
+			} catch (Exception e) {
+				log.warn("RPC invocation failed for object {}, command {}", objectId, command, e);
+				result = new RPCServiceImpl.RPCException("Error invoking RPC method", e);
+			}
+			rpcService.handleResult(result, promise);
+		}, true).onFailure(promise::tryFail);
 	}
 
 	@Override

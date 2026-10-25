@@ -251,8 +251,25 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 包含任务结果的Future
 	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs, ErrorHandler errorHandler) {
+		Future<T> result = submit(entityId, task, fast, description, timeoutMs, errorHandler).result();
+		return timeoutMs > 0 ? result.timeout(timeoutMs, TimeUnit.MILLISECONDS) : result;
+	}
+
+	/**
+	 * 统一提交入口，受理标记来自入队及执行生命周期，不从业务 Future 的失败状态推断。
+	 * @param entityId 实体 ID
+	 * @param task 业务任务
+	 * @param fast 是否插入队首
+	 * @param description 诊断描述
+	 * @param timeoutMs 任务元数据中的毫秒等待时限，此处不改变实际终态
+	 * @param errorHandler 业务重试策略
+	 * @param <T> 结果类型
+	 * @return 受理快照、实际结果和是否开始执行的独立信息
+	 */
+	private <T> TaskSubmission<T> submit(long entityId, Callable<T> task, boolean fast, String description,
+			long timeoutMs, ErrorHandler errorHandler) {
 		if (!running.get()) {
-			return Future.failedFuture(new IllegalStateException("Task executor service is shutting down"));
+			return new TaskSubmission<>(false, Future.failedFuture(new IllegalStateException("Task executor service is shutting down")), () -> false);
 		}
 		// 例外：entityId==0，直接并发执行
 		/*	if (entityId == 0) {
@@ -292,7 +309,13 @@ public class TaskExecutorService implements AutoCloseable {
 		// 获取与入队在实际邮箱键下协调，执行消费者放在协调区域外。
 		ActorMailbox mailbox = mailboxManager.enqueueTask(entityId, taskWrapper, fast);
 		if (mailbox == null) {
-			return Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId));
+			return new TaskSubmission<>(false, Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId)), () -> false);
+		}
+		// 提交可能跨过 close 的扫描；不能因旧消费者仍在执行而漏掉刚入队的任务。
+		if (!running.get()) {
+			for (TaskWrapper<?> pending : mailbox.drainPending(0, true)) {
+				pending.reject(new RejectedExecutionException("Task executor service is shutting down"));
+			}
 		}
 
 		// 尝试启动处理器
@@ -300,11 +323,7 @@ public class TaskExecutorService implements AutoCloseable {
 			submitProcessor(mailbox);
 		}
 
-		// 使用 Vert.x 的超时机制
-		if (timeoutMs > 0) {
-			return resultPromise.future().timeout(timeoutMs, TimeUnit.MILLISECONDS);
-		}
-		return resultPromise.future();
+		return new TaskSubmission<>(!taskWrapper.wasRejectedBeforeStart(), resultPromise.future(), taskWrapper::hasStarted);
 	}
 
 
@@ -375,7 +394,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * 提交任务但不返回结果
 	 * @param entityId 实体ID
 	 * @param task 任务
-	 * @return 如果成功提交返回true
+	 * @return 提交时受理为 true；后续终态需使用 submitTaskWithResult 观察
 	 */
 	public boolean submitTask(long entityId, Runnable task) {
 		return submitTask(entityId, task,false, "Anonymous Task", ErrorHandler.DISCARD_HANDLER);
@@ -406,15 +425,26 @@ public class TaskExecutorService implements AutoCloseable {
 	 */
 	public boolean submitTask(long entityId, Runnable task,boolean fast, String description, ErrorHandler errorHandler) {
 		try {
-			execute(entityId, () -> {
+			return submit(entityId, () -> {
 				task.run();
 				return null;
-			},fast, description, config.getDefaultTaskTimeoutMs(), errorHandler);
-			return true;
+			},fast, description, config.getDefaultTaskTimeoutMs(), errorHandler).isAccepted();
 		} catch (Exception e) {
 			LOGGER.error("Failed to submit task: " + e.getMessage(), e);
 			return false;
 		}
+	}
+
+	/**
+	 * 提交需要可靠收尾的无返回值任务，不附加会遮蔽实际执行状态的等待超时。
+	 * @param entityId 实体 ID
+	 * @param task 业务任务
+	 * @param fast 是否插入队首
+	 * @param description 诊断描述
+	 * @return 受理快照和实际执行结果；不会自动重试业务
+	 */
+	public TaskSubmission<Void> submitTaskWithResult(long entityId, Runnable task, boolean fast, String description) {
+		return submit(entityId, () -> { task.run(); return null; }, fast, description, 0, ErrorHandler.DISCARD_HANDLER);
 	}
 
 
@@ -477,7 +507,7 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @param cause 拒绝原因
 	 */
 	private void rejectProcessor(ActorMailbox mailbox, long generation, Throwable cause) {
-		for (TaskWrapper<?> pending : mailbox.drainPending(generation, false)) { pending.fail(cause); }
+		for (TaskWrapper<?> pending : mailbox.drainPending(generation, false)) { pending.reject(cause); }
 		mailbox.setLastError(cause);
 	}
 
@@ -532,7 +562,7 @@ public class TaskExecutorService implements AutoCloseable {
 			// 未开始任务明确失败；正在执行的任务仍由真实执行结果收尾。
 			RejectedExecutionException closed = new RejectedExecutionException("Task executor service is shutting down");
 			for (ActorMailbox mailbox : mailboxManager.getMailboxes().values()) {
-				for (TaskWrapper<?> pending : mailbox.drainPending(0, true)) { pending.fail(closed); }
+				for (TaskWrapper<?> pending : mailbox.drainPending(0, true)) { pending.reject(closed); }
 			}
 
 			// 等待所有任务完成或超时

@@ -93,6 +93,7 @@ public class MailboxProcessor implements Runnable {
 	 * @return 如果需要延迟重试，则返回ErrorPolicy，否则返回null。
 	 */
 	private <T> ErrorPolicy processTask(TaskWrapper<T> taskWrapper) {
+		taskWrapper.markStarted();
 		Task<T> task = taskWrapper.getTask();
 		String taskDescription = task.getDescription();
 		long startTime = System.nanoTime();

@@ -250,6 +250,17 @@ public class GameClient extends AbstractNetClient {
 		sendProtocol(message, curMessageSeq, errorCode, true);
 	}
 
+	/**
+	 * 队列外拒绝使用原请求序号，既不读取/改写 curMessageSeq，也不写入最近业务响应缓存。
+	 * @param request 从未进入业务执行的原请求，保留零或负序号
+	 * @param errorCode 拒绝原因对应的协议错误码
+	 */
+	@Override
+	public void rejectProtocol(IProtocol<?> request, int errorCode) {
+		sendProtocol(PbProtocol.PlayerErrorPush_01000099, request.getSeq(),
+				PlayerErrorPush_01000099.getDefaultInstance().toByteArray(), errorCode, false);
+	}
+
 	private void sendProtocol(Object message, int seq, int errorCode, boolean record) {
 		if (message instanceof Message) {
 			sendProtocol((Message) message, seq, errorCode, record);
