@@ -1,0 +1,8 @@
+[
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#committedSnapshotsColdReloadWithBothTransactionFactories",
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#timeoutKeepsActualDatabaseWritesOrdered",
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#committedButLostAcknowledgementRequiresExplicitReconciliation",
+  "cn.game.games.net.game.helper.PlayerTimerCancellationTest#individualCancellationInvalidatesAlreadyQueuedCallback",
+  "cn.game.games.net.game.helper.PlayerTimerCancellationTest#cancelAllInvalidatesImmediateAndDelayedCallbacks",
+  "cn.game.games.net.game.helper.PlayerTimerCancellationTest#cancellationAfterDeferralSurvivesRecoveryAndUncancelledControlRunsOnce"
+]
