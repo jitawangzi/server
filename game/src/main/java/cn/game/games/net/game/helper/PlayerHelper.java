@@ -17,7 +17,9 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.LongFunction;
 
 import javax.security.auth.login.LoginException;
 
@@ -1442,17 +1444,25 @@ public class PlayerHelper {
 	}
 
 	/** 
-	 * 创建新玩家，保存到数据库
-	 * @param player
-	 * @return
+	 * 创建新玩家，在其串行执行上下文封存参数后提交数据库。
+	 * @param player 已初始化模块的玩家，捕获期间不得并发修改
+	 * @return 成功返回原玩家；失败沿用 DAO 原因，不提供跨次写入保序保证
 	 */
 	public static Future<Player> savePlayerToDb(Player player) {
-		PlayerData data = player.getData();
-		data.beforeSave();
-		data.setModules(JsonUtil.toJsonStringWithType(player.getModules()));
+		return savePlayerToDb(player, data -> DAO.execute(PlayerDataMapper.class, MapperConstant.insert, data));
+	}
+
+	/**
+	 * 在原玩家调用线程准备创建参数，由指定提交器执行持久化。
+	 * @param player 已完成模块初始化的玩家
+	 * @param insert 接收本次参数的插入提交器，返回数据库调用结果
+	 * @return 成功返回原玩家，失败保留原原因
+	 */
+	static Future<Player> savePlayerToDb(Player player, Function<PlayerData, Future<Object>> insert) {
+		PlayerData data = PlayerDataSnapshot.capture(player);
 
 		Promise<Player> promise = Promise.promise();
-		DAO.execute(PlayerDataMapper.class, MapperConstant.insert, data)
+		insert.apply(data)
 				.onSuccess(r -> promise.complete(player))
 				.onFailure(t -> promise.fail(t));
 		return promise.future();
@@ -1739,27 +1749,38 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * 保存缓存数据到数据库
-	 * 这个方法最好不要放到Player里边，万一Player没有保证唯一，以PlayerManger里面的Player为准。不会覆盖数据
-	 * @return 
+	 * 在玩家所属串行执行上下文保存 PlayerManager 中的权威在线数据。
+	 * 单表分支提交独立参数，捕获期间不得并发修改；本入口尚不保证跨次写入顺序。
+	 * @param playerId 需要保存的玩家 ID
+	 * @return 原 DAO 批量结果；玩家缺失、不活跃或无任务时正常返回不表示已落库
 	 */
 	public static Future<List<Object>> saveClientCache(long playerId) {
-		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		return saveClientCache(playerId, PlayerManager.getInstance()::getPlayer,
+				ServerContext.getInstance()::isSinglePlayerTable, DAO::executeDbTaskList);
+	}
+
+	/**
+	 * 沿用玩家查找及存储模式分支，在调用线程准备任务后交给提交器。
+	 * @param playerId 需要保存的玩家 ID
+	 * @param players 权威玩家查找入口
+	 * @param singlePlayerTable 是否使用玩家聚合表，仅对活跃玩家读取
+	 * @param execute 接收数据库任务的提交器，提交后不得改写参数
+	 * @return 原批量保存结果；玩家缺失、不活跃或没有任务时沿用空操作结果
+	 */
+	static Future<List<Object>> saveClientCache(long playerId, LongFunction<Player> players,
+			BooleanSupplier singlePlayerTable,
+			Function<List<DbTask>, Future<List<Object>>> execute) {
+		Player player = players.apply(playerId);
 		if (player == null) {
 			return Future.succeededFuture();
 		}
 		if (player.isActive()) {
-			PlayerData data = player.getData();
-			if (ServerContext.getInstance().isSinglePlayerTable()) {
-				data.beforeSave();
-				String jsonString = JsonUtil.toJsonStringWithType(player.getModules());
-				data.setModules(jsonString);
-				debugModuleSize(player, jsonString);
+			if (singlePlayerTable.getAsBoolean()) {
+				PlayerData data = PlayerDataSnapshot.capture(player);
+				debugModuleSize(player, data.getModules());
 				List<DbTask> dbTasks = new ArrayList<>(1);
 				dbTasks.add(new DbTask(data.getMapperClass(), MapperConstant.updateByPrimaryKey, data));
-				return DAO.executeDbTaskList(dbTasks).onComplete(r -> {
-					data.setModules("{}");
-				});
+				return execute.apply(dbTasks);
 			}
 			// 下面暂时用不到
 			List<DbEntity> entities = new ArrayList<>();
@@ -1775,7 +1796,7 @@ public class PlayerHelper {
 				dbTasks.add(new DbTask(dbEntity.getMapperClass(), MapperConstant.updateByPrimaryKey, dbEntity));
 			}
 			if (!dbTasks.isEmpty()) {
-				Future<List<Object>> updateFuture = DAO.executeDbTaskList(dbTasks);
+				Future<List<Object>> updateFuture = execute.apply(dbTasks);
 				return updateFuture;
 			}
 		}

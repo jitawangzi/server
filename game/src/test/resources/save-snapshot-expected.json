@@ -1,0 +1,11 @@
+[
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#interleavedSavesKeepEveryMappedValue",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#failedOrTimedOutDaoFutureDoesNotChangeLateParameters",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#callerTimeoutLeavesPendingWriteSnapshotIntact",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#beforeSaveAndTypedModuleGraphArePreserved",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#nullableStringsAndBooleanValuesArePreserved",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#preparationFailureDoesNotSubmitOrClearSource",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#independentTableAndNoOpBranchesStayUnchanged",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#mapperCoverageRejectsMissingCopiedField",
+  "cn.game.games.net.game.helper.PlayerSaveSnapshotTest#completionNeverClearsLiveOrSubmittedJson"
+]
