@@ -32,8 +32,10 @@ public class ActorMailbox {
     private long processingGeneration;
     /** 实际执行线程；延迟等待期间为空。 */
     private volatile Thread processingThread;
-    /** 当前消费者开始执行的毫秒时间，不随新任务入队刷新。 */
-    private volatile long processingStartedAt;
+    /** 当前消费者是否正处于单次任务处理区间；与开始时间在实例锁下协调。 */
+    private boolean taskExecuting;
+    /** 当前任务开始的毫秒时间，零也是合法时钟值，不用作空闲标记。 */
+    private long taskStartedAt;
     
     /**
      * 使用项目时间源创建邮箱。
@@ -147,7 +149,7 @@ public class ActorMailbox {
         if (!update && processingThread != null && processingThread != Thread.currentThread()) { return false; }
         if (expect != update) {
             processingGeneration++;
-            if (!update) { processingThread = null; }
+            if (!update) { processingThread = null; taskExecuting = false; }
         }
         processing.set(update);
         return true;
@@ -164,7 +166,6 @@ public class ActorMailbox {
     synchronized boolean enterProcessing(long generation) {
         if (!ownsProcessing(generation) || processingThread != null) { return false; }
         processingThread = Thread.currentThread();
-        processingStartedAt = clock.getAsLong();
         return true;
     }
 
@@ -176,6 +177,7 @@ public class ActorMailbox {
      */
     synchronized long finishProcessing(long generation, boolean delayed) {
         if (!ownsProcessing(generation) || processingThread != Thread.currentThread()) { return 0; }
+        taskExecuting = false;
         processingThread = null;
         processingGeneration++;
         if (delayed && !taskQueue.isEmpty()) { return processingGeneration; }
@@ -204,6 +206,7 @@ public class ActorMailbox {
         TaskWrapper<?> task;
         while ((task = taskQueue.pollFirst()) != null) { pending.add(task); }
         if (processingThread == null) {
+            taskExecuting = false;
             processing.set(false);
             processingGeneration++;
         }
@@ -224,11 +227,26 @@ public class ActorMailbox {
         return true;
     }
 
-    /** @return 当前实际执行线程，空值表示未执行或正在等待重试。 */
-    Thread processingThread() { return processingThread; }
+    /** @param generation 只有当前代次的实际消费者可以记录本次任务开始，不改变消费权 */
+    synchronized void beginTaskExecution(long generation) {
+        if (ownsProcessing(generation) && processingThread == Thread.currentThread()) {
+            taskStartedAt = clock.getAsLong();
+            taskExecuting = true;
+        }
+    }
 
-    /** @return 当前消费者实际开始执行的毫秒时间。 */
-    long processingStartedAt() { return processingStartedAt; }
+    /** @param generation 清除本次任务记录，旧代次或其他线程不得结束新任务的诊断区间 */
+    synchronized void endTaskExecution(long generation) {
+        if (ownsProcessing(generation) && processingThread == Thread.currentThread()) { taskExecuting = false; }
+    }
+
+    /** @return 同一次采样的线程和任务开始时间，空闲及延迟重试等待返回空值 */
+    synchronized TaskExecutionSnapshot taskExecutionSnapshot() {
+        return taskExecuting && processingThread != null ? new TaskExecutionSnapshot(processingThread, taskStartedAt) : null;
+    }
+
+    /** @param thread 采样时的执行线程 @param startedAt 同一活动任务的毫秒开始时间 */
+    record TaskExecutionSnapshot(Thread thread, long startedAt) {}
     
     /**
      * 获取当前处理状态

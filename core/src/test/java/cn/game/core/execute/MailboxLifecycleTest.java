@@ -15,6 +15,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -131,6 +138,7 @@ class MailboxLifecycleTest {
     /** 真实跨过扫描门槛时，监控只能告警，不能替仍在执行的任务释放消费权。 */
     @Test
     void monitorDoesNotCreateSecondConsumer() throws InterruptedException {
+        clock.set(0);
         ManualExecutor worker = new ManualExecutor();
         TaskExecutorService service = service(worker, 3);
         CountDownLatch entered = new CountDownLatch(1);
@@ -145,7 +153,7 @@ class MailboxLifecycleTest {
             return "first";
         });
         Thread consumer = Thread.ofVirtual().start(worker.take());
-        try {
+        try (MonitorWarnings warnings = new MonitorWarnings()) {
             Assertions.assertTrue(entered.await(5, TimeUnit.SECONDS));
             Future<String> second = service.execute(1, () -> {
                 maxActive.accumulateAndGet(active.incrementAndGet(), Math::max);
@@ -154,6 +162,7 @@ class MailboxLifecycleTest {
             });
             clock.addAndGet(TimeUnit.HOURS.toMillis(1));
             service.getMonitor().checkMailboxes();
+            Assertions.assertTrue(warnings.hasDeadlockWarning(), "单任务从零时钟开始也必须真实告警");
             Assertions.assertEquals(0, worker.pending(), "监控不得另行提交消费者");
             Assertions.assertFalse(second.isComplete());
         } finally {
@@ -164,6 +173,81 @@ class MailboxLifecycleTest {
         }
         Assertions.assertEquals("first", first.result());
         Assertions.assertEquals(1, maxActive.get());
+    }
+
+    /** 一个消费者持续完成短任务时，不能用累计消费时长误报当前任务阻塞。 */
+    @Test
+    void monitorDoesNotAccumulateCompletedTaskDurations() {
+        clock.set(0);
+        ManualExecutor worker = new ManualExecutor();
+        TaskExecutorService service = service(worker, 8);
+        List<Future<Integer>> results = new ArrayList<>();
+        try (MonitorWarnings warnings = new MonitorWarnings()) {
+            for (int i = 0; i < 6; i++) {
+                results.add(service.execute(1, () -> {
+                    clock.addAndGet(30);
+                    service.getMonitor().checkMailboxes();
+                    return 1;
+                }));
+            }
+            worker.runAll();
+            Assertions.assertTrue(results.stream().allMatch(Future::succeeded));
+            Assertions.assertEquals(180, clock.get());
+            Assertions.assertFalse(warnings.hasDeadlockWarning(), "单任务30ms，连续工作180ms不能报100ms阻塞");
+        }
+    }
+
+    /** 业务和错误策略抛错后，后续短任务必须从自己的开始时间计时。 */
+    @Test
+    void monitorStartsFreshAfterFailurePolicyThrows() {
+        clock.set(0);
+        ManualExecutor worker = new ManualExecutor();
+        TaskExecutorService service = service(worker, 3);
+        Future<Object> failed = service.execute(1, () -> {
+            clock.addAndGet(150);
+            throw new IllegalStateException("business failure");
+        }, false, "throwing policy", 0, context -> { throw new IllegalArgumentException("policy failure"); });
+        Future<Integer> next = service.execute(1, () -> {
+            clock.addAndGet(30);
+            service.getMonitor().checkMailboxes();
+            return 1;
+        });
+        try (MonitorWarnings warnings = new MonitorWarnings()) {
+            worker.runAll();
+            Assertions.assertTrue(failed.failed());
+            Assertions.assertTrue(next.succeeded());
+            clock.addAndGet(1000);
+            service.getMonitor().checkMailboxes();
+            Assertions.assertFalse(warnings.hasDeadlockWarning(), "异常任务的时长不得累加到后续任务或空闲状态");
+        }
+    }
+
+    /** 延迟等待不算活动执行，重试重新开始计时，不能沿用前一次失败的时长。 */
+    @Test
+    void monitorExcludesRetryWaitingFromExecutionDuration() {
+        clock.set(0);
+        ManualExecutor worker = new ManualExecutor();
+        ManualScheduler scheduler = new ManualScheduler();
+        TaskExecutorService service = service(worker, 3, new OneToOneMailboxManager(3, clock::get), scheduler);
+        AtomicInteger attempts = new AtomicInteger();
+        Future<Integer> result = service.execute(1, () -> {
+            if (attempts.incrementAndGet() == 1) { throw new IllegalStateException("retry"); }
+            clock.addAndGet(30);
+            service.getMonitor().checkMailboxes();
+            return 1;
+        }, false, "waiting retry", 0, context -> ErrorPolicy.retryHeadWithDelay(1, TimeUnit.SECONDS));
+        try (MonitorWarnings warnings = new MonitorWarnings()) {
+            worker.runAll();
+            clock.addAndGet(1000);
+            service.getMonitor().checkMailboxes();
+            Assertions.assertTrue(service.getMailbox(1).isProcessing());
+            Assertions.assertFalse(result.isComplete());
+            clock.addAndGet(1000);
+            scheduler.take().run();
+            worker.runAll();
+            Assertions.assertTrue(result.succeeded());
+            Assertions.assertFalse(warnings.hasDeadlockWarning());
+        }
     }
 
     /** 新任务不能提前唤醒延迟重试，旧回调也不能绕过下一轮延迟或复活退役邮箱。 */
@@ -449,6 +533,31 @@ class MailboxLifecycleTest {
             worker.runAll();
         }
         Assertions.assertEquals(1, finished.get());
+    }
+
+    /** 捕获真实监控告警并在用例结束时恢复原日志级别，不通过检查内部计时字段代替行为断言。 */
+    private static final class MonitorWarnings implements AutoCloseable {
+        /** 实际收到的告警内容。 */
+        private final List<String> messages = new ArrayList<>();
+        /** 监控器日志入口。 */
+        private final Logger logger = (Logger) LogManager.getLogger(ExecutionMonitor.class);
+        /** 用例开始前的日志阈值。 */
+        private final Level previousLevel = logger.getLevel();
+        /** 只收集当前监控器的诊断。 */
+        private final AbstractAppender appender = new AbstractAppender("monitor-duration-test", null,
+                PatternLayout.createDefaultLayout(), false, Property.EMPTY_ARRAY) {
+            @Override
+            public void append(LogEvent event) { messages.add(event.getMessage().getFormattedMessage()); }
+        };
+
+        /** 开启实际 WARN 日志，否则独立测试默认 ERROR 会隐藏待断言行为。 */
+        MonitorWarnings() { appender.start(); logger.addAppender(appender); logger.setLevel(Level.WARN); }
+
+        /** @return 是否确实发出阻塞告警 */
+        boolean hasDeadlockWarning() { return messages.stream().anyMatch(message -> message.contains("Potential deadlock detected")); }
+
+        @Override
+        public void close() { logger.setLevel(previousLevel); logger.removeAppender(appender); appender.stop(); }
     }
 
     /** 手动定时器只保存已受理回调，测试显式触发到期，不依赖固定 sleep。 */

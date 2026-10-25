@@ -78,7 +78,14 @@ public class MailboxProcessor implements Runnable {
 	private ErrorPolicy processMailboxTasks() {
 		TaskWrapper<?> taskWrapper;
 		while ((taskWrapper = mailbox.pollTask()) != null) {
-			ErrorPolicy policy = processTask(taskWrapper);
+			ErrorPolicy policy;
+			mailbox.beginTaskExecution(generation);
+			try {
+				policy = processTask(taskWrapper);
+			} finally {
+				// 连同错误策略和同步结果回调一起计时；任何退出路径均清理诊断状态。
+				mailbox.endTaskExecution(generation);
+			}
 			// 如果收到延迟重试信号，则停止当前处理循环，并向上传递该信号。
 			if (policy != null && policy.getType() == ErrorPolicy.PolicyType.RETRY_HEAD_WITH_DELAY) {
 				return policy;

@@ -1,0 +1,6 @@
+[
+  "cn.game.core.execute.MailboxLifecycleTest#monitorDoesNotCreateSecondConsumer",
+  "cn.game.core.execute.MailboxLifecycleTest#monitorDoesNotAccumulateCompletedTaskDurations",
+  "cn.game.core.execute.MailboxLifecycleTest#monitorStartsFreshAfterFailurePolicyThrows",
+  "cn.game.core.execute.MailboxLifecycleTest#monitorExcludesRetryWaitingFromExecutionDuration"
+]

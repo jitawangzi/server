@@ -122,7 +122,6 @@ public class ExecutionMonitor {
             // 检查每个邮箱
             for (ActorMailbox mailbox : mailboxes.values()) {
                 long idleTime = now - mailbox.getLastAccessTime();
-                long processingTime = now - mailbox.processingStartedAt();
                 
                 // 检测闲置邮箱
                 if (mailbox.isEmpty() && !mailbox.isProcessing() && idleTime > idleTimeout) {
@@ -130,16 +129,18 @@ public class ExecutionMonitor {
                 }
                 
                 // 检测潜在死锁
-                Thread activeThread = mailbox.processingThread();
-                if (mailbox.isProcessing() && activeThread != null && processingTime > deadlockThreshold) {
+				ActorMailbox.TaskExecutionSnapshot activeTask = mailbox.taskExecutionSnapshot();
+				long processingTime = activeTask == null ? 0 : now - activeTask.startedAt();
+                if (activeTask != null && processingTime > deadlockThreshold) {
 					LOGGER.warn(String.format(
-                        "Potential deadlock detected for entity %d - processing for %d ms with %d tasks in queue",
+                        "Potential deadlock detected for entity %d - sampled task running for %d ms with %d tasks in queue",
                         mailbox.getEntityId(), processingTime, mailbox.getQueueSize()
                     ));
                     
                     // 超时只说明需要诊断，不能证明原任务已经终止或允许另一消费者进入。
-                    LOGGER.warn("Mailbox {} blocked on thread {}: {}", mailbox.getEntityId(), activeThread.getName(),
-                            Arrays.toString(activeThread.getStackTrace()));
+                    // 采样后任务可能已经切换，后续获取的线程栈只提供诊断线索。
+                    LOGGER.warn("Mailbox {} sampled active thread {}, later stack: {}", mailbox.getEntityId(), activeTask.thread().getName(),
+                            Arrays.toString(activeTask.thread().getStackTrace()));
                 }
             }
             
