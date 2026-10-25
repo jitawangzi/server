@@ -52,11 +52,29 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 
 	@Override
 	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
-		processAsync(objectId, () -> super.process(netClient, protocol), false).onFailure(failure -> {
-			log.warn("Network task failed for {}, message {}", objectId, protocol.getMsgID(), failure);
-			if (failure instanceof TaskNotExecutedException) {
-				// 在玩家队列外回复拒绝，必须使用本请求序号，不能污染正在处理请求的响应缓存。
-				netClient.rejectProtocol(protocol, ErrorMsgEnum.system_overload.getId());
+		if (!netClient.beginProtocolSubmission(protocol)) { return; }
+		Future<Void> execution;
+		try {
+			execution = processAsync(objectId, () -> super.process(netClient, protocol), false);
+		} catch (RuntimeException | Error failure) {
+			log.error("Network submission failed before returning a result for {}", objectId, failure);
+			netClient.endProtocolSubmission(protocol);
+			throw failure;
+		}
+		execution.onComplete(result -> {
+			try {
+				if (result.failed()) {
+					Throwable failure = result.cause();
+					log.warn("Network task failed for {}, message {}", objectId, protocol.getMsgID(), failure);
+					if (failure instanceof TaskNotExecutedException) {
+						// 登记保留至拒绝发送结束，防止同序号重入先执行成功再收到旧拒绝。
+						netClient.rejectProtocol(protocol, ErrorMsgEnum.system_overload.getId());
+					}
+				}
+			} catch (RuntimeException replyFailure) {
+				log.error("Network rejection reply failed for {}, message {}", objectId, protocol.getMsgID(), replyFailure);
+			} finally {
+				netClient.endProtocolSubmission(protocol);
 			}
 		});
 	}

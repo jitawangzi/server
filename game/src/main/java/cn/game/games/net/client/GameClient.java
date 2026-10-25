@@ -2,6 +2,7 @@ package cn.game.games.net.client;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class GameClient extends AbstractNetClient {
 	private ServerWebSocket channel;
 
 	/** 当前处理的消息序号 */
-	private int curMessageSeq;
+	private volatile int curMessageSeq;
 	private static final int MAX_RECENT_MESSAGES = 10;
 	// 每秒最多处理10个消息
 	/** 发送给玩家最近的几条消息，如果客户端没有收到某个包，重新请求时会下发 ， 
@@ -66,6 +67,10 @@ public class GameClient extends AbstractNetClient {
 		}
 	};
 	private final Object recentLock = new Object();
+	/** 本连接已登记的正序号请求，覆盖排队、执行及拒绝回包；与响应缓存共用锁。 */
+	private final Map<Integer, ProtocolSubmission> pendingRequests = new HashMap<>();
+	/** @param request 本次请求身份 @param cachedResponses 已完成请求的快照，防止排队期间缓存淘汰后误报未执行 */
+	private record ProtocolSubmission(IProtocol<?> request, List<IProtocol<byte[]>> cachedResponses) {}
 
 	public int packetMaxCountPerSecond = 0;
 	public long firstPacketTime = System.currentTimeMillis();
@@ -251,12 +256,66 @@ public class GameClient extends AbstractNetClient {
 	}
 
 	/**
-	 * 队列外拒绝使用原请求序号，既不读取/改写 curMessageSeq，也不写入最近业务响应缓存。
+	 * 本连接的正序号在入队前去重；已有缓存仍正常入队，保留原执行入口的限流顺序。
+	 * @param request 原请求，零或负序号保留既有业务检查
+	 * @return 是否登记成功并允许提交
+	 */
+	@Override
+	public boolean beginProtocolSubmission(IProtocol<?> request) {
+		int seq = request.getSeq();
+		if (seq <= 0) { return true; }
+		synchronized (recentLock) {
+			if (pendingRequests.containsKey(seq)) { return false; }
+			List<IProtocol<byte[]>> cached = recentMessages.get(seq);
+			List<IProtocol<byte[]>> snapshot = null;
+			if (cached != null && !cached.isEmpty()) {
+				snapshot = new ArrayList<>(cached);
+			} else {
+				int current = curMessageSeq;
+				if (current > 0 && seq <= current) { return false; }
+			}
+			pendingRequests.put(seq, new ProtocolSubmission(request, snapshot));
+			return true;
+		}
+	}
+
+	/** @param request 只释放身份匹配的原登记，迟到清理不能删除新请求 */
+	@Override
+	public void endProtocolSubmission(IProtocol<?> request) {
+		if (request.getSeq() <= 0) { return; }
+		synchronized (recentLock) {
+			ProtocolSubmission pending = pendingRequests.get(request.getSeq());
+			if (pending != null && pending.request() == request) { pendingRequests.remove(request.getSeq()); }
+		}
+	}
+
+	/**
+	 * 队列外拒绝使用原请求序号；已有业务结果重放而不改报未执行，也不写入业务缓存。
 	 * @param request 从未进入业务执行的原请求，保留零或负序号
 	 * @param errorCode 拒绝原因对应的协议错误码
 	 */
 	@Override
 	public void rejectProtocol(IProtocol<?> request, int errorCode) {
+		if (request.getSeq() > 0) {
+			List<IProtocol<byte[]>> snapshot = null;
+			synchronized (recentLock) {
+				ProtocolSubmission pending = pendingRequests.get(request.getSeq());
+				if (pending != null && pending.request() != request) { return; }
+				if (pending != null) { snapshot = pending.cachedResponses(); }
+				if (snapshot == null) {
+					List<IProtocol<byte[]>> cached = recentMessages.get(request.getSeq());
+					if (cached != null && !cached.isEmpty()) { snapshot = new ArrayList<>(cached); }
+				}
+				int current = curMessageSeq;
+				if (snapshot == null && current > 0 && request.getSeq() <= current) { return; }
+			}
+			if (snapshot != null) {
+				for (IProtocol<byte[]> response : snapshot) {
+					sendProtocol(response.getMsgID(), response.getSeq(), response.getData(), response.getErrorCode(), false);
+				}
+				return;
+			}
+		}
 		sendProtocol(PbProtocol.PlayerErrorPush_01000099, request.getSeq(),
 				PlayerErrorPush_01000099.getDefaultInstance().toByteArray(), errorCode, false);
 	}

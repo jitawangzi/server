@@ -16,6 +16,19 @@ public interface NetClient {
 
 	void afterProcess(IProtocol<?> protocol);
 
+	/**
+	 * 入队前登记本次请求；实现可重放已完成结果或抑制在途重发，不执行正常业务检查。
+	 * @param request 本次独立请求对象
+	 * @return true 表示允许提交，必须在终态调用 endProtocolSubmission
+	 */
+	default boolean beginProtocolSubmission(IProtocol<?> request) { return true; }
+
+	/**
+	 * 释放本次登记，拒绝时在回复发送调用结束后执行；不能误删另一请求的登记。
+	 * @param request 原登记请求对象
+	 */
+	default void endProtocolSubmission(IProtocol<?> request) {}
+
 	void sendProtocol(Object message);
 
 	void sendProtocol(Object message, int errorCode);

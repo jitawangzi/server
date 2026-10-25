@@ -1,0 +1,16 @@
+[
+  "cn.game.games.net.client.GameClientSubmissionTest#queuedDuplicateDoesNotReportRejection",
+  "cn.game.games.net.client.GameClientSubmissionTest#runningDuplicateWaitsForOriginalResult",
+  "cn.game.games.net.client.GameClientSubmissionTest#completedDuplicateReplaysCacheOnRejection",
+  "cn.game.games.net.client.GameClientSubmissionTest#admittedCachedRequestKeepsNormalRateCounting",
+  "cn.game.games.net.client.GameClientSubmissionTest#pendingRejectionPreservesEvictedCachedResult",
+  "cn.game.games.net.client.GameClientSubmissionTest#processedSequenceWithoutCacheIsNotRejected",
+  "cn.game.games.net.client.GameClientSubmissionTest#rejectionKeepsRegistrationUntilReplyReturns",
+  "cn.game.games.net.client.GameClientSubmissionTest#executionAndSynchronousSubmissionFailuresReleaseRegistration",
+  "cn.game.games.net.client.GameClientSubmissionTest#nonPositiveSequencesKeepOriginalRejectionBehavior",
+  "cn.game.games.net.client.GameClientRejectionTest",
+  "cn.game.games.net.client.GameClientSubmissionTest#concurrentDuplicateDuringReplyDoesNotEnterQueue",
+  "cn.game.games.net.client.GameClientSubmissionTest#staleCompletionCannotReleaseNewRegistration",
+  "cn.game.games.net.client.GameClientSubmissionTest#throwingRejectionReplyStillReleasesRegistration",
+  "cn.game.games.net.client.GameClientSubmissionTest#synchronousErrorPreservesTypeAndReleasesRegistration"
+]
