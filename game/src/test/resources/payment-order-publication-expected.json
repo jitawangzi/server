@@ -1,0 +1,17 @@
+[
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#actualPlayerPayCapturesNormalAndOneYuanOrderParameters",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#invalidNullAndFailedRpcNeverSaveOrPublish",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#commitPrecedesPublicationAndPaymentRemainsPending",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#callbackDuringSaveWaitsBehindPublication",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#callbackBeforeAssociationHasNoPaymentToComplete",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#failedAndUnknownWritesRetainAssociationWithoutPublication",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#lateCommitAfterTimeoutNeverRepublishes",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#staleRpcChecksOwnerConnectionSessionAndLogout",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#staleAfterCommitCannotPublishToReplacement",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#duplicateOrderPreservesOriginalRecordAndCallback",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#sendRejectionAndExceptionRemoveOnlyThisCallback",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#publicationKeepsOriginalSequenceAndCopiedArguments",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#standaloneModeRejectsBeforeCreatingOrder",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#mailboxRejectionSettlesPaymentWithoutAssociation",
+  "cn.game.games.net.game.helper.PaymentOrderPublisherTest#preparationFailureAndUnconfirmedSuccessDoNotPublish"
+]

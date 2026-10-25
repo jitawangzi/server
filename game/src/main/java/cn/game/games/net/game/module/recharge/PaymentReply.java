@@ -29,10 +29,15 @@ public final class PaymentReply {
 
     /** @param response 已构建的响应 @param error 协议错误码，零表示成功 */
     public void send(Message response, int error) {
+        trySend(response, error);
+    }
+
+    /** @param response 响应协议 @param error 错误码 @return 网络写入是否被同步接受，不代表客户端收到 */
+    public boolean trySend(Message response, int error) {
         if (client instanceof GameClient game) {
             int messageId = PbProtocol.getInstance().getMsgId(response.getClass().getSimpleName());
-            game.sendProtocol(messageId, sequence, response.toByteArray(), error, true);
-        } else { client.sendProtocol(response, error); }
+            return game.sendProtocol(messageId, sequence, response.toByteArray(), error, true);
+        } else { client.sendProtocol(response, error); return true; }
     }
 
     /**

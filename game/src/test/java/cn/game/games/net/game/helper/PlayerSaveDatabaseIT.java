@@ -35,6 +35,8 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.games.net.game.module.player.PlayerModule;
+import cn.game.games.net.game.module.recharge.PayItem;
+import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.util.DateUtil;
 import io.vertx.core.Future;
 
@@ -48,6 +50,30 @@ class PlayerSaveDatabaseIT {
 
     /** 准备生产模块类型，避免启动服务器和共享连接池。 */
     @BeforeAll static void metadata() { ClassManager.getInstance().init(); }
+
+    /** 真实发布器经生产保存通道和事务写入器确认后推单，新 Player 必须恢复完整付款关联。 */
+    @Test void payableOrderPublicationColdReloadsAssociation() throws Exception {
+        for (boolean spring : List.of(false, true)) {
+            try (DatabaseFixture db = new DatabaseFixture(spring)) {
+                db.seed();
+                try (var f = new PaymentOrderPublisherTest.Fixture(db.player(), db.writer::write)) {
+                    Future<Boolean> payment = f.start();
+                    f.order(); f.captured(); f.flush();
+                    Assertions.assertEquals(1, f.client.published());
+                    Assertions.assertFalse(payment.isComplete(), "发布订单不等于付款成功");
+                    Player cold = db.reloadFresh();
+                    PayItem item = cold.getPlayerModule().getPayItems(91);
+                    Assertions.assertNotNull(item);
+                    Assertions.assertEquals(91, item.getOrderId()); Assertions.assertEquals(12, item.getRmb());
+                    Assertions.assertEquals(PayType.FirstCharge, item.getPayType()); Assertions.assertEquals(73, item.getPayId());
+                    Assertions.assertEquals(1007, item.getSdkGoodsId()); Assertions.assertEquals(List.of(17, 18), item.getPaySubIds());
+                    Assertions.assertFalse(item.isFinish()); Assertions.assertFalse(cold.getPlayerModule().execPayCallback(91));
+                    Assertions.assertFalse(f.saves.status(db.id).observedDirty());
+                }
+                db.clean();
+            }
+        }
+    }
 
     /** 两种生产支持的事务都须提交后才能在新会话和新对象中读到快照。 */
     @Test void committedSnapshotsColdReloadWithBothTransactionFactories() throws Exception {

@@ -188,6 +188,11 @@ public class PlayerModule extends BasePlayerModule {
 		this.payCallback.put(uid, callback); 
 	}
 
+    /** @param uid 订单 ID @param callback 本次发布的回调；仅在所属玩家邮箱清理同一回调，不影响已有订单 */
+    public void removePayCallback(long uid, Promise<Boolean> callback) {
+        this.payCallback.remove(uid, callback);
+    }
+
 	public void addPayItems(PayItem payItem) {
 		this.payItems.put(payItem.getOrderId(), payItem);
 	}
