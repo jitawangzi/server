@@ -1,0 +1,5 @@
+[
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#agedPaymentEvidenceSurvivesColdCleanupAndReadOnlyCli",
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#completedPaymentColdReloadDeduplicatesWithoutReplaying",
+  "cn.game.games.net.game.helper.PlayerSaveDatabaseIT#offlineDeliveryCommitsBeforeReplyAndCleanup"
+]

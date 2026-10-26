@@ -53,6 +53,32 @@ class PlayerSaveDatabaseIT {
     /** 准备生产模块类型，避免启动服务器和共享连接池。 */
     @BeforeAll static void metadata() { ClassManager.getInstance().init(); }
 
+    /** 真实库写入十天以前的凭证，冷读后执行清理，再经本地 CLI 重复核对并确认整行不变。 */
+    @Test void agedPaymentEvidenceSurvivesColdCleanupAndReadOnlyCli() throws Exception {
+        try (DatabaseFixture db = new DatabaseFixture(false)) {
+            db.seed();
+            Player player = db.player();
+            PayItem item = new PayItem(); item.setOrderId(db.id); item.setRmb(12); item.setPayType(PayType.FirstCharge);
+            item.setSdkOrderId("fixture-sdk"); item.finish(); item.setCompletionState("REWARDS_COMPLETED");
+            item.setFinishTime(DateUtil.currentTimeMillis() - 11 * DateUtil.DAY_MILLIS);
+            item.prepareCompletionProof(db.id); item.confirmCompletionProof();
+            player.getPlayerModule().addPayItems(item);
+            Assertions.assertEquals(PlayerSaveCoordinator.Outcome.COMMITTED,
+                    await(db.writer.write(PlayerDataSnapshot.capture(player), false)).outcome());
+            Player cold = db.reloadFresh(); cold.getPlayerModule().initFromDbAfter();
+            Assertions.assertTrue(cold.getPlayerModule().getPayItems(db.id).hasCommittedCompletionProof(db.id, "fixture-sdk"));
+            String before = db.read().getModules();
+            for (int i = 0; i < 2; i++) {
+                var result = cn.game.games.diagnostics.PaymentEvidenceCli.run(new String[] {Long.toString(db.id), Long.toString(db.id)});
+                Assertions.assertEquals("PERSISTED_V1_PROOF_CONSISTENT", result.get("game"), result.toString());
+                Assertions.assertEquals("ORDER_NOT_FOUND", result.get("login"), result.toString());
+                Assertions.assertEquals("NOT_PROVEN", result.get("transactionResolution"));
+                Assertions.assertEquals(before, db.read().getModules());
+            }
+            db.clean();
+        }
+    }
+
     /** 原快照真实提交后，用新会话冷读、新玩家对象和新协调器验证重复通知不再发奖或保存。 */
     @Test void completedPaymentColdReloadDeduplicatesWithoutReplaying() throws Exception {
         PaymentDeliveryLifecycleTest.metadata();
@@ -334,6 +360,9 @@ class PlayerSaveDatabaseIT {
                 Assertions.assertEquals(1, statement.executeUpdate(), "只清理本轮精确归属行");
             }
             log.info("数据库测试清理完成 runId={} playerId={}", runId, id);
+            try (var session = factory.openSession()) {
+                Assertions.assertNull(session.getMapper(PlayerDataMapper.class).selectByPrimaryKey(id), "精确清理后冷查必须为空");
+            }
         }
 
         @Override public void close() throws InterruptedException {

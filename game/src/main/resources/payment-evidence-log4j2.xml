@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 本地诊断只向标准错误写脱敏告警，不加载业务文件日志或监控线程。 -->
+<Configuration status="OFF" shutdownHook="disable">
+  <Appenders><Console name="stderr" target="SYSTEM_ERR"><PatternLayout pattern="%level %msg%n%throwable"/></Console></Appenders>
+  <Loggers><Root level="warn"><AppenderRef ref="stderr"/></Root></Loggers>
+</Configuration>

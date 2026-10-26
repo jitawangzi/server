@@ -110,15 +110,9 @@ public class PlayerModule extends BasePlayerModule {
 //	}
 	@Override
 	public void initFromDbAfter() {
-		Iterator<Entry<Long, PayItem>> iterator = payItems.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<java.lang.Long, cn.game.games.net.game.module.recharge.PayItem> entry = (Map.Entry<java.lang.Long, cn.game.games.net.game.module.recharge.PayItem>) iterator
-					.next();
-			PayItem value = entry.getValue();
-			if (value.isFinish() && System.currentTimeMillis() - value.getFinishTime() > DateUtil.DAY_MILLIS * 10) {
-				iterator.remove();
-			}
-		}
+		// finish 和日龄均不证明平台已终结或证据已归档。当前没有可信删除依据，
+		// 因而保留普通订单、历史 finish、完成凭证及异常阶段，避免重启后丢失去重屏障。
+		// 容量随订单数增长；归档与限额告警须在具备可验证的终态/归档协议后单独落地。
 	};
 
 	public boolean addId(IdConstant type, int configId) {
