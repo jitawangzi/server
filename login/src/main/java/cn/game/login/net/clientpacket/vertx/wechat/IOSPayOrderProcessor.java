@@ -60,11 +60,17 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 	public static String merchantSerialNumber = "580431AE81584BB7E7B0266180D5893C12F2B31A";
 	/** 商户APIV3密钥 */
 	public static String apiV3Key = "WxNtZmE1dXth7Qxffpz9swHFrkio2bfh";
-	public final static Config config = new RSAAutoCertificateConfig.Builder().merchantId(merchantId)
+    /** 仅真实验签及创单时初始化证书，加载处理器不触发外部平台请求。 */
+    private static final class PaymentConfig {
+	private static final Config config = new RSAAutoCertificateConfig.Builder().merchantId(merchantId)
 			.privateKeyFromPath(privateKeyPath)
 			.merchantSerialNumber(merchantSerialNumber)
 			.apiV3Key(apiV3Key)
 			.build();
+    }
+
+    /** @return 首次使用时初始化的支付 SDK 配置，调用可能访问证书服务 */
+    public static Config paymentConfig() { return PaymentConfig.config; }
 
 	/**客服消息的TOKEN      */
 	public static String CustomerToken = "qwerqwer";
@@ -92,100 +98,78 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 //    初始化 NotificationParser。
 //    调用 NotificationParser.parse() 验签、解密并将 JSON 转换成具体的通知回调对象。如果验签失败，SDK 会抛出 ValidationException。
 //    接下来可以执行你的业务逻辑了。如果执行成功，你应返回 200 OK 的状态码。如果执行失败，你应返回 4xx 或者 5xx的状态码，例如数据库操作失败建议返回 500 Internal Server Error。
-	public static void notifyPayOrder(RoutingContext context) {
-		HttpServerRequest request = context.request();
-		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
-		String wechatPaySerial = request.getHeader("Wechatpay-Serial");
-		String wechatpayNonce = request.getHeader("Wechatpay-Nonce");
-		String wechatSignature = request.getHeader("Wechatpay-Signature");
-		String wechatTimestamp = request.getHeader("Wechatpay-Timestamp");
-		String requestBody = context.body().asString();
-		// 构造 RequestParam
-		RequestParam requestParam = new RequestParam.Builder().serialNumber(wechatPaySerial)
-				.nonce(wechatpayNonce)
-				.signature(wechatSignature)
-				.timestamp(wechatTimestamp)
-				.body(requestBody)
-				.build();
-		// 如果已经初始化了 RSAAutoCertificateConfig，可直接使用
-// 没有的话，则构造一个
-		NotificationConfig config = new RSAAutoCertificateConfig.Builder().merchantId(merchantId)
-				.privateKeyFromPath(privateKeyPath)
-				.merchantSerialNumber(merchantSerialNumber)
-				.apiV3Key(apiV3Key)
-				.build();
+    /** @param context 原微信支付 HTTP 请求；验签及同步异常统一结束响应 */
+    public static void notifyPayOrder(RoutingContext context) {
+        notifyPayOrder(context, parameter -> new NotificationParser((NotificationConfig) PaymentConfig.config).parse(parameter, Transaction.class),
+                () -> SpringContextLoader.getContext().getBean(PayOrderMapper.class), request -> {
+                    String serverId = UserHelper.getServerId(request.getPlayerId());
+                    return StringUtils.isEmpty(serverId) ? VxHolder.requestRemoteServer(ServerType.Game, request) : VxHolder.requestRemoteServer(serverId, request);
+                }, (transaction, order) -> {
+                    if (UserHelper.getUserByName(transaction.getPayer().getOpenid()) == null) {
+                        throw new IllegalArgumentException("PAYMENT_USER_NOT_FOUND");
+                    }
+                    WeChatCustomerServiceReq.delRunOrderData(transaction.getPayer().getOpenid(), String.valueOf(order.getId()));
+                });
+    }
 
-// 初始化 NotificationParser
-		NotificationParser parser = new NotificationParser(config);
-		Transaction transaction = null;
-		try {
-			// 以支付通知回调为例，验签、解密并转换成 Transaction
-			transaction = parser.parse(requestParam, Transaction.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-			onFail(response, 401, "sign verification failed");
-		}
-		if (transaction == null) {
-			onFail(response, 500, "transaction is null");
-			return;
-		}
+    /** @param context HTTP 请求 @param parser 验签解密边界 @param storage 订单存储 @param ship Game RPC 边界；生产与测试共用完整处理链 */
+    static void notifyPayOrder(RoutingContext context, java.util.function.Function<RequestParam, Transaction> parser,
+            java.util.function.Supplier<PayOrderMapper> storage,
+            java.util.function.Function<ServerMsg.PaymentOrderShipRequest_7d000022, Future<ServerMsg.PaymentOrderShipResponse_7d000023>> ship) {
+        notifyPayOrder(context, parser, storage, ship, (transaction, order) -> {});
+    }
 
-		PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-		PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(transaction.getOutTradeNo()));
-		if (payOrder == null) {
-			onFail(response, 500, "pay order is null");
-			return;
-		}
-		WeChatCustomerServiceReq.delRunOrderData(transaction.getPayer().getOpenid(), payOrder.getId() + "");
-		if (payOrder.getIsDeliver()) {
-			onSuccess(response);
-			return;
-		}
-
-		if (payOrder.getId().longValue() != Long.parseLong(transaction.getOutTradeNo())) {
-			onFail(response, 500, "payOrder.getThirdOrderId().equals(transaction.getTransactionId())");
-			return;
-		}
-		User user = UserHelper.getUserByName(transaction.getPayer().getOpenid());
-		if (user == null) {
-			onFail(response, 500, "User user");
-			return;
-		}
-		payOrder.setTransactionId(transaction.getTransactionId());
-		payOrder.setMchOrderNo(payOrder.getId() + "");
-		String serverId = UserHelper.getServerId(payOrder.getPlayerId());
-		ServerMsg.PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = ServerMsg.PaymentOrderShipRequest_7d000022
-				.newBuilder()
-				.setPlayerId(payOrder.getPlayerId())
-				.setUid(payOrder.getId())
-				.build();
-		log.info(String.format("充值成功 通知 game：%s ", paymentOrderShipRequest_7d000022.toString()));
-		Future<ServerMsg.PaymentOrderShipResponse_7d000023> future;
-		if (StringUtils.isEmpty(serverId)) {
-			future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
-		} else {
-			future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
-		}
-		future.onSuccess(r -> {
-			if (r.getSuccess()) {
-				if (!payOrder.getIsDeliver()) {
-					payOrder.setIsDeliver(true);
-					payOrder.setCompleteDate(DateUtil.nowDateStr());
-					payOrder.setCompleteTime(DateUtil.nowTimeStr());
-				}
-				updatePayOrder(payOrder, requestBody);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-				onSuccess(response);
-			} else {
-				updatePayOrder(payOrder, requestBody);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-				onFail(response, 500, "发货失败");
-			}
-		}).onFailure(err -> {
-			log.error("充值通知game失败", err);
-		});
-
-	}
+    /** @param context HTTP 请求 @param parser 验签边界 @param storage 存储边界 @param ship RPC 边界 @param beforeShip 原账号校验与客服待付缓存清理 */
+    private static void notifyPayOrder(RoutingContext context, java.util.function.Function<RequestParam, Transaction> parser,
+            java.util.function.Supplier<PayOrderMapper> storage,
+            java.util.function.Function<ServerMsg.PaymentOrderShipRequest_7d000022, Future<ServerMsg.PaymentOrderShipResponse_7d000023>> ship,
+            java.util.function.BiConsumer<Transaction, PayOrder> beforeShip) {
+        HttpServerResponse response = context.response().putHeader("content-type", "text/json");
+        try {
+            var request = context.request();
+            String body = context.body().asString();
+            RequestParam parameter = new RequestParam.Builder().serialNumber(request.getHeader("Wechatpay-Serial"))
+                    .nonce(request.getHeader("Wechatpay-Nonce")).signature(request.getHeader("Wechatpay-Signature"))
+                    .timestamp(request.getHeader("Wechatpay-Timestamp")).body(body).build();
+            Transaction transaction;
+            try { transaction = parser.apply(parameter); }
+            catch (Exception failure) {
+                log.warn("微信支付验签失败", failure);
+                onFail(response, 401, "sign verification failed"); return;
+            }
+            if (transaction == null || transaction.getPayer() == null || transaction.getAmount() == null
+                    || StringUtils.isBlank(transaction.getTransactionId()) || StringUtils.isBlank(transaction.getPayer().getOpenid())) {
+                onFail(response, 500, "invalid transaction"); return;
+            }
+            PayOrderMapper mapper = storage.get();
+            PayOrder order = mapper.selectByPrimaryKey(Long.parseLong(transaction.getOutTradeNo()));
+            if (!PaymentOrderState.canShip(order) || !"SUCCESS".equals(String.valueOf(transaction.getTradeState()))
+                    || !java.util.Objects.equals(order.getThirdUid(), transaction.getPayer().getOpenid())
+                    || !java.util.Objects.equals(order.getPrice(), transaction.getAmount().getTotal())
+                    || !PaymentOrderState.matches(order.getTransactionId(), transaction.getTransactionId())
+                    || !PaymentOrderState.matches(order.getMchOrderNo(), transaction.getOutTradeNo())) {
+                onFail(response, 500, "payment mismatch"); return;
+            }
+            beforeShip.accept(transaction, order);
+            // thirdOrderId 是创单 prepayId，不能与支付 transactionId 比较或覆盖。
+            order.setTransactionId(transaction.getTransactionId()); order.setMchOrderNo(transaction.getOutTradeNo());
+            updatePayOrder(order, body);
+            PaymentOrderState.record(mapper, order, false);
+            var message = ServerMsg.PaymentOrderShipRequest_7d000022.newBuilder().setPlayerId(order.getPlayerId()).setUid(order.getId())
+                    .setSdkOrderId(PaymentOrderState.sdkOrderId(order)).build();
+            ship.apply(message).map(result -> {
+                PaymentOrderState.record(mapper, order, result.getSuccess()); return result.getSuccess();
+            }).onSuccess(success -> {
+                if (success) { onSuccess(response); } else { onFail(response, 500, "发货未确认"); }
+            }).onFailure(failure -> {
+                log.warn("微信支付发货或订单保存未确认 orderId={}", order.getId(), failure);
+                onFail(response, 500, "发货未确认");
+            });
+        } catch (Exception failure) {
+            log.warn("微信支付回执受理失败", failure);
+            onFail(response, 500, "invalid payment notification");
+        }
+    }
 
 	private static void updatePayOrder(PayOrder payOrder, String desc) {
 		if (payOrder.getCallback() == null) {
@@ -203,6 +187,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("code", "fail");
 		jsonObject.put("message", errMsg);
+        response.end(jsonObject.toJSONString());
 
 	}
 
@@ -342,7 +327,7 @@ public class IOSPayOrderProcessor extends BasePayOrderProcessor {
 		payOrder.setThirdUid(user.getUsername());
 		return VxHolder.vertx.executeBlocking(() -> {
 			// 构建service
-			JsapiService service = new JsapiService.Builder().config(config).build();
+			JsapiService service = new JsapiService.Builder().config(PaymentConfig.config).build();
 			// request.setXxx(val)设置所需参数，具体参数可见Request定义
 			PrepayRequest request = new PrepayRequest();
 			Amount amount = new Amount();

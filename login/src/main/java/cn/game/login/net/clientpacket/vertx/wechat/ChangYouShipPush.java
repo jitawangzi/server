@@ -40,108 +40,76 @@ public class ChangYouShipPush implements BaseVertxHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(ChangYouShipPush.class);
 
-	@Override
-	public void handle(RoutingContext context) {
-		try {
-			HttpServerRequest request = context.request();
-			HttpServerResponse response = context.response().putHeader("content-type", "text/json");
-			JSONObject responseObject = new JSONObject();
-//		log.info("receive changyou ship push");
+    @Override
+    public void handle(RoutingContext context) {
+        var response = context.response().putHeader("content-type", "text/json");
+        try {
+            ChangYouPaymentNotification notification = ChangYouSdk.getInstance().parsePaymentNotification(context.body().asString());
+            processNotification(notification).onComplete(result -> {
+                if (result.failed()) { log.warn("畅游回执未完成，返回失败等待平台核对或重试", result.cause()); }
+                response.end(new JSONObject().fluentPut("status", result.succeeded() ? 1 : 0).toJSONString());
+            });
+        } catch (Exception failure) {
+            log.warn("畅游回执解析失败", failure);
+            response.end("{\"status\":0}");
+        }
+    }
 
-			Consumer<?> successConsumer = r -> {
-				responseObject.put("status", 1);
-				response.end(Buffer.buffer(responseObject.toJSONString()));
-			};
+    /** @param notification 已解析回执 @return 验单、Game 保存、Login 单调落库及平台更新均成功后的结果 */
+    protected Future<Void> processNotification(ChangYouPaymentNotification notification) {
+        try {
+            PayOrderMapper mapper = paymentMapper();
+            PayOrder order = mapper.selectByPrimaryKey(notification.getPushInfo().getGameOrderId());
+            var receipt = notification.getReceipt();
+            // SDK 示例使用字符串 SKU，不能假设它等于内部 itemId 或强制数量为 1。
+            // 沿用原验单链，并核对本地身份、精确金额和已绑定单号；商品映射仍需平台正式契约。
+            if (!PaymentOrderState.canShip(order) || receipt == null || StringUtils.isBlank(receipt.getOrderId())
+                    || !String.valueOf(order.getPlayerId()).equals(receipt.getRoleId())
+                    || !java.util.Objects.equals(order.getThirdUid(), receipt.getUserid())
+                    || !Double.isFinite(receipt.getGoodsPrice()) || order.getPrice() == null
+                    || java.math.BigDecimal.valueOf(receipt.getGoodsPrice()).movePointRight(2)
+                            .compareTo(java.math.BigDecimal.valueOf(order.getPrice())) != 0
+                    || (StringUtils.isNotEmpty(order.getThirdOrderId()) && !order.getThirdOrderId().equals(receipt.getOrderId()))
+                    || (StringUtils.isNotEmpty(order.getTransactionId()) && !order.getTransactionId().equals(receipt.getOrgOrderId()))) {
+                return Future.failedFuture("PAYMENT_NOTIFICATION_MISMATCH");
+            }
+            return verifyOrder(notification).compose(raw -> {
+                JSONObject verified = JSON.parseObject(raw);
+                if (!Integer.valueOf(200).equals(verified.getInteger("state")) || !"0".equals(verified.getString("data"))) {
+                    return Future.failedFuture("PAYMENT_VERIFICATION_FAILED");
+                }
+                return shipOrder(PaymentOrderShipRequest_7d000022.newBuilder().setPlayerId(order.getPlayerId())
+                        .setUid(order.getId()).setSdkOrderId(receipt.getOrderId()).build());
+            }).compose(result -> {
+                updatePayOrder(notification, order);
+                // 失败也仅记录支付事实，不可回退已由其他通知完成的交付状态。
+                PaymentOrderState.record(mapper, order, result.getSuccess());
+                return result.getSuccess() ? notifyUpdateOrder(notification).mapEmpty()
+                        : Future.failedFuture("PAYMENT_GAME_NOT_COMMITTED");
+            });
+        } catch (Exception failure) {
+            log.warn("畅游回执受理失败", failure);
+            return Future.failedFuture(failure);
+        }
+    }
 
-			String bodyAsString = context.body().asString();
-			log.info("receive changyou ship push, message body[{}]", bodyAsString);
-			ChangYouPaymentNotification paymentNotification = ChangYouSdk.getInstance().parsePaymentNotification(bodyAsString);
+    /** @return 当前订单存储；测试只替换外部边界 */
+    protected PayOrderMapper paymentMapper() { return SpringContextLoader.getContext().getBean(PayOrderMapper.class); }
 
-			PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
+    /** @param notification 已校验本地身份的回执 @return SDK 验单原始结果 */
+    protected Future<String> verifyOrder(ChangYouPaymentNotification notification) {
+        return ChangYouSdk.getInstance().orderVerification(notification.getReceipt().getChannelId(), 0, notification.getReceiptJsonOriginal());
+    }
 
-			PayOrder payOrder = mapper.selectByPrimaryKey(paymentNotification.getPushInfo().getGameOrderId());
+    /** @param request 原订单身份 @return Game 的持久化确认结果 */
+    protected Future<PaymentOrderShipResponse_7d000023> shipOrder(PaymentOrderShipRequest_7d000022 request) {
+        String serverId = UserHelper.getServerId(request.getPlayerId());
+        return StringUtils.isEmpty(serverId) ? VxHolder.requestRemoteServer(ServerType.Game, request)
+                : VxHolder.requestRemoteServer(serverId, request);
+    }
 
-			if (payOrder.getIsDeliver()) {
-				log.warn("payOrder is deliver" + payOrder);
-				successConsumer.accept(null);
-				notifyUpdateOrder(paymentNotification);
-				return;
-			}
-			// 校验一下价格
-			if (payOrder.getPrice() / 100 != paymentNotification.getReceipt().getGoodsPrice()) {
-				log.warn("price not match,orderId[{}] orderPrice[{}], notificationPrice[{}]", payOrder.getId(), payOrder.getPrice(),
-						paymentNotification.getReceipt().getGoodsPrice());
-				responseObject.put("status", 0);
-				response.end(Buffer.buffer(responseObject.toJSONString()));
-				return;
-			}
-
-			responseObject.put("status", 1);
-
-			Future<Void> endFuture = response.end(Buffer.buffer(responseObject.toJSONString()));
-			// 校验订单， 有鸟用？
-			endFuture.compose(r -> ChangYouSdk.getInstance()
-						.orderVerification(paymentNotification.getReceipt().getChannelId(), 0,
-							paymentNotification.getReceiptJsonOriginal()))
-					.compose(r -> {
-				log.info("start game ship " + r);
-				com.alibaba.fastjson.JSONObject object = com.alibaba.fastjson.JSON.parseObject(r);
-				int state = object.getInteger("state");
-				if (state != 200) {
-					log.warn("orderVerification fail, state[{}]", state);
-					return Future.failedFuture("orderVerification fail, state[" + state + "]");
-				}
-				String data = object.getString("data");
-				if (!data.equals("0")) {
-					log.warn("orderVerification fail, data[{}]", data);
-					return Future.failedFuture("orderVerification fail, data[" + data + "]");
-				}
-				// 通知game发货
-				User user = UserHelper.getUserByName(payOrder.getThirdUid());
-				PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022.newBuilder()
-						.setPlayerId(payOrder.getPlayerId())
-						.setUid(payOrder.getId())
-						.setSdkOrderId(paymentNotification.getReceipt().getOrderId())
-						.build();
-				String serverId = UserHelper.getServerId(payOrder.getPlayerId());
-				Future<PaymentOrderShipResponse_7d000023> future;
-				if (StringUtils.isEmpty(serverId)) {
-					future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
-				} else {
-					future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
-				}
-				return future;
-			}).compose(r -> {
-				log.info("wechat ship resp from game ret[{}]", r.getSuccess());
-				if (!r.getSuccess()) {
-					updatePayOrder(paymentNotification, payOrder);
-					mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-					return Future.failedFuture("game ship fail");
-				}
-				// 发货成功， 更新订单交付状态
-				if (!payOrder.getIsDeliver()) {
-					payOrder.setIsDeliver(true);
-					payOrder.setCompleteDate(DateUtil.nowDateStr());
-					payOrder.setCompleteTime(DateUtil.nowTimeStr());
-				}
-				updatePayOrder(paymentNotification, payOrder);
-				return VxHolder.vertx.executeBlocking(() -> mapper.updateByPrimaryKeyWithBLOBs(payOrder));
-			}).compose(r -> {
-				// 通知畅游sdk更新订单状态
-				return notifyUpdateOrder(paymentNotification);
-			}).onSuccess(r -> {
-				log.info("ChangYouShipPush  resp from game success : " + paymentNotification.getPushInfo().getGameOrderId());
-			}).onFailure(r -> {
-				log.error("ChangYouShipPush resp from game fail : " + paymentNotification.getPushInfo().getGameOrderId(), r);
-				updatePayOrder(paymentNotification, payOrder);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-			});
-		} catch (Exception e) {
-			log.error("ChangYouShipPush error " + e);
-		}
-	}
-
-	private Future<String> notifyUpdateOrder(ChangYouPaymentNotification paymentNotification) {
+	/** @param paymentNotification 已由 Game 和 Login 确认的订单 @return 平台状态更新原始结果；不假设重试或幂等保证 */
+	protected Future<String> notifyUpdateOrder(ChangYouPaymentNotification paymentNotification) {
 		JSONObject orderObject = new JSONObject();
 		orderObject.put("orderedId", paymentNotification.getReceipt().getOrderId());
 		JSONArray jsonArray = new JSONArray();

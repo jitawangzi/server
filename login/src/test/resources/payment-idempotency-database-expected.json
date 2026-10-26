@@ -1,0 +1,6 @@
+[
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentOrderDatabaseIT#unknownPaymentStateCannotPublishDelivery",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentOrderDatabaseIT#concurrentReceiptsAndLateFailurePreserveCompletion",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentOrderDatabaseIT#conflictingReceiptsCannotClaimOrDowngradeOrder",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentOrderDatabaseIT#concurrentConflictingBindingsPermitOnlyOneReceipt"
+]

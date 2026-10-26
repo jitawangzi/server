@@ -40,97 +40,66 @@ public class WechatShipPush implements BaseVertxHandler {
 
 	private static final String WX_URL_STRING = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
 	
-	@Override
-	public void handle(RoutingContext context) {
-		HttpServerRequest request = context.request();
-		HttpServerResponse response = context.response().putHeader("content-type", "text/json");
-		JSONObject responseObject = new JSONObject();
-		log.info("receive wechat push");
-		String signature = request.getParam("signature");
-		String timestamp = request.getParam("timestamp");
-		String nonce = request.getParam("nonce");
-		String echostr = request.getParam("echostr");
-		boolean checkRequest = WechatHelper.checkRequest(signature, timestamp, nonce);
-		if (!StringUtils.isEmpty(echostr)) {
-			log.info("receive wechat push ， echostr");
-			if (checkRequest) {
-				response.end(echostr);
-			} else {
-				response.end("error");
-				log.error("微信测试失败");
-			}
-			return;
-		}
+    @Override
+    public void handle(RoutingContext context) {
+        HttpServerResponse response = context.response().putHeader("content-type", "text/json");
+        try {
+            var request = context.request();
+            boolean valid = checkRequest(request.getParam("signature"), request.getParam("timestamp"), request.getParam("nonce"));
+            String echo = request.getParam("echostr");
+            if (StringUtils.isNotEmpty(echo)) { response.end(valid ? echo : "error"); return; }
+            if (!valid) { reply(response, 99998); return; }
+            WechatPushBean bean = WechatHelper.parseWechatPushBean(context.body().asString());
+            var payload = bean.MiniGame.PayloadObj;
+            if (payload == null) { throw new IllegalArgumentException("PAYMENT_PAYLOAD_REQUIRED"); }
+            if ("example_out_trade_no".equalsIgnoreCase(payload.OutTradeNo)) { reply(response, 0); return; }
+            PayOrderMapper mapper = paymentMapper();
+            PayOrder order = mapper.selectByPrimaryKey(Long.parseLong(payload.OutTradeNo));
+            var info = payload.WeChatPayInfo;
+            // 创单保存的是 goodsPrice 原价分值；核对 OrigPrice，允许 ActualPrice 因优惠低于原价。
+            if (!PaymentOrderState.canShip(order) || info == null || payload.GoodsInfo == null
+                    || StringUtils.isBlank(payload.OpenId) || !java.util.Objects.equals(order.getThirdUid(), payload.OpenId)
+                    || StringUtils.isBlank(info.MchOrderNo) || StringUtils.isBlank(info.TransactionId)
+                    || !java.util.Objects.equals(order.getPrice(), payload.GoodsInfo.OrigPrice)
+                    || payload.GoodsInfo.ActualPrice == null || payload.GoodsInfo.ActualPrice < 0
+                    || !PaymentOrderState.matches(order.getMchOrderNo(), info.MchOrderNo)
+                    || !PaymentOrderState.matches(order.getTransactionId(), info.TransactionId)) {
+                reply(response, 99999); return;
+            }
+            updatePayOrder(bean, order);
+            // 先以条件 SQL 绑定支付事实，冲突并发回执不得先到 Game 再被 Login 拒绝。
+            PaymentOrderState.record(mapper, order, false);
+            var ship = PaymentOrderShipRequest_7d000022.newBuilder().setPlayerId(order.getPlayerId()).setUid(order.getId())
+                    .setSdkOrderId(PaymentOrderState.sdkOrderId(order)).build();
+            shipOrder(ship).map(result -> {
+                PaymentOrderState.record(mapper, order, result.getSuccess());
+                return result.getSuccess() ? 0 : 99999;
+            }).onSuccess(code -> reply(response, code)).onFailure(failure -> {
+                log.warn("微信发货或订单保存未确认 orderId={}", order.getId(), failure);
+                reply(response, 99999);
+            });
+        } catch (Exception failure) {
+            log.warn("微信回执解析或受理失败", failure);
+            reply(response, 99999);
+        }
+    }
 
-		if (!checkRequest) {
-			responseObject.put("ErrCode", 99998);
-			responseObject.put("ErrMsg", "not from wechat");
-			response.end(Buffer.buffer(responseObject.toJSONString()));
-			log.error("ErrMsg,not from wechat");
-			return;
-		}
+    /** @param response 当前 HTTP 响应 @param code 微信约定的处理结果 */
+    private void reply(HttpServerResponse response, int code) {
+        response.end(Buffer.buffer(new JSONObject().fluentPut("ErrCode", code).fluentPut("ErrMsg", code == 0 ? "Success" : "internal error").toJSONString()));
+    }
 
-		Consumer<?> successConsumer = r -> {
-			responseObject.put("ErrCode", 0);
-			responseObject.put("ErrMsg", "Success");
-			response.end(Buffer.buffer(responseObject.toJSONString()));
-		};
-		Consumer<?> failConsumer = r -> {
-			responseObject.put("ErrCode", 99999);
-			responseObject.put("ErrMsg", "internal error");
-			response.end(Buffer.buffer(responseObject.toJSONString()));
-		};
+    /** @param signature 请求签名 @param timestamp 时间戳 @param nonce 随机串 @return 是否通过原微信签名检查 */
+    protected boolean checkRequest(String signature, String timestamp, String nonce) { return WechatHelper.checkRequest(signature, timestamp, nonce); }
 
-		String bodyAsString = context.body().asString();
-		log.info("receive wechat ship push, message body[{}]", bodyAsString);
-		WechatPushBean wechatPushBean = WechatHelper.parseWechatPushBean(bodyAsString);
+    /** @return 当前订单存储 */
+    protected PayOrderMapper paymentMapper() { return SpringContextLoader.getContext().getBean(PayOrderMapper.class); }
 
-		if (wechatPushBean.MiniGame.PayloadObj.OutTradeNo.equalsIgnoreCase("example_out_trade_no")) {
-			successConsumer.accept(null);
-			return;
-		}
-
-		PayOrderMapper mapper = SpringContextLoader.getContext().getBean(PayOrderMapper.class);
-		PayOrder payOrder = mapper.selectByPrimaryKey(Long.parseLong(wechatPushBean.MiniGame.PayloadObj.OutTradeNo));
-
-		if (payOrder.getIsDeliver()) {
-			successConsumer.accept(null);
-			return;
-		}
-		User user = UserHelper.getUserByName(wechatPushBean.MiniGame.PayloadObj.OpenId);
-		PaymentOrderShipRequest_7d000022 paymentOrderShipRequest_7d000022 = PaymentOrderShipRequest_7d000022
-				.newBuilder().setPlayerId(payOrder.getPlayerId()).setUid(payOrder.getId()).build();
-		String serverId = UserHelper.getServerId(payOrder.getPlayerId());
-		Future<PaymentOrderShipResponse_7d000023> future;
-		if (StringUtils.isEmpty(serverId)) {
-			future = VxHolder.requestRemoteServer(ServerType.Game, paymentOrderShipRequest_7d000022);
-		} else {
-			future = VxHolder.requestRemoteServer(serverId, paymentOrderShipRequest_7d000022);
-		}
-		future.onSuccess(r -> {
-			log.info("wechat ship resp from game ret[{}]", r.getSuccess());
-			if (r.getSuccess()) {
-				if (!payOrder.getIsDeliver()) {
-					payOrder.setIsDeliver(true);
-					payOrder.setCompleteDate(DateUtil.nowDateStr()); 
-					payOrder.setCompleteTime(DateUtil.nowTimeStr()) ; 
-				}
-				updatePayOrder(wechatPushBean, payOrder);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-				successConsumer.accept(null);
-			} else {
-				failConsumer.accept(null);
-				updatePayOrder(wechatPushBean, payOrder);
-				mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-			}
-		}).onFailure(r -> {
-			log.error("wechat ship resp from game fail : " + wechatPushBean.MiniGame.PayloadObj.OutTradeNo, r);
-			failConsumer.accept(null);
-			updatePayOrder(wechatPushBean, payOrder);
-			mapper.updateByPrimaryKeyWithBLOBs(payOrder);
-		});
-
-	}
+    /** @param request 已绑定支付事实的发货请求 @return Game 原提交确认结果 */
+    protected Future<PaymentOrderShipResponse_7d000023> shipOrder(PaymentOrderShipRequest_7d000022 request) {
+        String serverId = UserHelper.getServerId(request.getPlayerId());
+        return StringUtils.isEmpty(serverId) ? VxHolder.requestRemoteServer(ServerType.Game, request) : VxHolder.requestRemoteServer(serverId, request);
+    }
 
 	private void updatePayOrder(WechatPushBean wechatPushBean, PayOrder payOrder) {
 		if (payOrder.getCallback() == null) {

@@ -32,8 +32,8 @@ public class WechatPushBean {
         public String ProductId;
         public int Quantity;
         public String ZoneId;
-        public int OrigPrice;
-        public int ActualPrice;
+        public Integer OrigPrice;
+        public Integer ActualPrice;
         public String Attach;
         public int OrderSource;
     }

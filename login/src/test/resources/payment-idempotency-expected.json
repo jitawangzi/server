@@ -1,0 +1,15 @@
+[
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#historicalOrdersAndSdkSkuKeepExistingVerificationChain",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#receiptWaitsForAllCompletionBoundaries",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#verificationFailureGameFailureAndTimeoutStayUnsuccessful",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#mismatchedAndHistoricalReceiptsNeverShip",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#databaseAndPlatformFailuresPropagate",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#zeroRowMergeRequiresMatchingPersistedResult",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#gmQueriesThirdPartyIdAndHandlesNullOrBlankSdkId",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#gmRejectsInvalidOrdersAndEndsSynchronousFailures",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#wechatEntryWaitsAndPreservesSdkIdentityForGmReplay",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#wechatEntryRejectsMalformedAmountsStatesAndBoundConflicts",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#iosEntryUsesPrepayIdentityAndWaitsForCommit",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#iosEntryRejectsInvalidAndConflictingReceiptsBeforeGame",
+  "cn.game.login.net.clientpacket.vertx.wechat.PaymentNotificationTest#wechatConcurrentAndOutOfOrderResponsesRemainMonotonic"
+]

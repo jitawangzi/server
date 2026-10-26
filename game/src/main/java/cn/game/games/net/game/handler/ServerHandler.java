@@ -440,6 +440,18 @@ public class ServerHandler extends GameBaseHandler {
 	    try {
             requirePaymentOwner(player);
             online = player.isOnline();
+
+            // 凭证只能来自已提交的本批聚合快照，历史 finish 和内存奖励阶段均不足以成功去重。
+            PayItem existing = player.getPlayerModule().getPayItems(uid);
+            if (existing != null && existing.hasCommittedCompletionProof(player.getPlayerId(), sdkOrderId)) {
+                replyPayment(client, true, player.getPlayerId());
+                return;
+            }
+            if (existing != null && existing.getSdkOrderId() != null
+                    && !java.util.Objects.equals(existing.getSdkOrderId(), sdkOrderId)) {
+                replyPayment(client, false, player.getPlayerId());
+                return;
+            }
 	        PayItem payItem = findAndValidatePayItem(player, uid, online);
 	        if (payItem == null) {
                 replyPayment(client, false, player.getPlayerId());
@@ -510,6 +522,7 @@ public class ServerHandler extends GameBaseHandler {
             GameLogger.recharge(player, payItem);
             payItem.setCompletionState("REWARDS_COMPLETED");
             payItem.finish();
+            payItem.prepareCompletionProof(player.getPlayerId());
             return true;
         } catch (Exception failure) {
             payItem.setCompletionState("REVIEW_REQUIRED");
@@ -532,6 +545,7 @@ public class ServerHandler extends GameBaseHandler {
                 throw new IllegalStateException("PAYMENT_SAVE_NOT_CONFIRMED playerId=" + playerId);
             }
             requirePaymentOwner(player);
+            player.getPlayerModule().getPayItems(uid).confirmCompletionProof();
         } catch (Exception failure) {
             log.warn("充值保存未确认或原实例已失效，保留驻留状态 playerId={}", playerId, failure);
             player.getPlayerModule().confirmPayCallback(uid, failure);

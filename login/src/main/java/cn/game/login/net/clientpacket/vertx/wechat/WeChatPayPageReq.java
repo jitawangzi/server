@@ -97,7 +97,7 @@ public class WeChatPayPageReq implements BaseVertxHandler {
                 timestamp + "\n" +
                 nonce_str + "\n" +
                 "prepay_id=" +  prepay_id + "\n";
-        return IOSPayOrderProcessor.config.createSigner().sign(baseStr).getSign();
+        return IOSPayOrderProcessor.paymentConfig().createSigner().sign(baseStr).getSign();
     }
 
     public Map<String, String> sign(String url,String nonce_str, long timestamp) {

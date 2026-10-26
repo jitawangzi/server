@@ -372,6 +372,8 @@ class PlayerSaveRiskTest {
         PaymentHandler(FixturePlayer player, Harness h, boolean immediate) {
             this.player = player; this.h = h; this.immediate = immediate;
             player.setOnline(false); player.setGameClient(new GameClient(null));
+            player.getModules().put(cn.game.games.net.game.module.player.PlayerModule.class.getName(),
+                    new cn.game.games.net.game.module.player.PlayerModule());
         }
         @Override protected Player paymentPlayer(long id) { return player; }
         @Override protected boolean singlePaymentStorage() { return true; }

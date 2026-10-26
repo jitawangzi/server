@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface PayOrderMapper {
 
+    /** @param row 已校验身份的回执字段 @param delivered 仅 Game 明确提交成功时为 true @return 匹配并更新的行数 */
+    int mergePaymentReceipt(@Param("row") PayOrder row, @Param("delivered") boolean delivered);
+
 	/**
 	 * @mbg.generated
 	 */

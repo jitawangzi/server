@@ -53,6 +53,39 @@ class PlayerSaveDatabaseIT {
     /** 准备生产模块类型，避免启动服务器和共享连接池。 */
     @BeforeAll static void metadata() { ClassManager.getInstance().init(); }
 
+    /** 原快照真实提交后，用新会话冷读、新玩家对象和新协调器验证重复通知不再发奖或保存。 */
+    @Test void completedPaymentColdReloadDeduplicatesWithoutReplaying() throws Exception {
+        PaymentDeliveryLifecycleTest.metadata();
+        try {
+            for (boolean spring : List.of(false, true)) {
+                try (DatabaseFixture db = new DatabaseFixture(spring)) {
+                    db.seed(); db.gate.hold = true;
+                    try (var original = new PaymentDeliveryLifecycleTest.Fixture(db.player().getData(), true, db.writer::write)) {
+                        original.ship(); original.captured(); Assertions.assertTrue(db.gate.entered.await(10, TimeUnit.SECONDS));
+                        Assertions.assertTrue(original.replies.isEmpty());
+                        Assertions.assertFalse(original.player.getPlayerModule().getPayItems(91).hasCommittedCompletionProof(db.id, "sdk-91"));
+                        db.gate.release.countDown(); original.flush();
+                        Assertions.assertEquals(List.of(true), original.replies);
+                    }
+                    Player cold = db.reloadFresh();
+                    Assertions.assertEquals(1, cold.getPlayerModule().getGuideMap().get(700));
+                    Assertions.assertTrue(cold.getPlayerModule().getPayItems(91).hasCommittedCompletionProof(db.id, "sdk-91"));
+                    try (var restarted = new PaymentDeliveryLifecycleTest.Fixture(cold.getData(), true,
+                            (row, insert) -> { throw new AssertionError("冷读去重不能再次保存"); })) {
+                        restarted.player.getModules().put(PlayerModule.class.getName(), cold.getPlayerModule());
+                        restarted.ship(); restarted.flush(); restarted.ship(); restarted.flush();
+                        Assertions.assertEquals(List.of(true, true), restarted.replies);
+                        Assertions.assertEquals(0, restarted.awards.get()); Assertions.assertEquals(0, restarted.charges.get());
+                        Assertions.assertFalse(restarted.captured.future().isComplete());
+                        Assertions.assertEquals(1, restarted.player.getPlayerModule().getGuideMap().get(700));
+                    }
+                    Assertions.assertEquals(1, db.gate.completedCommits.get());
+                    db.clean();
+                }
+            }
+        } finally { PaymentDeliveryLifecycleTest.restore(); }
+    }
+
     /** 实际离线发货在真实事务确认后才回成功并清理；冷读核对订单与本例奖励标记。 */
     @Test void offlineDeliveryCommitsBeforeReplyAndCleanup() throws Exception {
         PaymentDeliveryLifecycleTest.metadata();

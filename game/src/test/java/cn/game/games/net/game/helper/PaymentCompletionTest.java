@@ -56,7 +56,7 @@ class PaymentCompletionTest {
             Assertions.assertEquals(1, stored.getGuideMap().get(700));
             Assertions.assertTrue(f.replies.isEmpty()); f.commit(); f.flush();
             Assertions.assertTrue(f.purchase.succeeded()); Assertions.assertEquals(List.of(true), f.replies);
-            f.ship(); f.flush(); Assertions.assertEquals(1, f.awards.get()); Assertions.assertEquals(List.of(true, false), f.replies);
+            f.ship(); f.flush(); Assertions.assertEquals(1, f.awards.get()); Assertions.assertEquals(List.of(true, true), f.replies);
         }
     }
 

@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.game.login.mapper.PayOrderMapper">
+  <!-- 回执只推进状态，禁止迟到失败用旧整行对象覆盖已完成结果；第三方身份冲突不更新。 -->
+  <update id="mergePaymentReceipt">
+    update t_pay_order set
+      pay_date = case when pay_state = 1 then #{row.payDate,jdbcType=CHAR} else pay_date end,
+      pay_time = case when pay_state = 1 then #{row.payTime,jdbcType=CHAR} else pay_time end,
+      pay_state = case when pay_state = 1 then 2 else pay_state end,
+      complete_date = case when #{delivered} and (is_deliver is null or is_deliver = 0) then #{row.completeDate,jdbcType=CHAR} else complete_date end,
+      complete_time = case when #{delivered} and (is_deliver is null or is_deliver = 0) then #{row.completeTime,jdbcType=CHAR} else complete_time end,
+      is_deliver = case when #{delivered} then 1 else is_deliver end,
+      callback = coalesce(callback, #{row.callback,jdbcType=LONGVARCHAR}),
+      third_order_id = coalesce(nullif(third_order_id, ''), #{row.thirdOrderId,jdbcType=VARCHAR}),
+      mch_order_no = coalesce(nullif(mch_order_no, ''), #{row.mchOrderNo,jdbcType=VARCHAR}),
+      transaction_id = coalesce(nullif(transaction_id, ''), #{row.transactionId,jdbcType=VARCHAR})
+    where id = #{row.id} and player_id = #{row.playerId} and price = #{row.price}
+      and pay_state in (1, 2)
+      and (third_uid = #{row.thirdUid,jdbcType=VARCHAR} or (third_uid is null and #{row.thirdUid,jdbcType=VARCHAR} is null))
+      and (third_order_id is null or third_order_id = '' or third_order_id = #{row.thirdOrderId,jdbcType=VARCHAR})
+      and (transaction_id is null or transaction_id = '' or transaction_id = #{row.transactionId,jdbcType=VARCHAR})
+        and (mch_order_no is null or mch_order_no = '' or mch_order_no = #{row.mchOrderNo,jdbcType=VARCHAR})
+  </update>
   <resultMap id="BaseResultMap" type="cn.game.login.cache.entity.PayOrder">
     <!--
       WARNING - @mbg.generated
