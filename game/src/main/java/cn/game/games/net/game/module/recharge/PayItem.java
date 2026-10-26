@@ -28,9 +28,18 @@ public class PayItem {
 	private boolean isFinish;
 	private long finishTime;
 
+    /** 非空表示已开始履约；失败/中断订单不能自动重发，旧记录缺省为 null。 */
+    private String completionState;
+
+    /** @return 当前履约阶段；旧 finish 不被追认为完整奖励证据 */
+    public String getCompletionState() { return completionState; }
+
+    /** @param state 持久化的履约阶段，供保守阻断及人工核对使用 */
+    public void setCompletionState(String state) { completionState = state; }
+
 	public void finish() {
 		this.isFinish = true;
-		this.finishTime = System.currentTimeMillis();
+		this.finishTime = cn.game.util.DateUtil.currentTimeMillis();
 	}
 
 	public long getOrderId() {

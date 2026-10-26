@@ -111,8 +111,16 @@ public class MonthCardModule extends BasePlayerModule {
 		}
 	};
 
-	public void sendRewardMail(boolean notify) {
-		long rewardTime = System.currentTimeMillis();
+    /** @param notify 是否推送邮件；常规跨天链路保持原异步投递行为 */
+    public void sendRewardMail(boolean notify) { sendRewardMail(notify, false); }
+
+    /** 充值履约直接复用本实例邮件模块，等待邮件插入终态，避免等待同邮箱 RPC。
+     * @param notify 是否推送新增邮件；不代表最终购买成功 */
+    public void sendPaymentRewardMail(boolean notify) { sendRewardMail(notify, true); }
+
+    /** @param notify 是否推送 @param confirmed 是否等待本实例邮件的实际插入结果 */
+    private void sendRewardMail(boolean notify, boolean confirmed) {
+		long rewardTime = DateUtil.currentTimeMillis();
 		for (MonthCard monthCard : monthCards.values()) {
 			long expireTime = monthCard.getExpireTime();
 			if (expireTime > 0) {
@@ -130,10 +138,20 @@ public class MonthCardModule extends BasePlayerModule {
 			for (int i = 0; i < diffInDays; i++) {
 				attachmentList.add(Goods.valueOf(monthCardConfig.DailyRewards));
 			}
-			MailHelper.sendMail(playerId, 7, attachmentList, notify);
-			monthCard.setLastRewardTime(System.currentTimeMillis());
+            if (confirmed) {
+                cn.game.core.util.AsyncUtils.await(sendPaymentMail(attachmentList, notify));
+            } else {
+                MailHelper.sendMail(playerId, 7, attachmentList, notify);
+            }
+			monthCard.setLastRewardTime(DateUtil.currentTimeMillis());
 		}
 	}
+
+    /** @param attachments 按既有每日奖励计算的附件 @param notify 是否通知 @return 本实例邮件插入的实际结果 */
+    protected io.vertx.core.Future<Object> sendPaymentMail(List<Goods> attachments, boolean notify) {
+        cn.game.games.cache.entity.Mail mail = cn.game.games.cache.entity.Mail.valueOfMailId(playerId, 7, attachments);
+        return player.getMailModule().sendOnline(mail, notify);
+    }
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {
 		for (MonthCard monthCard : monthCards.values()) {

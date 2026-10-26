@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.shop.limitedtimegift;
 
+import cn.game.games.net.game.module.recharge.PaymentCompletion;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,13 +136,10 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 		if (limitedTimeGiftData.getBuyCount() >= limitedTimeGiftConfig.PurchasesNum) {
 			return Future.failedFuture(ErrorMsgEnum.times_limit.ID + "");
 		}
-		Future<Boolean> payFuture = pay == false ? Future.succeededFuture()
+		Future<Boolean> payFuture = pay == false ? Future.succeededFuture(true)
 				: player.pay(PayType.LimitedTimeGift, id, limitedTimeGiftConfig.BuyPrice);
 
-		return payFuture.map(r -> {
-			if (!r) {
-				player.fail(ErrorMsgEnum.resource_not_enough);
-			}
+		return PaymentCompletion.reward(player, payFuture, () -> {
 			limitedTimeGiftData.setBuyCount(limitedTimeGiftData.getBuyCount() + 1);
 			// 如果购买次数超过了配置的次数，则删除这个礼包
 			if (limitedTimeGiftConfig.PurchasesNum > 0 && limitedTimeGiftData.getBuyCount() >= limitedTimeGiftConfig.PurchasesNum) {
@@ -150,7 +148,7 @@ public class LimitedTimeGiftModule extends BasePlayerModule {
 			}
 			List<RewardInfo> resources = PlayerHelper.addResources(player, limitedTimeGiftConfig.DropGroupId, OpType.LimitedTimeGift);
 			return resources;
-		});
+		}, ErrorMsgEnum.resource_not_enough);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.vip;
 
+import cn.game.games.net.game.module.recharge.PaymentReply;
+import cn.game.games.net.game.module.recharge.PaymentCompletion;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.net.client.NetClient;
@@ -86,16 +88,14 @@ public class VipHandler extends GameBaseHandler {
             client.sendProtocol(res, ErrorMsgEnum.config_data_not_found.getId());
             return;
         }
-		player.pay(PayType.VipGift, buyId, buyConfig.Price).onComplete(result -> {
-            if (result.result()){
-                vipModule.getBuyGiftList().add(buyId);
-                res.addAllDrops(PlayerHelper.addReward(player,buyConfig.RandomGivenId,OpType.vipGiftReward));
-                res.addAllBuyGiftIdList(vipModule.getBuyGiftList());
-                client.sendProtocol(res);
-            } else {
-                client.sendProtocol(res, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentReply reply = new PaymentReply(client);
+        io.vertx.core.Future<Boolean> pay = player.pay(PayType.VipGift, buyId, buyConfig.Price);
+        PaymentCompletion.reward(player, pay, () -> {
+            vipModule.getBuyGiftList().add(buyId);
+            res.addAllDrops(PlayerHelper.addReward(player, buyConfig.RandomGivenId, OpType.vipGiftReward));
+            res.addAllBuyGiftIdList(vipModule.getBuyGiftList());
+            return res.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(res.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
 
     }
 }

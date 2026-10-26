@@ -456,9 +456,10 @@ public class ServerHandler extends GameBaseHandler {
 	            return;
 	        }
 
-	        persistAndReply(client, player, online);
+	        persistAndReply(client, player, online, uid);
 	    } catch (Exception e) {
 	        log.error("ship unexpected error, playerId={}, uid={}", player.getPlayerId(), uid, e);
+            player.getPlayerModule().confirmPayCallback(uid, e);
             // 未确认业务及保存终态时保留原对象；错误只回本次 Login RPC，不能发给重连后的购买请求。
             replyPayment(client, false, player.getPlayerId());
 	    }
@@ -480,7 +481,7 @@ public class ServerHandler extends GameBaseHandler {
 	        }
 	        return null;
 	    }
-	    if (payItem.isFinish()) {
+	    if (payItem.isFinish() || payItem.getCompletionState() != null) {
 	        if (online) {
 	            log.error("PayItem[{}] ship repeated (online), playerId={}, payItem={}", uid, player.getPlayerId(), payItem);
 	        } else {
@@ -491,41 +492,35 @@ public class ServerHandler extends GameBaseHandler {
 	    return payItem;
 	}
 
-	/**
-	 * 执行支付后回调/补单、finish、事件与日志
-	 */
-	protected boolean processPayment(Player player, PayItem payItem, boolean online) {
-	    boolean callbackOk = true;
-	    if (online) {
-	        // 如果是老订单，可能没有 callback，需要走离线补单逻辑
-	        if (!player.getPlayerModule().execPayCallback(payItem.getOrderId())) {
-	            boolean offOk = payItem.getPayType().offlinePay(player, payItem);
-	            if (!offOk) {
-	                log.warn("PayItem offlinePay fail (online fallback), playerId={}, payItem={}", player.getPlayerId(), payItem);
-		            callbackOk = false;
-	            }
-	        }
-	    } else {
-	        // 离线直接走 offlinePay
-	        boolean offRet = payItem.getPayType().offlinePay(player, payItem);
-	        if (!offRet) {
-	            log.warn("PayItem offlinePay fail (offline), playerId={}, payItem={}", player.getPlayerId(), payItem);
-	            callbackOk = false;
-	        }
-	    }
-
-	    if (callbackOk) {
-	    	// 完成订单、事件与日志
-	    	payItem.finish();
-	    	player.fireAndHandleEvent(EventTypeEnum.Charge, payItem.getRmb());
-	    	GameLogger.recharge(player, payItem);
-		}
-	    return callbackOk;
-	}
+    /**
+     * 在原玩家邮箱执行完整购买奖励与同步 Charge 链，再标记业务完成。
+     * @param player 原权威玩家 @param payItem 未执行订单 @param online 当前在线状态
+     * @return 所有必要步骤是否明确完成；异常保留待核对状态，不允许自动重放部分奖励
+     */
+    protected boolean processPayment(Player player, PayItem payItem, boolean online) {
+        payItem.setCompletionState("EXECUTING");
+        try {
+            boolean completed = online && player.getPlayerModule().execPayCallback(payItem.getOrderId());
+            if (!completed) {
+                completed = payItem.getPayType().offlinePay(player, payItem);
+            }
+            if (!completed) { throw new IllegalStateException("PAYMENT_OFFLINE_REWARD_NOT_COMPLETED"); }
+            requirePaymentOwner(player);
+            player.fireAndHandleEvent(EventTypeEnum.Charge, payItem.getRmb());
+            GameLogger.recharge(player, payItem);
+            payItem.setCompletionState("REWARDS_COMPLETED");
+            payItem.finish();
+            return true;
+        } catch (Exception failure) {
+            payItem.setCompletionState("REVIEW_REQUIRED");
+            log.warn("充值奖励未完整完成，阻断自动重发 playerId={} orderId={}", player.getPlayerId(), payItem.getOrderId(), failure);
+            throw failure;
+        }
+    }
 
     /** 在所属邮箱内关闭业务作用域后保存；只有本次提交确认且原对象仍有效才回成功。
-     * @param client 本次 Login RPC @param player 原权威对象 @param online 业务执行时是否在线 */
-	protected void persistAndReply(NetClient client, Player player, boolean online) {
+     * @param client 本次 Login RPC @param player 原权威对象 @param online 业务执行时是否在线 @param uid 本次订单 ID */
+	protected void persistAndReply(NetClient client, Player player, boolean online, long uid) {
 	    long playerId = player.getPlayerId();
         GameClient originalConnection = player.getGameClient();
         try {
@@ -539,11 +534,14 @@ public class ServerHandler extends GameBaseHandler {
             requirePaymentOwner(player);
         } catch (Exception failure) {
             log.warn("充值保存未确认或原实例已失效，保留驻留状态 playerId={}", playerId, failure);
+            player.getPlayerModule().confirmPayCallback(uid, failure);
             replyPayment(client, false, playerId);
             return;
         }
 
         // 提交后的发送和清理失败不改写已确认结果，也不追加第二个相反响应。
+        player.getPlayerModule().confirmPayCallback(uid, online ? null
+                : new IllegalStateException("PAYMENT_COMPLETED_OFFLINE_WITHOUT_ORIGINAL_RESPONSE"));
         replyPayment(client, true, playerId);
         if (!online && player.getGameClient() == originalConnection) {
             try { cleanupIfOffline(player, false); }

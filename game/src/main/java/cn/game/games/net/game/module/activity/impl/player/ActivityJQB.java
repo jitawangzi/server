@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity.impl.player;
 
+import cn.game.games.net.game.module.recharge.PaymentCompletion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,19 +95,16 @@ public class ActivityJQB extends PlayerActivityBase {
 	}
 	@Override
 	public Future<List<RewardInfo>> asyncReceive(int id) {
-		Promise<List<RewardInfo>> promise = Promise.promise();
-		QuestModule questModule = player.getQuestModule();
-		ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);
-		Quest quest = questModule.get(activityJQBConfig.taskID);
-		player.pay(PayType.ActivityJQB, curId, activityJQBConfig.price).onComplete(result -> {
-			if (result.result()){
-				QuestConfig config = QuestManager.instance().get(quest.getId());
-				promise.complete(new ArrayList<>(PlayerHelper.addReward(player,config.Reward, OpType.ActivityJQB)));
-			}else {
-				promise.fail(ErrorMsgEnum.unknown.getDesc());
-			}
-		});
-		return promise.future();
+        QuestModule questModule = player.getQuestModule();
+        ActivityJQBConfig activityJQBConfig = ActivityJQBManager.instance().get(curId);
+        Quest quest = questModule.get(activityJQBConfig.taskID);
+        Future<Boolean> payment = player.pay(PayType.ActivityJQB, curId, activityJQBConfig.price);
+        return PaymentCompletion.reward(player, payment, () -> {
+            QuestConfig config = QuestManager.instance().get(quest.getId());
+            List<RewardInfo> rewards = new ArrayList<>(PlayerHelper.addReward(player, config.Reward, OpType.ActivityJQB));
+            checkRefreshActivity();
+            return rewards;
+        });
 	}
 
 	@Override

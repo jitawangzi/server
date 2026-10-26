@@ -68,6 +68,11 @@ public class PlayerModule extends BasePlayerModule {
 	/** 支付成功后的回调 */
 	@JsonIgnore
 	private transient Map<Long, Promise<Boolean>> payCallback = new HashMap<Long, Promise<Boolean>>() ; 
+
+    /** 支付承诺与完整奖励步骤的临时绑定；不恢复旧进程的回调。 */
+    @JsonIgnore
+    private transient Map<io.vertx.core.Future<Boolean>, cn.game.games.net.game.module.recharge.PaymentCompletion<?>> payRewards
+            = new java.util.concurrent.ConcurrentHashMap<>();
 	/** 本次订单充了多少钱 */
 	@JsonIgnore
 	@Deprecated
@@ -205,14 +210,34 @@ public class PlayerModule extends BasePlayerModule {
 		return guideMap;
 	}
 
-	public boolean execPayCallback(long uid) {
-		Promise<Boolean> callback = this.payCallback.remove(uid);
-		if(callback != null){
-			callback.complete(true);
-			return true;
-		}
-		return false;
-	}
+    /** @param payment 原支付承诺 @param reward 完整奖励步骤；调用方在发货任务入队前绑定 */
+    public void registerPayReward(io.vertx.core.Future<Boolean> payment,
+            cn.game.games.net.game.module.recharge.PaymentCompletion<?> reward) {
+        if (payRewards.putIfAbsent(payment, reward) != null) {
+            throw new IllegalStateException("PAYMENT_REWARD_DUPLICATE_REGISTRATION");
+        }
+        // 发布失败可在外部完成承诺；仅清除线程安全的临时绑定，不修改玩家业务字段。
+        payment.onComplete(ignored -> payRewards.remove(payment, reward));
+    }
+
+    /** @param uid 订单 ID @return 是否有在线奖励绑定；完成奖励不等于完成保存，不能在此通知购买成功 */
+    public boolean execPayCallback(long uid) {
+        Promise<Boolean> callback = payCallback.get(uid);
+        if (callback == null) { return false; }
+        var reward = payRewards.get(callback.future());
+        if (reward == null) { throw new IllegalStateException("PAYMENT_REWARD_CONTRACT_MISSING"); }
+        reward.execute();
+        return true;
+    }
+
+    /** @param uid 本次订单 @param failure 失败原因；null 仅允许在保存确认后使用 */
+    public void confirmPayCallback(long uid, Throwable failure) {
+        Promise<Boolean> callback = payCallback.remove(uid);
+        if (callback == null) { return; }
+        payRewards.remove(callback.future());
+        if (failure == null) { callback.tryComplete(true); }
+        else { callback.tryFail(failure); }
+    }
 
 	public int getLastChatTime() {
 		return lastChatTime;

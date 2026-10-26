@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.activity;
 
+import cn.game.games.net.game.module.recharge.PaymentCompletion;
 import cn.game.games.net.game.helper.PlayerWriteGuard;
 import cn.game.games.net.game.module.recharge.PaymentReply;
 import java.util.ArrayList;
@@ -232,15 +233,12 @@ public class ActivityHandler extends GameBaseHandler {
             return;
         }
         FirstChargeConfig firstChargeConfig = FirstChargeManager.instance().get(chargeId);
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.FirstCharge, chargeId, firstChargeConfig.Price, id);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                activityBase.buy(chargeId);
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentCompletion.reward(player, pay, () -> {
+            activityBase.buy(chargeId);
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void singleChargeReward(NetClient client, Object message) {
@@ -343,11 +341,9 @@ public class ActivityHandler extends GameBaseHandler {
         if (activityBase instanceof ActivityJQB) {
             List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
             int taskId = req.getTaskIds(0);
-            activityBase.asyncReceive(taskId).compose(reward -> PlayerWriteGuard.submit(player, () -> {
-                res.addAllRewards((Iterable<? extends RewardInfo>) reward);
-                activityBase.checkRefreshActivity();
-                client.sendProtocol(res.build());
-            })).onFailure(player::handleFail);
+            PaymentReply reply = new PaymentReply(client);
+            activityBase.asyncReceive(taskId).map(reward -> res.addAllRewards(reward).build()).onSuccess(reply::send)
+                    .onFailure(error -> reply.fail(res.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
         } else {
             // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
             List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());
@@ -513,19 +509,14 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.buy_over_limit.getId());
             return;
         }
-        player.pay(PayType.FirstCharge, id, config.PurchaseParameter, activityId).onSuccess(t -> {
-            if (t) {
-                GameLogger.activity(player, activityId, id);
-                resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
-                activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.shop_item_not_exist.getId());
-            }
-        }).onFailure(err -> {
-            err.printStackTrace();
-            client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-        });
+        PaymentReply reply = new PaymentReply(client);
+        Future<Boolean> pay = player.pay(PayType.WestLucky, id, config.PurchaseParameter, activityId);
+        PaymentCompletion.reward(player, pay, () -> {
+            GameLogger.activity(player, activityId, id);
+            resp.addAllDrops(PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy));
+            activityWestLucky.getBuyIdMap().put(id, buyNum + 1);
+            return resp.build();
+        }, ErrorMsgEnum.shop_item_not_exist).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void dayGift(NetClient client, Object message) {
@@ -560,23 +551,12 @@ public class ActivityHandler extends GameBaseHandler {
         }
         PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.DayGift, giftId, meiRiTeHuiConfig.PurchaseParameter, id);
-        pay.map(r -> {
-            // false 或缺失结果都不是支付成功，必须在普通/打包发奖之前终止。
-            if (!Boolean.TRUE.equals(r)) {
-                reply.send(defaultInstance, ErrorMsgEnum.unknown.getId());
-                return null;
-            }
-            List<RewardInfo> rewardInfos;
-            if (giftId == 99) {
-                rewardInfos = activity.packageBuy();
-            } else {
-                rewardInfos = activity.buy(giftId);
-            }
+        PaymentCompletion.reward(player, pay, () -> {
+            List<RewardInfo> rewardInfos = giftId == 99 ? activity.packageBuy() : activity.buy(giftId);
             resp.addAllRewards(rewardInfos);
-            reply.send(resp.build());
             GameLogger.activity(player, id, giftId);
-            return null;
-        }).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void serverOpenRank(NetClient client, Object message) {
@@ -700,21 +680,12 @@ public class ActivityHandler extends GameBaseHandler {
         int activityId = req.getActivityId();
         FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
         PaymentReply reply = new PaymentReply(client);
-        Future<Boolean> pay = player.pay(PayType.FundPassSignActivity, id, fundPassConfig.Price);
-        // map 的失败包含支付异常及业务回调异常，onComplete 不会捕获回调自身抛出的异常。
-        pay.map(paid -> {
-            if (Boolean.TRUE.equals(paid)) {
-                FundPassSignActivity activity = player.getActivityModule().get(activityId);
-                if (activity == null) {
-                    reply.send(defaultInstance, ErrorMsgEnum.activity_not_found.getId());
-                    return null;
-                }
-                reply.send(activity.buy(id));
-            } else {
-                reply.send(resp.build(), ErrorMsgEnum.unknown.getId());
-            }
-            return null;
-        }).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
+        Future<Boolean> pay = player.pay(PayType.FundPassSignActivity, id, fundPassConfig.Price, activityId);
+        PaymentCompletion.reward(player, pay, () -> {
+            FundPassSignActivity activity = player.getActivityModule().get(activityId);
+            if (activity == null) { player.fail(ErrorMsgEnum.activity_not_found); }
+            return activity.buy(id);
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(defaultInstance, error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void fundPassSignAll(NetClient client, Object message) {

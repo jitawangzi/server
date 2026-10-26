@@ -1,5 +1,6 @@
 package cn.game.games.net.game.module.shop;
 
+import cn.game.games.net.game.module.recharge.PaymentCompletion;
 import cn.game.games.net.game.module.recharge.PaymentReply;
 
 import java.util.ArrayList;
@@ -147,20 +148,13 @@ public class ShopHandler extends GameBaseHandler {
             return;
         }
         PaymentReply reply = new PaymentReply(client);
-        player.pay(PayType.XianShiLiBao, req.getId(), config.Price).map(handleSuccess -> {
-            if (!Boolean.TRUE.equals(handleSuccess)) {
-                reply.send(resp.build(), ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
-                return null;
-            }
-            // 由派生 Future 接住购买模块异常，不能只监听原支付 Future。
+        Future<Boolean> pay = player.pay(PayType.XianShiLiBao, req.getId(), config.Price);
+        PaymentCompletion.reward(player, pay, () -> {
             resp.addAllRewards(xianShiLiBaoModule.addBuyId(config));
             resp.setInfo(xianShiLiBaoModule.buildXianShiLiBao(config.Group));
-            reply.send(resp.build());
-            return null;
-        }).onFailure(e -> {
-            reply.fail(ShopMsg.BuyXianShiLiBaoResponse_15000053.getDefaultInstance(), e,
-                    ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId());
-        });
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(ShopMsg.BuyXianShiLiBaoResponse_15000053.getDefaultInstance(),
+                error, ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId()));
     }
 
     private void XianShiLiBaoInfo(NetClient client, Object message) {
@@ -291,15 +285,12 @@ public class ShopHandler extends GameBaseHandler {
             return;
         }
         FundPassConfig fundPassConfig = FundPassManager.instance().get(id);
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.FundPass, id, fundPassConfig.Price);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                fundPassRewardsMap.put(id, new ArrayList<Integer>());
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentCompletion.reward(player, pay, () -> {
+            fundPassRewardsMap.put(id, new ArrayList<Integer>());
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void fundPassReward(NetClient client, Object message) {
@@ -364,16 +355,12 @@ public class ShopHandler extends GameBaseHandler {
         int id = req.getId();
         RechargeConfig rechargeConfig = RechargeManager.instance().get(id);
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.Recharge, id, rechargeConfig.PurchaseParameter);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                List<RewardInfo> resources = PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade);
-                resp.addAllRewards(resources);
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentCompletion.reward(player, pay, () -> {
+            resp.addAllRewards(PlayerHelper.addResources(player, rechargeConfig.Item, OpType.ShopTrade));
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void buyShopItem(NetClient client, Object message) {
@@ -415,29 +402,15 @@ public class ShopHandler extends GameBaseHandler {
         }
         final int[][] itemsAdd = GameUtil.arrayMultiple(shopItemConfig.Item, count);
         final int countTemp = count;
-        Supplier<Boolean> addItemAction = () -> {
-            List<RewardInfo> resources = PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade);
-            //			if (shopItemConfig.PurchaseCnt > 0) {
+        PaymentReply reply = new PaymentReply(client);
+        Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, GameUtil.arrayMultiple3(shopItemConfig.PurchaseParameter, count), shopId, count);
+        PaymentCompletion.reward(player, pay, () -> {
+            resp.addAllRewards(PlayerHelper.addResources(player, itemsAdd, OpType.ShopTrade));
             shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + countTemp);
-            //				shopItem.update();
-            //			}
             player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, countTemp);
-            resp.addAllRewards(resources);
-            client.sendProtocol(resp);
-            GameLogger.shoptrade(player, shopId, itemId,countTemp);
-            if (shopId == 12 || shopId == 13 || shopId == 14) {
-                //				GameLogger.acti
-            }
-            return true;
-        };
-        Future<Boolean> pay = player.pay(PayType.ShopItem, itemId, GameUtil.arrayMultiple3(shopItemConfig.PurchaseParameter, count), shopId);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                addItemAction.get();
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+            GameLogger.shoptrade(player, shopId, itemId, countTemp);
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
         /*ShopItemConfig shopItemConfig = ShopItemManager.instance().get(shopItem.getItemId());
 		if (shopItemConfig.PurchaseCnt > 0 && shopItem.getItemBuyTimes() >= shopItemConfig.PurchaseCnt) {
 			client.sendProtocol(resp, ErrorMsgEnum.shop_item_buy_count_max.getId());
@@ -510,19 +483,15 @@ public class ShopHandler extends GameBaseHandler {
         }
         MonthCardConfig monthCardConfig = MonthCardManager.instance().get(id);
         int[] cost = monthCardConfig.Price;
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.MonthCard, id, cost);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
-                resp.setMonthCard(newMonthCard.toProto());
-                List<RewardInfo> resources = PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
-                resp.addAllRewards(resources);
-                monthCardModule.sendRewardMail(true);
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentCompletion.reward(player, pay, () -> {
+            MonthCard newMonthCard = monthCardModule.buyMonthCard(id);
+            resp.setMonthCard(newMonthCard.toProto());
+            resp.addAllRewards(PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy));
+            monthCardModule.sendPaymentRewardMail(true);
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     private void monthCardBuyReward(NetClient client, Object message) {
@@ -589,17 +558,13 @@ public class ShopHandler extends GameBaseHandler {
             client.sendProtocol(resp, ErrorMsgEnum.shop_gift_repeated.getId());
             return;
         }
+        PaymentReply reply = new PaymentReply(client);
         Future<Boolean> pay = player.pay(PayType.ChapterPacks, id, chapterPacksConfig.PurchaseParameter);
-        pay.onComplete(t -> {
-            if (t.result()) {
-                playerModule.addId(IdConstant.CHAPTER_PACK, id);
-                List<RewardInfo> resources = PlayerHelper.addResources(player, chapterPacksConfig.Item, OpType.ChapterGift);
-                resp.addAllRewards(resources);
-                client.sendProtocol(resp.build());
-            } else {
-                client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
-            }
-        });
+        PaymentCompletion.reward(player, pay, () -> {
+            playerModule.addId(IdConstant.CHAPTER_PACK, id);
+            resp.addAllRewards(PlayerHelper.addResources(player, chapterPacksConfig.Item, OpType.ChapterGift));
+            return resp.build();
+        }).onSuccess(reply::send).onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
     /*	private void advertise(NetClient client, Object message) {
@@ -619,12 +584,9 @@ public class ShopHandler extends GameBaseHandler {
         LimitedTimeGiftBuyResponse_15000062.Builder resp = LimitedTimeGiftBuyResponse_15000062.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         LimitedTimeGiftModule module = player.getModule(LimitedTimeGiftModule.class);
-        Future<List<RewardInfo>> buy = module.buy(id, true);
-        buy.map(r -> {
-            resp.addAllRewards(r);
-            client.sendProtocol(resp.build());
-            return null;
-        }).onFailure(player::handleFail);
+        PaymentReply reply = new PaymentReply(client);
+        module.buy(id, true).map(rewards -> resp.addAllRewards(rewards).build()).onSuccess(reply::send)
+                .onFailure(error -> reply.fail(resp.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
     }
 
 }

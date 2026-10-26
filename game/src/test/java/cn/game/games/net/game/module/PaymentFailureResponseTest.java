@@ -69,7 +69,7 @@ class PaymentFailureResponseTest {
     @Test void dayGiftSuccessAwardsOnlyAfterPayment() throws Exception {
         for (int gift : List.of(1, 99)) {
             try (Fixture f = new Fixture("day", gift)) {
-                f.invoke(); f.assertPending(); f.player.payment.complete(true); f.assertSucceeded();
+                f.invoke(); f.assertPending(); f.player.deliver(); f.assertSucceeded();
             }
         }
     }
@@ -85,7 +85,7 @@ class PaymentFailureResponseTest {
     /** 限时礼包成功仍调用购买模块且只发送一次成功结果。 */
     @Test void limitedGiftSuccessKeepsOriginalRewardPath() throws Exception {
         try (Fixture f = new Fixture("limited", 1)) {
-            f.invoke(); f.assertPending(); f.player.payment.complete(true); f.assertSucceeded();
+            f.invoke(); f.assertPending(); f.player.deliver(); f.assertSucceeded();
         }
     }
 
@@ -99,7 +99,7 @@ class PaymentFailureResponseTest {
     /** 基金购买在支付成功后只调用一次解锁并发送一次结果。 */
     @Test void fundSuccessRepliesExactlyOnce() throws Exception {
         try (Fixture f = new Fixture("fund", 15)) {
-            f.invoke(); f.assertPending(); f.player.payment.complete(true); f.assertSucceeded();
+            f.invoke(); f.assertPending(); f.player.deliver(); f.assertSucceeded();
         }
     }
 
@@ -139,7 +139,7 @@ class PaymentFailureResponseTest {
             for (boolean business : List.of(false, true)) {
                 try (Fixture f = new Fixture(type, 1)) {
                     f.awardFailure = business ? new LogicException(ErrorMsgEnum.times_limit) : new IllegalStateException("award failed");
-                    f.invoke(); f.player.payment.complete(true);
+                    f.invoke(); f.player.deliver();
                     f.assertFailed(business ? ErrorMsgEnum.times_limit.getId()
                             : type.equals("limited") ? ErrorMsgEnum.xian_shi_li_bao_buy_fail.getId() : ErrorMsgEnum.unknown.getId());
                 }
@@ -168,7 +168,7 @@ class PaymentFailureResponseTest {
                     f.invoke(); f.assertPending();
                     Assertions.assertTrue(f.client.needProcess(new ByteArrayProtocol(123, new byte[0], 42, 0)));
                     if (outcome == 2) { f.player.payment.fail(new IllegalStateException("late failure")); }
-                    else { f.player.payment.complete(outcome != 0); }
+                    else if (outcome == 0) { f.player.payment.complete(false); } else { f.player.deliver(); }
                     Assertions.assertEquals(List.of(41), f.client.sequences);
                     Assertions.assertEquals(1, f.client.getRecentMessages().get(41).size());
                     Assertions.assertFalse(f.client.getRecentMessages().containsKey(42));
@@ -176,6 +176,42 @@ class PaymentFailureResponseTest {
                     Assertions.assertEquals(List.of(41, 41), f.client.sequences);
                     Assertions.assertEquals(1, f.client.getRecentMessages().get(41).size(), "重放不得再次写缓存");
                 }
+            }
+        }
+    }
+
+    /** 实际购买 Handler 注册的奖励经实际发货入口执行，购买成功和 Login 确认都等保存回执。 */
+    @Test void actualHandlersWaitForShipmentRewardsAndCommit() throws Exception {
+        for (String type : List.of("day", "limited", "fund")) {
+            try (Fixture f = new Fixture(type, 1);
+                    var executor = cn.game.core.execute.SaveMailboxFixture.create()) {
+                var processor = new cn.game.core.net.process.IdVirtualThreadProcessor(executor);
+                var saved = Promise.<List<Object>>promise();
+                var captured = Promise.<Void>promise();
+                var replies = new java.util.concurrent.CopyOnWriteArrayList<Boolean>();
+                var saves = cn.game.games.net.game.helper.PlayerSaveCoordinator.shared();
+                saves.register(f.player.getPlayerId(), f.player, () -> {});
+                f.player.setOnline(true); f.player.setIslogining(false);
+                class Delivery extends cn.game.games.net.game.handler.ServerHandler {
+                    /** 在真实邮箱执行生产发货流程，外部保存由用例控制。 */
+                    void deliver() { handlePaymentForPlayer(f.client, f.player, 91, "fixture-sdk", true); }
+                    @Override protected Player paymentPlayer(long id) { return f.player; }
+                    @Override protected boolean singlePaymentStorage() { return true; }
+                    @Override protected cn.game.games.net.game.helper.PlayerWriteGuard.Scope beginPaymentMutation(Player value) {
+                        return new cn.game.games.net.game.helper.PlayerWriteGuard.Scope(saves.beginMutation(value.getPlayerId(), value));
+                    }
+                    @Override protected Future<List<Object>> savePayment(Player value) { captured.complete(); return saved.future(); }
+                    @Override protected void sendResult(NetClient client, boolean success) { replies.add(success); }
+                }
+                f.invoke(); f.assertPending();
+                Future<Void> shipping = processor.processAsync(f.player.getPlayerId(), new Delivery()::deliver, false);
+                captured.future().toCompletionStage().toCompletableFuture().get(10, java.util.concurrent.TimeUnit.SECONDS);
+                Assertions.assertEquals(1, f.awards.get()); Assertions.assertTrue(f.client.messages.isEmpty());
+                Assertions.assertTrue(replies.isEmpty()); Assertions.assertFalse(f.player.payment.future().isComplete());
+                Assertions.assertTrue(f.player.getPlayerModule().getPayItems(91).isFinish());
+                saved.complete(List.of(new cn.game.games.net.game.helper.PlayerSaveCoordinator.Receipt(f.player.getPlayerId(), 1, 1, 2)));
+                shipping.toCompletionStage().toCompletableFuture().get(10, java.util.concurrent.TimeUnit.SECONDS);
+                f.assertSucceeded(); Assertions.assertEquals(List.of(true), replies);
             }
         }
     }
@@ -299,12 +335,26 @@ class PaymentFailureResponseTest {
         /** 当前场景业务对象。 */
         ActivityBase activity;
         /** @param client 本次请求客户端 */
-        TestPlayer(RecordingClient client) { this.client = client; }
+        TestPlayer(RecordingClient client) {
+            this.client = client;
+            getModules().put(cn.game.games.net.game.module.player.PlayerModule.class.getName(), new cn.game.games.net.game.module.player.PlayerModule());
+        }
+        /** 消费真实注册的奖励绑定，再模拟保存确认；实际发货保存时序另由发货回归验证。 */
+        void deliver() {
+            try { getPlayerModule().execPayCallback(91); getPlayerModule().confirmPayCallback(91, null); }
+            catch (RuntimeException failure) {
+                LoggerFactory.getLogger(getClass()).warn("奖励执行失败，模拟发货拒绝", failure);
+                getPlayerModule().confirmPayCallback(91, failure);
+            }
+        }
         @Override public Account getAccount() { return account; }
         @Override public PlayerData getData() { return data; }
         @Override public int getLevel() { return 1; }
         @Override public long getGuildId() { return 0; }
-        @Override public Future<Boolean> pay(PayType type, int id, int[] cost, int... others) { return payment.future(); }
+        @Override public Future<Boolean> pay(PayType type, int id, int[] cost, int... others) {
+            var item = new cn.game.games.net.game.module.recharge.PayItem(); item.setOrderId(91); item.setPayType(type); item.setPayId(id); item.addPaySubIds(others);
+            getPlayerModule().addPayItems(item); getPlayerModule().addPayCallback(91, payment); return payment.future();
+        }
         @Override public ActivityModule getActivityModule() {
             return new ActivityModule() {
                 @Override @SuppressWarnings("unchecked") public <T extends ActivityBase> T get(int id) { return (T) activity; }

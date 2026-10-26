@@ -87,7 +87,7 @@ public enum PayType {
 			MonthCardModule monthCardModule = player.getModule(MonthCardModule.class);
 			monthCardModule.buyMonthCard(payItem.getPayId());
 			PlayerHelper.addResources(player, monthCardConfig.PurchaseRewards, OpType.MonthCardBuy);
-			monthCardModule.sendRewardMail(false);
+			monthCardModule.sendPaymentRewardMail(false);
 			return true;
 		}
 	},
@@ -97,14 +97,17 @@ public enum PayType {
 		@Override
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int itemId = payItem.getPayId();
-			int shopId = payItem.getPaySubIds().get(0);
+			if (payItem.getPaySubIds().size() < 2) { return false; }
+            int shopId = payItem.getPaySubIds().get(0);
+            int count = payItem.getPaySubIds().get(1);
+            if (count <= 0) { return false; }
 			ShopModule shopModule = player.getShopModule();
 			ShopItem shopItem = shopModule.getShopItem(shopId, itemId);
 			ShopItemConfig shopItemConfig = ShopItemManager.instance().get(itemId);
-			PlayerHelper.addResources(player, shopItemConfig.Item, OpType.ShopTrade);
-			shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + 1);
-			player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, 1);
-			GameLogger.shoptrade(player, shopId, itemId,1);
+			PlayerHelper.addResources(player, cn.game.util.GameUtil.arrayMultiple(shopItemConfig.Item, count), OpType.ShopTrade);
+			shopItem.setItemBuyTimes(shopItem.getItemBuyTimes() + count);
+			player.fireAndHandleEvent(EventTypeEnum.BuyItems, shopId, itemId, count);
+			GameLogger.shoptrade(player, shopId, itemId, count);
 			return true;
 		}
 	},
@@ -154,17 +157,17 @@ public enum PayType {
 			return true;
 		}
 	},
-	/**每日优惠礼包购买*/
-	DayGift(10) {
-		public boolean offlinePay(Player player, PayItem payItem) {
-			int id = payItem.getPayId();
-
-//			ActivityXianShiLiBaoConfig activityXianShiLiBaoConfig = ActivityXianShiLiBaoManager.instance().get(id);
-//			XianShiLiBaoModule xianShiLiBaoModule = player.getModule(XianShiLiBaoModule.class);
-//			xianShiLiBaoModule.addBuyId(activityXianShiLiBaoConfig);
-			return false;
-		}
-	},
+    /** 每日优惠礼包，与在线普通/打包购买使用相同模块。 */
+    DayGift(10) {
+        @Override public boolean offlinePay(Player player, PayItem payItem) {
+            int activityId = payItem.getPaySubIds().get(0);
+            cn.game.games.net.game.module.activity.impl.player.DayGiftActivity activity = player.getActivityModule().get(activityId);
+            if (payItem.getPayId() == 99) { activity.packageBuy(); }
+            else { activity.buy(payItem.getPayId()); }
+            GameLogger.activity(player, activityId, payItem.getPayId());
+            return true;
+        }
+    },
 	/**限时礼包购买*/
 	LimitedTimeGift(11) {
 		public boolean offlinePay(Player player, PayItem payItem) {
@@ -182,12 +185,25 @@ public enum PayType {
 
 		public boolean offlinePay(Player player, PayItem payItem) {
 			int id = payItem.getPayId();
-			FundPassSignActivity fundPassSignActivityModule = player.getActivityModule().get(id);
+			if (payItem.getPaySubIds().isEmpty()) { return false; }
+            FundPassSignActivity fundPassSignActivityModule = player.getActivityModule().get(payItem.getPaySubIds().get(0));
 			fundPassSignActivityModule.buy(id);
 			return true;
 		}
 	},
-	;
+    /** 西游转盘礼包使用独立类型，不能误走首充活动的离线恢复。 */
+    WestLucky(13) {
+        @Override public boolean offlinePay(Player player, PayItem payItem) {
+            int activityId = payItem.getPaySubIds().get(0);
+            var activity = (cn.game.games.net.game.module.activity.impl.player.ActivityWestLucky) player.getActivityModule().get(activityId);
+            var config = cn.game.protocol.generated.manager.ActivityWestLuckyPackManager.instance().get(payItem.getPayId());
+            GameLogger.activity(player, activityId, payItem.getPayId());
+            PlayerHelper.addResources(player, config.Item, OpType.ZhuanPanItemBuy);
+            activity.getBuyIdMap().merge(payItem.getPayId(), 1, Integer::sum);
+            return true;
+        }
+    },
+    ;
 
 
 	private int id;

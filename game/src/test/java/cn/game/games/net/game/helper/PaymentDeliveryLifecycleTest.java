@@ -206,7 +206,7 @@ class PaymentDeliveryLifecycleTest {
         }
     }
 
-    /** 真实 Charge 异常后的finish不会在本任务被误改成重投成功，仍保留对象和原失败语义。 */
+    /** 真实 Charge 异常发生在 finish 前，后续通知仍保守拒绝并保留原对象。 */
     @Test void failedChargeIsNotUpgradedToSuccessOnReplay() throws Exception {
         try (Fixture f = new Fixture(true)) {
             f.player.registerEventHandler(EventTypeEnum.Charge, event -> { throw new IllegalStateException("charge fault"); });
@@ -298,8 +298,14 @@ class PaymentDeliveryLifecycleTest {
         final AtomicInteger awards = new AtomicInteger(), charges = new AtomicInteger(), removes = new AtomicInteger(), loads = new AtomicInteger();
         /** 原付款承诺、外部加载与事务终态。 */
         final Promise<Boolean> payment = Promise.promise();
+        /** 可替换的奖励外部完成边界；保留生产回调绑定与发货流程。 */
+        java.util.function.Supplier<Future<Void>> reward = () -> { award(); return Future.succeededFuture(); };
+        /** 保存确认后才完成的购买结果。 */
+        final Future<Void> purchase;
         Promise<Player> loaded = Promise.promise();
         final Promise<PlayerSaveCoordinator.WriteResult> write = Promise.promise();
+        /** 生产快照装配实际交给 writer 的行，用于核对标记与奖励处于同一保存。 */
+        volatile PlayerData writtenSnapshot;
         final Promise<Void> captured = Promise.promise();
         final List<Runnable> deadlines = new CopyOnWriteArrayList<>();
         final PlayerSaveCoordinator saves;
@@ -337,10 +343,10 @@ class PaymentDeliveryLifecycleTest {
             PayItem item = new PayItem(); item.setOrderId(91); item.setPayType(PayType.FirstCharge); item.setPayId(73); item.setRmb(12); item.addPaySubIds(17);
             player.getPlayerModule().addPayItems(item);
             player.getPlayerModule().addPayCallback(91, payment);
-            payment.future().onSuccess(success -> { if (success) { award(); } });
+            purchase = cn.game.games.net.game.module.recharge.PaymentCompletion.async(player, payment.future(), () -> reward.get());
             player.registerEventHandler(EventTypeEnum.Charge, event -> charges.incrementAndGet());
             owner = player;
-            saves = new PlayerSaveCoordinator(4, 30_000, writer == null ? (row, insert) -> write.future() : writer,
+            saves = new PlayerSaveCoordinator(4, 30_000, writer == null ? (row, insert) -> { writtenSnapshot = row; return write.future(); } : writer,
                     (action, delay) -> { deadlines.add(action); return () -> {}; }, DateUtil::currentTimeMillis);
             saves.register(id(), player, () -> {});
             rpc = (NetClient) Proxy.newProxyInstance(NetClient.class.getClassLoader(), new Class<?>[] {NetClient.class}, (proxy, method, args) -> {

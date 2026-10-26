@@ -381,7 +381,7 @@ class PlayerSaveRiskTest {
             return new cn.game.games.net.game.module.recharge.PayItem();
         }
         @Override protected boolean processPayment(Player value, cn.game.games.net.game.module.recharge.PayItem item, boolean online) { return true; }
-        @Override protected void persistAndReply(cn.game.core.net.client.NetClient client, Player value, boolean online) {
+        @Override protected void persistAndReply(cn.game.core.net.client.NetClient client, Player value, boolean online, long uid) {
             Future<?> saved = h.save(); if (immediate) { h.commit(0); }
             saved.onComplete(result -> {
                 if (result.failed()) { done.tryFail(result.cause()); return; }

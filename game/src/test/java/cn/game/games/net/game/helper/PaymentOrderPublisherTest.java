@@ -130,7 +130,7 @@ class PaymentOrderPublisherTest {
             Assertions.assertEquals(1, f.client.published());
             Assertions.assertFalse(payment.isComplete());
             Assertions.assertFalse(f.saves.status(f.player.getPlayerId()).observedDirty());
-            await(f.processor.processAsync(f.player.getPlayerId(), () -> Assertions.assertTrue(f.player.getPlayerModule().execPayCallback(91)), false));
+            await(f.processor.processAsync(f.player.getPlayerId(), () -> { Assertions.assertTrue(f.player.getPlayerModule().execPayCallback(91)); f.player.getPlayerModule().confirmPayCallback(91, null); }, false));
             Assertions.assertTrue(await(payment));
         }
     }
@@ -142,6 +142,8 @@ class PaymentOrderPublisherTest {
             Future<Void> delivery = f.processor.processAsync(f.player.getPlayerId(), () -> {
                 Assertions.assertEquals(1, f.client.published());
                 Assertions.assertTrue(f.player.getPlayerModule().execPayCallback(91));
+                Assertions.assertFalse(payment.isComplete());
+                f.player.getPlayerModule().confirmPayCallback(91, null);
             }, false);
             Assertions.assertFalse(delivery.isComplete()); f.commit(); await(delivery); Assertions.assertTrue(await(payment));
         }
@@ -218,9 +220,10 @@ class PaymentOrderPublisherTest {
             PayItem original = new PayItem(); original.setOrderId(91); original.setPayId(777);
             Promise<Boolean> old = Promise.promise();
             f.player.getPlayerModule().addPayItems(original); f.player.getPlayerModule().addPayCallback(91, old);
+            cn.game.games.net.game.module.recharge.PaymentCompletion.reward(f.player, old.future(), () -> null);
             Future<Boolean> payment = f.start(); f.order(); Assertions.assertFalse(await(payment)); f.flush();
             Assertions.assertSame(original, f.player.getPlayerModule().getPayItems(91));
-            await(f.processor.processAsync(f.player.getPlayerId(), () -> Assertions.assertTrue(f.player.getPlayerModule().execPayCallback(91)), false));
+            await(f.processor.processAsync(f.player.getPlayerId(), () -> { Assertions.assertTrue(f.player.getPlayerModule().execPayCallback(91)); f.player.getPlayerModule().confirmPayCallback(91, null); }, false));
             Assertions.assertTrue(await(old.future())); Assertions.assertEquals(0, f.client.published());
         }
     }
@@ -317,7 +320,7 @@ class PaymentOrderPublisherTest {
         Future<Boolean> start() throws Exception { return start(new int[] {17, 18}); }
         /** @param extras 调用方参数 @return 原购买的支付 Future，外层邮箱任务仅执行创单入口 */
         Future<Boolean> start(int[] extras) throws Exception {
-            return await(processor.process(player.getPlayerId(), () -> PaymentOrderPublisher.create(player, PayType.FirstCharge, 73, 12, 1007, extras,
+            Future<Boolean> paymentResult = await(processor.process(player.getPlayerId(), () -> PaymentOrderPublisher.create(player, PayType.FirstCharge, 73, 12, 1007, extras,
                     new PaymentOrderPublisher.Services(() -> single, id -> owner, processor, saves,
                             value -> { request = value; return rpc.future(); }, id -> {
                                 if (saveFailure == 1) { throw new IllegalStateException("capture failed"); }
@@ -326,6 +329,8 @@ class PaymentOrderPublisherTest {
                                         tasks -> { throw new AssertionError("禁止独立表旁路"); });
                                 captured.complete(); return result;
                             }, () -> "test-server")), null));
+            cn.game.games.net.game.module.recharge.PaymentCompletion.reward(player, paymentResult, () -> null);
+            return paymentResult;
         }
         /** 推进真实 RPC 返回边界。 */
         void order() { rpc.complete(PaymentOrderCreateResponse_7d000021.newBuilder().setOrderId(91).build()); }
