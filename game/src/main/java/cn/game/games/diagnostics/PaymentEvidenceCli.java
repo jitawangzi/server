@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.game.util.DateUtil;
+import cn.game.games.net.game.helper.PaymentCapacityMonitor;
 
 /**
  * 显式本地 CLI：只查询一个玩家的一笔订单，不构造 Player、不启用多态反序列化或登录 hook。
@@ -23,7 +24,7 @@ import cn.game.util.DateUtil;
 public final class PaymentEvidenceCli {
     /** 仅记录脱敏异常，不输出驱动消息、配置值或订单正文。 */
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PaymentEvidenceCli.class);
-    /** 单次最多读取 4 MiB 玩家模块 JSON，超限返回 INPUT_LIMIT。 */
+    /** 单次最多读取 4 MiB 玩家模块 JSON 正文；这是诊断上限，不是保存上限。 */
     public static final int MAX_BYTES = 4 * 1024 * 1024;
     /** 单库 SQL 上限两秒，连接及 socket 上限两秒。 */
     private static final int QUERY_SECONDS = 2;
@@ -41,9 +42,17 @@ public final class PaymentEvidenceCli {
     public interface Reader {
         /** @param playerId 显式正玩家 ID @return 模块 JSON；无玩家行返回 null */
         String game(long playerId) throws Exception;
+        /** @param playerId 单个玩家主键 @return 正文及完整 modules 字节数；超诊断上限仍可只返回尺寸 */
+        default ModulesSnapshot gameSnapshot(long playerId) throws Exception {
+            String raw = game(playerId);
+            return raw == null ? null : new ModulesSnapshot(raw, PaymentCapacityMonitor.utf8Bytes(raw));
+        }
         /** @param orderId 显式正订单 ID @return 最小订单字段；无订单返回 null */
         LoginOrder login(long orderId) throws Exception;
     }
+
+    /** 超限时 modules 为 null，字节数仍来自同一主键行，不用占位大字符串伪造大小。 */
+    public record ModulesSnapshot(String modules, long utf8Bytes) {}
 
     /** 不携带平台 receipt、账号、商品正文或原始流水。 */
     public record LoginOrder(long playerId, int price, int payState, Integer delivered, String sdkOrderId) {}
@@ -95,14 +104,23 @@ public final class PaymentEvidenceCli {
         result.put("transactionResolution", "NOT_PROVEN"); result.put("canResend", false);
         result.put("retention", "RETAIN_NO_TRUSTED_ARCHIVE_OR_TERMINAL_PROOF");
         result.put("capacity", "UNBOUNDED_ORDER_COUNT_NO_EVICTION");
+        result.put("modulesSizeScope", "FULL_MODULES_UTF8");
+        result.put("diagnosticLimitBytes", MAX_BYTES);
+        result.put("retainedOrders", "NOT_OBSERVED");
         JsonNode item = null;
         result.put("gameReadStartedAt", DateUtil.currentTimeMillis());
         try {
-            String raw = reader.game(playerId);
-            if (raw == null) { result.put("game", "PLAYER_NOT_FOUND"); }
-            else if (raw.length() > MAX_BYTES || raw.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > MAX_BYTES) {
+            ModulesSnapshot snapshot = reader.gameSnapshot(playerId);
+            String raw = snapshot == null ? null : snapshot.modules();
+            if (snapshot == null) { result.put("game", "PLAYER_NOT_FOUND"); }
+            else if (snapshot.utf8Bytes() > MAX_BYTES) {
+                result.put("modulesUtf8Bytes", snapshot.utf8Bytes());
+                result.put("retainedOrders", "NOT_READ_INPUT_LIMIT");
                 result.put("game", "INPUT_LIMIT");
             } else {
+                if (raw == null || snapshot.utf8Bytes() < 0 || raw.length() > MAX_BYTES
+                        || PaymentCapacityMonitor.utf8Bytes(raw) > MAX_BYTES) { throw new IllegalArgumentException("INVALID_SIZE"); }
+                result.put("modulesUtf8Bytes", snapshot.utf8Bytes());
                 JsonNode root = unwrap(JSON.readTree(raw));
                 if (!root.isObject()) { throw new IllegalArgumentException("INVALID_MODULES"); }
                 JsonNode module = unwrap(root.path(MODULE));
@@ -111,6 +129,7 @@ public final class PaymentEvidenceCli {
                     if (!module.isObject()) { throw new IllegalArgumentException("INVALID_MODULE"); }
                     JsonNode items = unwrap(module.path("payItems"));
                     if (!items.isObject()) { throw new IllegalArgumentException("INVALID_ORDERS"); }
+                    result.put("retainedOrders", items.size());
                     item = unwrap(items.path(Long.toString(orderId)));
                     if (item.isMissingNode()) { result.put("game", "ORDER_NOT_FOUND"); }
                     else { classify(result, item, playerId, orderId); }
@@ -200,6 +219,25 @@ public final class PaymentEvidenceCli {
                 ? node.get(1) : node;
     }
 
+    /**
+     * @param connection 调用方拥有的只读连接，本方法仅关闭语句及结果集
+     * @param playerId 显式玩家主键，不允许扫描
+     * @return 同一行的 UTF-8 尺寸及受限正文，超限不调用 getString 读取正文
+     * @throws java.sql.SQLException 查询失败，由上层脱敏分类
+     */
+    static ModulesSnapshot readGame(java.sql.Connection connection, long playerId) throws java.sql.SQLException {
+        // 显式统一为 UTF-8，避免把非 UTF-8 列的存储字节错误标记为快照 UTF-8 字节。
+        try (var s = connection.prepareStatement("SELECT OCTET_LENGTH(CONVERT(modules USING utf8mb4)), CASE WHEN OCTET_LENGTH(CONVERT(modules USING utf8mb4))<=4194304 THEN modules ELSE NULL END FROM t_player_data WHERE player_id=? LIMIT 1")) {
+            s.setQueryTimeout(QUERY_SECONDS); s.setMaxRows(1); s.setLong(1, playerId);
+            try (var rows = s.executeQuery()) {
+                if (!rows.next()) { return null; }
+                long bytes = rows.getLong(1);
+                if (bytes > MAX_BYTES) { return new ModulesSnapshot(null, bytes); }
+                return new ModulesSnapshot(rows.getString(2) == null ? "null" : rows.getString(2), bytes);
+            }
+        }
+    }
+
     /** 私有连接只运行固定 SELECT；配置文件由受控本地运维提供，不自动连接 Apollo。 */
     private static final class JdbcReader implements Reader {
         /** 从受限本地文件读取的 Game 与 Login 配置，禁止输出。 */
@@ -218,14 +256,11 @@ public final class PaymentEvidenceCli {
             catch (Exception failure) { warn(failure); connection.close(); throw failure; }
         }
         @Override public String game(long playerId) throws Exception {
-            try (var c = connect(""); var s = c.prepareStatement("SELECT OCTET_LENGTH(modules), CASE WHEN OCTET_LENGTH(modules)<=4194304 THEN modules ELSE NULL END FROM t_player_data WHERE player_id=? LIMIT 1")) {
-                s.setQueryTimeout(QUERY_SECONDS); s.setMaxRows(1); s.setLong(1, playerId);
-                try (var rows = s.executeQuery()) {
-                    if (!rows.next()) { return null; }
-                    if (rows.getLong(1) > MAX_BYTES) { return " ".repeat(MAX_BYTES + 1); }
-                    return rows.getString(2) == null ? "null" : rows.getString(2);
-                }
-            }
+            ModulesSnapshot snapshot = gameSnapshot(playerId);
+            return snapshot == null ? null : snapshot.modules();
+        }
+        @Override public ModulesSnapshot gameSnapshot(long playerId) throws Exception {
+            try (var c = connect("")) { return readGame(c, playerId); }
         }
         @Override public LoginOrder login(long orderId) throws Exception {
             try (var c = connect("login."); var s = c.prepareStatement("SELECT player_id,price,pay_state,is_deliver,third_order_id FROM t_pay_order WHERE id=? LIMIT 1")) {

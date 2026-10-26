@@ -199,6 +199,13 @@ public class PlayerModule extends BasePlayerModule {
 	public PayItem getPayItems(long uid) {
 		return this.payItems.get(uid);
 	}
+
+    /**
+     * 仅在所属玩家队列、封存 modules 的同一执行段调用，不遍历或清理订单。
+     * @return 全部保留订单的数量；不包含临时支付回调
+     */
+    @JsonIgnore
+    public int retainedPaymentOrderCount() { return payItems.size(); }
 	
 	public Map<Integer, Integer> getGuideMap() {
 		return guideMap;

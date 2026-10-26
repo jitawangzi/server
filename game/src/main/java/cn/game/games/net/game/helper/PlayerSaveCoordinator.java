@@ -88,7 +88,8 @@ public final class PlayerSaveCoordinator {
             boolean observedDirty, Long earliestUnsavedChangeAt, Long riskFirstObservedSnapshotAt,
             boolean waiterTimedOut, boolean workerExited, String failure, long lastAttemptAt,
             long riskAgeMillis, boolean warning, boolean writeProtected, int consecutiveFailures,
-            long retryAt, boolean automaticBlocked, int deferredTimers) {}
+            long retryAt, boolean automaticBlocked, int deferredTimers,
+            Integer confirmedPaymentOrders, Long confirmedModulesUtf8Bytes) {}
     /** 受信运维核对后的裁决，不提供强制跳过 UNKNOWN 的选项。 */
     public enum Resolution { COMMITTED, NOT_COMMITTED }
     /**
@@ -121,6 +122,8 @@ public final class PlayerSaveCoordinator {
     private final Timer timer;
     /** 可控毫秒时钟。 */
     private final LongSupplier clock;
+    /** 仅在确认提交并完成回执后，由有界独立出口消费快照标量。 */
+    private final java.util.function.Consumer<PaymentCapacityMonitor.Sample> capacityObserver;
     /** 墙钟回拨不得缩短已观察风险。 */
     private final java.util.concurrent.atomic.AtomicInteger automaticOutstanding = new java.util.concurrent.atomic.AtomicInteger();
     /** 墙钟观察上界。 */
@@ -180,6 +183,8 @@ public final class PlayerSaveCoordinator {
         long version, confirmedVersion;
         /** 最近已确认提交的回执。 */
         Receipt confirmed;
+        /** 最近确认回执覆盖的容量；未确认或探针失败为 null，不用构建快照伪装已落库。 */
+        PaymentCapacityMonitor.Sample confirmedCapacity;
         /** 未明确埋点时保持 null，避免伪造最早业务变更时点。 */
         Long dirtyAt;
         /** 封存边界之后的变更合并在同一段，避免逐请求保留日志。 */
@@ -224,10 +229,16 @@ public final class PlayerSaveCoordinator {
     }
     /** 测试注入策略和时钟，生产使用固定预算。 */
     PlayerSaveCoordinator(int capacity, long waitMillis, Writer writer, Timer timer, LongSupplier clock, RiskPolicy policy) {
+        this(capacity, waitMillis, writer, timer, clock, policy, PaymentCapacityMonitor::committed);
+    }
+    /** @param capacity 队列上限 @param waitMillis 等待期限 @param writer 写入器 @param timer 计时器 @param clock 时钟 @param policy 风险策略 @param capacityObserver 已提交容量出口 */
+    PlayerSaveCoordinator(int capacity, long waitMillis, Writer writer, Timer timer, LongSupplier clock, RiskPolicy policy,
+            java.util.function.Consumer<PaymentCapacityMonitor.Sample> capacityObserver) {
         if (capacity < 1 || waitMillis < 1) { throw new IllegalArgumentException("保存容量和等待期限必须为正"); }
         this.capacity = capacity; this.waitMillis = waitMillis;
         this.writer = Objects.requireNonNull(writer); this.timer = Objects.requireNonNull(timer);
         this.clock = Objects.requireNonNull(clock); this.policy = Objects.requireNonNull(policy);
+        this.capacityObserver = Objects.requireNonNull(capacityObserver);
     }
     /** @param owner 权威对象 @param id 玩家；捕获前登记风险，准备失败也不能清理玩家 */
     Capture preparing(Object owner, long id) {
@@ -333,7 +344,11 @@ public final class PlayerSaveCoordinator {
         job.cancelTimer.run();
         // 独立通知线程避免用户同步回调等待其他代次时阻塞写入推进或等待计时器。
         Thread.startVirtualThread(() -> {
-            if (result.outcome() == Outcome.COMMITTED) { job.waiter.tryComplete(receipt.get()); }
+            if (result.outcome() == Outcome.COMMITTED) {
+                // 先完成回执，再以有界出口发布；指标、日志或注入观察者均不能延迟已提交的结果。
+                job.waiter.tryComplete(receipt.get());
+                if (receipt.get() != null) { PaymentCapacityMonitor.publish(PlayerDataSnapshot.capacity(job.data), capacityObserver); }
+            }
             else {
                 log.warn("玩家保存未确认 playerId={} generation={} outcome={}", id, job.generation, result.outcome(), result.cause());
                 job.waiter.tryFail(new SaveFailure(result.outcome().name(), id, job.generation, result.cause()));
@@ -344,6 +359,7 @@ public final class PlayerSaveCoordinator {
     private Receipt confirm(long id, Lane lane, Job job) {
         Receipt receipt = new Receipt(id, job.generation, job.capturedAt, now());
         lane.confirmed = receipt; lane.confirmedVersion = job.version;
+        lane.confirmedCapacity = PlayerDataSnapshot.capacity(job.data);
         while (!lane.changes.isEmpty() && lane.changes.peekFirst().version <= job.version) { lane.changes.removeFirst(); }
         lane.failures = 0; lane.retryAt = 0; lane.automaticBlocked = false;
         if (lane.version == job.version) { lane.snapshotAt = null; lane.failure = null; }
@@ -383,7 +399,9 @@ public final class PlayerSaveCoordinator {
                     lane.active == null ? 0 : lane.active.generation, lane.queue.size(), c == null ? 0 : c.generation(),
                     c == null ? 0 : c.committedAt(), c == null ? 0 : c.capturedAt(), lane.version > lane.confirmedVersion || !lane.mutations.isEmpty(),
                     lane.dirtyAt, lane.snapshotAt, lane.active != null && lane.active.timedOut, lane.unknown, lane.failure,
-                    lane.lastAttemptAt, age(lane), lane.warned, lane.protectedWrite, lane.failures, lane.retryAt, lane.automaticBlocked, lane.deferredTimers.size()));
+                    lane.lastAttemptAt, age(lane), lane.warned, lane.protectedWrite, lane.failures, lane.retryAt, lane.automaticBlocked, lane.deferredTimers.size(),
+                    lane.confirmedCapacity == null ? null : lane.confirmedCapacity.orders(),
+                    lane.confirmedCapacity == null ? null : lane.confirmedCapacity.modulesUtf8Bytes()));
             return lane;
         });
         return value.get();

@@ -10,6 +10,12 @@ import cn.game.util.JsonUtil;
  * 新增映射字段或可变类型须同步复制策略及 Mapper 覆盖测试，不负责跨次写入保序。
  */
 final class PlayerDataSnapshot {
+    /** 只随本次 Mapper 参数传递观测标量，不改变 PlayerData 持久字段或模块 JSON 格式。 */
+    private static final class MeasuredData extends PlayerData {
+        /** 封存时读取；回调线程不再访问在线模块。 */
+        @com.fasterxml.jackson.annotation.JsonIgnore
+        private PaymentCapacityMonitor.Sample capacity;
+    }
     /** 工具类不创建实例。 */
     private PlayerDataSnapshot() {}
 
@@ -25,7 +31,7 @@ final class PlayerDataSnapshot {
         String modules = JsonUtil.toJsonStringWithType(player.getModules());
 
         // 显式覆盖 insert 与 updateByPrimaryKey 实际读取的字段，不克隆整个玩家对象。
-        PlayerData snapshot = new PlayerData();
+        MeasuredData snapshot = new MeasuredData();
         snapshot.setPlayerId(source.getPlayerId());
         snapshot.setUid(source.getUid());
         snapshot.setChannelId(source.getChannelId());
@@ -59,8 +65,24 @@ final class PlayerDataSnapshot {
         snapshot.setGameTime(source.getGameTime());
         snapshot.setModules(modules);
 
+        // 复用唯一序列化结果，只在保存边界读 HashMap.size，不在支付请求上全扫订单。
+        try {
+            var module = player.getPlayerModule();
+            if (module != null) {
+                snapshot.capacity = new PaymentCapacityMonitor.Sample(source.getPlayerId(), module.retainedPaymentOrderCount(),
+                        PaymentCapacityMonitor.utf8Bytes(modules));
+            }
+        } catch (Throwable failure) {
+            PaymentCapacityMonitor.reportFailure(failure);
+        }
+
         // JSON 已由本次参数独占；异步完成或超时后都不能再清理任何提交对象。
         source.setModules("{}");
         return snapshot;
+    }
+
+    /** @param data 原封存参数 @return 捕获标量；手工或非聚合保存没有容量观测 */
+    static PaymentCapacityMonitor.Sample capacity(PlayerData data) {
+        return data instanceof MeasuredData measured ? measured.capacity : null;
     }
 }
