@@ -1,0 +1,17 @@
+[
+  "cn.game.games.diagnostics.PaymentArchiveTest#diskBytesAuthenticateWithIndependentJcaAndColdRead",
+  "cn.game.games.diagnostics.PaymentArchiveTest#signaturePayloadIdentityAndConclusionsCannotBeRewritten",
+  "cn.game.games.diagnostics.PaymentArchiveTest#missingWrongEmbeddedKeyAndUnknownVersionFailClosed",
+  "cn.game.games.diagnostics.PaymentArchiveTest#validMacDoesNotAuthorizeDifferentExpectedIdentity",
+  "cn.game.games.diagnostics.PaymentArchiveTest#ambiguousDeepOversizedAndTruncatedArchivesAreRejected",
+  "cn.game.games.diagnostics.PaymentArchiveTest#identicalObservationIsIdempotentAndConflictNeverOverwrites",
+  "cn.game.games.diagnostics.PaymentArchiveTest#concurrentWritersPublishOnlyOneCompleteAuthenticatedFile",
+  "cn.game.games.diagnostics.PaymentArchiveTest#crossProcessLockIsBoundedAndReleasedOnExit",
+  "cn.game.games.diagnostics.PaymentArchiveTest#partialWriteForceAndColdReadFailuresNeverReportSuccessOrRepair",
+  "cn.game.games.diagnostics.PaymentArchiveTest#unsafeOrUnreadableSourcesProduceNoArchive",
+  "cn.game.games.diagnostics.PaymentArchiveTest#historicalAndUnknownProofsRetainRiskWithoutDeleteOrResendAuthority",
+  "cn.game.games.diagnostics.PaymentArchiveTest#collectionPreservesSourceAndExcludesOtherPlayerData",
+  "cn.game.games.diagnostics.PaymentArchiveTest#pathsAndNonRegularTargetsFailClosed",
+  "cn.game.games.diagnostics.PaymentArchiveTest#reparseRedirectedRootCannotEscapeControlledDirectory",
+  "cn.game.games.diagnostics.PaymentArchiveTest#standaloneVerifyHasRedactedStdoutAndNonzeroFailureExit"
+]

@@ -156,10 +156,12 @@ class PaymentOrderDatabaseIT {
             Assertions.assertNotNull(config, "必须显式提供 S2_DB_CONFIG，不能跳过真实库验收");
             Properties properties = new Properties();
             try (InputStream input = Files.newInputStream(Path.of(config))) { properties.load(input); }
+            // 两库验收必须连接显式 Login 配置；兼容既有仅包含单库键的独立 Login 验收。
+            String prefix = properties.containsKey("login.dburl") ? "login." : "";
             var source = new DriverManagerDataSource();
-            source.setDriverClassName(properties.getProperty("driverClassName"));
-            source.setUrl(properties.getProperty("dburl"));
-            source.setUsername(properties.getProperty("dbuser")); source.setPassword(properties.getProperty("dbpass"));
+            source.setDriverClassName(properties.getProperty(prefix + "driverClassName"));
+            source.setUrl(properties.getProperty(prefix + "dburl"));
+            source.setUsername(properties.getProperty(prefix + "dbuser")); source.setPassword(properties.getProperty(prefix + "dbpass"));
             Properties limits = new Properties();
             limits.setProperty("connectTimeout", "3000"); limits.setProperty("socketTimeout", "20000");
             limits.setProperty("autoReconnect", "false"); limits.setProperty("useAffectedRows", String.valueOf(affectedRows));
@@ -226,6 +228,7 @@ class PaymentOrderDatabaseIT {
                     Assertions.assertEquals(1, statement.executeUpdate(), "只清理当前 fixture 的唯一订单");
                 }
                 Assertions.assertNull(read(), "fixture 必须清理完毕");
+                org.slf4j.LoggerFactory.getLogger(PaymentOrderDatabaseIT.class).info("PAYMENT_LOGIN_FIXTURE_COLD_EMPTY");
             }
         }
     }

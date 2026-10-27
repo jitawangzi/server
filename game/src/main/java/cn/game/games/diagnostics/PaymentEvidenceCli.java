@@ -239,7 +239,7 @@ public final class PaymentEvidenceCli {
     }
 
     /** 私有连接只运行固定 SELECT；配置文件由受控本地运维提供，不自动连接 Apollo。 */
-    private static final class JdbcReader implements Reader {
+    static final class JdbcReader implements Reader {
         /** 从受限本地文件读取的 Game 与 Login 配置，禁止输出。 */
         private final Properties config = new Properties();
         /** @throws Exception 缺少配置时失败，不回退生产缺省配置 */

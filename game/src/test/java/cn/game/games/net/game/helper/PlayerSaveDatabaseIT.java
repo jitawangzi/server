@@ -53,6 +53,81 @@ class PlayerSaveDatabaseIT {
     /** 准备生产模块类型，避免启动服务器和共享连接池。 */
     @BeforeAll static void metadata() { ClassManager.getInstance().init(); }
 
+    /** 唯一两库夹具经真实只读采集、持久归档和冷读验证；新连接核对源行未变及精确清理为空。 */
+    @Test void trustedArchiveReadsBothDatabasesWithoutMutatingSource() throws Exception {
+        Properties config = new Properties();
+        try (InputStream input = Files.newInputStream(Path.of(System.getenv("S2_DB_CONFIG")))) { config.load(input); }
+        Path runtime = Files.createTempDirectory(Path.of(System.getenv("S3_ARCHIVE_TEST_ROOT")), "archive-db-");
+        Path key = runtime.resolve("key.bin"), archive = runtime.resolve("archive");
+        byte[] secret = new byte[32]; new java.security.SecureRandom().nextBytes(secret); Files.write(key, secret);
+        java.util.Arrays.fill(secret, (byte) 0);
+        try (DatabaseFixture db = new DatabaseFixture(false)) {
+            db.seed(); boolean loginInserted = false;
+            try {
+                try (var connection = archiveLoginConnection(config); var insert = connection.prepareStatement(
+                        "INSERT INTO t_pay_order (id,game_server_id,channel_code,channel_label,user_id,player_id,third_uid,env,pay_state,is_deliver,create_date,create_time,debug_text,third_order_id,price,item_name,callback) VALUES (?,'s3c-test','s3c-test','s3c-test',?,?,?,1,2,1,?,?,?, ?,1200,'s3c-test','{}')")) {
+                    insert.setLong(1, db.id); insert.setLong(2, db.id); insert.setLong(3, db.id); insert.setString(4, db.runId);
+                    insert.setString(5, DateUtil.nowDateStr()); insert.setString(6, DateUtil.nowTimeStr());
+                    insert.setString(7, db.runId); insert.setString(8, db.runId);
+                    Assertions.assertEquals(1, insert.executeUpdate()); loginInserted = true;
+                }
+                Player player = db.player(); PayItem item = new PayItem();
+                item.setOrderId(db.id); item.setRmb(12); item.setPayType(PayType.FirstCharge); item.setSdkOrderId(db.runId);
+                item.finish(); item.setCompletionState("REWARDS_COMPLETED"); item.prepareCompletionProof(db.id); item.confirmCompletionProof();
+                player.getPlayerModule().addPayItems(item);
+                Assertions.assertEquals(PlayerSaveCoordinator.Outcome.COMMITTED,
+                        await(db.writer.write(PlayerDataSnapshot.capture(player), false)).outcome());
+                String gameBefore = db.read().getModules(); List<String> loginBefore = archiveLoginSnapshot(config, db.id);
+                var sealed = cn.game.games.diagnostics.PaymentArchiveCli.run(new String[] {"archive", Long.toString(db.id), Long.toString(db.id), archive.toString(), key.toString()});
+                Assertions.assertEquals("SEALED_AND_VERIFIED", sealed.get("status"), sealed.toString());
+                Path artifact = archive.resolve("payment-" + db.id + "-" + db.id + ".json");
+                Assertions.assertTrue(Files.size(artifact) > 0);
+                var cold = cn.game.games.diagnostics.PaymentArchiveCli.run(new String[] {"verify", Long.toString(db.id), Long.toString(db.id), archive.toString(), key.toString()});
+                Assertions.assertEquals("VERIFIED", cold.get("status")); Assertions.assertEquals(false, cold.get("canDelete"));
+                Assertions.assertEquals(gameBefore, db.read().getModules());
+                Assertions.assertEquals(loginBefore, archiveLoginSnapshot(config, db.id));
+                db.clean();
+            } finally {
+                if (loginInserted) {
+                    try (var connection = archiveLoginConnection(config); var delete = connection.prepareStatement(
+                            "DELETE FROM t_pay_order WHERE id=? AND player_id=? AND debug_text=? AND third_uid=? AND third_order_id=?")) {
+                        delete.setLong(1, db.id); delete.setLong(2, db.id); delete.setString(3, db.runId);
+                        delete.setString(4, db.runId); delete.setString(5, db.runId);
+                        Assertions.assertEquals(1, delete.executeUpdate());
+                    }
+                    Assertions.assertTrue(archiveLoginSnapshot(config, db.id).isEmpty(), "新连接冷查本轮Login夹具必须为空");
+                    log.info("TRUSTED_ARCHIVE_LOGIN_FIXTURE_COLD_EMPTY");
+                }
+            }
+            log.info("TRUSTED_ARCHIVE_FIXTURE_COLD_EMPTY game=1 login=1");
+        } finally {
+            // 路径只来自本轮私有临时目录；不保留测试密钥或把测试产物当生产归档。
+            try (var paths = Files.walk(runtime)) {
+                for (Path path : paths.sorted(java.util.Comparator.reverseOrder()).toList()) { Files.delete(path); }
+            }
+        }
+    }
+
+    /** @param config 临时受限配置 @return 仅本夹具的独立 Login 连接，不使用业务连接池 */
+    private static Connection archiveLoginConnection(Properties config) throws SQLException {
+        Properties properties = new Properties(); properties.setProperty("user", config.getProperty("login.dbuser"));
+        properties.setProperty("password", config.getProperty("login.dbpass")); properties.setProperty("connectTimeout", "2000");
+        properties.setProperty("socketTimeout", "5000"); properties.setProperty("autoReconnect", "false");
+        return java.sql.DriverManager.getConnection(config.getProperty("login.dburl"), properties);
+    }
+
+    /** @param config 临时配置 @param id 本轮唯一订单 @return 每个字段的冷读值，含 null；不输出正文 */
+    private static List<String> archiveLoginSnapshot(Properties config, long id) throws SQLException {
+        try (var connection = archiveLoginConnection(config); var select = connection.prepareStatement("SELECT * FROM t_pay_order WHERE id=?")) {
+            select.setLong(1, id);
+            try (var row = select.executeQuery()) {
+                List<String> values = new ArrayList<>();
+                if (row.next()) { for (int i = 1; i <= row.getMetaData().getColumnCount(); i++) { values.add(row.getString(i)); } }
+                return values;
+            }
+        }
+    }
+
     /** 真实库写入十天以前的凭证，冷读后执行清理，再经本地 CLI 重复核对并确认整行不变。 */
     @Test void agedPaymentEvidenceSurvivesColdCleanupAndReadOnlyCli() throws Exception {
         try (DatabaseFixture db = new DatabaseFixture(false)) {
@@ -363,6 +438,7 @@ class PlayerSaveDatabaseIT {
             try (var session = factory.openSession()) {
                 Assertions.assertNull(session.getMapper(PlayerDataMapper.class).selectByPrimaryKey(id), "精确清理后冷查必须为空");
             }
+            log.info("PAYMENT_GAME_FIXTURE_COLD_EMPTY");
         }
 
         @Override public void close() throws InterruptedException {
