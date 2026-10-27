@@ -23,6 +23,9 @@ import com.ctrip.framework.apollo.model.ConfigChangeEvent;
  * @author SYQ
  */
 public final class Config {
+	/** 启动时显式启用；必须先部署 Game 同库凭证表，不支持在线关闭或自动降级。 */
+	public static final boolean paymentDurableDedupEnabled = Boolean.parseBoolean(
+			System.getProperty("game.paymentDurableDedup", "false"));
 	private static Logger log = LoggerFactory.getLogger(Config.class);
 	/** 配置文件路径 */
 	public static final String CONFIG_FILE = "config/config.conf";

@@ -334,7 +334,7 @@ class PlayerSaveDatabaseIT {
     }
 
     /** 每个场景独占一个随机主键；失败保留数据与归属日志，成功才条件删除。 */
-    private static final class DatabaseFixture implements AutoCloseable {
+    static final class DatabaseFixture implements AutoCloseable {
         /** 本轮归属标识。 */
         final String runId = "s2_" + UUID.randomUUID().toString().replace("-", "");
         /** 与普通分配 ID 空间分离的正整数，INSERT 冲突立即失败。 */
@@ -443,13 +443,14 @@ class PlayerSaveDatabaseIT {
 
         @Override public void close() throws InterruptedException {
             gate.release.countDown();
+            gate.receiptRelease.countDown();
             executor.shutdown();
             Assertions.assertTrue(executor.awaitTermination(20, TimeUnit.SECONDS), "实际写线程未退出，保留 fixture，不进入下一轮");
         }
     }
 
     /** 仅包装真实连接的 commit；SQL、事务提交和冷读仍由实际数据库执行。 */
-    private static final class CommitGate extends DelegatingDataSource {
+    static final class CommitGate extends DelegatingDataSource {
         /** A 到达真实提交边界。 */
         final CountDownLatch entered = new CountDownLatch(1);
         /** 由测试放行 A，任何退出路径都放行。 */
@@ -462,15 +463,39 @@ class PlayerSaveDatabaseIT {
         volatile boolean hold;
         /** 是否在首笔真实提交后注入回执丢失。 */
         volatile boolean loseAcknowledgement;
+        /** 新持久去重验收只在完成凭证事务的提交处阻塞，避免阻塞发奖前占位提交。 */
+        volatile boolean holdReceipt, failReceiptInsert;
+        /** 真实提交之后丢失确认，只用于新凭证 UNKNOWN 验收。 */
+        volatile boolean loseReceiptAcknowledgement;
+        /** 查询异常只能拒绝，不能转换成凭证不存在。 */
+        volatile boolean failEvidenceRead;
+        /** 新凭证场景的独立提交屏障，旧回归不使用。 */
+        final CountDownLatch receiptEntered = new CountDownLatch(1), receiptRelease = new CountDownLatch(1);
+        /** 真实驱动完成凭证事务提交的证据。 */
+        final CountDownLatch receiptCommitted = new CountDownLatch(1);
 
         /** @param source 测试私有数据源 */
         CommitGate(DriverManagerDataSource source) { super(source); }
 
         @Override public Connection getConnection() throws SQLException {
             Connection actual = super.getConnection();
+            java.util.concurrent.atomic.AtomicBoolean receipt = new java.util.concurrent.atomic.AtomicBoolean();
             return (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class<?>[] {Connection.class},
                     (proxy, method, args) -> {
+                        if (failEvidenceRead && method.getName().equals("prepareStatement") && args[0] instanceof String sql
+                                && sql.startsWith("SELECT intent,token,player_id,order_id,sdk_order_id FROM s3d_claim_")) {
+                            throw new SQLException("受控持久凭证查询故障");
+                        }
+                        if (method.getName().equals("prepareStatement") && args[0] instanceof String sql
+                                && sql.startsWith("INSERT INTO s3d_receipt_")) {
+                            receipt.set(true);
+                            if (failReceiptInsert) { throw new SQLException("受控凭证插入故障"); }
+                        }
                         boolean commit = method.getName().equals("commit");
+                        if (commit && receipt.get() && holdReceipt) {
+                            receiptEntered.countDown();
+                            if (!receiptRelease.await(15, TimeUnit.SECONDS)) { throw new SQLException("凭证提交屏障未释放"); }
+                        }
                         int number = commit ? commits.incrementAndGet() : 0;
                         if (commit && hold && number == 1) {
                             entered.countDown();
@@ -484,6 +509,10 @@ class PlayerSaveDatabaseIT {
                         }
                         if (commit) {
                             completedCommits.incrementAndGet();
+                            if (receipt.get()) {
+                                receiptCommitted.countDown();
+                                if (loseReceiptAcknowledgement) { throw new SQLException("凭证事务真实提交后回执丢失"); }
+                            }
                             if (loseAcknowledgement && number == 1) { throw new SQLException("真实提交完成后注入回执丢失"); }
                         }
                         return result;

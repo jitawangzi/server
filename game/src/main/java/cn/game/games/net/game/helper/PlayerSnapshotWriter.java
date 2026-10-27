@@ -108,7 +108,17 @@ final class PlayerSnapshotWriter {
         }
         PlayerDataMapper mapper = session.getMapper(PlayerDataMapper.class);
         attempt.enteredMapper = true;
-        return insert ? mapper.insert(data) : mapper.updateByPrimaryKey(data);
+        int rows = insert ? mapper.insert(data) : mapper.updateByPrimaryKey(data);
+        var completion = PlayerDataSnapshot.durablePayment(data);
+        if (rows == 1 && completion != null) {
+            try {
+                completion.claim().store().insertCompletion(session.getConnection(), factories.get(), completion);
+            } catch (java.sql.SQLException failure) {
+                log.warn("履约凭证插入失败，玩家聚合事务不得提交 playerId={}", data.getPlayerId(), failure);
+                throw new IllegalStateException("PAYMENT_DURABLE_INSERT_FAILED", failure);
+            }
+        }
+        return rows;
     }
     /** @param session 待关闭会话 @param playerId 玩家；关闭异常不充当提交或终止证明 */
     private void close(SqlSession session, long playerId) {

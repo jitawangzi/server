@@ -15,6 +15,9 @@ final class PlayerDataSnapshot {
         /** 封存时读取；回调线程不再访问在线模块。 */
         @com.fasterxml.jackson.annotation.JsonIgnore
         private PaymentCapacityMonitor.Sample capacity;
+        /** 与同一奖励快照绑定的完成正文，不改变 Mapper 或模块 JSON。 */
+        @com.fasterxml.jackson.annotation.JsonIgnore
+        private PaymentDedupStore.Completion durablePayment;
     }
     /** 工具类不创建实例。 */
     private PlayerDataSnapshot() {}
@@ -65,6 +68,18 @@ final class PlayerDataSnapshot {
         snapshot.setGameTime(source.getGameTime());
         snapshot.setModules(modules);
 
+        // 只携带当前发货附件，不扫描历史订单；正文与本次实际封存的热订单必须相同。
+        var playerModule = player.getPlayerModule();
+        if (playerModule != null && playerModule.getDurablePayment() != null) {
+            var completion = playerModule.getDurablePayment();
+            if (completion.claim().intent().playerId() != snapshot.getPlayerId()
+                    || !completion.proof().equals(JsonUtil.toJsonString(
+                            playerModule.getPayItems(completion.claim().intent().orderId())))) {
+                throw new IllegalStateException("PAYMENT_DURABLE_SNAPSHOT_MISMATCH");
+            }
+            snapshot.durablePayment = completion;
+        }
+
         // 复用唯一序列化结果，只在保存边界读 HashMap.size，不在支付请求上全扫订单。
         try {
             var module = player.getPlayerModule();
@@ -84,5 +99,10 @@ final class PlayerDataSnapshot {
     /** @param data 原封存参数 @return 捕获标量；手工或非聚合保存没有容量观测 */
     static PaymentCapacityMonitor.Sample capacity(PlayerData data) {
         return data instanceof MeasuredData measured ? measured.capacity : null;
+    }
+
+    /** @param data 本次封存参数 @return 同事务凭证附件，普通保存为 null */
+    static PaymentDedupStore.Completion durablePayment(PlayerData data) {
+        return data instanceof MeasuredData measured ? measured.durablePayment : null;
     }
 }

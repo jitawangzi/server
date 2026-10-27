@@ -1,0 +1,16 @@
+[
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#atomicJdbcAndSpringCommitBeforeSuccess",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#coldWithoutHotOrderDeduplicatesWithoutArchiveOrSideEffects",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#receiptInsertFailureRollsBackAggregateAndFreezesOwner",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#immutableReceiptConflictRollsBackSecondSnapshot",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#concurrentClaimsRejectSameOrderAndSdkWithDifferentArguments",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#wrongIdentityArgumentsVersionsAndCorruptionFailClosed",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#legacyAndRestartedPendingOrdersRemainBlocked",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#disabledAndMissingTableDeploymentBoundaries",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#missingUniqueConstraintRejectsBeforeReward",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#timeoutLateCommitDoesNotThawOriginalOwner",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#lostCommitAcknowledgementRemainsUnknown",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#partialRewardFailureFreezesWithoutInventingReceipt",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#queryFailureNeverBecomesPermissionToReward",
+  "cn.game.games.net.game.helper.PaymentDurableDedupDatabaseIT#offlineShipmentCommitsReceiptBeforeReplyAndRelease"
+]

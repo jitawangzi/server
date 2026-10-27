@@ -179,6 +179,8 @@ public final class PlayerSaveCoordinator {
         final ArrayDeque<Job> queue = new ArrayDeque<>();
         /** 结果不明时保持 active，不释放写入权。 */
         boolean unknown;
+        /** 支付部分副作用或凭证失败后永久隔离本对象，普通保存/迟到成功不自动解除。 */
+        boolean paymentFrozen;
         /** 已观察变更及已确认覆盖版本；拒绝也增加前者。 */
         long version, confirmedVersion;
         /** 最近已确认提交的回执。 */
@@ -245,6 +247,7 @@ public final class PlayerSaveCoordinator {
         AtomicReference<Capture> result = new AtomicReference<>();
         lanes.compute(id, (key, lane) -> {
             requireOwner(lane, owner, id);
+            if (lane.paymentFrozen) { throw new SaveFailure("PAYMENT_FROZEN", id, 0, null); }
             long at = now();
             // beforeSave 也可能修改聚合字段，捕获失败仍保留原始风险。
             changed(lane, at);
@@ -279,8 +282,8 @@ public final class PlayerSaveCoordinator {
             if (capture == null) { changed(lane, now()); }
             lane.lastAttemptAt = now();
             if (lane.snapshotAt == null) { lane.snapshotAt = capture == null ? now() : capture.at(); }
-            if (lane.unknown || lane.queue.size() >= capacity) {
-                String code = lane.unknown ? "UNKNOWN_BLOCKED" : "QUEUE_FULL";
+            if (lane.paymentFrozen || lane.unknown || lane.queue.size() >= capacity) {
+                String code = lane.paymentFrozen ? "PAYMENT_FROZEN" : lane.unknown ? "UNKNOWN_BLOCKED" : "QUEUE_FULL";
                 lane.failure = code;
                 rejected.set(new SaveFailure(code, id, generation, null));
                 return lane;
@@ -328,6 +331,9 @@ public final class PlayerSaveCoordinator {
     }
     /** @param id 玩家 @param job 本次请求 @param result 实际终态，先预留并启动后继再通知等待者 */
     private void finish(long id, Job job, WriteResult result) {
+        if (result.outcome() != Outcome.COMMITTED && PlayerDataSnapshot.durablePayment(job.data) != null) {
+            freezePayment(id, null, result.cause());
+        }
         AtomicReference<Job> next = new AtomicReference<>();
         AtomicReference<Receipt> receipt = new AtomicReference<>();
         lanes.computeIfPresent(id, (key, lane) -> {
@@ -336,7 +342,7 @@ public final class PlayerSaveCoordinator {
             if (result.outcome() == Outcome.COMMITTED) { receipt.set(confirm(id, lane, job)); }
             else { failed(lane, result.cause(), result.outcome() == Outcome.NOT_WRITTEN); }
             if (result.outcome() == Outcome.UNKNOWN) { lane.unknown = true; }
-            else { lane.active = lane.queue.pollFirst(); next.set(lane.active); }
+            else { lane.active = lane.paymentFrozen ? null : lane.queue.pollFirst(); next.set(lane.active); }
             refreshRisk(id, lane);
             return lane;
         });
@@ -361,8 +367,8 @@ public final class PlayerSaveCoordinator {
         lane.confirmed = receipt; lane.confirmedVersion = job.version;
         lane.confirmedCapacity = PlayerDataSnapshot.capacity(job.data);
         while (!lane.changes.isEmpty() && lane.changes.peekFirst().version <= job.version) { lane.changes.removeFirst(); }
-        lane.failures = 0; lane.retryAt = 0; lane.automaticBlocked = false;
-        if (lane.version == job.version) { lane.snapshotAt = null; lane.failure = null; }
+        lane.failures = 0; lane.retryAt = 0; lane.automaticBlocked = lane.paymentFrozen;
+        if (lane.version == job.version) { lane.snapshotAt = null; if (!lane.paymentFrozen) { lane.failure = null; } }
         updateDirtyAt(lane);
         return receipt;
     }
@@ -395,7 +401,7 @@ public final class PlayerSaveCoordinator {
         lanes.computeIfPresent(id, (key, lane) -> {
             refreshRisk(id, lane);
             Receipt c = lane.confirmed;
-            value.set(new Status(identity, id, lane.unknown ? "UNKNOWN" : lane.active != null ? "IN_FLIGHT" : "IDLE",
+            value.set(new Status(identity, id, lane.unknown ? "UNKNOWN" : lane.paymentFrozen ? "PAYMENT_FROZEN" : lane.active != null ? "IN_FLIGHT" : "IDLE",
                     lane.active == null ? 0 : lane.active.generation, lane.queue.size(), c == null ? 0 : c.generation(),
                     c == null ? 0 : c.committedAt(), c == null ? 0 : c.capturedAt(), lane.version > lane.confirmedVersion || !lane.mutations.isEmpty(),
                     lane.dirtyAt, lane.snapshotAt, lane.active != null && lane.active.timedOut, lane.unknown, lane.failure,
@@ -475,8 +481,8 @@ public final class PlayerSaveCoordinator {
         updateDirtyAt(lane);
         long age = age(lane);
         if (!lane.warned && age >= policy.warnAfter()) { log.warn("玩家保存风险接近预算 playerId={} ageMs={}", id, age); lane.warned = true; }
-        if (lane.unknown || age >= policy.budget()) { lane.protectedWrite = true; }
-        if (!lane.risky() && !lane.unknown) { lane.protectedWrite = false; lane.warned = false; }
+        if (lane.paymentFrozen || lane.unknown || age >= policy.budget()) { lane.protectedWrite = true; }
+        if (!lane.risky() && !lane.unknown && !lane.paymentFrozen) { lane.protectedWrite = false; lane.warned = false; }
     }
     /** 在实际执行业务前检查，排队时的检查不能替代此处检查。 */
     public Mutation beginMutation(long id, Object owner) {
@@ -508,7 +514,7 @@ public final class PlayerSaveCoordinator {
     }
     /** @return 无在途/不明/排队/活动业务时才能自动捕获新的快照 */
     private boolean automaticEligible(Lane lane) {
-        return lane.version > lane.confirmedVersion && lane.active == null && lane.queue.isEmpty() && !lane.unknown
+        return lane.version > lane.confirmedVersion && lane.active == null && lane.queue.isEmpty() && !lane.unknown && !lane.paymentFrozen
                 && lane.mutations.isEmpty() && !lane.automaticBlocked && now() >= lane.retryAt
                 && (lane.failures > 0 || age(lane) >= policy.saveAfter());
     }
@@ -641,10 +647,38 @@ public final class PlayerSaveCoordinator {
     public boolean release(long id, Object owner, BooleanSupplier remove) {
         AtomicReference<Boolean> removed = new AtomicReference<>(false);
         lanes.compute(id, (key, lane) -> {
-            if (lane != null && (lane.owner != owner || lane.risky())) { return lane; }
+            if (lane != null && (lane.owner != owner || lane.risky() || lane.paymentFrozen)) { return lane; }
             removed.set(remove.getAsBoolean());
             return removed.get() ? null : lane;
         });
         return removed.get();
+    }
+
+    /**
+     * 冻结已产生副作用的原对象；允许真实在途事务结束，但禁止后继快照覆盖数据库。
+     * @param id 玩家 @param owner 原对象；写入器已经绑定代次时可为 null @param cause 失败原因
+     */
+    public void freezePayment(long id, Object owner, Throwable cause) {
+        List<Job> rejected = new ArrayList<>();
+        lanes.computeIfPresent(id, (key, lane) -> {
+            if (owner != null && lane.owner != owner) { return lane; }
+            lane.paymentFrozen = true; lane.protectedWrite = true; lane.automaticBlocked = true;
+            lane.failure = "PAYMENT_FROZEN";
+            rejected.addAll(lane.queue); lane.queue.clear();
+            return lane;
+        });
+        for (Job job : rejected) {
+            job.cancelTimer.run(); job.waiter.tryFail(new SaveFailure("PAYMENT_FROZEN", id, job.generation, cause));
+        }
+        log.warn("支付未确认，冻结原玩家后续修改和保存 playerId={}", id, cause);
+    }
+
+    /** @param id 玩家 @param owner 原对象；当前隔离不能被迟到的数据库成功查询自动解除 */
+    public void requirePaymentReady(long id, Object owner) {
+        lanes.compute(id, (key, lane) -> {
+            requireOwner(lane, owner, id);
+            if (lane.paymentFrozen || lane.unknown) { throw new SaveFailure("PAYMENT_FROZEN", id, 0, null); }
+            return lane;
+        });
     }
 }

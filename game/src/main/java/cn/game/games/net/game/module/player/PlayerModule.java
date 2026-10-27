@@ -79,6 +79,20 @@ public class PlayerModule extends BasePlayerModule {
 	private Map<Long, Integer> payRmbs = new HashMap<Long, Integer>();
 	/** 订单记录 */
 	private Map<Long, PayItem> payItems = new HashMap<Long, PayItem>();
+
+    /** 本次发货的同事务凭证；只在所属邮箱准备和清除，不进入模块 JSON。 */
+    @JsonIgnore
+    private transient cn.game.games.net.game.helper.PaymentDedupStore.Completion durablePayment;
+
+    /** @return 尚未获得原提交回执的凭证附件 */
+    @JsonIgnore
+    public cn.game.games.net.game.helper.PaymentDedupStore.Completion getDurablePayment() { return durablePayment; }
+
+    /** @param completion 本次不可变凭证；仅原提交成功后可传 null 清除 */
+    public void setDurablePayment(cn.game.games.net.game.helper.PaymentDedupStore.Completion completion) {
+        if (completion != null && durablePayment != null) { throw new IllegalStateException("PAYMENT_DURABLE_PENDING"); }
+        durablePayment = completion;
+    }
 	
 	/** 随机宝箱，小云宝箱 */
 	private List<Goods> cloudBox;

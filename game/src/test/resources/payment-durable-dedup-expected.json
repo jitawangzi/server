@@ -1,0 +1,6 @@
+[
+  "cn.game.games.net.game.helper.PaymentDurableDedupTest#identityBindsAllArgumentsAndCopiesSubIds",
+  "cn.game.games.net.game.helper.PaymentDurableDedupTest#controlledTableNamesRejectBusinessInput",
+  "cn.game.games.net.game.helper.PaymentDurableDedupTest#completionRequiresOriginalProofAndMatchingIdentity",
+  "cn.game.games.net.game.helper.PaymentDurableDedupTest#freezeRejectsQueuedAndFutureSavesEvenAfterLateCommit"
+]

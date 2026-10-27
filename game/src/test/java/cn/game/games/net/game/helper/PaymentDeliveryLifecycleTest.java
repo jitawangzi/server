@@ -316,6 +316,8 @@ class PaymentDeliveryLifecycleTest {
         /** 外部故障注入，不改写真实业务或保存收尾分支。 */
         boolean single = true, replyThrows, removeThrows;
         int saveFailure;
+        /** 新凭证用例注入同一个真实 Game 工厂；旧回归保持默认关闭。 */
+        PaymentDedupStore durableStore;
         long orderId = 91;
         /** 记录业务执行线程，以断言删除仍在同一邮箱任务。 */
         volatile Thread businessThread;
@@ -389,6 +391,9 @@ class PaymentDeliveryLifecycleTest {
             @Override protected Future<Player> loadPaymentPlayer(long id) { loads.incrementAndGet(); return loaded.future(); }
             @Override protected Future<Void> submitPayment(long id, Runnable action) { return processor.processAsync(id, action, false); }
             @Override protected boolean singlePaymentStorage() { return single; }
+            @Override protected PaymentDedupStore paymentDedupStore() { return durableStore; }
+            @Override protected void freezePayment(Player value, Throwable cause) { saves.freezePayment(id(), value, cause); }
+            @Override protected void requireDurablePaymentReady(Player value) { saves.requirePaymentReady(id(), value); }
             @Override protected PlayerWriteGuard.Scope beginPaymentMutation(Player value) { return new PlayerWriteGuard.Scope(saves.beginMutation(id(), value)); }
             @Override protected Future<List<Object>> savePayment(Player value) {
                 Assertions.assertSame(player, value);

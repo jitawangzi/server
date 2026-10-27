@@ -437,13 +437,28 @@ public class ServerHandler extends GameBaseHandler {
 	 * 统一处理一个玩家的一笔订单（在线/离线通用）
 	 */
 	protected void handlePaymentForPlayer(NetClient client, Player player, long uid,String sdkOrderId, boolean online) {
+	    cn.game.games.net.game.helper.PaymentDedupStore.Claim durableClaim = null;
 	    try {
             requirePaymentOwner(player);
             online = player.isOnline();
 
             // 凭证只能来自已提交的本批聚合快照，历史 finish 和内存奖励阶段均不足以成功去重。
             PayItem existing = player.getPlayerModule().getPayItems(uid);
-            if (existing != null && existing.hasCommittedCompletionProof(player.getPlayerId(), sdkOrderId)) {
+            var durable = paymentDedupStore();
+            if (durable != null) {
+                requireDurablePaymentReady(player);
+                var lookup = durable.lookup(player.getPlayerId(), uid, sdkOrderId, existing);
+                requirePaymentOwner(player);
+                if (lookup == cn.game.games.net.game.helper.PaymentDedupStore.Lookup.COMPLETED) {
+                    replyPayment(client, true, player.getPlayerId());
+                    return;
+                }
+                if (lookup != cn.game.games.net.game.helper.PaymentDedupStore.Lookup.ABSENT) {
+                    replyPayment(client, false, player.getPlayerId());
+                    return;
+                }
+            }
+            if (durable == null && existing != null && existing.hasCommittedCompletionProof(player.getPlayerId(), sdkOrderId)) {
                 replyPayment(client, true, player.getPlayerId());
                 return;
             }
@@ -459,10 +474,18 @@ public class ServerHandler extends GameBaseHandler {
 	        }
             boolean ok;
             try (PlayerWriteGuard.Scope ignored = beginPaymentMutation(player)) {
+                if (durable != null) {
+                    durableClaim = durable.claim(cn.game.games.net.game.helper.PaymentDedupStore.intent(player.getPlayerId(), payItem, sdkOrderId));
+                    requirePaymentOwner(player);
+                }
                 payItem.setSdkOrderId(sdkOrderId);
                 ok = processPayment(player, payItem, online);
+                if (ok && durableClaim != null) {
+                    player.getPlayerModule().setDurablePayment(cn.game.games.net.game.helper.PaymentDedupStore.completed(durableClaim, payItem));
+                }
             }
 	        if (!ok) {
+	            if (durableClaim != null) { freezePayment(player, new IllegalStateException("PAYMENT_REWARD_NOT_COMPLETED")); }
 	            // processPayment 内部已做必要日志
                 replyPayment(client, false, player.getPlayerId());
 	            return;
@@ -470,12 +493,28 @@ public class ServerHandler extends GameBaseHandler {
 
 	        persistAndReply(client, player, online, uid);
 	    } catch (Exception e) {
+	        if (durableClaim != null) { freezePayment(player, e); }
 	        log.error("ship unexpected error, playerId={}, uid={}", player.getPlayerId(), uid, e);
             player.getPlayerModule().confirmPayCallback(uid, e);
             // 未确认业务及保存终态时保留原对象；错误只回本次 Login RPC，不能发给重连后的购买请求。
             replyPayment(client, false, player.getPlayerId());
 	    }
 	}
+
+    /** @return 启动时显式启用的同库凭证存储；默认关闭以兼容尚未迁移的部署 */
+    protected cn.game.games.net.game.helper.PaymentDedupStore paymentDedupStore() {
+        return Config.paymentDurableDedupEnabled ? cn.game.games.net.game.helper.PaymentDedupStore.shared() : null;
+    }
+
+    /** @param player 已开始履约的原对象 @param cause 失败原因；无自动解锁或跨节点接管 */
+    protected void freezePayment(Player player, Throwable cause) {
+        cn.game.games.net.game.helper.PlayerSaveCoordinator.shared().freezePayment(player.getPlayerId(), player, cause);
+    }
+
+    /** @param player 本进程原对象；不通过冷查询自动解除已观察的 UNKNOWN 或支付隔离 */
+    protected void requireDurablePaymentReady(Player player) {
+        cn.game.games.net.game.helper.PlayerSaveCoordinator.shared().requirePaymentReady(player.getPlayerId(), player);
+    }
 
     /** 充值业务变化先结束作用域，再由persistAndReply捕获最终快照。 */
     protected PlayerWriteGuard.Scope beginPaymentMutation(Player player) { return PlayerWriteGuard.begin(player); }
@@ -546,7 +585,9 @@ public class ServerHandler extends GameBaseHandler {
             }
             requirePaymentOwner(player);
             player.getPlayerModule().getPayItems(uid).confirmCompletionProof();
+            player.getPlayerModule().setDurablePayment(null);
         } catch (Exception failure) {
+            if (player.getPlayerModule().getDurablePayment() != null) { freezePayment(player, failure); }
             log.warn("充值保存未确认或原实例已失效，保留驻留状态 playerId={}", playerId, failure);
             player.getPlayerModule().confirmPayCallback(uid, failure);
             replyPayment(client, false, playerId);
