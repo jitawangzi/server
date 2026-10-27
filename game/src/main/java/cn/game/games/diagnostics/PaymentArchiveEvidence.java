@@ -152,7 +152,7 @@ final class PaymentArchiveEvidence {
     }
 
     /** @param node 普通树 @return 仅剥离既有包装，不实例化包装中的类名 */
-    private static JsonNode unwrap(JsonNode node) {
+    static JsonNode unwrap(JsonNode node) {
         return node.isArray() && node.size() == 2 && node.get(0).isTextual()
                 && (node.get(0).textValue().startsWith("java.util.") || node.get(0).textValue().startsWith("cn.game.games.net.game.module."))
                 ? node.get(1) : node;

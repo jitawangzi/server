@@ -61,11 +61,15 @@ public final class PaymentArchiveStore {
 
     /** @param root 显式根 @param keyFile 外置信任锚 @param player 期望玩家 @param order 期望订单 @return 冷读认证结果，绝不授予业务操作权限 */
     public static Map<String, Object> verify(Path root, Path keyFile, long player, long order) throws Exception {
+        return receipt("VERIFIED", readAuthenticated(root, keyFile, player, order));
+    }
+
+    /** @param root 显式根 @param keyFile 外部私有密钥 @param player 玩家 @param order 订单 @return 本次真实冷读认证的普通树，不能作为后续写入授权 */
+    static JsonNode readAuthenticated(Path root, Path keyFile, long player, long order) throws Exception {
         Path directory = directory(root, false);
         byte[] key = key(keyFile, directory);
         try {
-            JsonNode content = authenticate(DISK.read(artifact(directory, player, order)), key, player, order);
-            return receipt("VERIFIED", content);
+            return authenticate(DISK.read(artifact(directory, player, order)), key, player, order);
         } finally { java.util.Arrays.fill(key, (byte) 0); }
     }
 

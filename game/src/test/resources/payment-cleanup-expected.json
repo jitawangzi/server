@@ -1,0 +1,12 @@
+[
+  "cn.game.games.diagnostics.PaymentCleanupTest#consistentLocalEvidenceNeverAuthorizesDeletionOrResend",
+  "cn.game.games.diagnostics.PaymentCleanupTest#authenticatedBytesKeyVersionAndIdentityAreRecheckedEveryTime",
+  "cn.game.games.diagnostics.PaymentCleanupTest#currentSnapshotParametersAndProofChangesAreBlocked",
+  "cn.game.games.diagnostics.PaymentCleanupTest#absentColdDataPendingUnknownAndLegacyRemainBlocked",
+  "cn.game.games.diagnostics.PaymentCleanupTest#missingReceiptClaimedAndQueryErrorsFailClosed",
+  "cn.game.games.diagnostics.PaymentCleanupTest#explicitInputAndRedactedOutputConvention",
+  "cn.game.games.net.game.helper.PaymentCleanupDurableTest#boundedReadsDistinguishMissingClaimReceiptAndCompleted",
+  "cn.game.games.net.game.helper.PaymentCleanupDurableTest#corruptVersionsIdentityTokensAndDuplicateRowsAreRejected",
+  "cn.game.games.net.game.helper.PaymentCleanupDurableTest#recomputedDigestCannotHideAlteredPurchaseOrProof",
+  "cn.game.games.net.game.helper.PaymentCleanupDurableTest#queryFailureAndLegacyCompletionNeverBecomeAbsentOrCompleted"
+]

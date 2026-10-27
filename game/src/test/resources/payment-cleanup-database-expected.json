@@ -1,0 +1,5 @@
+[
+  "cn.game.games.net.game.helper.PaymentCleanupDatabaseIT#completedTransactionAndStandaloneCliRemainReadOnlyAndBlocked",
+  "cn.game.games.net.game.helper.PaymentCleanupDatabaseIT#receiptClaimCorruptionAndMissingTableFailClosed",
+  "cn.game.games.net.game.helper.PaymentCleanupDatabaseIT#changedAbsentPendingAndArchiveRisksRemainBlocked"
+]

@@ -247,7 +247,7 @@ public final class PaymentEvidenceCli {
             try (InputStream input = Files.newInputStream(Path.of(java.lang.System.getenv("S2_DB_CONFIG")))) { config.load(input); }
         }
         /** @param prefix 空字符串为 Game，login. 为 Login @return 私有只读连接 */
-        private java.sql.Connection connect(String prefix) throws Exception {
+        java.sql.Connection connect(String prefix) throws Exception {
             Properties p = new Properties();
             p.setProperty("user", config.getProperty(prefix + "dbuser")); p.setProperty("password", config.getProperty(prefix + "dbpass"));
             p.setProperty("connectTimeout", "2000"); p.setProperty("socketTimeout", "2000"); p.setProperty("autoReconnect", "false");

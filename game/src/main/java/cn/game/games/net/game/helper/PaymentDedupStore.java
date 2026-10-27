@@ -130,6 +130,62 @@ public final class PaymentDedupStore {
     }
 
     /**
+     * 运维冷读复用发货链路的严格身份及完成正文校验；只执行两条有界 SELECT，不调用 Spring、Player 或写入器。
+     * @param c 调用方拥有的 Game 只读连接 @param playerId 显式玩家 @param expected 已认证归档的完整 PayItem
+     * @return 两表局部观察状态，不代表原子快照、平台终态或清理授权
+     * @throws SQLException 查询失败，不得解释为不存在
+     */
+    public static Lookup observe(Connection c, long playerId, PayItem expected) throws SQLException {
+        return observe(c, CLAIM, RECEIPT, playerId, expected);
+    }
+
+    /** @param c 隔离测试 Game 连接 @param suffix 本轮随机表后缀 @param playerId 玩家 @param expected 归档订单 @return 真实只读观察 */
+    static Lookup observe(Connection c, String suffix, long playerId, PayItem expected) throws SQLException {
+        return observe(c, testTable("claim", suffix), testTable("receipt", suffix), playerId, expected);
+    }
+
+    /** @param playerId 玩家 @param item 普通 JSON 映射的订单，不执行初始化 @return 与发货存储完全相同的完整身份校验 */
+    public static Intent validateCompletedItem(long playerId, PayItem item) {
+        Intent intent = intent(playerId, item, item.getSdkOrderId());
+        validateProof(intent, JsonUtil.toJsonString(item));
+        return intent;
+    }
+
+    /** @param c Game只读连接 @param claims 固定或测试表 @param receipts 固定或测试表 @param playerId 玩家 @param expected 归档订单 @return 严格局部观察 */
+    private static Lookup observe(Connection c, String claims, String receipts, long playerId, PayItem expected) throws SQLException {
+        Intent wanted = validateCompletedItem(playerId, expected);
+        String json = null, token = null;
+        // 在服务端限制 LONGTEXT 读取量；LIMIT 3 足够识别订单键和平台键的歧义，不扫描或回填。
+        try (var s = c.prepareStatement("SELECT CASE WHEN OCTET_LENGTH(intent)<=4194304 THEN intent END,token,player_id,order_id,sdk_order_id FROM "
+                + claims + " WHERE order_id=? OR sdk_order_id=? LIMIT 3")) {
+            s.setLong(1, wanted.orderId()); s.setString(2, wanted.sdkOrderId()); s.setQueryTimeout(2); s.setMaxRows(3);
+            try (var r = s.executeQuery()) {
+                if (r.next()) {
+                    json = r.getString(1); token = r.getString(2);
+                    if (json == null || !wanted.equals(validateIntent(json, playerId, wanted.orderId(), wanted.sdkOrderId(), expected))
+                            || r.getLong(3) != playerId || r.getLong(4) != wanted.orderId() || !wanted.sdkOrderId().equals(r.getString(5))
+                            || token == null || !token.matches("[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}") || r.next()) { throw invalid(); }
+                }
+            }
+        }
+        try (var s = c.prepareStatement("SELECT version,player_id,order_id,sdk_order_id,CASE WHEN OCTET_LENGTH(intent)<=4194304 THEN intent END,token,"
+                + "CASE WHEN OCTET_LENGTH(proof)<=4194304 THEN proof END,proof_sha256 FROM " + receipts + " WHERE order_id=? OR sdk_order_id=? LIMIT 3")) {
+            s.setLong(1, wanted.orderId()); s.setString(2, wanted.sdkOrderId()); s.setQueryTimeout(2); s.setMaxRows(3);
+            try (var r = s.executeQuery()) {
+                if (!r.next()) { return json == null ? Lookup.ABSENT : Lookup.CLAIMED; }
+                if (r.getInt(1) != 1 || r.getLong(2) != playerId || r.getLong(3) != wanted.orderId() || !wanted.sdkOrderId().equals(r.getString(4))
+                        || json == null || !json.equals(r.getString(5)) || !token.equals(r.getString(6))) { throw invalid(); }
+                String proof = r.getString(7);
+                if (proof == null || !digest(proof).equals(r.getString(8))) { throw invalid(); }
+                validateProof(wanted, proof);
+                // 发货去重只需购买身份一致；清理预检还必须与归档的完成时间、阶段和全部证明完全一致。
+                if (!JsonUtil.toJsonString(expected).equals(proof) || r.next()) { throw invalid(); }
+                return Lookup.COMPLETED;
+            }
+        }
+    }
+
+    /**
      * 先提交不可覆盖占位，再允许奖励；唯一键竞争失败不能借用胜者 token 重试。
      * @param intent 完整购买身份 @return 本次占位；异常或超时均不可执行奖励
      * @throws SQLException INSERT 或提交未确认
