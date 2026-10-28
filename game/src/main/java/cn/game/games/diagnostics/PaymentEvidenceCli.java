@@ -3,14 +3,10 @@ package cn.game.games.diagnostics;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.DriverManager;
 import java.sql.SQLTimeoutException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,16 +71,7 @@ public final class PaymentEvidenceCli {
         }
         try {
             long player = Long.parseLong(args[0]), order = Long.parseLong(args[1]);
-            // CLI 自有守护线程；即使驱动不响应中断，也不阻塞玩家邮箱或阻止 CLI 退出。
-            var executor = Executors.newSingleThreadExecutor(Thread.ofPlatform().daemon().factory());
-            try {
-                var future = executor.submit(() -> inspect(player, order, new JdbcReader()));
-                try { return future.get(7, TimeUnit.SECONDS); }
-                finally { future.cancel(true); }
-            } finally { executor.shutdownNow(); }
-        } catch (TimeoutException failure) {
-            warn(failure);
-            return Map.of("status", "TIMEOUT", "transactionResolution", "NOT_PROVEN");
+            return inspect(player, order, new JdbcReader());
         } catch (Exception failure) {
             warn(failure);
             if (failure instanceof InterruptedException) { Thread.currentThread().interrupt(); }
@@ -242,6 +229,8 @@ public final class PaymentEvidenceCli {
     static final class JdbcReader implements Reader {
         /** 从受限本地文件读取的 Game 与 Login 配置，禁止输出。 */
         private final Properties config = new Properties();
+        /** 整条诊断共享单调起点，包括两库连接、结构元数据和凭证读取。 */
+        private final long started = System.nanoTime();
         /** @throws Exception 缺少配置时失败，不回退生产缺省配置 */
         JdbcReader() throws Exception {
             try (InputStream input = Files.newInputStream(Path.of(java.lang.System.getenv("S2_DB_CONFIG")))) { config.load(input); }
@@ -251,7 +240,11 @@ public final class PaymentEvidenceCli {
             Properties p = new Properties();
             p.setProperty("user", config.getProperty(prefix + "dbuser")); p.setProperty("password", config.getProperty(prefix + "dbpass"));
             p.setProperty("connectTimeout", "2000"); p.setProperty("socketTimeout", "2000"); p.setProperty("autoReconnect", "false");
-            var connection = DriverManager.getConnection(config.getProperty(prefix + "dburl"), p);
+            String url = config.getProperty(prefix + "dburl");
+            cn.game.games.net.game.helper.PaymentDatabaseBoundary.validateUrl(url, p, 2000);
+            var source = new org.springframework.jdbc.datasource.DriverManagerDataSource(url, p);
+            var connection = cn.game.games.net.game.helper.PaymentDatabaseBoundary.open(source,
+                    new cn.game.games.net.game.helper.PaymentDatabaseBoundary.Limits(2000, 2000, 2000, 12000), started);
             try { connection.setReadOnly(true); return connection; }
             catch (Exception failure) { warn(failure); connection.close(); throw failure; }
         }

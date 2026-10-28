@@ -35,10 +35,17 @@ public final class PaymentEnablementCli {
 
     /** @param args 空数组 @return 脱敏报告，所有结果均无启用/清理/重放授权 */
     public static Map<String, Object> run(String[] args) {
-        return run(args, () -> {
+        if (args == null || args.length != 0) { return report(null, List.of("NO_ARGUMENTS_ALLOWED"), "INVALID_INPUT"); }
+        try {
             var reader = new PaymentEvidenceCli.JdbcReader();
-            try (var c = reader.connect("")) { return PaymentDedupStore.inspectSchema(c); }
-        });
+            try (var c = reader.connect("")) {
+                var schema = PaymentDedupStore.inspectSchema(c);
+                return report(schema, schema.blockers(), schema.valid() ? "BLOCKED_EXTERNAL_PREREQUISITES" : "BLOCKED_SCHEMA");
+            }
+        } catch (Exception failure) {
+            PaymentArchiveStore.safeWarn(failure);
+            return report(null, List.of("SCHEMA_CONFIG_OR_METADATA_UNAVAILABLE"), "BLOCKED_SCHEMA");
+        }
     }
 
     /** @param args 空数组 @param reader 只读观察依赖 @return 总等待不超过12秒的报告 */
@@ -53,13 +60,15 @@ public final class PaymentEnablementCli {
             try {
                 var schema = future.get(waitMillis, TimeUnit.MILLISECONDS);
                 return report(schema, schema.blockers(), schema.valid() ? "BLOCKED_EXTERNAL_PREREQUISITES" : "BLOCKED_SCHEMA");
-            } finally { future.cancel(true); }
+            } finally { executor.shutdown(); }
         } catch (Exception failure) {
             PaymentArchiveStore.safeWarn(failure);
             if (failure instanceof InterruptedException) { Thread.currentThread().interrupt(); }
-            return report(null, List.of(failure instanceof java.util.concurrent.TimeoutException ? "SCHEMA_OBSERVATION_TIMEOUT"
+            var result = report(null, List.of(failure instanceof java.util.concurrent.TimeoutException ? "SCHEMA_OBSERVATION_TIMEOUT"
                     : "SCHEMA_CONFIG_OR_METADATA_UNAVAILABLE"), "BLOCKED_SCHEMA");
-        } finally { executor.shutdownNow(); }
+            result.put("readerExited", executor.isTerminated());
+            return result;
+        } finally { executor.shutdown(); }
     }
 
     /** @param schema 可选局部观察 @param blockers 固定原因 @param status 固定状态 @return 不含原始元数据的报告 */

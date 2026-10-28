@@ -1,0 +1,17 @@
+[
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#invalidBudgetsFailBeforeAcquisition",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#localConfigurationPrecedenceIsStrict",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#urlTimeoutPrecedenceNeverSilentlyOverridesUrl",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#unknownSourceFailsClosedWithoutCallingDriver",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#unsupportedNetworkTimeoutDiscardsBeforeSql",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#ignoredNetworkTimeoutFailsClosed",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#successfulConnectionRestoresAllOriginalState",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#restoreFailuresNeverRecycleConnection",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#unfinishedTransactionIsDiscardedWithoutAutoCommitRestore",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#remainingBudgetIsNotResetPerStatement",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#lateCommitIsAwaitedAndReportedUnknown",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#sharedDiagnosticDeadlineRejectsNextConnection",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#failedSqlCannotImplicitlyCommitDuringCleanup",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#schemaMetadataConsumesOneTotalBudget",
+  "cn.game.games.net.game.helper.PaymentDatabaseBoundaryTest#unstartedPoolIsActionablePreExecutionFailure"
+]

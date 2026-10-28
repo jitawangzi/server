@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.ConnectionHolder;
+import java.sql.Connection;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.util.SpringContextLoader;
@@ -34,11 +36,17 @@ final class PlayerSnapshotWriter {
     private final Supplier<SqlSessionFactory> factories;
     /** 异步实际执行入口。 */
     private final Executor executor;
+    /** 每次操作开始前验证本地预算，测试可注入更短有限值。 */
+    private final Supplier<PaymentDatabaseBoundary.Limits> limits;
     /** 从现有 Spring 容器取得同一玩家数据库工厂，首次写入时才访问配置。 */
     PlayerSnapshotWriter() { this(() -> SpringContextLoader.getContext().getBean(SqlSessionFactory.class), io); }
     /** @param factories 会话工厂 @param executor 独立执行器 */
     PlayerSnapshotWriter(Supplier<SqlSessionFactory> factories, Executor executor) {
-        this.factories = factories; this.executor = executor;
+        this(factories, executor, PaymentDatabaseBoundary.Limits::configured);
+    }
+    /** @param factories 原工厂 @param executor 实际IO执行器 @param limits 有限预算来源 */
+    PlayerSnapshotWriter(Supplier<SqlSessionFactory> factories, Executor executor, Supplier<PaymentDatabaseBoundary.Limits> limits) {
+        this.factories = factories; this.executor = executor; this.limits = limits;
     }
     /** @param data 封存参数 @param insert 创建或更新 @return 不带等待超时的真实事务结果 */
     Future<PlayerSaveCoordinator.WriteResult> write(PlayerData data, boolean insert) {
@@ -55,6 +63,8 @@ final class PlayerSnapshotWriter {
     private static final class Attempt {
         /** 已开始 Mapper 调用后，异常不能再宣称未执行。 */
         boolean enteredMapper;
+        /** commit已真实确认后，资源恢复故障不撤销已提交事实。 */
+        boolean committed;
     }
     /** @param data 独占参数 @param insert 创建或更新 @return 仅显式事务提交成功才确认 */
     private PlayerSaveCoordinator.WriteResult execute(PlayerData data, boolean insert) {
@@ -67,34 +77,45 @@ final class PlayerSnapshotWriter {
             var environment = factory.getConfiguration().getEnvironment();
             var transactions = environment.getTransactionFactory();
             int rows;
-            if (transactions instanceof SpringManagedTransactionFactory) {
-                // SpringManaged 忽略 openSession 的 autoCommit 参数，必须先由同数据源的事务管理器绑定连接。
-                TransactionTemplate transaction = new TransactionTemplate(new DataSourceTransactionManager(environment.getDataSource()));
-                rows = transaction.execute(status -> {
-                    SqlSession session = factory.openSession(ExecutorType.SIMPLE, false);
+            try (Connection bounded = PaymentDatabaseBoundary.open(environment.getDataSource(), limits.get())) {
+                if (transactions instanceof SpringManagedTransactionFactory) {
+                    // SpringManaged 忽略 openSession 的 autoCommit 参数，必须先由同数据源的事务管理器绑定连接。
+                    TransactionTemplate transaction = new TransactionTemplate(new DataSourceTransactionManager(environment.getDataSource()));
+                    if (TransactionSynchronizationManager.hasResource(environment.getDataSource())) {
+                        throw new IllegalStateException("保存线程已有数据源绑定");
+                    }
+                    // 预先绑定原数据源身份，事务管理器与原工厂取得同一预算连接；不替换共享工厂的数据源。
+                    TransactionSynchronizationManager.bindResource(environment.getDataSource(), new ConnectionHolder(bounded));
                     try {
-                        int affected = invoke(session, data, insert, attempt);
-                        if (affected != 1) { status.setRollbackOnly(); }
-                        return affected;
+                        rows = transaction.execute(status -> {
+                            SqlSession session = factory.openSession(ExecutorType.SIMPLE, false);
+                            try {
+                                int affected = invoke(session, data, insert, attempt);
+                                if (affected != 1) { status.setRollbackOnly(); }
+                                return affected;
+                            } finally { close(session, data.getPlayerId()); }
+                        });
+                        if (rows == 1) { attempt.committed = true; }
+                    } finally { TransactionSynchronizationManager.unbindResource(environment.getDataSource()); }
+                    // 模板返回时数据库 commit/rollback 已结束，不能在模板回调返回时提前通知成功。
+                } else if (transactions instanceof JdbcTransactionFactory) {
+                    bounded.setAutoCommit(false);
+                    SqlSession session = factory.openSession(bounded);
+                    try {
+                        rows = invoke(session, data, insert, attempt);
+                        if (rows == 1) { session.commit(true); attempt.committed = true; }
+                        else { session.rollback(true); }
                     } finally { close(session, data.getPlayerId()); }
-                });
-                // 模板返回时数据库 commit/rollback 已结束，不能在模板回调返回时提前通知成功。
-            } else if (transactions instanceof JdbcTransactionFactory) {
-                SqlSession session = factory.openSession(ExecutorType.SIMPLE, false);
-                try {
-                    rows = invoke(session, data, insert, attempt);
-                    if (rows == 1) { session.commit(true); }
-                    else { session.rollback(true); }
-                } finally { close(session, data.getPlayerId()); }
-            } else {
-                throw new IllegalStateException("玩家保存要求支持显式提交的 JDBC/Spring 事务工厂");
+                } else {
+                    throw new IllegalStateException("玩家保存要求支持显式提交的 JDBC/Spring 事务工厂");
+                }
             }
             return rows == 1 ? new PlayerSaveCoordinator.WriteResult(PlayerSaveCoordinator.Outcome.COMMITTED, null)
                     : new PlayerSaveCoordinator.WriteResult(PlayerSaveCoordinator.Outcome.NOT_WRITTEN,
                             new IllegalStateException("玩家快照影响行数必须为1，实际=" + rows));
         } catch (Throwable failure) {
-            log.error("玩家快照事务未确认 playerId={} enteredMapper={}", data.getPlayerId(), attempt.enteredMapper, failure);
-            return new PlayerSaveCoordinator.WriteResult(attempt.enteredMapper
+            log.error("玩家快照边界失败 playerId={} enteredMapper={} committed={}", data.getPlayerId(), attempt.enteredMapper, attempt.committed, failure);
+            return new PlayerSaveCoordinator.WriteResult(attempt.committed ? PlayerSaveCoordinator.Outcome.COMMITTED : attempt.enteredMapper
                     ? PlayerSaveCoordinator.Outcome.UNKNOWN : PlayerSaveCoordinator.Outcome.NOT_WRITTEN, failure);
         }
     }

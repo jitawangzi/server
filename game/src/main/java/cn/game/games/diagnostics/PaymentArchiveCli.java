@@ -2,8 +2,6 @@ package cn.game.games.diagnostics;
 
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /** 显式本地单订单 archive/verify CLI；不启动业务、不自动扫描或补发，stdout 只输出固定脱敏摘要。 */
 public final class PaymentArchiveCli {
@@ -25,14 +23,8 @@ public final class PaymentArchiveCli {
             long player = Long.parseLong(args[1]), order = Long.parseLong(args[2]);
             Path root = Path.of(args[3]), key = Path.of(args[4]);
             if (args[0].equals("verify")) { return PaymentArchiveStore.verify(root, key, player, order); }
-            // 总采集等待沿用原 CLI 七秒上限；超时只取消只读采集，后台任务没有写归档权限。
-            var executor = Executors.newSingleThreadExecutor(Thread.ofPlatform().daemon().factory());
-            com.fasterxml.jackson.databind.node.ObjectNode content;
-            try {
-                var future = executor.submit(() -> PaymentArchiveEvidence.collect(player, order, new PaymentEvidenceCli.JdbcReader()));
-                try { content = future.get(7, TimeUnit.SECONDS); }
-                finally { future.cancel(true); }
-            } finally { executor.shutdownNow(); }
+            // 真实只读调用及连接清理退出后才封存归档，不以取消等待者当作采集终止。
+            var content = PaymentArchiveEvidence.collect(player, order, new PaymentEvidenceCli.JdbcReader());
             return PaymentArchiveStore.seal(root, key, player, order, content, new PaymentArchiveStore.Disk() {});
         } catch (Exception failure) {
             PaymentArchiveStore.safeWarn(failure);

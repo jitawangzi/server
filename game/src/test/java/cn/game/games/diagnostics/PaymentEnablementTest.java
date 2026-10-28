@@ -44,7 +44,7 @@ class PaymentEnablementTest {
         Assertions.assertEquals(List.of("SCHEMA_CONFIG_OR_METADATA_UNAVAILABLE"), report.get("localBlockers"));
     }
 
-    /** 总等待上限不依赖驱动配合；返回超时后取消本轮守护任务，不伪造已完成观察。 */
+    /** 任意注入读取器的等待超时不能取消实际工作或伪装观察退出。 */
     @Test void totalTimeoutCancelsObservationAndFailsClosed() throws Exception {
         CountDownLatch entered = new CountDownLatch(1), stopped = new CountDownLatch(1), release = new CountDownLatch(1);
         try {
@@ -53,7 +53,9 @@ class PaymentEnablementTest {
                 try { release.await(); return new PaymentDedupSchema.Report(1, "c".repeat(64), List.of()); }
                 finally { stopped.countDown(); }
             }, 100);
-            Assertions.assertTrue(entered.await(1, TimeUnit.SECONDS)); Assertions.assertTrue(stopped.await(1, TimeUnit.SECONDS));
+            Assertions.assertTrue(entered.await(1, TimeUnit.SECONDS)); Assertions.assertEquals(1, stopped.getCount());
+            Assertions.assertEquals(false, report.get("readerExited"));
+            release.countDown(); Assertions.assertTrue(stopped.await(1, TimeUnit.SECONDS));
             Assertions.assertEquals(List.of("SCHEMA_OBSERVATION_TIMEOUT"), report.get("localBlockers"));
             Assertions.assertEquals(false, report.get("localSchemaReady")); Assertions.assertEquals(3, PaymentEnablementCli.exitCode(report));
         } finally { release.countDown(); }

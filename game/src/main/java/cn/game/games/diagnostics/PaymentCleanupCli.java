@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.game.games.net.game.helper.PaymentDedupStore;
@@ -69,12 +67,7 @@ public final class PaymentCleanupCli {
             return report(List.of("EXPLICIT_POSITIVE_PLAYER_ORDER_REQUIRED"), "NOT_READ", "NOT_OBSERVED", true);
         }
         try {
-            var executor = Executors.newSingleThreadExecutor(Thread.ofPlatform().daemon().factory());
-            try {
-                var future = executor.submit(() -> inspect(Path.of(args[2]), Path.of(args[3]), Long.parseLong(args[0]), Long.parseLong(args[1]), factory.open()));
-                try { return future.get(12, TimeUnit.SECONDS); }
-                finally { future.cancel(true); }
-            } finally { executor.shutdownNow(); }
+            return inspect(Path.of(args[2]), Path.of(args[3]), Long.parseLong(args[0]), Long.parseLong(args[1]), factory.open());
         } catch (Exception failure) {
             PaymentArchiveStore.safeWarn(failure);
             if (failure instanceof InterruptedException) { Thread.currentThread().interrupt(); }

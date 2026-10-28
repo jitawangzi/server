@@ -256,7 +256,7 @@ public final class PaymentDedupStore {
 
     /** @return 新的 Game 连接，生命周期只属于本次查询或占位 @throws SQLException 建连失败 */
     private Connection connection() throws SQLException {
-        Connection c = factories.get().getConfiguration().getEnvironment().getDataSource().getConnection();
+        Connection c = PaymentDatabaseBoundary.open(factories.get().getConfiguration().getEnvironment().getDataSource(), PaymentDatabaseBoundary.Limits.configured());
         try {
             verifySchema(c);
             return c;

@@ -1,0 +1,9 @@
+[
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#slowSqlUsesRealQueryTimeout",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#saturatedHikariAcquisitionHasFiniteWait",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#blockedSqlIsUnknownForJdbcAndSpring",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#lostCommitAcknowledgementNeverAllowsReplay",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#lateCommitKeepsOwnershipUntilActualExit",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#unsupportedNetworkTimeoutFailsBeforeEitherMapper",
+  "cn.game.games.net.game.helper.PaymentDatabaseTimeoutDatabaseIT#springAndJdbcRestoreOrDiscardOwnedConnection"
+]

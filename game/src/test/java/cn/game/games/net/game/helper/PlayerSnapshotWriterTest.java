@@ -85,7 +85,7 @@ class PlayerSnapshotWriterTest {
         Assertions.assertTrue(f.calls.isEmpty());
         var badFactory = new PlayerSnapshotWriter(() -> { throw new IllegalStateException("no factory"); }, Runnable::run);
         Assertions.assertEquals(PlayerSaveCoordinator.Outcome.NOT_WRITTEN, badFactory.write(new PlayerData(), false).result().outcome());
-        f.autoCommit = true;
+        f.refuseAutoCommit = true;
         Assertions.assertEquals(PlayerSaveCoordinator.Outcome.NOT_WRITTEN,
                 new PlayerSnapshotWriter(f::factory, Runnable::run).write(new PlayerData(), false).result().outcome());
         Assertions.assertEquals(List.of("close"), f.calls);
@@ -126,6 +126,8 @@ class PlayerSnapshotWriterTest {
         final boolean spring;
         /** 连接池默认值及可控结果。 */
         boolean autoCommit = true, failCommit;
+        /** 驱动网络状态。 */
+        int network;
         /** 更新影响行数。 */
         int rows = 1;
         /** 数据库边界轨迹。 */
@@ -137,6 +139,8 @@ class PlayerSnapshotWriterTest {
             Connection connection = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class<?>[]{Connection.class},
                     (proxy, method, args) -> {
                         switch (method.getName()) {
+                            case "getNetworkTimeout": return network;
+                            case "setNetworkTimeout": network = (int) args[1]; return null;
                             case "getAutoCommit": return autoCommit;
                             case "setAutoCommit": autoCommit = (boolean) args[0]; calls.add("autoCommit=" + autoCommit); return null;
                             case "commit": calls.add("commit"); if (failCommit) { throw new java.sql.SQLException("commit response lost"); } return null;
@@ -156,6 +160,7 @@ class PlayerSnapshotWriterTest {
                                             return switch (operation.getName()) {
                                                 case "execute" -> { Assertions.assertFalse(autoCommit); calls.add("sql"); yield false; }
                                                 case "getUpdateCount" -> rows;
+                                                case "getQueryTimeout" -> 0;
                                                 case "getConnection" -> proxy;
                                                 case "getMoreResults", "isClosed" -> false;
                                                 case "toString" -> "test statement";
@@ -165,9 +170,12 @@ class PlayerSnapshotWriterTest {
                             default: throw new AssertionError(method.getName());
                         }
                     });
-            DataSource dataSource = (DataSource) Proxy.newProxyInstance(DataSource.class.getClassLoader(), new Class<?>[]{DataSource.class},
+            DataSource dataSource = (DataSource) Proxy.newProxyInstance(PaymentDatabaseBoundary.Source.class.getClassLoader(), new Class<?>[]{PaymentDatabaseBoundary.Source.class},
                     (proxy, method, args) -> switch (method.getName()) {
                         case "getConnection" -> connection;
+                        case "acquisitionMillis" -> 1;
+                        case "mysqlDriver" -> false;
+                        case "discard" -> null;
                         case "toString" -> "test datasource";
                         case "hashCode" -> 2;
                         case "equals" -> proxy == args[0];
@@ -192,7 +200,10 @@ class PlayerSnapshotWriterTest {
         /** 可控影响行数。 */
         int rows = 1;
         /** 违规自动提交配置。 */
-        boolean autoCommit;
+        boolean autoCommit = true, refuseAutoCommit;
+        /** 可核对的连接原状态。 */
+        int network, isolation = Connection.TRANSACTION_READ_COMMITTED;
+        boolean readOnly;
         /** 指定失败阶段。 */
         String failAt;
         /** 固定原因，验证异常身份。 */
@@ -201,17 +212,35 @@ class PlayerSnapshotWriterTest {
         CountDownLatch commitEntered, commitRelease;
         /** @return 不建立数据库连接的会话工厂 */
         SqlSessionFactory factory() {
-            DataSource ds = (DataSource) Proxy.newProxyInstance(DataSource.class.getClassLoader(), new Class<?>[]{DataSource.class},
-                    (proxy, method, args) -> { throw new AssertionError("unexpected real connection"); });
-            Configuration configuration = new Configuration(new Environment("test", new JdbcTransactionFactory(), ds));
             Connection connection = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class<?>[]{Connection.class},
-                    (proxy, method, args) -> { if (method.getName().equals("getAutoCommit")) { return autoCommit; } throw new AssertionError(method.getName()); });
+                    (proxy, method, args) -> switch (method.getName()) {
+                        case "getAutoCommit" -> autoCommit;
+                        case "setAutoCommit" -> { if (!refuseAutoCommit) { autoCommit = (boolean) args[0]; } yield null; }
+                        case "getNetworkTimeout" -> network;
+                        case "setNetworkTimeout" -> { network = (int) args[1]; yield null; }
+                        case "getTransactionIsolation" -> isolation;
+                        case "setTransactionIsolation" -> { isolation = (int) args[0]; yield null; }
+                        case "isReadOnly" -> readOnly;
+                        case "setReadOnly" -> { readOnly = (boolean) args[0]; yield null; }
+                        case "commit", "rollback", "close" -> null;
+                        default -> throw new AssertionError(method.getName());
+                    });
+            DataSource ds = (DataSource) Proxy.newProxyInstance(PaymentDatabaseBoundary.Source.class.getClassLoader(), new Class<?>[]{PaymentDatabaseBoundary.Source.class},
+                    (proxy, method, args) -> switch (method.getName()) {
+                        case "getConnection" -> connection;
+                        case "acquisitionMillis" -> 1;
+                        case "mysqlDriver" -> false;
+                        case "discard" -> null;
+                        default -> throw new AssertionError(method.getName());
+                    });
+            Configuration configuration = new Configuration(new Environment("test", new JdbcTransactionFactory(), ds));
+            Connection[] bounded = new Connection[1];
             PlayerDataMapper mapper = (PlayerDataMapper) Proxy.newProxyInstance(PlayerDataMapper.class.getClassLoader(), new Class<?>[]{PlayerDataMapper.class},
                     (proxy, method, args) -> { visit(method.getName().equals("insert") ? "insert" : "update"); return rows; });
             SqlSession session = (SqlSession) Proxy.newProxyInstance(SqlSession.class.getClassLoader(), new Class<?>[]{SqlSession.class},
                     (proxy, method, args) -> {
                         return switch (method.getName()) {
-                            case "getConnection" -> connection;
+                            case "getConnection" -> bounded[0];
                             case "getMapper" -> mapper;
                             case "commit", "rollback", "close" -> {
                                 visit(method.getName());
@@ -219,6 +248,8 @@ class PlayerSnapshotWriterTest {
                                     commitEntered.countDown();
                                     Assertions.assertTrue(commitRelease.await(5, TimeUnit.SECONDS));
                                 }
+                                if (method.getName().equals("commit")) { bounded[0].commit(); }
+                                if (method.getName().equals("rollback")) { bounded[0].rollback(); }
                                 yield null;
                             }
                             default -> throw new AssertionError(method.getName());
@@ -228,7 +259,7 @@ class PlayerSnapshotWriterTest {
                     (proxy, method, args) -> {
                         if (method.getName().equals("getConfiguration")) { return configuration; }
                         Assertions.assertEquals("openSession", method.getName());
-                        Assertions.assertEquals(ExecutorType.SIMPLE, args[0]); Assertions.assertEquals(false, args[1]);
+                        bounded[0] = (Connection) args[0];
                         return session;
                     });
         }

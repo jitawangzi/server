@@ -450,7 +450,7 @@ class PlayerSaveDatabaseIT {
     }
 
     /** 仅包装真实连接的 commit；SQL、事务提交和冷读仍由实际数据库执行。 */
-    static final class CommitGate extends DelegatingDataSource {
+    static final class CommitGate extends DelegatingDataSource implements PaymentDatabaseBoundary.Source {
         /** A 到达真实提交边界。 */
         final CountDownLatch entered = new CountDownLatch(1);
         /** 由测试放行 A，任何退出路径都放行。 */
@@ -477,6 +477,14 @@ class PlayerSaveDatabaseIT {
         /** @param source 测试私有数据源 */
         CommitGate(DriverManagerDataSource source) { super(source); }
 
+        /** 隔离新场景可声明更短的已验证私有获取上限。 */
+        int acquisitionMillis = 60000;
+        @Override public boolean mysqlDriver() { return true; }
+        @Override public int acquisitionMillis() { return acquisitionMillis; }
+        @Override public void discard(Connection connection) throws SQLException {
+            connection.unwrap(com.mysql.cj.jdbc.JdbcConnection.class).abortInternal();
+            connection.close();
+        }
         @Override public Connection getConnection() throws SQLException {
             Connection actual = super.getConnection();
             java.util.concurrent.atomic.AtomicBoolean receipt = new java.util.concurrent.atomic.AtomicBoolean();
