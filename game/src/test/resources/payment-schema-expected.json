@@ -1,0 +1,12 @@
+[
+  "cn.game.games.diagnostics.PaymentEnablementTest#validSchemaNeverAuthorizesEnablementCleanupOrReplay",
+  "cn.game.games.diagnostics.PaymentEnablementTest#incompatibleSchemaKeepsActionableContractDiagnostics",
+  "cn.game.games.diagnostics.PaymentEnablementTest#explicitNoArgumentBoundaryRejectsAllOverrides",
+  "cn.game.games.diagnostics.PaymentEnablementTest#readerFailureIsRedactedAndNeverReady",
+  "cn.game.games.diagnostics.PaymentEnablementTest#totalTimeoutCancelsObservationAndFailsClosed",
+  "cn.game.games.net.game.helper.PaymentSchemaTest#missingTablesAreBoundedReadonlyAndHaveStableSignature",
+  "cn.game.games.net.game.helper.PaymentSchemaTest#metadataQueryFaultPropagatesWithoutPartialSuccess",
+  "cn.game.games.net.game.helper.PaymentSchemaTest#excessiveMetadataFailsInsteadOfSigningTruncatedRows",
+  "cn.game.games.net.game.helper.PaymentSchemaTest#reportCopiesBlockersAndCarriesSafeVersionedFailure",
+  "cn.game.games.net.game.helper.PaymentSchemaTest#expressionNonUniqueIndexIsNotToleratedAsOrdinaryIndex"
+]

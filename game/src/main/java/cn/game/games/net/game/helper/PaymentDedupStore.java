@@ -8,7 +8,6 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.HashSet;
 import java.util.function.Supplier;
 import org.apache.ibatis.session.SqlSessionFactory;
 import cn.game.games.net.game.module.recharge.PayItem;
@@ -269,24 +268,14 @@ public final class PaymentDedupStore {
         }
     }
 
-    /** @param c Game 连接；确认三表都可事务化且两个新表具备声明的独立唯一键 @throws SQLException 依赖缺失或错误 */
+    /** @param c 调用方拥有的Game只读连接 @return 固定生产三表的V1结构观察，不授予启用或清理权限 @throws SQLException 元数据不可读 */
+    public static PaymentDedupSchema.Report inspectSchema(Connection c) throws SQLException {
+        return PaymentDedupSchema.inspect(c, "t_player_data", CLAIM, RECEIPT);
+    }
+
+    /** @param c Game 连接；奖励前逐次检查完整V1持久化契约，无成功缓存 @throws SQLException 依赖缺失或错误 */
     private void verifySchema(Connection c) throws SQLException {
-        try (var s = c.prepareStatement("SELECT table_name,engine FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name IN (?,?,?)")) {
-            s.setString(1, "t_player_data"); s.setString(2, claimTable); s.setString(3, receiptTable); s.setQueryTimeout(5);
-            HashSet<String> seen = new HashSet<>();
-            try (var r = s.executeQuery()) {
-                while (r.next()) { if (!"InnoDB".equalsIgnoreCase(r.getString(2))) { throw invalid(); } seen.add(r.getString(1)); }
-            }
-            if (seen.size() != 3) { throw invalid(); }
-        }
-        for (String table : List.of(claimTable, receiptTable)) {
-            HashSet<String> unique = new HashSet<>();
-            try (var s = c.prepareStatement("SELECT GROUP_CONCAT(column_name ORDER BY seq_in_index) FROM information_schema.statistics WHERE table_schema=DATABASE() AND table_name=? AND non_unique=0 GROUP BY index_name")) {
-                s.setString(1, table); s.setQueryTimeout(5);
-                try (var r = s.executeQuery()) { while (r.next()) { unique.add(r.getString(1)); } }
-            }
-            if (!unique.containsAll(List.of("order_id", "sdk_order_id"))) { throw invalid(); }
-        }
+        PaymentDedupSchema.inspect(c, "t_player_data", claimTable, receiptTable).requireValid();
     }
 
     /** @param value 原始完成正文 @return 原字节 SHA-256；摘要不提供独立真实性授权 */

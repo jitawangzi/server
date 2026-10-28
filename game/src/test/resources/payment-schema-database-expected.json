@@ -1,0 +1,11 @@
+[
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#missingAndWrongSignedIntegerColumnsRejectBeforeClaimAndReward",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#stringLengthCharsetCollationAndTextCapacityRejectBeforeMutation",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#nullabilityDefaultsExtrasAndGeneratedColumnsRejectBeforeMutation",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#compositePrefixMissingAndAdditionalUniqueConstraintsReject",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#allThreeTablesRequireTransactionalBaseTables",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#correctSchemaCommitsAndReadonlyReportDoesNotAuthorizeEnablement",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#schemaChangeAfterLookupIsRecheckedBeforeClaimWithoutCache",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#declaredSafeMetadataVariationsStillCommit",
+  "cn.game.games.net.game.helper.PaymentSchemaDatabaseIT#foreignKeyAndTriggerWriteRestrictionsAreRejected"
+]
