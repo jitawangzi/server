@@ -149,7 +149,7 @@ public final class PaymentCleanupCli {
     }
 
     /** @param player 玩家 @param tree 普通树，无多态类加载 @return 与持久去重相同校验链核对的完成订单 */
-    private static PayItem completedItem(long player, JsonNode tree) throws Exception {
+    static PayItem completedItem(long player, JsonNode tree) throws Exception {
         var fields = new java.util.HashSet<>(PROOF_FIELDS); fields.remove("version"); fields.remove("playerId");
         fields.addAll(List.of("isFinish", "finishTime", "completionState", "completionProof"));
         PaymentArchiveEvidence.require(tree.isObject() && PaymentArchiveEvidence.names(tree).equals(fields)

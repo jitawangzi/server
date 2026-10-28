@@ -1,0 +1,15 @@
+[
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#rejectsInvalidOrDuplicateUnboundedScopeBeforeAnyRead",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#deterministicPagesBindScopeAndEmptyTailDoesNotConnect",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#strictV1AbsentClaimedAndCompletedAreDistinctReadOnlyCandidates",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#historicalFinishAndPendingUnknownStatesStaySeparate",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#futureAndVersionGapsNeverBecomeCurrentProof",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#conflictingIdentityAmountSdkAndProofAreNotHistoricalSuccess",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#strictProofRejectsMissingExtraAndChangedPurchaseParameters",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#missingDependenciesAndSqlFailureHaveDifferentCoverage",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#malformedDuplicateTrailingDeepAndLargeJsonRemainUnreadable",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#persistedTypeWrappersNeverInitializeTheirNamedClass",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#partialConnectionFailurePreservesProgressWithoutSkippingFailedEntry",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#timeoutAndConfigurationFailuresAreHonestAndBoundFurtherWork",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryTest#maximumScopeStillReadsOnlyTenEntriesAndBoundsAggregateOutput"
+]

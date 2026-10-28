@@ -72,6 +72,12 @@ public final class PaymentDedupStore {
     /** 查询结果明确区分不存在和已占位；查询异常不转换为 ABSENT。 */
     public enum Lookup { ABSENT, CLAIMED, COMPLETED }
 
+    /** 只读诊断识别未来receipt版本；继承原失败类型，发货和清理仍拒绝未知版本。 */
+    public static final class UnsupportedReceiptVersion extends IllegalStateException {
+        /** 固定脱敏错误，不包含存储正文。 */
+        private UnsupportedReceiptVersion() { super("PAYMENT_DURABLE_UNSUPPORTED_RECEIPT_VERSION"); }
+    }
+
     /** @param playerId 权威玩家 @param item 可信热订单 @param sdk 本次平台单号 @return 全参数身份 */
     public static Intent intent(long playerId, PayItem item, String sdk) {
         return new Intent(1, playerId, item.getOrderId(), sdk, item.getRmb(), item.getPayType(), item.getPayId(),
@@ -172,6 +178,7 @@ public final class PaymentDedupStore {
             s.setLong(1, wanted.orderId()); s.setString(2, wanted.sdkOrderId()); s.setQueryTimeout(2); s.setMaxRows(3);
             try (var r = s.executeQuery()) {
                 if (!r.next()) { return json == null ? Lookup.ABSENT : Lookup.CLAIMED; }
+                if (r.getInt(1) > 1) { throw new UnsupportedReceiptVersion(); }
                 if (r.getInt(1) != 1 || r.getLong(2) != playerId || r.getLong(3) != wanted.orderId() || !wanted.sdkOrderId().equals(r.getString(4))
                         || json == null || !json.equals(r.getString(5)) || !token.equals(r.getString(6))) { throw invalid(); }
                 String proof = r.getString(7);

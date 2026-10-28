@@ -210,7 +210,7 @@ public final class PaymentArchiveStore {
     }
 
     /** @param path 无链接文件 @param max 字节上限 @return 重新打开读入的字节，增长或截断均由认证拒绝 */
-    private static byte[] boundedRead(Path path, int max) throws IOException {
+    static byte[] boundedRead(Path path, int max) throws IOException {
         regular(path);
         try (var channel = FileChannel.open(path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) {
             if (channel.size() > max) { throw new IOException("INPUT_LIMIT"); }

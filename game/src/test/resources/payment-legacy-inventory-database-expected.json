@@ -1,0 +1,9 @@
+[
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#realTwoDatabaseClassificationAndDurableStatesPreserveAllBytes",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#futureVersionGapsCorruptReceiptsAndDuplicateClaimsStayBlocked",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#malformedLargeAndWrappedPersistedJsonNeverRunsInitialization",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#missingLiveRowsAndMissingDurableTablesAreDistinctFromConnectionError",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#exactInputPagesCoverOnlyRequestedKeysWithNoCrossDatabaseAtomicityClaim",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#actualSlowQueryAndChildJvmExitContractAreFiniteAndReadOnly",
+  "cn.game.games.diagnostics.PaymentLegacyInventoryDatabaseIT#productionCliRequiresPrivateBoundedConfigurationAndHonestFailureExit"
+]

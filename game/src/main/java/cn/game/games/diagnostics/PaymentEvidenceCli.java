@@ -225,6 +225,19 @@ public final class PaymentEvidenceCli {
         }
     }
 
+    /** @param connection 调用方只读连接 @param orderId 显式订单主键 @return 最小有界字段或null；超长SDK不读正文而拒绝 @throws java.sql.SQLException 读取故障 */
+    static LoginOrder readLogin(java.sql.Connection connection, long orderId) throws java.sql.SQLException {
+        try (var s = connection.prepareStatement("SELECT player_id,price,pay_state,is_deliver,CASE WHEN OCTET_LENGTH(third_order_id)<=764 THEN third_order_id END,OCTET_LENGTH(third_order_id) FROM t_pay_order WHERE id=? LIMIT 1")) {
+            s.setQueryTimeout(QUERY_SECONDS); s.setMaxRows(1); s.setLong(1, orderId);
+            try (var r = s.executeQuery()) {
+                if (!r.next()) { return null; }
+                if (r.getLong(6) > 764) { throw new java.sql.SQLException("PAYMENT_LOGIN_ID_INPUT_LIMIT"); }
+                Object delivered = r.getObject(4);
+                return new LoginOrder(r.getLong(1), r.getInt(2), r.getInt(3), delivered == null ? null : r.getInt(4), r.getString(5));
+            }
+        }
+    }
+
     /** 私有连接只运行固定 SELECT；配置文件由受控本地运维提供，不自动连接 Apollo。 */
     static final class JdbcReader implements Reader {
         /** 从受限本地文件读取的 Game 与 Login 配置，禁止输出。 */
@@ -235,6 +248,10 @@ public final class PaymentEvidenceCli {
         JdbcReader() throws Exception {
             try (InputStream input = Files.newInputStream(Path.of(java.lang.System.getenv("S2_DB_CONFIG")))) { config.load(input); }
         }
+        /** @param properties 已在私有无链接文件中有界读取的配置 @param start 包括配置读取的整轮单调起点 */
+        JdbcReader(Properties properties, long start) { config.putAll(properties); inventoryStarted = start; }
+        /** 盘点复用整轮截止点；其他既有调用继续使用原始起点。 */
+        private long inventoryStarted;
         /** @param prefix 空字符串为 Game，login. 为 Login @return 私有只读连接 */
         java.sql.Connection connect(String prefix) throws Exception {
             Properties p = new Properties();
@@ -244,7 +261,7 @@ public final class PaymentEvidenceCli {
             cn.game.games.net.game.helper.PaymentDatabaseBoundary.validateUrl(url, p, 2000);
             var source = new org.springframework.jdbc.datasource.DriverManagerDataSource(url, p);
             var connection = cn.game.games.net.game.helper.PaymentDatabaseBoundary.open(source,
-                    new cn.game.games.net.game.helper.PaymentDatabaseBoundary.Limits(2000, 2000, 2000, 12000), started);
+                    new cn.game.games.net.game.helper.PaymentDatabaseBoundary.Limits(2000, 2000, 2000, 12000), inventoryStarted == 0 ? started : inventoryStarted);
             try { connection.setReadOnly(true); return connection; }
             catch (Exception failure) { warn(failure); connection.close(); throw failure; }
         }
@@ -256,14 +273,7 @@ public final class PaymentEvidenceCli {
             try (var c = connect("")) { return readGame(c, playerId); }
         }
         @Override public LoginOrder login(long orderId) throws Exception {
-            try (var c = connect("login."); var s = c.prepareStatement("SELECT player_id,price,pay_state,is_deliver,third_order_id FROM t_pay_order WHERE id=? LIMIT 1")) {
-                s.setQueryTimeout(QUERY_SECONDS); s.setMaxRows(1); s.setLong(1, orderId);
-                try (var r = s.executeQuery()) {
-                    if (!r.next()) { return null; }
-                    Object delivered = r.getObject(4);
-                    return new LoginOrder(r.getLong(1), r.getInt(2), r.getInt(3), delivered == null ? null : r.getInt(4), r.getString(5));
-                }
-            }
+            try (var c = connect("login.")) { return readLogin(c, orderId); }
         }
     }
 }
