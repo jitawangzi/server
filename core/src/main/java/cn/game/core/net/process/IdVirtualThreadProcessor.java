@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import cn.game.core.execute.TaskExecutorService;
 import cn.game.core.execute.TaskSubmission;
 import cn.game.core.execute.TaskNotExecutedException;
+import cn.game.core.execute.RequestTiming;
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -53,12 +54,17 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 	@Override
 	public void process(long objectId, NetClient netClient, IProtocol<?> protocol) {
 		if (!netClient.beginProtocolSubmission(protocol)) { return; }
+		RequestTiming timing = RequestTiming.start(protocol.getMsgID());
 		Future<Void> execution;
 		try {
-			execution = processAsync(objectId, () -> super.process(netClient, protocol), false);
+			execution = processAsync(objectId, () -> {
+				try { timing.run(netClient, protocol.getSeq(), () -> super.process(netClient, protocol)); }
+				finally { timing.finished(false); }
+			}, false);
 		} catch (RuntimeException | Error failure) {
 			log.error("Network submission failed before returning a result for {}", objectId, failure);
 			netClient.endProtocolSubmission(protocol);
+			timing.finished(true);
 			throw failure;
 		}
 		execution.onComplete(result -> {
@@ -67,6 +73,7 @@ public class IdVirtualThreadProcessor extends AbstractProcessor {
 					Throwable failure = result.cause();
 					log.warn("Network task failed for {}, message {}", objectId, protocol.getMsgID(), failure);
 					if (failure instanceof TaskNotExecutedException) {
+						timing.finished(true);
 						// 登记保留至拒绝发送结束，防止同序号重入先执行成功再收到旧拒绝。
 						netClient.rejectProtocol(protocol, ErrorMsgEnum.system_overload.getId());
 					}

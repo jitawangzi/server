@@ -21,6 +21,7 @@ import cn.game.games.net.data.mapper.PlayerDataMapper;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import cn.game.core.execute.TimingMetrics;
 
 /**
  * 玩家聚合快照的专用事务边界。独立线程打开非自动提交会话，显式 commit 后才报告确认。
@@ -69,6 +70,7 @@ final class PlayerSnapshotWriter {
     /** @param data 独占参数 @param insert 创建或更新 @return 仅显式事务提交成功才确认 */
     private PlayerSaveCoordinator.WriteResult execute(PlayerData data, boolean insert) {
         Attempt attempt = new Attempt();
+        TimingMetrics.Span transactionTiming = TimingMetrics.start(TimingMetrics.Stage.TRANSACTION);
         try {
             if (TransactionSynchronizationManager.isActualTransactionActive()) {
                 throw new IllegalStateException("专用保存线程不能加入外部事务");
@@ -117,7 +119,7 @@ final class PlayerSnapshotWriter {
             log.error("玩家快照边界失败 playerId={} enteredMapper={} committed={}", data.getPlayerId(), attempt.enteredMapper, attempt.committed, failure);
             return new PlayerSaveCoordinator.WriteResult(attempt.committed ? PlayerSaveCoordinator.Outcome.COMMITTED : attempt.enteredMapper
                     ? PlayerSaveCoordinator.Outcome.UNKNOWN : PlayerSaveCoordinator.Outcome.NOT_WRITTEN, failure);
-        }
+        } finally { transactionTiming.end(attempt.committed ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); }
     }
     /** @param session 专用会话 @param data 封存参数 @param insert 操作 @param attempt 调用阶段 @return 实际影响行数 */
     private int invoke(SqlSession session, PlayerData data, boolean insert, Attempt attempt) {

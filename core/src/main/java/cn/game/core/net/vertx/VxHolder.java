@@ -18,6 +18,7 @@ import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.ConfigService;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.execute.TimingMetrics;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.object.ProtobufProtocol;
 import cn.game.core.net.vertx.codec.CustomMessageCodec;
@@ -559,7 +560,26 @@ public class VxHolder {
 	 */
 	private static <T> Future<T> executeBlockingWithTimeoutInternal(Callable<T> blockingCodeHandler, long timeoutMs, boolean ordered) {
 		// 执行阻塞操作
-		return vertx.executeBlocking(blockingCodeHandler, ordered).timeout(timeoutMs, TimeUnit.MILLISECONDS);
+		TimingMetrics.Span queued = TimingMetrics.start(TimingMetrics.Stage.DB_WORKER_QUEUE);
+		TimingMetrics.Span wait = TimingMetrics.start(TimingMetrics.Stage.DB_WAIT);
+		Future<T> actual;
+		boolean submitted = false;
+		try {
+		actual = vertx.executeBlocking(() -> {
+			queued.end(TimingMetrics.Outcome.SUCCESS);
+			TimingMetrics.Span work = TimingMetrics.start(TimingMetrics.Stage.DB_WORKER);
+			boolean success = false;
+			try { T result = blockingCodeHandler.call(); success = true; return result; }
+			finally { work.end(success ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); }
+		}, ordered);
+		submitted = true;
+		} finally {
+			if (!submitted) { queued.end(TimingMetrics.Outcome.REJECTED); wait.end(TimingMetrics.Outcome.REJECTED); }
+		}
+		actual.onFailure(failure -> queued.end(TimingMetrics.Outcome.REJECTED));
+		Future<T> waited = actual.timeout(timeoutMs, TimeUnit.MILLISECONDS);
+		wait.observe(actual, waited);
+		return waited;
 	}
 	
 	public static int getClusterNodeCount() {

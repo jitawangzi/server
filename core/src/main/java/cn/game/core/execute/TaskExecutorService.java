@@ -251,8 +251,11 @@ public class TaskExecutorService implements AutoCloseable {
 	 * @return 包含任务结果的Future
 	 */
 	public <T> Future<T> execute(long entityId, Callable<T> task, boolean fast, String description, long timeoutMs, ErrorHandler errorHandler) {
+		TimingMetrics.Span wait = TimingMetrics.start(TimingMetrics.Stage.TASK_WAIT);
 		Future<T> result = submit(entityId, task, fast, description, timeoutMs, errorHandler).result();
-		return timeoutMs > 0 ? result.timeout(timeoutMs, TimeUnit.MILLISECONDS) : result;
+		Future<T> waited = timeoutMs > 0 ? result.timeout(timeoutMs, TimeUnit.MILLISECONDS) : result;
+		wait.observe(result, waited);
+		return waited;
 	}
 
 	/**
@@ -269,6 +272,7 @@ public class TaskExecutorService implements AutoCloseable {
 	private <T> TaskSubmission<T> submit(long entityId, Callable<T> task, boolean fast, String description,
 			long timeoutMs, ErrorHandler errorHandler) {
 		if (!running.get()) {
+			TimingMetrics.start(TimingMetrics.Stage.TASK_ACTUAL).end(TimingMetrics.Outcome.REJECTED);
 			return new TaskSubmission<>(false, Future.failedFuture(new IllegalStateException("Task executor service is shutting down")), () -> false);
 		}
 		// 例外：entityId==0，直接并发执行
@@ -309,6 +313,7 @@ public class TaskExecutorService implements AutoCloseable {
 		// 获取与入队在实际邮箱键下协调，执行消费者放在协调区域外。
 		ActorMailbox mailbox = mailboxManager.enqueueTask(entityId, taskWrapper, fast);
 		if (mailbox == null) {
+			taskWrapper.reject(new QueueFullException("Task queue is full"));
 			return new TaskSubmission<>(false, Future.failedFuture(new QueueFullException("Task queue is full for entity " + entityId)), () -> false);
 		}
 		// 提交可能跨过 close 的扫描；不能因旧消费者仍在执行而漏掉刚入队的任务。

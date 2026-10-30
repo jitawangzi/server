@@ -14,10 +14,19 @@ public class TaskWrapper<T>{
     private volatile boolean rejectedBeforeStart;
 	/** 记录重试次数 */
 	private int attempts = 0;
+    /** 每次尝试的排队等待与逻辑提交的实际终态分开。 */
+    private TimingMetrics.Span queued = TimingMetrics.start(TimingMetrics.Stage.MAILBOX_QUEUE);
+    /** 实际结果不因调用者等待超时而结束。 */
+    private final TimingMetrics.Span actual = TimingMetrics.start(TimingMetrics.Stage.TASK_ACTUAL);
 
     public TaskWrapper(Task<T> task, Promise<T> resultPromise) {
         this.task = task;
         this.resultPromise = resultPromise;
+        // 从原Promise的获胜终态观测，避免竞争complete/fail时指标赢家与业务赢家不同。
+        if (actual.enabled()) {
+            resultPromise.future().onComplete(result -> actual.end(rejectedBeforeStart ? TimingMetrics.Outcome.REJECTED
+                    : result.succeeded() ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE));
+        }
     }
 
     /**
@@ -53,7 +62,13 @@ public class TaskWrapper<T>{
     }
 
     /** 消费者已取出任务后，在调用业务代码前记录实际开始。 */
-    void markStarted() { started = true; }
+    void markStarted() { started = true; queued.end(TimingMetrics.Outcome.SUCCESS); }
+
+    /** 重试排队从本次重新受理开始，不把退避等同实际执行。 */
+    void markRetryQueued() { queued = TimingMetrics.start(TimingMetrics.Stage.MAILBOX_QUEUE); }
+
+    /** 未能重新入队时只结束排队观测，原错误策略仍负责业务终态。 */
+    void markQueueRejected() { queued.end(TimingMetrics.Outcome.REJECTED); }
 
     /** @return 是否至少进入过一次业务执行 */
     boolean hasStarted() { return started; }
@@ -63,6 +78,7 @@ public class TaskWrapper<T>{
 
     /** @param cause 从待执行队列移除后的明确失败原因；调用时必须已经取得该任务 */
     void reject(Throwable cause) {
+        queued.end(TimingMetrics.Outcome.REJECTED);
         if (!started) { rejectedBeforeStart = true; }
         fail(cause);
     }

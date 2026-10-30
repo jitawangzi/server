@@ -16,6 +16,7 @@ import cn.game.core.exception.LogicException;
 import cn.game.core.net.transport.Command;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.ExceptionHelper;
+import cn.game.core.execute.TimingMetrics;
 import cn.game.util.Config;
 import cn.game.util.DateUtil;
 import cn.game.util.GameUtil;
@@ -147,9 +148,16 @@ public interface RpcClient {
 	 */
 	private Future<?> handleVertxFuture(CallType callType, Command command, String targetAddr, long startLong) {
 		if (callType == CallType.LoadBalancer || callType == CallType.PointToPoint) {
+			TimingMetrics.Span timing = TimingMetrics.start(TimingMetrics.Stage.RPC_WAIT);
+			boolean observed = false;
+			try {
 			Future<Message<Object>> request = request(targetAddr, command, VxHolder.universalOptions);
-			return request.map(r -> decodeResponse(r.body()))
+			Future<Object> result = request.map(r -> decodeResponse(r.body()))
 					.onFailure(t -> logError(targetAddr, command, startLong, t));
+			timing.observe(result, result);
+			observed = true;
+			return result;
+			} finally { if (!observed) { timing.end(TimingMetrics.Outcome.FAILURE); } }
 		} else if (callType == CallType.Broadcast) {
 			broadcast(targetAddr, command, VxHolder.universalOptions);
 			// 广播没有返回结果
@@ -191,11 +199,17 @@ public interface RpcClient {
 			timeout = 600;
 		}
 		DeliveryOptions options = new DeliveryOptions().setSendTimeout(timeout * 1000).setCodecName(VxHolder.universalMessageCodec.name());
+		TimingMetrics.Span timing = TimingMetrics.start(TimingMetrics.Stage.RPC_WAIT);
+		boolean succeeded = false;
+		TimingMetrics.Outcome failedOutcome = TimingMetrics.Outcome.FAILURE;
 		try {
 			Future<Message<Object>> request = request(targetAddr, command, options);
 			Message<Object> message = request.toCompletionStage().toCompletableFuture().get(timeout, TimeUnit.SECONDS);
-			return decodeResponse(message.body());
+			Object decoded = decodeResponse(message.body());
+			succeeded = true;
+			return decoded;
 		} catch (Exception e) {
+		    failedOutcome = TimingMetrics.failureOutcome(e);
 		    String scene = MessageFormat.format("远程调用异常: targetAddr[{0}] command[{1}] thread[{2}]",
 		            targetAddr, command, Thread.currentThread().getName());
 		    ExceptionHelper.rethrowWithPolicy(e, log, scene);
@@ -206,7 +220,7 @@ public interface RpcClient {
 		    log.error("远程调用过程中发生本地致命错误(Error): targetAddr[{}] command[{}] thread[{}]",
 		            targetAddr, command, Thread.currentThread().getName(), err);
 		    throw err;
-		}
+		} finally { timing.end(succeeded ? TimingMetrics.Outcome.SUCCESS : failedOutcome); }
 		// never reach
 	}
 

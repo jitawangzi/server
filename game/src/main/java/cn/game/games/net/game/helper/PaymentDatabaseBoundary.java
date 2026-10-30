@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
+import cn.game.core.execute.TimingMetrics;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 /**
@@ -78,7 +79,11 @@ public final class PaymentDatabaseBoundary {
         } else if (source instanceof Source supported) { acquire = supported.acquisitionMillis(); }
         else { throw new SQLException("PAYMENT_DB_UNSUPPORTED_DATASOURCE:finite acquisition adapter required"); }
         if (acquire < 1 || acquire > limits.acquire()) { throw new SQLException("PAYMENT_DB_ACQUIRE_EXCEEDS_BUDGET"); }
-        Connection connection = source.getConnection();
+        TimingMetrics.Span acquisition = TimingMetrics.start(TimingMetrics.Stage.CONNECTION);
+        Connection connection;
+        boolean acquired = false;
+        try { connection = source.getConnection(); acquired = true; }
+        finally { acquisition.end(acquired ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); }
         try {
             if (source instanceof HikariDataSource) { connection.unwrap(com.mysql.cj.jdbc.JdbcConnection.class); }
             return new Lease(connection, source, limits, started).proxy();
@@ -211,7 +216,12 @@ public final class PaymentDatabaseBoundary {
                             || name.equals("setReadOnly") || name.equals("setTransactionIsolation") || name.equals("isReadOnly")
                             || name.equals("getTransactionIsolation") || name.equals("getAutoCommit") || name.startsWith("prepare") || name.equals("createStatement")) { arm(); }
                     if (name.equals("setAutoCommit") && Boolean.FALSE.equals(a[0])) { transaction = true; }
-                    Object value = m.invoke(raw, a);
+                    TimingMetrics.Span commit = name.equals("commit") || name.equals("rollback")
+                            ? TimingMetrics.start(TimingMetrics.Stage.SQL) : null;
+                    Object value;
+                    boolean success = false;
+                    try { value = m.invoke(raw, a); success = true; }
+                    finally { if (commit != null) { commit.end(success ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); } }
                     if (name.equals("commit") || name.equals("rollback")) { transaction = false; remaining(); }
                     if (value instanceof Statement statement) { return statement(statement, (Connection) p); }
                     return value;
@@ -234,7 +244,11 @@ public final class PaymentDatabaseBoundary {
                         // 保留schema等调用方已经指定的更短期限，统一预算只能收紧，不能放宽。
                         rawStatement.setQueryTimeout(existing > 0 ? Math.min(existing, seconds) : seconds);
                     }
-                    Object value = m.invoke(rawStatement, a);
+                    TimingMetrics.Span sql = m.getName().startsWith("execute") ? TimingMetrics.start(TimingMetrics.Stage.SQL) : null;
+                    Object value;
+                    boolean success = false;
+                    try { value = m.invoke(rawStatement, a); success = true; }
+                    finally { if (sql != null) { sql.end(success ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); } }
                     if (m.getName().startsWith("execute")) { remaining(); }
                     if (value instanceof java.sql.ResultSet result) { return resultSet(result); }
                     return value;

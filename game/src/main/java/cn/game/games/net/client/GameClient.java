@@ -17,6 +17,7 @@ import com.google.protobuf.MessageLite.Builder;
 import com.google.protobuf.TextFormat;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.execute.RequestTiming;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
@@ -168,6 +169,9 @@ public class GameClient extends AbstractNetClient {
 	 * @return
 	 */
 	public boolean sendProtocol(int msgId, int seq, byte[] data, int errorCode, boolean recored) {
+		RequestTiming timing = RequestTiming.response(this, seq, msgId);
+		boolean observed = false;
+		try {
 
 //		ProtobufProtocol protobufProtocol = new ProtobufProtocol(msgId, data, errorCode);
 		if (isActive()) {
@@ -181,7 +185,8 @@ public class GameClient extends AbstractNetClient {
 			compositeBuffer.addComponents(headerBuf, bodyBuf);
 			compositeBuffer.writerIndex(headerBuf.readableBytes() + bodyBuf.readableBytes());
 			BufferInternal buffer = BufferInternal.buffer(compositeBuffer);
-			channel.writeBinaryMessage(buffer);
+			io.vertx.core.Future<Void> write = channel.writeBinaryMessage(buffer);
+			if (timing != null) { timing.written(write, errorCode); observed = true; }
 //			if (msgId == PbProtocol.PlayerLoginResponse_01000002) {
 //				log.error("player[{}] sendProtocol[{}] seq[{}] errorCode[{}]data length[{}] First 20 bytes[{}]", playerId, msgId, seq, errorCode, data.length,
 //						ByteHelp.toString(data, 20));
@@ -208,6 +213,7 @@ public class GameClient extends AbstractNetClient {
 			return true;
 		}
 		return false;
+		} finally { if (timing != null && !observed) { timing.failed(); } }
 	}
 //	private boolean sendProtocol(int msgId, byte[] data, int errorCode) {
 //		return sendProtocol(msgId, curMessageSeq, data, errorCode, true);

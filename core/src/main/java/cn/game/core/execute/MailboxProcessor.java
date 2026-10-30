@@ -104,12 +104,15 @@ public class MailboxProcessor implements Runnable {
 		Task<T> task = taskWrapper.getTask();
 		String taskDescription = task.getDescription();
 		long startTime = System.nanoTime();
+		TimingMetrics.Span execution = TimingMetrics.start(TimingMetrics.Stage.EXECUTION);
 		try {
 			T result = task.execute();
+			execution.end(TimingMetrics.Outcome.SUCCESS);
 			// 任务成功完成，设置结果
 			taskWrapper.complete(result);
 			mailbox.getStats().completedTasks.incrementAndGet();
 		} catch (Throwable e) {
+			execution.end(TimingMetrics.Outcome.FAILURE);
 			// 任务失败，应用错误处理策略。
 			LOGGER.warn("Task {} failed for mailbox {}", taskDescription, mailbox.getEntityId(), e);
 			return handleTaskFailure(taskWrapper, e);
@@ -156,7 +159,9 @@ public class MailboxProcessor implements Runnable {
 				failTask(taskWrapper, new RejectedExecutionException("Task executor service is shutting down", e));
 				return null;
 			}
+			taskWrapper.markRetryQueued();
 			if (!mailbox.offerTaskFirstRetry(taskWrapper)) {
+				taskWrapper.markQueueRejected();
 				QueueFullException rejected = new QueueFullException("Retry queue is full for mailbox " + entityId);
 				rejected.initCause(e);
 				LOGGER.warn("Retry rejected for task {} in mailbox {}", task.getDescription(), entityId, rejected);

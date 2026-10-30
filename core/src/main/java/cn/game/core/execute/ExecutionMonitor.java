@@ -163,15 +163,17 @@ public class ExecutionMonitor {
         
         // 更新全局统计
         totalActiveMailboxes.set(mailboxes.size());
+        long completed = 0, failed = 0, timedOut = 0;
         
         // 收集各邮箱的统计信息
         for (ActorMailbox mailbox : mailboxes.values()) {
             MailboxStats stats = mailbox.getStats();
             
             // 更新全局计数器
-            totalCompletedTasks.set(totalCompletedTasks.get() + stats.completedTasks.get());
-            totalFailedTasks.set(totalFailedTasks.get() + stats.failedTasks.get());
-            totalTimeoutTasks.set(totalTimeoutTasks.get() + stats.timeoutTasks.get());
+            // 邮箱计数已是累计值，重复采样不能再次累加；语义为当前保留邮箱的合计。
+            completed += stats.completedTasks.get();
+            failed += stats.failedTasks.get();
+            timedOut += stats.timeoutTasks.get();
             
             // 添加到快照
             snapshot.mailboxStats.put(mailbox.getEntityId(), new MailboxStatSnapshot(mailbox));
@@ -179,10 +181,12 @@ public class ExecutionMonitor {
         
         // 设置全局统计
         snapshot.totalMailboxes = totalActiveMailboxes.get();
+        totalCompletedTasks.set(completed); totalFailedTasks.set(failed); totalTimeoutTasks.set(timedOut);
         snapshot.totalCompletedTasks = totalCompletedTasks.get();
         snapshot.totalFailedTasks = totalFailedTasks.get();
         snapshot.totalTimeoutTasks = totalTimeoutTasks.get();
-        snapshot.timestamp = System.currentTimeMillis();
+        snapshot.timestamp = clock.getAsLong();
+        snapshot.timings = TimingMetrics.current().snapshot();
         
         return snapshot;
     }
@@ -254,6 +258,8 @@ public class ExecutionMonitor {
      * 监控快照，包含某一时刻的统计信息
      */
     public static class MonitorSnapshot {
+        /** 固定维度耗时快照；与邮箱保留期间合计的旧字段口径独立。 */
+        public TimingMetrics.Snapshot timings;
         public long timestamp;
         public int totalMailboxes;
         public long totalCompletedTasks;

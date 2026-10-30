@@ -3,6 +3,7 @@ package cn.game.games.net.game.helper;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.util.JsonUtil;
+import cn.game.core.execute.TimingMetrics;
 
 /**
  * 封存一次玩家聚合表写入的全部 Mapper 参数，避免异步读取混入后续在线状态。
@@ -31,7 +32,11 @@ final class PlayerDataSnapshot {
     static PlayerData capture(Player player) {
         PlayerData source = player.getData();
         source.beforeSave();
-        String modules = JsonUtil.toJsonStringWithType(player.getModules());
+        TimingMetrics.Span serialization = TimingMetrics.start(TimingMetrics.Stage.SNAPSHOT);
+        String modules;
+        boolean serialized = false;
+        try { modules = JsonUtil.toJsonStringWithType(player.getModules()); serialized = true; }
+        finally { serialization.end(serialized ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); }
 
         // 显式覆盖 insert 与 updateByPrimaryKey 实际读取的字段，不克隆整个玩家对象。
         MeasuredData snapshot = new MeasuredData();
