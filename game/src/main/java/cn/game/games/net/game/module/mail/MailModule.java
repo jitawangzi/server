@@ -33,6 +33,7 @@ import cn.game.util.DateUtil;
 import io.vertx.codegen.annotations.Nullable;
 import io.vertx.core.Future;
 
+/** 邮件独立表状态与查询；分页只读取已装载邮箱，写入口沿用显式DbEntity存储。 */
 public class MailModule extends BasePlayerModule  {
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.LoginSuccess };
 
@@ -129,6 +130,26 @@ public class MailModule extends BasePlayerModule  {
 		return this.mails.values();
 	}
 
+	/**
+	 * 查询当前玩家邮箱，不更新已读、领取、数据库或其他模块。
+	 * @param filter 0全部、1未读、2当前可领取
+	 * @param size 已解析的有限页大小
+	 * @param cursor 相同玩家及筛选的分页游标
+	 * @return 有序邮件和后续游标
+	 */
+	public MailPage.Result page(int filter, int size, String cursor) {
+		return MailPage.select(mails.values(), playerId, filter, size, cursor, DateUtil.currentTimeSeconds());
+	}
+
+	/**
+	 * 兼容没有任何已知字段的旧请求，保留完整ALL列表；新客户端须显式设置筛选或页大小启用有界分页。
+	 * @return 当前玩家可见邮件的稳定倒序列表，不更新实体
+	 */
+	public List<Mail> legacyList() {
+		return mails.values().stream().filter(mail -> mail.getPlayerId() == playerId && !mail.getIsDeleted())
+				.sorted(Comparator.comparingInt(Mail::getCreateTime).thenComparingLong(Mail::getId).reversed()).toList();
+	}
+
 	public boolean hasNoRead() {
 
 		for (Mail mail : this.mails.values())
@@ -164,13 +185,19 @@ public class MailModule extends BasePlayerModule  {
 		}
 	}
 
+	/**
+	 * 按与筛选一致的邮件资格领取，合格项才标记已读及已领并发起原独立表异步更新。
+	 * @param id 当前玩家邮箱内的唯一邮件ID
+	 * @return 实际奖励结果；不合格时为空，本返回不代表异步数据库更新已确认
+	 */
 	public List<RewardInfo> receive(long id) {
 		List<RewardInfo> list = new ArrayList<>();
 
 		Mail mail = get(id);
-		if (mail != null && !mail.getReceive()) {
-			List<Goods> attachmentList = mail.getAttachmentList();
-			if (attachmentList != null && !attachmentList.isEmpty() || mail.getMailId() > 0) {
+		// 筛选和实际领取共用资格，避免空奖励、坏配置或过期邮件先被标记领取。
+		if (mail != null && mail.getPlayerId() == playerId && MailRewards.claimable(mail, DateUtil.currentTimeSeconds())) {
+			List<Goods> attachmentList = MailRewards.attachments(mail);
+			{
 
 				mail.setReceive(true);
 				mail.setReceiveTime(DateUtil.currentTimeSeconds());
