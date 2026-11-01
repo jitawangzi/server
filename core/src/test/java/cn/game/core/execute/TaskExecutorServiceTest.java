@@ -372,53 +372,52 @@ class TaskExecutorServiceTest {
 		assertTrue(ex instanceof TimeoutException || (ex.getCause() != null && ex.getCause() instanceof TimeoutException));
 	}
 
+	/** 保留真实生产调度链路，按单调时间验证两段最低延迟及最终丢弃，不要求恰好整秒完成。 */
 	@Test
 	@DisplayName("发生异常时，应该进行重试")
 	void testRetry_whenException() {
-
-		long startTime = System.currentTimeMillis();
-		AtomicInteger retryCount = new AtomicInteger(0);
+		List<Long> attemptTimes = Collections.synchronizedList(new ArrayList<>());
+		List<Long> failureTimes = Collections.synchronizedList(new ArrayList<>());
+		List<Integer> attempts = Collections.synchronizedList(new ArrayList<>());
 		int maxRetries = 3;
 		int retryDelaySeconds = 3;
+		RuntimeException failure = new RuntimeException("Test exception for retry");
 		ErrorHandler errorHandler = context -> {
-			Throwable cause = context.getCause();
-			if (cause instanceof SQLException) {
+			if (context.getCause() instanceof SQLException) {
 				return ErrorPolicy.discard();
-			} else {
-				retryCount.incrementAndGet();
-				// 重试三次
-				// 超过重试次数后，丢弃任务
-				System.err.println("重试次数: " + context.getAttemptCount() + ", 错误: " + cause.getMessage());
-				if (context.getAttemptCount() >= maxRetries) {
-					return ErrorPolicy.discard();
-				}
-				return ErrorPolicy.retryHeadWithDelay(retryDelaySeconds, TimeUnit.SECONDS);
 			}
+			failureTimes.add(System.nanoTime());
+			attempts.add(context.getAttemptCount());
+			return context.getAttemptCount() >= maxRetries ? ErrorPolicy.discard()
+					: ErrorPolicy.retryHeadWithDelay(retryDelaySeconds, TimeUnit.SECONDS);
 		};
 
 		Future<String> future = taskExecutorService.execute(20, () -> {
-			throw new RuntimeException("Test exception for retry");
-		},false, "Test exception for retry", 30000, errorHandler); // 超时时间应该比重试的时间长
+			attemptTimes.add(System.nanoTime());
+			throw failure;
+		}, false, "Test exception for retry", 0, errorHandler);
+		Assertions.assertSame(failure, Assertions.assertThrows(RuntimeException.class,
+				() -> AsyncUtils.awaitWithException(future, 15, TimeUnit.SECONDS)));
+		Assertions.assertEquals(List.of(1, 2, 3), attempts);
+		Assertions.assertEquals(maxRetries, attemptTimes.size());
+		for (int i = 1; i < maxRetries; i++) {
+			long elapsedNanos = attemptTimes.get(i) - failureTimes.get(i - 1);
+			Assertions.assertTrue(elapsedNanos >= TimeUnit.SECONDS.toNanos(retryDelaySeconds),
+					"重试不得早于三秒延迟，实际纳秒=" + elapsedNanos);
+		}
+		org.slf4j.LoggerFactory.getLogger(getClass()).info("真实重试间隔纳秒: {}, {}",
+				attemptTimes.get(1) - failureTimes.get(0), attemptTimes.get(2) - failureTimes.get(1));
 
-		Exception ex = assertThrows(Exception.class, () -> AsyncUtils.await(future, 50, TimeUnit.SECONDS));
-		assertTrue(ex instanceof RuntimeException || (ex.getCause() != null && ex.getCause() instanceof RuntimeException));
-
-		System.out.println("重试" + maxRetries + "次，耗时: " + (System.currentTimeMillis() - startTime) / 1000 + "秒");
-		assertTrue(retryCount.get() == maxRetries, "重试次数应为" + maxRetries + "次");
-		// 第三次直接失败了，所以是2个时间间隔
-		assertTrue((System.currentTimeMillis() - startTime) / 1000 == (maxRetries - 1) * retryDelaySeconds,
-				"总耗时应为 " + (maxRetries - 1) * retryDelaySeconds + " 秒");
-
-		startTime = System.currentTimeMillis();
-
+		// 直接丢弃由原因身份和一次调用证明，不能用平台调度速度的任意上限代替行为断言。
+		AtomicInteger sqlCalls = new AtomicInteger();
+		SQLException sqlFailure = new SQLException("sql exception");
 		Future<String> future2 = taskExecutorService.execute(21, () -> {
-			throw new SQLException("sql exception");
-		}, false,"sql exception for discard", 3000, errorHandler);
-
-		ex = assertThrows(Exception.class, () -> AsyncUtils.await(future2, 50, TimeUnit.SECONDS));
-		assertTrue(ex instanceof SQLException || (ex.getCause() != null && ex.getCause() instanceof SQLException));
-		// 直接失败，不重试，执行时间应该很短
-		assertTrue(System.currentTimeMillis() - startTime <= 100);
-
+			sqlCalls.incrementAndGet();
+			throw sqlFailure;
+		}, false, "sql exception for discard", 0, errorHandler);
+		Assertions.assertSame(sqlFailure, Assertions.assertThrows(SQLException.class,
+				() -> AsyncUtils.awaitWithException(future2, 5, TimeUnit.SECONDS)));
+		Assertions.assertEquals(1, sqlCalls.get());
+		Assertions.assertEquals(List.of(1, 2, 3), attempts);
 	}
 }
