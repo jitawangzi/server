@@ -125,12 +125,14 @@ public class PbBuilder {
 		return mails.stream().filter(mail -> !mail.getIsDeleted()).map(PbBuilder::buildMailInfo).collect(toList());
 	}
 
+	/**
+	 * 构建邮件展示，坏附件不展示、缺配置使用安全ID，不填充实体的懒解析缓存。
+	 * @param mail 已核对归属的邮件实体
+	 * @return 邮件协议展示数据，不改写持久字段
+	 */
 	public static MailInfo buildMailInfo(Mail mail) {
-		MailConfig mailConfig = null;
 		int mailId = mail.getMailId();
-		if (mailId > 0) {
-			mailConfig = MailManager.instance().get(mailId);
-		}
+		// 缺配置的历史邮件仍按实体展示；可领取资格由邮件模块独立判断。
 		MailInfo.Builder builder = MailInfo.newBuilder();
 		builder.setUid(mail.getId() + "");
 		builder.setContent(mail.getContent()) ; 
@@ -141,9 +143,12 @@ public class PbBuilder {
 		builder.setTime(mail.getCreateTime());
 		builder.setTitle(mail.getTitle());
 		builder.setType(mail.getType());
-		builder.setId(mailId);
-        if( mail.getAttachmentList()!=null) {
-			List<GoodsInfo> collect = mail.getAttachmentList().stream().map(PbBuilder::buildGoodsInfo).collect(toList());
+		// 配置缺失时用既有自定义邮件ID 0安全展示，不改写Mail实体的真实配置ID。
+		builder.setId(mailId > 0 && MailManager.instance().getNullable(mailId) == null ? 0 : mailId);
+		// 查询不填充实体缓存；坏附件保留原始存储，仅省略无法展示的奖励。
+		List<Goods> attachments = cn.game.games.net.game.module.mail.MailRewards.attachments(mail);
+        if (attachments != null) {
+			List<GoodsInfo> collect = attachments.stream().map(PbBuilder::buildGoodsInfo).collect(toList());
 			builder.addAllAttachments(collect);
 		}
 		if (mail.getType() == 3) {

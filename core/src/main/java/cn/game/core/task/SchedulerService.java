@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.scheduling.support.PeriodicTrigger;
+import org.springframework.scheduling.support.TaskUtils;
+import org.springframework.util.ErrorHandler;
 
 /**    
  * 定时任务调度器，主要可以处理cron表达式类型的任务
@@ -17,17 +19,28 @@ import org.springframework.scheduling.support.PeriodicTrigger;
  */
 public class SchedulerService {
 	private static Logger log = LoggerFactory.getLogger(SchedulerService.class);
+	/** 保持 Spring 调度入口既有的异常记录策略，覆盖一次性任务的 Throwable。 */
+	private static final ErrorHandler SCHEDULE_ERROR_HANDLER =
+			t -> log.error("Unexpected error occurred in spring scheduled task: ", t);
 
 	private static final SchedulerService INSTANCE = new SchedulerService();
 	private final ThreadPoolTaskScheduler taskScheduler;
 
 	private SchedulerService() {
-		this.taskScheduler = new ThreadPoolTaskScheduler();
+		this(new ThreadPoolTaskScheduler());
+	}
+
+	/**
+	 * 装配独立调度资源，允许测试控制墙钟而不修改全局单例。
+	 * @param taskScheduler 本服务负责初始化和关闭的调度器
+	 */
+	SchedulerService(ThreadPoolTaskScheduler taskScheduler) {
+		this.taskScheduler = taskScheduler;
 		this.taskScheduler.setPoolSize(5);
 		this.taskScheduler.setThreadNamePrefix("SpringTaskScheduler-");
 		this.taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
 		this.taskScheduler.setAwaitTerminationSeconds(60);
-		this.taskScheduler.setErrorHandler(t -> log.error("Unexpected error occurred in spring scheduled task: " ,t));
+		this.taskScheduler.setErrorHandler(SCHEDULE_ERROR_HANDLER);
 		this.taskScheduler.initialize();
 	}
 
@@ -43,16 +56,18 @@ public class SchedulerService {
 		taskScheduler.execute(new ErrorHandlingRunnable(task));
 	}
 
-	/** 
-	 * 延迟执行一次任务
-	 * @param task
-	 * @param delay
-	 * @param timeUnit
-	 * @return
+	/**
+	 * 相对等待后执行一次任务，不早于指定延迟；调度拥塞可以导致晚执行。
+	 * @param task 到期动作，异常沿用调度服务的日志策略
+	 * @param delay 相对等待时长，零或负值按底层执行器契约立即受理
+	 * @param timeUnit 等待时长单位，保留底层执行器支持的纳秒精度
+	 * @return 可取消或等待实际执行完成的句柄
 	 */
 	public ScheduledFuture<?> scheduleTask(Runnable task, long delay, TimeUnit timeUnit) {
-		return taskScheduler
-				.schedule(new ErrorHandlingRunnable(task), new java.util.Date(System.currentTimeMillis() + timeUnit.toMillis(delay)));
+		// 相对等待直接交给单调计时的执行器，避免墙钟校准和毫秒截断缩短重试间隔。
+		return taskScheduler.getScheduledExecutor().schedule(
+				TaskUtils.decorateTaskWithErrorHandler(new ErrorHandlingRunnable(task), SCHEDULE_ERROR_HANDLER, false),
+				delay, timeUnit);
 	}
 
 	/** 
