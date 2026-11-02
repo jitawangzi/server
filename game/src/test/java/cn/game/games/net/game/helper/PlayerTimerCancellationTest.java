@@ -176,7 +176,7 @@ class PlayerTimerCancellationTest {
 
         /** @return 与测试玩家绑定的最小聚合参数 */
         PlayerData data() {
-            PlayerData data = new PlayerData(); data.setPlayerId(player.getPlayerId()); data.setModules("{}"); return data;
+            PlayerData data = new PlayerData(); data.setPlayerId(player.getPlayerId()); data.setModules(null); return data;
         }
 
         @Override public void close() throws IllegalAccessException {

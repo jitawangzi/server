@@ -1909,7 +1909,7 @@ public class PlayerHelper {
 		}
 		return Future.failedFuture(new PlayerSaveCoordinator.SaveFailure("SAVE_SKIPPED", playerId, 0, null));
 	}
-	private static void debugModuleSize(Player player, String jsonString) {
+	private static void debugModuleSize(Player player, byte[] compressedBytes) {
 	    if (ServerContext.getInstance().getRunMode().isDev()) {
 	        Map<String, ModuleStat> stats = JolExclusiveSizeAnalyzer.analyzeExclusive(player.getModules(), null);
 	        log.info("=== Player[{}] Module Memory Report (exclusive only; shared not counted) ===", player.getPlayerId());
@@ -1934,7 +1934,7 @@ public class PlayerHelper {
 	        log.info("Player[{}] Modules Total exclusiveSize=[{}] MB",
 	                player.getPlayerId(), String.format("%.2f", totalMb));
 
-	        int sizeBytes = ByteHelp.estimateUtf8Bytes(jsonString);
+	        int sizeBytes = compressedBytes == null ? 0 : compressedBytes.length;
 	        if (sizeBytes >= APPROX_WARN_BYTES) {
 	            double mb = sizeBytes / 1024.0 / 1024.0;
 	            log.warn("saveClientCache warn: playerId={}, modules size={} bytes ({} MB)",

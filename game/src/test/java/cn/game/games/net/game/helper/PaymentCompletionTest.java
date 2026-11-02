@@ -15,6 +15,7 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.util.JsonUtil;
+import cn.game.util.CborSnappyUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -49,7 +50,7 @@ class PaymentCompletionTest {
             reward.complete(); f.captured();
             Assertions.assertTrue(item.isFinish()); Assertions.assertEquals("REWARDS_COMPLETED", item.getCompletionState());
             Assertions.assertEquals(1, f.charges.get()); Assertions.assertFalse(f.purchase.isComplete());
-            java.util.Map<String, cn.game.games.core.BasePlayerModule> snapshot = JsonUtil.parseObjectWithType(f.writtenSnapshot.getModules());
+            java.util.Map<String, cn.game.games.core.BasePlayerModule> snapshot = CborSnappyUtil.decompress(f.writtenSnapshot.getModules());
             PlayerModule stored = (PlayerModule) snapshot.get(PlayerModule.class.getName());
             Assertions.assertTrue(stored.getPayItems(91).isFinish());
             Assertions.assertEquals("REWARDS_COMPLETED", stored.getPayItems(91).getCompletionState());

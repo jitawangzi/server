@@ -3,17 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
-	</properties>
+	<parent>
+		<groupId>cn.game</groupId>
+		<artifactId>server</artifactId>
+		<version>1.0</version>
+	</parent>
 
-	<groupId>cn.game</groupId>
 	<artifactId>simulationclient</artifactId>
-	<version>1.0</version>
-
+	<packaging>jar</packaging>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -25,51 +22,28 @@
 			</resource>
 		</resources>
 		<plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.12.1</version> <!-- 确保版本号正确 -->
-            <configuration>
-                <source>21</source>
-                <target>21</target>
-            </configuration>
-        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.12.1</version>
+				<configuration>
+					<source>21</source>
+					<target>21</target>
+				</configuration>
+			</plugin>
 			<!-- 有的软件打包成bundle格式，需要这个插件 -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.9</version>
 				<extensions>true</extensions>
 			</plugin>
-<!--		<plugin>-->
-		
-<!--    <artifactId>maven-resources-plugin</artifactId>-->
-<!--    <executions>-->
-<!--        <execution>-->
-<!--            <id>copy-resource</id>-->
-<!--            <phase>package</phase>-->
-<!--            <goals>-->
-<!--                <goal>copy-resources</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--                <outputDirectory>D:/apache-jmeter-5.4.1/lib/ext</outputDirectory>-->
-<!--                <resources>-->
-<!--                    <resource>-->
-<!--									 文件地址 -->
-<!--                        <directory>${basedir}/target</directory>-->
-<!--                        <includes>-->
-<!--                            <include>*.jar</include>-->
-<!--                        </includes>-->
-<!--                    </resource>-->
-<!--                </resources>-->
-<!--            </configuration>-->
-<!--        </execution>-->
-<!--    </executions>-->
-<!--</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<?m2e ignore?>
 						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
@@ -87,10 +61,33 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
-		
 		<pluginManagement>
 			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -99,27 +96,20 @@
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>util</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>core</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>cn.game</groupId>
 			<artifactId>protocol</artifactId>
-			<version>1.0</version>
 		</dependency>
 
 		<dependency>
-
 			<groupId>org.apache.jmeter</groupId>
-
 			<artifactId>ApacheJMeter_core</artifactId>
-
 			<version>5.4.1</version>
-
 			<exclusions>
 				<exclusion>
 					<groupId>xml-apis</groupId>
@@ -129,16 +119,10 @@
 		</dependency>
 
 		<dependency>
-
 			<groupId>org.apache.jmeter</groupId>
-
 			<artifactId>ApacheJMeter_java</artifactId>
-
 			<version>5.4.1</version>
-
 		</dependency>
-
-
 	</dependencies>
 
 </project>

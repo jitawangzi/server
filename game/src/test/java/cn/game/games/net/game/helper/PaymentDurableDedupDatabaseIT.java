@@ -40,7 +40,7 @@ class PaymentDurableDedupDatabaseIT {
                 try (var f = c.shipment(true)) {
                     f.ship(); f.captured(); Assertions.assertTrue(c.db.gate.receiptEntered.await(10, TimeUnit.SECONDS));
                     Assertions.assertTrue(f.replies.isEmpty()); Assertions.assertEquals(0, c.receipts());
-                    Assertions.assertEquals("{}", c.db.read().getModules(), "提交前新连接只能看到原fixture字节");
+                    Assertions.assertNull(c.db.read().getModules(), "提交前新连接只能看到原fixture字节");
                     f.ship(); c.db.gate.receiptRelease.countDown(); f.flush();
                     Assertions.assertEquals(List.of(true, true), f.replies);
                     Assertions.assertEquals(1, f.awards.get()); Assertions.assertEquals(1, f.charges.get());
@@ -48,7 +48,7 @@ class PaymentDurableDedupDatabaseIT {
                     Player cold = c.db.reloadFresh();
                     Assertions.assertEquals(1, cold.getPlayerModule().getGuideMap().get(700));
                     Assertions.assertTrue(cold.getPlayerModule().getPayItems(91).hasCommittedCompletionProof(c.db.id, "sdk-91"));
-                    Assertions.assertFalse(c.db.read().getModules().contains("durablePayment"));
+                    Assertions.assertNull(cold.getPlayerModule().getDurablePayment());
                     Assertions.assertEquals(PaymentDedupStore.Lookup.COMPLETED, c.store.lookup(c.db.id, 91, "sdk-91", cold.getPlayerModule().getPayItems(91)));
                 }
             }
@@ -86,7 +86,7 @@ class PaymentDurableDedupDatabaseIT {
                 try (var f = c.shipment(true)) {
                     f.ship(); f.flush();
                     Assertions.assertEquals(List.of(false), f.replies); Assertions.assertEquals(1, f.awards.get());
-                    Assertions.assertEquals(0, c.receipts()); Assertions.assertEquals("{}", c.db.read().getModules());
+                    Assertions.assertEquals(0, c.receipts()); Assertions.assertNull(c.db.read().getModules());
                     Assertions.assertTrue(f.saves.status(f.id()).writeProtected());
                     Assertions.assertThrows(PlayerSaveCoordinator.SaveFailure.class,
                             () -> PlayerHelper.saveClientCache(f.id(), id -> f.owner, () -> true, f.saves, tasks -> { throw new AssertionError(); }));
@@ -110,11 +110,11 @@ class PaymentDurableDedupDatabaseIT {
                 player.getPlayerModule().setDurablePayment(PaymentDedupStore.completed(claim, item));
                 var first = PlayerDataSnapshot.capture(player);
                 Assertions.assertEquals(PlayerSaveCoordinator.Outcome.COMMITTED, PaymentDeliveryLifecycleTest.await(c.db.writer.write(first, false)).outcome());
-                String original = c.db.read().getModules();
+                byte[] original = c.db.read().getModules();
                 player.getData().setExp(999); player.getPlayerModule().getGuideMap().put(700, 99);
                 Assertions.assertEquals(PlayerSaveCoordinator.Outcome.UNKNOWN,
                         PaymentDeliveryLifecycleTest.await(c.db.writer.write(PlayerDataSnapshot.capture(player), false)).outcome());
-                Assertions.assertEquals(42, c.db.read().getExp()); Assertions.assertEquals(original, c.db.read().getModules());
+                Assertions.assertEquals(42, c.db.read().getExp()); Assertions.assertArrayEquals(original, c.db.read().getModules());
                 Assertions.assertEquals(1, c.receipts());
             }
         }
@@ -244,7 +244,7 @@ class PaymentDurableDedupDatabaseIT {
                 Assertions.assertEquals(1, f.awards.get()); Assertions.assertEquals(0, f.charges.get());
                 Assertions.assertTrue(f.saves.status(f.id()).writeProtected()); Assertions.assertEquals(0, c.receipts());
                 Assertions.assertThrows(PlayerSaveCoordinator.SaveFailure.class, () -> f.saves.preparing(f.player, f.id()));
-                Assertions.assertEquals("{}", c.db.read().getModules());
+                Assertions.assertNull(c.db.read().getModules());
             }
         }
     }

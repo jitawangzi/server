@@ -215,6 +215,10 @@ public final class PaymentCapacityMonitor {
      * 与 String.getBytes(UTF_8) 一致：有效代理对四字节，孤立代理字符使用一个替换字节。
      * @param text 已封存完整 modules JSON @return UTF-8 编码字节数，不是字符数
      */
+    public static long bytes(byte[] bytes) {
+        return bytes == null ? 0 : bytes.length;
+    }
+
     public static long utf8Bytes(String text) {
         long bytes = 0;
         for (int i = 0; i < text.length(); i++) {

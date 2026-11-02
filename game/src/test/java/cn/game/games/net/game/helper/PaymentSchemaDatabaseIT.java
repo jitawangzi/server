@@ -205,13 +205,13 @@ class PaymentSchemaDatabaseIT {
         /** 先检查报告，再走真实发货，冷核对没有claim、奖励、Charge或聚合保存。 */
         void reject() throws Exception {
             var report = inspect(); Assertions.assertFalse(report.valid()); Assertions.assertThrows(java.sql.SQLException.class, report::requireValid);
-            String before = db.read().getModules();
+            byte[] before = db.read().getModules();
             try (var f = shipment()) {
                 f.ship(); f.flush(); f.assertRejectedBeforeBusiness(); Assertions.assertEquals(0, db.gate.commits.get());
                 Assertions.assertNull(f.player.getPlayerModule().getPayItems(db.id).getSdkOrderId());
                 Assertions.assertEquals(0, f.player.getPlayerModule().getPayItems(db.id).getFinishTime());
             }
-            Assertions.assertEquals(before, db.read().getModules()); assertEmpty();
+            Assertions.assertArrayEquals(before, db.read().getModules()); assertEmpty();
         }
 
         /** @return 只执行生产结构检查的新只读连接观察 */

@@ -347,7 +347,7 @@ class PaymentOrderPublisherTest {
         }
         /** @return 只装配 PlayerModule 的实际 Player，不启动业务环境 */
         private static Player testPlayer() {
-            PlayerData data = new PlayerData(); data.setPlayerId(8191); data.setUid(8191); data.setModules("{}");
+            PlayerData data = new PlayerData(); data.setPlayerId(8191); data.setUid(8191); data.setModules(null);
             Player player = new Player() { @Override public PlayerData getData() { return data; } };
             player.setPlayerId(8191); player.getModules().put(PlayerModule.class.getName(), new PlayerModule()); return player;
         }

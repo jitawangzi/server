@@ -96,6 +96,11 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private int image;
 	/**
+	 * 聊天框
+	 * @mbg.generated
+	 */
+	private int chatBox;
+	/**
 	 * 创建日期
 	 * @mbg.generated
 	 */
@@ -159,16 +164,10 @@ public class PlayerData implements Serializable, DbEntity {
 	 */
 	private int gameTime;
 	/**
-	 * 聊天框id
+	 * 玩家全模块数据(CBOR序列化+Snappy压缩)
 	 * @mbg.generated
 	 */
-	private int chatBox;
-	/**
-	/**
-	 * 所有模块的数据
-	 * @mbg.generated
-	 */
-	private String modules;
+	private byte[] modules;
 	/**
 	 * @mbg.generated
 	 */
@@ -428,6 +427,20 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
+	public int getChatBox() {
+		return chatBox;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
+	public void setChatBox(int chatBox) {
+		this.chatBox = chatBox;
+	}
+
+	/**
+	 * @mbg.generated
+	 */
 	public String getCreateDate() {
 		return createDate;
 	}
@@ -610,14 +623,14 @@ public class PlayerData implements Serializable, DbEntity {
 	/**
 	 * @mbg.generated
 	 */
-	public String getModules() {
+	public byte[] getModules() {
 		return modules;
 	}
 
 	/**
 	 * @mbg.generated
 	 */
-	public void setModules(String modules) {
+	public void setModules(byte[] modules) {
 		this.modules = modules;
 	}
 
@@ -647,12 +660,4 @@ public class PlayerData implements Serializable, DbEntity {
 	public void setNew(boolean isNew) {
 		this.isNew = isNew;
 	}
-
-    public int getChatBox() {
-        return chatBox;
-    }
-
-    public void setChatBox(int chatBox) {
-        this.chatBox = chatBox;
-    }
 }

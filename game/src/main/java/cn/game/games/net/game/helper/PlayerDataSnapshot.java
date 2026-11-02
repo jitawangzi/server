@@ -3,6 +3,7 @@ package cn.game.games.net.game.helper;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.util.JsonUtil;
+import cn.game.util.CborSnappyUtil;
 import cn.game.core.execute.TimingMetrics;
 
 /**
@@ -33,9 +34,9 @@ final class PlayerDataSnapshot {
         PlayerData source = player.getData();
         source.beforeSave();
         TimingMetrics.Span serialization = TimingMetrics.start(TimingMetrics.Stage.SNAPSHOT);
-        String modules;
+        byte[] modules;
         boolean serialized = false;
-        try { modules = JsonUtil.toJsonStringWithType(player.getModules()); serialized = true; }
+        try { modules = CborSnappyUtil.compress(player.getModules()); serialized = true; }
         finally { serialization.end(serialized ? TimingMetrics.Outcome.SUCCESS : TimingMetrics.Outcome.FAILURE); }
 
         // 显式覆盖 insert 与 updateByPrimaryKey 实际读取的字段，不克隆整个玩家对象。
@@ -90,14 +91,14 @@ final class PlayerDataSnapshot {
             var module = player.getPlayerModule();
             if (module != null) {
                 snapshot.capacity = new PaymentCapacityMonitor.Sample(source.getPlayerId(), module.retainedPaymentOrderCount(),
-                        PaymentCapacityMonitor.utf8Bytes(modules));
+                        PaymentCapacityMonitor.bytes(modules));
             }
         } catch (Throwable failure) {
             PaymentCapacityMonitor.reportFailure(failure);
         }
 
         // JSON 已由本次参数独占；异步完成或超时后都不能再清理任何提交对象。
-        source.setModules("{}");
+        source.setModules(null);
         return snapshot;
     }
 

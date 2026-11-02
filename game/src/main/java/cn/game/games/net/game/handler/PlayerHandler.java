@@ -1217,7 +1217,7 @@ public class PlayerHandler extends GameBaseHandler {
 		playerData.setRefreshWeek(DateUtil.getWeek());
 		playerData.setRefreshMonth(DateUtil.getMonth());
 		playerData.setNew(true);
-		playerData.setModules("[]");
+		playerData.setModules(null);
 
 //		ObjUtil.setDefaultValue(playerData);
 		/*	

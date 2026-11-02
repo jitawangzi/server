@@ -377,7 +377,7 @@ class PaymentDeliveryLifecycleTest {
             Assertions.assertEquals(0, charges.get()); Assertions.assertFalse(captured.future().isComplete()); Assertions.assertEquals(0, removes.get());
         }
         /** @return 不访问真实数据库的基础行 */
-        private static PlayerData data() { PlayerData data = new PlayerData(); data.setPlayerId(8291); data.setUid(8291); data.setModules("{}"); return data; }
+        private static PlayerData data() { PlayerData data = new PlayerData(); data.setPlayerId(8291); data.setUid(8291); data.setModules(null); return data; }
         @Override public void close() {
             write.tryComplete(new PlayerSaveCoordinator.WriteResult(PlayerSaveCoordinator.Outcome.NOT_WRITTEN, new IllegalStateException("fixture closed")));
             executor.close();

@@ -53,8 +53,9 @@ class TimingBoundariesTest {
         player.getModules().put(PlayerModule.class.getName(), new PlayerModule());
         var snapshot = PlayerDataSnapshot.capture(player);
         Assertions.assertNotSame(data, snapshot);
-        Assertions.assertNotEquals("{}", snapshot.getModules());
-        Assertions.assertEquals("{}", data.getModules());
+        Assertions.assertNotNull(snapshot.getModules());
+        Assertions.assertTrue(snapshot.getModules().length > 0);
+        Assertions.assertNull(data.getModules());
         Assertions.assertEquals(1, count(metrics, TimingMetrics.Stage.SNAPSHOT, TimingMetrics.Outcome.SUCCESS));
     }
     /** 真实worker执行失败保留原原因，观测只附着原Future，不使用共享集群。 */

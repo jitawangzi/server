@@ -398,7 +398,7 @@ class PlayerSaveRiskTest {
     /** 等待明确失败。 */
     private static void awaitFailure(Future<?> future) { Assertions.assertThrows(java.util.concurrent.ExecutionException.class, () -> await(future)); }
     /** 最小独占参数。 */
-    private static PlayerData data() { PlayerData data = new PlayerData(); data.setPlayerId(1L); data.setModules("{}"); return data; }
+    private static PlayerData data() { PlayerData data = new PlayerData(); data.setPlayerId(1L); data.setModules(null); return data; }
     /** 无全局环境的时间/事务替身；使用真实协调器。 */
     private static final class Harness {
         final AtomicLong time = new AtomicLong(100);

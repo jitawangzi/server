@@ -77,14 +77,14 @@ class PlayerSaveDatabaseIT {
                 player.getPlayerModule().addPayItems(item);
                 Assertions.assertEquals(PlayerSaveCoordinator.Outcome.COMMITTED,
                         await(db.writer.write(PlayerDataSnapshot.capture(player), false)).outcome());
-                String gameBefore = db.read().getModules(); List<String> loginBefore = archiveLoginSnapshot(config, db.id);
+                byte[] gameBefore = db.read().getModules(); List<String> loginBefore = archiveLoginSnapshot(config, db.id);
                 var sealed = cn.game.games.diagnostics.PaymentArchiveCli.run(new String[] {"archive", Long.toString(db.id), Long.toString(db.id), archive.toString(), key.toString()});
                 Assertions.assertEquals("SEALED_AND_VERIFIED", sealed.get("status"), sealed.toString());
                 Path artifact = archive.resolve("payment-" + db.id + "-" + db.id + ".json");
                 Assertions.assertTrue(Files.size(artifact) > 0);
                 var cold = cn.game.games.diagnostics.PaymentArchiveCli.run(new String[] {"verify", Long.toString(db.id), Long.toString(db.id), archive.toString(), key.toString()});
                 Assertions.assertEquals("VERIFIED", cold.get("status")); Assertions.assertEquals(false, cold.get("canDelete"));
-                Assertions.assertEquals(gameBefore, db.read().getModules());
+                Assertions.assertArrayEquals(gameBefore, db.read().getModules());
                 Assertions.assertEquals(loginBefore, archiveLoginSnapshot(config, db.id));
                 db.clean();
             } finally {
@@ -142,13 +142,13 @@ class PlayerSaveDatabaseIT {
                     await(db.writer.write(PlayerDataSnapshot.capture(player), false)).outcome());
             Player cold = db.reloadFresh(); cold.getPlayerModule().initFromDbAfter();
             Assertions.assertTrue(cold.getPlayerModule().getPayItems(db.id).hasCommittedCompletionProof(db.id, "fixture-sdk"));
-            String before = db.read().getModules();
+            byte[] before = db.read().getModules();
             for (int i = 0; i < 2; i++) {
                 var result = cn.game.games.diagnostics.PaymentEvidenceCli.run(new String[] {Long.toString(db.id), Long.toString(db.id)});
                 Assertions.assertEquals("PERSISTED_V1_PROOF_CONSISTENT", result.get("game"), result.toString());
                 Assertions.assertEquals("ORDER_NOT_FOUND", result.get("login"), result.toString());
                 Assertions.assertEquals("NOT_PROVEN", result.get("transactionResolution"));
-                Assertions.assertEquals(before, db.read().getModules());
+                Assertions.assertArrayEquals(before, db.read().getModules());
             }
             db.clean();
         }
@@ -398,7 +398,7 @@ class PlayerSaveDatabaseIT {
             data.setChannelId("s2-test"); data.setServerId("s2-test"); data.setName(runId.substring(0, 15));
             data.setRegion(""); data.setUnionName("");
             data.setCreateDate("2026-10-25 00:00:00"); data.setLoginDate("2026-10-25 00:00:00");
-            data.setModules("{}"); data.setExp(42);
+            data.setModules(null); data.setExp(42);
             return data;
         }
 

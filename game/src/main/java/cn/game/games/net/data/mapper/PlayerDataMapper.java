@@ -89,7 +89,8 @@ public interface PlayerDataMapper {
 	 * @note   1. 字段名必须与数据库列名一致 2. 字段值类型需要与数据库字段类型兼容 3. 主键字段不会被更新 4. 如果params为空或不包含任何有效字段，将不执行更新操作
 	 * @mbg.generated
 	 */
-	int updateColumnsByPrimaryKey(@Param("playerId") long playerId, @Param("params") java.util.Map<String, Object> params);
+	int updateColumnsByPrimaryKey(@Param("playerId") long playerId,
+			@Param("params") java.util.Map<String, Object> params);
 
 	/**
 	 * @mbg.generated

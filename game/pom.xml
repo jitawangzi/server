@@ -46,6 +46,14 @@
 			<artifactId>thinkingdatasdk</artifactId>
 			<version>3.0.2</version>
 		</dependency>
+			<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial.snappy</groupId>
+			<artifactId>snappy-java</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -76,10 +84,10 @@
 				</executions>
 			</plugin>
 
-									<plugin> 
-							<groupId>org.apache.maven.plugins</groupId> 
-							<artifactId>maven-dependency-plugin</artifactId> 
-							</plugin> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin> 
 
 		</plugins>
 	</build>

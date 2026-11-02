@@ -19,6 +19,9 @@ import cn.game.games.diagnostics.PaymentEvidenceCli;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.games.net.game.module.recharge.PayType;
 import cn.game.util.JsonUtil;
+import cn.game.util.CborSnappyUtil;
+import cn.game.games.core.BasePlayerModule;
+import cn.game.games.net.game.module.player.PlayerModule;
 
 /**
  * 当前两库真实冷读、真实Game聚合与完成事务、真实子JVM CLI；每个Case只占有一行Game、一行Login、两张随机测试表。
@@ -96,19 +99,21 @@ class PaymentCleanupDatabaseIT {
     /** 当前热项变化、UNKNOWN/旧证明、缺失Login/Game行、缺完成凭证及改写归档均不能变成清理成功。 */
     @Test void changedAbsentPendingAndArchiveRisksRemainBlocked() throws Exception {
         try(var f=new Case(false)) {
-            f.open(); String modules=f.db.read().getModules();
+            f.open(); byte[] modules=f.db.read().getModules();
             for(String mode:List.of("UNKNOWN","EXECUTING","version","sdk","rmb","legacy","missingModule")) {
-                String changed=alterModules(modules,f.db.id,mode);
-                Assertions.assertFalse(new com.fasterxml.jackson.databind.ObjectMapper().readTree(changed).equals(
-                        new com.fasterxml.jackson.databind.ObjectMapper().readTree(modules)),"夹具故障必须实际改变JSON树："+mode);
+                byte[] changed=alterModules(modules,f.db.id,mode);
+                Assertions.assertFalse(java.util.Arrays.equals(changed, modules), "夹具故障必须实际改变模块字节：" + mode);
                 f.modules(changed); f.assertReadOnly(false);
             }
             f.modules(modules);
-            var mapper=new com.fasterxml.jackson.databind.ObjectMapper(); var tree=mapper.readTree(modules);
-            com.fasterxml.jackson.databind.JsonNode payload=tree.isArray()?tree.get(1):tree;
-            var module=payload.path("cn.game.games.net.game.module.player.PlayerModule"); if(module.isArray()) { module=module.get(1); }
-            var items=module.path("payItems"); if(items.isArray()) { items=items.get(1); }
-            ((com.fasterxml.jackson.databind.node.ObjectNode)items).remove(Long.toString(f.db.id)); f.modules(mapper.writeValueAsString(tree));
+            var mapper = new com.fasterxml.jackson.databind.ObjectMapper(new com.fasterxml.jackson.dataformat.cbor.CBORFactory());
+            byte[] cborBytes = org.xerial.snappy.Snappy.uncompress(modules);
+            var tree = mapper.readTree(cborBytes);
+            com.fasterxml.jackson.databind.JsonNode payload = tree.isArray() ? tree.get(1) : tree;
+            var module = payload.path("cn.game.games.net.game.module.player.PlayerModule"); if (module.isArray()) { module = module.get(1); }
+            var items = module.path("payItems"); if (items.isArray()) { items = items.get(1); }
+            ((com.fasterxml.jackson.databind.node.ObjectNode) items).remove(Long.toString(f.db.id));
+            f.modules(org.xerial.snappy.Snappy.compress(mapper.writeValueAsBytes(tree)));
             Assertions.assertEquals("ALREADY_NOT_PRESENT_OBSERVED",f.check().get("hotItem")); f.assertReadOnly(false); f.modules(modules);
             f.removeLogin(); f.assertReadOnly(false); f.insertLogin();
             var row=f.db.read();
@@ -142,21 +147,28 @@ class PaymentCleanupDatabaseIT {
         var p=new Properties();try(InputStream in=Files.newInputStream(Path.of(System.getenv("S2_DB_CONFIG")))) { p.load(in); }return p;
     }
     /** @param raw 数据库返回的JSON，空白格式不作假设 @param order 本轮订单 @param mode 固定故障种类 @return 精确改变的JSON树 */
-    private static String alterModules(String raw,long order,String mode)throws Exception {
-        var mapper=new com.fasterxml.jackson.databind.ObjectMapper();var tree=mapper.readTree(raw);
-        var root=tree.isArray()?tree.get(1):tree;var module=root.path("cn.game.games.net.game.module.player.PlayerModule");
-        if(module.isArray()) {module=module.get(1);}var items=module.path("payItems");if(items.isArray()) {items=items.get(1);}
-        var item=items.path(Long.toString(order));if(item.isArray()) {item=item.get(1);}var object=(com.fasterxml.jackson.databind.node.ObjectNode)item;
-        switch(mode) {
-            case "UNKNOWN","EXECUTING" -> object.put("completionState",mode);
-            case "version" -> ((com.fasterxml.jackson.databind.node.ObjectNode)object.path("completionProof")).put("version",99);
-            case "sdk" -> object.put("sdkOrderId","other-sdk");
-            case "rmb" -> object.put("rmb",13);
-            case "legacy" -> {object.remove("completionProof");object.remove("completionState");}
-            case "missingModule" -> {return "{}";}
+    private static byte[] alterModules(byte[] raw, long order, String mode) throws Exception {
+        var mapper = new com.fasterxml.jackson.databind.ObjectMapper(new com.fasterxml.jackson.dataformat.cbor.CBORFactory());
+        if ("missingModule".equals(mode)) { return org.xerial.snappy.Snappy.compress(mapper.writeValueAsBytes(mapper.createObjectNode())); }
+        byte[] cborBytes = org.xerial.snappy.Snappy.uncompress(raw);
+        var tree = mapper.readTree(cborBytes);
+        var root = tree.isArray() ? tree.get(1) : tree;
+        var module = root.path("cn.game.games.net.game.module.player.PlayerModule");
+        if (module.isArray()) { module = module.get(1); }
+        var items = module.path("payItems");
+        if (items.isArray()) { items = items.get(1); }
+        var item = items.path(Long.toString(order));
+        if (item.isArray()) { item = item.get(1); }
+        var object = (com.fasterxml.jackson.databind.node.ObjectNode) item;
+        switch (mode) {
+            case "UNKNOWN", "EXECUTING" -> object.put("completionState", mode);
+            case "version" -> ((com.fasterxml.jackson.databind.node.ObjectNode) object.path("completionProof")).put("version", 99);
+            case "sdk" -> object.put("sdkOrderId", "other-sdk");
+            case "rmb" -> object.put("rmb", 13);
+            case "legacy" -> { object.remove("completionProof"); object.remove("completionState"); }
             default -> throw new AssertionError(mode);
         }
-        return mapper.writeValueAsString(tree);
+        return org.xerial.snappy.Snappy.compress(mapper.writeValueAsBytes(tree));
     }
     /** @param future 本轮真实写入 @return 有界等待后的结果 @throws Exception 失败或超时 */
     private static <T> T await(io.vertx.core.Future<T> future) throws Exception {
@@ -257,8 +269,8 @@ class PaymentCleanupDatabaseIT {
             }
         }
         /** @param value 本轮测试modules字节 */
-        void modules(String value)throws Exception {
-            try(var c=connect(config,false);var s=c.prepareStatement("UPDATE t_player_data SET modules=? WHERE player_id=? AND account_id=?")) {s.setString(1,value);s.setLong(2,db.id);s.setString(3,db.runId);Assertions.assertEquals(1,s.executeUpdate());}
+        void modules(byte[] value)throws Exception {
+            try(var c=connect(config,false);var s=c.prepareStatement("UPDATE t_player_data SET modules=? WHERE player_id=? AND account_id=?")) {s.setBytes(1,value);s.setLong(2,db.id);s.setString(3,db.runId);Assertions.assertEquals(1,s.executeUpdate());}
         }
         /** 只插入本轮唯一Login行，冲突立即失败。 */
         void insertLogin()throws Exception {

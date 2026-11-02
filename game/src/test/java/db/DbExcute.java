@@ -1,5 +1,7 @@
 package db;
 
+import cn.game.util.CborSnappyUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class DbExcute {
 //					player.getVarModule().setVar(j, j);
 				}
 
-				playerData.setModules(JsonUtil.toJsonString(player.getModules()));
+				playerData.setModules(CborSnappyUtil.compress(player.getModules()));
 				list.add(playerData);
 			}
 			DAO.executeSync(PlayerDataMapper.class, MapperConstant.insertBatch, list);
@@ -110,7 +112,7 @@ public class DbExcute {
 //					player.getVarModule().setVar(j, j);
 				}
 
-				playerData.setModules(JsonUtil.toJsonString(player.getModules()));
+				playerData.setModules(CborSnappyUtil.compress(player.getModules()));
 				list.add(playerData);
 //				DAO.executeSync(PlayerDataMapper.class, MapperConstant.updateByPrimaryKeyWithBLOBs, playerData);
 

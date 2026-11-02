@@ -1,5 +1,6 @@
 package cn.game.games.net.game.helper;
 
+import java.nio.charset.StandardCharsets;
 import java.io.InputStream;
 import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
@@ -32,6 +33,7 @@ import cn.game.games.net.game.constant.MapperConstant;
 import cn.game.games.net.game.db.DbTask;
 import cn.game.testsupport.SaveProbeModule;
 import cn.game.util.JsonUtil;
+import cn.game.util.CborSnappyUtil;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
@@ -120,11 +122,11 @@ public class PlayerSaveSnapshotTest {
                 DeferredWrites writes = new DeferredWrites();
                 Map<String, Object> original = expected(player, insert);
                 submit(player, insert, writes);
-                Assertions.assertEquals("{}", player.getData().getModules());
-                player.getData().setModules("later live state");
+                Assertions.assertNull(player.getData().getModules());
+                player.getData().setModules("later live state".getBytes(StandardCharsets.UTF_8));
                 if (outcome == 0) { writes.complete(0); }
                 else { writes.fail(0, outcome == 1 ? new IllegalStateException("failed") : new TimeoutException("expired")); }
-                Assertions.assertEquals("later live state", player.getData().getModules());
+                Assertions.assertArrayEquals("later live state".getBytes(StandardCharsets.UTF_8), player.getData().getModules());
                 Assertions.assertEquals(original, bind(writes.rows.getFirst(), insert));
             }
         }
@@ -145,10 +147,10 @@ public class PlayerSaveSnapshotTest {
             submit(player, insert, writes);
             Assertions.assertEquals(1, source.calls);
             Assertions.assertEquals("prepared", bind(writes.rows.getFirst(), insert).get("name"));
-            String json = writes.rows.getFirst().getModules();
+            byte[] json = writes.rows.getFirst().getModules();
             player.module.values.add("changed");
             second.values.clear();
-            Map<String, BasePlayerModule> restored = JsonUtil.parseObjectWithType(json);
+            Map<String, BasePlayerModule> restored = CborSnappyUtil.decompress(json);
             Assertions.assertEquals(2, restored.size());
             SaveProbeModule restoredFirst = Assertions.assertInstanceOf(SaveProbeModule.class, restored.get("first"));
             Assertions.assertNotSame(player.module, restoredFirst);
@@ -179,7 +181,7 @@ public class PlayerSaveSnapshotTest {
     void preparationFailureDoesNotSubmitOrClearSource() {
         HookData source = new HookData();
         source.failure = new IllegalStateException("prepare failed");
-        source.setModules("original");
+        source.setModules("original".getBytes(StandardCharsets.UTF_8));
         FixturePlayer player = new FixturePlayer(source);
         DeferredWrites writes = new DeferredWrites();
         for (boolean insert : List.of(true, false)) {
@@ -187,7 +189,7 @@ public class PlayerSaveSnapshotTest {
                     () -> submit(player, insert, writes)));
         }
         Assertions.assertTrue(writes.rows.isEmpty());
-        Assertions.assertEquals("original", source.getModules());
+        Assertions.assertArrayEquals("original".getBytes(StandardCharsets.UTF_8), source.getModules());
     }
 
     /** 玩家缺失、不活跃及空任务明确失败；独立表不增加写入或绕过原钩子。 */
@@ -261,6 +263,7 @@ public class PlayerSaveSnapshotTest {
             else if (type == int.class) { value = 100 * version + ++index; }
             else if (type == long.class) { value = 1000L * version + ++index; }
             else if (type == boolean.class) { value = version % 2 == 1; }
+            else if (type == byte[].class) { value = new byte[] {(byte) version}; }
             else { throw new AssertionError("新增 Mapper 类型需明确复制和测试策略: " + property + ":" + type); }
             bean.setValue(property, value);
         }
@@ -276,7 +279,7 @@ public class PlayerSaveSnapshotTest {
     /** @param player 当前状态 @param insert 操作类型 @return 提交前独立计算的全部绑定值 */
     private Map<String, Object> expected(FixturePlayer player, boolean insert) throws SQLException {
         Map<String, Object> values = bind(player.getData(), insert);
-        values.put("modules", JsonUtil.toJsonStringWithType(player.getModules()));
+        values.put("modules", new Bytes(CborSnappyUtil.compress(player.getModules())));
         return values;
     }
 
@@ -287,6 +290,11 @@ public class PlayerSaveSnapshotTest {
     }
 
     /** @param row 原提交引用 @param insert 操作类型 @return 真实 MyBatis 参数处理器在晚读取时绑定的值 */
+    private record Bytes(byte[] bytes) {
+        @Override public boolean equals(Object o) { return o instanceof Bytes other && java.util.Arrays.equals(bytes, other.bytes); }
+        @Override public int hashCode() { return java.util.Arrays.hashCode(bytes); }
+        @Override public String toString() { return "Bytes[" + (bytes == null ? "null" : bytes.length + " bytes") + "]"; }
+    }
     private Map<String, Object> bind(PlayerData row, boolean insert) throws SQLException {
         MappedStatement statement = statement(insert);
         BoundSql sql = statement.getBoundSql(row);
@@ -295,7 +303,14 @@ public class PlayerSaveSnapshotTest {
                 new Class<?>[] {PreparedStatement.class}, (proxy, method, args) -> {
                     if (method.getName().startsWith("set") && args[0] instanceof Integer index) {
                         String property = sql.getParameterMappings().get(index - 1).getProperty();
-                        values.put(property, method.getName().equals("setNull") ? null : args[1]);
+                        Object val = method.getName().equals("setNull") ? null : args[1];
+                        if (val instanceof java.io.InputStream in) {
+                            try { val = in.readAllBytes(); } catch (Exception e) { throw new RuntimeException(e); }
+                        }
+                        if (val instanceof byte[] bytes) {
+                            val = new Bytes(bytes);
+                        }
+                        values.put(property, val);
                         return null;
                     }
                     throw new UnsupportedOperationException(method.getName());

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import cn.game.games.net.game.module.draw.DrawModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,6 @@ import cn.game.games.core.event.PlayerEvent;
 import cn.game.games.core.event.PlayerEventBus;
 import cn.game.games.core.event.PlayerEventHandler;
 import cn.game.games.net.client.GameClient;
-import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.helper.ItemHelper;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.PlayerWriteGuard;
@@ -56,6 +54,7 @@ import cn.game.games.net.game.module.develop.hero.HeroModule;
 import cn.game.games.net.game.module.develop.pet.PetModule;
 import cn.game.games.net.game.module.develop.secretscript.SecretscriptModule;
 import cn.game.games.net.game.module.develop.skill.DragonSkillModule;
+import cn.game.games.net.game.module.draw.DrawModule;
 import cn.game.games.net.game.module.func.FuncModule;
 import cn.game.games.net.game.module.guarantee.GuaranteeModule;
 import cn.game.games.net.game.module.guild.GuildModule;
@@ -78,12 +77,10 @@ import cn.game.protocol.generated.config.FairyFriendFavorabilityConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.VIPConfig;
 import cn.game.protocol.generated.enume.Asset;
-import cn.game.protocol.generated.enume.ConditionTypeEnum;
 import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.enume.WelfareTypeEnum;
 import cn.game.protocol.generated.manager.FairyFriendFavorabilityManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
-import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.GoodsTypeEnum;
 import cn.game.protocol.manual.OpType;
@@ -93,8 +90,8 @@ import cn.game.protocol.protobuf.GuildMsg.GuildSimpleInfo;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerInfo;
 import cn.game.protocol.protobuf.ServerMsg;
+import cn.game.util.CborSnappyUtil;
 import cn.game.util.DateUtil;
-import cn.game.util.JsonUtil;
 import cn.game.util.ServerType;
 import cn.game.util.ai.annotation.AiExport;
 import cn.game.util.reflect.ClassHelper;
@@ -369,9 +366,9 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public void initPlayerModule() {
 		HashMap<String, BasePlayerModule> modules = null;
-		String modules2 = getData().getModules();
-		if (!StringUtils.isEmpty(modules2) && !"[]".equals(modules2)) {
-			modules = JsonUtil.parseObjectWithType(modules2);
+		byte[] modules2 = getData().getModules();
+		if (modules2 != null && modules2.length > 0) {
+			modules = CborSnappyUtil.decompress(modules2);
 		}
 		initModule(modules);
 	}
@@ -383,9 +380,9 @@ public class Player {
 //					continue;
 //				}
 				BasePlayerModule instance = createBasePlayerModuleInstance(clazz, modulesFromDb);
-//				if (!instance.isComplete()) {
-//					continue;
-//				}
+				if (!instance.isComplete()) {
+					continue;
+				}
 				instance.initDefault(this);
 				modules.put(clazz.getName(), instance);
 				if (instance instanceof GoodsModule) {

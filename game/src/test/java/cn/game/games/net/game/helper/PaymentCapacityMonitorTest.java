@@ -19,6 +19,8 @@ import cn.game.games.net.game.module.player.PlayerModule;
 import cn.game.games.net.game.module.recharge.PayItem;
 import cn.game.testsupport.PaymentCapacityProbeModule;
 import cn.game.util.JsonUtil;
+import cn.game.util.CborSnappyUtil;
+import cn.game.games.core.BasePlayerModule;
 import io.vertx.core.Promise;
 
 /** 真实封存与提交回调结合可控时钟，验证容量不改变保存、保留和 UNKNOWN 语义。 */
@@ -126,10 +128,10 @@ class PaymentCapacityMonitorTest {
         player.getData().setName("中😀"); player.add(1, "secret-支付😀");
         var data = PlayerDataSnapshot.capture(player);
         var sample = PlayerDataSnapshot.capacity(data);
-        Assertions.assertEquals(data.getModules().getBytes(StandardCharsets.UTF_8).length, sample.modulesUtf8Bytes());
+        Assertions.assertEquals(data.getModules().length, sample.modulesUtf8Bytes());
         Assertions.assertEquals(1, sample.orders()); Assertions.assertEquals(1, player.module.countReads.get());
-        String raw = data.getModules();
-        player.add(2, "later"); player.getData().setModules("new online value");
+        byte[] raw = data.getModules();
+        player.add(2, "later"); player.getData().setModules("new online value".getBytes(StandardCharsets.UTF_8));
         List<PaymentCapacityMonitor.Sample> observed = new CopyOnWriteArrayList<>();
         Promise<PlayerSaveCoordinator.WriteResult> write = Promise.promise();
         var coordinator = coordinator(write, observed::add);
@@ -143,14 +145,15 @@ class PaymentCapacityMonitorTest {
         Assertions.assertEquals(List.of(sample), observed);
         Assertions.assertEquals(1, coordinator.status(41).confirmedPaymentOrders());
         Assertions.assertEquals(sample.modulesUtf8Bytes(), coordinator.status(41).confirmedModulesUtf8Bytes());
-        Assertions.assertEquals(1, player.module.countReads.get()); Assertions.assertEquals(raw, data.getModules());
-        Assertions.assertEquals("new online value", player.getData().getModules());
+        Assertions.assertEquals(1, player.module.countReads.get()); Assertions.assertArrayEquals(raw, data.getModules());
+        Assertions.assertArrayEquals("new online value".getBytes(StandardCharsets.UTF_8), player.getData().getModules());
     }
 
     /** 大订单集超过诊断阈值仍原样提交，不删单、不截断，告警出口不包含 SDK 原文。 */
     @Test void largeOrderSetIsCommittedWithoutTruncationOrEviction() throws Exception {
         FixturePlayer player = new FixturePlayer();
-        for (int i = 1; i <= 12_000; i++) { player.add(i, "secret-sdk-中😀".repeat(12)); }
+        byte[] buf = new byte[200]; var rnd = java.util.concurrent.ThreadLocalRandom.current(); var hex = java.util.HexFormat.of();
+        for (int i = 1; i <= 12_000; i++) { rnd.nextBytes(buf); player.add(i, "secret-sdk-" + hex.formatHex(buf)); }
         var data = PlayerDataSnapshot.capture(player);
         var sample = PlayerDataSnapshot.capacity(data);
         Assertions.assertEquals(12_000, sample.orders()); Assertions.assertTrue(sample.modulesUtf8Bytes() > 4_194_304);
@@ -162,7 +165,7 @@ class PaymentCapacityMonitorTest {
         result.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
         awaitObservation(() -> alerts.size() == 2);
         Assertions.assertEquals(2, alerts.size()); Assertions.assertFalse(alerts.toString().contains("secret-sdk"));
-        var restored = JsonUtil.<java.util.Map<String, PlayerModule>>parseObjectWithType(data.getModules()).get(PlayerModule.class.getName());
+        var restored = (PlayerModule) CborSnappyUtil.<java.util.Map<String, BasePlayerModule>>decompress(data.getModules()).get(PlayerModule.class.getName());
         Assertions.assertEquals(12_000, restored.retainedPaymentOrderCount()); Assertions.assertNotNull(restored.getPayItems(12_000));
     }
 

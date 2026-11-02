@@ -256,7 +256,7 @@ class PlayerSaveOrderingTest {
                 "fixture explicitly confirms no old transaction can execute", "fixture confirms terminal result");
     }
     /** @param id 玩家 @param name 本代内容 @return 已独占的测试参数 */
-    private static PlayerData data(long id, String name) { PlayerData data = new PlayerData(); data.setPlayerId(id); data.setName(name); data.setModules("{}"); return data; }
+    private static PlayerData data(long id, String name) { PlayerData data = new PlayerData(); data.setPlayerId(id); data.setName(name); data.setModules(null); return data; }
     /** @param result 本次 Future @return 有界等待的成功结果 */
     private static <T> T await(Future<T> result) throws Exception { return result.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS); }
     /** @param result 本次 Future @return 原始保存失败，拒绝将测试等待超时当作预期失败 */

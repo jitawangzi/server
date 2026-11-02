@@ -18,8 +18,7 @@ class TimingDatabaseIT {
                 var snapshot = PlayerDataSnapshot.capture(player);
                 var result = fixture.writer.write(snapshot, false).toCompletionStage().toCompletableFuture().get(20, TimeUnit.SECONDS);
                 Assertions.assertEquals(PlayerSaveCoordinator.Outcome.COMMITTED, result.outcome());
-                Assertions.assertEquals(cn.game.util.JsonUtil.getObjectMapper().readTree(snapshot.getModules()),
-                        cn.game.util.JsonUtil.getObjectMapper().readTree(fixture.read().getModules()));
+                Assertions.assertArrayEquals(snapshot.getModules(), fixture.read().getModules());
                 for (var stage : new TimingMetrics.Stage[]{TimingMetrics.Stage.CONNECTION, TimingMetrics.Stage.SQL,
                         TimingMetrics.Stage.TRANSACTION, TimingMetrics.Stage.SNAPSHOT}) {
                     Assertions.assertTrue(metrics.snapshot().rows().stream().anyMatch(r -> r.stage() == stage
