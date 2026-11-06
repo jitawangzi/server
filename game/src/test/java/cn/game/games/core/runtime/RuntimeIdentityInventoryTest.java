@@ -63,4 +63,45 @@ class RuntimeIdentityInventoryTest {
         Assertions.assertTrue(RuntimeIdentity.validChallenge("a".repeat(32)));
         Assertions.assertThrows(IllegalStateException.class, () -> RuntimeIdentity.observe("a".repeat(32)));
     }
+
+    /** Game 清单必须在读取配置与制品前应用命令行节点覆盖，不能保留环境默认节点名。 */
+    @Test void gameManifestAppliesStartupNodeBeforeCollectingInputs() throws Exception {
+        assertManifestStartupNode("game", "game.server.id", "game_test");
+    }
+
+    /** Login 清单遵循自己的启动节点键，不能遗漏登录服或错误覆盖游戏服节点。 */
+    @Test void loginManifestAppliesStartupNodeBeforeCollectingInputs() throws Exception {
+        assertManifestStartupNode("login", "login.server.id", "login_test");
+    }
+
+    /**
+     * 用缺失制品目录终止后续采集，直接验证真实清单入口在配置读取前的启动参数语义。
+     * @param app Apollo 应用名
+     * @param key 该应用启动入口使用的节点属性名
+     * @param target 命令行显式指定的节点名
+     */
+    private void assertManifestStartupNode(String app, String key, String target) throws Exception {
+        String otherKey = app.equals("game") ? "login.server.id" : "game.server.id";
+        Map<String, String> previous = new LinkedHashMap<>();
+        for (String property : List.of("app.id", "game.runtimeIdentity.root", key, otherKey)) {
+            previous.put(property, System.getProperty(property));
+        }
+        Path output = directory.resolve("expected.json");
+        try {
+            System.setProperty("app.id", app);
+            System.setProperty("game.runtimeIdentity.root", directory.resolve("missing-artifacts").toString());
+            System.setProperty(key, "apollo_default_node");
+            System.setProperty(otherKey, "other_node");
+            Assertions.assertThrows(java.nio.file.NoSuchFileException.class,
+                    () -> RuntimeIdentityManifest.main(new String[] { target, output.toString() }));
+            Assertions.assertEquals(target, System.getProperty(key));
+            Assertions.assertEquals("other_node", System.getProperty(otherKey));
+            Assertions.assertFalse(Files.exists(output));
+        } finally {
+            previous.forEach((property, value) -> {
+                if (value == null) { System.clearProperty(property); }
+                else { System.setProperty(property, value); }
+            });
+        }
+    }
 }
