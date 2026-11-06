@@ -375,6 +375,16 @@ public class Client extends AbstractNetClient {
 
 	private void chooseLogicServer(String url, String passport, int totalServerCount, List<MyServerInfo> myServerListList)
 			throws InvalidProtocolBufferException {
+		// 严格场景显式选定逻辑区服，避免自动选择最近登录或最新开服的数据范围。
+		String requestedLogicServer = System.getProperty("scenario.logicServerId", "");
+		if (!requestedLogicServer.isBlank()) {
+			logicServerId = requestedLogicServer;
+			playerIdInLogicServer = null;
+			for (MyServerInfo info : myServerListList) {
+				if (requestedLogicServer.equals(info.getServerId())) { playerIdInLogicServer = info.getPlayerId(); }
+			}
+			return;
+		}
 		byte[] resp;
 		if (!myServerListList.isEmpty()) {
 			int lastEnterTime = 0; 
@@ -921,10 +931,15 @@ public class Client extends AbstractNetClient {
 		return sendWsPack(message);
 	}
 	public <T> T sendProtocolAndWait(Message message) {
+		return sendProtocolAndWait(message, 5);
+	}
+	/** 严格制品核对可读取较多文件，允许调用者单独设置有界等待，不改变普通协议默认时限。 */
+	public <T> T sendProtocolAndWait(Message message, int timeoutSeconds) {
+		if (timeoutSeconds < 1 || timeoutSeconds > 60) { throw new IllegalArgumentException("请求等待时限应为1至60秒"); }
 		io.vertx.core.Promise promise = io.vertx.core.Promise.promise();
 		respPromise = promise;
 		sendProtocol(message);
-		Future future = promise.future().timeout(5, TimeUnit.SECONDS);
+		Future future = promise.future().timeout(timeoutSeconds, TimeUnit.SECONDS);
 		Object resp = AsyncUtils.await(future);
 		return (T) resp;
 	}

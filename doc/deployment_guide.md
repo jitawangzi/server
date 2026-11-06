@@ -157,6 +157,8 @@ mvn package -DskipTests
 > 2. Windows 宿主机上若存在多个虚拟网卡（如 VMware/VPN），需显式指定 `-DdefaultNetworkIp=127.0.0.1`，避免 Vert.x 集群网卡绑定失败。
 
 ### 5.2 启动脚本
+自动化联调优先使用 `run_server.ps1 -Action Prepare` 生成独立快照，再按 [运行目标证据](../.ai-workspace/context/runtime-verification.md) 启动、核验与停止。默认 Apollo 为回环 9888 / SYQ；Start 需要确认测试数据范围，不会按主类模糊匹配结束已有服务。下列旧手工入口不自动提供严格运行身份。
+
 已在 `D:\work-all\game\server\` 目录下创建便捷启动脚本：
 1. **独立启动**：
    - GameServer：双击 `run_game.bat`（唯一 ID：`game_test`，WebSocket 端口：7011）
@@ -170,7 +172,7 @@ mvn package -DskipTests
 
 ## 六、服务状态验证
 
-运行状态下，以下端口正常监听即表示整个系统已完整跑通：
+以下端口监听仅表示对应入口已建立，不能证明完整登录、协议场景或所连版本正确。完整联调需执行实际场景并核对运行身份：
 - `2181`：ZooKeeper 注册中心
 - `6379`：Redis 数据缓存
 - `9888`：Apollo 配置中心

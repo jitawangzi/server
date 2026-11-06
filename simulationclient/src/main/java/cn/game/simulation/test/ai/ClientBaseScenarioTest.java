@@ -144,9 +144,8 @@ public abstract class ClientBaseScenarioTest {
 			run();
             System.out.println(">>> 测试流程结束，结果：PASS");
             System.exit(0); // 成功退出
-		} catch (Exception e) {
-            System.err.println(">>> 测试流程失败: " + e.getMessage());
-            e.printStackTrace();
+		} catch (Throwable e) {
+            org.slf4j.LoggerFactory.getLogger(getClass()).error("测试流程失败", e);
             System.exit(1); // 失败退出
         }
 	}
@@ -155,20 +154,39 @@ public abstract class ClientBaseScenarioTest {
      * 
      * @throws Exception
      */
-    private void run() throws Exception {
+    private void run() throws Throwable {
 
         // 1. 自动登录流程
-    	client = new Client(ServerTestContext.passportUsername, ServerTestContext.pwd, ServerTestContext.serverId,
+		client = new Client(System.getProperty("scenario.account", ServerTestContext.passportUsername), ServerTestContext.pwd,
+                System.getProperty("scenario.gameId", ServerTestContext.serverId),
 				ServerTestContext.version);
 
-		client.loginPassportProto(ServerTestContext.loginServerUrl);
+		client.loginPassportProto(System.getProperty("scenario.loginUrl", ServerTestContext.loginServerUrl));
 		client.loginGateway(ServerTestContext.gateServerIp, ServerTestContext.gateServerPort);
 
 		client.waitInit();
+        if (!client.getInit()) { throw new IllegalStateException("SCENARIO_LOGIN_NOT_READY"); }
         System.out.println("登录成功，开始执行测试流程...");
 
         // 2. 执行具体的测试逻辑 (由子类/AI实现)
-        executeProcess();
+        ScenarioRuntimeEvidence runtime = ScenarioRuntimeEvidence.configured();
+        if (runtime != null) { runtime.before(client); }
+        Throwable scenarioFailure = null;
+        try { executeProcess(); }
+        catch (Throwable e) {
+            org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景执行失败，保留后续运行观察", e);
+            scenarioFailure = e;
+            throw e;
+        } finally {
+            if (runtime != null) {
+                try { runtime.after(client, scenarioFailure == null); }
+                catch (Throwable e) {
+                    org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景后运行观察失败", e);
+                    if (scenarioFailure != null) { scenarioFailure.addSuppressed(e); }
+                    else { throw e; }
+                }
+            }
+        }
     
     }
 }

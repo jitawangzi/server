@@ -146,6 +146,7 @@ public class GameServer implements GameServerMBean {
 		ServerType serverType = ServerType.Game;
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, serverType);
+		cn.game.games.core.runtime.RuntimeIdentity.prepare(serverId);
 		LoggerManager.init();
 //		Log4j2ApolloLoader.getInstance().init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
@@ -225,6 +226,7 @@ public class GameServer implements GameServerMBean {
 		// 最后在启动websocket服务器,防止服务器还没完全启动，客户端就重连了，导致某些问题
 		cn.game.games.net.game.helper.PlayerHelper.startSaveRiskMonitor();
 		initWebsocketVerticle();
+		cn.game.games.core.runtime.RuntimeIdentity.ready();
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
@@ -431,6 +433,7 @@ public class GameServer implements GameServerMBean {
 	}
 
 	public void shutdown() {
+		cn.game.games.core.runtime.RuntimeIdentity.stop();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 //		log.info("Game Server starts to shutdown ...");

@@ -156,6 +156,28 @@ public class TestHandler extends GameBaseHandler {
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
 
+        // 复用已有测试协议回传实际处理节点，不进入修改玩家状态的 GM 分发。
+        if (cmd.equals("runtimeIdentity") || cmd.startsWith("runtimeIdentity ")) {
+            if (ServerContext.getInstance().getRunMode().isProduction() || playerId <= 0 || player == null
+                    || !player.isOnline() || player.getGameClient() != client) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.need_login.getId());
+                return;
+            }
+            try {
+                String[] identityArgs = cmd.split(" ", -1);
+                if (identityArgs.length != 2) { throw new IllegalArgumentException("RUNTIME_CHALLENGE_INVALID"); }
+                Map<String, String> identity = cn.game.games.core.runtime.RuntimeIdentity.observe(identityArgs[1]);
+                identity.put("playerId", Long.toString(playerId));
+                identity.put("logicServerId", player.getData().getServerId());
+                resp.setDebugInfo(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(identity));
+                client.sendProtocol(resp.build());
+            } catch (Exception e) {
+                logger.warn("玩家运行身份观察失败 playerId={}", playerId, e);
+                client.sendProtocol(resp.build(), ErrorMsgEnum.unknown.getId());
+            }
+            return;
+        }
+
         String[] params = cmd.split(" ");
         if (params.length > 0) {
             boolean found = cn.game.games.net.game.gm.GmRegistry.dispatch(player, params[0], params);
