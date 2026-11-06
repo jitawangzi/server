@@ -1,4 +1,4 @@
-package cn.game.games.core.runtime;
+package cn.game.core.runtime;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +31,8 @@ public final class RuntimeIdentityInventory {
     private final AtomicBoolean changed = new AtomicBoolean();
     /** 独立制品目录，所有实际类路径条目必须在此目录中。 */
     private final Path root;
+    /** 记录启动前的实际 XML 加载代数；文件恢复不能恢复旧代数。 */
+    private final long resourceVersion = cn.game.util.file.WatchServiceManager.getInstance().resourceVersion();
 
     /**
      * 注册变化观察；必须在业务加载配置之前创建。
@@ -39,6 +41,9 @@ public final class RuntimeIdentityInventory {
      */
     public RuntimeIdentityInventory(Path root, boolean watch) throws Exception {
         this.root = root.toRealPath();
+        if (cn.game.util.runtime.FrozenApollo.enabled()) {
+            cn.game.util.runtime.FrozenApollo.INSTANCE.assertUnchanged();
+        }
         if (watch) {
             for (String namespace : NAMESPACES) {
                 ConfigService.getConfig(namespace).addChangeListener(event -> changed.set(true));
@@ -55,7 +60,9 @@ public final class RuntimeIdentityInventory {
      * @return 可公开给本地测试的白名单字段
      */
     public Map<String, String> capture(String targetId) throws Exception {
+        if (resourceVersion != cn.game.util.file.WatchServiceManager.getInstance().resourceVersion()) { throw new IllegalStateException("RUNTIME_RESOURCE_CHANGED"); }
         if (changed.get()) { throw new IllegalStateException("RUNTIME_CONFIG_CHANGED"); }
+        if (cn.game.util.runtime.FrozenApollo.enabled()) { cn.game.util.runtime.FrozenApollo.INSTANCE.assertUnchanged(); }
         if (targetId == null || !targetId.matches("[A-Za-z0-9_.-]{1,100}")) {
             throw new IllegalArgumentException("RUNTIME_TARGET_INVALID");
         }
@@ -75,6 +82,7 @@ public final class RuntimeIdentityInventory {
             classpath.add(Path.of(entry));
         }
         Map<String, String> config = new TreeMap<>();
+        if (cn.game.util.runtime.FrozenApollo.enabled()) { config.putAll(cn.game.util.runtime.FrozenApollo.INSTANCE.identityValues()); }
         for (String namespace : NAMESPACES) {
             var loaded = ConfigService.getConfig(namespace);
             for (String key : loaded.getPropertyNames()) { config.put(namespace + "/" + key, loaded.getProperty(key, "")); }
@@ -103,7 +111,9 @@ public final class RuntimeIdentityInventory {
         result.put("protocolSha256", digestPaths(root, List.of(Path.of(PbProtocol.class.getProtectionDomain().getCodeSource().getLocation().toURI()))));
         result.put("configSha256", digestValues(config));
         result.put("dataNamespace", "storage-sha256:" + digestValues(data));
+        if (resourceVersion != cn.game.util.file.WatchServiceManager.getInstance().resourceVersion()) { throw new IllegalStateException("RUNTIME_RESOURCE_CHANGED"); }
         if (changed.get()) { throw new IllegalStateException("RUNTIME_CONFIG_CHANGED"); }
+        if (cn.game.util.runtime.FrozenApollo.enabled()) { cn.game.util.runtime.FrozenApollo.INSTANCE.assertUnchanged(); }
         return result;
     }
 

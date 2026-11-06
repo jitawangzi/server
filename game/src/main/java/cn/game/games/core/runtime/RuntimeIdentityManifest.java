@@ -1,5 +1,7 @@
 package cn.game.games.core.runtime;
 
+import cn.game.core.runtime.RuntimeIdentityInventory;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,7 @@ public final class RuntimeIdentityManifest {
         // 复用真实入口的节点覆盖规则，避免把 Apollo 默认节点名计入待启动进程的期望摘要。
         String targetId = GameUtil.parseServerId(args, serverType);
         var inventory = new RuntimeIdentityInventory(Path.of(System.getProperty("game.runtimeIdentity.root")), false);
+        if (cn.game.util.runtime.FrozenApollo.enabled()) { cn.game.util.runtime.FrozenApollo.INSTANCE.freeze(); }
         Files.writeString(Path.of(args[1]), new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(inventory.capture(targetId)));
         System.exit(0);
     }

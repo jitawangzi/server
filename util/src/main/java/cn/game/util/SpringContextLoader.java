@@ -112,7 +112,8 @@ public class SpringContextLoader extends ThreadGroup
 		// 如果spring窗口实例为null，则讲明构建过程出错了，直接退出
 		if (appContextGeneric != null)
 			return;
-		appContextGeneric = new GenericXmlApplicationContext();
+		// 严格验收沿用启动时固定的环境，并拒绝动态表达式重新读取实时配置。
+		appContextGeneric = cn.game.util.runtime.FrozenApollo.INSTANCE.newSpringContext();
 		for (String string : xmlContent) {
 			appContextGeneric.load(new ByteArrayResource(string.getBytes()));
 		}

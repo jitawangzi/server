@@ -55,6 +55,7 @@ public class LoginServer {
 	public void start(String[] args) throws Exception {
 		long start = System.currentTimeMillis();
 		String serverId = GameUtil.parseServerId(args, ServerType.Login);
+        cn.game.core.runtime.RuntimeStartup.verify(serverId);
 		Log4j2ApolloLoader.getInstance().init();
 
 		LoggerType.Stdout.logger.info("正在启动登录服...");

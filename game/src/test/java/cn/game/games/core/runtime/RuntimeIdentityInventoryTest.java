@@ -1,5 +1,7 @@
 package cn.game.games.core.runtime;
 
+import cn.game.core.runtime.RuntimeIdentityInventory;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -13,6 +15,49 @@ import org.junit.jupiter.api.io.TempDir;
 class RuntimeIdentityInventoryTest {
     /** 每个用例独有的文件根。 */
     @TempDir Path directory;
+
+    /** 首次身份复查发生在修改、实际加载、原字节恢复之后，仍必须拒绝。 */
+    @Test void resourceLoadThenRestoreBeforeFirstProbeRevokesIdentity() throws Exception {
+        var watcher = cn.game.util.file.WatchServiceManager.getInstance();
+        var inventory = new RuntimeIdentityInventory(directory, false);
+        Path file = Files.writeString(directory.resolve("BoundaryFixture.xml"), "original");
+        var loaded = new java.util.concurrent.atomic.AtomicReference<String>();
+        watcher.register(new cn.game.util.file.ResourceListener() {
+            @Override public String name() { return "BoundaryFixture"; }
+            @Override public void load() {
+                try { loaded.set(Files.readString(file)); }
+                catch (java.io.IOException e) {
+                    org.slf4j.LoggerFactory.getLogger(RuntimeIdentityInventoryTest.class).warn("读取资源回归夹具失败", e);
+                    throw new java.io.UncheckedIOException(e);
+                }
+            }
+        });
+        Files.writeString(file, "changed");
+        watcher.dispatchChange(java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY, file.getFileName());
+        Assertions.assertEquals("changed", loaded.get());
+        Files.writeString(file, "original");
+        Assertions.assertEquals("RUNTIME_RESOURCE_CHANGED", Assertions.assertThrows(IllegalStateException.class,
+                () -> inventory.capture("game_test")).getMessage());
+        Assertions.assertEquals("changed", loaded.get());
+    }
+
+    /** CREATE 在解析失败前撤销；OVERFLOW 丢失事件也不能继续证明身份。 */
+    @Test void resourceCreateFailureAndOverflowRevokeIdentity() throws Exception {
+        var watcher = cn.game.util.file.WatchServiceManager.getInstance();
+        var inventory = new RuntimeIdentityInventory(directory, false);
+        watcher.register(new cn.game.util.file.ResourceListener() {
+            @Override public String name() { return "BoundaryFail"; }
+            @Override public void load() { throw new IllegalStateException("fixture parse failure"); }
+        });
+        Assertions.assertThrows(IllegalStateException.class, () -> watcher.dispatchChange(
+                java.nio.file.StandardWatchEventKinds.ENTRY_CREATE, Path.of("BoundaryFail.xml")));
+        Assertions.assertEquals("RUNTIME_RESOURCE_CHANGED", Assertions.assertThrows(IllegalStateException.class,
+                () -> inventory.capture("game_test")).getMessage());
+        var next = new RuntimeIdentityInventory(directory, false);
+        watcher.dispatchChange(java.nio.file.StandardWatchEventKinds.OVERFLOW, null);
+        Assertions.assertEquals("RUNTIME_RESOURCE_CHANGED", Assertions.assertThrows(IllegalStateException.class,
+                () -> next.capture("game_test")).getMessage());
+    }
 
     /** 相同名称但不同字节的制品不能共用摘要。 */
     @Test void artifactContentChangesIdentity() throws Exception {

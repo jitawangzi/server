@@ -1,5 +1,7 @@
 package cn.game.games.core.runtime;
 
+import cn.game.core.runtime.RuntimeIdentityInventory;
+
 import java.lang.management.ManagementFactory;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -53,7 +55,9 @@ public final class RuntimeIdentity {
      * @param targetId 当前 GameServer 解析出的节点名
      */
     public static void prepare(String targetId) throws Exception {
+        cn.game.core.runtime.RuntimeStartup.verify(targetId);
         if (!Boolean.getBoolean("game.runtimeIdentity.enabled")) { return; }
+        if (!cn.game.util.runtime.FrozenApollo.enabled()) { throw new IllegalStateException("RUNTIME_CONFIG_FREEZE_REQUIRED"); }
         if (!"test".equalsIgnoreCase(System.getProperty("server.run.mode"))) {
             throw new IllegalStateException("RUNTIME_IDENTITY_REQUIRES_TEST_MODE");
         }

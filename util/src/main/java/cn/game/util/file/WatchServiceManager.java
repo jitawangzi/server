@@ -28,6 +28,31 @@ public class WatchServiceManager implements Runnable {
 
 	private static final Logger log = LoggerFactory.getLogger(WatchServiceManager.class);
 	private Map<String, ResourceListener> resources = new HashMap<>();
+	/** 实际资源加载前执行，身份撤销不能放在加载成功后的消费者中。 */
+	private final java.util.concurrent.atomic.AtomicLong resourceVersion = new java.util.concurrent.atomic.AtomicLong();
+
+	/** @return 实际分派前递增的资源版本；恢复原文件不能倒退。 */
+	public long resourceVersion() { return resourceVersion.get(); }
+
+	/**
+	 * 分派实际文件事件；观察者先于任何加载执行，加载异常也不能恢复旧身份。
+	 * @param kind 文件系统事件类型
+	 * @param path 相对文件名；OVERFLOW 可为空
+	 */
+	public void dispatchChange(WatchEvent.Kind<?> kind, Path path) {
+		if (kind == StandardWatchEventKinds.OVERFLOW) {
+			resourceVersion.incrementAndGet();
+			return;
+		}
+		if (kind != StandardWatchEventKinds.ENTRY_CREATE && kind != StandardWatchEventKinds.ENTRY_MODIFY) { return; }
+		String fileName = path.getFileName().toString();
+		if (fileName.startsWith(".") || !fileName.endsWith(".xml")) { return; }
+		resourceVersion.incrementAndGet();
+		ResourceListener listener = resources.get(fileName.substring(0, fileName.length() - 4));
+		if (listener == null) { log.warn("配置文件[{}]没有对应的解析器", fileName); return; }
+		if (kind == StandardWatchEventKinds.ENTRY_MODIFY) { listener.reload(); } else { listener.load(); }
+		log.info("RUNTIME_RESOURCE_LOADED name={} version={}", fileName, resourceVersion.get());
+	}
 
 	private String[] watchDirs;
 
@@ -89,36 +114,8 @@ public class WatchServiceManager implements Runnable {
 
 					final WatchEvent.Kind<?> kind = watchEvent.kind();
 
-					if (kind == StandardWatchEventKinds.OVERFLOW) {
-						continue;
-					}
 					try {
-						// 创建事件
-						if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-							// get the filename for the event
-							final WatchEvent<Path> watchEventPath = (WatchEvent<Path>) watchEvent;
-							final Path path = watchEventPath.context();
-							String fileName = path.getFileName().toString();
-							if (fileName.startsWith(".")) { // 隐藏文件
-								continue;
-							}
-							if (!fileName.endsWith(".xml")) { // 只监听xml文件
-								continue;
-							}
-							log.info(kind + " -> " + fileName);
-							int index = fileName.lastIndexOf(".");
-							ResourceListener resourceListener = this.resources.get(fileName.substring(0, index));
-							if (resourceListener != null) {
-								if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-									resourceListener.reload();
-								}else {
-									resourceListener.load();
-								}
-							} else {
-								log.warn("配置文件[{}]没有对应的解析器", fileName);
-							}
-
-						}
+						dispatchChange(kind, kind == StandardWatchEventKinds.OVERFLOW ? null : (Path) watchEvent.context());
 					} catch (Exception e) {
 						log.error("配置文件热更新异常：", e);
 						MailUtil.reportException("配置文件热更新异常", ExceptionUtils.getFullStackTrace(e));
