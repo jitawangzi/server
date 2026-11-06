@@ -59,6 +59,7 @@ final class PlayerDataSnapshot {
         snapshot.setHead(source.getHead());
         snapshot.setHeadFrame(source.getHeadFrame());
         snapshot.setImage(source.getImage());
+        snapshot.setChatBox(source.getChatBox());
         snapshot.setCreateDate(source.getCreateDate());
         snapshot.setLoginDate(source.getLoginDate());
         snapshot.setOfflineTime(source.getOfflineTime());
