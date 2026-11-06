@@ -7,13 +7,21 @@
 # 1. Param 块必须放在第一位（注释除外）
 param (
     [Parameter(Mandatory=$true, Position=0)]
-    [string]$TestClass
+    [string]$TestClass,
+    [string]$ExpectedRuntime,
+    [uri]$RuntimeIdentityUri,
+    [switch]$RequireRuntimeIdentity
 )
 
 # 2. 设置编码移到 param 之后
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $ErrorActionPreference = "Stop"
+if ([bool]$ExpectedRuntime -ne [bool]$RuntimeIdentityUri) { throw 'RUNTIME_ARGUMENTS_INCOMPLETE: ExpectedRuntime and RuntimeIdentityUri must be supplied together' }
+if ($RequireRuntimeIdentity -and -not $ExpectedRuntime) { throw 'RUNTIME_IDENTITY_REQUIRED: configure the actual runtime observation endpoint and expected release manifest' }
+$runtimeBefore=$null
+if ($ExpectedRuntime) { . (Join-Path $PSScriptRoot '.ai-workspace/scripts/runtime-evidence.ps1') }
+else { Write-Warning 'RUNTIME_UNVERIFIED: this run cannot establish the running server build or configuration' }
 $ClientModule = "simulationclient"
 
 # ================= 1. 自动编译 (Auto Compile) =================
@@ -52,6 +60,12 @@ $javaArgs = @(
     $TestClass
 )
 
+# 编译完成后观察目标；测试结束再次读取，防止沿用旧观察或忽略中途重启。
+if ($ExpectedRuntime) {
+    $runtimeBefore=Get-RuntimeIdentityObservation -ExpectedPath $ExpectedRuntime -IdentityUri $RuntimeIdentityUri
+    Write-Output ('RUNTIME_BEFORE_OBSERVATION: '+($runtimeBefore|ConvertTo-Json -Depth 8 -Compress))
+}
+
 # 启动 Java 进程
 # Wait: 脚本必须等待测试跑完
 # NoNewWindow: 直接在当前控制台输出日志，方便 AI 读取
@@ -61,10 +75,24 @@ $process = Start-Process -FilePath "java" `
     -PassThru `
     -Wait
 
+Write-Output ("SCENARIO_PROCESS_EXIT: "+$process.ExitCode)
+if ($runtimeBefore) {
+    $runtimeAfter=$null; $observationStatus='FAILED'
+    try {
+        $runtimeAfter=Get-RuntimeIdentityObservation -ExpectedPath $ExpectedRuntime -IdentityUri $RuntimeIdentityUri
+        Assert-RuntimeIdentityStable $runtimeBefore $runtimeAfter
+        $observationStatus='OBSERVED_MATCH'
+    } finally {
+        # 后观测失败也保存之前观察和场景退出码；原异常继续向外传播，不能输出通过。
+        $report=[ordered]@{schemaVersion='1.0';testClass=$TestClass;exitCode=$process.ExitCode;runtimeStatus=$observationStatus;before=$runtimeBefore;after=$runtimeAfter;scenarioRouting='REQUIRES_SCENARIO_TARGET_EVIDENCE'}
+        Write-Output ('RUNTIME_OBSERVATION: '+($report|ConvertTo-Json -Depth 8 -Compress))
+    }
+}
+
 # ================= 3. 结果判断 (Check Exit Code) =================
 if ($process.ExitCode -eq 0) {
     Write-Host "`n========================================" -ForegroundColor Green
-    Write-Host "   TEST PASSED: $TestClass" -ForegroundColor Green
+    Write-Host "   SCENARIO_PROCESS_PASS: $TestClass (runtime identity and routing scope are reported separately)" -ForegroundColor Green
     Write-Host "========================================"
     exit 0
 } else {

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "sourceUrl": "https://github.com/jitawangzi/agent-sop.git",
-  "commit": "78658f0eb68752edd9322a0f890ea9077ea746b6",
+  "commit": "adcf817869e6dd2e2d10a785c53634c223041283",
   "manifest": {
     "path": "distribution/project-manifest.json",
     "blobSha256": "f8928a093ae9633aa732cc28916cc2a2ef922984ec632bdb7f0872447e75a0ef"
