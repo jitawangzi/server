@@ -1,0 +1,6 @@
+[
+  "cn.game.util.CborSnappyUtilTest#testNullAndEmptyBoundary",
+  "cn.game.util.CborSnappyUtilTest#testPolymorphicModulesRoundTrip",
+  "cn.game.util.CborSnappyUtilTest#testBitSetAndTime",
+  "cn.game.util.CborSnappyUtilTest#testCompressionRatio"
+]

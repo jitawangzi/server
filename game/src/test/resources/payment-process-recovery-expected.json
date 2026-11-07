@@ -1,0 +1,8 @@
+[
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#duplicateCrossProcessShipmentAndCommittedRestart",
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#timedOutRequestCompletesAndRetryDoesNotRepeatReward",
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#committedResponseLostThenCrashRecoversWithoutRewardReplay",
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#crashAfterClaimBeforeRewardRemainsBlocked",
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#crashAfterRewardBeforeSaveRemainsBlocked",
+  "cn.game.games.net.game.helper.PaymentProcessRecoveryIT#crashInsideTransactionBeforeCommitRemainsBlocked"
+]
