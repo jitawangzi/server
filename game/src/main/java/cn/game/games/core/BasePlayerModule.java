@@ -6,6 +6,21 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +33,14 @@ import cn.game.games.net.game.db.DbTask;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo;
 
 public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, PlayerEventHandler {
+	/** inspectState递归快照最大深度上限 */
+	public static final int MAX_INSPECT_DEPTH = 8;
+	/** inspectState单容器/单集合最大导出条目上限 */
+	public static final int MAX_INSPECT_ELEMENTS = 200;
+	/** inspectState禁止深层反射的JDK及底层框架包名前缀 */
+	private static final String[] BLOCKED_INSPECT_PACKAGE_PREFIXES = {
+			"java.", "javax.", "sun.", "jdk.", "io.netty.", "io.vertx."
+	};
 	protected transient Logger log = LoggerFactory.getLogger(this.getClass());
 	// @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	protected transient Player player;
@@ -212,5 +235,294 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 	 */
 	public boolean isComplete() {
 		return true; 
+	}
+
+	/**
+	 * 只读返回当前模块内部状态快照，仅基于字段读取，不触发任何懒初始化getter或写库副作用
+	 *
+	 * @return 模块状态只读快照
+	 */
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		IdentityHashMap<Object, Boolean> activeAncestors = new IdentityHashMap<>();
+		activeAncestors.put(this, Boolean.TRUE);
+		try {
+			for (Class<?> cursor = this.getClass(); cursor != null && cursor != BasePlayerModule.class && cursor != Object.class; cursor = cursor.getSuperclass()) {
+				Field[] fields = cursor.getDeclaredFields();
+				for (Field field : fields) {
+					int modifiers = field.getModifiers();
+					if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || field.isSynthetic()) {
+						continue;
+					}
+					if (Player.class.isAssignableFrom(field.getType()) || Logger.class.isAssignableFrom(field.getType())) {
+						continue;
+					}
+					if (snapshot.containsKey(field.getName())) {
+						continue;
+					}
+					try {
+						field.setAccessible(true);
+						Object value = field.get(this);
+						snapshot.put(field.getName(), toInspectValue(value, 0, activeAncestors));
+					} catch (Throwable e) {
+						log.warn("读取模块只读快照字段失败 module={} field={}", this.getClass().getSimpleName(), field.getName(), e);
+						snapshot.put(field.getName(), Map.of("_inspectError", formatInspectError(e)));
+					}
+				}
+			}
+		} finally {
+			activeAncestors.remove(this);
+		}
+		return snapshot;
+	}
+
+	/**
+	 * 受控只读转换内部对象快照，使用祖先链环检测、深度上限与容器元素上限避免StackOverflowError或内存膨胀
+	 *
+	 * @param value 原始字段值
+	 * @return 可安全序列化的只读快照对象
+	 */
+	protected final Object toInspectValue(Object value) {
+		return toInspectValue(value, 0, new IdentityHashMap<>());
+	}
+
+	/**
+	 * 按上限截取集合快照并向目标快照Map写入截断标记
+	 *
+	 * @param <T> 集合元素类型
+	 * @param source 源集合
+	 * @param itemMapper 单元素只读映射器
+	 * @param snapshot 目标快照Map
+	 * @param listKey 明细列表键名
+	 * @param truncatedKey 截断标记键名
+	 * @return 截断后的明细列表
+	 */
+	protected final <T> List<Object> snapshotBoundedList(Collection<T> source, Function<T, Object> itemMapper,
+			Map<String, Object> snapshot, String listKey, String truncatedKey) {
+		List<Object> list = new ArrayList<>();
+		boolean truncated = false;
+		if (source != null) {
+			for (T item : source) {
+				if (list.size() >= MAX_INSPECT_ELEMENTS) {
+					truncated = true;
+					break;
+				}
+				list.add(itemMapper != null ? itemMapper.apply(item) : toInspectValue(item));
+			}
+		}
+		snapshot.put(listKey, list);
+		if (truncated) {
+			if (truncatedKey != null && !truncatedKey.isBlank()) {
+				snapshot.put(truncatedKey, true);
+			}
+			snapshot.put("truncated", true);
+		}
+		return list;
+	}
+
+	/**
+	 * 按上限截取Map快照并向目标快照Map写入截断标记
+	 *
+	 * @param <K> 源Map键类型
+	 * @param <V> 源Map值类型
+	 * @param source 源Map
+	 * @param keyMapper 键映射器
+	 * @param valueMapper 值映射器
+	 * @param snapshot 目标快照Map
+	 * @param mapKey 明细Map键名
+	 * @param truncatedKey 截断标记键名
+	 * @return 截断后的明细Map
+	 */
+	protected final <K, V> Map<Object, Object> snapshotBoundedMap(Map<K, V> source, Function<K, Object> keyMapper,
+			Function<V, Object> valueMapper, Map<String, Object> snapshot, String mapKey, String truncatedKey) {
+		Map<Object, Object> bounded = new LinkedHashMap<>();
+		boolean truncated = false;
+		if (source != null) {
+			for (Map.Entry<K, V> entry : source.entrySet()) {
+				if (bounded.size() >= MAX_INSPECT_ELEMENTS) {
+					truncated = true;
+					break;
+				}
+				Object mappedKey = keyMapper != null ? keyMapper.apply(entry.getKey()) : entry.getKey();
+				Object mappedVal = valueMapper != null ? valueMapper.apply(entry.getValue()) : toInspectValue(entry.getValue());
+				bounded.put(mappedKey, mappedVal);
+			}
+		}
+		snapshot.put(mapKey, bounded);
+		if (truncated) {
+			if (truncatedKey != null && !truncatedKey.isBlank()) {
+				snapshot.put(truncatedKey, true);
+			}
+			snapshot.put("truncated", true);
+		}
+		return bounded;
+	}
+
+	private Object toInspectValue(Object value, int depth, IdentityHashMap<Object, Boolean> activeAncestors) {
+		if (value == null) {
+			return null;
+		}
+		if (depth > MAX_INSPECT_DEPTH) {
+			return "<maxDepth>";
+		}
+		if (value instanceof Boolean || value instanceof Number || value instanceof Character || value instanceof String) {
+			return value;
+		}
+		if (value instanceof Enum<?>) {
+			return ((Enum<?>) value).name();
+		}
+		if (value instanceof Date || value instanceof UUID) {
+			return value;
+		}
+		if (value instanceof TemporalAccessor) {
+			return value.toString();
+		}
+		if (value instanceof AtomicBoolean) {
+			return ((AtomicBoolean) value).get();
+		}
+		if (value instanceof Optional<?>) {
+			Optional<?> opt = (Optional<?>) value;
+			return opt.isPresent() ? toInspectValue(opt.get(), depth + 1, activeAncestors) : null;
+		}
+		if (value instanceof Player || value instanceof Logger) {
+			return "<skipped:" + value.getClass().getSimpleName() + ">";
+		}
+		if (activeAncestors.containsKey(value)) {
+			return "<circular:" + value.getClass().getSimpleName() + ">";
+		}
+
+		activeAncestors.put(value, Boolean.TRUE);
+		try {
+			if (value instanceof Map<?, ?>) {
+				return convertMapSnapshot((Map<?, ?>) value, depth, activeAncestors);
+			}
+			if (value instanceof Collection<?>) {
+				return convertCollectionSnapshot((Collection<?>) value, depth, activeAncestors);
+			}
+			if (value.getClass().isArray()) {
+				return convertArraySnapshot(value, depth, activeAncestors);
+			}
+			if (isBlockedInspectType(value.getClass())) {
+				return "<opaque:" + value.getClass().getSimpleName() + ">";
+			}
+			return convertPojoSnapshot(value, depth, activeAncestors);
+		} catch (Throwable e) {
+			log.warn("转换模块字段快照异常 module={} valueType={}", this.getClass().getSimpleName(), value.getClass().getName(), e);
+			return Map.of("_inspectError", formatInspectError(e));
+		} finally {
+			activeAncestors.remove(value);
+		}
+	}
+
+	private Map<String, Object> convertMapSnapshot(Map<?, ?> map, int depth, IdentityHashMap<Object, Boolean> activeAncestors) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		int count = 0;
+		for (Map.Entry<?, ?> entry : map.entrySet()) {
+			if (count >= MAX_INSPECT_ELEMENTS) {
+				result.put("_truncated", true);
+				result.put("_totalSize", map.size());
+				break;
+			}
+			String key = entry.getKey() == null ? "null" : String.valueOf(entry.getKey());
+			try {
+				result.put(key, toInspectValue(entry.getValue(), depth + 1, activeAncestors));
+			} catch (Throwable e) {
+				log.warn("转换Map快照元素异常 module={} key={}", this.getClass().getSimpleName(), key, e);
+				result.put(key, Map.of("_inspectError", formatInspectError(e)));
+			}
+			count++;
+		}
+		return result;
+	}
+
+	private List<Object> convertCollectionSnapshot(Collection<?> collection, int depth,
+			IdentityHashMap<Object, Boolean> activeAncestors) {
+		List<Object> result = new ArrayList<>();
+		int count = 0;
+		for (Object item : collection) {
+			if (count >= MAX_INSPECT_ELEMENTS) {
+				result.add(Map.of("_truncated", true, "_totalSize", collection.size(), "_limit", MAX_INSPECT_ELEMENTS));
+				break;
+			}
+			try {
+				result.add(toInspectValue(item, depth + 1, activeAncestors));
+			} catch (Throwable e) {
+				log.warn("转换集合快照元素异常 module={} index={}", this.getClass().getSimpleName(), count, e);
+				result.add(Map.of("_inspectError", formatInspectError(e)));
+			}
+			count++;
+		}
+		return result;
+	}
+
+	private List<Object> convertArraySnapshot(Object array, int depth, IdentityHashMap<Object, Boolean> activeAncestors) {
+		int len = Array.getLength(array);
+		int limit = Math.min(len, MAX_INSPECT_ELEMENTS);
+		List<Object> result = new ArrayList<>(limit + (len > MAX_INSPECT_ELEMENTS ? 1 : 0));
+		for (int i = 0; i < limit; i++) {
+			try {
+				result.add(toInspectValue(Array.get(array, i), depth + 1, activeAncestors));
+			} catch (Throwable e) {
+				log.warn("转换数组快照元素异常 module={} index={}", this.getClass().getSimpleName(), i, e);
+				result.add(Map.of("_inspectError", formatInspectError(e)));
+			}
+		}
+		if (len > MAX_INSPECT_ELEMENTS) {
+			result.add(Map.of("_truncated", true, "_totalSize", len, "_limit", MAX_INSPECT_ELEMENTS));
+		}
+		return result;
+	}
+
+	private Map<String, Object> convertPojoSnapshot(Object pojo, int depth, IdentityHashMap<Object, Boolean> activeAncestors) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		int fieldCount = 0;
+		for (Class<?> cursor = pojo.getClass(); cursor != null && cursor != Object.class; cursor = cursor.getSuperclass()) {
+			if (isBlockedInspectType(cursor)) {
+				break;
+			}
+			Field[] fields = cursor.getDeclaredFields();
+			for (Field field : fields) {
+				int modifiers = field.getModifiers();
+				if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || field.isSynthetic()) {
+					continue;
+				}
+				if (Player.class.isAssignableFrom(field.getType()) || Logger.class.isAssignableFrom(field.getType())) {
+					continue;
+				}
+				if (result.containsKey(field.getName())) {
+					continue;
+				}
+				if (fieldCount >= MAX_INSPECT_ELEMENTS) {
+					result.put("_truncated", true);
+					return result;
+				}
+				fieldCount++;
+				try {
+					field.setAccessible(true);
+					Object fv = field.get(pojo);
+					result.put(field.getName(), toInspectValue(fv, depth + 1, activeAncestors));
+				} catch (Throwable e) {
+					log.warn("读取对象快照字段异常 module={} type={} field={}", this.getClass().getSimpleName(),
+							pojo.getClass().getSimpleName(), field.getName(), e);
+					result.put(field.getName(), Map.of("_inspectError", formatInspectError(e)));
+				}
+			}
+		}
+		return result;
+	}
+
+	private static boolean isBlockedInspectType(Class<?> type) {
+		String name = type.getName();
+		for (String prefix : BLOCKED_INSPECT_PACKAGE_PREFIXES) {
+			if (name.startsWith(prefix)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static String formatInspectError(Throwable e) {
+		String message = e.getMessage();
+		return e.getClass().getSimpleName() + ": " + (message == null ? "" : message);
 	}
 }

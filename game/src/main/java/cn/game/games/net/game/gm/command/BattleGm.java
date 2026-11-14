@@ -4,9 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import cn.game.core.exception.LogicException;
 import cn.game.games.cache.entity.Chapter;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.gm.AbstractGm;
+import cn.game.games.net.game.gm.GmAction;
+import cn.game.games.net.game.gm.GmGroup;
+import cn.game.games.net.game.gm.GmParam;
+import cn.game.games.net.game.gm.GmScope;
+import cn.game.games.net.game.gm.GmSecurityTier;
 import cn.game.games.net.game.module.battle.BattleModule;
 import cn.game.games.net.game.module.battle.LingShanWenChanBattle;
 import cn.game.games.net.game.module.battle.MengYanMiJingBattle;
@@ -16,118 +22,114 @@ import cn.game.protocol.generated.config.BattleConfig;
 import cn.game.protocol.generated.manager.BattleManager;
 import cn.game.protocol.manual.DungeonTypeEnum;
 import cn.game.protocol.manual.ErrorMsgEnum;
-import cn.game.core.exception.LogicException;
 
+/**
+ * 战斗与关卡调试GM指令分组
+ *
+ * @author shuyongqiang
+ */
 @Component
+@GmGroup(name = "battle", description = "战斗与副本调试指令")
 public class BattleGm extends AbstractGm {
 
-    @Override
-    public void init() {
-        register("ly", this::ly);
-        register("zxgk", this::zxgk);
-        register("lingshan", this::lingshan);
-        register("slzj", this::slzj);
-        register("mymj", this::mymj);
-        register("slzjsd", this::slzjsd);
-    }
+	@GmAction(name = "ly", description = "跳关宝石塔(灵玉塔)", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void ly(Player player,
+			@GmParam(description = "目标关卡ID", required = false, defaultValue = "0") int id) {
+		BattleModule battleModule = player.getBattleModule();
+		TowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.GemTower);
+		towerBattle.gmJump(id);
+	}
 
-    private void ly(Player player, String[] params) {
-        // 设置关卡id
-        int p1 = getInt(params, 1);
-        BattleModule battleModule = player.getBattleModule();
-        TowerBattle towerBattle = battleModule.getBattle(DungeonTypeEnum.GemTower);
-        towerBattle.gmJump(p1);
-    }
+	@GmAction(name = "zxgk", description = "设置主线通关进度", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void zxgk(Player player,
+			@GmParam(description = "主线关卡ID或第几关序号") int id) {
+		int p1 = id;
+		if (p1 == 0) {
+			throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+		}
+		if (p1 < 1000) {
+			List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.BattleChapter.getId());
+			p1 = battleTypeList.get(p1 - 1).ID;
+		}
+		BattleModule battleModule = player.getBattleModule();
+		battleModule.setMainBattleHighest(p1);
+		BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
+		while (battleConfig != null) {
+			battleModule.addChapter(battleConfig.ID);
+			Chapter chapter = battleModule.getChapter(battleConfig.ID);
+			chapter.setBattleTime(30);
+			chapter.setPass(true);
+			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
+		}
+		// 刷新一下功能开启
+		player.getFuncModule().refreshFuncOpen();
+	}
 
-    private void zxgk(Player player, String[] params) {
-        // 设置主线关卡id
-        int p1 = getInt(params, 1);
-        if (p1 == 0) {
-            throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
-        }
-        if (p1 < 1000) {
-            List<BattleConfig> battleTypeList = BattleManager.instance().getBattleTypeList(DungeonTypeEnum.BattleChapter.getId());
-            p1 = battleTypeList.get(p1 - 1).ID;
-        }
-        BattleModule battleModule = player.getBattleModule();
-        battleModule.setMainBattleHighest(p1);
-        BattleConfig battleConfig = BattleManager.instance().getNullable(p1);
-        while (battleConfig != null) {
-            battleModule.addChapter(battleConfig.ID);
-            Chapter chapter = battleModule.getChapter(battleConfig.ID);
-            chapter.setBattleTime(30);
-            chapter.setPass(true);
-            battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
-        }
-        // 刷新一下功能开启
-        player.getFuncModule().refreshFuncOpen();
-    }
+	@GmAction(name = "lingshan", description = "设置灵山问禅通关层数", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void lingshan(Player player,
+			@GmParam(description = "层数") int floor) {
+		if (floor == 0) {
+			throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
+		}
+		BattleModule battleModule = player.getBattleModule();
+		LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
+		battle.setLastCompleteFloor(floor);
+	}
 
-    private void lingshan(Player player, String[] params) {
-        // 设置灵山问禅层数
-        int p1 = getInt(params, 1);
-        if (p1 == 0) {
-            throw new LogicException(ErrorMsgEnum.gm_cmd_param.ID);
-        }
-        BattleModule battleModule = player.getBattleModule();
-        LingShanWenChanBattle battle = battleModule.getBattle(DungeonTypeEnum.LingShanWenChan);
-        battle.setLastCompleteFloor(p1);
-    }
+	@GmAction(name = "slzj", description = "设置失落真经关卡进度", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void slzj(Player player,
+			@GmParam(description = "关卡ID", required = false, defaultValue = "0") int id,
+			@GmParam(description = "阶段", required = false, defaultValue = "0") int stage) {
+		BattleModule battleModule = player.getBattleModule();
+		ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+		if (battle != null) {
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+			if (battleConfig.preBattle > 0) {
+				battle.setCompleteBattleId(battleConfig.preBattle);
+			}
+			battle.setStartBattleId(id);
+			if (stage > 0 && stage <= 10) {
+				battle.setBattleStage(stage);
+			}
+		}
+	}
 
-    private void slzj(Player player, String[] params) {
-        // 设置失落真经关卡id
-        int p1 = getInt(params, 1);
-        int p2 = getInt(params, 2);
-        BattleModule battleModule = player.getBattleModule();
-        ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-        if (battle != null) {
-            BattleConfig battleConfig = BattleManager.instance().get(p1);
-            if (battleConfig.preBattle > 0) {
-                battle.setCompleteBattleId(battleConfig.preBattle);
-            }
-            battle.setStartBattleId(p1);
-            if (p2 > 0 && p2 <= 10) {
-                battle.setBattleStage(p2);
-            }
-        }
-    }
+	@GmAction(name = "mymj", description = "设置梦魇秘境关卡进度", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void mymj(Player player,
+			@GmParam(description = "关卡ID", required = false, defaultValue = "0") int id) {
+		BattleModule battleModule = player.getBattleModule();
+		MengYanMiJingBattle battle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
+		if (battle != null) {
+			BattleConfig battleConfig = BattleManager.instance().get(id);
+			if (battleConfig.preBattle > 0) {
+				battle.setCompleteBattleId(battleConfig.preBattle);
+				battle.setMaxBattleId(battleConfig.preBattle);
+			}
+			battle.setStartBattleId(id);
+		}
+	}
 
-    private void mymj(Player player, String[] params) {
-        // 设置梦魇秘境关卡id
-        int p1 = getInt(params, 1);
-        BattleModule battleModule = player.getBattleModule();
-        MengYanMiJingBattle battle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
-        if (battle != null) {
-            BattleConfig battleConfig = BattleManager.instance().get(p1);
-            if (battleConfig.preBattle > 0) {
-                battle.setCompleteBattleId(battleConfig.preBattle);
-                battle.setMaxBattleId(battleConfig.preBattle);
-            }
-            battle.setStartBattleId(p1);
-        }
-    }
-
-    private void slzjsd(Player player, String[] params) {
-        // 设置失落真经手动关卡。
-        int p1 = getInt(params, 1);
-        int p2 = getInt(params, 2);
-        BattleModule battleModule = player.getBattleModule();
-        ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
-        if (battle != null) {
-            if (p1 > 0) {
-                BattleConfig battleConfig = BattleManager.instance().get(p1);
-                if (battleConfig.preBattle > 0) {
-                    battle.setCompleteBattleId(battleConfig.preBattle);
-                    battle.setHistoryMaxBattleId(battleConfig.preBattle);
-                }
-                battle.setStartBattleId(p1);
-            }
-            if (p2 > 0 && p2 < 10) {
-                battle.setBattleStage(p2);
-            } else {
-                battle.setBattleStage(10);
-            }
-            battle.setZhijieshoudong(true);
-        }
-    }
+	@GmAction(name = "slzjsd", description = "设置失落真经手动关卡", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
+	public void slzjsd(Player player,
+			@GmParam(description = "关卡ID", required = false, defaultValue = "0") int id,
+			@GmParam(description = "阶段", required = false, defaultValue = "0") int stage) {
+		BattleModule battleModule = player.getBattleModule();
+		ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
+		if (battle != null) {
+			if (id > 0) {
+				BattleConfig battleConfig = BattleManager.instance().get(id);
+				if (battleConfig.preBattle > 0) {
+					battle.setCompleteBattleId(battleConfig.preBattle);
+					battle.setHistoryMaxBattleId(battleConfig.preBattle);
+				}
+				battle.setStartBattleId(id);
+			}
+			if (stage > 0 && stage < 10) {
+				battle.setBattleStage(stage);
+			} else {
+				battle.setBattleStage(10);
+			}
+			battle.setZhijieshoudong(true);
+		}
+	}
 }

@@ -1,6 +1,9 @@
 package cn.game.core.net.socket.handler;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +107,16 @@ public abstract class BaseHandler implements Handler {
 		}
 
 		this.CMD_INVOKERS.put(Integer.valueOf(cmd), invoker);
+	}
+
+	/**
+	 * 获取当前处理器已注册命令字只读集合
+	 *
+	 * @return 不可变命令字集合
+	 * @author shuyongqiang
+	 */
+	public Set<Integer> getRegisteredCmds() {
+		return Collections.unmodifiableSet(new HashSet<>(this.CMD_INVOKERS.keySet()));
 	}
 
 }

@@ -772,4 +772,19 @@ public class ServerTestContext {
 			}
 		}
 	}
+
+	/**
+	 * 通过指定模拟客户端执行结构化GM动作
+	 *
+	 * @param client 已连接模拟客户端
+	 * @param action GM动作名或别名
+	 * @param jsonArgs JSON参数字符串
+	 * @return 结构化执行结果
+	 */
+	public static GmClientResult gm(Client client, String action, String jsonArgs) {
+		if (client == null) {
+			throw new IllegalArgumentException("client cannot be null");
+		}
+		return client.gm(action, jsonArgs);
+	}
 }

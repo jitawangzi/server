@@ -8,7 +8,9 @@ import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.ExceptionHelper;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerLoginRequest_01000001;
+import java.util.Map;
 import cn.game.simulation.client.Client;
+import cn.game.simulation.client.GmClientResult;
 import cn.game.simulation.client.ServerTestContext;
 import cn.game.util.log.LoggerManager;
 
@@ -57,6 +59,38 @@ public abstract class ClientBaseScenarioTest {
                 .setCmd(cmd)
                 .build();
         return sendAndWait(gmReq);
+    }
+
+    /**
+     * 发送结构化GM动作并等待响应
+     *
+     * @param action GM动作名或别名
+     * @return 结构化执行结果
+     */
+    protected GmClientResult gm(String action) {
+        return client.gm(action);
+    }
+
+    /**
+     * 发送带JSON参数的结构化GM动作并等待响应
+     *
+     * @param action GM动作名或别名
+     * @param jsonArgs JSON参数
+     * @return 结构化执行结果
+     */
+    protected GmClientResult gm(String action, String jsonArgs) {
+        return client.gm(action, jsonArgs);
+    }
+
+    /**
+     * 发送带Map命名参数的结构化GM动作并等待响应
+     *
+     * @param action GM动作名或别名
+     * @param args 参数键值对
+     * @return 结构化执行结果
+     */
+    protected GmClientResult gm(String action, Map<String, Object> args) {
+        return client.gm(action, args);
     }
     /** 
      * 从服务器同步最新的数据

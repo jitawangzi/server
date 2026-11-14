@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -230,6 +231,20 @@ public class AttrModule extends BasePlayerModule {
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		snapshot.put("power", power);
+		snapshot.put("heroAttrCount", heroAttrs != null ? heroAttrs.size() : 0);
+		snapshotBoundedMap(heroAttrs, k -> k,
+				wrapper -> wrapper != null ? toInspectValue(wrapper.getMap()) : Map.of(),
+				snapshot, "heroAttrs", "heroAttrsTruncated");
+		snapshotBoundedMap(playerAttrCalcMap, k -> k != null ? k.name() : "null",
+				calc -> calc != null && calc.getAttrMap() != null ? toInspectValue(calc.getAttrMap().getMap()) : Map.of(),
+				snapshot, "playerAttrCalcs", "playerAttrCalcsTruncated");
+		return snapshot;
 	}
 	
 }

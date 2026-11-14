@@ -4,6 +4,7 @@ import static cn.game.games.core.event.EventTypeEnum.PLAYER_CREATE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -202,5 +203,15 @@ public class InviteModule extends BasePlayerModule {
 
     public int getFinishLvCount(int needLv) {
         return (int)targetLvMap.values().stream().filter(lv -> lv >= needLv).count();
+    }
+
+    @Override
+    public Object inspectState() {
+        Map<String, Object> snapshot = new LinkedHashMap<>();
+        snapshot.put("invitePid", invitePid);
+        snapshot.put("targetCount", targetLvMap != null ? targetLvMap.size() : 0);
+        snapshotBoundedMap(targetLvMap, k -> k, v -> v, snapshot, "targetLvMap", "targetLvMapTruncated");
+        snapshotBoundedList(rewardIndexList, v -> v, snapshot, "rewardIndexList", "rewardIndexListTruncated");
+        return snapshot;
     }
 }

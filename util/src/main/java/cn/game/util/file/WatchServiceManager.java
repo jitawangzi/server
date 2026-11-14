@@ -9,7 +9,9 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +74,16 @@ public class WatchServiceManager implements Runnable {
 
 	public void register(ResourceListener listener) {
 		this.resources.put(listener.name(), listener);
+	}
+
+	/**
+	 * 获取已注册资源监听器只读视图
+	 *
+	 * @return 不可变资源监听器映射
+	 * @author shuyongqiang
+	 */
+	public Map<String, ResourceListener> getResources() {
+		return Collections.unmodifiableMap(new LinkedHashMap<>(this.resources));
 	}
 	public void registerAndLoad(ResourceListener listener) {
 		register(listener);

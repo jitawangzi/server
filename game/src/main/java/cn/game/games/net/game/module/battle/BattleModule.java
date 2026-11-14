@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -810,5 +811,45 @@ public class BattleModule extends BasePlayerModule  {
 	@Override
 	public int processOrder() {
 		return EVENT_PROCESS_ORDER_HIGH;
+	}
+
+	@Override
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		snapshot.put("mainBattleHighest", mainBattleHighest);
+		snapshot.put("attackingType", attackingType);
+		snapshot.put("attackingId", attackingId);
+		snapshot.put("attackingSubId", attackingSubId);
+		snapshot.put("lineupId", lineupId);
+		snapshot.put("rescueSkillId", rescueSkillId);
+		snapshot.put("freeRougeTimes", freeRougeTimes);
+		snapshot.put("lastPatrolRewardTime", lastPatrolRewardTime);
+		snapshot.put("quickPatrolCount", quickPatrolCount);
+		snapshot.put("adPatrolCount", adPatrolCount);
+		snapshot.put("battleRewardMultipleTimes", battleRewardMultipleTimes);
+		snapshot.put("daySweepCount", daySweepCount);
+		snapshot.put("shareReliveCount", shareReliveCount);
+		snapshot.put("adReliveCount", adReliveCount);
+		snapshot.put("adRogueCount", adRogueCount);
+		snapshotBoundedMap(dailyCount != null ? dailyCount.getMap() : null, k -> k, v -> v,
+				snapshot, "dailyCount", "dailyCountTruncated");
+		snapshotBoundedList(battleChapterRewards, v -> v,
+				snapshot, "battleChapterRewards", "battleChapterRewardsTruncated");
+		snapshot.put("chapterCount", chapters != null ? chapters.size() : 0);
+		snapshotBoundedMap(chapters, k -> k, chapter -> {
+			Map<String, Object> item = new LinkedHashMap<>();
+			item.put("battleId", chapter.getBattleId());
+			item.put("pass", chapter.getPass());
+			item.put("finishTimes", chapter.getFinishTimes());
+			item.put("battleTime", chapter.getBattleTime());
+			return item;
+		}, snapshot, "chapters", "chaptersTruncated");
+		snapshot.put("legacyLevelsCount", levels != null ? levels.size() : 0);
+		snapshot.put("helpDataCount", helpData != null ? helpData.size() : 0);
+		snapshotBoundedList(helpData != null ? helpData.keySet() : null, v -> v,
+				snapshot, "helpDataIds", "helpDataIdsTruncated");
+		snapshotBoundedMap(battlesMap, k -> k, this::toInspectValue,
+				snapshot, "battlesMap", "battlesMapTruncated");
+		return snapshot;
 	}
 }

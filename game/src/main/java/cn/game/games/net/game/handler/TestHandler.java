@@ -13,10 +13,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cn.game.games.net.game.gm.ConfigQueryService;
+import cn.game.games.net.game.gm.GmDispatcher;
+import cn.game.games.net.game.gm.GmResult;
+import cn.game.games.net.game.gm.GmSchemaCatalog;
+import cn.game.games.net.game.gm.GmSecurityPolicy;
+import cn.game.games.net.game.gm.PlayerInspectService;
+import cn.game.games.net.game.gm.ProtoCatalogService;
 import cn.game.games.cache.entity.*;
 import cn.game.games.net.game.module.battle.*;
 import cn.game.games.net.game.module.develop.equip.EquipModule;
@@ -34,10 +46,8 @@ import org.redisson.api.RFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-
 import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.IdCache;
@@ -113,6 +123,17 @@ import cn.game.util.RedisUtil;
 import cn.game.util.ServerType;
 import cn.game.util.SpringContextLoader;
 import io.vertx.core.Future;
+import cn.game.protocol.protobuf.TestMsg.TestGmSchemaRequest_6f000100;
+import cn.game.protocol.protobuf.TestMsg.TestGmSchemaResponse_6f000101;
+import cn.game.protocol.generated.enume.InitialUI;
+import cn.game.protocol.protobuf.TestMsg.TestGmExecRequest_6f000102;
+import cn.game.protocol.protobuf.TestMsg.TestGmExecResponse_6f000103;
+import cn.game.protocol.protobuf.TestMsg.TestConfigQueryRequest_6f000104;
+import cn.game.protocol.protobuf.TestMsg.TestConfigQueryResponse_6f000105;
+import cn.game.protocol.protobuf.TestMsg.TestProtoCatalogRequest_6f000106;
+import cn.game.protocol.protobuf.TestMsg.TestProtoCatalogResponse_6f000107;
+import cn.game.protocol.protobuf.TestMsg.TestInspectPlayerRequest_6f000108;
+import cn.game.protocol.protobuf.TestMsg.TestInspectPlayerResponse_6f000109;
 
 @Component
 public class TestHandler extends GameBaseHandler {
@@ -122,7 +143,20 @@ public class TestHandler extends GameBaseHandler {
 
     protected Logger logger = LoggerFactory.getLogger(TestHandler.class);
 
-    ExecutorService executorService = Executors.newFixedThreadPool(1280);
+    /** 0x6f测试协议共用的JSON序列化与反序列化Mapper */
+    private static final ObjectMapper GM_JSON_MAPPER = new ObjectMapper();
+
+    @Autowired(required = false)
+    private GmDispatcher gmDispatcher;
+
+    @Autowired(required = false)
+    private ConfigQueryService configQueryService;
+
+    @Autowired(required = false)
+    private ProtoCatalogService protoCatalogService;
+
+    @Autowired(required = false)
+    private PlayerInspectService playerInspectService;
 
     @Override
     protected int getModule() {
@@ -135,7 +169,7 @@ public class TestHandler extends GameBaseHandler {
         putInvoker(PbProtocol.TestPlayerLogoutRequest_6f000042, this::playerLogout);
         // 先保留给客户端使用
         putInvoker(PbProtocol.TestPlayerAssetDataRequest_6f000028, this::assetData);
-        if (ServerContext.getInstance().getRunMode().isProduction()) {
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
             return;
         }
         logger.warn("===================================test command is enable =================================");
@@ -147,6 +181,17 @@ public class TestHandler extends GameBaseHandler {
         putInvoker(PbProtocol.TestPlayerDeleteRequest_6f000044, this::playerDelete);
         putInvoker(PbProtocol.TestMessageRequest_6f000080, this::message);
         putInvoker(PbProtocol.TestConfigCheckRequest_6f000090, this::configCheck);
+        putInvoker(PbProtocol.TestGmSchemaRequest_6f000100, this::gmSchema);
+        putInvoker(PbProtocol.TestGmExecRequest_6f000102, this::gmExec);
+        putInvoker(PbProtocol.TestConfigQueryRequest_6f000104, this::configQuery);
+        putInvoker(PbProtocol.TestProtoCatalogRequest_6f000106, this::protoCatalog);
+        putInvoker(PbProtocol.TestInspectPlayerRequest_6f000108, this::inspectPlayer);
+        if (SpringContextLoader.getContext() != null) {
+            GmDispatcher dispatcher = resolveGmDispatcher();
+            if (!dispatcher.hasRegisteredGroupBeans()) {
+                logger.error("TestHandler初始化完成但GmDispatcher尚未注册任何@GmGroup动作Bean");
+            }
+        }
     }
 
     private void gmCmd(NetClient client, Object message) {
@@ -155,21 +200,27 @@ public class TestHandler extends GameBaseHandler {
         String cmd = req.getCmd();
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
-
         // 复用已有测试协议回传实际处理节点，不进入修改玩家状态的 GM 分发。
         if (cmd.equals("runtimeIdentity") || cmd.startsWith("runtimeIdentity ")) {
-            if (ServerContext.getInstance().getRunMode().isProduction() || playerId <= 0 || player == null
-                    || !player.isOnline() || player.getGameClient() != client) {
+            if (GmSecurityPolicy.currentRunMode().isProduction()) {
+                client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+                return;
+            }
+            if (playerId <= 0 || player == null || !player.isOnline() || player.getGameClient() != client) {
                 client.sendProtocol(resp.build(), ErrorMsgEnum.need_login.getId());
                 return;
             }
             try {
                 String[] identityArgs = cmd.split(" ", -1);
-                if (identityArgs.length != 2) { throw new IllegalArgumentException("RUNTIME_CHALLENGE_INVALID"); }
+                if (identityArgs.length != 2) {
+                    throw new IllegalArgumentException("RUNTIME_CHALLENGE_INVALID");
+                }
                 Map<String, String> identity = cn.game.games.core.runtime.RuntimeIdentity.observe(identityArgs[1]);
                 identity.put("playerId", Long.toString(playerId));
-                identity.put("logicServerId", player.getData().getServerId());
-                resp.setDebugInfo(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(identity));
+                if (player.getData() != null && player.getData().getServerId() != null) {
+                    identity.put("logicServerId", player.getData().getServerId());
+                }
+                resp.setDebugInfo(GM_JSON_MAPPER.writeValueAsString(identity));
                 client.sendProtocol(resp.build());
             } catch (Exception e) {
                 logger.warn("玩家运行身份观察失败 playerId={}", playerId, e);
@@ -177,16 +228,15 @@ public class TestHandler extends GameBaseHandler {
             }
             return;
         }
-
-        String[] params = cmd.split(" ");
-        if (params.length > 0) {
-            boolean found = cn.game.games.net.game.gm.GmRegistry.dispatch(player, params[0], params);
-            if (!found) {
-                client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
-                return;
-            }
-        } else {
-            client.sendProtocol(resp.build(), ErrorMsgEnum.gm_cmd_not_exist.getId());
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        GmResult gmResult = resolveGmDispatcher().dispatchText(player, cmd);
+        resp.setDebugInfo(toJson(gmResult));
+        if (!gmResult.isOk()) {
+            int errCode = gmResult.getErrorCode() > 0 ? gmResult.getErrorCode() : ErrorMsgEnum.unknown.getId();
+            client.sendProtocol(resp.build(), errCode);
             return;
         }
         client.sendProtocol(resp.build());
@@ -352,7 +402,7 @@ public class TestHandler extends GameBaseHandler {
     }
 
     protected void test(NetClient client, Object message) {
-//    	ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay, null);
+        //    	ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay, null);
         TestRunRequest_6f000020 req = (TestRunRequest_6f000020) message;
         long playerId = client.getPlayerId();
         Player player = PlayerManager.getInstance().getPlayer(playerId);
@@ -360,7 +410,6 @@ public class TestHandler extends GameBaseHandler {
         List<Hero> battleHeroList = player.getHeroModule().getBattleHeroList();
         String playerServerId = IdCache.getPlayerServerId(240201789);
         System.out.println(playerServerId);
-        
         //		RFuture<Object> async = RedisUtil.getAsync(CacheType.PLAYER_SIMPLE.key(240202120));
         //		System.out.println("当前线程：" + Thread.currentThread().getName());
         //		async.onComplete((r, e) -> {
@@ -557,6 +606,7 @@ public class TestHandler extends GameBaseHandler {
         }
         System.out.println(MessageFormat.format("{0}次抽卡结果,蓝:{1} 紫:{2} 金:{3} 红:{4}", lp * count, r3, r4, r5, r6));
     }
+
     protected void addItem(NetClient client, Object message) {
         TestAddItemRequest_6f000008 req = (TestAddItemRequest_6f000008) message;
         TestAddItemResponse_6f000009.Builder resp = TestAddItemResponse_6f000009.newBuilder();
@@ -595,60 +645,6 @@ public class TestHandler extends GameBaseHandler {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         //		FriendBaseInfo buildFriendBaseInfo = PbBuilder.buildFriendBaseInfo(player);
         //		client.sendProtocol(buildFriendBaseInfo);
-    }
-
-    protected void testDBinsert(NetClient client, Object message) {
-        // 如果是顺序执行，每个db操作大概50-60ms之间,100个要5s
-        // 线程池执行，100个操作，2800ms，#连接池中保留的最大连接数maxPoolSize = 5
-        // 同上，maxPoolSize = 50 ， 使用了800多ms，时间明显减少。或者600多
-        // 同上， maxPoolSize = 500 ，结果基本一样。
-        // 10 个连接创建玩家 1000 个消耗时间：8256，已经有一些超时的了
-        // 100 个连接创建玩家 1000 个消耗时间：4424，时间减少了，没有超时的。
-        // 1000 个连接创建玩家 1000 个消耗时间：4946/4265，和上面100个的没什么区别。估计是达到了mysql本身的连接限制
-        // 用测试服务器，mysql最大连接配置为10000，连接池10000个连接创建1000个玩家，第一次用了2000多ms，后面几次都是600ms
-        //		TestDbInsertRequest_7f000001 request = (TestDbInsertRequest_7f000001) message;
-        //		int intarg = request.getTimes();
-        int intarg = 10;
-        long start = System.currentTimeMillis();
-        //		ExecutorService executorService = Executors.newCachedThreadPool();
-        final CountDownLatch latch = new CountDownLatch(intarg);
-        for (int i = 0; i < intarg; i++) {
-            executorService.execute(new Runnable() {
-
-                @Override
-                public void run() {
-                    //					long id = GameServer.getInstance().nextPlayerId();
-                    long id = 0;
-                    // TODO Auto-generated method stub
-                    PlayerData player = new PlayerData();
-                    // player.setSeq(seq) ;
-                    player.setGender(true);
-                    player.setCreateDate(DateUtil.getStringDate());
-                    player.setLevel(1);
-                    player.setUid(id);
-                    player.setName(id + "");
-                    player.setLoginDate(DateUtil.getStringDate());
-                    player.setRefreshDay(DateUtil.getDay());
-                    ObjUtil.setDefaultValue(player);
-                    player.setPlayerId(id);
-                    try {
-                        DAO.executeSync(PlayerDataMapper.class, MapperConstant.insert, player);
-                        latch.countDown();
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-            });
-        }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        log.info("创建玩家 " + intarg + " 个消耗时间：" + (System.currentTimeMillis() - start));
-        System.out.println("创建玩家 " + intarg + " 个消耗时间：" + (System.currentTimeMillis() - start));
     }
 
     private void testMessage(NetClient client, Object message) {
@@ -701,7 +697,7 @@ public class TestHandler extends GameBaseHandler {
         TestConfigCheckResponse_6f000091 defaultInstance = TestConfigCheckResponse_6f000091.getDefaultInstance();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         // 给资源
-        TestHelper.setMaxCurrency(player,OpType.Test);
+        TestHelper.setMaxCurrency(player, OpType.Test);
         // 所有道具给一遍。
         Collection<ItemConfig> items = ItemManager.instance().list();
         for (ItemConfig itemConfig : items) {
@@ -785,4 +781,261 @@ public class TestHandler extends GameBaseHandler {
         client.sendProtocol(resp.build());
     }
 
+    private void gmSchema(NetClient client, Object message) {
+        TestGmSchemaRequest_6f000100 req = (TestGmSchemaRequest_6f000100) message;
+        TestGmSchemaResponse_6f000101.Builder resp = TestGmSchemaResponse_6f000101.newBuilder();
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        resp.setSchemaVersion(GmResult.SCHEMA_VERSION);
+        try {
+            GmSchemaCatalog catalog = resolveGmDispatcher().getSchemaCatalog(GmSecurityPolicy.currentRunMode(), req.getGroupFilter());
+            resp.setSchemaVersion(catalog.getSchemaVersion());
+            resp.setSchemaJson(toJson(catalog));
+        } catch (Exception e) {
+            logger.warn("获取GM Schema失败 groupFilter={}", req.getGroupFilter(), e);
+            resp.setSchemaJson(toJson(GmResult.fail(ErrorMsgEnum.unknown, "获取GM Schema异常: " + e.getMessage())));
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private void gmExec(NetClient client, Object message) {
+        TestGmExecRequest_6f000102 req = (TestGmExecRequest_6f000102) message;
+        TestGmExecResponse_6f000103.Builder resp = TestGmExecResponse_6f000103.newBuilder();
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        long rawTargetId = req.getTargetPlayerId();
+        long targetPlayerId = rawTargetId > 0 ? rawTargetId : client.getPlayerId();
+        String traceId = req.getTraceId() != null && !req.getTraceId().isBlank() ? req.getTraceId() : UUID.randomUUID().toString();
+        GmResult gmResult;
+        if (rawTargetId < 0) {
+            targetPlayerId = rawTargetId;
+            gmResult = GmResult.fail(ErrorMsgEnum.request_parameter_error, "target_player_id不能为负数")
+                    .withTraceId(traceId);
+        } else {
+            try {
+                Map<String, Object> params = parseJsonObjectMap(req.getParamsJson());
+                gmResult = resolveGmDispatcher().dispatchAction(req.getAction(), targetPlayerId, params, traceId, false);
+            } catch (IllegalArgumentException e) {
+                logger.warn("解析TestGmExec参数失败 action={} paramsJson={}", req.getAction(), req.getParamsJson(), e);
+                gmResult = GmResult.fail(ErrorMsgEnum.gm_cmd_param, "params_json必须是合法的JSON对象: " + e.getMessage())
+                        .withTraceId(traceId);
+            } catch (Exception e) {
+                logger.warn("执行TestGmExec异常 action={} targetPlayerId={}", req.getAction(), targetPlayerId, e);
+                gmResult = GmResult.fail(ErrorMsgEnum.unknown, "执行GM动作异常: " + e.getMessage())
+                        .withTraceId(traceId);
+            }
+        }
+        int seq = client instanceof GameClient gameClient ? gameClient.getCurMessageSeq() : 0;
+        int reqMsgId = PbProtocol.TestGmExecRequest_6f000102;
+        String reqMsgName = PbProtocol.idNameMap != null
+                ? PbProtocol.idNameMap.getOrDefault(reqMsgId, "TestGmExecRequest_6f000102")
+                : "TestGmExecRequest_6f000102";
+        resp.setResultJson(toJson(gmResult));
+        resp.setPlayerId(targetPlayerId);
+        resp.setMsgId(reqMsgId);
+        resp.setMsgName(reqMsgName);
+        resp.setSeq(seq);
+        resp.setTimestampMs(DateUtil.currentTimeMillis());
+        resp.setTraceId(gmResult.getTraceId() != null && !gmResult.getTraceId().isBlank() ? gmResult.getTraceId() : traceId);
+        client.sendProtocol(resp.build());
+    }
+
+    private void configQuery(NetClient client, Object message) {
+        TestConfigQueryRequest_6f000104 req = (TestConfigQueryRequest_6f000104) message;
+        TestConfigQueryResponse_6f000105.Builder resp = TestConfigQueryResponse_6f000105.newBuilder();
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        resp.setSchemaVersion(GmResult.SCHEMA_VERSION);
+        String op = req.getOp() == null ? "" : req.getOp().trim();
+        try {
+            Object payload;
+            if ("tables".equalsIgnoreCase(op) || "listTables".equalsIgnoreCase(op)) {
+                List<Map<String, Object>> tables = resolveConfigQueryService().listTables();
+                Map<String, Object> result = new LinkedHashMap<>();
+                result.put("schemaVersion", GmResult.SCHEMA_VERSION);
+                result.put("ok", true);
+                result.put("total", tables.size());
+                result.put("tables", tables);
+                payload = result;
+            } else if ("list".equalsIgnoreCase(op)) {
+                Map<String, String> filters = parseStringMap(req.getFilterJson());
+                Integer page = req.getPage() > 0 ? req.getPage() : 1;
+                Integer pageSize = req.getPageSize() > 0 ? req.getPageSize() : ConfigQueryService.DEFAULT_PAGE_SIZE;
+                Map<String, Object> pageResult = resolveConfigQueryService().listRows(req.getTable(), filters, page, pageSize);
+                pageResult.put("ok", true);
+                payload = pageResult;
+            } else if ("get".equalsIgnoreCase(op)) {
+                if (req.getId() < 0) {
+                    payload = GmResult.fail(ErrorMsgEnum.request_parameter_error, "id不能为负数");
+                } else {
+                    String key = extractLookupKey(req.getFilterJson());
+                    Integer id = req.getId() > 0 ? req.getId() : null;
+                    Object row = resolveConfigQueryService().getRow(req.getTable(), id, key);
+                    Map<String, Object> result = new LinkedHashMap<>();
+                    result.put("schemaVersion", GmResult.SCHEMA_VERSION);
+                    result.put("ok", true);
+                    result.put("table", req.getTable());
+                    result.put("data", row);
+                    payload = result;
+                }
+            } else {
+                payload = GmResult.fail(ErrorMsgEnum.request_parameter_error, "不支持的config查询op: " + op);
+            }
+            resp.setResultJson(toJson(payload));
+        } catch (LogicException e) {
+            logger.warn("TestConfigQuery业务参数或数据异常 op={} table={}", op, req.getTable(), e);
+            resp.setResultJson(toJson(GmResult.fail(e.getErrorCode(), resolveErrorName(e.getErrorCode()), e.getMessage())));
+        } catch (Exception e) {
+            logger.warn("TestConfigQuery执行异常 op={} table={}", op, req.getTable(), e);
+            resp.setResultJson(toJson(GmResult.fail(ErrorMsgEnum.request_parameter_error, "配置查询异常: " + e.getMessage())));
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private void protoCatalog(NetClient client, Object message) {
+        TestProtoCatalogRequest_6f000106 req = (TestProtoCatalogRequest_6f000106) message;
+        TestProtoCatalogResponse_6f000107.Builder resp = TestProtoCatalogResponse_6f000107.newBuilder();
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        resp.setSchemaVersion(GmResult.SCHEMA_VERSION);
+        try {
+            int rawModuleFilter = req.getModuleFilter();
+            if (rawModuleFilter < 0 || rawModuleFilter > 0xFF) {
+                resp.setCatalogJson(toJson(GmResult.fail(ErrorMsgEnum.request_parameter_error, "module_filter必须在0到255之间")));
+            } else {
+                String moduleFilter = rawModuleFilter > 0 ? String.format("0x%02x", rawModuleFilter & 0xFF) : null;
+                Map<String, Object> catalog = resolveProtoCatalogService().listCatalog(moduleFilter, null, req.getIncludeSchemas(), true);
+                resp.setCatalogJson(toJson(catalog));
+            }
+        } catch (Exception e) {
+            logger.warn("查询协议目录异常 moduleFilter={}", req.getModuleFilter(), e);
+            resp.setCatalogJson(toJson(GmResult.fail(ErrorMsgEnum.unknown, "查询协议目录异常: " + e.getMessage())));
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private void inspectPlayer(NetClient client, Object message) {
+        TestInspectPlayerRequest_6f000108 req = (TestInspectPlayerRequest_6f000108) message;
+        TestInspectPlayerResponse_6f000109.Builder resp = TestInspectPlayerResponse_6f000109.newBuilder();
+        if (GmSecurityPolicy.currentRunMode().isProduction()) {
+            client.sendProtocol(resp.build(), ErrorMsgEnum.production_gm_not_allow.getId());
+            return;
+        }
+        resp.setSchemaVersion(GmResult.SCHEMA_VERSION);
+        try {
+            long rawTargetId = req.getTargetPlayerId();
+            if (rawTargetId < 0) {
+                resp.setResultJson(toJson(GmResult.fail(ErrorMsgEnum.request_parameter_error, "target_player_id不能为负数")));
+            } else {
+                long targetPlayerId = rawTargetId > 0 ? rawTargetId : client.getPlayerId();
+                GmResult inspectResult = resolvePlayerInspectService().inspectPlayer(targetPlayerId, req.getModulesList(), req.getScope(), null);
+                resp.setResultJson(toJson(inspectResult));
+            }
+        } catch (Exception e) {
+            logger.warn("执行玩家只读自省异常 targetPlayerId={}", req.getTargetPlayerId(), e);
+            resp.setResultJson(toJson(GmResult.fail(ErrorMsgEnum.unknown, "执行玩家只读自省异常: " + e.getMessage())));
+        }
+        client.sendProtocol(resp.build());
+    }
+
+    private GmDispatcher resolveGmDispatcher() {
+        if (gmDispatcher != null) {
+            return gmDispatcher;
+        }
+        GmDispatcher singleton = GmDispatcher.getInstance();
+        if (!singleton.hasRegisteredGroupBeans() && SpringContextLoader.getContext() != null) {
+            singleton.initFromSpring();
+            if (!singleton.hasRegisteredGroupBeans()) {
+                logger.error("Spring上下文已存在但GmDispatcher兜底扫描后仍无@GmGroup动作Bean");
+            }
+        }
+        return singleton;
+    }
+
+    private ConfigQueryService resolveConfigQueryService() {
+        if (configQueryService == null) {
+            configQueryService = new ConfigQueryService();
+        }
+        return configQueryService;
+    }
+
+    private ProtoCatalogService resolveProtoCatalogService() {
+        if (protoCatalogService == null) {
+            protoCatalogService = new ProtoCatalogService();
+        }
+        return protoCatalogService;
+    }
+
+    private PlayerInspectService resolvePlayerInspectService() {
+        if (playerInspectService == null) {
+            playerInspectService = new PlayerInspectService();
+        }
+        return playerInspectService;
+    }
+
+    private Map<String, Object> parseJsonObjectMap(String json) {
+        if (json == null || json.isBlank()) {
+            return Collections.emptyMap();
+        }
+        try {
+            Map<String, Object> parsed = GM_JSON_MAPPER.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
+            return parsed != null ? parsed : Collections.emptyMap();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+    }
+
+    private Map<String, String> parseStringMap(String json) {
+        if (json == null || json.isBlank()) {
+            return Collections.emptyMap();
+        }
+        Map<String, Object> raw = parseJsonObjectMap(json);
+        Map<String, String> result = new LinkedHashMap<>();
+        for (Entry<String, Object> entry : raw.entrySet()) {
+            if (entry.getKey() != null && entry.getValue() != null) {
+                result.put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
+        return result;
+    }
+
+    private String extractLookupKey(String filterJson) {
+        if (filterJson == null || filterJson.isBlank()) {
+            return null;
+        }
+        String trimmed = filterJson.trim();
+        if (trimmed.startsWith("{")) {
+            Map<String, Object> map = parseJsonObjectMap(trimmed);
+            Object keyObj = map.get("key");
+            return keyObj != null ? String.valueOf(keyObj) : null;
+        }
+        return trimmed;
+    }
+
+    private static String resolveErrorName(int errorCode) {
+        for (ErrorMsgEnum err : ErrorMsgEnum.values()) {
+            if (err.getId() == errorCode) {
+                return err.name();
+            }
+        }
+        return "LOGIC_ERROR";
+    }
+
+    private String toJson(Object value) {
+        try {
+            return GM_JSON_MAPPER.writeValueAsString(value);
+        } catch (Exception e) {
+            logger.warn("序列化0x6f测试响应JSON失败", e);
+            return "{\"schemaVersion\":\"1.0\",\"ok\":false,\"errorCode\":-1,\"errorName\":\"JSON_SERIALIZE_ERROR\",\"summary\":\"JSON序列化失败\"}";
+        }
+    }
 }

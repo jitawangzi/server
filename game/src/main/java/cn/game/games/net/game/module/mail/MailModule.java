@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -348,5 +349,27 @@ public class MailModule extends BasePlayerModule  {
 
 	public void setGlobalMailId(long globalMailId) {
 		this.globalMailId = globalMailId;
+	}
+
+	@Override
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		snapshot.put("globalMailId", globalMailId);
+		snapshot.put("noticeMailId", notice != null ? notice.getMailId() : 0);
+		snapshot.put("mailCount", mails != null ? mails.size() : 0);
+		snapshotBoundedList(mails != null ? mails.values() : null, mail -> {
+			Map<String, Object> item = new LinkedHashMap<>();
+			item.put("id", mail.getId());
+			item.put("mailId", mail.getMailId());
+			item.put("type", mail.getType());
+			item.put("title", mail.getTitle());
+			item.put("see", mail.getSee());
+			item.put("receive", mail.getReceive());
+			item.put("isDeleted", mail.getIsDeleted());
+			item.put("createTime", mail.getCreateTime());
+			item.put("expireTime", mail.getExpireTime());
+			return item;
+		}, snapshot, "mails", "mailsTruncated");
+		return snapshot;
 	}
 }

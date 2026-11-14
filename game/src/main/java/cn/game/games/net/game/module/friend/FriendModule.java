@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.friend;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -390,5 +391,41 @@ public class FriendModule extends BasePlayerModule {
 	@Override
 	public boolean alwaysStoreDataInStandaloneTable() {
 		return true;
+	}
+
+	@Override
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		snapshot.put("lastRefreshTime", lastRefreshTime);
+		snapshot.put("sendGiftCount", sendGiftCount);
+		snapshot.put("applicationCount", applicationCount);
+		snapshot.put("giftReceiveCount", giftReceiveCount);
+		snapshot.put("refreshCount", refreshCount);
+		snapshot.put("friendCount", friends != null ? friends.size() : 0);
+		snapshot.put("applicationCountInCache", applications != null ? applications.size() : 0);
+		snapshot.put("myApplicationCount", myApplications != null ? myApplications.size() : 0);
+		snapshot.put("lastRefreshPlayersCount", lastRefreshPlayers != null ? lastRefreshPlayers.size() : 0);
+
+		snapshotBoundedList(friends != null ? friends.values() : null, friend -> {
+			Map<String, Object> item = new LinkedHashMap<>();
+			item.put("friendId", friend.getFriendId());
+			item.put("relation", friend.getRelation());
+			item.put("gift", friend.getGift());
+			item.put("gifted", friend.getGifted());
+			item.put("receive", friend.getReceive());
+			item.put("intimate", friend.getIntimate());
+			return item;
+		}, snapshot, "friends", "friendsTruncated");
+
+		snapshotBoundedList(applications != null ? applications.values() : null, app -> {
+			Map<String, Object> item = new LinkedHashMap<>();
+			item.put("applyPlayerId", app.getApplyPlayerId());
+			item.put("applyPlayerServer", app.getApplyPlayerServer());
+			item.put("applyTime", app.getApplyTime());
+			return item;
+		}, snapshot, "applications", "applicationsTruncated");
+
+		snapshotBoundedList(myApplications, v -> v, snapshot, "myApplications", "myApplicationsTruncated");
+		return snapshot;
 	}
 }

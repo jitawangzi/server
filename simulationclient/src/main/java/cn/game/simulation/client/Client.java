@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.TextFormat;
@@ -52,6 +53,8 @@ import cn.game.protocol.protobuf.Account.LogicServerInfo;
 import cn.game.protocol.protobuf.Account.MyServerInfo;
 import cn.game.protocol.protobuf.Account.ServerInfo;
 import cn.game.protocol.protobuf.BaseMsg;
+import cn.game.protocol.protobuf.TestMsg.TestGmExecRequest_6f000102;
+import cn.game.protocol.protobuf.TestMsg.TestGmExecResponse_6f000103;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
 import cn.game.protocol.protobuf.BaseMsg.ItemInfo;
 import cn.game.protocol.protobuf.BaseMsg.SimplePlayerInfo;
@@ -116,6 +119,8 @@ public class Client extends AbstractNetClient {
 	public static Logger logger = LoggerFactory.getLogger(Client.class);
 	public static Logger netLogger = LoggerFactory.getLogger("Net");
 	public static Logger systemOutLog = LoggerFactory.getLogger("SystemOut");
+	/** GM结构化参数序列化复用的ObjectMapper */
+	private static final ObjectMapper GM_JSON_MAPPER = new ObjectMapper();
 
 	private Channel channel;
 	private String passportSessionId;
@@ -209,6 +214,7 @@ public class Client extends AbstractNetClient {
 	public volatile int lastSendMessageId;
 	
 	private volatile io.vertx.core.Promise respPromise;
+	private final Object respPromiseLock = new Object();
 	// 上一次心跳时间
 	private long lastHeartbeatTime = System.currentTimeMillis();
 
@@ -937,18 +943,44 @@ public class Client extends AbstractNetClient {
 	public <T> T sendProtocolAndWait(Message message, int timeoutSeconds) {
 		if (timeoutSeconds < 1 || timeoutSeconds > 60) { throw new IllegalArgumentException("请求等待时限应为1至60秒"); }
 		io.vertx.core.Promise promise = io.vertx.core.Promise.promise();
-		respPromise = promise;
-		sendProtocol(message);
-		Future future = promise.future().timeout(timeoutSeconds, TimeUnit.SECONDS);
-		Object resp = AsyncUtils.await(future);
-		return (T) resp;
+		synchronized (respPromiseLock) {
+			if (this.respPromise != null && !this.respPromise.future().isComplete()) {
+				throw new IllegalStateException("已有进行中的同步等待请求，禁止并发覆盖respPromise");
+			}
+			this.respPromise = promise;
+		}
+		try {
+			ChannelFuture cf = sendProtocol(message);
+			if (cf == null) {
+				if (!promise.future().isComplete()) {
+					promise.tryFail(new IllegalStateException("协议发送失败：连接通道不可用"));
+				}
+			} else {
+				cf.addListener(future -> {
+					if (!future.isSuccess()) {
+						Throwable cause = future.cause();
+						promise.tryFail(cause != null ? cause : new IllegalStateException("协议发送失败"));
+					}
+				});
+			}
+			Future future = promise.future().timeout(timeoutSeconds, TimeUnit.SECONDS);
+			Object resp = AsyncUtils.await(future);
+			return (T) resp;
+		} finally {
+			synchronized (respPromiseLock) {
+				if (this.respPromise == promise) {
+					this.respPromise = null;
+				}
+			}
+		}
 	}
 //	public boolean checkResponse(pri) {
 //		
 //		
 //	}
 	public void onResponse(int id,int seq ,int errorCode, Message respMessage) {
-		if (respPromise == null) {
+		io.vertx.core.Promise promise = this.respPromise;
+		if (promise == null) {
 			return ; 
 		}
 		// 服务器主动推送的
@@ -956,13 +988,15 @@ public class Client extends AbstractNetClient {
 			return; 
 		}
 		if (id <= 0) {
-			respPromise.fail(new LogicException(errorCode, "Response id is " + id));
+			promise.tryFail(new LogicException(errorCode, "Response id is " + id));
+			return;
 		}
 		if (errorCode > 0 ||  respMessage instanceof PlayerErrorPush_01000099) {
-			respPromise.fail(new LogicException(errorCode, "Response id:"+HexUtil.toHexString(id)+" fail,errorCode:" + errorCode));
+			promise.tryFail(new LogicException(errorCode, "Response id:"+HexUtil.toHexString(id)+" fail,errorCode:" + errorCode));
+			return;
 		}
 		if (id - 1 == lastSendMessageId) {// 请求对应的返回包
-			respPromise.tryComplete(respMessage); 
+			promise.tryComplete(respMessage); 
 		}
 		// 返回包之前的一些推送
 	}
@@ -1115,6 +1149,53 @@ public class Client extends AbstractNetClient {
 			}
 		}
 		return false; 
+	}
+
+	/**
+	 * 以无参方式发送结构化GM动作并阻塞等待响应
+	 *
+	 * @param action GM动作名或别名
+	 * @return 结构化GM执行结果
+	 */
+	public GmClientResult gm(String action) {
+		return gm(action, "{}");
+	}
+
+	/**
+	 * 以Map命名参数方式发送结构化GM动作并阻塞等待响应
+	 *
+	 * @param action GM动作名或别名
+	 * @param args 参数键值对
+	 * @return 结构化GM执行结果
+	 */
+	public GmClientResult gm(String action, Map<String, Object> args) {
+		try {
+			String jsonArgs = args == null || args.isEmpty() ? "{}" : GM_JSON_MAPPER.writeValueAsString(args);
+			return gm(action, jsonArgs);
+		} catch (Exception e) {
+			logger.warn("序列化GM参数失败 action={}", action, e);
+			throw new IllegalArgumentException("序列化GM参数失败: " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 发送0x6f000102结构化GM动作并阻塞等待0x6f000103响应
+	 *
+	 * @param action GM动作名或别名
+	 * @param jsonArgs JSON格式参数字符串
+	 * @return 解析后的结构化GM执行结果
+	 */
+	public GmClientResult gm(String action, String jsonArgs) {
+		String safeAction = action == null ? "" : action.trim();
+		String safeParams = (jsonArgs == null || jsonArgs.isBlank()) ? "{}" : jsonArgs;
+		TestGmExecRequest_6f000102 req = TestGmExecRequest_6f000102.newBuilder()
+				.setAction(safeAction)
+				.setParamsJson(safeParams)
+				.setTargetPlayerId(getPlayerId())
+				.setTraceId(UUID.randomUUID().toString())
+				.build();
+		TestGmExecResponse_6f000103 resp = sendProtocolAndWait(req);
+		return GmClientResult.fromResponse(resp);
 	}
 	
 	@Override

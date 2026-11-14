@@ -14,6 +14,7 @@ import cn.game.core.execute.error.RetryContext;
  */
 public class MailboxProcessor implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MailboxProcessor.class.getName());
+	private static final ThreadLocal<Long> CURRENT_ENTITY_ID = new ThreadLocal<>();
 
 	private final ActorMailbox mailbox;
 	private final TaskExecutorService executorService;
@@ -37,6 +38,16 @@ public class MailboxProcessor implements Runnable {
 	 * @param config 既有构造入口的执行配置
 	 * @param generation 本次取得的消费权代次
 	 */
+	/**
+	 * 获取当前线程正在执行的实体邮箱ID（不依赖DeadlockGuard开关，适用于全部RunMode）
+	 *
+	 * @return 实体ID，非邮箱线程返回null
+	 * @author shuyongqiang
+	 */
+	public static Long currentEntityId() {
+		return CURRENT_ENTITY_ID.get();
+	}
+
 	MailboxProcessor(ActorMailbox mailbox, TaskExecutorService executorService, TaskExecutionConfig config, long generation) {
 		this.mailbox = mailbox;
 		this.executorService = executorService;
@@ -50,7 +61,9 @@ public class MailboxProcessor implements Runnable {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Start processing mailbox for entity {}", entityId);
 		}
-		DeadlockGuard.enter(mailbox.getEntityId());
+		Long previousEntityId = CURRENT_ENTITY_ID.get();
+		CURRENT_ENTITY_ID.set(entityId);
+		DeadlockGuard.enter(entityId);
 
 		ErrorPolicy delayedRetryPolicy = null;
 
@@ -66,6 +79,11 @@ public class MailboxProcessor implements Runnable {
 				LOGGER.debug("Finished processing mailbox for entity {}", entityId);
 			}
 			DeadlockGuard.exit(entityId);
+			if (previousEntityId == null) {
+				CURRENT_ENTITY_ID.remove();
+			} else {
+				CURRENT_ENTITY_ID.set(previousEntityId);
+			}
 			// 包括空队列和异常路径，消费权始终在同一出口归还或交给带代次的延迟回调。
 			executorService.finishProcessor(mailbox, generation, delayedRetryPolicy);
 		}

@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -161,6 +162,22 @@ public abstract class AbstractItemNoStackModule<E extends ItemNoStack> extends G
 
 	public Map<Long, E> getUid_items() {
 		return uid_items;
+	}
+
+	@Override
+	public Object inspectState() {
+		Map<String, Object> snapshot = new LinkedHashMap<>();
+		snapshot.put("itemCount", uid_items != null ? uid_items.size() : 0);
+		snapshot.put("configIdCount", id_items != null ? id_items.keySet().size() : 0);
+		snapshotBoundedList(uid_items != null ? uid_items.values() : null, item -> {
+			Map<String, Object> entry = new LinkedHashMap<>();
+			entry.put("id", item.getId());
+			entry.put("configId", item.getConfigId());
+			entry.put("level", item.getLevel());
+			entry.put("star", item.getStar());
+			return entry;
+		}, snapshot, "items", "itemsTruncated");
+		return snapshot;
 	}
 
 }

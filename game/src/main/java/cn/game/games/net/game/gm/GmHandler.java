@@ -102,19 +102,33 @@ public class GmHandler extends GmBaseHandler {
 	private void tdLv(NetClient client, Object o) {
 		GmPlayerTDLevelRequest_77000054 req = (GmPlayerTDLevelRequest_77000054) o;
 		GmPlayerTDLevelResponse_77000055 resp = GmPlayerTDLevelResponse_77000055.getDefaultInstance();
-		long playerId = Long.parseLong(req.getPlayerId());
+		if (!GmSecurityPolicy.isActionAllowed(GmSecurityPolicy.currentRunMode(), GmSecurityTier.OPS_REPAIR)) {
+			client.sendProtocol(resp, ErrorMsgEnum.production_gm_not_allow.getId());
+			return;
+		}
+		long playerId;
+		try {
+			playerId = Long.parseLong(req.getPlayerId());
+		} catch (NumberFormatException e) {
+			log.warn("0x77 tdLv playerId格式非法: playerId={}", req.getPlayerId(), e);
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
 		int level = req.getLevel();
+		if (level <= 0) {
+			client.sendProtocol(resp, ErrorMsgEnum.gm_cmd_param.getId());
+			return;
+		}
 
-		PlayerHelper.modifyPlayer(playerId, player -> {
-			if (player.getDevelopModule().getHeavenlyDaoLevel() != level) {
-				player.getDevelopModule().setHeavenlyDaoLevel(level);
-				return true;
-			}
-			return false;
-		});
-
-		client.sendProtocol(resp);
-
+		PlayerHelper.modifyPlayer(playerId, player -> GmDispatcher.updateHeavenlyDaoLevel(player, level))
+				.onComplete(ar -> {
+					if (ar.succeeded()) {
+						client.sendProtocol(resp);
+					} else {
+						log.error("0x77 tdLv修改失败: playerId={}, level={}", playerId, level, ar.cause());
+						client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+					}
+				});
 	}
 
 	private void playerDelete(NetClient client, Object o) {
@@ -338,11 +352,23 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
 		String channel = request.getChannel();
 		String name = request.getName();
-		SimplePlayer searchPlayer = PlayerHelper.searchPlayer(name, request.getPlayerIdBytes().isEmpty() ? 0 : Long.parseLong(request.getPlayerId()));
+		SimplePlayer searchPlayer = searchPlayerForInfo(name, request.getPlayerIdBytes().isEmpty() ? 0 : Long.parseLong(request.getPlayerId()));
 		if (searchPlayer != null) {
 			response.setPlayer(searchPlayer.toGmPlayerInfo());
 		}
 		sendAndRecordOpt(client, request, response.build(), "查询玩家");
+	}
+
+	/**
+	 * 查询玩家简略信息（预留可测试覆写钩子，默认调用PlayerHelper.searchPlayer）
+	 *
+	 * @param name 玩家名称
+	 * @param playerId 玩家ID
+	 * @return 简略玩家信息
+	 * @author shuyongqiang
+	 */
+	protected SimplePlayer searchPlayerForInfo(String name, long playerId) {
+		return PlayerHelper.searchPlayer(name, playerId);
 	}
 
 	private void sendAndRecordOpt(NetClient client, Message request, Message response, String optMsg) {
@@ -367,6 +393,9 @@ public class GmHandler extends GmBaseHandler {
 		String responseStr = TextFormat.printer().escapingNonAscii(false).printToString(response);
 		String result = errMsg == null ? responseStr : errMsg.getDesc();
 		Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+		if (VxHolder.vertx == null || player == null || player.getAccount() == null) {
+			return;
+		}
 		String requestStr = TextFormat.printer().escapingNonAscii(false).printToString(request);
 		ServerMsg.GmOptRecordRequest_7d000052.Builder req = ServerMsg.GmOptRecordRequest_7d000052.newBuilder();
 		req.setOptmsg(optMsg == null ? "null" : optMsg)
@@ -374,9 +403,7 @@ public class GmHandler extends GmBaseHandler {
 				.setOptPid(player.getAccount().accountId + ":" + client.getPlayerId() + ":" + player.getData().getName())
 				.setOptResult(result);
 		VxHolder.requestRemoteServer(ServerType.Login, req.build()).onComplete(r -> {
-		}).onFailure(e -> {
-			e.printStackTrace();
-		});
+		}).onFailure(e -> log.error("记录0x77 GM操作日志失败", e));
 	}
 
 	private void shutdown(NetClient client, Object message) {

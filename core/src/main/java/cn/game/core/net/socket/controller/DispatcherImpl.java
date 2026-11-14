@@ -1,5 +1,6 @@
 package cn.game.core.net.socket.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,16 @@ import cn.game.util.HexUtil;
 public class DispatcherImpl implements Dispatcher {
 	protected Logger log = LoggerFactory.getLogger(BaseHandler.class);
 	private static final Map<Integer, Handler> MODULE_HANDLERS = new HashMap<Integer, Handler>();
+
+	/**
+	 * 获取已注册模块处理器只读视图
+	 *
+	 * @return 不可变模块处理器映射
+	 * @author shuyongqiang
+	 */
+	public static Map<Integer, Handler> getModuleHandlers() {
+		return Collections.unmodifiableMap(new HashMap<>(MODULE_HANDLERS));
+	}
 
 	@Override
 	public void put(int module, Handler handler) {
