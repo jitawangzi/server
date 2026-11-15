@@ -52,7 +52,14 @@ public final class GmConsolePanelLoader {
 		if (env != null && !env.isBlank()) {
 			return Path.of(env.trim()).toAbsolutePath().normalize();
 		}
-		return Path.of(DEFAULT_PANELS_DIR).toAbsolutePath().normalize();
+		Path defaultPath = Path.of(DEFAULT_PANELS_DIR);
+		if (!Files.exists(defaultPath)) {
+			Path parentFallback = Path.of("..", DEFAULT_PANELS_DIR);
+			if (Files.exists(parentFallback)) {
+				return parentFallback.toAbsolutePath().normalize();
+			}
+		}
+		return defaultPath.toAbsolutePath().normalize();
 	}
 
 	/**

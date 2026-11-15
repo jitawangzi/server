@@ -168,11 +168,23 @@ public class GmWebConsoleServerTest {
 				.build();
 		HttpResponse<String> indexResp = httpClient.send(indexReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 		Assertions.assertEquals(200, indexResp.statusCode());
-		Assertions.assertTrue(indexResp.body().contains("GM Console"));
+		String indexBody = indexResp.body();
+		Assertions.assertTrue(indexBody.contains("GM Console"));
+		Assertions.assertTrue(indexBody.contains("quickOffset('+1h')"));
+		Assertions.assertTrue(indexBody.contains("<option value=''>-- 全部分组 --"));
+		Assertions.assertTrue(indexBody.contains("switchTab('tabSchema')"));
+		Assertions.assertTrue(indexBody.contains("player.time."));
+		Assertions.assertFalse(indexBody.contains("quickOffset(\"+1h\")"));
+		Assertions.assertFalse(indexBody.contains("<option value=\"\">-- 全部分组 --"));
 	}
 
 	@Test
 	public void testPanelHotReloadAndPathTraversalSecurity() throws Exception {
+		// 0. 验证面板目录解析容错
+		Path resolvedPanelsDir = GmConsolePanelLoader.resolvePanelsDir();
+		Assertions.assertNotNull(resolvedPanelsDir);
+		Assertions.assertTrue(Files.exists(resolvedPanelsDir));
+
 		// 1. 创建测试自定义面板
 		Path panelFile = testPanelsDir.resolve("custom-test.html");
 		Files.writeString(panelFile, "<div>Initial Panel V1</div>", StandardCharsets.UTF_8);

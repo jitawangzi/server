@@ -189,18 +189,18 @@
       <span>D: <b id="lblDay" style="color:#67e8f9">--</b> | W: <b id="lblWeek" style="color:#67e8f9">--</b> | M: <b id="lblMonth" style="color:#67e8f9">--</b></span>
     </div>
     <div style="display:flex; gap:6px;">
-      <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="quickOffset("+1h")">+1小时</button>
-      <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="quickOffset("+1d")">+1天</button>
+      <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="quickOffset('+1h')">+1小时</button>
+      <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="quickOffset('+1d')">+1天</button>
       <button class="btn btn-danger" style="padding:2px 8px; font-size:0.75rem;" onclick="resetClock()">归零</button>
       <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="refreshBootstrap()">🔄 刷新</button>
     </div>
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab("tabSchema")">Schema 动态表单</button>
-    <button class="tab-btn" onclick="switchTab("tabCommand")">命令行执行器</button>
-    <button class="tab-btn" onclick="switchTab("tabClock")">虚拟时钟运维</button>
-    <button class="tab-btn" onclick="switchTab("tabPanels")">自定义热载面板</button>
+    <button class="tab-btn active" onclick="switchTab('tabSchema')">Schema 动态表单</button>
+    <button class="tab-btn" onclick="switchTab('tabCommand')">命令行执行器</button>
+    <button class="tab-btn" onclick="switchTab('tabClock')">虚拟时钟运维</button>
+    <button class="tab-btn" onclick="switchTab('tabPanels')">自定义热载面板</button>
   </div>
 
   <div class="container">
@@ -243,7 +243,7 @@
         <div class="form-group">
           <label>命令字符串 (例如: time.status, time.offset +1d, item 1001 10):</label>
           <div style="display:flex; gap:8px;">
-            <input type="text" id="txtCommand" placeholder="输入GM命令..." onkeydown="if(event.key==="Enter") executeTextCommand();" />
+            <input type="text" id="txtCommand" placeholder="输入GM命令..." onkeydown="if(event.key==='Enter') executeTextCommand();" />
             <button class="btn" onclick="executeTextCommand()">发送</button>
           </div>
         </div>
@@ -378,7 +378,7 @@
       const groups = new Set();
       schema.actions.forEach(a => { if (a.group) groups.add(a.group); });
       const selGroup = document.getElementById("selGroup");
-      selGroup.innerHTML = "<option value="">-- 全部分组 --</option>";
+      selGroup.innerHTML = "<option value=''>-- 全部分组 --</option>";
       groups.forEach(g => {
         selGroup.innerHTML += `<option value="${g}">${g}</option>`;
       });
@@ -411,7 +411,7 @@
           const div = document.createElement("div");
           div.className = "form-group";
           div.innerHTML = `
-            <label>${p.name} ${p.required ? "<b style="color:red">*</b>" : ""} (${p.type}): <span style="color:#64748b">${p.description || ""}</span></label>
+            <label>${p.name} ${p.required ? "<b style='color:red'>*</b>" : ""} (${p.type}): <span style="color:#64748b">${p.description || ""}</span></label>
             <input type="${p.type === "int" || p.type === "long" ? "number" : "text"}" id="param_${p.name}" value="${p.defaultValue || ""}" placeholder="${p.name}" />
           `;
           container.appendChild(div);
@@ -438,7 +438,7 @@
       }
       const res = await apiRequest("/gm-console/api/execute", "POST", { action: actionId, playerId, args, dryRun });
       document.getElementById("preSchemaResult").textContent = JSON.stringify(res, null, 2);
-      if (res.ok && actionId.startsWith("time.")) {
+      if (res.ok && (actionId.startsWith("time.") || actionId.startsWith("player.time."))) {
         refreshBootstrap();
       }
     }
@@ -484,7 +484,7 @@
 
     function initPanelsDropdown(panels) {
       const sel = document.getElementById("selPanel");
-      sel.innerHTML = "<option value="">-- 选择自定义面板 --</option>";
+      sel.innerHTML = "<option value=''>-- 选择自定义面板 --</option>";
       if (panels && panels.length > 0) {
         panels.forEach(p => {
           sel.innerHTML += `<option value="${p.file}">${p.name} (${p.file})</option>`;
@@ -511,8 +511,15 @@
       const resp = await fetch("/gm-console/panels/" + file, { headers });
       if (resp.ok) {
         container.innerHTML = await resp.text();
+        const scripts = container.querySelectorAll("script");
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement("script");
+          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+          newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
       } else {
-        container.innerHTML = `<span style="color:red">加载面板失败 (HTTP ${resp.status}): ${await resp.text()}</span>`;
+        container.innerHTML = `<span style='color:red'>加载面板失败 (HTTP ${resp.status}): ${await resp.text()}</span>`;
       }
     }
 
