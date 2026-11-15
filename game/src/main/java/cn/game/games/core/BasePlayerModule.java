@@ -525,4 +525,101 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 		String message = e.getMessage();
 		return e.getClass().getSimpleName() + ": " + (message == null ? "" : message);
 	}
+
+	/**
+	 * 非生产测试重置当前模块状态，清空容器、原子类归零并重置业务标量
+	 *
+	 * @return 重置后的最新模块状态快照
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> resetForTest() {
+		if (cn.game.games.net.game.gm.GmSecurityPolicy.currentRunMode().isProduction()) {
+			throw new cn.game.core.exception.LogicException(cn.game.protocol.manual.ErrorMsgEnum.production_gm_not_allow.ID, "生产环境禁止执行模块重置");
+		}
+		cn.game.games.net.game.helper.PlayerWriteGuard.Scope guard = null;
+		if (player != null) {
+			try {
+				guard = cn.game.games.net.game.helper.PlayerWriteGuard.begin(player);
+			} catch (Throwable e) {
+				// 未在PlayerSaveCoordinator登记的轻量测试实例降级直接执行
+			}
+		}
+		try (cn.game.games.net.game.helper.PlayerWriteGuard.Scope ignored = guard) {
+			for (Class<?> clazz = this.getClass(); clazz != null && clazz != BasePlayerModule.class; clazz = clazz.getSuperclass()) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Field field : fields) {
+					int modifiers = field.getModifiers();
+					if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || field.isSynthetic()) {
+						continue;
+					}
+					Class<?> type = field.getType();
+					if (Logger.class.isAssignableFrom(type) || Player.class.isAssignableFrom(type)
+							|| PlayerEventHandler.class.isAssignableFrom(type)
+							|| "cn.game.core.event.PlayerEventDispatcher".equals(type.getName())
+							|| "cn.game.games.core.event.PlayerEventHandler".equals(type.getName())) {
+						continue;
+					}
+					try {
+						field.setAccessible(true);
+						Object val = field.get(this);
+						if (val != null) {
+							if (val instanceof Collection<?> coll) {
+								coll.clear();
+							} else if (val instanceof Map<?, ?> map) {
+								map.clear();
+							} else if (val instanceof cn.game.util.MapWrapper mw) {
+								mw.clear();
+							} else if (val instanceof cn.game.util.IntMapWrapper imw) {
+								imw.clear();
+							} else if (val instanceof cn.game.util.FloatMapWrapper fmw) {
+								fmw.clear();
+							} else if (val instanceof cn.game.util.StringMapWrapper smw) {
+								smw.clear();
+							} else if (val instanceof java.util.concurrent.atomic.AtomicInteger ai) {
+								ai.set(0);
+							} else if (val instanceof java.util.concurrent.atomic.AtomicLong al) {
+								al.set(0L);
+							} else if (val instanceof AtomicBoolean ab) {
+								ab.set(false);
+							} else if (!Modifier.isFinal(modifiers)) {
+								if (type == boolean.class || type == Boolean.class) {
+									field.set(this, false);
+								} else if (type == byte.class || type == Byte.class) {
+									field.set(this, (byte) 0);
+								} else if (type == short.class || type == Short.class) {
+									field.set(this, (short) 0);
+								} else if (type == int.class || type == Integer.class) {
+									field.set(this, 0);
+								} else if (type == long.class || type == Long.class) {
+									field.set(this, 0L);
+								} else if (type == float.class || type == Float.class) {
+									field.set(this, 0.0f);
+								} else if (type == double.class || type == Double.class) {
+									field.set(this, 0.0d);
+								} else if (type == char.class || type == Character.class) {
+									field.set(this, (char) 0);
+								} else {
+									field.set(this, null);
+								}
+							}
+						}
+					} catch (Throwable e) {
+						log.warn("resetForTest清理字段异常 class={} field={}", clazz.getSimpleName(), field.getName(), e);
+					}
+				}
+			}
+			init();
+			initAfter();
+			afterResetForTest();
+			initFromDbAfter();
+			Object inspect = inspectState();
+			return inspect instanceof Map ? (Map<String, Object>) inspect : Collections.emptyMap();
+		}
+	}
+
+	/**
+	 * resetForTest 后置处理钩子，子类可覆写恢复默认容器或特殊索引
+	 */
+	protected void afterResetForTest() {
+	}
 }

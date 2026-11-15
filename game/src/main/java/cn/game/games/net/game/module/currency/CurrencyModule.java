@@ -224,4 +224,10 @@ public class CurrencyModule extends GoodsModule<Currency> {
 	public Currency removeFromCache(long id) {
 		throw new UnsupportedOperationException("不支持通过uid删除货币"); // 货币不支持通过uid删除
 	}
+	@Override
+	protected void afterResetForTest() {
+		if (currencyMap == null) {
+			currencyMap = new cn.game.util.MapWrapper();
+		}
+	}
 }

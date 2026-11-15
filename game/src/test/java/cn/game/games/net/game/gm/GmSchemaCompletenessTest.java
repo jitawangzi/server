@@ -109,7 +109,7 @@ public class GmSchemaCompletenessTest {
 					continue;
 				}
 				String actionName = action.name().isEmpty() ? method.getName() : action.name();
-				String fullId = group.name() + "." + actionName;
+				String fullId = (group.name() + "." + actionName).toLowerCase(java.util.Locale.ROOT);
 				Assertions.assertTrue(schemaIds.contains(fullId), "包扫描动作缺失于Schema: " + fullId);
 			}
 		}
@@ -123,6 +123,23 @@ public class GmSchemaCompletenessTest {
 		Assertions.assertTrue(schemaIds.contains("player.time.set"));
 		Assertions.assertTrue(schemaIds.contains("player.time.reset"));
 		Assertions.assertTrue(schemaIds.contains("player.time"));
+		Assertions.assertTrue(schemaIds.contains("repair.list"));
+		Assertions.assertTrue(schemaIds.contains("repair.execute"));
+		Assertions.assertTrue(schemaIds.contains("repair.auditlog"));
+		Assertions.assertTrue(schemaIds.contains("repair.rescan"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.trace.start"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.trace.stop"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.trace.status"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.snapshot.save"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.snapshot.restore"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.snapshot.list"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.snapshot.delete"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.flushandcoldreload"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.rng.seed"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.rng.sequence"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.rng.status"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.rng.reset"));
+		Assertions.assertTrue(schemaIds.contains("player.gm.resetmodule"));
 
 		GmSchemaCatalog filtered = dispatcher.getSchemaCatalog(RunMode.DEV, "config");
 		Assertions.assertFalse(filtered.getActions().isEmpty());
@@ -145,6 +162,11 @@ public class GmSchemaCompletenessTest {
 		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "config.get".equals(a.getId())));
 		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "proto.catalog".equals(a.getId())));
 		Assertions.assertTrue(prodCatalog.getActions().stream().noneMatch(a -> a.getId().startsWith("player.time.") || "player.time".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "repair.list".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "repair.execute".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "repair.auditlog".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "repair.rescan".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().noneMatch(a -> a.getId().startsWith("player.gm.trace.") || a.getId().startsWith("player.gm.snapshot.") || a.getId().startsWith("player.gm.rng.") || "player.gm.resetmodule".equals(a.getId()) || "player.gm.flushandcoldreload".equals(a.getId())));
 	}
 
 	private static boolean isExcludedFromProductionScan(Class<?> clazz) {

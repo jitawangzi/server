@@ -131,4 +131,10 @@ public class ItemModule extends AbstractItemModule<Item> {
 	public void checkConfig(int id) {
 		ItemManager.instance().get(id);
 	}
+	@Override
+	protected void afterResetForTest() {
+		if (id_items == null) {
+			id_items = new java.util.HashMap<>();
+		}
+	}
 }

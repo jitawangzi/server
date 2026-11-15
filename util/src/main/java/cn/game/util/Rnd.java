@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import cn.game.util.ai.annotation.AiExport;
@@ -25,10 +28,241 @@ import cn.game.util.ai.annotation.AiExport;
 public final class Rnd {
 //	private static final ThreadLocal<Random> threadLocalRandom = ThreadLocal.withInitial(Random::new);
 
-	private static Random getRandom() {
-		return ThreadLocalRandom.current();
+	public enum ControlledRandomMode {
+		NONE, SEED, SEQUENCE
 	}
-//	private static final Random random = new Random();
+
+	public static class ControlledRandom extends Random {
+		private static final long serialVersionUID = 1L;
+		private final ControlledRandomMode mode;
+		private final Long seed;
+		private final Random seedRandom;
+		private final ConcurrentLinkedQueue<Integer> intQueue;
+		private final ConcurrentLinkedQueue<Double> doubleQueue;
+		private final Random fallbackRandom;
+
+		public ControlledRandom(long seed) {
+			this.mode = ControlledRandomMode.SEED;
+			this.seed = seed;
+			this.seedRandom = new Random(seed);
+			this.intQueue = new ConcurrentLinkedQueue<>();
+			this.doubleQueue = new ConcurrentLinkedQueue<>();
+			this.fallbackRandom = this.seedRandom;
+		}
+
+		public ControlledRandom(List<Integer> intValues, List<Double> doubleValues, Long fallbackSeed) {
+			this.mode = ControlledRandomMode.SEQUENCE;
+			this.seed = null;
+			this.seedRandom = null;
+			this.intQueue = new ConcurrentLinkedQueue<>();
+			if (intValues != null) {
+				this.intQueue.addAll(intValues);
+			}
+			this.doubleQueue = new ConcurrentLinkedQueue<>();
+			if (doubleValues != null) {
+				this.doubleQueue.addAll(doubleValues);
+			}
+			this.fallbackRandom = fallbackSeed != null ? new Random(fallbackSeed) : null;
+		}
+
+		private Random getFallbackRandom() {
+			return fallbackRandom != null ? fallbackRandom : ThreadLocalRandom.current();
+		}
+
+		public ControlledRandomMode getMode() {
+			return mode;
+		}
+
+		public Long getSeed() {
+			return seed;
+		}
+
+		public boolean hasNextInt() {
+			return mode == ControlledRandomMode.SEQUENCE && !intQueue.isEmpty();
+		}
+
+		public Integer pollNextInt() {
+			return intQueue.poll();
+		}
+
+		public boolean hasNextDouble() {
+			return mode == ControlledRandomMode.SEQUENCE && !doubleQueue.isEmpty();
+		}
+
+		public int getRemainingInts() {
+			return mode == ControlledRandomMode.SEQUENCE ? intQueue.size() : 0;
+		}
+
+		public int getRemainingDoubles() {
+			return mode == ControlledRandomMode.SEQUENCE ? doubleQueue.size() : 0;
+		}
+
+		@Override
+		public synchronized void setSeed(long seed) {
+			if (seedRandom != null) {
+				seedRandom.setSeed(seed);
+			}
+		}
+
+		@Override
+		public int nextInt() {
+			if (mode == ControlledRandomMode.SEED) {
+				synchronized (seedRandom) {
+					return seedRandom.nextInt();
+				}
+			}
+			Integer val = intQueue.poll();
+			if (val != null) {
+				return val;
+			}
+			return getFallbackRandom().nextInt();
+		}
+
+		@Override
+		public int nextInt(int bound) {
+			if (bound <= 0) {
+				throw new IllegalArgumentException("bound must be positive");
+			}
+			if (mode == ControlledRandomMode.SEED) {
+				synchronized (seedRandom) {
+					return seedRandom.nextInt(bound);
+				}
+			}
+			Integer val = intQueue.poll();
+			if (val != null) {
+				return Math.floorMod(val, bound);
+			}
+			return getFallbackRandom().nextInt(bound);
+		}
+
+		@Override
+		public double nextDouble() {
+			if (mode == ControlledRandomMode.SEED) {
+				synchronized (seedRandom) {
+					return seedRandom.nextDouble();
+				}
+			}
+			Double d = doubleQueue.poll();
+			if (d != null) {
+				return d;
+			}
+			Integer val = intQueue.poll();
+			if (val != null) {
+				return (Math.floorMod(val, 10000)) / 10000.0;
+			}
+			return getFallbackRandom().nextDouble();
+		}
+
+		@Override
+		public float nextFloat() {
+			return (float) nextDouble();
+		}
+
+		@Override
+		public long nextLong() {
+			if (mode == ControlledRandomMode.SEED) {
+				synchronized (seedRandom) {
+					return seedRandom.nextLong();
+				}
+			}
+			Integer val = intQueue.poll();
+			if (val != null) {
+				return val.longValue();
+			}
+			return getFallbackRandom().nextLong();
+		}
+
+		@Override
+		public boolean nextBoolean() {
+			return nextDouble() >= 0.5;
+		}
+	}
+
+	private static volatile ControlledRandom customRandom = null;
+
+	/**
+	 * 获取当前线程使用的随机源实例，受控模式下返回ControlledRandom，默认返回ThreadLocalRandom
+	 *
+	 * @return 当前可用的Random实例
+	 */
+	public static Random getRandom() {
+		ControlledRandom r = customRandom;
+		return r != null ? r : ThreadLocalRandom.current();
+	}
+
+	/**
+	 * 判断当前是否启用了非生产可控随机源
+	 *
+	 * @return true表示启用了受控随机源，false表示使用默认系统随机源
+	 */
+	public static boolean isControlledRandomEnabled() {
+		return customRandom != null;
+	}
+
+	/**
+	 * 设置固定种子受控随机源（仅限非生产环境）
+	 *
+	 * @param seed 确定性随机数种子
+	 */
+	public static void setControlledRandomSeed(long seed) {
+		customRandom = new ControlledRandom(seed);
+	}
+
+	/**
+	 * 设置预设序列受控随机源（仅限非生产环境）
+	 *
+	 * @param intValues 预设整数队列，可为null
+	 * @param doubleValues 预设浮点队列，取值必须在[0.0, 1.0)之间，可为null
+	 * @param fallbackSeed 序列耗尽后的确定性回退种子，为null时回退至ThreadLocalRandom
+	 * @throws IllegalArgumentException 当intValues与doubleValues均为空，或doubleValues越界时抛出
+	 */
+	public static void setControlledRandomSequence(List<Integer> intValues, List<Double> doubleValues, Long fallbackSeed) {
+		boolean hasInts = intValues != null && !intValues.isEmpty();
+		boolean hasDoubles = doubleValues != null && !doubleValues.isEmpty();
+		if (!hasInts && !hasDoubles) {
+			throw new IllegalArgumentException("intValues and doubleValues cannot both be empty");
+		}
+		if (doubleValues != null) {
+			for (Double d : doubleValues) {
+				if (d == null || d < 0.0 || d >= 1.0) {
+					throw new IllegalArgumentException("double value must be in [0.0, 1.0): " + d);
+				}
+			}
+		}
+		customRandom = new ControlledRandom(intValues, doubleValues, fallbackSeed);
+	}
+
+	/**
+	 * 重置受控随机源，完全恢复为默认ThreadLocalRandom
+	 */
+	public static void resetControlledRandom() {
+		customRandom = null;
+	}
+
+	/**
+	 * 获取当前可控随机源的配置状态与序列剩余条目统计
+	 *
+	 * @return 包含mode、enabled、seed、remainingInts、remainingDoubles的只读Map
+	 */
+	public static Map<String, Object> getControlledRandomStatus() {
+		Map<String, Object> status = new LinkedHashMap<>();
+		ControlledRandom r = customRandom;
+		if (r == null) {
+			status.put("mode", "NONE");
+			status.put("enabled", false);
+			return status;
+		}
+		status.put("mode", r.getMode().name());
+		status.put("enabled", true);
+		if (r.getMode() == ControlledRandomMode.SEED) {
+			status.put("seed", r.getSeed());
+		} else if (r.getMode() == ControlledRandomMode.SEQUENCE) {
+			status.put("remainingInts", r.getRemainingInts());
+			status.put("remainingDoubles", r.getRemainingDoubles());
+		}
+		return status;
+	}
+//	private static final // redundant Random removed for convergence
 	private static final int RANDOM_CONST = 10000;
 	/** 按百分比随机 */
 	public static final int RANDOM_PERCENTAGE_CONST = 100;
@@ -54,6 +288,13 @@ public final class Rnd {
 	 * @return int 返回类型 @throws
 	 */
 	public static final int get(int min, int max) {
+		ControlledRandom cr = customRandom;
+		if (cr != null && cr.getMode() == ControlledRandomMode.SEQUENCE) {
+			Integer val = cr.pollNextInt();
+			if (val != null) {
+				return min + Math.floorMod(val, max - min + 1);
+			}
+		}
 		return min + (int) Math.floor(getRandom().nextDouble() * (max - min + 1));
 	}
 
@@ -69,7 +310,7 @@ public final class Rnd {
 			--max;
 		if (min % 2 == 0)
 			++min;
-		return min + 2 * (int) (Math.random() * ((max - min) / 2 + 1));
+		return min + 2 * (int) (getRandom().nextDouble() * ((max - min) / 2 + 1));
 	}
 
 	/**
@@ -79,6 +320,13 @@ public final class Rnd {
 	 * @return int 返回类型 @throws
 	 */
 	public static final int nextInt(int n) {
+		ControlledRandom cr = customRandom;
+		if (cr != null && cr.getMode() == ControlledRandomMode.SEQUENCE) {
+			Integer val = cr.pollNextInt();
+			if (val != null) {
+				return Math.floorMod(val, n);
+			}
+		}
 		return (int) Math.floor(getRandom().nextDouble() * n);
 	}
 	
@@ -89,6 +337,13 @@ public final class Rnd {
 	 * @return
 	 */
 	public static final int nextInt(int min, int max) {
+		ControlledRandom cr = customRandom;
+		if (cr != null && cr.getMode() == ControlledRandomMode.SEQUENCE) {
+			Integer val = cr.pollNextInt();
+			if (val != null) {
+				return min + Math.floorMod(val, max - min);
+			}
+		}
 		return (int) Math.floor(min + getRandom().nextDouble() * (max - min));
 	}
 
@@ -423,7 +678,7 @@ public final class Rnd {
 			throw new IllegalArgumentException("Count cannot be greater than the array length.");
 		}
 
-		Random random = new Random();
+		// redundant Random removed for convergence
 
 		// Fisher-Yates 洗牌算法
 		for (int i = array.length - 1; i > 0; i--) {
@@ -493,7 +748,7 @@ public final class Rnd {
 				max += weight[i];
 			}
 		}
-		int rand = new Random().nextInt(max);
+		int rand = nextInt(max);
 		int current = 0;
 		for (; start < end; start++) {
 			if (start > weight.length - 1) {
@@ -527,7 +782,7 @@ public final class Rnd {
 				max += weight.get(i);
 			}
 		}
-		int rand = new Random().nextInt(max);
+		int rand = nextInt(max);
 		int current = 0;
 		for (; start < end; start++) {
 			if (start > weight.size() - 1) {
@@ -557,7 +812,7 @@ public final class Rnd {
 		if (list.size() <= count) {
 			return list ; 
 		}
-		Collections.shuffle(list);
+		Collections.shuffle(list, getRandom());
 		return list.subList(0, count);
 
 	}
@@ -794,7 +1049,7 @@ public final class Rnd {
 		for (int i = start; i <= end; i++) {
 			allNumbers.add(i);
 		}
-		Collections.shuffle(allNumbers);
+		Collections.shuffle(allNumbers, getRandom());
 		return allNumbers.subList(0, n);
 	}
 	

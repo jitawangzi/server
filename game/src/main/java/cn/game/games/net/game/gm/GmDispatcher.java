@@ -62,6 +62,7 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 	private final Map<String, RegisteredAction> actionsById = new LinkedHashMap<>();
 	private final Map<String, RegisteredAction> lookupIndex = new ConcurrentHashMap<>();
 	private final Set<String> groups = new LinkedHashSet<>();
+	private final Set<String> conflictedShortNames = ConcurrentHashMap.newKeySet();
 
 	/**
 	 * 默认构造器，供Spring容器实例化并注册为全局调度器
@@ -152,6 +153,53 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		return registeredBeans.size() > 1;
 	}
 
+	/**
+	 * 热更重扫：重新扫描并更新动作注册表与Schema (DC-17, BR-16)
+	 */
+	public synchronized void rescan() {
+		List<Object> previousBeans = new ArrayList<>();
+		for (Object b : registeredBeans) {
+			if (!(b instanceof GmMetaActions)) {
+				previousBeans.add(b);
+			}
+		}
+		ApplicationContext ctx = this.applicationContext != null ? this.applicationContext : SpringContextLoader.getContext();
+		List<Object> contextBeans = new ArrayList<>();
+		if (ctx != null) {
+			Map<String, Object> beans = ctx.getBeansWithAnnotation(GmGroup.class);
+			contextBeans.addAll(beans.values());
+		}
+
+		Set<Object> newRegisteredBeans = Collections.newSetFromMap(new IdentityHashMap<>());
+		Set<String> newGroups = new LinkedHashSet<>();
+		Map<String, RegisteredAction> newActionsById = new LinkedHashMap<>();
+		Map<String, RegisteredAction> newLookupIndex = new ConcurrentHashMap<>();
+		Set<String> newConflictedShortNames = ConcurrentHashMap.newKeySet();
+
+		registerBeanTo(new GmMetaActions(), newRegisteredBeans, newGroups, newActionsById, newLookupIndex, newConflictedShortNames);
+
+		for (Object bean : previousBeans) {
+			registerBeanTo(bean, newRegisteredBeans, newGroups, newActionsById, newLookupIndex, newConflictedShortNames);
+		}
+		for (Object bean : contextBeans) {
+			registerBeanTo(bean, newRegisteredBeans, newGroups, newActionsById, newLookupIndex, newConflictedShortNames);
+		}
+
+		synchronized (this) {
+			registeredBeans.clear();
+			registeredBeans.addAll(newRegisteredBeans);
+			groups.clear();
+			groups.addAll(newGroups);
+			actionsById.clear();
+			actionsById.putAll(newActionsById);
+			lookupIndex.clear();
+			lookupIndex.putAll(newLookupIndex);
+			conflictedShortNames.clear();
+			conflictedShortNames.addAll(newConflictedShortNames);
+		}
+		log.info("GmDispatcher 热更重扫完成，已加载分组数: {}, 动作数: {}", groups.size(), actionsById.size());
+	}
+
 	private void scanContextBeans(ApplicationContext ctx) {
 		if (ctx == null) {
 			return;
@@ -168,6 +216,16 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 	 * @param bean 带@GmGroup注解的处理器实例
 	 */
 	public synchronized void registerBean(Object bean) {
+		registerBeanTo(bean, this.registeredBeans, this.groups, this.actionsById, this.lookupIndex, this.conflictedShortNames);
+	}
+
+	private void registerBeanTo(
+			Object bean,
+			Set<Object> targetRegisteredBeans,
+			Set<String> targetGroups,
+			Map<String, RegisteredAction> targetActionsById,
+			Map<String, RegisteredAction> targetLookupIndex,
+			Set<String> targetConflictedShortNames) {
 		if (bean == null) {
 			throw new IllegalArgumentException("GM bean cannot be null");
 		}
@@ -176,14 +234,14 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		if (groupAnno == null) {
 			throw new IllegalArgumentException("GM处理器缺少@GmGroup注解: " + clazz.getName());
 		}
-		if (registeredBeans.contains(bean)) {
+		if (targetRegisteredBeans.contains(bean)) {
 			return;
 		}
 		String groupName = normalizeKey(groupAnno.name());
 		if (groupName.isEmpty()) {
 			throw new IllegalArgumentException("@GmGroup.name不能为空: " + clazz.getName());
 		}
-		groups.add(groupName);
+		targetGroups.add(groupName);
 
 		for (Method method : clazz.getDeclaredMethods()) {
 			GmAction actionAnno = method.getAnnotation(GmAction.class);
@@ -226,23 +284,36 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 					Collections.unmodifiableList(paramSchemas));
 			RegisteredAction registered = new RegisteredAction(bean, method, actionAnno, schema, paramSpecs);
 
-			// 先做全量冲突预检，避免部分写入脏状态
-			ensureUniqueKey(fullId, registered);
-			if (!actionName.equals(fullId)) {
-				ensureUniqueKey(actionName, registered);
-			}
+			// 先做全量冲突预检，避免部分写入脏状态（fullId 与显式 aliases 必须严格全局唯一）
+			ensureUniqueKey(fullId, registered, targetLookupIndex);
 			for (String alias : aliases) {
-				ensureUniqueKey(alias, registered);
+				ensureUniqueKey(alias, registered, targetLookupIndex);
 			}
 
-			actionsById.put(fullId, registered);
-			lookupIndex.put(fullId, registered);
-			lookupIndex.put(actionName, registered);
+			targetActionsById.put(fullId, registered);
+			targetLookupIndex.put(fullId, registered);
 			for (String alias : aliases) {
-				lookupIndex.put(alias, registered);
+				targetLookupIndex.put(alias, registered);
+			}
+
+			// 纯动作短名如果发生跨分组同名（如config.list与repair.list），仅降级不作为全局快捷别名，避免歧义，不阻断合法分组动作注册
+			if (!actionName.equals(fullId)) {
+				if (!targetConflictedShortNames.contains(actionName)) {
+					RegisteredAction existing = targetLookupIndex.get(actionName);
+					if (existing == null) {
+						targetLookupIndex.put(actionName, registered);
+					} else if (existing != registered) {
+						targetConflictedShortNames.add(actionName);
+						if (!targetActionsById.containsKey(actionName)) {
+							targetLookupIndex.remove(actionName);
+						}
+						log.debug("GM动作短名冲突，加入黑名单并降级为必须全名调用: shortName={}, existing={}, incoming={}",
+								actionName, existing.schema.getId(), fullId);
+					}
+				}
 			}
 		}
-		registeredBeans.add(bean);
+		targetRegisteredBeans.add(bean);
 	}
 
 	/**
@@ -846,8 +917,8 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		return GmParamType.JSON;
 	}
 
-	private void ensureUniqueKey(String key, RegisteredAction incoming) {
-		RegisteredAction existing = lookupIndex.get(key);
+	private void ensureUniqueKey(String key, RegisteredAction incoming, Map<String, RegisteredAction> targetLookupIndex) {
+		RegisteredAction existing = targetLookupIndex.get(key);
 		if (existing != null && existing != incoming) {
 			throw new IllegalStateException("GM命令或别名重复冲突: key=" + key
 					+ ", existing=" + existing.schema.getId()

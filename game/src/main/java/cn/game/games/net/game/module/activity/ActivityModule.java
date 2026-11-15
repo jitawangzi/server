@@ -224,4 +224,10 @@ public class ActivityModule extends BasePlayerModule {
 		return INIT_PRIORITY_LOW;
 	}
 
+	@Override
+	protected void afterResetForTest() {
+		if (playerActivityManager == null) {
+			initAfter();
+		}
+	}
 }

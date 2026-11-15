@@ -1,5 +1,7 @@
 package cn.game.games.net.game.handler;
 
+import cn.game.games.net.game.gm.RequestTraceService;
+
 import cn.game.core.net.client.NetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.socket.handler.BaseHandler;
@@ -18,12 +20,35 @@ public abstract class GameBaseHandler extends BaseHandler {
     private final ThreadLocal<ArrayDeque<PlayerWriteGuard.Scope>> scopes = ThreadLocal.withInitial(ArrayDeque::new);
     @Override
     public void dispatch(NetClient client, IProtocol<?> protocol) {
+        long playerId = client != null ? client.getPlayerId() : 0L;
+        boolean record = RequestTraceService.getInstance().isRecording(playerId);
+        RequestTraceService.TraceBuilder trace = null;
+        if (record) {
+            int msgId = protocol != null ? protocol.getMsgID() : 0;
+            String msgName = protocol != null ? protocol.getClass().getSimpleName() : "UnknownProtocol";
+            int seq = protocol != null ? protocol.getSeq() : 0;
+            trace = RequestTraceService.getInstance().beginTrace(playerId, msgId, msgName, seq);
+        }
         ArrayDeque<PlayerWriteGuard.Scope> stack = scopes.get();
         int depth = stack.size();
+        int errCode = 0;
         try { super.dispatch(client, protocol); }
-        finally {
+        catch (Throwable t) {
+            if (trace != null) {
+                trace.recordException(t);
+            }
+            if (t instanceof cn.game.core.exception.LogicException le) {
+                errCode = le.getErrorCode();
+            } else {
+                errCode = cn.game.protocol.manual.ErrorMsgEnum.unknown.ID;
+            }
+            throw t;
+        } finally {
             while (stack.size() > depth) { stack.pop().close(); }
             if (stack.isEmpty()) { scopes.remove(); }
+            if (trace != null) {
+                RequestTraceService.getInstance().endTrace(trace, errCode);
+            }
         }
     }
     /** 测试可注入独立协调器，不替换进程共享实例。 */

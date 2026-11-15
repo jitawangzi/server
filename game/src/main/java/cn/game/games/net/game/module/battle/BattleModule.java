@@ -808,6 +808,10 @@ public class BattleModule extends BasePlayerModule  {
 		return handCardUseCount;
 	}
 
+	public IntMapWrapper getDailyCount() {
+		return dailyCount;
+	}
+
 	@Override
 	public int processOrder() {
 		return EVENT_PROCESS_ORDER_HIGH;
@@ -851,5 +855,23 @@ public class BattleModule extends BasePlayerModule  {
 		snapshotBoundedMap(battlesMap, k -> k, this::toInspectValue,
 				snapshot, "battlesMap", "battlesMapTruncated");
 		return snapshot;
+	}
+	@Override
+	protected void afterResetForTest() {
+		if (chapters == null) {
+			chapters = new java.util.HashMap<>();
+		}
+		if (dailyCount == null) {
+			dailyCount = new cn.game.util.IntMapWrapper();
+		}
+		if (consecutiveFailures == null) {
+			consecutiveFailures = new cn.game.util.IntMapWrapper();
+		}
+		if (handCardUseCount == null) {
+			handCardUseCount = new cn.game.util.IntMapWrapper();
+		}
+		if (storeStaminas == null) {
+			storeStaminas = new java.util.ArrayList<>();
+		}
 	}
 }

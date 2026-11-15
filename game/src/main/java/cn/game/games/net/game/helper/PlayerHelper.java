@@ -1,5 +1,7 @@
 package cn.game.games.net.game.helper;
 
+import cn.game.games.net.game.gm.RequestTraceService;
+
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import java.lang.reflect.Method;
@@ -385,6 +387,7 @@ public class PlayerHelper {
 			log.info("player[{}] addReward  id[{}]count[{}]opType[{}]", player.getPlayerId(), id, value, opType);
 			player.fireAndHandleEvent(EventTypeEnum.GetItem, id, value);
 			BIHelper.resourceUpdate(player, id, value, opType, true);
+			RequestTraceService.recordResourceEvent(player.getPlayerId(), id, value, true, opType != null ? opType.name() : "None");
 			if (notify && !rewards.isEmpty()) {
 				player.getGameClient().sendProtocol(PbBuilder.buildRewardPush(rewards));
 			}
@@ -514,6 +517,7 @@ public class PlayerHelper {
 //				player.getGameClient().sendProtocol(spendPush.build());
 			}
 			BIHelper.resourceUpdate(player, id, value, consumeType, false);
+			RequestTraceService.recordResourceEvent(player.getPlayerId(), id, value, false, consumeType != null ? consumeType.name() : "None");
 			return;
 		}
 		player.fail(ErrorMsgEnum.resource_not_enough);
