@@ -245,7 +245,7 @@ public class GmSecurityPolicyAnd0x77Test {
 			Assertions.assertFalse(prodCatalog.getActions().stream().anyMatch(a -> a.getSecurity() == GmSecurityTier.DEV_TEST_ONLY));
 			Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "secprobe.safeop".equals(a.getId())));
 
-			Assertions.assertDoesNotThrow(GmSecurityPolicy::isRequireAuth);
+			Assertions.assertDoesNotThrow(() -> GmSecurityPolicy.isRequireAuth());
 
 			// gm0x77 表征：PRODUCTION 下校验 isGm 及未登录空玩家拦截
 			CapturingGameClient unknownClient = new CapturingGameClient(0L);

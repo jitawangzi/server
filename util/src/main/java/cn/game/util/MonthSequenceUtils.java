@@ -24,7 +24,7 @@ public class MonthSequenceUtils {
      * 获取当前日期的“全局月序号”
      */
     public static int getCurrentMonthIndex() {
-        return getMonthIndex(LocalDate.now());
+        return getMonthIndex(DateUtil.nowDate());
     }
 
     /**
@@ -39,7 +39,7 @@ public class MonthSequenceUtils {
      * 判断当前日期与指定日期是否在同一月
      */
     public static boolean isSameMonthWithNow(LocalDate other) {
-        return isSameMonth(LocalDate.now(), other);
+        return isSameMonth(DateUtil.nowDate(), other);
     }
 
     /**
@@ -53,7 +53,7 @@ public class MonthSequenceUtils {
      * 判断当前日期与指定日期是否跨月
      */
     public static boolean isCrossMonthWithNow(LocalDate other) {
-        return isCrossMonth(LocalDate.now(), other);
+        return isCrossMonth(DateUtil.nowDate(), other);
     }
 
     /**
@@ -70,6 +70,6 @@ public class MonthSequenceUtils {
      * 计算指定日期距离当前日期相差多少个月
      */
     public static int diffMonthsWithNow(LocalDate other) {
-        return diffMonths(other, LocalDate.now());
+        return diffMonths(other, DateUtil.nowDate());
     }
 }

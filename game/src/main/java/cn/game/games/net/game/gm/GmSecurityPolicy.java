@@ -1,5 +1,7 @@
 package cn.game.games.net.game.gm;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +23,19 @@ public final class GmSecurityPolicy {
 	private static final Logger log = LoggerFactory.getLogger(GmSecurityPolicy.class);
 
 	public static final String PROP_HTTP_ENABLED = "gm.http.enabled";
+	public static final String PROP_HTTP_PORT = "gm.http.port";
+	public static final String PROP_HTTP_HOST = "gm.http.host";
 	public static final String PROP_REQUIRE_AUTH = "gm.http.requireAuth";
 	public static final String PROP_OPS_TOKEN = "gm.http.opsToken";
+	public static final String PROP_TOKEN = "gm.http.token";
 	public static final String ENV_HTTP_ENABLED = "GM_HTTP_ENABLED";
+	public static final String ENV_HTTP_PORT = "GM_HTTP_PORT";
+	public static final String ENV_HTTP_HOST = "GM_HTTP_HOST";
 	public static final String ENV_REQUIRE_AUTH = "GM_HTTP_REQUIRE_AUTH";
 	public static final String ENV_OPS_TOKEN = "GM_HTTP_OPS_TOKEN";
+	public static final String ENV_TOKEN = "GM_HTTP_TOKEN";
+	public static final int DEFAULT_HTTP_PORT = 18080;
+	public static final int RESERVED_IDENTITY_PORT = 17011;
 
 	private GmSecurityPolicy() {
 	}
@@ -128,7 +138,110 @@ public final class GmSecurityPolicy {
 	 */
 	public static String getOpsToken() {
 		String val = readConfigValue(PROP_OPS_TOKEN, ENV_OPS_TOKEN);
+		if (val == null || val.isBlank()) {
+			val = readConfigValue(PROP_TOKEN, ENV_TOKEN);
+		}
 		return val != null && !val.isBlank() ? val.trim() : null;
+	}
+
+	/**
+	 * 解析HTTP GM网关监听端口，若配置为17011或非法端口范围则抛出异常以硬阻断冲突 (EX-07)
+	 *
+	 * @return 监听端口号（允许0供测试动态分配）
+	 */
+	public static int resolveHttpPort() {
+		String val = readConfigValue(PROP_HTTP_PORT, ENV_HTTP_PORT);
+		int port = DEFAULT_HTTP_PORT;
+		if (val != null && !val.isBlank()) {
+			try {
+				port = Integer.parseInt(val.trim());
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("HTTP GM控制台端口配置非法: " + val, e);
+			}
+		}
+		if (port == RESERVED_IDENTITY_PORT) {
+			throw new IllegalArgumentException("HTTP GM控制台端口不能为 17011 (已被 RuntimeIdentity 预留)");
+		}
+		if (port < 0 || port > 65535) {
+			throw new IllegalArgumentException("HTTP GM控制台端口超出有效范围 [0, 65535]: " + port);
+		}
+		return port;
+	}
+
+	/**
+	 * 解析HTTP GM网关监听主机地址，生产模式下强制收敛绑定回环地址 127.0.0.1 (EX-08)
+	 *
+	 * @param runMode 当前运行模式
+	 * @return 监听主机IP
+	 */
+	public static String resolveHttpHost(RunMode runMode) {
+		RunMode effectiveMode = runMode != null ? runMode : currentRunMode();
+		String configured = readConfigValue(PROP_HTTP_HOST, ENV_HTTP_HOST);
+		if (effectiveMode.isProduction()) {
+			if (configured == null || configured.isBlank()
+					|| "0.0.0.0".equals(configured.trim())
+					|| (!"127.0.0.1".equals(configured.trim()) && !"localhost".equalsIgnoreCase(configured.trim()))) {
+				log.warn("生产模式下GM HTTP控制台强制收敛绑定回环地址 127.0.0.1 (原配置={})", configured);
+				return "127.0.0.1";
+			}
+			return configured.trim();
+		}
+		return (configured != null && !configured.isBlank()) ? configured.trim() : "0.0.0.0";
+	}
+
+	/**
+	 * 判断指定运行模式下HTTP GM接口是否强制要求鉴权
+	 *
+	 * @param runMode 当前运行模式
+	 * @return true表示需要Token鉴权
+	 */
+	public static boolean isRequireAuth(RunMode runMode) {
+		RunMode effectiveMode = runMode != null ? runMode : currentRunMode();
+		if (effectiveMode.isProduction()) {
+			return true;
+		}
+		String explicit = readConfigValue(PROP_REQUIRE_AUTH, ENV_REQUIRE_AUTH);
+		if (explicit != null && !explicit.isBlank()) {
+			return Boolean.parseBoolean(explicit.trim());
+		}
+		return false;
+	}
+
+	/**
+	 * 常量时间校验请求携带的Token是否与配置的服务端Token一致 (DR-06)
+	 *
+	 * @param providedToken 请求端传入的Token
+	 * @return true表示鉴权通过
+	 */
+	public static boolean validateToken(String providedToken) {
+		String serverToken = getOpsToken();
+		if (serverToken == null || serverToken.isBlank()) {
+			log.warn("服务端未配置GM HTTP鉴权Token (gm.http.opsToken), 拒绝访问");
+			return false;
+		}
+		if (providedToken == null || providedToken.isBlank()) {
+			return false;
+		}
+		byte[] a = serverToken.getBytes(StandardCharsets.UTF_8);
+		byte[] b = providedToken.trim().getBytes(StandardCharsets.UTF_8);
+		return MessageDigest.isEqual(a, b);
+	}
+
+	/**
+	 * 从HTTP请求头提取Token (支持 X-GM-Token 与 Authorization: Bearer <token>)
+	 *
+	 * @param authHeader Authorization请求头
+	 * @param gmTokenHeader X-GM-Token请求头
+	 * @return 提取到的Token或null
+	 */
+	public static String extractToken(String authHeader, String gmTokenHeader) {
+		if (gmTokenHeader != null && !gmTokenHeader.isBlank()) {
+			return gmTokenHeader.trim();
+		}
+		if (authHeader != null && authHeader.regionMatches(true, 0, "Bearer ", 0, 7)) {
+			return authHeader.substring(7).trim();
+		}
+		return null;
 	}
 
 	private static String readConfigValue(String propKey, String envKey) {

@@ -46,7 +46,7 @@ public class WeekSequenceUtils {
      * 获取当前日期的“全局周序号”
      */
     public static int getCurrentWeekIndex() {
-        return getWeekIndex(LocalDate.now());
+        return getWeekIndex(DateUtil.nowDate());
     }
 
     /**
@@ -60,7 +60,7 @@ public class WeekSequenceUtils {
      * 判断当前日期与指定日期是否在同一自然周
      */
     public static boolean isSameWeekWithNow(LocalDate other) {
-        return isSameWeek(LocalDate.now(), other);
+        return isSameWeek(DateUtil.nowDate(), other);
     }
 
     /**
@@ -74,7 +74,7 @@ public class WeekSequenceUtils {
      * 判断当前日期与指定日期是否跨周
      */
     public static boolean isCrossWeekWithNow(LocalDate other) {
-        return isCrossWeek(LocalDate.now(), other);
+        return isCrossWeek(DateUtil.nowDate(), other);
     }
 
     /**
@@ -93,6 +93,6 @@ public class WeekSequenceUtils {
      * 计算指定日期距离当前日期相差多少周（基于周编号）
      */
     public static int diffWeeksWithNow(LocalDate other) {
-        return diffWeeks(other, LocalDate.now());
+        return diffWeeks(other, DateUtil.nowDate());
     }
 }

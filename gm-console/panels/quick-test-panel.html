@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Quick Test Panel</title>
+  <style>
+    .quick-panel {
+      padding: 16px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #f8fafc;
+      font-family: sans-serif;
+    }
+    .quick-panel h3 { margin-bottom: 12px; color: #38bdf8; }
+    .quick-panel button {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+    .quick-panel button:hover { background: #0369a1; }
+    .quick-panel pre {
+      background: #0f172a;
+      padding: 8px;
+      margin-top: 12px;
+      border-radius: 4px;
+      color: #38bdf8;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="quick-panel">
+    <h3>🛠️ 快速测试示例面板 (Quick Test Panel)</h3>
+    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:12px;">演示使用 window.GmConsole SDK 实时调用 GM 指令并展示结果。</p>
+    <div>
+      <button onclick="checkClock()">查询时钟状态 (time.status)</button>
+      <button onclick="advanceOneHour()">快进1小时 (+1h)</button>
+    </div>
+    <pre id="quickPanelOutput">等待操作...</pre>
+  </div>
+
+  <script>
+    async function checkClock() {
+      const output = document.getElementById("quickPanelOutput");
+      if (window.GmConsole) {
+        const res = await window.GmConsole.executeAction("time.status");
+        output.textContent = JSON.stringify(res, null, 2);
+      } else {
+        output.textContent = "GmConsole SDK 未就绪";
+      }
+    }
+    async function advanceOneHour() {
+      const output = document.getElementById("quickPanelOutput");
+      if (window.GmConsole) {
+        const res = await window.GmConsole.executeAction("time.offset", { offset: "+1h" });
+        output.textContent = JSON.stringify(res, null, 2);
+      } else {
+        output.textContent = "GmConsole SDK 未就绪";
+      }
+    }
+  </script>
+</body>
+</html>

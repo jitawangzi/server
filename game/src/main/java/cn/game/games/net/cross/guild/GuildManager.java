@@ -53,7 +53,7 @@ public class GuildManager {
 	}
 
 	public void init() {
-		lastCrossDayTimer = System.currentTimeMillis();
+		lastCrossDayTimer = DateUtil.currentTimeMillis();
 		// 加载公会数据
 //        loadAllData();
 		// 启动定时器 定期存储 公会数据
@@ -65,7 +65,7 @@ public class GuildManager {
 
 	private Runnable timeCrossCheck() {
 		return () -> {
-			long now = System.currentTimeMillis();
+			long now = DateUtil.currentTimeMillis();
 			if (!DateUtil.isSameDay(now, lastCrossDayTimer)) {
 				lastCrossDayTimer = now;
 				// 跨天触发 公会事件
@@ -80,7 +80,8 @@ public class GuildManager {
 	}
 
 	public Future<Void> saveAllGuildData(boolean isForce) {
-		long now = System.currentTimeMillis();
+		long startPhysicalMs = System.currentTimeMillis();
+		long now = DateUtil.currentTimeMillis();
 		List<Future<Void>> saveFutures = new ArrayList<>();
 		int saveNum = 0;
 		for (Guild info : guildMap.values()) {
@@ -113,7 +114,7 @@ public class GuildManager {
 				});
 			}
 		}
-		log.info(String.format("saveAllGuildData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - now, saveNum,
+		log.info(String.format("saveAllGuildData use:%d, saveNum:%d, totalNum:%d", System.currentTimeMillis() - startPhysicalMs, saveNum,
 				guildMap.size()));
 
 		if (saveFutures.isEmpty()) {

@@ -118,6 +118,11 @@ public class GmSchemaCompletenessTest {
 		Assertions.assertTrue(schemaIds.contains("gm.inspect"));
 		Assertions.assertTrue(schemaIds.contains("config.tables"));
 		Assertions.assertTrue(schemaIds.contains("proto.catalog"));
+		Assertions.assertTrue(schemaIds.contains("player.time.status"));
+		Assertions.assertTrue(schemaIds.contains("player.time.offset"));
+		Assertions.assertTrue(schemaIds.contains("player.time.set"));
+		Assertions.assertTrue(schemaIds.contains("player.time.reset"));
+		Assertions.assertTrue(schemaIds.contains("player.time"));
 
 		GmSchemaCatalog filtered = dispatcher.getSchemaCatalog(RunMode.DEV, "config");
 		Assertions.assertFalse(filtered.getActions().isEmpty());
@@ -139,6 +144,7 @@ public class GmSchemaCompletenessTest {
 		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "gm.inspect".equals(a.getId())));
 		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "config.get".equals(a.getId())));
 		Assertions.assertTrue(prodCatalog.getActions().stream().anyMatch(a -> "proto.catalog".equals(a.getId())));
+		Assertions.assertTrue(prodCatalog.getActions().stream().noneMatch(a -> a.getId().startsWith("player.time.") || "player.time".equals(a.getId())));
 	}
 
 	private static boolean isExcludedFromProductionScan(Class<?> clazz) {

@@ -21,6 +21,9 @@ import cn.game.games.net.game.gm.GmDispatcher;
 import cn.game.games.net.game.gm.GmGroup;
 import cn.game.games.net.game.gm.GmParam;
 import cn.game.games.net.game.gm.GmScope;
+import cn.game.games.net.game.gm.VirtualClockService;
+import java.util.Map;
+
 import cn.game.games.net.game.gm.GmSecurityPolicy;
 import cn.game.games.net.game.gm.GmSecurityTier;
 import cn.game.games.net.game.helper.PlayerHelper;
@@ -186,49 +189,44 @@ public class PlayerGm extends AbstractGm {
 		return rawVal.isEmpty() ? new String[] { rawOp } : new String[] { rawOp, rawVal };
 	}
 
-	@GmAction(name = "time", description = "调整测试服系统时间并触发跨天/周/月事件", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, sideEffects = "修改系统时间并触发跨天/周/月事件", example = "time set \"2026-05-01 04:59:55\"")
-	public void time(
+		@GmAction(name = "time.status", aliases = {"timestatus"}, description = "获取当前物理时间、JVM虚拟时间、偏移量与周期序号状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, example = "time.status")
+	public Map<String, Object> timeStatus() {
+		return VirtualClockService.getInstance().getStatus().toMap();
+	}
+
+	@GmAction(name = "time.offset", aliases = {"timeoffset"}, description = "按相对偏移表达式调整虚拟时间并触发跨周期一站式结算", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, sideEffects = "调整JVM虚拟时间并按需触发跨天/周/月结算与踢线", example = "time.offset offset=\"+1d\"")
+	public Object timeOffset(
+			@GmParam(description = "时间偏移量表达式(+1d, -2h, 30m, 3600s)") String offset,
+			@GmParam(required = false, defaultValue = "false", description = "是否允许向后倒退") boolean allowBackward,
+			@GmParam(required = false, defaultValue = "false", description = "是否踢出所有在线客户端") boolean kickClients) {
+		return VirtualClockService.getInstance().applyOffset(offset, allowBackward, kickClients);
+	}
+
+	@GmAction(name = "time.set", aliases = {"timeset"}, description = "设置绝对目标虚拟时间并触发跨周期一站式结算", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, sideEffects = "调整JVM虚拟时间并按需触发跨天/周/月结算与踢线", example = "time.set targetTime=\"2026-05-01 05:00:00\"")
+	public Object timeSet(
+			@GmParam(description = "目标时间(yyyy-MM-dd HH:mm:ss)") String targetTime,
+			@GmParam(required = false, defaultValue = "false", description = "是否允许向后倒退") boolean allowBackward,
+			@GmParam(required = false, defaultValue = "false", description = "是否踢出所有在线客户端") boolean kickClients) {
+		return VirtualClockService.getInstance().setTargetTime(targetTime, allowBackward, kickClients);
+	}
+
+	@GmAction(name = "time.reset", aliases = {"timereset"}, description = "重置虚拟时间偏移为0恢复物理系统时间", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, sideEffects = "重置JVM虚拟时钟偏移为0", example = "time.reset allowBackward=true")
+	public Object timeReset(
+			@GmParam(required = false, defaultValue = "false", description = "是否允许向后倒退") boolean allowBackward,
+			@GmParam(required = false, defaultValue = "false", description = "是否踢出所有在线客户端") boolean kickClients) {
+		return VirtualClockService.getInstance().resetOffset(allowBackward, kickClients);
+	}
+
+	@GmAction(name = "time", description = "调整测试服虚拟时间并触发跨天/周/月事件(兼容旧命令格式)", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, sideEffects = "修改虚拟时间并触发跨天/周/月事件", example = "time set \"2026-05-01 04:59:55\"")
+	public Object time(
 			@GmParam(description = "子命令(set/add/sub/restore/status)或偏移量") String opOrOffset,
-			@GmParam(required = false, description = "时间值或偏移参数") String value) {
-		if (GmSecurityPolicy.currentRunMode().isProduction()) {
-			throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID);
-		}
+			@GmParam(required = false, defaultValue = "", description = "时间值或偏移参数") String value,
+			@GmParam(required = false, defaultValue = "false", description = "是否允许向后倒退") boolean allowBackward,
+			@GmParam(required = false, defaultValue = "false", description = "是否踢出所有在线客户端") boolean kickClients) {
+		return VirtualClockService.getInstance().executeLegacyCommand(opOrOffset, value, allowBackward, kickClients);
+	}
 
-		String[] timeArgs = resolveTimeArgs(opOrOffset, value);
-		LocalDateTime now = LocalDateTime.now();
-		PreviewResult previewPlannedTime = LinuxTimeShift.previewPlannedTime(timeArgs);
-		if (previewPlannedTime != null && previewPlannedTime.crossedDay) {
-			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-				p.getData().setOfflineTime(DateUtil.currentTimeMillis());
-			});
-		}
-		LinuxTimeShift.main(timeArgs);
-
-		LocalDateTime nowDateTime = LocalDateTime.now();
-		if (previewPlannedTime != null && previewPlannedTime.crossedDay) {
-			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-				PlayerHelper.refresh(p);
-			});
-		}
-		PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-			p.fireAndHandleEvent(EventTypeEnum.SystemTimeChange);
-		});
-		ServerContext.getInstance().fireEvent(ServerEventTypeEnum.SystemTimeChange);
-		if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.WEEKS) > 0) {
-			ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewWeek);
-			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-				p.fireAndHandleEvent(EventTypeEnum.NewWeek);
-			});
-		} else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.MONTHS) > 0) {
-			ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewMonth);
-			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-				p.fireAndHandleEvent(EventTypeEnum.NewMonth);
-			});
-		} else if (nowDateTime.isAfter(now) && DateUtil.diff(nowDateTime, now, ChronoUnit.DAYS) > 0) {
-			ServerContext.getInstance().fireEvent(ServerEventTypeEnum.NewDay);
-			PlayerManager.getInstance().getAllPlayer().values().forEach(p -> {
-				p.fireAndHandleEvent(EventTypeEnum.NewDay);
-			});
-		}
+	public Object time(String opOrOffset, String value) {
+		return time(opOrOffset, value, false, false);
 	}
 }

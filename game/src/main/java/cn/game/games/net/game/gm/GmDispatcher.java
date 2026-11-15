@@ -387,6 +387,51 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 	 * @param dryRun 是否演练
 	 * @return 结构化执行结果
 	 */
+	/**
+	 * 分发HTTP网关文本GM命令（source标记为http，支持可选traceId与dryRun）
+	 *
+	 * @param playerId 目标玩家ID（无玩家时为0）
+	 * @param rawCommand 原始命令字符串
+	 * @param traceId 调用链跟踪ID（可为空）
+	 * @param dryRun 是否试运行
+	 * @return 结构化执行结果
+	 */
+	public GmResult dispatchHttpText(long playerId, String rawCommand, String traceId, boolean dryRun) {
+		long startNanos = System.nanoTime();
+		String effectiveTraceId = traceId != null && !traceId.isBlank() ? traceId : UUID.randomUUID().toString();
+		List<String> tokens;
+		try {
+			tokens = GmCommandTokenizer.tokenize(rawCommand);
+		} catch (IllegalArgumentException e) {
+			log.warn("HTTP GM命令行分词失败 rawCommand={}, traceId={}", rawCommand, effectiveTraceId, e);
+			return finalizeResult(GmResult.fail(ErrorMsgEnum.gm_cmd_param, e.getMessage()), effectiveTraceId, startNanos, dryRun);
+		}
+		if (tokens.isEmpty()) {
+			return finalizeResult(GmResult.fail(ErrorMsgEnum.gm_cmd_not_exist, "GM命令不能为空"), effectiveTraceId, startNanos, dryRun);
+		}
+
+		String first = normalizeKey(tokens.get(0));
+		int argOffset = 1;
+		RegisteredAction action = null;
+		if (tokens.size() >= 2) {
+			String composite = first + "." + normalizeKey(tokens.get(1));
+			action = lookupIndex.get(composite);
+			if (action != null) {
+				argOffset = 2;
+			}
+		}
+		if (action == null) {
+			action = lookupIndex.get(first);
+		}
+		if (action == null) {
+			return finalizeResult(GmResult.fail(ErrorMsgEnum.gm_cmd_not_exist, "未知GM命令: " + tokens.get(0)), effectiveTraceId, startNanos, dryRun);
+		}
+
+		List<String> argTokens = tokens.subList(argOffset, tokens.size());
+		Player player = playerId > 0 ? PlayerManager.getInstance().getPlayer(playerId) : null;
+		return executeResolvedAction(action, player, playerId, argTokens, null, effectiveTraceId, dryRun, "http", startNanos);
+	}
+
 	public GmResult dispatchAction(String commandOrId, long playerId, Map<String, Object> params, String traceId, boolean dryRun) {
 		long startNanos = System.nanoTime();
 		String effectiveTraceId = traceId != null && !traceId.isBlank() ? traceId : UUID.randomUUID().toString();

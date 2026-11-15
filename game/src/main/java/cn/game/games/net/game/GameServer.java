@@ -166,6 +166,7 @@ public class GameServer implements GameServerMBean {
 
 		ActiveServerListManager.getInstance().start(ServerType.values());
 		ServerContext.getInstance().init();
+		cn.game.games.net.game.gm.VirtualClockService.getInstance().initOnStartup();
 
 //		util.SpringContextLoader.main(args);
 		// init with apollo config
@@ -227,6 +228,7 @@ public class GameServer implements GameServerMBean {
 		cn.game.games.net.game.helper.PlayerHelper.startSaveRiskMonitor();
 		initWebsocketVerticle();
 		cn.game.games.core.runtime.RuntimeIdentity.ready();
+		cn.game.games.net.game.gm.web.GmWebConsoleServer.getInstance().startIfEnabled();
 //		log.info("max player id :" + dbMaxPlayerId);
 //		log.info("逻辑服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		LoggerType.Stdout.logger.info(String.format("逻辑服[%s]启动成功,耗时[%s]s", ServerContext.getInstance().getServerId(),
@@ -434,6 +436,7 @@ public class GameServer implements GameServerMBean {
 
 	public void shutdown() {
 		cn.game.games.core.runtime.RuntimeIdentity.stop();
+		cn.game.games.net.game.gm.web.GmWebConsoleServer.getInstance().stop();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 //		log.info("Game Server starts to shutdown ...");

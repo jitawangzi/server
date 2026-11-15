@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import cn.game.util.ai.annotation.AiExport;
 
@@ -23,6 +24,73 @@ import cn.game.util.ai.annotation.AiExport;
 public final class DateUtil {
 	/** 固定的起始日期,判断天数、周数等，避免跨年、月等问题 */
 	private static final LocalDate DATE_START = LocalDate.of(2025, 1, 1);
+
+	/** 跨平台 JVM 虚拟时钟毫秒偏移量 */
+	private static final AtomicLong offsetMillis = new AtomicLong(0L);
+
+	/**
+	 * 获取当前虚拟时钟相对于系统物理时钟的毫秒偏移量
+	 *
+	 * @return 毫秒偏移量
+	 */
+	public static long getTimeOffsetMillis() {
+		return offsetMillis.get();
+	}
+
+	/**
+	 * 设置虚拟时钟毫秒偏移量
+	 *
+	 * @param offset 毫秒偏移量
+	 */
+	public static void setTimeOffsetMillis(long offset) {
+		offsetMillis.set(offset);
+	}
+
+	/**
+	 * 累加虚拟时钟毫秒偏移量
+	 *
+	 * @param delta 累加的毫秒数
+	 * @return 累加后的总偏移量
+	 */
+	public static long addTimeOffsetMillis(long delta) {
+		return offsetMillis.addAndGet(delta);
+	}
+
+	/**
+	 * 重置虚拟时钟偏移量为 0（恢复真实系统时间）
+	 */
+	public static void resetTimeOffset() {
+		offsetMillis.set(0L);
+	}
+
+	/**
+	 * 获取当前虚拟时间对应的 LocalDateTime
+	 */
+	public static LocalDateTime nowDateTime() {
+		return Instant.ofEpochMilli(currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
+
+	/**
+	 * 获取当前虚拟时间对应的 LocalDate
+	 */
+	public static LocalDate nowDate() {
+		return Instant.ofEpochMilli(currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
+	/**
+	 * 获取当前虚拟时间对应的 LocalTime
+	 */
+	public static LocalTime nowTime() {
+		return Instant.ofEpochMilli(currentTimeMillis()).atZone(ZoneId.systemDefault()).toLocalTime();
+	}
+
+	/**
+	 * 获取当前虚拟时间对应的 Date 对象
+	 */
+	public static Date nowDateObj() {
+		return new Date(currentTimeMillis());
+	}
+
 
 	/** yyyy年MM月dd日 HH时mm分ss秒 */
 	public static final String pattern_zh = "yyyy年MM月dd日 HH时mm分ss秒";
@@ -121,7 +189,7 @@ public final class DateUtil {
 	 * 获取当前时间字符串
 	 */
 	public static String getStringDate() {
-		return LocalDateTime.now().format(formatter);
+		return nowDateTime().format(formatter);
 	}
 
 
@@ -140,7 +208,7 @@ public final class DateUtil {
 	 * @return 毫秒时间戳
 	 */
 	public static long nextDayStartTime(int days) {
-		return nextDayStartTime(System.currentTimeMillis(), days);
+		return nextDayStartTime(currentTimeMillis(), days);
 	}
 
 	/** 
@@ -150,7 +218,7 @@ public final class DateUtil {
 	 * @return 秒时间戳
 	 */
 	public static int nextDayStartTimeSecond(int days) {
-		return (int) (nextDayStartTime(System.currentTimeMillis(), days) / 1000);
+		return (int) (nextDayStartTime(currentTimeMillis(), days) / 1000);
 	}
 
 	/** 
@@ -186,7 +254,7 @@ public final class DateUtil {
 	 * @return 毫秒时间戳
 	 */
 	public static long getDayTimeBySet(int hourOffset, int minuteOffset, int secondOffset) {
-		LocalDate today = LocalDate.now();
+		LocalDate today = nowDate();
 		LocalDateTime dateTime = today.atTime(hourOffset, minuteOffset, secondOffset);
 		return toEpochMilli(dateTime);
 	}
@@ -220,7 +288,7 @@ public final class DateUtil {
 	 * 以凌晨5点为一天的开始
 	 */
 	public static int getDayCustom() {
-		return getDayCustom(LocalDateTime.now());
+		return getDayCustom(nowDateTime());
 	}
 
 	/** 
@@ -228,7 +296,7 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int getDay() {
-		return (int) ChronoUnit.DAYS.between(DATE_START, LocalDate.now());
+		return (int) ChronoUnit.DAYS.between(DATE_START, nowDate());
 	}
 
 	/**
@@ -272,7 +340,7 @@ public final class DateUtil {
 	}
 
 	public static long addWeekBeginTimer(int offsetWeek){
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = nowDateTime();
 		LocalDateTime targetWeekStart = now.plusWeeks(offsetWeek)
 				.with(DayOfWeek.MONDAY)
 				.truncatedTo(ChronoUnit.DAYS);
@@ -288,8 +356,7 @@ public final class DateUtil {
 	 * @return 当前日期的字符串格式
 	 */
     public static String nowDateStr() {
-		LocalDate now = LocalDate.now();
-		return now.format(formatterEnYMD);
+		return nowDate().format(formatterEnYMD);
     }
 
 	/**
@@ -302,7 +369,7 @@ public final class DateUtil {
 		if (start == null) {
 			return true;
 		}
-		Date now = new Date();
+		Date now = nowDateObj();
 		if (now.after(start)) {
 			if (end == null) {
 				return true;
@@ -319,7 +386,7 @@ public final class DateUtil {
 	 * @return 当前时间的字符串格式
 	 */
 	public static String nowTimeStr() {
-		return LocalTime.now().format(formatterTime);
+		return nowTime().format(formatterTime);
 	}
 
 	/** 
@@ -328,7 +395,7 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int diffDays(long timeMillis) {
-		return diffDays(toLocalDate(timeMillis), LocalDate.now());
+		return diffDays(toLocalDate(timeMillis), nowDate());
 	}
 
 	/**
@@ -374,7 +441,7 @@ public final class DateUtil {
 	 * @return
 	 */
 	public static int diff(long timeMillis, ChronoUnit unit) {
-		return diff(toLocalDateTime(timeMillis), LocalDateTime.now(), unit);
+		return diff(toLocalDateTime(timeMillis), nowDateTime(), unit);
 	}
 
 	/**
@@ -404,7 +471,7 @@ public final class DateUtil {
 			throw new IllegalArgumentException("Hour must be between 0 and 23");
 		}
 		// 使用现代的日期时间API
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = nowDateTime();
 		LocalDateTime targetDateTime = now.toLocalDate().atTime(hour, 0, 0); // 设置为指定小时的整点
 
 		return toEpochMilli(targetDateTime);
@@ -431,18 +498,16 @@ public final class DateUtil {
 	public static int diffDays(String dateTimeStr) {
 		LocalDateTime specificDateTime = LocalDateTime.parse(dateTimeStr, formatter);
 		LocalDate specificDate = specificDateTime.toLocalDate();
-		LocalDate currentDate = LocalDate.now();
+		LocalDate currentDate = nowDate();
 		return diffDays(specificDate, currentDate);
 	}
 	
 	public static int currentTimeSeconds() {
-		
-		return (int) (System.currentTimeMillis() / 1000); 
+		return (int) (currentTimeMillis() / 1000);
 	}
 
 	public static long currentTimeMillis() {
-
-		return System.currentTimeMillis();
+		return System.currentTimeMillis() + offsetMillis.get();
 	}
 
 	/**

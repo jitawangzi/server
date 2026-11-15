@@ -824,6 +824,9 @@ public class PlayerHelper {
 		if (nowDay == player.getData().getRefreshDay()) {
 			return;
 		}
+		if (player.getData().getRefreshDay() > nowDay) {
+			log.warn("检测到玩家跨天刷新日超前于当前虚拟时钟 playerId={}, playerRefreshDay={}, currentDay={}", player.getData().getPlayerId(), player.getData().getRefreshDay(), nowDay);
+		}
 		long playerId = player.getData().getPlayerId();
 		log.info("new day refresh player:" + playerId);
 		// 各个模块各自刷新
