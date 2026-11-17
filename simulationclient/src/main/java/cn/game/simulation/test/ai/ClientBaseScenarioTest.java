@@ -29,6 +29,11 @@ public abstract class ClientBaseScenarioTest {
     */
     protected Client client;
 
+    /**
+     * 黑白盒一体化测试 SDK 实例
+     */
+    protected WhiteBoxTestKit whiteBox;
+
     /** 
      * 发送请求并阻塞等待结果
      * @param <T>
@@ -92,6 +97,82 @@ public abstract class ClientBaseScenarioTest {
     protected GmClientResult gm(String action, Map<String, Object> args) {
         return client.gm(action, args);
     }
+
+    /**
+     * 获取黑白盒一体化测试 SDK 实例
+     *
+     * @return WhiteBoxTestKit 实例
+     */
+    public WhiteBoxTestKit getWhiteBox() {
+        return whiteBox;
+    }
+
+    /**
+     * 重置指定模块或全部模块
+     *
+     * @param modules 待重置模块名称列表；若未提供则默认重置全部模块
+     */
+    protected void resetModules(String... modules) {
+        if (whiteBox == null) {
+            throw new IllegalStateException("WhiteBoxTestKit 未初始化");
+        }
+        whiteBox.resetModules(modules);
+    }
+
+    /**
+     * 黑盒发送协议请求并全程录制白盒 Trace
+     *
+     * @param <T> 预期响应类型
+     * @param request 协议请求实例
+     * @return 包含响应与 Trace 数据的 TracedResponse
+     */
+    protected <T> WhiteBoxTestKit.TracedResponse<T> sendAndTrace(Message request) {
+        if (whiteBox == null) {
+            throw new IllegalStateException("WhiteBoxTestKit 未初始化");
+        }
+        return whiteBox.sendAndTrace(request);
+    }
+
+    /**
+     * 根据点分路径深度提取模块字段
+     *
+     * @param moduleName 模块名称
+     * @param dotPath 点分属性路径
+     * @return 字段值
+     */
+    protected Object inspectModuleField(String moduleName, String dotPath) {
+        if (whiteBox == null) {
+            throw new IllegalStateException("WhiteBoxTestKit 未初始化");
+        }
+        return whiteBox.inspectModuleField(moduleName, dotPath);
+    }
+
+    /**
+     * 断言模块点分路径字段等于期望值
+     *
+     * @param moduleName 模块名称
+     * @param dotPath 点分属性路径
+     * @param expectedValue 期望值
+     */
+    protected void assertModuleFieldEquals(String moduleName, String dotPath, Object expectedValue) {
+        if (whiteBox == null) {
+            throw new IllegalStateException("WhiteBoxTestKit 未初始化");
+        }
+        whiteBox.assertModuleFieldEquals(moduleName, dotPath, expectedValue);
+    }
+
+    /**
+     * 强制玩家数据立即落库并执行冷重载
+     *
+     * @return 冷重载响应数据
+     */
+    protected Map<String, Object> flushAndColdReload() {
+        if (whiteBox == null) {
+            throw new IllegalStateException("WhiteBoxTestKit 未初始化");
+        }
+        return whiteBox.flushAndColdReload();
+    }
+
     /** 
      * 从服务器同步最新的数据
      * {@link Client#getPlayerAllInfo()} 会被更新为最新数据
@@ -202,25 +283,36 @@ public abstract class ClientBaseScenarioTest {
         if (!client.getInit()) { throw new IllegalStateException("SCENARIO_LOGIN_NOT_READY"); }
         System.out.println("登录成功，开始执行测试流程...");
 
-        // 2. 执行具体的测试逻辑 (由子类/AI实现)
-        ScenarioRuntimeEvidence runtime = ScenarioRuntimeEvidence.configured();
-        if (runtime != null) { runtime.before(client); }
-        Throwable scenarioFailure = null;
-        try { executeProcess(); }
-        catch (Throwable e) {
-            org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景执行失败，保留后续运行观察", e);
-            scenarioFailure = e;
-            throw e;
+        this.whiteBox = new WhiteBoxTestKit(client, this::synchronizeDataFromServer);
+
+        try {
+            // 2. 执行具体的测试逻辑 (由子类/AI实现)
+            ScenarioRuntimeEvidence runtime = ScenarioRuntimeEvidence.configured();
+            if (runtime != null) { runtime.before(client); }
+            Throwable scenarioFailure = null;
+            try { executeProcess(); }
+            catch (Throwable e) {
+                org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景执行失败，保留后续运行观察", e);
+                scenarioFailure = e;
+                throw e;
+            } finally {
+                if (runtime != null) {
+                    try { runtime.after(client, scenarioFailure == null); }
+                    catch (Throwable e) {
+                        org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景后运行观察失败", e);
+                        if (scenarioFailure != null) { scenarioFailure.addSuppressed(e); }
+                        else { throw e; }
+                    }
+                }
+            }
         } finally {
-            if (runtime != null) {
-                try { runtime.after(client, scenarioFailure == null); }
-                catch (Throwable e) {
-                    org.slf4j.LoggerFactory.getLogger(getClass()).warn("场景后运行观察失败", e);
-                    if (scenarioFailure != null) { scenarioFailure.addSuppressed(e); }
-                    else { throw e; }
+            if (whiteBox != null) {
+                try {
+                    whiteBox.cleanupAll();
+                } catch (Throwable e) {
+                    org.slf4j.LoggerFactory.getLogger(getClass()).warn("whiteBox cleanupAll failed", e);
                 }
             }
         }
-    
     }
 }

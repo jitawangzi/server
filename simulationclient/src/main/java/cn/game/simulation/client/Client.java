@@ -53,6 +53,17 @@ import cn.game.protocol.protobuf.Account.LogicServerInfo;
 import cn.game.protocol.protobuf.Account.MyServerInfo;
 import cn.game.protocol.protobuf.Account.ServerInfo;
 import cn.game.protocol.protobuf.BaseMsg;
+import java.util.Arrays;
+import java.util.Collections;
+import cn.game.protocol.protobuf.TestMsg.TestConfigQueryRequest_6f000104;
+import cn.game.protocol.protobuf.TestMsg.TestConfigQueryResponse_6f000105;
+import cn.game.protocol.protobuf.TestMsg.TestGmCmdRequest_6f000001;
+import cn.game.protocol.protobuf.TestMsg.TestGmSchemaRequest_6f000100;
+import cn.game.protocol.protobuf.TestMsg.TestGmSchemaResponse_6f000101;
+import cn.game.protocol.protobuf.TestMsg.TestInspectPlayerRequest_6f000108;
+import cn.game.protocol.protobuf.TestMsg.TestInspectPlayerResponse_6f000109;
+import cn.game.protocol.protobuf.TestMsg.TestProtoCatalogRequest_6f000106;
+import cn.game.protocol.protobuf.TestMsg.TestProtoCatalogResponse_6f000107;
 import cn.game.protocol.protobuf.TestMsg.TestGmExecRequest_6f000102;
 import cn.game.protocol.protobuf.TestMsg.TestGmExecResponse_6f000103;
 import cn.game.protocol.protobuf.BaseMsg.HeroInfo;
@@ -1196,6 +1207,176 @@ public class Client extends AbstractNetClient {
 				.build();
 		TestGmExecResponse_6f000103 resp = sendProtocolAndWait(req);
 		return GmClientResult.fromResponse(resp);
+	}
+	/**
+	 * 拉取GM元数据目录定义并解析为Map
+	 *
+	 * @param groupFilter GM分组名过滤，传入null或空串表示返回全部分组
+	 * @return 解析后的元数据Schema Map
+	 */
+	public Map<String, Object> fetchGmSchema(String groupFilter) {
+		String safeFilter = groupFilter == null ? "" : groupFilter.trim();
+		TestGmSchemaRequest_6f000100 req = TestGmSchemaRequest_6f000100.newBuilder()
+				.setGroupFilter(safeFilter)
+				.build();
+		TestGmSchemaResponse_6f000101 resp = sendProtocolAndWait(req);
+		return parseJsonToMap("fetchGmSchema", resp == null ? null : resp.getSchemaJson());
+	}
+
+	/**
+	 * 拉取全量GM元数据目录定义并解析为Map
+	 *
+	 * @return 解析后的元数据Schema Map
+	 */
+	public Map<String, Object> fetchGmSchema() {
+		return fetchGmSchema("");
+	}
+
+	/**
+	 * 查询服务端所有已注册的静态配置表名列表
+	 *
+	 * @return 包含表名列表的结果Map
+	 */
+	public Map<String, Object> queryConfigTables() {
+		TestConfigQueryRequest_6f000104 req = TestConfigQueryRequest_6f000104.newBuilder()
+				.setOp("tables")
+				.build();
+		TestConfigQueryResponse_6f000105 resp = sendProtocolAndWait(req);
+		return parseJsonToMap("queryConfigTables", resp == null ? null : resp.getResultJson());
+	}
+
+	/**
+	 * 分页与条件过滤查询指定静态配置表
+	 *
+	 * @param table 配置表名称
+	 * @param page 分页页码（1基）
+	 * @param pageSize 每页条数
+	 * @param filterJson 过滤条件JSON串
+	 * @return 包含分页数据的结果Map
+	 */
+	public Map<String, Object> queryConfigList(String table, int page, int pageSize, String filterJson) {
+		TestConfigQueryRequest_6f000104 req = TestConfigQueryRequest_6f000104.newBuilder()
+				.setOp("list")
+				.setTable(table == null ? "" : table.trim())
+				.setPage(page)
+				.setPageSize(pageSize)
+				.setFilterJson(filterJson == null ? "" : filterJson.trim())
+				.build();
+		TestConfigQueryResponse_6f000105 resp = sendProtocolAndWait(req);
+		return parseJsonToMap("queryConfigList", resp == null ? null : resp.getResultJson());
+	}
+
+	/**
+	 * 查询指定静态配置表的单个记录
+	 *
+	 * @param table 配置表名称
+	 * @param id 记录ID或配置行ID
+	 * @param filterJson 可选过滤条件JSON串
+	 * @return 包含单条配置行数据的结果Map
+	 */
+	public Map<String, Object> queryConfigGet(String table, int id, String filterJson) {
+		TestConfigQueryRequest_6f000104 req = TestConfigQueryRequest_6f000104.newBuilder()
+				.setOp("get")
+				.setTable(table == null ? "" : table.trim())
+				.setId(id)
+				.setFilterJson(filterJson == null ? "" : filterJson.trim())
+				.build();
+		TestConfigQueryResponse_6f000105 resp = sendProtocolAndWait(req);
+		return parseJsonToMap("queryConfigGet", resp == null ? null : resp.getResultJson());
+	}
+
+	/**
+	 * 获取服务端全量协议元信息目录与错误码字典
+	 *
+	 * @param moduleFilter 高8位模块ID过滤，<=0表示不过滤
+	 * @param includeSchemas 是否包含字段级JSON Schema
+	 * @return 包含协议元信息目录的结果Map
+	 */
+	public Map<String, Object> fetchProtoCatalog(int moduleFilter, boolean includeSchemas) {
+		TestProtoCatalogRequest_6f000106 req = TestProtoCatalogRequest_6f000106.newBuilder()
+				.setModuleFilter(moduleFilter)
+				.setIncludeSchemas(includeSchemas)
+				.build();
+		TestProtoCatalogResponse_6f000107 resp = sendProtocolAndWait(req);
+		return parseJsonToMap("fetchProtoCatalog", resp == null ? null : resp.getCatalogJson());
+	}
+
+	/**
+	 * 获取服务端全量协议元信息目录（默认不过滤模块且不包含字段Schema）
+	 *
+	 * @return 包含协议元信息目录的结果Map
+	 */
+	public Map<String, Object> fetchProtoCatalog() {
+		return fetchProtoCatalog(0, false);
+	}
+
+	/**
+	 * 白盒自省指定在线玩家指定模块的内存状态
+	 *
+	 * @param targetPlayerId 目标玩家ID，<=0时默认取当前客户端玩家ID
+	 * @param modules 要观测的模块名列表，为null或空集合表示观测全量模块
+	 * @return 包含模块自省状态快照的结果Map
+	 */
+	public Map<String, Object> inspectPlayer(long targetPlayerId, List<String> modules) {
+		long effectivePlayerId = targetPlayerId <= 0 ? getPlayerId() : targetPlayerId;
+		TestInspectPlayerRequest_6f000108.Builder builder = TestInspectPlayerRequest_6f000108.newBuilder()
+				.setTargetPlayerId(effectivePlayerId)
+				.setScope("player");
+		if (modules != null && !modules.isEmpty()) {
+			builder.addAllModules(modules);
+		}
+		TestInspectPlayerResponse_6f000109 resp = sendProtocolAndWait(builder.build());
+		return parseJsonToMap("inspectPlayer", resp == null ? null : resp.getResultJson());
+	}
+
+	/**
+	 * 白盒自省当前在线玩家指定模块的内存状态
+	 *
+	 * @param modules 要观测的模块名列表，为空表示观测全量模块
+	 * @return 包含模块自省状态快照的结果Map
+	 */
+	public Map<String, Object> inspectPlayer(String... modules) {
+		return inspectPlayer(getPlayerId(), modules);
+	}
+
+	/**
+	 * 白盒自省指定在线玩家指定模块的内存状态
+	 *
+	 * @param targetPlayerId 目标玩家ID，<=0时默认取当前客户端玩家ID
+	 * @param modules 要观测的模块名列表，为空表示观测全量模块
+	 * @return 包含模块自省状态快照的结果Map
+	 */
+	public Map<String, Object> inspectPlayer(long targetPlayerId, String... modules) {
+		List<String> list = (modules == null || modules.length == 0) ? Collections.emptyList() : Arrays.asList(modules);
+		return inspectPlayer(targetPlayerId, list);
+	}
+
+	/**
+	 * 统一解析0x6f响应JSON字符串为Map结构，严格执行空与格式拦截
+	 *
+	 * @param protocolName 协议或方法标识名，用于错误定位
+	 * @param json 服务端下发的JSON文本
+	 * @return 反序列化后的Map结果
+	 * @throws IllegalStateException JSON为空、blank或反序列化失败时抛出（EX-13）
+	 */
+	private Map<String, Object> parseJsonToMap(String protocolName, String json) {
+		// 检查响应文本是否为空
+		if (json == null || json.isBlank()) {
+			throw new IllegalStateException(protocolName + " 响应JSON为空 (EX-13)");
+		}
+
+		// 执行Jackson反序列化
+		try {
+			Map<String, Object> result = GM_JSON_MAPPER.readValue(json,
+					new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+			if (result == null) {
+				throw new IllegalStateException(protocolName + " 反序列化JSON为空 (EX-13)");
+			}
+			return result;
+		} catch (Exception e) {
+			logger.warn("{} 反序列化JSON失败 raw={}", protocolName, json, e);
+			throw new IllegalStateException(protocolName + " 反序列化JSON失败 (EX-13): " + e.getMessage(), e);
+		}
 	}
 	
 	@Override

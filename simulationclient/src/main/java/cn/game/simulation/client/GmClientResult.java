@@ -2,6 +2,7 @@ package cn.game.simulation.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,10 @@ public class GmClientResult {
 
 	/** 协议结果结构版本号 */
 	private String schemaVersion;
+	/** 是否为沙箱演练预演模式 */
+	private boolean dryRun;
+	/** 变更前后Diff差异结构（通常为List或Map） */
+	private Object diff;
 	/** GM执行是否成功 */
 	private boolean ok;
 	/** 错误码，0表示成功，-1表示本地响应JSON解析异常 */
@@ -91,6 +96,82 @@ public class GmClientResult {
 		result.setTimestampMs(response.getTimestampMs());
 		result.setRawResultJson(json);
 		return result;
+	}
+
+	/**
+	 * 判断是否为沙箱演练预演模式
+	 *
+	 * @return true表示为预演模式（无副作用）
+	 */
+	public boolean isDryRun() {
+		return dryRun;
+	}
+
+	/**
+	 * 设置是否为沙箱演练预演模式
+	 *
+	 * @param dryRun 是否为预演模式
+	 */
+	public void setDryRun(boolean dryRun) {
+		this.dryRun = dryRun;
+	}
+
+	/**
+	 * 获取变更前后Diff差异结构
+	 *
+	 * @return Diff差异对象（通常为List或Map）
+	 */
+	public Object getDiff() {
+		return diff;
+	}
+
+	/**
+	 * 设置变更前后Diff差异结构
+	 *
+	 * @param diff Diff差异对象
+	 */
+	public void setDiff(Object diff) {
+		this.diff = diff;
+	}
+
+	/**
+	 * 获取Map形式的返回数据，数据非Map类型或为空时安全返回空Map
+	 *
+	 * @return Map形式返回数据
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getDataAsMap() {
+		if (this.data instanceof Map) {
+			return (Map<String, Object>) this.data;
+		}
+		return Collections.emptyMap();
+	}
+
+	/**
+	 * 获取List形式的Diff差异列表，数据非List类型或为空时安全返回空List
+	 *
+	 * @return Diff列表
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getDiffAsList() {
+		if (this.diff instanceof List) {
+			return (List<Map<String, Object>>) this.diff;
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * 严格断言执行成功，若ok为false则抛出IllegalStateException
+	 *
+	 * @return 当前GmClientResult实例自身
+	 * @throws IllegalStateException GM执行失败时抛出
+	 */
+	public GmClientResult requireOk() {
+		if (!this.ok) {
+			throw new IllegalStateException(String.format("GM执行失败 (EX-13): errorCode=%d, errorName=%s, summary=%s, traceId=%s",
+					errorCode, errorName, summary, traceId));
+		}
+		return this;
 	}
 
 	/**
