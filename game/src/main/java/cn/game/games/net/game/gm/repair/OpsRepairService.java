@@ -47,6 +47,7 @@ import cn.game.games.net.game.gm.GmResult;
 import cn.game.games.net.game.gm.GmScope;
 import cn.game.games.net.game.gm.GmSecurityPolicy;
 import cn.game.games.net.game.gm.GmSecurityTier;
+import cn.game.games.net.game.gm.GmStateDiffUtil;
 import cn.game.games.net.game.gm.PlayerInspectService;
 import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.games.net.game.helper.PlayerWriteGuard;
@@ -528,32 +529,8 @@ public class OpsRepairService {
 		return snapshot;
 	}
 
-	private List<Map<String, Object>> computeStateDiff(Map<String, Object> before, Map<String, Object> after) {
-		List<Map<String, Object>> diffs = new ArrayList<>();
-		for (Map.Entry<String, Object> entry : after.entrySet()) {
-			String key = entry.getKey();
-			Object afterVal = entry.getValue();
-			Object beforeVal = before.get(key);
-			if (!Objects.equals(beforeVal, afterVal)) {
-				Map<String, Object> diffItem = new LinkedHashMap<>();
-				diffItem.put("path", key);
-				diffItem.put("before", beforeVal);
-				diffItem.put("after", afterVal);
-				diffs.add(diffItem);
-			}
-		}
-		// 检查是否有被删除的键
-		for (Map.Entry<String, Object> entry : before.entrySet()) {
-			String key = entry.getKey();
-			if (!after.containsKey(key)) {
-				Map<String, Object> diffItem = new LinkedHashMap<>();
-				diffItem.put("path", key);
-				diffItem.put("before", entry.getValue());
-				diffItem.put("after", null);
-				diffs.add(diffItem);
-			}
-		}
-		return diffs;
+	public List<Map<String, Object>> computeStateDiff(Map<String, Object> before, Map<String, Object> after) {
+		return GmStateDiffUtil.computeFlatDiff(before, after);
 	}
 
 	private Player cloneSandboxPlayer(Player original) {

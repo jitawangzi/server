@@ -201,6 +201,53 @@ public class RequestTraceService {
 	}
 
 	/**
+	 * 非生产环境开启单请求隔离强制录制 (DC-05, BR-06, EX-06)
+	 * 不修改全局 enabled 开关，确保 LogAppender 已挂载，并将 TraceBuilder 绑定至 ThreadLocal。
+	 *
+	 * @param playerId 目标玩家ID
+	 * @param msgId    协议ID
+	 * @param msgName  协议名称
+	 * @param seq      请求序号
+	 * @return 构造器，生产模式下返回 null
+	 */
+	public TraceBuilder beginForcedTrace(long playerId, int msgId, String msgName, int seq) {
+		if (GmSecurityPolicy.currentRunMode().isProduction()) {
+			return null;
+		}
+		ensureLogAppenderAttached();
+		TraceBuilder builder = new TraceBuilder(playerId, msgId, msgName, seq);
+		currentBuilder.set(builder);
+		return builder;
+	}
+
+	/**
+	 * 结束单请求隔离强制录制并返回 TraceRecord
+	 *
+	 * @param builder   由 beginForcedTrace 创建的构造器
+	 * @param errorCode 最终错误码
+	 * @return 构建的 TraceRecord，若原全局正开启录制则顺带推入环形缓冲
+	 */
+	public TraceRecord endForcedTrace(TraceBuilder builder, int errorCode) {
+		try {
+			if (builder == null) {
+				return null;
+			}
+			TraceRecord record = builder.build(errorCode);
+			if (isRecording(builder.playerId)) {
+				buffer.addLast(record);
+				totalRecorded.incrementAndGet();
+				int cap = maxRecords.get();
+				while (buffer.size() > cap) {
+					buffer.pollFirst();
+				}
+			}
+			return record;
+		} finally {
+			currentBuilder.remove();
+		}
+	}
+
+	/**
 	 * 记录资源增减变动流水
 	 */
 	public static void recordResourceEvent(long playerId, int id, long count, boolean isAdd, String opType) {

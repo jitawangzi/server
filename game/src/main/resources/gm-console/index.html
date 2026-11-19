@@ -197,15 +197,19 @@
   </div>
 
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('tabSchema')">Schema 动态表单</button>
+    <button class="tab-btn active" onclick="switchTab('tabWorkbench')">功能协议工作台</button>
+    <button class="tab-btn" onclick="switchTab('tabSchema')">Schema 动态表单</button>
     <button class="tab-btn" onclick="switchTab('tabCommand')">命令行执行器</button>
     <button class="tab-btn" onclick="switchTab('tabClock')">虚拟时钟运维</button>
     <button class="tab-btn" onclick="switchTab('tabPanels')">自定义热载面板</button>
   </div>
 
   <div class="container">
+    <!-- Tab 0: 功能协议工作台 -->
+    <div id="tabWorkbench" class="tab-content active"></div>
+
     <!-- Tab 1: Schema 表单 -->
-    <div id="tabSchema" class="tab-content active">
+    <div id="tabSchema" class="tab-content">
       <div class="grid">
         <div class="card">
           <div class="card-title">指令选择与参数</div>
@@ -541,5 +545,6 @@
 
     window.onload = refreshBootstrap;
   </script>
+  <script src="/gm-console/workbench.js"></script>
 </body>
 </html>

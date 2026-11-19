@@ -21,7 +21,8 @@ public abstract class GameBaseHandler extends BaseHandler {
     @Override
     public void dispatch(NetClient client, IProtocol<?> protocol) {
         long playerId = client != null ? client.getPlayerId() : 0L;
-        boolean record = RequestTraceService.getInstance().isRecording(playerId);
+        boolean hasExistingTrace = RequestTraceService.getInstance().getCurrentBuilder() != null;
+        boolean record = !hasExistingTrace && RequestTraceService.getInstance().isRecording(playerId);
         RequestTraceService.TraceBuilder trace = null;
         if (record) {
             int msgId = protocol != null ? protocol.getMsgID() : 0;
@@ -36,6 +37,8 @@ public abstract class GameBaseHandler extends BaseHandler {
         catch (Throwable t) {
             if (trace != null) {
                 trace.recordException(t);
+            } else if (hasExistingTrace) {
+                RequestTraceService.recordException(t);
             }
             if (t instanceof cn.game.core.exception.LogicException le) {
                 errCode = le.getErrorCode();

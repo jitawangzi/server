@@ -50,6 +50,56 @@ public class ProtoCatalogService {
 
 	private final Path protoSourceDir;
 	private volatile Map<String, String> cachedComments;
+	private volatile Map<String, ProtoFileMeta> cachedFileMetas;
+
+	/**
+	 * 单个 .proto 文件元数据定义 (DC-02, BR-02)
+	 */
+	public static class ProtoFileMeta {
+		private final int moduleId;
+		private final String moduleIdHex;
+		private final String moduleKey;
+		private final String title;
+		private final String functionName;
+		private final String handlerPackage;
+		private final Path filePath;
+
+		public ProtoFileMeta(int moduleId, String moduleIdHex, String moduleKey, String title, String functionName, String handlerPackage, Path filePath) {
+			this.moduleId = moduleId;
+			this.moduleIdHex = moduleIdHex;
+			this.moduleKey = moduleKey;
+			this.title = title;
+			this.functionName = functionName;
+			this.handlerPackage = handlerPackage;
+			this.filePath = filePath;
+		}
+
+		public int getModuleId() { return moduleId; }
+		public String getModuleIdHex() { return moduleIdHex; }
+		public String getModuleKey() { return moduleKey; }
+		public String getTitle() { return title; }
+		public String getFunctionName() { return functionName; }
+		public String getHandlerPackage() { return handlerPackage; }
+		public Path getFilePath() { return filePath; }
+	}
+
+	public Path getProtoSourceDir() {
+		return protoSourceDir;
+	}
+
+	public Map<String, ProtoFileMeta> getProtoFileMetas() {
+		Map<String, ProtoFileMeta> cached = this.cachedFileMetas;
+		if (cached != null) {
+			return cached;
+		}
+		synchronized (this) {
+			if (this.cachedFileMetas != null) {
+				return this.cachedFileMetas;
+			}
+			this.cachedFileMetas = loadFileMetasSafe(protoSourceDir);
+			return this.cachedFileMetas;
+		}
+	}
 
 	/**
 	 * 使用默认proto源码目录构造协议目录服务
@@ -272,6 +322,27 @@ public class ProtoCatalogService {
 		return result;
 	}
 
+	/**
+	 * 获取只读消息及字段注释缓存
+	 *
+	 * @return 注释字典
+	 */
+	public Map<String, String> getMessageComments() {
+		return getCommentsSafe();
+	}
+
+	/**
+	 * 查找消息或字段注释
+	 *
+	 * @param comments 注释字典
+	 * @param fullKey 全限定键
+	 * @param shortKey 短名称键
+	 * @return 注释内容（未命中返回空串）
+	 */
+	public static String lookupMessageComment(Map<String, String> comments, String fullKey, String shortKey) {
+		return lookupComment(comments, fullKey, shortKey);
+	}
+
 	private static String lookupComment(Map<String, String> comments, String fullKey, String shortKey) {
 		if (comments == null || comments.isEmpty()) {
 			return "";
@@ -289,7 +360,7 @@ public class ProtoCatalogService {
 		return "";
 	}
 
-	private Set<Integer> collectRegisteredHandlerCmds() {
+	public static Set<Integer> collectRegisteredHandlerCmds() {
 		Set<Integer> cmds = new HashSet<>();
 		Map<Integer, Handler> handlers = DispatcherImpl.getModuleHandlers();
 		for (Handler handler : handlers.values()) {
@@ -300,7 +371,7 @@ public class ProtoCatalogService {
 		return cmds;
 	}
 
-	private Descriptor resolveDescriptor(Parser<?> parser) {
+	public static Descriptor resolveDescriptor(Parser<?> parser) {
 		if (parser == null) {
 			return null;
 		}
@@ -402,6 +473,116 @@ public class ProtoCatalogService {
 			}
 		} catch (Exception e) {
 			log.warn("读取proto注释失败，忽略文件: {}", protoFile, e);
+		}
+	}
+
+	private Map<String, ProtoFileMeta> loadFileMetasSafe(Path dir) {
+		if (dir == null || !Files.isDirectory(dir)) {
+			log.info("Proto源码目录不存在，文件元数据降级为空: dir={}", dir);
+			return Collections.emptyMap();
+		}
+		Map<String, ProtoFileMeta> metas = new LinkedHashMap<>();
+		try (Stream<Path> walk = Files.walk(dir)) {
+			walk.filter(p -> Files.isRegularFile(p) && p.toString().endsWith(".proto"))
+					.forEach(p -> parseProtoFileMeta(p, metas));
+		} catch (Exception e) {
+			log.warn("扫描proto文件元数据失败: dir={}", dir, e);
+		}
+		return Collections.unmodifiableMap(metas);
+	}
+
+	private void parseProtoFileMeta(Path protoFile, Map<String, ProtoFileMeta> metas) {
+		try {
+			String fileName = protoFile.getFileName().toString();
+			String moduleKey = fileName.replaceAll("(?i)Msg\\.proto$", "").replaceAll("(?i)\\.proto$", "").toLowerCase(Locale.ROOT);
+			List<String> lines = Files.readAllLines(protoFile, StandardCharsets.UTF_8);
+
+			boolean hasMessageModule = false;
+			int moduleId = 0;
+			String functionName = null;
+			String handlerPackage = null;
+			String fileTagTitle = null;
+			String beforeMetaComment = null;
+			List<String> postMetaComments = new ArrayList<>();
+			boolean sawMetaTag = false;
+			boolean sawBlankAfterLastPostComment = false;
+
+			for (String rawLine : lines) {
+				String line = rawLine.trim();
+				// 进入首个消息/枚举声明后停止提取文件头元数据，避免把具体消息字段注释混作模块标题
+				if (line.startsWith("message ") || line.startsWith("message{")
+						|| line.startsWith("enum ") || line.startsWith("enum{")) {
+					break;
+				}
+				if (line.isEmpty()) {
+					if (!postMetaComments.isEmpty()) {
+						sawBlankAfterLastPostComment = true;
+					}
+					continue;
+				}
+				if (line.startsWith("//@MessageModule")) {
+					sawMetaTag = true;
+					String hexToken = line.substring("//@MessageModule".length()).trim();
+					if (hexToken.startsWith("0x") || hexToken.startsWith("0X")) {
+						hexToken = hexToken.substring(2);
+					}
+					try {
+						moduleId = Integer.parseInt(hexToken, 16);
+						if (moduleId > 0) {
+							hasMessageModule = true;
+						}
+					} catch (Exception e) {
+						log.warn("解析.proto十六进制模块号异常 file={}, line={}", fileName, line, e);
+					}
+				} else if (line.startsWith("//@Function")) {
+					sawMetaTag = true;
+					functionName = line.substring("//@Function".length()).trim();
+				} else if (line.startsWith("//@HandlerPackage")) {
+					sawMetaTag = true;
+					handlerPackage = line.substring("//@HandlerPackage".length()).trim();
+				} else if (line.startsWith("//@File")) {
+					String fTitle = line.substring("//@File".length()).trim();
+					if (!fTitle.isEmpty()) {
+						fileTagTitle = fTitle;
+					}
+				} else if (line.startsWith("//") || line.startsWith("/*")) {
+					String clean = line.replaceAll("^/+\\*?\\*?", "").replaceAll("\\*+/.*$", "").trim();
+					if (clean.isEmpty() || clean.startsWith("@") || clean.startsWith("syntax")
+							|| clean.startsWith("option ") || clean.startsWith("import ")) {
+						continue;
+					}
+					if (!sawMetaTag) {
+						beforeMetaComment = clean;
+					} else {
+						postMetaComments.add(clean);
+						sawBlankAfterLastPostComment = false;
+					}
+				}
+			}
+
+			// 严格以 //@MessageModule 为模块收录依据，未显式声明该注解的文件不列入功能工作台模块目录
+			if (!hasMessageModule || moduleId <= 0) {
+				return;
+			}
+
+			String headerTitle = fileTagTitle;
+			if (headerTitle == null || headerTitle.isEmpty()) {
+				if (beforeMetaComment != null && !beforeMetaComment.isEmpty()) {
+					headerTitle = beforeMetaComment;
+				} else if (postMetaComments.size() >= 2
+						|| (postMetaComments.size() == 1 && sawBlankAfterLastPostComment)) {
+					headerTitle = postMetaComments.get(0);
+				}
+			}
+
+			String title = (headerTitle != null && !headerTitle.isEmpty())
+					? headerTitle
+					: (functionName != null && !functionName.isEmpty() ? functionName : moduleKey);
+			String moduleIdHex = String.format("0x%02x", moduleId);
+			ProtoFileMeta meta = new ProtoFileMeta(moduleId, moduleIdHex, moduleKey, title, functionName, handlerPackage, protoFile);
+			metas.put(moduleKey, meta);
+		} catch (Exception e) {
+			log.warn("解析proto元数据异常: file={}", protoFile, e);
 		}
 	}
 

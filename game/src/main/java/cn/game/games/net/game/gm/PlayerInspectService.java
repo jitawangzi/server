@@ -2,6 +2,7 @@ package cn.game.games.net.game.gm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -42,6 +43,12 @@ public class PlayerInspectService {
 
 	/** 解析JSON数组格式modules过滤参数的共享Mapper */
 	private static final ObjectMapper FILTER_JSON_MAPPER = new ObjectMapper();
+
+	private static final PlayerInspectService INSTANCE = new PlayerInspectService();
+
+	public static PlayerInspectService getInstance() {
+		return INSTANCE;
+	}
 
 	/** 是否允许在缺少邮箱处理器时直读玩家模块（仅限单测隔离场景显式开启，生产默认禁用） */
 	private final boolean allowDirectReadWithoutProcessor;
@@ -159,6 +166,25 @@ public class PlayerInspectService {
 			log.warn("等待玩家邮箱只读自省结果失败 playerId={}", playerId, e);
 			return GmResult.fail(ErrorMsgEnum.unknown, "等待玩家自省超时或中断: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * 直接采集玩家模块的只读状态Map（供协议模拟 withDiff 前后快照对比使用）
+	 *
+	 * @param player        目标玩家
+	 * @param moduleFilters 可选模块过滤集合
+	 * @return 模块名 -> 状态Map
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> captureModulesSnapshot(Player player, Collection<String> moduleFilters) {
+		GmResult res = inspectSnapshot(player, moduleFilters, "player");
+		if (res != null && res.isOk() && res.getData() instanceof Map<?, ?> map) {
+			Object modulesObj = map.get("modules");
+			if (modulesObj instanceof Map<?, ?> m) {
+				return (Map<String, Object>) m;
+			}
+		}
+		return Collections.emptyMap();
 	}
 
 	/**

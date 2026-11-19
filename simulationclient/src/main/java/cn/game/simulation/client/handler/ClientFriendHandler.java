@@ -1,7 +1,5 @@
 package cn.game.simulation.client.handler;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -72,14 +70,14 @@ public class ClientFriendHandler extends BaseHandler {
         FriendBlackListResponse_30000052 resp = (FriendBlackListResponse_30000052) message;
         List<SimplePlayerInfo> playersList = resp.getPlayersList();
         Client client = (Client) netClient;
-        client.blackList = playersList.stream().map(r-> r.getId()).collect(toList()); 
+        client.blackList = playersList.stream().map(r-> r.getId()).toList(); 
     }
 
     private void applyList(NetClient netClient, Object message) {
         FriendApplyListResponse_30000054 resp = (FriendApplyListResponse_30000054) message;
         List<SimplePlayerInfo> playersList = resp.getPlayersList();
         Client client = (Client) netClient;
-        client.applicationList = playersList.stream().map(r-> r.getId()).collect(toList()); 
+        client.applicationList = playersList.stream().map(r-> r.getId()).toList(); 
 
     }
 

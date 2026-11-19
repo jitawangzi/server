@@ -18,6 +18,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -77,6 +78,11 @@ import cn.game.util.SpringContextLoader;
  */
 @Isolated
 public class PlayerInspectServiceTest {
+
+	@BeforeAll
+	static void initMetadata() {
+		ClassManager.getInstance().init();
+	}
 
 	/**
 	 * 自省协议测试用桩客户端

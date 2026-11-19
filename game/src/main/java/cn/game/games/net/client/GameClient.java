@@ -21,6 +21,7 @@ import cn.game.core.execute.RequestTiming;
 import cn.game.core.net.client.AbstractNetClient;
 import cn.game.core.net.protocol.IProtocol;
 import cn.game.core.net.protocol.bytes.ByteArrayProtocol;
+import cn.game.games.net.game.gm.proto.ProtocolCaptureSession;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerErrorPush_01000099;
@@ -45,6 +46,16 @@ public class GameClient extends AbstractNetClient {
 	public static final String PLAYID_KEY = "PLAYID";
 
 	public static boolean recordMessageLength = ConfigUtil.getBooleanConfig("recordMessageLength"); 
+	
+	public static final ThreadLocal<ProtocolCaptureSession> ACTIVE_CAPTURE = new ThreadLocal<>();
+
+	public static void beginThreadLocalCapture(ProtocolCaptureSession session) {
+		ACTIVE_CAPTURE.set(session);
+	}
+
+	public static void endThreadLocalCapture() {
+		ACTIVE_CAPTURE.remove();
+	}
 	
 	private volatile long lastRecvPacketTime;
 	/** 连接会话 */
@@ -169,12 +180,35 @@ public class GameClient extends AbstractNetClient {
 	 * @return
 	 */
 	public boolean sendProtocol(int msgId, int seq, byte[] data, int errorCode, boolean recored) {
+		if (!ServerContext.getInstance().getRunMode().isProduction()) {
+			ProtocolCaptureSession session = ACTIVE_CAPTURE.get();
+			if (session != null && session.matchesClient(this)) {
+				session.capture(msgId, seq, data, errorCode);
+				if (!session.isMirrorToRealClient()) {
+					return true;
+				}
+				if (channel != null && isActive()) {
+					CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
+					ByteBuf headerBuf = Unpooled.buffer(16);
+					headerBuf.writeInt(data.length + 16);
+					headerBuf.writeInt(seq);
+					headerBuf.writeInt(msgId);
+					headerBuf.writeInt(errorCode);
+					ByteBuf bodyBuf = Unpooled.wrappedBuffer(data);
+					compositeBuffer.addComponents(headerBuf, bodyBuf);
+					compositeBuffer.writerIndex(headerBuf.readableBytes() + bodyBuf.readableBytes());
+					BufferInternal buffer = BufferInternal.buffer(compositeBuffer);
+					channel.writeBinaryMessage(buffer);
+				}
+				return true;
+			}
+		}
 		RequestTiming timing = RequestTiming.response(this, seq, msgId);
 		boolean observed = false;
 		try {
 
 //		ProtobufProtocol protobufProtocol = new ProtobufProtocol(msgId, data, errorCode);
-		if (isActive()) {
+		if (channel != null && isActive()) {
 			CompositeByteBuf compositeBuffer = Unpooled.compositeBuffer(2);
 			ByteBuf headerBuf = Unpooled.buffer(16);
 			headerBuf.writeInt(data.length + 16);
@@ -246,9 +280,10 @@ public class GameClient extends AbstractNetClient {
 //		return toDetailString();
 	}
 	public String toDetailString() {
+		String connectionId = channel != null ? channel.binaryHandlerID() : "virtual";
 		return MessageFormat.format("GameClient:playerId[{0,number,#}]sessionId[{1}]connectionId[{2}]", playerId,
 				sessionId,
-				channel.binaryHandlerID());
+				connectionId);
 	}
 
 	@Override
@@ -338,11 +373,15 @@ public class GameClient extends AbstractNetClient {
 
 	@Override
 	public void close() {
-		channel.close().onSuccess(r -> {
-			log.info("client[{}] close success", this);
-		}).onFailure(e -> {
-			log.info("client[{" + this + "}] close fail", e);
-		});
+		if (channel != null) {
+			channel.close().onSuccess(r -> {
+				log.info("client[{}] close success", this);
+			}).onFailure(e -> {
+				log.info("client[{" + this + "}] close fail", e);
+			});
+		} else {
+			log.info("virtual client[{}] close ignored", this);
+		}
 	}
 
 	public ServerWebSocket getChannel() {
@@ -351,6 +390,12 @@ public class GameClient extends AbstractNetClient {
 
 	@Override
 	public boolean needProcess(IProtocol<?> protocol) {
+		if (!ServerContext.getInstance().getRunMode().isProduction()) {
+			ProtocolCaptureSession session = ACTIVE_CAPTURE.get();
+			if (session != null && session.matchesClient(this)) {
+				return true;
+			}
+		}
 		if (packetMaxCountPerSecond++ >= 10) {
 			long now = System.currentTimeMillis();
 			if (now - firstPacketTime < 1000) {

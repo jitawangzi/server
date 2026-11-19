@@ -83,7 +83,9 @@ public class GameClientManager {
 				players.remove(gameClient.getPlayerId());
 			}
 		}
-		connections.remove(gameClient.getChannel().binaryHandlerID());
+		if (gameClient.getChannel() != null) {
+			connections.remove(gameClient.getChannel().binaryHandlerID());
+		}
 
 		gameClient.sendProtocol(PlayerLogoutPush_01100030.getDefaultInstance());
 		gameClient.close();
