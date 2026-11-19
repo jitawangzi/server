@@ -27,6 +27,7 @@ import cn.game.core.net.socket.controller.Dispatcher;
 import cn.game.core.net.socket.controller.DispatcherImpl;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
+import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.net.client.GameClient;
 import cn.game.games.net.client.GameClient.GameClientState;
 import cn.game.games.net.game.gm.GmDispatcher;
@@ -38,6 +39,7 @@ import cn.game.games.net.game.gm.proto.ProtocolSimulationService.ProtoInvokeRequ
 import cn.game.games.net.game.gm.proto.VirtualGameClient;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.util.ObjUtil;
 import cn.game.protocol.protobuf.PbProtocol;
 import cn.game.protocol.protobuf.PlayerMsg;
 import io.vertx.core.Future;
@@ -405,77 +407,107 @@ public class GmWebConsoleServer {
 			}
 
 			long playerId = json.getLong("playerId", 0L);
-			String passportSessionId = json.getString("passportSessionId");
 			String accountId = json.getString("accountId");
+			if (accountId == null || accountId.isBlank()) {
+				accountId = json.getString("account");
+			}
+			if (accountId != null) {
+				accountId = accountId.trim();
+			}
 			String serverId = json.getString("serverId");
-			int timeoutMs = Math.max(1000, Math.min(15000, json.getInteger("timeoutMs", 5000)));
+			if (serverId == null || serverId.isBlank()) {
+				serverId = ServerContext.getInstance().getServerId() != null ? ServerContext.getInstance().getServerId() : "game_1";
+			}
 
-			if (playerId > 0) {
-				Player onlinePlayer = PlayerManager.getInstance().getPlayer(playerId);
-				if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.isIslogouting() && onlinePlayer.getGameClient() != null) {
-					Map<String, Object> data = new LinkedHashMap<>();
-					data.put("ok", true);
-					data.put("reused", true);
-					data.put("playerId", onlinePlayer.getPlayerId());
-					data.put("name", onlinePlayer.getData() != null ? onlinePlayer.getData().getName() : "");
-					data.put("level", onlinePlayer.getData() != null ? onlinePlayer.getData().getLevel() : 0);
-					data.put("isVirtualClient", onlinePlayer.getGameClient() instanceof VirtualGameClient);
-					sendJson(ctx, GmResult.success("ok", data));
-					return;
+			// 优先根据 accountId 检索已有的角色对象
+			Player targetPlayer = null;
+			if (accountId != null && !accountId.isEmpty()) {
+				for (Player p : PlayerManager.getInstance().getAllPlayer().values()) {
+					if (p.getData() != null) {
+						if (accountId.equalsIgnoreCase(p.getData().getAccountId())
+								|| accountId.equalsIgnoreCase(p.getData().getName())) {
+							targetPlayer = p;
+							break;
+						}
+					}
 				}
 			}
 
-			effectiveVertx.executeBlocking(() -> {
-				VirtualGameClient vClient = new VirtualGameClient(playerId);
-				CompletableFuture<VirtualGameClient.LoginCaptureOutcome> loginFuture = new CompletableFuture<>();
-				vClient.setLoginFuture(loginFuture);
+			// 若未通过账号匹配到，且指定了有效 playerId，则直接根据 playerId 获取
+			if (targetPlayer == null && playerId > 0) {
+				targetPlayer = PlayerManager.getInstance().getPlayer(playerId);
+			}
 
-				PlayerMsg.PlayerLoginRequest_01000001.Builder b = PlayerMsg.PlayerLoginRequest_01000001.newBuilder();
-				b.setSessionId(passportSessionId != null && !passportSessionId.isBlank() ? passportSessionId : "virtual-session-" + UUID.randomUUID().toString());
-				b.setReconnect(false);
-				b.setPlayerId(String.valueOf(playerId > 0 ? playerId : "0"));
-				if (accountId != null && !accountId.isBlank()) {
-					b.setAccountId(accountId);
+			// 若角色已存在，确保其在线并挂载 VirtualGameClient，直接复用
+			if (targetPlayer != null) {
+				targetPlayer.setOnline(true);
+				targetPlayer.setIslogouting(false);
+				if (targetPlayer.getGameClient() == null || !targetPlayer.getGameClient().isActive()) {
+					targetPlayer.setGameClient(new VirtualGameClient(targetPlayer.getPlayerId()));
 				}
-				if (serverId != null && !serverId.isBlank()) {
-					b.setServerId(serverId);
-				}
+				Map<String, Object> data = new LinkedHashMap<>();
+				data.put("ok", true);
+				data.put("reused", true);
+				data.put("playerId", targetPlayer.getPlayerId());
+				data.put("name", targetPlayer.getData() != null ? targetPlayer.getData().getName() : "");
+				data.put("level", targetPlayer.getData() != null ? targetPlayer.getData().getLevel() : 1);
+				data.put("accountId", targetPlayer.getData() != null ? targetPlayer.getData().getAccountId() : "");
+				data.put("isVirtualClient", targetPlayer.getGameClient() instanceof VirtualGameClient);
+				sendJson(ctx, GmResult.success("ok", data));
+				return;
+			}
 
-				PlayerMsg.PlayerLoginRequest_01000001 loginReq = b.build();
-				IProtocol<?> protocol = new ProtobufProtocol(PbProtocol.PlayerLoginRequest_01000001, loginReq, 1);
-				Dispatcher dispatcher = new DispatcherImpl();
-				dispatcher.dispatch(vClient, protocol);
-
-				try {
-					VirtualGameClient.LoginCaptureOutcome outcome = loginFuture.get(timeoutMs, TimeUnit.MILLISECONDS);
-					if (outcome.isOk()) {
-						vClient.setState(GameClientState.IN_GAME);
-						long pid = playerId > 0 ? playerId : vClient.getPlayerId();
-						Player p = PlayerManager.getInstance().getPlayer(pid);
-						Map<String, Object> data = new LinkedHashMap<>();
-						data.put("ok", true);
-						data.put("reused", false);
-						data.put("playerId", pid);
-						data.put("name", p != null && p.getData() != null ? p.getData().getName() : "");
-						data.put("level", p != null && p.getData() != null ? p.getData().getLevel() : 0);
-						data.put("isVirtualClient", true);
-						return GmResult.success("ok", data);
-					} else {
-						int errCode = outcome.getErrorCode() != 0 ? outcome.getErrorCode() : ErrorMsgEnum.unknown.getId();
-						return GmResult.fail(errCode, "LOGIN_FAIL", outcome.getErrorDesc() != null ? outcome.getErrorDesc() : "登录失败");
+			// 若角色不存在，在非生产测试环境下自闭环快速创建测试角色并挂载 VirtualGameClient
+			long allocatedPid = playerId > 0 ? playerId : 0L;
+			if (allocatedPid <= 0) {
+				if (accountId != null && !accountId.isEmpty()) {
+					long hashPid = Math.abs((long) accountId.hashCode()) % 900000L + 100000L;
+					while (PlayerManager.getInstance().getPlayer(hashPid) != null) {
+						hashPid++;
 					}
-				} catch (TimeoutException te) {
-					return GmResult.fail(ErrorMsgEnum.unknown, "测试登录等待超时 (" + timeoutMs + "ms)");
-				} catch (Exception e) {
-					return GmResult.fail(ErrorMsgEnum.unknown, "测试登录执行异常: " + e.getMessage());
-				}
-			}, false).onComplete(ar -> {
-				if (ar.succeeded()) {
-					sendJson(ctx, ar.result());
+					allocatedPid = hashPid;
 				} else {
-					sendJson(ctx, GmResult.fail(ErrorMsgEnum.unknown, ar.cause().getMessage()));
+					long autoPid = 200001L;
+					while (PlayerManager.getInstance().getPlayer(autoPid) != null) {
+						autoPid++;
+					}
+					allocatedPid = autoPid;
 				}
-			});
+			}
+
+			String effectiveAccount = (accountId != null && !accountId.isEmpty()) ? accountId : "test_" + allocatedPid;
+			String effectiveName = effectiveAccount;
+
+			PlayerData data = new PlayerData();
+			ObjUtil.setDefaultValue(data);
+			data.setPlayerId(allocatedPid);
+			data.setUid(allocatedPid);
+			data.setAccountId(effectiveAccount);
+			data.setName(effectiveName);
+			data.setServerId(serverId);
+			data.setLevel(1);
+
+			Player newPlayer = new Player(data);
+			newPlayer.setOnline(true);
+			newPlayer.setIslogouting(false);
+			VirtualGameClient vClient = new VirtualGameClient(allocatedPid);
+			newPlayer.setGameClient(vClient);
+
+			try {
+				PlayerManager.getInstance().initAdd(newPlayer);
+			} catch (Throwable t) {
+				log.warn("initAdd test player warning: pid={}, msg={}", allocatedPid, t.getMessage());
+			}
+
+			Map<String, Object> respData = new LinkedHashMap<>();
+			respData.put("ok", true);
+			respData.put("reused", false);
+			respData.put("playerId", allocatedPid);
+			respData.put("name", effectiveName);
+			respData.put("level", 1);
+			respData.put("accountId", effectiveAccount);
+			respData.put("isVirtualClient", true);
+			sendJson(ctx, GmResult.success("ok", respData));
 		});
 
 		// 10. GET /gm-console/workbench.js

@@ -745,25 +745,156 @@
     onPlayerChange: function (val) {
       state.selectedPlayerId = parseInt(val, 10) || 0;
     },
-    quickTestLogin: async function () {
-      const pidStr = prompt('请输入要进行测试登录的玩家 ID (留空或 0 表示分配新虚拟玩家):', '0');
-      if (pidStr === null) return;
-      const pid = parseInt(pidStr, 10) || 0;
+    quickTestLogin: function () {
+      let modal = document.getElementById('wbTestLoginModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'wbTestLoginModal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+        modal.innerHTML = `
+          <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border-color, #334155); border-radius:8px; width:440px; max-width:90vw; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 style="margin:0; font-size:1.15rem; color:var(--primary, #38bdf8); display:flex; align-items:center; gap:8px;">
+                <span>🎮</span> 测试登录通道 (DEV/TEST)
+              </h3>
+              <button id="wbLoginModalClose" style="background:none; border:none; color:var(--text-muted, #94a3b8); font-size:1.2rem; cursor:pointer;">✕</button>
+            </div>
+            
+            <div style="display:flex; gap:16px; margin-bottom:16px; border-bottom:1px solid var(--border-color, #334155); padding-bottom:8px;">
+              <label id="wbRadioLabelAccount" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; color:#38bdf8;">
+                <input type="radio" name="wbLoginMode" value="account" checked onchange="window.WorkbenchApp.switchLoginMode('account')">
+                <span>账号名登录 (推荐)</span>
+              </label>
+              <label id="wbRadioLabelPlayerId" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; color:var(--text-muted, #94a3b8);">
+                <input type="radio" name="wbLoginMode" value="playerId" onchange="window.WorkbenchApp.switchLoginMode('playerId')">
+                <span>玩家ID登录</span>
+              </label>
+            </div>
+
+            <div id="wbAccountLoginField" style="margin-bottom:16px;">
+              <label style="display:block; font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:6px;">账号名 / Account ID:</label>
+              <input type="text" id="wbAccountInput" placeholder="例如: test_user_01 / admin" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:#0f172a; color:#fff; font-size:0.9rem;" value="tester_01">
+              <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">输入任意账号名，系统自动检索已有角色或快速创建新测试角色</div>
+            </div>
+
+            <div id="wbPlayerIdLoginField" style="margin-bottom:16px; display:none;">
+              <label style="display:block; font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:6px;">玩家 ID (数值):</label>
+              <input type="number" id="wbPlayerIdInput" placeholder="例如: 10001 (留空或0自动分配)" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:#0f172a; color:#fff; font-size:0.9rem;" value="">
+              <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">输入指定数值 playerId，若已在线则直接激活，未激活自动就绪</div>
+            </div>
+
+            <div id="wbLoginTip" style="display:none; padding:8px 12px; border-radius:4px; font-size:0.85rem; margin-bottom:16px;"></div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+              <button class="btn btn-secondary" onclick="window.WorkbenchApp.closeLoginModal()">取消</button>
+              <button id="wbLoginSubmitBtn" class="btn btn-primary" onclick="window.WorkbenchApp.doSubmitLogin()">立即登录</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('wbLoginModalClose').onclick = () => window.WorkbenchApp.closeLoginModal();
+        modal.onclick = (e) => {
+          if (e.target === modal) window.WorkbenchApp.closeLoginModal();
+        };
+      }
+      modal.style.display = 'flex';
+      const tip = document.getElementById('wbLoginTip');
+      if (tip) tip.style.display = 'none';
+      const accountInput = document.getElementById('wbAccountInput');
+      if (accountInput) accountInput.focus();
+    },
+
+    switchLoginMode: function (mode) {
+      const accField = document.getElementById('wbAccountLoginField');
+      const pidField = document.getElementById('wbPlayerIdLoginField');
+      const lblAcc = document.getElementById('wbRadioLabelAccount');
+      const lblPid = document.getElementById('wbRadioLabelPlayerId');
+      if (mode === 'account') {
+        if (lblAcc) lblAcc.style.color = '#38bdf8';
+        if (lblPid) lblPid.style.color = 'var(--text-muted, #94a3b8)';
+        if (accField) accField.style.display = 'block';
+        if (pidField) pidField.style.display = 'none';
+        const inp = document.getElementById('wbAccountInput');
+        if (inp) inp.focus();
+      } else {
+        if (lblAcc) lblAcc.style.color = 'var(--text-muted, #94a3b8)';
+        if (lblPid) lblPid.style.color = '#38bdf8';
+        if (accField) accField.style.display = 'none';
+        if (pidField) pidField.style.display = 'block';
+        const inp = document.getElementById('wbPlayerIdInput');
+        if (inp) inp.focus();
+      }
+    },
+
+    closeLoginModal: function () {
+      const modal = document.getElementById('wbTestLoginModal');
+      if (modal) modal.style.display = 'none';
+    },
+
+    doSubmitLogin: async function () {
+      const submitBtn = document.getElementById('wbLoginSubmitBtn');
+      const tip = document.getElementById('wbLoginTip');
+      const checkedMode = document.querySelector('input[name="wbLoginMode"]:checked')?.value || 'account';
+
+      const payload = { timeoutMs: 5000 };
+      if (checkedMode === 'account') {
+        const acc = document.getElementById('wbAccountInput')?.value?.trim();
+        if (!acc) {
+          if (tip) {
+            tip.style.display = 'block';
+            tip.style.background = '#450a0a';
+            tip.style.color = '#fca5a5';
+            tip.innerText = '请输入有效的账号名';
+          }
+          return;
+        }
+        payload.accountId = acc;
+      } else {
+        const pidStr = document.getElementById('wbPlayerIdInput')?.value?.trim();
+        const pid = parseInt(pidStr, 10) || 0;
+        payload.playerId = pid;
+      }
+
       try {
-        const res = await apiFetch('/gm-console/api/workbench/test-login', 'POST', {
-          playerId: pid,
-          timeoutMs: 5000
-        });
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = '登录中...';
+        }
+        if (tip) tip.style.display = 'none';
+
+        const res = await apiFetch('/gm-console/api/workbench/test-login', 'POST', payload);
         if (res && res.ok && res.data) {
-          alert(`测试登录成功! 玩家ID: ${res.data.playerId}, 名称: ${res.data.name || '未命名'}, 是否虚拟连接: ${res.data.isVirtualClient}`);
+          window.WorkbenchApp.closeLoginModal();
+          alert(`测试登录成功!\n账号: ${res.data.accountId || '无'}\n玩家ID: ${res.data.playerId}\n名称: ${res.data.name || '未命名'}\n状态: ${res.data.reused ? '复用已有角色' : '新创建测试角色'}`);
           await loadOnlinePlayers();
           state.selectedPlayerId = res.data.playerId;
-          renderModuleWorkbench(state.currentModule.moduleId);
+          if (state.currentModule) {
+            renderModuleWorkbench(state.currentModule.moduleId);
+          }
         } else {
-          alert(`测试登录失败: ${res?.message || '未知错误'}`);
+          if (tip) {
+            tip.style.display = 'block';
+            tip.style.background = '#450a0a';
+            tip.style.color = '#fca5a5';
+            tip.innerText = `测试登录失败: ${res?.summary || res?.message || '未知错误'}`;
+          } else {
+            alert(`测试登录失败: ${res?.summary || res?.message || '未知错误'}`);
+          }
         }
       } catch (e) {
-        alert(`测试登录请求异常: ${e.message}`);
+        if (tip) {
+          tip.style.display = 'block';
+          tip.style.background = '#450a0a';
+          tip.style.color = '#fca5a5';
+          tip.innerText = `测试登录异常: ${e.message}`;
+        } else {
+          alert(`测试登录请求异常: ${e.message}`);
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = '立即登录';
+        }
       }
     },
     switchSubTab: function (tab) {

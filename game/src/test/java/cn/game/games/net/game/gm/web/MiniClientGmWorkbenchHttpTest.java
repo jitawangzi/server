@@ -258,6 +258,60 @@ public class MiniClientGmWorkbenchHttpTest {
 	}
 
 	/**
+	 * TC-WORKBENCH-ACCOUNT-AND-PLAYER-TEST-LOGIN: 验证非在线玩家ID及账号名渠道测试登录与复用
+	 */
+	@Test
+	public void testLoginForOfflinePlayerAndAccount() throws Exception {
+		long newPlayerId = 55667788L;
+		// 1. 尝试使用未在线的 playerId 进行测试登录 (自闭环创建/装配)
+		HttpRequest offlineReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/test-login"))
+				.header("Content-Type", "application/json")
+				.POST(HttpRequest.BodyPublishers.ofString("{\"playerId\":" + newPlayerId + "}"))
+				.build();
+		HttpResponse<String> offlineResp = httpClient.send(offlineReq, HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(200, offlineResp.statusCode());
+		JsonNode offlineJson = MAPPER.readTree(offlineResp.body());
+		Assertions.assertTrue(offlineJson.get("ok").asBoolean(), "未在线玩家登录应当自闭环成功");
+		JsonNode offlineData = offlineJson.get("data");
+		Assertions.assertFalse(offlineData.get("reused").asBoolean(), "新创建测试玩家 reused=false");
+		Assertions.assertEquals(newPlayerId, offlineData.get("playerId").asLong());
+		Assertions.assertTrue(offlineData.get("isVirtualClient").asBoolean());
+
+		// 2. 再次使用相同的 playerId 登录，应当复用已在线角色
+		HttpResponse<String> reusePidResp = httpClient.send(offlineReq, HttpResponse.BodyHandlers.ofString());
+		JsonNode reusePidJson = MAPPER.readTree(reusePidResp.body());
+		Assertions.assertTrue(reusePidJson.get("ok").asBoolean());
+		Assertions.assertTrue(reusePidJson.get("data").get("reused").asBoolean(), "再次登录应当 reused=true");
+
+		// 3. 尝试使用纯账号名 (accountId) 进行登录
+		String accountName = "qa_tester_01";
+		HttpRequest accountReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/test-login"))
+				.header("Content-Type", "application/json")
+				.POST(HttpRequest.BodyPublishers.ofString("{\"accountId\":\"" + accountName + "\"}"))
+				.build();
+		HttpResponse<String> accountResp = httpClient.send(accountReq, HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(200, accountResp.statusCode());
+		JsonNode accountJson = MAPPER.readTree(accountResp.body());
+		Assertions.assertTrue(accountJson.get("ok").asBoolean(), "账号名登录应当成功");
+		JsonNode accountData = accountJson.get("data");
+		Assertions.assertEquals(accountName, accountData.get("accountId").asText());
+		Assertions.assertEquals(accountName, accountData.get("name").asText());
+		Assertions.assertTrue(accountData.get("playerId").asLong() > 0);
+
+		// 4. 再次使用相同的 accountId 登录，应当复用已在线角色
+		HttpResponse<String> reuseAccResp = httpClient.send(accountReq, HttpResponse.BodyHandlers.ofString());
+		JsonNode reuseAccJson = MAPPER.readTree(reuseAccResp.body());
+		Assertions.assertTrue(reuseAccJson.get("ok").asBoolean());
+		Assertions.assertTrue(reuseAccJson.get("data").get("reused").asBoolean(), "相同账号名再次登录应当 reused=true");
+
+		// 清理新创建的测试玩家
+		unregisterPlayer(newPlayerId);
+		unregisterPlayer(accountData.get("playerId").asLong());
+	}
+
+	/**
 	 * TC-12-WEB-CONSOLE-STATIC-AND-PANELS: 单页工作台静态首页与 workbench.js 资源加载测试
 	 */
 	@Test
