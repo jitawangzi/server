@@ -191,7 +191,7 @@ public class ItemModuleAcceptanceSuite implements ModuleAcceptanceSuite {
             }
 
             // 2. 出售分解全量扫描
-            if (item.Decompose != null && item.Decompose.length > 0) {
+            if (item.Decompose != null && item.Decompose.length >= 2 && item.Decompose[0] > 0 && item.Decompose[1] > 0) {
                 String branchKey = "ITEM_SELL_DECOMPOSE";
                 String caseId = "MATRIX_ITEM_SELL_" + item.ID;
                 ctx.executeMatrixRow(caseId, "ItemConfig", item.ID, branchKey,
@@ -208,6 +208,9 @@ public class ItemModuleAcceptanceSuite implements ModuleAcceptanceSuite {
                         },
                         result -> {
                             InProcessAcceptanceKit.assertProtocolSuccess(result);
+                            if (item.Decompose[0] != item.ID) {
+                                InProcessAcceptanceKit.assertResourceDelta(result, item.Decompose[0], (long) item.Decompose[1]);
+                            }
                         }
                 );
             }

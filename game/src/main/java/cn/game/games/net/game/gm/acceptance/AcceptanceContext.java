@@ -131,7 +131,10 @@ public class AcceptanceContext {
             log.warn("功能契约用例未通过: caseId={}, status={}", caseId, status, t);
         } finally {
             try {
-                ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+                if (sandboxPlayer != null) {
+                    SandboxExecutionGuard.enableConditionBypass(sandboxPlayer.getPlayerId(), false);
+                    ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+                }
                 Rnd.resetControlledRandom();
             } catch (Exception e) {
                 log.warn("契约用例后置清理异常: caseId={}", caseId, e);
@@ -224,8 +227,9 @@ public class AcceptanceContext {
                 }
                 if (errorCode != 0 || hasTraceErrors(invokeResult)) {
                     status = AcceptanceCaseStatus.SUT_FAILURE;
-                    defectCategory = detectDefectCategory(errorCode, invokeResult != null ? String.valueOf(invokeResult.get("message")) : "");
-                    message = invokeResult != null ? String.valueOf(invokeResult.get("message")) : "业务协议返回错误";
+                    String extractedMsg = extractErrorMessage(invokeResult);
+                    defectCategory = detectDefectCategory(errorCode, extractedMsg);
+                    message = extractedMsg;
                 }
             } catch (Throwable t) {
                 status = AcceptanceCaseStatus.SUT_FAILURE;
@@ -257,7 +261,10 @@ public class AcceptanceContext {
 
         // 阶段 5: TEARDOWN
         try {
-            ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+            if (sandboxPlayer != null) {
+                SandboxExecutionGuard.enableConditionBypass(sandboxPlayer.getPlayerId(), false);
+                ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+            }
             Rnd.resetControlledRandom();
         } catch (Exception e) {
             log.warn("矩阵扫描后置清理异常: caseId={}", caseId, e);
@@ -347,6 +354,34 @@ public class AcceptanceContext {
             return errors instanceof List && !((List<?>) errors).isEmpty();
         }
         return false;
+    }
+
+    private static String extractErrorMessage(Map<String, Object> invokeResult) {
+        if (invokeResult == null) {
+            return "业务协议返回结果为空";
+        }
+        Object desc = invokeResult.get("errorDesc");
+        if (desc != null && !String.valueOf(desc).isBlank()) {
+            return String.valueOf(desc);
+        }
+        Object msg = invokeResult.get("message");
+        if (msg != null && !String.valueOf(msg).isBlank()) {
+            return String.valueOf(msg);
+        }
+        Object name = invokeResult.get("errorName");
+        if (name != null && !String.valueOf(name).isBlank()) {
+            return String.valueOf(name);
+        }
+        Object traceObj = invokeResult.get("trace");
+        if (traceObj instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> trace = (Map<String, Object>) traceObj;
+            Object errors = trace.get("errorEvents");
+            if (errors instanceof List && !((List<?>) errors).isEmpty()) {
+                return "服务端内部异常: " + ((List<?>) errors).get(0);
+            }
+        }
+        return "业务协议返回非零错误码";
     }
 
     private static String detectDefectCategory(int errorCode, String message) {

@@ -41,7 +41,13 @@ public class SandboxResetter {
         if (moduleNames != null && moduleNames.length > 0) {
             for (String name : moduleNames) {
                 if (name != null && !name.isBlank()) {
-                    filter.add(name.trim().toLowerCase());
+                    String clean = name.trim().toLowerCase();
+                    filter.add(clean);
+                    if (clean.endsWith("module")) {
+                        filter.add(clean.substring(0, clean.length() - "module".length()));
+                    } else {
+                        filter.add(clean + "module");
+                    }
                 }
             }
         }
@@ -51,9 +57,11 @@ public class SandboxResetter {
             if (module == null) {
                 continue;
             }
+            String key = entry.getKey() != null ? entry.getKey().toLowerCase() : "";
             String fullName = module.getClass().getName().toLowerCase();
             String simpleName = module.getClass().getSimpleName().toLowerCase();
-            if (filter.isEmpty() || filter.contains(fullName) || filter.contains(simpleName)) {
+            String strippedName = simpleName.endsWith("module") ? simpleName.substring(0, simpleName.length() - 6) : simpleName;
+            if (filter.isEmpty() || filter.contains(key) || filter.contains(fullName) || filter.contains(simpleName) || filter.contains(strippedName)) {
                 try {
                     module.resetForTest();
                 } catch (Throwable t) {

@@ -19,11 +19,13 @@ import cn.game.games.net.game.gm.acceptance.ModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.SandboxResetter;
 import cn.game.games.net.game.module.shop.ShopHandler;
 import cn.game.protocol.generated.config.ChapterPacksConfig;
+import cn.game.protocol.generated.config.FundPassConfig;
 import cn.game.protocol.generated.config.MonthCardConfig;
 import cn.game.protocol.generated.config.RechargeConfig;
 import cn.game.protocol.generated.config.ShopConfig;
 import cn.game.protocol.generated.config.ShopItemConfig;
 import cn.game.protocol.generated.manager.ChapterPacksManager;
+import cn.game.protocol.generated.manager.FundPassManager;
 import cn.game.protocol.generated.manager.MonthCardManager;
 import cn.game.protocol.generated.manager.RechargeManager;
 import cn.game.protocol.generated.manager.ShopItemManager;
@@ -231,15 +233,26 @@ public class ShopModuleAcceptanceSuite implements ModuleAcceptanceSuite {
 
         // 7. 契约用例：通行证购买与重复购买防护
         ctx.executeContractCase("CONTRACT:fund_pass_buy_and_repeat_guard", "通行证购买与重复购买防刷拦截", () -> {
-            Map<String, Object> req = Map.of("id", 1);
-            Map<String, Object> res1 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.ShopFundPassBuyRequest_15000030, req);
-            if (res1 != null) {
-                Object errObj = res1.get("errorCode");
-                int code = (errObj instanceof Number) ? ((Number) errObj).intValue() : -1;
-                if (code == 0) {
-                    Map<String, Object> res2 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.ShopFundPassBuyRequest_15000030, req);
-                    InProcessAcceptanceKit.assertErrorCode(res2, ErrorMsgEnum.repeat_request.getId());
+            FundPassConfig target = null;
+            if (FundPassManager.instance() != null) {
+                for (FundPassConfig cfg : FundPassManager.instance().list()) {
+                    if (cfg.Price != null && cfg.Price.length > 0) {
+                        target = cfg;
+                        break;
+                    }
                 }
+            }
+            if (target != null) {
+                SandboxResetter.resetModules(player, "shop", "currency");
+                ConditionSatisfier.satisfyAllFunctionsAndBaseLevel(player, 100, 15, 100);
+                CostProvisioner.provisionShopPayment(player, target.Price, 1);
+
+                Map<String, Object> req = Map.of("id", target.ID);
+                Map<String, Object> res1 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.ShopFundPassBuyRequest_15000030, req);
+                InProcessAcceptanceKit.assertProtocolSuccess(res1);
+
+                Map<String, Object> res2 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.ShopFundPassBuyRequest_15000030, req);
+                InProcessAcceptanceKit.assertErrorCode(res2, ErrorMsgEnum.repeat_request.getId());
             }
         });
     }

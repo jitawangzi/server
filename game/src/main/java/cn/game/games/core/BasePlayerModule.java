@@ -575,6 +575,8 @@ public abstract class BasePlayerModule implements Comparable<BasePlayerModule>, 
 								fmw.clear();
 							} else if (val instanceof cn.game.util.StringMapWrapper smw) {
 								smw.clear();
+							} else if (val instanceof com.google.common.collect.Multimap<?, ?> mm) {
+								mm.clear();
 							} else if (val instanceof java.util.concurrent.atomic.AtomicInteger ai) {
 								ai.set(0);
 							} else if (val instanceof java.util.concurrent.atomic.AtomicLong al) {

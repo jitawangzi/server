@@ -153,6 +153,9 @@ public class ModuleAcceptanceEngine {
             long totalElapsedMs = Math.max(0L, (System.nanoTime() - startNs) / 1_000_000L);
             return ctx.buildReport(suite.getModuleId(), suite.getModuleKey(), suite.getTitle(), totalElapsedMs);
         } finally {
+            if (sandboxPlayer != null) {
+                SandboxExecutionGuard.enableConditionBypass(sandboxPlayer.getPlayerId(), false);
+            }
             SandboxExecutionGuard.setSandboxThreadMuted(false);
         }
     }

@@ -251,7 +251,9 @@ public class InProcessAcceptanceKit {
         Object errObj = invokeResult.get("errorCode");
         int errCode = (errObj instanceof Number) ? ((Number) errObj).intValue() : -1;
         if (errCode != 0) {
-            throw new AssertionError("协议执行返回业务错误码: " + errCode + ", errorName=" + invokeResult.get("errorName") + ", msg=" + invokeResult.get("message"));
+            Object desc = invokeResult.get("errorDesc");
+            String errDesc = desc != null ? String.valueOf(desc) : String.valueOf(invokeResult.get("message"));
+            throw new AssertionError("协议执行返回业务错误码: " + errCode + ", errorName=" + invokeResult.get("errorName") + ", desc=" + errDesc);
         }
         Object traceObj = invokeResult.get("trace");
         if (traceObj instanceof Map) {
@@ -289,7 +291,9 @@ public class InProcessAcceptanceKit {
                     }
                 }
             }
-            throw new AssertionError("期望业务错误码 " + expectedErrorCode + "，实际返回: " + actualCode + " (" + invokeResult.get("errorName") + ")");
+            Object desc = invokeResult.get("errorDesc");
+            String errDesc = desc != null ? String.valueOf(desc) : String.valueOf(invokeResult.get("errorName"));
+            throw new AssertionError("期望业务错误码 " + expectedErrorCode + "，实际返回: " + actualCode + " (" + errDesc + ")");
         }
     }
 

@@ -502,4 +502,19 @@ public class ShopModule extends BasePlayerModule {
 		}
 	}
 
+	@Override
+	protected void afterResetForTest() {
+		if (this.shopItemsMap == null) {
+			this.shopItemsMap = com.google.common.collect.ArrayListMultimap.create();
+		}
+		if (this.fundPassRewardsMap == null) {
+			this.fundPassRewardsMap = new java.util.HashMap<>();
+		}
+		if (this.heishiRefreshTimesMap == null) {
+			this.heishiRefreshTimesMap = new cn.game.util.IntMapWrapper();
+		}
+		initShop();
+		initFundPass();
+	}
+
 }
