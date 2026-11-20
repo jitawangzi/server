@@ -1225,6 +1225,9 @@ public class PlayerHelper {
 		if (condition == 0) { // 一般认为没有配置条件，默认符合。
 			return true;
 		}
+		if (player != null && cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isConditionBypassEnabled(player.getPlayerId())) {
+			return true;
+		}
 		ConditionConfig conditionConfig = ConditionManager.instance().get(condition);
 		long conditionCount = getConditionCount(player, condition); 
 		return operator(conditionCount, conditionConfig.numParam, conditionConfig.operator) ; 

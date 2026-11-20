@@ -322,6 +322,8 @@ public class ProtocolSimulationService {
 		int finalErrCode = 0;
 		if (explicitErrorCode != 0) {
 			finalErrCode = explicitErrorCode;
+		} else if (errorPushPacket != null && errorPushPacket.getErrorCode() != 0 && (mainRespPacket == null || mainRespPacket.getErrorCode() == 0 || mainRespPacket.getErrorCode() == ErrorMsgEnum.unknown.getId())) {
+			finalErrCode = errorPushPacket.getErrorCode();
 		} else if (mainRespPacket != null && mainRespPacket.getErrorCode() != 0) {
 			finalErrCode = mainRespPacket.getErrorCode();
 		} else if (errorPushPacket != null && errorPushPacket.getErrorCode() != 0) {

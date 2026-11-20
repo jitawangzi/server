@@ -365,6 +365,7 @@ public class FeatureWorkbenchService {
 			map.put("errors", errors);
 			map.put("actions", actions);
 			map.put("matchedPanels", matchedPanels);
+			map.put("acceptanceSuite", cn.game.games.net.game.gm.acceptance.ModuleAcceptanceEngine.getInstance().getSuiteSummary(this.moduleId));
 			return map;
 		}
 

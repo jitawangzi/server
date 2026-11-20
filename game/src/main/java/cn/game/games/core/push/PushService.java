@@ -41,10 +41,16 @@ public class PushService {
 	}
 
 	public void pushMessage(Message protoMessage, boolean immediate, String... tags) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted() || messageQueue == null) {
+			return;
+		}
 		messageQueue.addMessage(protoMessage, immediate, tags);
 	}
 
 	public void pushMessage(Message protoMessage, String... tags) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted() || messageQueue == null) {
+			return;
+		}
 		messageQueue.addMessage(protoMessage, true, tags);
 	}
 

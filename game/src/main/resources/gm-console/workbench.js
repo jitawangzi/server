@@ -142,10 +142,11 @@
             <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">
               Key: <code>${escapeHtml(m.moduleKey)}</code>${fnBadge}
             </div>
-            <div style="display:flex; gap:12px; font-size:0.8rem; color:#94a3b8;">
+            <div style="display:flex; gap:12px; font-size:0.8rem; color:#94a3b8; align-items:center; flex-wrap:wrap;">
               <span>⚡ 请求: <b>${reqCount}</b></span>
               <span>📡 推送: <b>${pushCount}</b></span>
               <span>🛠️ 快捷GM: <b>${actCount}</b></span>
+              ${m.acceptanceSuite && m.acceptanceSuite.available ? `<span class="badge" style="background:#10b981; color:#fff;">✅ 自动化验收 (${(m.acceptanceSuite.declaredBranches||[]).length}分支)</span>` : ''}
             </div>
           </div>
         `;
@@ -158,6 +159,93 @@
     `;
 
     container.innerHTML = html;
+  }
+
+  function renderAcceptanceCenter(mod) {
+    if (!mod.acceptanceSuite || !mod.acceptanceSuite.available) {
+      return '';
+    }
+    const report = state.acceptanceReports && state.acceptanceReports[mod.moduleId];
+    return `
+      <div class="card" style="margin-bottom:16px; border:1px solid #10b981; background:linear-gradient(to right, rgba(16, 185, 129, 0.05), rgba(15, 23, 42, 0.8));">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.1rem; font-weight:700; color:#10b981;">🛡️ 模块自动化验收与配表全集扫描中心</span>
+            <span class="badge" style="background:#10b981; color:#fff;">已接入 (${(mod.acceptanceSuite.declaredBranches||[]).length} 分支)</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" style="border-color:#38bdf8; color:#38bdf8;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'CONTRACT')">🧪 功能契约验收 (CONTRACT)</button>
+            <button class="btn btn-secondary" style="border-color:#f59e0b; color:#f59e0b;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'MATRIX_SCAN')">📊 多态全量配表扫描 (MATRIX_SCAN)</button>
+            <button class="btn btn-primary" style="background:#10b981;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'ALL')">🚀 一键全量验收 (ALL)</button>
+          </div>
+        </div>
+        ${report ? renderAcceptanceReport(report, mod.moduleId) : '<div style="font-size:0.85rem; color:var(--text-muted);">尚未执行验收。点击上方按钮启动进程内双轨验收与配表全集扫描。</div>'}
+      </div>
+    `;
+  }
+
+  function renderAcceptanceReport(report, moduleId) {
+    const branches = report.branchCoverage || [];
+    const failedItems = report.failedItems || [];
+
+    let branchHtml = branches.map(b => {
+      let badgeStyle = 'background:#10b981; color:#fff;';
+      let text = `✅ ${escapeHtml(b.branchKey)} (${b.passed}/${b.total})`;
+      if (b.total === 0) {
+        badgeStyle = 'background:#eab308; color:#000;';
+        text = `⚠️ ${escapeHtml(b.branchKey)} (0命中)`;
+      } else if (b.failed > 0) {
+        badgeStyle = 'background:#ef4444; color:#fff;';
+        text = `❌ ${escapeHtml(b.branchKey)} (${b.failed}失败)`;
+      }
+      return `<span class="badge" style="${badgeStyle}; padding:4px 8px; margin:2px;">${text}</span>`;
+    }).join(' ');
+
+    let failedHtml = '';
+    if (failedItems.length > 0) {
+      failedHtml = `
+        <div style="margin-top:14px;">
+          <div style="font-weight:700; color:#ef4444; margin-bottom:8px;">❌ 失败用例与配表缺陷诊断 (${failedItems.length} 项)</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${failedItems.map(item => `
+              <div style="background:#0f172a; border:1px solid #ef4444; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                  <div>
+                    <span style="font-weight:700; color:#f87171;">${escapeHtml(item.caseId || '')}</span>
+                    <span class="badge" style="background:#dc2626; color:#fff; margin-left:6px;">${escapeHtml(item.status || '')}</span>
+                    <span class="badge" style="background:#64748b; color:#fff; margin-left:4px;">${escapeHtml(item.defectCategory || '')}</span>
+                    ${item.configTable ? `<span style="font-size:0.8rem; color:#94a3b8; margin-left:8px;">配表: <code>${escapeHtml(item.configTable)}:${item.configId}</code></span>` : ''}
+                    ${item.branchKey ? `<span style="font-size:0.8rem; color:#38bdf8; margin-left:8px;">分支: <code>${escapeHtml(item.branchKey)}</code></span>` : ''}
+                  </div>
+                  <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="window.WorkbenchApp.runAcceptance(${moduleId}, '${report.mode}', '${escapeHtml(item.caseId)}')">🔄 单条重试</button>
+                </div>
+                <div style="margin-top:6px; font-size:0.85rem; color:#fca5a5;">
+                  <b>${item.errorCode ? `错误码 [${item.errorCode}] ${escapeHtml(item.errorName || '')}: ` : ''}</b>${escapeHtml(item.message || '')}
+                </div>
+                ${item.stackExcerpt ? `<pre style="margin-top:6px; padding:6px; background:#020617; border-radius:4px; font-size:0.75rem; color:#fca5a5; overflow-x:auto;">${escapeHtml(item.stackExcerpt)}</pre>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div>
+        <div style="display:flex; gap:16px; font-size:0.9rem; margin-bottom:10px; background:#0f172a; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
+          <span>模式: <b>${escapeHtml(report.mode)}</b></span>
+          <span>总执行: <b>${report.totalCases}</b></span>
+          <span style="color:#10b981;">通过: <b>${report.passedCases}</b></span>
+          <span style="color:#ef4444;">失败: <b>${report.failedCases}</b></span>
+          <span>耗时: <b>${report.elapsedMs} ms</b></span>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="font-size:0.85rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">多态分支覆盖度:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:4px;">${branchHtml}</div>
+        </div>
+        ${failedHtml}
+      </div>
+    `;
   }
 
   // 2. 渲染单个模块的工作台
@@ -198,6 +286,8 @@
           <button class="btn btn-secondary" style="padding:6px 10px; font-size:0.8rem;" onclick="window.WorkbenchApp.quickTestLogin()">➕ 测试登录</button>
         </div>
       </div>
+
+      ${renderAcceptanceCenter(mod)}
 
       <div style="display:grid; grid-template-columns: 320px 1fr; gap:16px;">
         <!-- 左侧导航: 协议列表、推送、错误码、GM动作 -->
@@ -247,6 +337,93 @@
     `;
 
     container.innerHTML = html;
+  }
+
+  function renderAcceptanceCenter(mod) {
+    if (!mod.acceptanceSuite || !mod.acceptanceSuite.available) {
+      return '';
+    }
+    const report = state.acceptanceReports && state.acceptanceReports[mod.moduleId];
+    return `
+      <div class="card" style="margin-bottom:16px; border:1px solid #10b981; background:linear-gradient(to right, rgba(16, 185, 129, 0.05), rgba(15, 23, 42, 0.8));">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.1rem; font-weight:700; color:#10b981;">🛡️ 模块自动化验收与配表全集扫描中心</span>
+            <span class="badge" style="background:#10b981; color:#fff;">已接入 (${(mod.acceptanceSuite.declaredBranches||[]).length} 分支)</span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" style="border-color:#38bdf8; color:#38bdf8;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'CONTRACT')">🧪 功能契约验收 (CONTRACT)</button>
+            <button class="btn btn-secondary" style="border-color:#f59e0b; color:#f59e0b;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'MATRIX_SCAN')">📊 多态全量配表扫描 (MATRIX_SCAN)</button>
+            <button class="btn btn-primary" style="background:#10b981;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'ALL')">🚀 一键全量验收 (ALL)</button>
+          </div>
+        </div>
+        ${report ? renderAcceptanceReport(report, mod.moduleId) : '<div style="font-size:0.85rem; color:var(--text-muted);">尚未执行验收。点击上方按钮启动进程内双轨验收与配表全集扫描。</div>'}
+      </div>
+    `;
+  }
+
+  function renderAcceptanceReport(report, moduleId) {
+    const branches = report.branchCoverage || [];
+    const failedItems = report.failedItems || [];
+
+    let branchHtml = branches.map(b => {
+      let badgeStyle = 'background:#10b981; color:#fff;';
+      let text = `✅ ${escapeHtml(b.branchKey)} (${b.passed}/${b.total})`;
+      if (b.total === 0) {
+        badgeStyle = 'background:#eab308; color:#000;';
+        text = `⚠️ ${escapeHtml(b.branchKey)} (0命中)`;
+      } else if (b.failed > 0) {
+        badgeStyle = 'background:#ef4444; color:#fff;';
+        text = `❌ ${escapeHtml(b.branchKey)} (${b.failed}失败)`;
+      }
+      return `<span class="badge" style="${badgeStyle}; padding:4px 8px; margin:2px;">${text}</span>`;
+    }).join(' ');
+
+    let failedHtml = '';
+    if (failedItems.length > 0) {
+      failedHtml = `
+        <div style="margin-top:14px;">
+          <div style="font-weight:700; color:#ef4444; margin-bottom:8px;">❌ 失败用例与配表缺陷诊断 (${failedItems.length} 项)</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${failedItems.map(item => `
+              <div style="background:#0f172a; border:1px solid #ef4444; border-radius:6px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                  <div>
+                    <span style="font-weight:700; color:#f87171;">${escapeHtml(item.caseId || '')}</span>
+                    <span class="badge" style="background:#dc2626; color:#fff; margin-left:6px;">${escapeHtml(item.status || '')}</span>
+                    <span class="badge" style="background:#64748b; color:#fff; margin-left:4px;">${escapeHtml(item.defectCategory || '')}</span>
+                    ${item.configTable ? `<span style="font-size:0.8rem; color:#94a3b8; margin-left:8px;">配表: <code>${escapeHtml(item.configTable)}:${item.configId}</code></span>` : ''}
+                    ${item.branchKey ? `<span style="font-size:0.8rem; color:#38bdf8; margin-left:8px;">分支: <code>${escapeHtml(item.branchKey)}</code></span>` : ''}
+                  </div>
+                  <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="window.WorkbenchApp.runAcceptance(${moduleId}, '${report.mode}', '${escapeHtml(item.caseId)}')">🔄 单条重试</button>
+                </div>
+                <div style="margin-top:6px; font-size:0.85rem; color:#fca5a5;">
+                  <b>${item.errorCode ? `错误码 [${item.errorCode}] ${escapeHtml(item.errorName || '')}: ` : ''}</b>${escapeHtml(item.message || '')}
+                </div>
+                ${item.stackExcerpt ? `<pre style="margin-top:6px; padding:6px; background:#020617; border-radius:4px; font-size:0.75rem; color:#fca5a5; overflow-x:auto;">${escapeHtml(item.stackExcerpt)}</pre>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div>
+        <div style="display:flex; gap:16px; font-size:0.9rem; margin-bottom:10px; background:#0f172a; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
+          <span>模式: <b>${escapeHtml(report.mode)}</b></span>
+          <span>总执行: <b>${report.totalCases}</b></span>
+          <span style="color:#10b981;">通过: <b>${report.passedCases}</b></span>
+          <span style="color:#ef4444;">失败: <b>${report.failedCases}</b></span>
+          <span>耗时: <b>${report.elapsedMs} ms</b></span>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div style="font-size:0.85rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">多态分支覆盖度:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:4px;">${branchHtml}</div>
+        </div>
+        ${failedHtml}
+      </div>
+    `;
   }
 
   function renderPlayerOptions() {
@@ -732,6 +909,33 @@
       await loadCatalog();
       await loadOnlinePlayers();
       renderModuleCatalog();
+    },
+    runAcceptance: async function (moduleId, mode, caseId) {
+      if (!state.acceptanceReports) {
+        state.acceptanceReports = {};
+      }
+      try {
+        const body = {
+          moduleId: moduleId,
+          mode: mode || 'ALL',
+          caseId: caseId || '',
+          maxMatrixRows: 2000
+        };
+        const res = await fetch('/gm-console/api/workbench/acceptance/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if ((json.ok || json.code === 0 || json.errorCode === 0) && json.data) {
+          state.acceptanceReports[moduleId] = json.data.report || json.data;
+          renderModuleWorkbench(moduleId);
+        } else {
+          alert('执行验收失败: ' + (json.summary || json.message || json.msg || '未知错误'));
+        }
+      } catch (e) {
+        alert('调用验收接口异常: ' + e.message);
+      }
     },
     selectRequest: function (msgId) {
       if (!state.currentModule) return;

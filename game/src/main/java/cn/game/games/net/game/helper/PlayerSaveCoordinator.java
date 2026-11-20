@@ -36,6 +36,18 @@ import io.vertx.core.Promise;
 public final class PlayerSaveCoordinator {
     /** 保存状态和恢复裁决日志。 */
     private static final Logger log = LoggerFactory.getLogger(PlayerSaveCoordinator.class);
+    /** 自动化验收沙盒玩家起始号段；该号段仅驻留内存并在变更时即时虚拟确认，不写入持久化介质。 */
+    public static final long SANDBOX_PLAYER_ID_MIN = 900_000_000_000L;
+
+    /**
+     * 判断指定玩家是否为自动化验收沙盒玩家
+     *
+     * @param playerId 玩家ID
+     * @return true表示属于沙盒免落盘号段
+     */
+    public static boolean isSandboxPlayerId(long playerId) {
+        return playerId >= SANDBOX_PLAYER_ID_MIN;
+    }
     /** 当前进程共享保存通道；首次使用才初始化资源。 */
     private static final class Shared {
         /** 独立等待计时器，不执行数据库工作。 */
@@ -71,7 +83,7 @@ public final class PlayerSaveCoordinator {
     /** 每次确认都绑定其自身代次与快照覆盖时点。 */
     public record Receipt(long playerId, long generation, long capturedAt, long committedAt) {}
     /** 已返回的超时/失败不被人工核对改写；诊断通过 status 读取。 */
-    record Submission(long generation, Future<Receipt> result) {}
+    public record Submission(long generation, Future<Receipt> result) {}
     /** 明确区分拒绝、无操作、未写入及结果不明，均不能当作持久化成功。 */
     public static final class SaveFailure extends IllegalStateException {
         /** 可供调用方区分的稳定原因。 */
@@ -149,7 +161,7 @@ public final class PlayerSaveCoordinator {
         Change(long version, long at) { this.version = version; this.at = at; }
     }
     /** 捕获开始时点和覆盖版本，不能用序列化完成时点冒充覆盖起点。 */
-    record Capture(long version, long at) {}
+    public record Capture(long version, long at) {}
     /** 同步业务作用域；跨快照的活动作用域始终保留原始风险时间。 */
     public final class Mutation implements AutoCloseable {
         private final long id, version, at;
@@ -162,7 +174,16 @@ public final class PlayerSaveCoordinator {
         public void close() {
             lanes.computeIfPresent(id, (key, lane) -> {
                 if (!closed && lane.owner == owner && lane.mutations.remove(this)) {
-                    if (lane.sealedVersion >= version) { changed(lane, at); }
+                    if (isSandboxPlayerId(id)) {
+                        lane.confirmedVersion = lane.version;
+                        lane.changes.clear();
+                        lane.dirtyAt = null;
+                        lane.snapshotAt = null;
+                        lane.protectedWrite = false;
+                        lane.warned = false;
+                    } else if (lane.sealedVersion >= version) {
+                        changed(lane, at);
+                    }
                     closed = true;
                 }
                 return lane;
@@ -243,10 +264,20 @@ public final class PlayerSaveCoordinator {
         this.capacityObserver = Objects.requireNonNull(capacityObserver);
     }
     /** @param owner 权威对象 @param id 玩家；捕获前登记风险，准备失败也不能清理玩家 */
-    Capture preparing(Object owner, long id) {
+    public Capture preparing(Object owner, long id) {
         AtomicReference<Capture> result = new AtomicReference<>();
         lanes.compute(id, (key, lane) -> {
             requireOwner(lane, owner, id);
+            if (isSandboxPlayerId(id)) {
+                lane.confirmedVersion = lane.version;
+                lane.changes.clear();
+                lane.dirtyAt = null;
+                lane.snapshotAt = null;
+                lane.protectedWrite = false;
+                lane.warned = false;
+                result.set(new Capture(lane.version, now()));
+                return lane;
+            }
             if (lane.paymentFrozen) { throw new SaveFailure("PAYMENT_FROZEN", id, 0, null); }
             long at = now();
             // beforeSave 也可能修改聚合字段，捕获失败仍保留原始风险。
@@ -263,13 +294,39 @@ public final class PlayerSaveCoordinator {
      * 接收已经捕获的参数，不在 IO 回调中访问在线 Player；拒绝也保留已观察未保存状态。
      * @param owner 权威玩家身份 @param data 独占参数 @param insert 是否创建 @return 本代等待视图
      */
-    Submission submit(Object owner, PlayerData data, boolean insert) {
+    public Submission submit(Object owner, PlayerData data, boolean insert) {
         return submit(owner, data, insert, null);
     }
     /** 带捕获边界的生产入口；旧测试/手工快照入口按提交时观察到的变化保守登记。 */
-    Submission submit(Object owner, PlayerData data, boolean insert, Capture capture) {
+    public Submission submit(Object owner, PlayerData data, boolean insert, Capture capture) {
         long id = data.getPlayerId();
         long generation = generations.incrementAndGet();
+        if (isSandboxPlayerId(id)) {
+            AtomicReference<Receipt> sandboxReceipt = new AtomicReference<>();
+            AtomicReference<SaveFailure> sandboxRejected = new AtomicReference<>();
+            lanes.compute(id, (key, lane) -> {
+                if (lane == null) { lane = new Lane(); lane.owner = owner; }
+                if (lane.owner != owner) {
+                    sandboxRejected.set(new SaveFailure("OWNER_CHANGED", id, generation, null));
+                    return lane;
+                }
+                long nowMs = now();
+                Receipt r = new Receipt(id, generation, capture == null ? nowMs : capture.at(), nowMs);
+                lane.confirmed = r;
+                lane.confirmedVersion = lane.version;
+                lane.changes.clear();
+                lane.dirtyAt = null;
+                lane.snapshotAt = null;
+                lane.protectedWrite = false;
+                lane.warned = false;
+                sandboxReceipt.set(r);
+                return lane;
+            });
+            if (sandboxRejected.get() != null) {
+                return new Submission(generation, Future.failedFuture(sandboxRejected.get()));
+            }
+            return new Submission(generation, Future.succeededFuture(sandboxReceipt.get()));
+        }
         AtomicReference<Job> accepted = new AtomicReference<>();
         AtomicReference<Job> start = new AtomicReference<>();
         AtomicReference<SaveFailure> rejected = new AtomicReference<>();
@@ -425,6 +482,9 @@ public final class PlayerSaveCoordinator {
     }
     /** @param id 玩家 @param changedAt 首次已知变更时间；调用者负责真实变更埋点，不能用保存尝试时间代替 */
     public void markDirty(long id, long changedAt) {
+        if (isSandboxPlayerId(id)) {
+            return;
+        }
         lanes.computeIfPresent(id, (key, lane) -> {
             changed(lane, Math.min(now(), changedAt));
             return lane;

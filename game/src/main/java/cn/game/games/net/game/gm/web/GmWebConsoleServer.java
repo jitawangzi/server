@@ -34,6 +34,9 @@ import cn.game.games.net.game.gm.GmDispatcher;
 import cn.game.games.net.game.gm.GmResult;
 import cn.game.games.net.game.gm.GmSecurityPolicy;
 import cn.game.games.net.game.gm.VirtualClockService;
+import cn.game.games.net.game.gm.acceptance.AcceptanceRunMode;
+import cn.game.games.net.game.gm.acceptance.ModuleAcceptanceEngine;
+import cn.game.games.net.game.gm.acceptance.ModuleAcceptanceReport;
 import cn.game.games.net.game.gm.proto.ProtocolSimulationService;
 import cn.game.games.net.game.gm.proto.ProtocolSimulationService.ProtoInvokeRequest;
 import cn.game.games.net.game.gm.proto.VirtualGameClient;
@@ -514,6 +517,86 @@ public class GmWebConsoleServer {
 		router.get("/gm-console/workbench.js").handler(ctx -> {
 			String js = loadWorkbenchJs();
 			ctx.response().putHeader("Content-Type", "application/javascript; charset=utf-8").end(js);
+		});
+
+		// 11. GET /gm-console/api/workbench/acceptance/suites
+		router.get("/gm-console/api/workbench/acceptance/suites").handler(ctx -> {
+			RunMode mode = GmSecurityPolicy.currentRunMode();
+			if (mode.isProduction()) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.production_gm_not_allow, "生产环境禁止访问模块验收套件"));
+				return;
+			}
+			sendJson(ctx, GmResult.success("ok", Map.of("suites", ModuleAcceptanceEngine.getInstance().listSuiteSummaries())));
+		});
+
+		// 12. POST /gm-console/api/workbench/acceptance/run
+		router.post("/gm-console/api/workbench/acceptance/run").handler(ctx -> {
+			RunMode mode = GmSecurityPolicy.currentRunMode();
+			if (mode.isProduction()) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.production_gm_not_allow, "生产环境禁止执行模块自动化验收"));
+				return;
+			}
+			io.vertx.core.json.JsonObject json;
+			try {
+				json = ctx.body().asJsonObject();
+			} catch (Exception e) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "请求体非合法JSON: " + e.getMessage()));
+				return;
+			}
+			if (json == null) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "请求体不能为空"));
+				return;
+			}
+
+			Object modIdObj = json.getValue("moduleId");
+			int moduleId = 0;
+			if (modIdObj instanceof Number) {
+				moduleId = ((Number) modIdObj).intValue();
+			} else if (modIdObj instanceof String) {
+				String s = ((String) modIdObj).trim();
+				try {
+					if (s.startsWith("0x") || s.startsWith("0X")) {
+						moduleId = Integer.parseInt(s.substring(2), 16);
+					} else {
+						moduleId = Integer.parseInt(s);
+					}
+				} catch (Exception e) {
+					moduleId = 0;
+				}
+			}
+			if (moduleId <= 0) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "moduleId 必须大于0"));
+				return;
+			}
+			if (ModuleAcceptanceEngine.getInstance().getSuite(moduleId) == null) {
+				sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "该模块尚未注册自动化验收套件: " + moduleId));
+				return;
+			}
+
+			String modeStr = json.getString("mode", "ALL");
+			AcceptanceRunMode runMode = AcceptanceRunMode.ALL;
+			try {
+				runMode = AcceptanceRunMode.valueOf(modeStr.toUpperCase());
+			} catch (Exception e) {
+				runMode = AcceptanceRunMode.ALL;
+			}
+			String caseId = json.getString("caseId", "");
+			int maxMatrixRows = json.getInteger("maxMatrixRows", 2000);
+
+			final int targetModuleId = moduleId;
+			final AcceptanceRunMode targetMode = runMode;
+			final String targetCaseId = caseId;
+			final int targetMaxRows = maxMatrixRows;
+
+			Thread.startVirtualThread(() -> {
+				try {
+					ModuleAcceptanceReport report = ModuleAcceptanceEngine.getInstance().runSuite(targetModuleId, targetMode, targetCaseId, targetMaxRows);
+					sendJson(ctx, GmResult.success("ok", report.toMap()));
+				} catch (Throwable t) {
+					log.warn("执行自动化验收失败: moduleId={}", targetModuleId, t);
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.unknown, "执行自动化验收异常: " + t.getMessage()));
+				}
+			});
 		});
 
 		// 5. 静态首页单页控制台

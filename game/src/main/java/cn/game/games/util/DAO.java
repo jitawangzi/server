@@ -101,6 +101,9 @@ public class DAO {
 	 * @return
 	 */
 	public static Future<List<Object>> executeDbTaskList(List<DbTask> tasks) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+			return Future.succeededFuture(java.util.Collections.emptyList());
+		}
 		return VxHolder.executeBlockingWithTimeout(() -> {
 			List<Object> ret = new ArrayList<>();
 			for (DbTask dbTask : tasks) {
@@ -113,6 +116,9 @@ public class DAO {
 	}
 
 	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.shouldBypassDaoMethod(method)) {
+			return Future.succeededFuture(null);
+		}
 		return VxHolder.executeBlockingWithTimeout(() -> (T) invoke(mapperClass, method, args));
 	}
 

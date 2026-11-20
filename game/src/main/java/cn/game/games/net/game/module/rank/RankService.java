@@ -125,6 +125,9 @@ public class RankService {
      * @param primaryScore 主要分数
      */
     public void setScore(String serverId, RankType type, long playerId, long primaryScore) {
+        if (cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId) || cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+            return;
+        }
         // 计算时间差：2030年 - 当前秒
         long nowSeconds = DateUtil.currentTimeSeconds();
         long timeDelta = BASE_END_TIME_SECONDS - nowSeconds;
@@ -174,6 +177,9 @@ public class RankService {
      * 内部私有实现：执行真正的 Redis 异步写入
      */
     private CompletionStage<Boolean> setScoreAsyncInternal(String serverId, RankType type, long playerId, long primaryScore, long secondaryScore) {
+        if (cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId) || cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+            return java.util.concurrent.CompletableFuture.completedFuture(true);
+        }
         // 统一计算
         double combinedScore = calculateCombinedScore(primaryScore, secondaryScore);
         
@@ -203,6 +209,9 @@ public class RankService {
 	 * @return 返回更新后的最终分数
 	 */
 	public double updateScore(String serverId, RankType type, long playerId, long score) {
+		if (cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId) || cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+			return 0.0;
+		}
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addScore(playerId, score);
 	}
@@ -217,6 +226,9 @@ public class RankService {
 	 * @return 返回更新后的最终分数
 	 */
 	public CompletionStage<Double> updateScoreAsync(String serverId, RankType type, long playerId, long score) {
+		if (cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId) || cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+			return java.util.concurrent.CompletableFuture.completedFuture(0.0);
+		}
 		RScoredSortedSet<Long> rank = getRankSet(serverId, type);
 		return rank.addScoreAsync(playerId, score);
 	}
