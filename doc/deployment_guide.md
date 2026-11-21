@@ -20,8 +20,8 @@
    - [4.3 全工程 Maven 打包](#43-全工程-maven-打包)
 5. [游戏服务启动 (GameServer 与 LoginServer)](#五游戏服务启动-gameserver-与-loginserver)
    - [5.1 启动参数详解](#51-启动参数详解)
-   - [5.2 脚本与 Windows Terminal 启动](#52-脚本与-windows-terminal-启动)
-6. [服务状态排查与常见问题 (FAQ)](#六服务状态排查与常见问题-faq)
+   - [5.2 启动脚本](#52-启动脚本)
+6. [服务状态验证](#六服务状态验证)
 
 ---
 
@@ -128,7 +128,7 @@ Vert.x 客户端在 ZK 的根命名空间为 `io.vertx`。已初始化 `game_tes
 ```cmd
 mvn package -DskipTests
 ```
-全工程 7 个子模块编译成功，并将所有依赖 jar 包自动复制到各模块 `target/lib/` 目录下。
+全工程 6 个子模块（`util`、`protocol`、`core`、`game`、`login`、`simulationclient`）编译成功，并将所有依赖 jar 包自动复制到各模块 `target/lib/` 目录下。
 
 ---
 

@@ -46,15 +46,15 @@ server/                           # [宿主主仓 server.git]
 
 提交代码或文档前，必须确认文件所属的真实 Git 仓库，**不能在宿主根执行一次 `git add` 就以为所有目录都已提交**：
 
-| 路径 | 归属仓库 | 能否直接修改 | 说明 |
+| 路径 | 归属仓库 / 跟踪状态 | 能否直接修改 | 说明 |
 |---|---|---|---|
-| `server/` 业务代码、`doc/`、`README.md` | `server.git`（宿主主仓） | 可修改 | 宿主已本地忽略 `.ai-workspace/`、`protocol/` 等 |
+| `server/` 业务代码、`doc/`、`README.md` | `server.git`（宿主主仓跟踪） | 可修改 | 宿主已忽略 `.ai-workspace/`、`protocol/` 等独立仓 |
 | `protocol/` | `protocol.git`（独立仓库） | 改 `.proto` 后由 `protocol.bat` 生成 | 单独检查 `git -C protocol status` 与提交 |
-| `.ai-sop/` | `agent-sop.git`（Git Submodule） | **禁止在宿主直接修改** | 通用 SOP 引擎，由 `tools/ai-sop/ai-sop.lock.json` 锁版本 |
-| `AGENTS.md`、`ANTIGRAVITY.md`、`CLAUDE.md`、`GEMINI.md`、`ai-sop.ps1`、`.agents/`、`.claude/`、`.codex/`、`.cursor/`、`.github/`、`.pi/` | 安装器投影产物 | **禁止手工编辑** | 均由 `install-ai-sop.ps1` 从 `.ai-sop/` 与 `.ai-workspace/skills/` 投影生成；改真源后重新投影 |
+| `.ai-sop/`、`tools/ai-sop/` | `agent-sop.git`（Git Submodule + 锁文件，`server.git` 跟踪） | **禁止在宿主直接修改** | 通用 SOP 引擎，由 `tools/ai-sop/ai-sop.lock.json` 锁版本 |
+| `ANTIGRAVITY.md`、`GEMINI.md`、`ai-sop.ps1` | 投影生成（**由 `server.git` 跟踪**） | **禁止手工编辑** | 随 SOP 升版由 `install-ai-sop.ps1` 重新投影，变更需随 `server.git` 提交 |
+| `AGENTS.md`、`CLAUDE.md`、`.agents/`、`.claude/`、`.codex/`、`.cursor/`、`.github/`、`.pi/` | 投影生成（**由 `.gitignore` 忽略**） | **禁止手工编辑** | 本机安装器投影生成；自建 Skill 请改 `.ai-workspace/skills/` 后重投（历史遗留的少量 `.claude/skills/*` 若仍被跟踪亦不得手改） |
 | `.ai-workspace/`（不含 `specs/`） | `ai-workspace.git`（独立仓库） | 可修改 | 存放本服领域知识、验证配置、自建 Skill 真源与脚本；提交使用其独立 Git / `commit.cmd` |
 | `.ai-workspace/specs/` | `game_specs.git`（独立仓库） | 可修改（状态由引擎写入） | 仅保存**本服功能/平台**的设计文档、任务与 `.artifacts/`；外层 `.ai-workspace/.gitignore` 隔离 |
-| `doc/old/` | 历史归档 | **只作背景查阅** | 含早期旧架构/Word 资料，不作为当前实现事实 |
 
 ---
 
@@ -66,6 +66,7 @@ server/                           # [宿主主仓 server.git]
 | 了解系统拓扑、节点职责、邮箱线程、存储与容错边界 | [doc/01_系统架构设计全景文档.md](doc/01_系统架构设计全景文档.md) |
 | 了解完整研发流程、配表/协议/业务落地与编码约束 | [doc/02_开发流程与研发规范手册.md](doc/02_开发流程与研发规范手册.md) |
 | 搭建 Windows 本地环境（MySQL/Redis/ZK/Apollo）与启停服务 | [doc/deployment_guide.md](doc/deployment_guide.md) |
+| 新人图文快速上手配置文档（**仅面向开发者人工阅读，AI 无需加载**） | [doc/Party项目服务端快速上手配置文档.docx](doc/Party项目服务端快速上手配置文档.docx) |
 | 排查线上/本地 Bug、查看日志与使用 GM Web 工作台 | [.ai-workspace/context/debugging-playbook.md](.ai-workspace/context/debugging-playbook.md) |
 | 查看充值跨进程与崩溃恢复专项验收标准 | [doc/payment-process-recovery.md](doc/payment-process-recovery.md) |
 | 查看配表结构与生成器规则（外部平级仓库） | [../dic_generate/配置表AI编码规范.md](../dic_generate/配置表AI编码规范.md) |
