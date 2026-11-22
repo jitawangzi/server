@@ -2,6 +2,8 @@ package cn.game.games.net.game.gm.acceptance;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ import cn.game.protocol.generated.manager.VIPManager;
 public class ConditionSatisfier {
 
     private static final Logger log = LoggerFactory.getLogger(ConditionSatisfier.class);
+
+    /** 记录通过 setSandboxGuildContext 注入了虚拟公会ID的沙盒玩家，避免在 Teardown 时误删真实跨服公会上下文 */
+    private static final Set<Long> VIRTUAL_GUILD_PLAYERS = ConcurrentHashMap.newKeySet();
 
     /**
      * 满足全部功能开启与基础高等级门槛
@@ -122,7 +127,22 @@ public class ConditionSatisfier {
      * @param player 目标沙盒玩家
      */
     public static void clearSandboxGuildContext(Player player) {
+        if (player != null) {
+            VIRTUAL_GUILD_PLAYERS.remove(player.getPlayerId());
+        }
         setSandboxGuildContext(player, 0L);
+    }
+
+    /**
+     * 仅当玩家的公会上下文是由 ConditionSatisfier 注入的虚拟公会ID时才在 Teardown 中自动清理，
+     * 避免在 GuildModuleAcceptanceSuite 等跨服真实公会验收中每条用例结束后误清空真实公会挂载。
+     *
+     * @param player 目标沙盒玩家
+     */
+    public static void clearVirtualGuildContextIfSet(Player player) {
+        if (player != null && VIRTUAL_GUILD_PLAYERS.remove(player.getPlayerId())) {
+            setSandboxGuildContext(player, 0L);
+        }
     }
 
     /**
@@ -139,12 +159,14 @@ public class ConditionSatisfier {
             Field field = GuildModule.class.getDeclaredField("guildJoin");
             field.setAccessible(true);
             if (virtualGuildId > 0) {
+                VIRTUAL_GUILD_PLAYERS.add(player.getPlayerId());
                 GuildJoin gj = new GuildJoin();
                 gj.setPlayerId(player.getPlayerId());
                 gj.setGuildId(virtualGuildId);
                 field.set(player.getGuildModule(), gj);
                 player.getData().setUnionId(virtualGuildId);
             } else {
+                VIRTUAL_GUILD_PLAYERS.remove(player.getPlayerId());
                 field.set(player.getGuildModule(), null);
                 player.getData().setUnionId(0L);
             }

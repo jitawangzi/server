@@ -487,4 +487,15 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			guild.handleEvent(GuildConstants.GuildEvenType.CROSS_DAY);
 		}
 	}
+
+	@Override
+	public void prepareBargainForAcceptance(long guildId, int bargainItemId, int bargainTotalNum) {
+		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
+		if (guildInfo == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
+		GuildBargain bargain = guildInfo.getModule().getBargain();
+		bargain.setBargainItemId(bargainItemId);
+		bargain.setBargainTotalNum(bargainTotalNum);
+	}
 }

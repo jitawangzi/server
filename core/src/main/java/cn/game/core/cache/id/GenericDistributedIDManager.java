@@ -72,6 +72,12 @@ public abstract class GenericDistributedIDManager {
 			if (isObjectInCurrentServer(objectId)) {
 				return ServerContext.getInstance().getServerId();
 			}
+			// 沙盒测试ID（>= 900_000_000_000L）直接读取 Redis 实时路由，避免跨服节点 Guava 本地缓存残留旧节点ID或空串
+			if (objectId >= 900_000_000_000L) {
+				String redisKey = generateRedisKey(objectId);
+				String serverId = RedisUtil.get(redisKey);
+				return serverId != null ? serverId : "";
+			}
 			return serverCache.get(objectId, () -> {
 				String redisKey = generateRedisKey(objectId);
 				String serverId = RedisUtil.get(redisKey);
@@ -102,15 +108,17 @@ public abstract class GenericDistributedIDManager {
 		}
 		String redisKey = generateRedisKey(objectId);
 		Future<String> future = Future.fromCompletionStage(RedisUtil.getAsync(redisKey));
-		future.onComplete(ret -> {
-			if (ret.result() == null) {
-				if (useCacheIfAbsent) {
-					setServerId(objectId, "");
+		if (objectId < 900_000_000_000L) {
+			future.onComplete(ret -> {
+				if (ret.result() == null) {
+					if (useCacheIfAbsent) {
+						setServerId(objectId, "");
+					}
+				} else {
+					setServerId(objectId, ret.result());
 				}
-			} else {
-				setServerId(objectId, ret.result());
-			}
-		});
+			});
+		}
 		return future;
 	}
 

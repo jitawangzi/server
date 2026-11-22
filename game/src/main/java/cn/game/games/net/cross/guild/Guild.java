@@ -303,12 +303,16 @@ public class Guild {
 
 		// 删除所有玩家
 		module.removeAllMember(quitType);
-		// 删除公会排行榜
-		RankService.getInstance().removeRankAsync(RankType.Guild,data.getServerId(), getId());
-		// 删除公会名称 id 映射
-		delGuildNameIdRedisData();
-		// 删除公会 simple 对象
-		RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_SIMPLE_DATA.key(getId()));
+		if (RedisUtil.getRedis() != null) {
+			// 删除公会排行榜
+			RankService.getInstance().removeRankAsync(RankType.Guild, data.getServerId(), getId());
+			// 删除公会名称 id 映射
+			delGuildNameIdRedisData();
+			// 删除公会 simple 对象
+			RedisLocalCache.getInstance().deleteAsync(CacheType.ZONG_MEN_SIMPLE_DATA.key(getId()));
+			// 删除公会所在服务器映射
+			GuildManager.getInstance().clearGuildServerId(data.getId());
+		}
 		// 删除数据库公会
 		DAO.delete(data);
 		GuildManager.getInstance().delGuild(data.getId());

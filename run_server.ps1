@@ -1,4 +1,4 @@
-#requires -Version 7.0
+﻿#requires -Version 7.0
 <#
 .SYNOPSIS
     本地运行入口。Prepare 构建独立制品；Start 显式确认测试数据范围；Stop 只操作本次登记的进程。
@@ -11,7 +11,9 @@ param(
     [string]$ApolloCluster='SYQ',
     [string]$GameId='game_test',
     [string]$LoginId='login_test',
+    [string]$CrossId='cross_test',
     [int]$IdentityPort=17011,
+    [switch]$IncludeCross,
     [switch]$ConfirmDataScope
 )
 & (Join-Path $PSScriptRoot '.ai-workspace/scripts/local-runtime.ps1') @PSBoundParameters

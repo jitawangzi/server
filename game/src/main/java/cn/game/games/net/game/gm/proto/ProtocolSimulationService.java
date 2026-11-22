@@ -195,6 +195,11 @@ public class ProtocolSimulationService {
 				player.setGameClient(effectiveClient);
 			}
 			final GameClient finalClient = effectiveClient;
+			boolean isSandboxPlayer = cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId);
+			boolean prevSandboxMuted = cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted();
+			if (isSandboxPlayer && !prevSandboxMuted) {
+				cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.setSandboxThreadMuted(true);
+			}
 
 			try {
 				// (1) 采集前置快照
@@ -236,6 +241,9 @@ public class ProtocolSimulationService {
 			} finally {
 				// 严格无条件清理探针与 Trace 上下文 (EX-06, INV-CAPTURE-HOOK-CLEANUP)
 				GameClient.endThreadLocalCapture();
+				if (isSandboxPlayer && !prevSandboxMuted) {
+					cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.setSandboxThreadMuted(false);
+				}
 
 				Object traceRecord = null;
 				if (traceBuilder != null) {

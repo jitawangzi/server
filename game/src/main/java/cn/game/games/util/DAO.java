@@ -101,12 +101,21 @@ public class DAO {
 	 * @return
 	 */
 	public static Future<List<Object>> executeDbTaskList(List<DbTask> tasks) {
-		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted()) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.isSandboxThreadMuted() || tasks == null || tasks.isEmpty()) {
+			return Future.succeededFuture(java.util.Collections.emptyList());
+		}
+		List<DbTask> effectiveTasks = new ArrayList<>(tasks.size());
+		for (DbTask dbTask : tasks) {
+			if (dbTask != null && !cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.shouldBypassDaoMethod(dbTask.getMethod(), dbTask.getArg())) {
+				effectiveTasks.add(dbTask);
+			}
+		}
+		if (effectiveTasks.isEmpty()) {
 			return Future.succeededFuture(java.util.Collections.emptyList());
 		}
 		return VxHolder.executeBlockingWithTimeout(() -> {
 			List<Object> ret = new ArrayList<>();
-			for (DbTask dbTask : tasks) {
+			for (DbTask dbTask : effectiveTasks) {
 				Object result = invoke(dbTask.getMapper(), dbTask.getMethod(), dbTask.getArg());
 				ret.add(result);
 			}
@@ -116,7 +125,7 @@ public class DAO {
 	}
 
 	public static <T> Future<@Nullable T> execute(Class<?> mapperClass, String method, Object... args) {
-		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.shouldBypassDaoMethod(method)) {
+		if (cn.game.games.net.game.gm.acceptance.SandboxExecutionGuard.shouldBypassDaoMethod(method, args)) {
 			return Future.succeededFuture(null);
 		}
 		return VxHolder.executeBlockingWithTimeout(() -> (T) invoke(mapperClass, method, args));

@@ -22,6 +22,7 @@ public final class RuntimeIdentityManifest {
         ServerType serverType = switch (System.getProperty("app.id", "")) {
             case "game" -> ServerType.Game;
             case "login" -> ServerType.Login;
+            case "cross" -> ServerType.Cross;
             default -> throw new IllegalArgumentException("RUNTIME_MANIFEST_APP_UNSUPPORTED");
         };
         // 复用真实入口的节点覆盖规则，避免把 Apollo 默认节点名计入待启动进程的期望摘要。

@@ -133,7 +133,7 @@ public class AcceptanceContext {
             try {
                 if (sandboxPlayer != null) {
                     SandboxExecutionGuard.enableConditionBypass(sandboxPlayer.getPlayerId(), false);
-                    ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+                    ConditionSatisfier.clearVirtualGuildContextIfSet(sandboxPlayer);
                 }
                 Rnd.resetControlledRandom();
             } catch (Exception e) {
@@ -263,7 +263,7 @@ public class AcceptanceContext {
         try {
             if (sandboxPlayer != null) {
                 SandboxExecutionGuard.enableConditionBypass(sandboxPlayer.getPlayerId(), false);
-                ConditionSatisfier.setSandboxGuildContext(sandboxPlayer, 0L);
+                ConditionSatisfier.clearVirtualGuildContextIfSet(sandboxPlayer);
             }
             Rnd.resetControlledRandom();
         } catch (Exception e) {
@@ -297,6 +297,10 @@ public class AcceptanceContext {
      * @return 验收汇总报告
      */
     public ModuleAcceptanceReport buildReport(int moduleId, String moduleKey, String title, long totalElapsedMs) {
+        return buildReport(moduleId, moduleKey, title, totalElapsedMs, Collections.emptyMap());
+    }
+
+    public ModuleAcceptanceReport buildReport(int moduleId, String moduleKey, String title, long totalElapsedMs, Map<String, Object> clusterTopology) {
         int totalCases = results.size();
         int passedCases = 0;
         int failedCases = 0;
@@ -339,7 +343,7 @@ public class AcceptanceContext {
 
         return new ModuleAcceptanceReport(moduleId, moduleKey, title, mode, totalCases, passedCases, failedCases,
                 provisionFailures, fixtureDefects, sutFailures, assertionFailures, totalElapsedMs,
-                branchCoverageList, failedItems, warnings, results);
+                branchCoverageList, failedItems, warnings, results, clusterTopology);
     }
 
     private static boolean hasTraceErrors(Map<String, Object> invokeResult) {

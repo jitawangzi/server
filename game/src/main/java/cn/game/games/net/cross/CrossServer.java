@@ -65,6 +65,7 @@ public class CrossServer {
 		long start = System.currentTimeMillis();
 
 		String serverId = GameUtil.parseServerId(args, ServerType.Cross);
+		cn.game.core.runtime.RuntimeStartup.verify(serverId);
 		Log4j2ApolloLoader.getInstance().init();
 		LoggerType.Stdout.logger.debug(System.getProperty("java.class.path"));
 		LoggerType.Stdout.logger.info("启动跨服。。");

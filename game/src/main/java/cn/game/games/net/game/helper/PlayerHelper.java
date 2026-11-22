@@ -2215,7 +2215,8 @@ public class PlayerHelper {
 	 */
 	public static Future<Boolean> checkContextData(Player player, String msg) {
 		Promise<Boolean> promise = Promise.promise();
-		if (Config.wechatAccessToken == null || Config.DISABLE_WECHAT_CONTENT_CHECK) {
+		if (Config.wechatAccessToken == null || Config.DISABLE_WECHAT_CONTENT_CHECK
+				|| (player != null && PlayerSaveCoordinator.isSandboxPlayerId(player.getPlayerId()))) {
 			return Future.succeededFuture(true);
 		}
 		String url = String.format("https://api.weixin.qq.com/wxa/msg_sec_check?access_token=%s", Config.wechatAccessToken);
@@ -2264,6 +2265,15 @@ public class PlayerHelper {
 			Player p = PlayerManager.getInstance().getPlayer(playerId);
 			if (p != null) {
 				return new SimplePlayer(p);
+			}
+			if (PlayerSaveCoordinator.isSandboxPlayerId(playerId)) {
+				SimplePlayer fallback = new SimplePlayer();
+				fallback.setId(playerId);
+				fallback.setName("Sandbox_" + playerId);
+				fallback.setLevel(100);
+				fallback.setOnline(true);
+				fallback.setServerId(ServerContext.getInstance().getServerId() != null ? ServerContext.getInstance().getServerId() : "1");
+				return fallback;
 			}
 			log.warn("getSimplePlayer from redis is null, playerId: " + playerId);
 		}

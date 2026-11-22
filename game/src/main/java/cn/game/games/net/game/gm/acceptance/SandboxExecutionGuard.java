@@ -82,15 +82,111 @@ public class SandboxExecutionGuard {
      * 检查当前DAO写操作方法是否应该被静默旁路
      *
      * @param method 方法名
+     * @param args DAO调用参数（用于在跨服或异步工作线程上识别沙盒实体）
      * @return true表示应旁路直接返回空成功Future
      */
-    public static boolean shouldBypassDaoMethod(String method) {
-        if (!isSandboxThreadMuted() || method == null) {
+    public static boolean shouldBypassDaoMethod(String method, Object... args) {
+        if (method == null) {
             return false;
         }
         String lower = method.toLowerCase();
         // 允许只读查询，阻断所有插入/更新/删除操作
-        return !lower.startsWith("select") && !lower.startsWith("get") && !lower.startsWith("find") && !lower.startsWith("count");
+        boolean isWriteMethod = !lower.startsWith("select") && !lower.startsWith("get") && !lower.startsWith("find") && !lower.startsWith("count");
+        if (!isWriteMethod) {
+            return false;
+        }
+        if (isSandboxThreadMuted()) {
+            return true;
+        }
+        if (args != null) {
+            for (Object arg : args) {
+                if (isSandboxEntity(arg)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** 记录由沙盒玩家创建的跨服沙盒公会ID，确保即便公会改名或触发定时保存也能被 DAO 旁路识别 */
+    private static final Set<Long> SANDBOX_GUILD_IDS = ConcurrentHashMap.newKeySet();
+
+    private static boolean isSandboxEntity(Object arg) {
+        if (arg == null) {
+            return false;
+        }
+        if (arg instanceof Number num) {
+            long val = num.longValue();
+            return PlayerSaveCoordinator.isSandboxPlayerId(val) || SANDBOX_GUILD_IDS.contains(val);
+        }
+        if (arg instanceof PlayerData pd) {
+            return PlayerSaveCoordinator.isSandboxPlayerId(pd.getPlayerId());
+        }
+        if (arg instanceof cn.game.games.cache.entity.GuildJoin gj) {
+            if (PlayerSaveCoordinator.isSandboxPlayerId(gj.getPlayerId())) {
+                if (gj.getGuildId() > 0) {
+                    SANDBOX_GUILD_IDS.add(gj.getGuildId());
+                }
+                return true;
+            }
+            return false;
+        }
+        if (arg instanceof cn.game.games.cache.entity.GuildData gd) {
+            if (gd.getId() > 0 && SANDBOX_GUILD_IDS.contains(gd.getId())) {
+                return true;
+            }
+            if (gd.getName() != null && gd.getName().startsWith("沙盒")) {
+                if (gd.getId() > 0) {
+                    SANDBOX_GUILD_IDS.add(gd.getId());
+                }
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private static void registerLiveClusterRouting(Player player) {
+        if (player == null) {
+            return;
+        }
+        long pid = player.getPlayerId();
+        try {
+            String serverId = ServerContext.getInstance().getServerId();
+            if (cn.game.core.net.vertx.VxHolder.vertx != null
+                    && cn.game.util.RedisUtil.getRedis() != null
+                    && serverId != null && !serverId.isBlank()) {
+                String idKey = cn.game.core.cache.id.IdCache.generateRedisKey(cn.game.core.cache.id.DistributedObjectType.PLAYER, pid);
+                // 强制覆盖刷新当前沙盒玩家所在 GameServer 节点路由，防止跨节点重启后 initServerId 因旧键存在而静默失败
+                cn.game.util.RedisUtil.set(idKey, serverId);
+                cn.game.core.cache.id.IdCache.initServerId(cn.game.core.cache.id.DistributedObjectType.PLAYER, pid);
+                cn.game.games.core.SimplePlayer simplePlayer = new cn.game.games.core.SimplePlayer(player);
+                cn.game.core.cache.RedisLocalCache.getInstance().put(cn.game.core.cache.CacheType.PLAYER_SIMPLE.key(pid), simplePlayer);
+            }
+        } catch (Throwable t) {
+            log.warn("注册沙盒玩家跨服路由与SimplePlayer缓存警告: playerId={}", pid, t);
+        }
+    }
+
+    /**
+     * 清理沙盒玩家在真实集群 Redis 中的跨服路由与 SimplePlayer 缓存
+     *
+     * @param pid 沙盒玩家ID
+     */
+    public static void unregisterLiveClusterRouting(long pid) {
+        try {
+            if (cn.game.core.net.vertx.VxHolder.vertx != null
+                    && cn.game.util.RedisUtil.getRedis() != null
+                    && ServerContext.getInstance().getServerId() != null) {
+                String redisKey = cn.game.core.cache.id.IdCache.generateRedisKey(cn.game.core.cache.id.DistributedObjectType.PLAYER, pid);
+                cn.game.util.RedisUtil.delete(redisKey);
+                String simpleKey = cn.game.core.cache.CacheType.PLAYER_SIMPLE.key(pid);
+                cn.game.core.cache.RedisLocalCache.getInstance().deleteAsync(simpleKey);
+                cn.game.util.RedisUtil.delete(simpleKey);
+            }
+        } catch (Throwable t) {
+            log.warn("清理沙盒玩家跨服路由缓存失败: playerId={}", pid, t);
+        }
     }
 
     /**
@@ -134,6 +230,7 @@ public class SandboxExecutionGuard {
                 defaultAccount.openid = "sandbox_openid_" + effectiveId;
                 existing.setAccount(defaultAccount);
             }
+            registerLiveClusterRouting(existing);
             return existing;
         }
 
@@ -176,6 +273,7 @@ public class SandboxExecutionGuard {
         PlayerManager.getInstance().initAdd(player);
 
         ConditionSatisfier.satisfyAllFunctionsAndBaseLevel(player, 100, 14, 100);
+        registerLiveClusterRouting(player);
 
         return player;
     }
@@ -191,6 +289,7 @@ public class SandboxExecutionGuard {
         }
         long pid = player.getPlayerId();
         enableConditionBypass(pid, false);
+        unregisterLiveClusterRouting(pid);
         try {
             if (player.getGameClient() != null) {
                 cn.game.games.net.game.manager.GameClientManager.getInstance().removeGameClient(player.getGameClient(), cn.game.core.net.client.LogoutType.ServerClose);

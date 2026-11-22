@@ -413,6 +413,33 @@ public class ModuleAcceptancePlatformTest {
         Assertions.assertEquals(1, retryReport.getTotalCases(), "单条重试报告必须只包含 1 条用例");
         Assertions.assertTrue(retryReport.isSuccess(), "单条重试必须成功");
         Assertions.assertEquals("CONTRACT:guild_info_query_success", retryReport.getResults().get(0).getCaseId());
+
+        // 4. 真实集群拓扑声明与 requireLiveCluster 强校验验证
+        ModuleAcceptanceSuite guildSuite = engine.getSuite(0x40);
+        Assertions.assertNotNull(guildSuite);
+        Map<String, Object> topology = engine.inspectClusterTopology(guildSuite);
+        Assertions.assertNotNull(topology);
+        @SuppressWarnings("unchecked")
+        List<String> requiredTypes = (List<String>) topology.get("requiredServerTypes");
+        Assertions.assertTrue(requiredTypes.contains("Game") && requiredTypes.contains("Cross"),
+                "公会模块必须显式声明依赖 Game 与 Cross 双节点: " + requiredTypes);
+        Assertions.assertNotNull(contractReport.getClusterTopology(), "验收报告必须携带 clusterTopology 拓扑快照");
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            engine.runSuite(0x40, AcceptanceRunMode.CONTRACT, null, 10, true);
+        }, "离线 JUnit 未启动真实 GameServer+CrossServer 集群时，requireLiveCluster=true 必须硬拦截");
+
+        // 5. 验证 ALL 模式（跨阶段复用沙盒公会并在末尾统一解散）与 DAO.delete 主键旁路
+        ModuleAcceptanceReport allReport = engine.runSuite(0x40, AcceptanceRunMode.ALL, null, 50);
+        Assertions.assertTrue(allReport.isSuccess(), "ALL 模式公会全量验收必须通过: " + allReport.getFailedCases());
+        Assertions.assertEquals(33, allReport.getTotalCases(), "ALL 模式公会全量用例数应为 33 条");
+        Assertions.assertTrue(cn.game.games.net.cross.guild.GuildManager.getInstance().getAllGuildIds().isEmpty(),
+                "GuildModuleAcceptanceSuite 执行完毕后必须自动解散并清理沙盒公会");
+        cn.game.games.cache.entity.GuildData dummyGuildData = new cn.game.games.cache.entity.GuildData();
+        dummyGuildData.setId(889999999L);
+        dummyGuildData.setName("沙盒测试旁路");
+        Assertions.assertTrue(SandboxExecutionGuard.shouldBypassDaoMethod("insert", dummyGuildData));
+        Assertions.assertTrue(SandboxExecutionGuard.shouldBypassDaoMethod("deleteByPrimaryKey", 889999999L),
+                "已登记在 SANDBOX_GUILD_IDS 中的沙盒公会主键按 Long 执行 deleteByPrimaryKey 必须被旁路");
     }
 
     /**
@@ -502,6 +529,19 @@ public class ModuleAcceptancePlatformTest {
                 JsonNode invalidJson = MAPPER.readTree(invalidResp.body());
                 Assertions.assertFalse(invalidJson.get("ok").asBoolean());
                 Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), invalidJson.get("errorCode").asInt());
+
+                // 4.5 离线环境请求 requireLiveCluster=true 应返回 CLUSTER_TOPOLOGY_NOT_READY 错误码区分
+                HttpRequest topologyBlockReq = HttpRequest.newBuilder()
+                        .uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/acceptance/run"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString("{\"moduleId\": 64, \"mode\": \"CONTRACT\", \"requireLiveCluster\": true}"))
+                        .build();
+                HttpResponse<String> topologyBlockResp = httpClient.send(topologyBlockReq, HttpResponse.BodyHandlers.ofString());
+                Assertions.assertEquals(200, topologyBlockResp.statusCode());
+                JsonNode topologyBlockJson = MAPPER.readTree(topologyBlockResp.body());
+                Assertions.assertFalse(topologyBlockJson.get("ok").asBoolean());
+                Assertions.assertEquals(ErrorMsgEnum.condition_check_error.getId(), topologyBlockJson.get("errorCode").asInt());
+                Assertions.assertEquals("CLUSTER_TOPOLOGY_NOT_READY", topologyBlockJson.get("errorName").asText());
 
                 // 5. 请求 GET /gm-console/workbench.js 检验前端双轨验收看板交互
                 HttpRequest jsReq = HttpRequest.newBuilder()

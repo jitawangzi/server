@@ -2,6 +2,8 @@ package cn.game.games.net.game.gm.acceptance;
 
 import java.util.List;
 
+import cn.game.util.ServerType;
+
 /**
  * 模块级双轨自动化验收套件接口。
  * 遵循“功能契约验收 (CONTRACT)”与“多态分支 × 配表全集扫描 (MATRIX_SCAN)”双轨设计。
@@ -44,6 +46,17 @@ public interface ModuleAcceptanceSuite {
      * @return 配表名称列表
      */
     List<String> getRelatedTables();
+
+    /**
+     * 获取本模块真实逻辑验收所依赖的服务器节点类型拓扑列表。
+     * 默认为 {@code [ServerType.Game]}；若模块涉及公会（{@code GuildServiceInterface}）、跨服活动或
+     * {@code CrossServerInterface} 等远程 RPC 调用，必须声明 {@code List.of(ServerType.Game, ServerType.Cross)}。
+     *
+     * @return 必需的服务器节点类型列表
+     */
+    default List<ServerType> getRequiredServerTypes() {
+        return List.of(ServerType.Game);
+    }
 
     /**
      * 执行轨道一：功能契约与状态机边界用例

@@ -104,6 +104,9 @@ public class GuildHelper {
 	 * @param msgId 消息号
 	 */
 	public static void notifyMsgToPlayer(long playerId, Message msg, int msgId) {
+		if (VxHolder.vertx == null || cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(playerId)) {
+			return;
+		}
 		ServerMsg.NotifyGuildMsgToGame_7d000047.Builder builder = ServerMsg.NotifyGuildMsgToGame_7d000047.newBuilder();
 		builder.setMsgId(msgId);
 		builder.setData(msg.toByteString());

@@ -166,12 +166,18 @@
       return '';
     }
     const report = state.acceptanceReports && state.acceptanceReports[mod.moduleId];
+    const reqNodes = (mod.acceptanceSuite.requiredServerTypes || ['Game']).join(' + ');
+    const topo = mod.acceptanceSuite.clusterTopology || {};
+    const topoBadge = topo.ready
+      ? `<span class="badge" style="background:#0284c7; color:#fff;">🌐 集群拓扑就绪 (${escapeHtml(reqNodes)})</span>`
+      : `<span class="badge" style="background:#f59e0b; color:#000;" title="缺少节点: ${escapeHtml((topo.missingServerTypes||[]).join(','))}">⚠️ 需真实节点: ${escapeHtml(reqNodes)}</span>`;
     return `
       <div class="card" style="margin-bottom:16px; border:1px solid #10b981; background:linear-gradient(to right, rgba(16, 185, 129, 0.05), rgba(15, 23, 42, 0.8));">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-          <div style="display:flex; align-items:center; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span style="font-size:1.1rem; font-weight:700; color:#10b981;">🛡️ 模块自动化验收与配表全集扫描中心</span>
             <span class="badge" style="background:#10b981; color:#fff;">已接入 (${(mod.acceptanceSuite.declaredBranches||[]).length} 分支)</span>
+            ${topoBadge}
           </div>
           <div style="display:flex; gap:10px;">
             <button class="btn btn-secondary" style="border-color:#38bdf8; color:#38bdf8;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'CONTRACT')">🧪 功能契约验收 (CONTRACT)</button>
@@ -235,9 +241,10 @@
         <div style="display:flex; gap:16px; font-size:0.9rem; margin-bottom:10px; background:#0f172a; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
           <span>模式: <b>${escapeHtml(report.mode)}</b></span>
           <span>总执行: <b>${report.totalCases}</b></span>
-          <span style="color:#10b981;">通过: <b>${report.passedCases}</b></span>
+          <span>通过: <b>${report.passedCases}</b></span>
           <span style="color:#ef4444;">失败: <b>${report.failedCases}</b></span>
           <span>耗时: <b>${report.elapsedMs} ms</b></span>
+          ${report.clusterTopology ? `<span>节点拓扑: <b>${escapeHtml((report.clusterTopology.requiredServerTypes||[]).join('+'))}</b> (${report.clusterTopology.ready ? '<span style="color:#10b981;">真实集群已就绪</span>' : '<span style="color:#f59e0b;">缺:' + escapeHtml((report.clusterTopology.missingServerTypes||[]).join(',')) + '</span>'})</span>` : ''}
         </div>
         <div style="margin-bottom:8px;">
           <div style="font-size:0.85rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">多态分支覆盖度:</div>
@@ -832,7 +839,8 @@
           moduleId: moduleId,
           mode: mode || 'ALL',
           caseId: caseId || '',
-          maxMatrixRows: 2000
+          maxMatrixRows: 2000,
+          requireLiveCluster: true
         };
         const json = await apiFetch('/gm-console/api/workbench/acceptance/run', 'POST', body);
         if ((json.ok || json.code === 0 || json.errorCode === 0) && json.data) {

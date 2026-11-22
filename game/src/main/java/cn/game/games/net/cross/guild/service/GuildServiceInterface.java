@@ -176,4 +176,13 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * 公会服务跨天，只在测试使用
 	 */
 	void testGuildNewDay(); 
+
+	/**
+	 * 自动化验收专用：在跨服公会实例上设置当前砍价商品ID并重置已砍价额度
+	 *
+	 * @param guildId 公会ID
+	 * @param bargainItemId 砍价配置表ID
+	 * @param bargainTotalNum 初始已砍价数量
+	 */
+	void prepareBargainForAcceptance(long guildId, int bargainItemId, int bargainTotalNum);
 }

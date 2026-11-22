@@ -582,16 +582,29 @@ public class GmWebConsoleServer {
 			}
 			String caseId = json.getString("caseId", "");
 			int maxMatrixRows = json.getInteger("maxMatrixRows", 2000);
+			Boolean reqLiveObj = json.getBoolean("requireLiveCluster");
+			boolean requireLiveCluster = (reqLiveObj != null) ? reqLiveObj : ModuleAcceptanceEngine.getInstance().isLiveServerRuntime();
 
 			final int targetModuleId = moduleId;
 			final AcceptanceRunMode targetMode = runMode;
 			final String targetCaseId = caseId;
 			final int targetMaxRows = maxMatrixRows;
+			final boolean targetRequireLive = requireLiveCluster;
 
 			Thread.startVirtualThread(() -> {
 				try {
-					ModuleAcceptanceReport report = ModuleAcceptanceEngine.getInstance().runSuite(targetModuleId, targetMode, targetCaseId, targetMaxRows);
+					ModuleAcceptanceReport report = ModuleAcceptanceEngine.getInstance().runSuite(
+							targetModuleId, targetMode, targetCaseId, targetMaxRows, targetRequireLive);
 					sendJson(ctx, GmResult.success("ok", report.toMap()));
+				} catch (LogicException le) {
+					log.warn("执行自动化验收业务异常: moduleId={}", targetModuleId, le);
+					sendJson(ctx, GmResult.fail(le.getErrorCode(), "LOGIC_ERROR", "执行自动化验收异常: " + le.getMessage()));
+				} catch (IllegalArgumentException iae) {
+					log.warn("执行自动化验收参数异常: moduleId={}", targetModuleId, iae);
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "执行自动化验收参数异常: " + iae.getMessage()));
+				} catch (IllegalStateException ise) {
+					log.warn("执行自动化验收集群拓扑未就绪: moduleId={}", targetModuleId, ise);
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.condition_check_error.getId(), "CLUSTER_TOPOLOGY_NOT_READY", "集群拓扑未就绪: " + ise.getMessage()));
 				} catch (Throwable t) {
 					log.warn("执行自动化验收失败: moduleId={}", targetModuleId, t);
 					sendJson(ctx, GmResult.fail(ErrorMsgEnum.unknown, "执行自动化验收异常: " + t.getMessage()));

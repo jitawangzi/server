@@ -29,6 +29,7 @@ public class ModuleAcceptanceReport {
     private final List<Map<String, Object>> failedItems;
     private final List<String> warnings;
     private final List<AcceptanceCaseResult> results;
+    private final Map<String, Object> clusterTopology;
 
     public ModuleAcceptanceReport(int moduleId, String moduleKey, String title,
             AcceptanceRunMode mode, int totalCases, int passedCases, int failedCases,
@@ -37,7 +38,7 @@ public class ModuleAcceptanceReport {
             List<Map<String, Object>> failedItems, List<String> warnings) {
         this(moduleId, moduleKey, title, mode, totalCases, passedCases, failedCases,
                 provisionFailures, fixtureDefects, sutFailures, assertionFailures, elapsedMs,
-                branchCoverage, failedItems, warnings, Collections.emptyList());
+                branchCoverage, failedItems, warnings, Collections.emptyList(), Collections.emptyMap());
     }
 
     public ModuleAcceptanceReport(int moduleId, String moduleKey, String title,
@@ -46,6 +47,17 @@ public class ModuleAcceptanceReport {
             long elapsedMs, List<Map<String, Object>> branchCoverage,
             List<Map<String, Object>> failedItems, List<String> warnings,
             List<AcceptanceCaseResult> results) {
+        this(moduleId, moduleKey, title, mode, totalCases, passedCases, failedCases,
+                provisionFailures, fixtureDefects, sutFailures, assertionFailures, elapsedMs,
+                branchCoverage, failedItems, warnings, results, Collections.emptyMap());
+    }
+
+    public ModuleAcceptanceReport(int moduleId, String moduleKey, String title,
+            AcceptanceRunMode mode, int totalCases, int passedCases, int failedCases,
+            int provisionFailures, int fixtureDefects, int sutFailures, int assertionFailures,
+            long elapsedMs, List<Map<String, Object>> branchCoverage,
+            List<Map<String, Object>> failedItems, List<String> warnings,
+            List<AcceptanceCaseResult> results, Map<String, Object> clusterTopology) {
         this.moduleId = moduleId;
         this.moduleKey = moduleKey == null ? "" : moduleKey;
         this.title = title == null ? "" : title;
@@ -62,6 +74,7 @@ public class ModuleAcceptanceReport {
         this.failedItems = failedItems == null ? new ArrayList<>() : new ArrayList<>(failedItems);
         this.warnings = warnings == null ? new ArrayList<>() : new ArrayList<>(warnings);
         this.results = results == null ? new ArrayList<>() : new ArrayList<>(results);
+        this.clusterTopology = clusterTopology == null ? new LinkedHashMap<>() : new LinkedHashMap<>(clusterTopology);
     }
 
     public int getModuleId() {
@@ -128,6 +141,10 @@ public class ModuleAcceptanceReport {
         return results;
     }
 
+    public Map<String, Object> getClusterTopology() {
+        return clusterTopology;
+    }
+
     /**
      * 判断本轮验收是否完全成功（用例数大于0且无失败用例）
      *
@@ -165,6 +182,9 @@ public class ModuleAcceptanceReport {
         map.put("branchCoverage", branchCoverage);
         map.put("failedItems", failedItems);
         map.put("warnings", warnings);
+        if (!clusterTopology.isEmpty()) {
+            map.put("clusterTopology", clusterTopology);
+        }
         return map;
     }
 }
