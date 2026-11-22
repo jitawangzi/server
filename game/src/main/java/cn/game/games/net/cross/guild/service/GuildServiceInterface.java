@@ -6,10 +6,9 @@ import cn.game.core.net.remote.RemoteCrossServerInterface;
 import cn.game.games.net.cross.guild.Guild;
 import cn.game.games.net.cross.guild.GuildMember;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
-import cn.game.games.net.cross.guild.dto.MemberAuthRequest;
+import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
-import io.vertx.core.Future;
 
 public interface GuildServiceInterface extends RemoteCrossServerInterface {
 
@@ -23,7 +22,7 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param joinType 加入类型 1 快速加入、2 需要验证加入、3 不可加入；
 	 * @return 新公会信息
 	 */
-	Future<GuildServiceInfo> createGuild(long createPlayerId, String name, String notice, String declaration, int icon,int joinType);
+	GuildServiceInfo createGuild(long createPlayerId, String name, String notice, String declaration, int icon, int joinType);
 
 	/**
 	 * 获取公会信息
@@ -60,7 +59,6 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * 解散公会
 	 * @param guildId 公会ID
 	 * @param playerId 操作玩家ID
-	 * @return 是否成功
 	 */
 	void dissolveGuild(long guildId, long playerId);
 
@@ -78,26 +76,27 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param operatorId 操作者ID
 	 * @param targetPlayerId 目标玩家ID
 	 * @param position 新职位
-	 * @return 是否成功
+	 * @return 变更前的旧职位
 	 */
-	void setMemberPosition(long guildId, long operatorId, long targetPlayerId, int position);
+	int setMemberPosition(long guildId, long operatorId, long targetPlayerId, int position);
 
 	/**
 	 * 退出公会
 	 * @param guildId 公会ID
 	 * @param playerId 玩家ID
 	 * @param playerName 玩家名称
-	 * @return 是否成功
 	 */
 	void quitGuild(long guildId, long playerId, String playerName);
 
 	/**
 	 * 成员权限管理
 	 * @param guildId 公会ID
-	 * @param request 权限请求
-	 * @return 是否成功
+	 * @param operatorId 操作者ID
+	 * @param operatorName 操作者名称
+	 * @param optType 操作类型
+	 * @param targetPidList 目标玩家ID列表
 	 */
-	void updateMemberAuth(long guildId, long operatorId,String operatorName, int optType, List<Long> targetPidList);
+	void updateMemberAuth(long guildId, long operatorId, String operatorName, int optType, List<Long> targetPidList);
 
 	/**
 	 * 增加公会资产，经验、活跃度等
@@ -107,17 +106,16 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 * @param value 资产值
 	 * @return 如果升级了，返回新的等级，否则返回0
 	 */
-	Future<Integer> addGuildAsset(long guildId, long playerId, int assetId, int value);
+	int addGuildAsset(long guildId, long playerId, int assetId, int value);
 	
 	/** 
 	 * 增加某个成员的贡献值
 	 * @param guildId
 	 * @param playerId
 	 * @param value
-	 * @return
 	 */
 	@Deprecated
-	Future<?> addMemberContribute(long guildId, long playerId, int value);
+	void addMemberContribute(long guildId, long playerId, int value);
 
 	/**
 	 * 公会砍价
@@ -141,7 +139,13 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	 */
 	GuildServiceInfo randomJoin(long playerId);
 	
-	Future<?> donate(long guildId, long playerId, int donateType);
+	/**
+	 * 成员捐献更新
+	 * @param guildId
+	 * @param playerId
+	 * @param donateType
+	 */
+	void donate(long guildId, long playerId, int donateType);
 	
 	/** 
 	 *  是否有可以处理的入会申请
@@ -153,9 +157,23 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	
 	GuildMember getMember(long guildId, long playerId);
 	
+	/**
+	 * 获取公会操作日志
+	 * @param guildId
+	 * @return 日志列表
+	 */
+	List<GuildMsg.GuildLogProto> getGuildLogs(long guildId);
+
+	/**
+	 * 向公会成员广播协议消息（如聊天）
+	 * @param guildId
+	 * @param msgId
+	 * @param data
+	 */
+	void broadcastGuildMessage(long guildId, int msgId, byte[] data);
+
 	/** 
 	 * 公会服务跨天，只在测试使用
 	 */
 	void testGuildNewDay(); 
-	
 }

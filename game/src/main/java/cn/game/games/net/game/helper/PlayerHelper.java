@@ -2254,8 +2254,17 @@ public class PlayerHelper {
 
 	public static SimplePlayer getSimplePlayer(long playerId) {
 		String key = CacheType.PLAYER_SIMPLE.key(playerId);
-		SimplePlayer simplePlayer =  RedisLocalCache.getInstance().get(key);
+		SimplePlayer simplePlayer = null;
+		try {
+			simplePlayer = RedisLocalCache.getInstance().get(key);
+		} catch (Exception e) {
+			log.warn("getSimplePlayer from cache failed for playerId: " + playerId, e);
+		}
 		if (simplePlayer == null) {
+			Player p = PlayerManager.getInstance().getPlayer(playerId);
+			if (p != null) {
+				return new SimplePlayer(p);
+			}
 			log.warn("getSimplePlayer from redis is null, playerId: " + playerId);
 		}
 		return simplePlayer; 

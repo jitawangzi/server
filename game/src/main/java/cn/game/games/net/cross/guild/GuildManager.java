@@ -17,6 +17,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
+import cn.game.core.exception.LogicException;
 import cn.game.core.task.SchedulerService;
 import cn.game.core.util.AsyncUtils;
 import cn.game.games.cache.entity.GuildData;
@@ -24,6 +25,7 @@ import cn.game.games.net.data.mapper.GuildDataMapper;
 import cn.game.games.net.game.module.rank.RankService;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.enume.RankType;
+import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.util.DateUtil;
 import cn.game.util.RedisUtil;
@@ -164,6 +166,9 @@ public class GuildManager {
 	}
 
 	public RFuture<Void> saveSimpleData(Guild guild) {
+		if (RedisUtil.getRedis() == null) {
+			return null;
+		}
 		String redisKey = CacheType.ZONG_MEN_SIMPLE_DATA.key(guild.getId());
 		return RedisUtil.setAsync(redisKey, guild.toSimpleGuild());
 	}
@@ -174,47 +179,38 @@ public class GuildManager {
 
 	/**
 	 * 创建公会
-	 * @param req 创建公会的一些参数
 	 * @param createPlayerId 门主pid
 	 * @return 新的公会
 	 */
-	public Future<Guild> createGuild(long createPlayerId,String name,String notice,String declaration,int icon,int joinType) {
-		Promise<Guild> promise = Promise.promise();
+	public Guild createGuild(long createPlayerId, String name, String notice, String declaration, int icon, int joinType) {
 		try {
 			long newGuildId = GuildHelper.createGuildId();
 
 			boolean trySetName = GuildHelper.trySetName(name, newGuildId); 
 			if (!trySetName) {
-				return Future.failedFuture("公会名称已存在，请重新输入名称");
+				throw new LogicException(ErrorMsgEnum.zong_men_name_repeat.ID, "公会名称已存在，请重新输入名称");
 			}
 			// 创建公会
 			Guild guildInfo = new Guild();
 			// 公会初始化
-			guildInfo.init(name,notice,declaration,icon,joinType, newGuildId, createPlayerId);
+			guildInfo.init(name, notice, declaration, icon, joinType, newGuildId, createPlayerId);
 			guildInfo.updateModuleData();
-			DAO.insert(guildInfo.getData()).onSuccess(res -> {
-				if (res != null) {
-					// 保存 simple data
-					saveSimpleData(guildInfo);
-					// 存储 redis name--id map
-//					saveRedisNameIdMap(guildInfo.getName(), guildInfo.getId());
-					// 保存公会战斗力排行榜
-					saveGuildTotalPowerRank(guildInfo);
-					guildMap.put(guildInfo.getId(), guildInfo);
-					// 公会所在服务器
-					saveGuildServerId(guildInfo.getId());
-					promise.complete(guildInfo);
-				} else {
-					promise.complete(null);
-				}
-			}).onFailure(err -> {
-				promise.fail(err);
-			});
+			Future<@Nullable Object> insertFuture = DAO.insert(guildInfo.getData());
+			AsyncUtils.await(insertFuture);
+			// 保存 simple data
+			saveSimpleData(guildInfo);
+			// 保存公会战斗力排行榜
+			saveGuildTotalPowerRank(guildInfo);
+			guildMap.put(guildInfo.getId(), guildInfo);
+			// 公会所在服务器
+			saveGuildServerId(guildInfo.getId());
+			return guildInfo;
+		} catch (LogicException le) {
+			throw le;
 		} catch (Exception e) {
-			log.error("",e);
-			promise.fail(e);
+			log.error("createGuild failed", e);
+			throw new RuntimeException(e);
 		}
-		return promise.future();
 	}
 
 	/** 
@@ -226,6 +222,9 @@ public class GuildManager {
 	}
 
 	CompletionStage<Boolean> saveGuildTotalPowerRank(Guild guildInfo) {
+		if (RedisUtil.getRedis() == null) {
+			return java.util.concurrent.CompletableFuture.completedFuture(true);
+		}
 		return RankService.getInstance()
 				.setScoreAsync(guildInfo.getData().getServerId(), RankType.Guild, guildInfo.getId(), guildInfo.callTotalPower());
 	}
@@ -235,6 +234,9 @@ public class GuildManager {
 	}
 
 	public void clearGuildServerId(long id) {
+		if (RedisUtil.getRedis() == null) {
+			return;
+		}
 		RedisUtil.deleteAsync(CacheType.ZONG_MEN_SERVER_ID.key(id));
 	}
 

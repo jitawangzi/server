@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,8 +21,10 @@ import cn.game.core.cache.id.IdCache;
 import cn.game.core.net.remote.RemoteLoginServerInterface;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
+import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.core.cache.GameCacheService;
+import cn.game.games.net.cross.guild.service.GuildService;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.util.DateUtil;
@@ -46,6 +49,11 @@ public class ServerHelper {
 			T impl = RpcFactory.getImpl(clazz, ServerContext.getInstance().getRpcClient(), CallType.PointToPoint, serverId, serverType, 0);
 			ret.add(impl);
 		}
+		if (ret.isEmpty() && (serverSet.isEmpty() || ServerContext.getInstance().getRpcClient() == null)) {
+			if (clazz == GuildServiceInterface.class) {
+				ret.add((T) GuildService.getInstance());
+			}
+		}
 		return ret;
 	}
 
@@ -61,16 +69,19 @@ public class ServerHelper {
 	public static <T> T getRemoteInterfaceProxy(ServerType serverType, Class<T> clazz, DistributedObjectType type, long targetId) {
 
 		CallType callType = CallType.PointToPoint;
-		String serverId = IdCache.getManager(type).getServerId(targetId);
+		String serverId = IdCache.getServerId(type, targetId);
 		if (StringUtils.isEmpty(serverId)) {
 			callType = CallType.LoadBalancer;
 		}
-		if (ServerContext.getInstance().getServerType() == serverType) {
-			// 对象不在线，或者在当前服务器，直接由当前服务器处理
-			if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
-				// 直接返回本地代理
-				return ClassHelper.getSingletonInstance(clazz);
+		boolean isLocalOrSandbox = ServerContext.getInstance().getServerType() == serverType
+				|| ServerContext.getInstance().getRpcClient() == null
+				|| (ServerContext.getInstance().getRpcClient() instanceof VertxRpcClient && ((VertxRpcClient) ServerContext.getInstance().getRpcClient()).getVertx() == null);
+		if (isLocalOrSandbox) {
+			// 对象不在线，或者在当前服务器，或者无独立RPC环境（纯单测/沙盒），直接由当前服务器处理
+			if (clazz == GuildServiceInterface.class) {
+				return (T) GuildService.getInstance();
 			}
+			return ClassHelper.getSingletonInstance(clazz);
 		}
 		// 在其他服务器，通过远程调用
 		return RpcFactory.getImpl(clazz, ServerContext.getInstance().getRpcClient(), callType, serverId, serverType, targetId);
@@ -118,7 +129,12 @@ public class ServerHelper {
 	}
 	
 	public static Map<String, VirtualServerView> getServerOpenMap() {
-		return ServerContext.getInstance().getValidGameService().getValidServers();
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+		if (validGameService == null) {
+			return Collections.emptyMap();
+		}
+		Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+		return validServers != null ? validServers : Collections.emptyMap();
 //		return GameCacheService.getInstance().getOpenServerMap(); 
 	}
 	public static String[] getServerIds() {
@@ -131,7 +147,8 @@ public class ServerHelper {
 	}
 	public static String getServerIdLatestAsync() {
 		VirtualServerView retServerView= null; 
-		Map<String, VirtualServerView> validServers = ServerContext.getInstance().getValidGameService().getValidServers(); 
+		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
+		Map<String, VirtualServerView> validServers = validGameService != null ? validGameService.getValidServers() : null; 
 		if (validServers != null && validServers.size() > 0) {
 			List<VirtualServerView> list = validServers.values()
 					.stream()
@@ -139,7 +156,7 @@ public class ServerHelper {
 					.collect(Collectors.toList());
 			retServerView = list.get(0);
 		}
-		return retServerView.ID;
+		return retServerView != null ? retServerView.ID : "";
 	}
 	public static String getServerName(String serverId) {
 		VirtualServerView virtualServerView = getServerOpenMap().get(serverId); 

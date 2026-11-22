@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -792,14 +793,22 @@ public class BattleModule extends BasePlayerModule  {
     }
     public List<Hero> getDefaultLineupHeroes() {
     	Map<Integer, List<String>> map = this.lineupMaps.get(DungeonTypeEnum.BattleChapter.getId()); 
+    	if (map == null) {
+    		return Collections.emptyList();
+    	}
     	Integer orDefault = lineupChooseMaps.getOrDefault(DungeonTypeEnum.BattleChapter.getId(), 0); 
     	List<String> list = map.get(orDefault);
+    	if (list == null) {
+    		return Collections.emptyList();
+    	}
     	HeroModule heroModule = player.getHeroModule(); 
     	List<Hero> heros = new ArrayList<>();
     	
     	for (String uid : list) {
     		Hero hero = heroModule.get(Long.parseLong(uid)); 
-    		heros.add(hero);
+    		if (hero != null) {
+    			heros.add(hero);
+    		}
     	}
     	return heros;
     }

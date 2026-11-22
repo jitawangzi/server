@@ -32,7 +32,7 @@ public class GuildModuleData  implements GuildConstants.GuildEventHandler{
 
 	private long guildId; 
 	/***      公会操作日志 */
-	GuildOptLog optLog;
+	public GuildOptLog optLog;
 	/***      公会 成员列表 */
 	public Map<Long, GuildMember> menMemberMap = new HashMap<>();
 	/**  公会 设置 */

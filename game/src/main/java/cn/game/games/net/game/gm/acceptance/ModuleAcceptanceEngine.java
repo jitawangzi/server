@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import cn.game.core.exception.LogicException;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.net.game.gm.GmSecurityPolicy;
+import cn.game.games.net.game.gm.acceptance.suites.GuildModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ItemModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ShopModuleAcceptanceSuite;
 import cn.game.games.net.game.helper.PlayerSaveCoordinator;
@@ -36,9 +37,10 @@ public class ModuleAcceptanceEngine {
     private final Map<Integer, ModuleAcceptanceSuite> suites = new ConcurrentHashMap<>();
 
     private ModuleAcceptanceEngine() {
-        // 自动注册内置两大标杆模块验收套件
+        // 自动注册内置三大模块验收套件
         registerSuite(new ItemModuleAcceptanceSuite());
         registerSuite(new ShopModuleAcceptanceSuite());
+        registerSuite(new GuildModuleAcceptanceSuite());
     }
 
     /**

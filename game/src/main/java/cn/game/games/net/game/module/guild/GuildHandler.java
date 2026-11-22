@@ -1,5 +1,7 @@
 package cn.game.games.net.game.module.guild;
 
+import cn.game.core.util.AsyncUtils;
+import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
 import cn.game.games.net.game.helper.PlayerWriteGuard;
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +173,7 @@ public class GuildHandler extends GameBaseHandler {
         GuildMsg.GuildBargainRequest_40000060 req = (GuildMsg.GuildBargainRequest_40000060) o;
         GuildMsg.GuildBargainResponse_40000061.Builder res = GuildMsg.GuildBargainResponse_40000061.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        if (player.getGuildId() < 0) {
+        if (player.getGuildId() <= 0) {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
@@ -261,7 +263,16 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
             return;
         }
-        autoForwardGuildServer(client, res, req, null);
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+        try {
+            List<GuildMsg.GuildLogProto> logs = guildProxy.getGuildLogs(player.getGuildId());
+            if (logs != null) {
+                res.addAllLogList(logs);
+            }
+            client.sendProtocol(res.build());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void getGuildInfo(NetClient client, Object o) {
@@ -279,6 +290,7 @@ public class GuildHandler extends GameBaseHandler {
         client.sendProtocol(res.build());
     }
 
+    @Deprecated
     private void autoForwardGuildServer(NetClient client, Message.Builder res, Message req, Function<Message, Void> successCallBack) {
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
         if (player.getGuildId() == 0) {
@@ -326,12 +338,17 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
-        autoForwardGuildServer(client, res, req, (result) -> {
-            GuildMemberPositionSetResponse_40000016 response = (GuildMemberPositionSetResponse_40000016) result;
-            client.sendProtocol(response);
-            GameLogger.guildMemberPositionChange(player, req.getTargetPid(), response.getOldPosition(), response.getPosition());
-            return null;
-        });
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
+        try {
+            int oldPosition = guildProxy.setMemberPosition(guildId, player.getPlayerId(), req.getTargetPid(), req.getPosition());
+            res.setOldPosition(oldPosition);
+            res.setPosition(req.getPosition());
+            res.setTargetPid(req.getTargetPid());
+            client.sendProtocol(res.build());
+            GameLogger.guildMemberPositionChange(player, req.getTargetPid(), oldPosition, req.getPosition());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void setGuildSetting(NetClient client, Object o) {
@@ -371,38 +388,40 @@ public class GuildHandler extends GameBaseHandler {
             checkStrs.add(req.getWx());
         }
         // 非法字符串检测
-        List<CompletableFuture<Boolean>> checkComplatableList = new ArrayList<>();
         for (String str : checkStrs) {
-            checkComplatableList.add((CompletableFuture<Boolean>) PlayerHelper.checkContextData(player, str).toCompletionStage());
-        }
-        CompletableFuture.allOf(checkComplatableList.toArray(new CompletableFuture[0])).thenAcceptAsync(result -> {
-            if (checkComplatableList.stream().anyMatch(CompletableFuture::isCompletedExceptionally)) {
-                client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+            Boolean ok = AsyncUtils.await(PlayerHelper.checkContextData(player, str));
+            if (Boolean.FALSE.equals(ok)) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
                 return;
             }
-            for (CompletableFuture<Boolean> future : checkComplatableList) {
-                try {
-                    if (future.get().booleanValue() == false) {
-                        client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
-                    return;
-                }
-            }
-            autoForwardGuildServer(client, res, req, message -> {
+        }
+        GuildSettingRequest settingReq = new GuildSettingRequest();
+        settingReq.setOperatorId(player.getPlayerId());
+        settingReq.setOperatorName(player.getPlayerName());
+        settingReq.setName(req.getName());
+        settingReq.setWx(req.getWx());
+        settingReq.setNotice(req.getNotice());
+        settingReq.setDeclaration(req.getDeclaration());
+        settingReq.setIcon(req.getIcon());
+        settingReq.setAutoJoin(req.getAutoJoin());
+
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+        try {
+            boolean success = guildProxy.setGuildSetting(player.getGuildId(), settingReq);
+            if (success) {
                 if (!StringUtils.isEmpty(req.getName())) {
                     // 公会改名 扣除资源
                     PlayerHelper.delResources(player, GlobalConst.GuildNameRevise, OpType.guildChangeName);
                 }
                 res.setResult(true);
-                client.sendProtocol(res);
+                client.sendProtocol(res.build());
                 GameLogger.guildInfoChange(player, player.getGuildId(), req.getName() == null ? "null" : req.getName(), req.getIcon());
-                return null;
-            });
-        });
+            } else {
+                client.sendProtocol(res.build(), ErrorMsgEnum.unknown.ID);
+            }
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     // 已废弃 不要主动解散公会了
@@ -417,25 +436,22 @@ public class GuildHandler extends GameBaseHandler {
         }
         long guildId = player.getGuildId();
         String guildName = player.getGuildName();
-        sendMsgToGuildServer(player, req, "").compose(callBack -> PlayerWriteGuard.submit(player, () -> {
-            if (callBack.errorCode != ErrorMsgEnum.ok.ID) {
-                client.sendProtocol(res.build(), callBack.errorCode);
-            } else {
-                // 解散公会成功
-                GuildModule module = player.getGuildModule();
-                module.quit(2);
-                module.setDisbandCount(module.getDisbandCount() + 1);
-                // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
-                if (module.getDisbandCount() > 1) {
-                    module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * 1000);
-                }
-                GameLogger.guildDisband(player, guildId, guildName);
-                client.sendProtocol(callBack.response);
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
+        try {
+            guildProxy.dissolveGuild(guildId, player.getPlayerId());
+            // 解散公会成功
+            GuildModule module = player.getGuildModule();
+            module.quit(2);
+            module.setDisbandCount(module.getDisbandCount() + 1);
+            // 第二次及后续解散时，宗主需要1小时才可加入其它公会（GuildSuzerainCD）；
+            if (module.getDisbandCount() > 1) {
+                module.setNextJoinTimer(System.currentTimeMillis() + GlobalConst.GuildSuzerainCD * 1000);
             }
-        })).onFailure(err -> {
-            err.printStackTrace();
-            client.sendProtocol(res, ErrorMsgEnum.zong_men_not_exist.ID);
-        });
+            GameLogger.guildDisband(player, guildId, guildName);
+            client.sendProtocol(res.build());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void applyJoinGuild(NetClient client, Object o) {
@@ -454,17 +470,21 @@ public class GuildHandler extends GameBaseHandler {
         //            return;
         //		}
         guildModule.checkJoinCd();
-        GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, id);
-        GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
-        if (guild != null) {
-            GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
-            // 玩家直接加入公会
-            guildModule.join(simpleInfo.getId());
-            GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
-            client.sendProtocol(res.setGuild(allInfo).build());
-        } else {
-            applyJoinList.add(id);
-            client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
+        GuildServiceInterface serviceInterface = ServerHelper.getGuildProxy(id);
+        try {
+            GuildServiceInfo guild = serviceInterface.applyJoinGuild(id, player.getPlayerId());
+            if (guild != null) {
+                GuildSimpleInfo simpleInfo = guild.getShowInfo().getSimpleInfo();
+                // 玩家直接加入公会
+                guildModule.join(simpleInfo.getId());
+                GuildAllInfo allInfo = GuildHelper.buildAllInfo(guild, player.getPlayerId());
+                client.sendProtocol(res.setGuild(allInfo).build());
+            } else {
+                applyJoinList.add(id);
+                client.sendProtocol(GuildApplyJoinResponse_40000008.getDefaultInstance());
+            }
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
         }
     }
 
@@ -506,47 +526,29 @@ public class GuildHandler extends GameBaseHandler {
             checkStrs.add(req.getDeclaration());
         }
         checkStrs.add(name);
-        Future<Boolean> checkFuture = PlayerHelper.checkContextData(player, name);
+
         // 非法字符串检测
-        log.warn("start thread " + Thread.currentThread().getName());
-        List<Future<Boolean>> checks = new ArrayList<>(checkStrs.size());
         for (String str : checkStrs) {
-            // 应为 Vert.x Future<Boolean>
-            Future<Boolean> f = PlayerHelper.checkContextData(player, str);
-            checks.add(f);
-        }
-        checks.add(checkFuture);
-        Future.all(checks).compose(cf -> {
-            // 验证是否有 false
-            for (int i = 0; i < checks.size(); i++) {
-                Boolean ok = (Boolean) cf.resultAt(i);
-                if (Boolean.FALSE.equals(ok)) {
-                    client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
-                    return Future.failedFuture("context-check-fail");
-                }
+            Boolean ok = AsyncUtils.await(PlayerHelper.checkContextData(player, str));
+            if (Boolean.FALSE.equals(ok)) {
+                client.sendProtocol(res.build(), ErrorMsgEnum.we_chat_context_check_fail.ID);
+                return;
             }
-            // 通过校验，发起远程调用
-            GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
-            return guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(), req.getAutoJoin());
-        }).compose(r -> PlayerWriteGuard.submit(player, () -> {
-                log.warn("map exec" + Thread.currentThread().getName());
-                log.warn("thread=" + Thread.currentThread().getName());
-                //    		 log.warn("isEventLoop=" + context.isEventLoopContext());
-                //    		 log.warn("isWorker=" + context.isWorkerContext());
-                //    		 log.warn("isVirtualThread=" + (context.threadingModel() == ThreadingModel.VIRTUAL_THREAD ? "true":"false"));
-                // 创建公会成功
-                // 创建公会成功的业务逻辑
-                PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
-                GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
-                guildModule.join(simpleInfo.getId());
-                GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
-                res.setGuild(allInfo);
-                client.sendProtocol(res);
-                GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
-        })).onFailure(err -> {
-            // 如果是校验未通过，前面已返回相应协议；这里兜底
-            player.handleFail(err);
-        });
+        }
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(0);
+        try {
+            GuildServiceInfo r = guildProxy.createGuild(player.getPlayerId(), req.getName(), req.getNotice(), req.getDeclaration(), req.getIcon(), req.getAutoJoin());
+            // 创建公会成功
+            PlayerHelper.delResources(player, GlobalConst.GuildCreationConsume, OpType.guildChangeName);
+            GuildSimpleInfo simpleInfo = r.getShowInfo().getSimpleInfo();
+            guildModule.join(simpleInfo.getId());
+            GuildAllInfo allInfo = GuildHelper.buildAllInfo(r, player.getPlayerId());
+            res.setGuild(allInfo);
+            client.sendProtocol(res.build());
+            GameLogger.guildCreate(player, simpleInfo.getId(), simpleInfo.getName(), simpleInfo.getIcon());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void findGuild(NetClient client, Object o) {
@@ -557,12 +559,16 @@ public class GuildHandler extends GameBaseHandler {
         if (guildId <= 0) {
             player.fail(ErrorMsgEnum.request_parameter_error, "guildId <= 0");
         }
-        GuildServiceInterface serviceInterface = GameServer.getInstance().getRemoteCrossServerInterface(GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
-        GuildShowInfo guildShowInfo = serviceInterface.getGuildShowInfo(guildId);
-        if (guildShowInfo != null && player.getServerId().equals(guildShowInfo.getSimpleInfo().getServerId())) {
-            res.setGuild(guildShowInfo);
+        GuildServiceInterface serviceInterface = ServerHelper.getGuildProxy(guildId);
+        try {
+            GuildShowInfo guildShowInfo = serviceInterface.getGuildShowInfo(guildId);
+            if (guildShowInfo != null && player.getServerId().equals(guildShowInfo.getSimpleInfo().getServerId())) {
+                res.setGuild(guildShowInfo);
+            }
+            client.sendProtocol(res.build());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
         }
-        client.sendProtocol(res.build());
     }
 
     private void guildList(NetClient client, Object o) {

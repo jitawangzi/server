@@ -9,8 +9,10 @@ import cn.game.core.net.client.NetClient;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.core.push.PushService;
+import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.handler.GameBaseHandler;
 import cn.game.games.net.game.helper.PlayerHelper;
+import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.guild.GuildHandler;
 import cn.game.protocol.manual.ErrorMsgEnum;
@@ -174,7 +176,9 @@ public class ChatHandler extends GameBaseHandler {
 					messageBuilder.setChatType(chatType);
 					messageBuilder.setContent(content);
 					messageBuilder.setSendPlayer(sendPlayer.buildSimplePlayerInfo());
-					GuildHandler.sendMsgToGuildServer(sendPlayer, ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build());
+					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(sendPlayer.getGuildId());
+					guildProxy.broadcastGuildMessage(sendPlayer.getGuildId(), PbProtocol.ChatMessagePush_31010001,
+							ChatMessagePush_31010001.newBuilder().addMessageInfo(messageBuilder.build()).build().toByteArray());
 					break;
 				}
 				default:

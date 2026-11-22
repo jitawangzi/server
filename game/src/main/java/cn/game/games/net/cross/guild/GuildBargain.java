@@ -7,6 +7,7 @@ import java.util.Map;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.RedisLocalCache;
 import cn.game.games.core.SimplePlayer;
+import cn.game.games.net.game.helper.PlayerHelper;
 import cn.game.protocol.generated.config.GuildBargainConfig;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.protobuf.GuildMsg;
@@ -68,11 +69,11 @@ public class GuildBargain implements GuildConstants.GuildEventHandler {
 		bargainTotalNum += count;
 		bargainTimes++;
 
-		// 异步记录砍价日志
-		Future<SimplePlayer> simplePlayerFuture = RedisLocalCache.getInstance().getAsync(CacheType.PLAYER_SIMPLE.key(playerId));
-		simplePlayerFuture.onSuccess(simplePlayer -> {
+		// 记录砍价日志
+		SimplePlayer simplePlayer = PlayerHelper.getSimplePlayer(playerId);
+		if (simplePlayer != null) {
 			addBargainLog(simplePlayer.getName(), count);
-		});
+		}
 
 		return count;
 	}

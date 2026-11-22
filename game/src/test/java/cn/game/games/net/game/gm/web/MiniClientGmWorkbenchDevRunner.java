@@ -55,6 +55,19 @@ public class MiniClientGmWorkbenchDevRunner {
 			cn.game.protocol.generated.config.GlobalConst.FriendMax = 50;
 
 			ClassManager.getInstance().init();
+			try {
+				cn.game.games.net.game.init.GameIdManagerInitializer.initialize();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			try {
+				cn.game.protocol.generated.helper.ManagerHelper.init();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+			if (cn.game.protocol.generated.config.GlobalConst.GuildCreationVIP <= 0) {
+				cn.game.protocol.generated.config.GlobalConst.GuildCreationVIP = 1;
+			}
 
 			GmDispatcher dispatcher = GmDispatcher.getInstance();
 			if (!dispatcher.hasCommand("player.time.status")) {
@@ -150,7 +163,14 @@ public class MiniClientGmWorkbenchDevRunner {
 			field.set(ProtocolSimulationService.getInstance(), mockDispatcher);
 
 			GmWebConsoleServer server = GmWebConsoleServer.getInstance();
-			int port = server.start("127.0.0.1", 17010).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
+			int listenPort = 18080;
+			if (args != null && args.length > 0) {
+				try {
+					listenPort = Integer.parseInt(args[0]);
+				} catch (Exception ignored) {
+				}
+			}
+			int port = server.start("127.0.0.1", listenPort).toCompletionStage().toCompletableFuture().get(10, TimeUnit.SECONDS);
 
 			System.out.println("=================================================================");
 			System.out.println("  GM Web Console 已在 http://localhost:" + port + "/gm-console 成功启动！");

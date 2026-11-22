@@ -148,6 +148,9 @@ public class SandboxExecutionGuard {
         data.setLevel(100);
         data.setVipLevel(14);
         data.setRefreshDay(DateUtil.getDay());
+        String nowStr = DateUtil.getTimeByPattern(new java.util.Date(), DateUtil.pattern_en);
+        data.setCreateDate(nowStr);
+        data.setLoginDate(nowStr);
 
         Player player = new Player(data);
         Account account = new Account();

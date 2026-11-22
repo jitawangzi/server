@@ -33,6 +33,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
+import cn.game.games.net.game.gm.acceptance.suites.GuildModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ItemModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ShopModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.web.GmWebConsoleServer;
@@ -333,12 +334,23 @@ public class ModuleAcceptancePlatformTest {
         Assertions.assertTrue(shopMatrixReport.getTotalCases() > 0, "商店配表扫描用例数应大于 0");
         Assertions.assertEquals(0, shopMatrixReport.getProvisionFailures(), "造数故障数应为 0");
 
-        // 5. 单条用例定向重试
+        // 5. 公会模块契约验收 (CONTRACT)
+        ModuleAcceptanceReport guildContractReport = engine.runSuite(0x40, AcceptanceRunMode.CONTRACT, null, 100);
+        Assertions.assertTrue(guildContractReport.isSuccess(), "公会契约用例应全部通过: " + guildContractReport.getFailedCases());
+        Assertions.assertEquals(0, guildContractReport.getFailedCases());
+        Assertions.assertTrue(guildContractReport.getTotalCases() >= 6, "公会契约用例总数至少 6 条");
+
+        // 6. 公会模块多态配表矩阵扫描 (MATRIX_SCAN)
+        ModuleAcceptanceReport guildMatrixReport = engine.runSuite(0x40, AcceptanceRunMode.MATRIX_SCAN, null, 30);
+        Assertions.assertTrue(guildMatrixReport.getTotalCases() > 0, "公会配表扫描用例数应大于 0");
+        Assertions.assertEquals(0, guildMatrixReport.getProvisionFailures(), "造数故障数应为 0");
+
+        // 7. 单条用例定向重试
         ModuleAcceptanceReport singleRetryReport = engine.runSuite(0x0b, AcceptanceRunMode.ALL, "CONTRACT:item_use_not_enough", 100);
         Assertions.assertEquals(1, singleRetryReport.getTotalCases(), "单条重试报告必须只包含 1 条用例");
         Assertions.assertEquals("CONTRACT:item_use_not_enough", singleRetryReport.getResults().get(0).getCaseId());
 
-        // 6. 未覆盖多态分支告警验证
+        // 8. 未覆盖多态分支告警验证
         ModuleAcceptanceSuite dummySuite = new ModuleAcceptanceSuite() {
             @Override public int getModuleId() { return 0x7e; }
             @Override public String getModuleKey() { return "dummy"; }
@@ -354,6 +366,53 @@ public class ModuleAcceptancePlatformTest {
         ModuleAcceptanceReport dummyReport = engine.runSuite(0x7e, AcceptanceRunMode.CONTRACT, null, 10);
         Assertions.assertTrue(dummyReport.getWarnings().stream().anyMatch(w -> w.contains("UNCOVERED_BRANCH:BRANCH_UNCOVERED")),
                 "未覆盖分支必须生成 UNCOVERED_BRANCH 告警");
+    }
+
+    /**
+     * TC-MAP-06: 公会模块（0x40）双轨自动化验收独立实测（契约验收 + 配表矩阵扫描 + 定向重试）
+     */
+    @Test
+    public void testGuildModuleAcceptanceSuiteStandalone() throws Exception {
+        ModuleAcceptanceEngine engine = ModuleAcceptanceEngine.getInstance();
+
+        // 1. 轨道一：公会功能契约用例验收 (CONTRACT)
+        ModuleAcceptanceReport contractReport = engine.runSuite(0x40, AcceptanceRunMode.CONTRACT, null, 100);
+        System.out.println("================================================================================");
+        System.out.println("  公会模块契约验收 (CONTRACT) 报告: 总用例=" + contractReport.getTotalCases()
+                + ", 通过=" + contractReport.getPassedCases() + ", 失败=" + contractReport.getFailedCases()
+                + ", 耗时=" + contractReport.getElapsedMs() + "ms");
+        System.out.println("--------------------------------------------------------------------------------");
+        for (AcceptanceCaseResult r : contractReport.getResults()) {
+            System.out.println(String.format("  [%s] caseId=%-42s title=%-22s 耗时=%dms",
+                    r.getStatus() == AcceptanceCaseStatus.PASSED ? "PASS" : "FAIL", r.getCaseId(), r.getTitle(), r.getElapsedMs()));
+        }
+        System.out.println("================================================================================");
+        Assertions.assertTrue(contractReport.isSuccess(), "公会契约验收必须全部通过: " + contractReport.getFailedCases());
+        Assertions.assertEquals(0, contractReport.getFailedCases(), "公会契约失败用例数必须为 0");
+        Assertions.assertTrue(contractReport.getTotalCases() >= 8, "公会契约用例数至少为 8 条");
+
+        // 2. 轨道二：公会多态配表矩阵扫描 (MATRIX_SCAN)
+        ModuleAcceptanceReport matrixReport = engine.runSuite(0x40, AcceptanceRunMode.MATRIX_SCAN, null, 50);
+        System.out.println("================================================================================");
+        System.out.println("  公会模块配表矩阵扫描 (MATRIX_SCAN) 报告: 扫描总数=" + matrixReport.getTotalCases()
+                + ", 通过=" + matrixReport.getPassedCases() + ", 造数故障=" + matrixReport.getProvisionFailures()
+                + ", 耗时=" + matrixReport.getElapsedMs() + "ms");
+        System.out.println("--------------------------------------------------------------------------------");
+        for (AcceptanceCaseResult r : matrixReport.getResults()) {
+            System.out.println(String.format("  [%s] caseId=%-42s branch=%-25s 耗时=%dms",
+                    r.getStatus() == AcceptanceCaseStatus.PASSED ? "PASS" : "FAIL", r.getCaseId(), r.getBranchKey(), r.getElapsedMs()));
+        }
+        System.out.println("================================================================================");
+        Assertions.assertTrue(matrixReport.getTotalCases() > 0, "公会配表扫描用例数必须大于 0");
+        Assertions.assertEquals(0, matrixReport.getProvisionFailures(), "公会配表造数故障必须为 0");
+        Assertions.assertEquals(0, matrixReport.getFailedCases(), "公会配表扫描业务失败数必须为 0");
+
+        // 3. 单条用例定向重试验证
+        ModuleAcceptanceReport retryReport = engine.runSuite(0x40, AcceptanceRunMode.ALL, "CONTRACT:guild_info_query_success", 100);
+        System.out.println("  [PASS] 单条定向重试验证成功: " + retryReport.getResults().get(0).getCaseId());
+        Assertions.assertEquals(1, retryReport.getTotalCases(), "单条重试报告必须只包含 1 条用例");
+        Assertions.assertTrue(retryReport.isSuccess(), "单条重试必须成功");
+        Assertions.assertEquals("CONTRACT:guild_info_query_success", retryReport.getResults().get(0).getCaseId());
     }
 
     /**

@@ -1,5 +1,6 @@
 package cn.game.games.net.cross.guild.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,12 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.google.protobuf.Message;
+
 import cn.game.core.base.ServerContext;
 import cn.game.core.exception.LogicException;
 import cn.game.core.net.remote.RemoteProxy;
 import cn.game.games.net.cross.guild.Guild;
 import cn.game.games.net.cross.guild.GuildBargain;
 import cn.game.games.net.cross.guild.GuildConstants;
+import cn.game.games.net.cross.guild.GuildHelper;
 import cn.game.games.net.cross.guild.GuildManager;
 import cn.game.games.net.cross.guild.GuildMember;
 import cn.game.games.net.cross.guild.GuildSetting;
@@ -26,8 +30,10 @@ import cn.game.protocol.generated.config.GuildPermissionsConfig;
 import cn.game.protocol.generated.manager.GuildBargainManager;
 import cn.game.protocol.generated.manager.GuildPermissionsManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
+import cn.game.protocol.protobuf.GuildMsg;
 import cn.game.protocol.protobuf.GuildMsg.GuildServiceInfo;
 import cn.game.protocol.protobuf.GuildMsg.GuildShowInfo;
+import cn.game.protocol.protobuf.PbProtocol;
 import io.vertx.core.Future;
 
 /**    
@@ -58,10 +64,12 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	@Override
-	public Future<GuildServiceInfo> createGuild(long createPlayerId, String name, String notice, String declaration, int icon,int joinType) {
-		return GuildManager.getInstance().createGuild(createPlayerId,name,notice,declaration,icon,joinType).map(r -> {
-			return r.toProto();
-		});
+	public GuildServiceInfo createGuild(long createPlayerId, String name, String notice, String declaration, int icon, int joinType) {
+		Guild guild = GuildManager.getInstance().createGuild(createPlayerId, name, notice, declaration, icon, joinType);
+		if (guild == null) {
+			fail(ErrorMsgEnum.unknown);
+		}
+		return guild.toProto();
 	}
 
 	/**
@@ -218,6 +226,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (request.getTianDaoLevel() != 0) {
 			setting.setTianDaoLevel(request.getTianDaoLevel());
 		}
+		GuildManager.getInstance().saveSimpleData(guildInfo);
 		return true;
 	}
 
@@ -227,10 +236,10 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	 * @param operatorId 操作者ID
 	 * @param targetPlayerId 目标玩家ID
 	 * @param position 新职位
-	 * @return 是否成功
+	 * @return 变更前的旧职位
 	 */
 	@Override
-	public void setMemberPosition(long guildId, long operatorId, long targetPlayerId, int position) {
+	public int setMemberPosition(long guildId, long operatorId, long targetPlayerId, int position) {
 		System.out.println("收到公会设置成员职位请求: guildId=" + guildId + ", operatorId=" + operatorId + ", targetPlayerId=" + targetPlayerId
 				+ ", position=" + position);
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
@@ -256,15 +265,16 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			fail(ErrorMsgEnum.request_parameter_error);
 		}
 
+		int oldPosition = targetMember.getPosition();
 		if (position == GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			// 转让宗主
 			guildInfo.zongZhuTransfer(operator, targetMember);
 		} else {
-			int oldPosition = targetMember.getPosition();
 			targetMember.setPosition(position);
 			guildInfo.handleEvent(GuildConstants.GuildEvenType.ZONG_MEN_POSITION_CHANGE, targetMember.playerId, oldPosition,
 					position);
 		}
+		return oldPosition;
 	}
 
 	/**
@@ -352,7 +362,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	@Override
-	public Future<Integer> addGuildAsset(long guildId, long playerId, int assetId, int value) {
+	public int addGuildAsset(long guildId, long playerId, int assetId, int value) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
 		if (guildInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -361,10 +371,11 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		guildInfo.addGuildAsset(playerId, assetId, value);
 		int newLevel = guildInfo.getLv(); 
 
-		return Future.succeededFuture(newLevel > oldLevel ? newLevel : 0);
+		return newLevel > oldLevel ? newLevel : 0;
 	}
+
 	@Override
-	public Future<?> addMemberContribute(long guildId, long playerId, int value) {
+	public void addMemberContribute(long guildId, long playerId, int value) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
 		if (guildInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -373,7 +384,6 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 		if (member != null) {
 			member.addcontribution(value);
 		}
-		return Future.succeededFuture();
 	}
 
 	@Override
@@ -422,13 +432,31 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	@Override
-	public Future<?> donate(long guildId, long playerId, int donateType) {
+	public void donate(long guildId, long playerId, int donateType) {
 		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		if (guild == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
 		GuildMember member = guild.getMember(playerId); 
 		if (member != null) {
 			member.setTotalDonateCount(member.getTotalDonateCount() + 1);
 		}
-		return Future.succeededFuture();
+	}
+
+	@Override
+	public List<GuildMsg.GuildLogProto> getGuildLogs(long guildId) {
+		Guild guild = getGuild(guildId);
+		return guild.getModule().optLog.toProto();
+	}
+
+	@Override
+	public void broadcastGuildMessage(long guildId, int msgId, byte[] data) {
+		Guild info = getGuild(guildId);
+		if (info != null) {
+			List<Long> memberIdList = new ArrayList<>(info.getModule().menMemberMap.keySet());
+			Message message = PbProtocol.getInstance().parseFrom(msgId, data);
+			GuildHelper.broadcastNotifyMsgToPlayer(message, msgId, memberIdList);
+		}
 	}
 
 	@Override

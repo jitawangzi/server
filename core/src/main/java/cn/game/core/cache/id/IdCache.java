@@ -2,6 +2,7 @@ package cn.game.core.cache.id;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,8 @@ public class IdCache {
 	 * @return
 	 */
 	public static String getServerId(DistributedObjectType type, long id) {
-		return getManager(type).getServerId(id);
+		GenericDistributedIDManager manager = getManager(type);
+		return manager != null ? manager.getServerId(id) : null;
 	}
 
 	/** 
@@ -56,7 +58,8 @@ public class IdCache {
 	 * @return
 	 */
 	public static Future<String> getServerIdAsync(DistributedObjectType type, long id) {
-		return getManager(type).getServerIdAsync(id, true);
+		GenericDistributedIDManager manager = getManager(type);
+		return manager != null ? manager.getServerIdAsync(id, true) : Future.succeededFuture(null);
 	}
 
 	/** 
@@ -66,12 +69,12 @@ public class IdCache {
 	 */
 	public static String getPlayerServerId(long playerId) {
 		GenericDistributedIDManager manager = getManager(DistributedObjectType.PLAYER);
-		return manager.getServerId(playerId);
+		return manager != null ? manager.getServerId(playerId) : null;
 	}
 
 	public static String getGuildServerId(long playerId) {
 		GenericDistributedIDManager manager = getManager(DistributedObjectType.GUILD);
-		return manager.getServerId(playerId);
+		return manager != null ? manager.getServerId(playerId) : null;
 	}
 
 	/** 
@@ -105,6 +108,9 @@ public class IdCache {
 	}
 
 	private static CompletionStage<Boolean> trySetServerIdAsync(String key) {
+		if (RedisUtil.getRedis() == null) {
+			return CompletableFuture.completedFuture(true);
+		}
 		return LuaScriptUtil.trySetWithExpectAsync(key, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS); 
 	}
 
@@ -124,13 +130,16 @@ public class IdCache {
 	 * @return
 	 */
 	public static boolean trySetServerId(DistributedObjectType objectType, long id) {
+		if (RedisUtil.getRedis() == null) {
+			return true;
+		}
 		String redisKey = generateRedisKey(objectType, id); 
 		return LuaScriptUtil.trySetWithExpect(redisKey, ServerContext.getInstance().getServerId(), Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS); 
 	}
 
 	public static String generateRedisKey(DistributedObjectType objectType, long id) {
 		GenericDistributedIDManager manager = getManager(objectType);
-		return manager.generateRedisKey(id);
+		return manager != null ? manager.generateRedisKey(id) : objectType.name() + ":" + id;
 	}
 	
 	/** 

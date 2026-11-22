@@ -843,11 +843,19 @@ public class Player {
 	}
 
 	public long getLastLoginTimer() {
-		return DateUtil.parseDate(getData().getLoginDate()).getTime();
+		String loginDate = getData().getLoginDate();
+		if (StringUtils.isEmpty(loginDate)) {
+			return System.currentTimeMillis();
+		}
+		return DateUtil.parseDate(loginDate).getTime();
 	}
 
 	public long getCreateTimer() {
-		return DateUtil.parseDate(getData().getCreateDate()).getTime();
+		String createDate = getData().getCreateDate();
+		if (StringUtils.isEmpty(createDate)) {
+			return System.currentTimeMillis();
+		}
+		return DateUtil.parseDate(createDate).getTime();
 	}
 
 	public String getOpenId() {

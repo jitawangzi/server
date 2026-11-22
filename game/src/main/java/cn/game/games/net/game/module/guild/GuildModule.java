@@ -133,23 +133,19 @@ public class GuildModule extends BasePlayerModule {
 				int id = event.get(0);
 				int count = event.get(1);
 				if (id == Asset.GuildExp.ID || id == Asset.GuildPoint.ID || id == Asset.GuildContribute.ID) {
-					GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-					Future<Integer> newLevelFuture = guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
-					newLevelFuture.onComplete(ar -> {
-						if (ar.succeeded()) {
-							int newLevel = ar.result() == null ? 0 :ar.result() ;
-							if (newLevel > 0) {
-								// 公会升级了
-								GameLogger.guildUpgrade(player, count, newLevel) ; 
-							}
-						} else {
-							log.error("addGuildAsset failed! guildId={}, playerId={}, assetId={}, value={}, cause={}",
-									player.getGuildId(), playerId, id, count, ar.cause().getMessage());
+					try {
+						GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+						int newLevel = guildProxy.addGuildAsset(player.getGuildId(), playerId, id, count);
+						if (newLevel > 0) {
+							// 公会升级了
+							GameLogger.guildUpgrade(player, count, newLevel);
 						}
-					});
+					} catch (Exception e) {
+						log.error("addGuildAsset failed! guildId={}, playerId={}, assetId={}, value={}, cause={}",
+								player.getGuildId(), playerId, id, count, e.getMessage());
+					}
 				}
 			}
-			;
 		}
 		case GuildDonate -> {
 			GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());

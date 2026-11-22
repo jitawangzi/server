@@ -212,6 +212,9 @@ public class GuildHelper {
 
 	public static boolean trySetName(String name, long newGuildId) {
 		String nameKey = getNameKey(name);
+		if (RedisUtil.getRedis() == null) {
+			return true;
+		}
 		return RedisUtil.trySet(nameKey, newGuildId);
 	}
 

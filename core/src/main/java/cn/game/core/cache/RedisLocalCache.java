@@ -138,11 +138,17 @@ public class RedisLocalCache {
 	}
 
 	private <T> T getFromRedis(String key) {
+		if (redissonClient == null) {
+			return null;
+		}
 		RBucket<T> bucket = redissonClient.getBucket(key);
 		return bucket.get();
 	}
 
 	private <T> Future<T> getFromRedisAsync(String key) {
+		if (redissonClient == null) {
+			return Future.succeededFuture(null);
+		}
 		RBucket<T> bucket = redissonClient.getBucket(key);
 		return Future.fromCompletionStage(bucket.getAsync());
 	}
@@ -154,7 +160,13 @@ public class RedisLocalCache {
 	 */
 	public <T> void put(String key, T value) {
 		cache.put(key, value);
-		redissonClient.getBucket(key).set(value);
+		if (redissonClient != null) {
+			try {
+				redissonClient.getBucket(key).set(value);
+			} catch (Exception e) {
+				log.warn("put to Redis failed for key: {}", key, e);
+			}
+		}
 	}
 
 	/** 

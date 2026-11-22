@@ -63,8 +63,15 @@ public class InProcessAcceptanceKit {
             }
             Field segField = IdUtil.class.getDeclaredField("segmentService");
             segField.setAccessible(true);
-            if (segField.get(null) == null) {
-                segField.set(null, new SegmentIdService());
+            Object segVal = segField.get(null);
+            if (segVal == null || segVal.getClass() == SegmentIdService.class) {
+                segField.set(null, new SegmentIdService() {
+                    private final java.util.concurrent.atomic.AtomicLong seq = new java.util.concurrent.atomic.AtomicLong(1000);
+                    @Override
+                    public long nextId(cn.game.core.id.IdUtil.IdType type) {
+                        return seq.incrementAndGet();
+                    }
+                });
             }
         } catch (Throwable t) {
             log.warn("初始化测试 IdUtil 警告", t);

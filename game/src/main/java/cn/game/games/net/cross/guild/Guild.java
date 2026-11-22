@@ -68,6 +68,8 @@ public class Guild {
 
 	public void init(String name,String notice,String declaration,int icon,int joinType, long newGuildId, long createPlayerId) {
 		SimplePlayer creator = PlayerHelper.getSimplePlayer(createPlayerId);
+		String serverId = creator != null ? creator.getServerId() : PlayerHelper.getServerId(createPlayerId);
+		String creatorName = creator != null ? creator.getName() : "玩家" + createPlayerId;
 
 		module = new GuildModuleData();
 		saveDataTimer = System.currentTimeMillis() + GuildConstants.SAVE_ZONG_MEN_DATA_TIMER;
@@ -81,15 +83,15 @@ public class Guild {
 		data.setNotification(StringUtils.isEmpty(declaration) ? GlobalConst.GuildXuanyan : declaration);
 		data.setCreateTime(DateUtil.getTimeByPattern(new Date(), DateUtil.pattern_en));
 		data.setExp(0);
-		data.setServerId(creator.getServerId());
+		data.setServerId(serverId);
 
 		// 初始化各个模块
 		module = new GuildModuleData();
-		module.init(newGuildId,joinType,creator.getName());
+		module.init(newGuildId,joinType,creatorName);
 		module.afterInit(this);
 		module.registerAllModuleEventHandler();
 
-		module.handleEvent(GuildConstants.GuildEvenType.ZONG_MEN_CREATE, this, createPlayerId, creator.getName());
+		module.handleEvent(GuildConstants.GuildEvenType.ZONG_MEN_CREATE, this, createPlayerId, creatorName);
 		module.handleEvent(GuildConstants.GuildEvenType.ZONG_MEN_LEVEL_UP, this, getLv());
 		joinGuild(createPlayerId, GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU);
 	}
