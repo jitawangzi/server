@@ -406,6 +406,8 @@ public class ModuleAcceptancePlatformTest {
         Assertions.assertTrue(matrixReport.getTotalCases() > 0, "公会配表扫描用例数必须大于 0");
         Assertions.assertEquals(0, matrixReport.getProvisionFailures(), "公会配表造数故障必须为 0");
         Assertions.assertEquals(0, matrixReport.getFailedCases(), "公会配表扫描业务失败数必须为 0");
+        Assertions.assertTrue(matrixReport.getWarnings().stream().noneMatch(w -> w.startsWith("UNCOVERED_BRANCH:")),
+                "配表矩阵扫描必须无 UNCOVERED_BRANCH 告警: " + matrixReport.getWarnings());
 
         // 3. 单条用例定向重试验证
         ModuleAcceptanceReport retryReport = engine.runSuite(0x40, AcceptanceRunMode.ALL, "CONTRACT:guild_info_query_success", 100);
@@ -431,7 +433,7 @@ public class ModuleAcceptancePlatformTest {
         // 5. 验证 ALL 模式（跨阶段复用沙盒公会并在末尾统一解散）与 DAO.delete 主键旁路
         ModuleAcceptanceReport allReport = engine.runSuite(0x40, AcceptanceRunMode.ALL, null, 50);
         Assertions.assertTrue(allReport.isSuccess(), "ALL 模式公会全量验收必须通过: " + allReport.getFailedCases());
-        Assertions.assertEquals(33, allReport.getTotalCases(), "ALL 模式公会全量用例数应为 33 条");
+        Assertions.assertEquals(35, allReport.getTotalCases(), "ALL 模式公会全量用例数应为 35 条");
         Assertions.assertTrue(cn.game.games.net.cross.guild.GuildManager.getInstance().getAllGuildIds().isEmpty(),
                 "GuildModuleAcceptanceSuite 执行完毕后必须自动解散并清理沙盒公会");
         cn.game.games.cache.entity.GuildData dummyGuildData = new cn.game.games.cache.entity.GuildData();

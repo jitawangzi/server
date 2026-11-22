@@ -320,7 +320,9 @@ public class Guild {
 	}
 
 	void delGuildNameIdRedisData() {
-		RedisUtil.delete(GuildHelper.getNameKey(getName()));
+		if (RedisUtil.getRedis() != null) {
+			RedisUtil.delete(GuildHelper.getNameKey(getName()));
+		}
 	}
 
 	public GuildModuleData getModule() {

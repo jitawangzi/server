@@ -21,6 +21,8 @@ import com.google.protobuf.Message;
 import cn.game.core.base.ServerContext;
 import cn.game.core.event.EventProcessor;
 import cn.game.core.exception.LogicException;
+import cn.game.util.DateUtil;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.core.BasePlayerModule;
@@ -705,14 +707,14 @@ public class Player {
 	 */
 	@AiExport
 	public void handleFail(Message response, Throwable t) {
+		LogicException logicException = (t instanceof LogicException) ? (LogicException) t : ExceptionHelper.findCause(t, LogicException.class);
 		// 逻辑错误，非法逻辑
-		if (t instanceof LogicException) {
-			LogicException logicException = (LogicException) t;
+		if (logicException != null) {
 			getGameClient().sendProtocol(response, logicException.getErrorCode());
 			return;
 		}
 		// 一般是vertx主动生成的错误码错误
-		if (StringUtils.isNumeric(t.getMessage())) {
+		if (t != null && t.getMessage() != null && StringUtils.isNumeric(t.getMessage())) {
 			getGameClient().sendProtocol(response, Integer.parseInt(t.getMessage()));
 			return;
 		}
@@ -845,7 +847,7 @@ public class Player {
 	public long getLastLoginTimer() {
 		String loginDate = getData().getLoginDate();
 		if (StringUtils.isEmpty(loginDate)) {
-			return System.currentTimeMillis();
+			return DateUtil.currentTimeMillis();
 		}
 		return DateUtil.parseDate(loginDate).getTime();
 	}
@@ -853,7 +855,7 @@ public class Player {
 	public long getCreateTimer() {
 		String createDate = getData().getCreateDate();
 		if (StringUtils.isEmpty(createDate)) {
-			return System.currentTimeMillis();
+			return DateUtil.currentTimeMillis();
 		}
 		return DateUtil.parseDate(createDate).getTime();
 	}

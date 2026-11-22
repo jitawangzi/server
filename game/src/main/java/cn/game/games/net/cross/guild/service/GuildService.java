@@ -165,7 +165,7 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		GuildMember member = guildInfo.getMember(playerId);
-		if (member.getPosition() != GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
+		if (member == null || member.getPosition() != GuildConstants.ZONG_MEN_POSITION_ZONG_ZHU) {
 			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
 		guildInfo.dissolveGuild(2);
@@ -186,16 +186,22 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 
 		GuildSetting setting = guildInfo.getModule().setting;
 		GuildMember member = guildInfo.getMember(request.getOperatorId());
+		if (member == null) {
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
+		}
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(member.position);
+		if (permissionsConfig == null) {
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
+		}
 
 		// 修改公会名称
 		if (!StringUtils.isEmpty(request.getName())) {
 			if (!permissionsConfig.Rename) {
 				fail(ErrorMsgEnum.zong_men_permission_not_enough);
 			}
-			 if (!setting.changeGuildName(guildInfo, request.getName(), request.getOperatorName())) {
-				return false ; 
-			};
+			if (!setting.changeGuildName(guildInfo, request.getName(), request.getOperatorName())) {
+				fail(ErrorMsgEnum.zong_men_name_repeat);
+			}
 		}
 
 		// 其他设置修改
@@ -240,8 +246,6 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	 */
 	@Override
 	public int setMemberPosition(long guildId, long operatorId, long targetPlayerId, int position) {
-		System.out.println("收到公会设置成员职位请求: guildId=" + guildId + ", operatorId=" + operatorId + ", targetPlayerId=" + targetPlayerId
-				+ ", position=" + position);
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
 		if (guildInfo == null) {
 			fail(ErrorMsgEnum.zong_men_not_exist);
@@ -252,6 +256,9 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			fail(ErrorMsgEnum.zong_men_player_member_not_exist);
 		}
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(operator.position);
+		if (permissionsConfig == null) {
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
+		}
 		if (!permissionsConfig.Posts) {
 			fail(ErrorMsgEnum.zong_men_permission_not_enough);
 		}
@@ -321,7 +328,13 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 			fail(ErrorMsgEnum.zong_men_not_exist);
 		}
 		GuildMember operator = guildInfo.getMember(operatorId);
+		if (operator == null) {
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
+		}
 		GuildPermissionsConfig permissionsConfig = GuildPermissionsManager.instance().get(operator.position);
+		if (permissionsConfig == null) {
+			fail(ErrorMsgEnum.zong_men_permission_not_enough);
+		}
 
 		// 权限检查
 		if ((optType == 1 || optType == 2) && !permissionsConfig.Approval) {
@@ -424,8 +437,17 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	@Override
 	public int[] getBargainPrice(long guildId) {
 		Guild guildInfo = GuildManager.getInstance().getGuild(guildId);
+		if (guildInfo == null || guildInfo.getModule() == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
 		GuildBargain bargain = guildInfo.getModule().getBargain();
+		if (bargain == null) {
+			fail(ErrorMsgEnum.zong_men_not_exist);
+		}
 		GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargain.getBargainItemId());
+		if (guildBargainConfig == null) {
+			fail(ErrorMsgEnum.config_data_not_found);
+		}
 		int bargainTotalNum = bargain.getBargainTotalNum();
 		int price = guildBargainConfig.Price[1] - bargainTotalNum;
 		return new int[] {guildBargainConfig.ID,price};
@@ -444,9 +466,16 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	}
 
 	@Override
-	public List<GuildMsg.GuildLogProto> getGuildLogs(long guildId) {
+	public GuildMsg.GuildLogResponse_40000026 getGuildLogs(long guildId) {
 		Guild guild = getGuild(guildId);
-		return guild.getModule().optLog.toProto();
+		GuildMsg.GuildLogResponse_40000026.Builder res = GuildMsg.GuildLogResponse_40000026.newBuilder();
+		if (guild != null && guild.getModule() != null && guild.getModule().optLog != null) {
+			List<GuildMsg.GuildLogProto> protoLogs = guild.getModule().optLog.toProto();
+			if (protoLogs != null) {
+				res.addAllLogList(protoLogs);
+			}
+		}
+		return res.build();
 	}
 
 	@Override
@@ -462,9 +491,15 @@ public class GuildService implements RemoteProxy, GuildServiceInterface {
 	@Override
 	public boolean hasPendingApplication(long guildId, long playerId) {
 		Guild guild = GuildManager.getInstance().getGuild(guildId);
+		if (guild == null) {
+			return false;
+		}
 		GuildMember member = guild.getMember(playerId); 
+		if (member == null) {
+			return false;
+		}
 		GuildPermissionsConfig guildPermissionsConfig = GuildPermissionsManager.instance().get(member.position); 
-		if (!guildPermissionsConfig.Approval) {
+		if (guildPermissionsConfig == null || !guildPermissionsConfig.Approval) {
 			return false; 
 		}
 		return guild.hasApply();

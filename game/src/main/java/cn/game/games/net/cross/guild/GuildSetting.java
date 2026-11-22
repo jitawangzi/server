@@ -70,11 +70,13 @@ public class GuildSetting implements GuildConstants.GuildEventHandler {
      * @return 是否成功
      */
     public boolean changeGuildName(Guild guildInfo, String newName, String operatorName) {
-        boolean trySet = RedisUtil.trySet(GuildHelper.getNameKey(newName), newName); 
-		if (!trySet) {
-			// 名称修改失败,已经存在了
-			return false;
-		}
+        if (RedisUtil.getRedis() != null) {
+            boolean trySet = RedisUtil.trySet(GuildHelper.getNameKey(newName), newName); 
+            if (!trySet) {
+                // 名称修改失败,已经存在了
+                return false;
+            }
+        }
 
         // 删除旧的公会名称id映射
         guildInfo.delGuildNameIdRedisData();

@@ -73,15 +73,22 @@ public class ServerHelper {
 		if (StringUtils.isEmpty(serverId)) {
 			callType = CallType.LoadBalancer;
 		}
-		boolean isLocalOrSandbox = ServerContext.getInstance().getServerType() == serverType
-				|| ServerContext.getInstance().getRpcClient() == null
+		boolean isSandboxWithoutRpc = ServerContext.getInstance().getRpcClient() == null
 				|| (ServerContext.getInstance().getRpcClient() instanceof VertxRpcClient && ((VertxRpcClient) ServerContext.getInstance().getRpcClient()).getVertx() == null);
-		if (isLocalOrSandbox) {
-			// 对象不在线，或者在当前服务器，或者无独立RPC环境（纯单测/沙盒），直接由当前服务器处理
+		if (isSandboxWithoutRpc) {
 			if (clazz == GuildServiceInterface.class) {
 				return (T) GuildService.getInstance();
 			}
 			return ClassHelper.getSingletonInstance(clazz);
+		}
+		if (ServerContext.getInstance().getServerType() == serverType) {
+			// 对象不在线，或者在当前服务器，直接由当前服务器处理
+			if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
+				if (clazz == GuildServiceInterface.class) {
+					return (T) GuildService.getInstance();
+				}
+				return ClassHelper.getSingletonInstance(clazz);
+			}
 		}
 		// 在其他服务器，通过远程调用
 		return RpcFactory.getImpl(clazz, ServerContext.getInstance().getRpcClient(), callType, serverId, serverType, targetId);

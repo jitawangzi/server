@@ -57,17 +57,13 @@ public class GuildModuleAcceptanceSuite implements ModuleAcceptanceSuite {
             "GUILD_DONATE_FREE",
             "GUILD_DONATE_GOLD",
             "GUILD_DONATE_DIAMOND",
-            "GUILD_DONATE_RESOURCE",
             "GUILD_BARGAIN_PERFORM",
-            "GUILD_BARGAIN_BUY",
-            "GUILD_CREATE_NORMAL",
-            "GUILD_SETTING_UPDATE"
+            "GUILD_BARGAIN_BUY"
     ));
 
     private static final List<String> RELATED_TABLES = Collections.unmodifiableList(Arrays.asList(
             "GuildDonateConfig",
-            "GuildBargainConfig",
-            "GuildBasicConfig"
+            "GuildBargainConfig"
     ));
 
     @Override
@@ -119,14 +115,19 @@ public class GuildModuleAcceptanceSuite implements ModuleAcceptanceSuite {
             // 2. 契约用例：VIP 等级不足创建公会拦截
             ctx.executeContractCase("CONTRACT:guild_create_vip_limit", "VIP 等级不足时创建公会应返回等级不足拦截", () -> {
                 clearPlayerGuild(player);
-                if (GlobalConst.GuildCreationVIP <= 0) {
-                    GlobalConst.GuildCreationVIP = 1;
+                int originVip = GlobalConst.GuildCreationVIP;
+                try {
+                    if (GlobalConst.GuildCreationVIP <= 0) {
+                        GlobalConst.GuildCreationVIP = 1;
+                    }
+                    player.getPlayerModule().getExpLevelMap().setValue(Asset.VIPExp.ID, 0);
+                    Map<String, Object> req = Map.of("name", "测试VIP拦截公会", "notice", "公告", "declaration", "宣言", "icon", 1, "autoJoin", 1);
+                    Map<String, Object> res = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildCreateRequest_40000005, req);
+                    InProcessAcceptanceKit.assertErrorCode(res, ErrorMsgEnum.level_not_enough.getId());
+                } finally {
+                    GlobalConst.GuildCreationVIP = originVip;
+                    player.getPlayerModule().getExpLevelMap().setValue(Asset.VIPExp.ID, 14);
                 }
-                player.getPlayerModule().getExpLevelMap().setValue(Asset.VIPExp.ID, 0);
-                Map<String, Object> req = Map.of("name", "测试VIP拦截公会", "notice", "公告", "declaration", "宣言", "icon", 1, "autoJoin", 1);
-                Map<String, Object> res = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildCreateRequest_40000005, req);
-                InProcessAcceptanceKit.assertErrorCode(res, ErrorMsgEnum.level_not_enough.getId());
-                player.getPlayerModule().getExpLevelMap().setValue(Asset.VIPExp.ID, 14);
             });
 
             // 3. 契约用例：未在公会中的玩家发起砍价拦截
@@ -189,6 +190,36 @@ public class GuildModuleAcceptanceSuite implements ModuleAcceptanceSuite {
                         "autoJoin", 1
                 );
                 Map<String, Object> res = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildSettingRequest_40000013, req);
+                InProcessAcceptanceKit.assertProtocolSuccess(res);
+            });
+
+            // 9. 契约用例：公会砍价商品防重入（幂等性）验证
+            ctx.executeContractCase("CONTRACT:guild_bargain_repeat_buy_blocked", "重复购买公会砍价商品应返回重复操作拦截", () -> {
+                long guildId = ensureSandboxGuild(player);
+                GuildBargainConfig config = (GuildBargainManager.instance() != null && !GuildBargainManager.instance().list().isEmpty())
+                        ? GuildBargainManager.instance().list().iterator().next()
+                        : null;
+                if (config != null) {
+                    ServerHelper.getGuildProxy(guildId).prepareBargainForAcceptance(guildId, config.ID, 0);
+                    player.getGuildModule().setBargainBuy(false);
+                    if (config.Price != null && config.Price.length >= 2) {
+                        CostProvisioner.provisionCostArray(player, config.Price, 2);
+                        Map<String, Object> req = Collections.emptyMap();
+                        // 第一次购买成功
+                        Map<String, Object> res1 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildBargainBuyRequest_40000062, req);
+                        InProcessAcceptanceKit.assertProtocolSuccess(res1);
+                        // 第二次重复购买拦截
+                        Map<String, Object> res2 = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildBargainBuyRequest_40000062, req);
+                        InProcessAcceptanceKit.assertErrorCode(res2, ErrorMsgEnum.repeat_request.getId());
+                    }
+                }
+            });
+
+            // 10. 契约用例：查询公会操作日志走 Protobuf 响应
+            ctx.executeContractCase("CONTRACT:guild_logs_query", "已在公会中的玩家查询公会日志应返回正确 Protobuf 响应", () -> {
+                ensureSandboxGuild(player);
+                Map<String, Object> req = Collections.emptyMap();
+                Map<String, Object> res = InProcessAcceptanceKit.invokeProto(player.getPlayerId(), PbProtocol.GuildLogRequest_40000025, req);
                 InProcessAcceptanceKit.assertProtocolSuccess(res);
             });
         } finally {

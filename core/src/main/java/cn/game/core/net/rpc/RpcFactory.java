@@ -12,7 +12,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.game.core.exception.LogicException;
 import cn.game.core.net.vertx.VxHolder;
+import cn.game.core.util.ExceptionHelper;
 import cn.game.util.ServerType;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -138,7 +140,11 @@ public class RpcFactory {
 					return method.invoke(proxy, args);
 				}
 				return rpcClient.invoke(callType, method, args, targetAddr, objectId);
-			} catch (Exception e) {
+			} catch (Throwable e) {
+				LogicException le = (e instanceof LogicException) ? (LogicException) e : ExceptionHelper.findCause(e, LogicException.class);
+				if (le != null) {
+					throw le;
+				}
 				log.error("rpc invoke 调用出现异常", e);
 				throw new RuntimeException(e);
 			}
@@ -208,7 +214,11 @@ public class RpcFactory {
 	            
 	            // 其他方法通过RPC调用
 	            return invocation.rpcClient.invoke(invocation.callType, method, args, invocation.targetAddr, invocation.objectId);
-	        } catch (Exception e) {
+	        } catch (Throwable e) {
+	            LogicException le = (e instanceof LogicException) ? (LogicException) e : ExceptionHelper.findCause(e, LogicException.class);
+	            if (le != null) {
+	                throw le;
+	            }
 	            log.error("rpc invoke 调用出现异常", e);
 	            throw new RuntimeException(e);
 	        }

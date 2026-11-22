@@ -3,6 +3,7 @@ package cn.game.games.net.game.module.guild;
 import cn.game.core.util.AsyncUtils;
 import cn.game.games.net.cross.guild.dto.GuildSettingRequest;
 import cn.game.games.net.game.helper.PlayerWriteGuard;
+import cn.game.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -179,7 +180,7 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildModule guildModule = player.getGuildModule();
         long joinTime = guildModule.getJoinTime();
-        if (guildModule.getDisbandCount() > 0 && (System.currentTimeMillis() - joinTime) / 1000 < GlobalConst.GuildBargainCD) {
+        if (guildModule.getDisbandCount() > 0 && (DateUtil.currentTimeMillis() - joinTime) / 1000 < GlobalConst.GuildBargainCD) {
             client.sendProtocol(res.build(), ErrorMsgEnum.cd_time_error.ID);
             return;
         }
@@ -188,23 +189,25 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.times_limit.ID);
             return;
         }
-        // 先扣次数
-        log.info("guild bargain BIBIBI 1");
-        PlayerHelper.delResources(player, Asset.GuildBargain.ID, 1, OpType.GuildBargain);
+        if (!PlayerHelper.isEnough(player, Asset.GuildBargain.ID, 1)) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.resource_not_enough.ID);
+            return;
+        }
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-        int[] ret = guildProxy.bargain(player.getGuildId(), player.getPlayerId());
-        GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(ret[0]);
-        log.info("guild bargain BIBIBI 2");
-        List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.BargainReward, OpType.GuildBargain);
-        res.addAllRewards(resources);
-        res.setCount(ret[1]);
-        log.info("guild bargain BIBIBI 3");
-        player.fireAndHandleEvent(EventTypeEnum.GuildBargain);
-        log.info("guild bargain BIBIBI 4");
-        guildModule.setBargainCount(bargainCount + 1);
-        client.sendProtocol(res.build());
-        log.info("guild bargain BIBIBI 5");
-        GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]);
+        try {
+            int[] ret = guildProxy.bargain(player.getGuildId(), player.getPlayerId());
+            PlayerHelper.delResources(player, Asset.GuildBargain.ID, 1, OpType.GuildBargain);
+            GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(ret[0]);
+            List<RewardInfo> resources = PlayerHelper.addResources(player, guildBargainConfig.BargainReward, OpType.GuildBargain);
+            res.addAllRewards(resources);
+            res.setCount(ret[1]);
+            player.fireAndHandleEvent(EventTypeEnum.GuildBargain);
+            guildModule.setBargainCount(bargainCount + 1);
+            client.sendProtocol(res.build());
+            GameLogger.guildBargain(player, player.getGuildId(), ret[2], ret[1], guildBargainConfig.Price[1] - ret[1]);
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void buyBargain(NetClient client, Object o) {
@@ -215,19 +218,24 @@ public class GuildHandler extends GameBaseHandler {
             client.sendProtocol(res.build(), ErrorMsgEnum.illegal_request.ID);
             return;
         }
-        log.info("guild buyBargain BIBIBI 1");
-        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-        int[] bargainPrice = guildProxy.getBargainPrice(player.getGuildId());
-        log.info("guild buyBargain BIBIBI 2");
-        GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargainPrice[0]);
-        PlayerHelper.delResources(player, guildBargainConfig.Price[0], bargainPrice[1], OpType.GuildBargain);
-        List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.GuildBargain);
-        res.addAllRewards(rewards);
         GuildModule guildModule = player.getGuildModule();
-        guildModule.setBargainBuy(true);
-        client.sendProtocol(res.build());
-        log.info("guild buyBargain BIBIBI 3");
-        GameLogger.guildBargainPurchase(player, guildBargainConfig.ID, bargainPrice[1]);
+        if (guildModule.isBargainBuy()) {
+            client.sendProtocol(res.build(), ErrorMsgEnum.repeat_request.ID);
+            return;
+        }
+        GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+        try {
+            int[] bargainPrice = guildProxy.getBargainPrice(player.getGuildId());
+            GuildBargainConfig guildBargainConfig = GuildBargainManager.instance().get(bargainPrice[0]);
+            PlayerHelper.delResources(player, guildBargainConfig.Price[0], bargainPrice[1], OpType.GuildBargain);
+            List<RewardInfo> rewards = PlayerHelper.addResources(player, guildBargainConfig.Item, OpType.GuildBargain);
+            res.addAllRewards(rewards);
+            guildModule.setBargainBuy(true);
+            client.sendProtocol(res.build());
+            GameLogger.guildBargainPurchase(player, guildBargainConfig.ID, bargainPrice[1]);
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void updateMemberAuth(NetClient client, Object o) {
@@ -265,11 +273,8 @@ public class GuildHandler extends GameBaseHandler {
         }
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
         try {
-            List<GuildMsg.GuildLogProto> logs = guildProxy.getGuildLogs(player.getGuildId());
-            if (logs != null) {
-                res.addAllLogList(logs);
-            }
-            client.sendProtocol(res.build());
+            GuildMsg.GuildLogResponse_40000026 logRes = guildProxy.getGuildLogs(player.getGuildId());
+            client.sendProtocol(logRes != null ? logRes : res.build());
         } catch (Throwable t) {
             player.handleFail(res.build(), t);
         }
@@ -317,16 +322,18 @@ public class GuildHandler extends GameBaseHandler {
         GuildMsg.GuildQuitRequest_40000017 req = (GuildMsg.GuildQuitRequest_40000017) o;
         GuildMsg.GuildQuitResponse_40000018.Builder res = GuildMsg.GuildQuitResponse_40000018.newBuilder();
         Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        GuildModule guildModule = player.getGuildModule();
-        long guildId = guildModule.getGuildId();
+        long guildId = player.getGuildId();
         if (guildId <= 0) {
-            player.fail(ErrorMsgEnum.zong_men_not_exist);
+            client.sendProtocol(res.build(), ErrorMsgEnum.zong_men_not_exist.ID);
+            return;
         }
         GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(guildId);
-        guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
-        // 退出成功,在退出的推送协议里处理退出，这里先不处理了
-        //        guildModule.quit(0);
-        client.sendProtocol(res.setResult(true).build());
+        try {
+            guildProxy.quitGuild(guildId, player.getPlayerId(), player.getPlayerName());
+            client.sendProtocol(res.setResult(true).build());
+        } catch (Throwable t) {
+            player.handleFail(res.build(), t);
+        }
     }
 
     private void setGuildMemberPosition(NetClient client, Object o) {

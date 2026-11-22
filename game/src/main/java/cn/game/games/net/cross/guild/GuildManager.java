@@ -208,6 +208,7 @@ public class GuildManager {
 		} catch (LogicException le) {
 			throw le;
 		} catch (Exception e) {
+			GuildHelper.delName(name);
 			log.error("createGuild failed", e);
 			throw new RuntimeException(e);
 		}

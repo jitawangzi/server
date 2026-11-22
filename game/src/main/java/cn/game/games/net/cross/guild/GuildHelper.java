@@ -176,6 +176,9 @@ public class GuildHelper {
 	}
 
 	public static boolean checkGuildNameRepeat(String name) {
+		if (RedisUtil.getRedis() == null) {
+			return false;
+		}
 		String nameKey = getNameKey(name);
 		return RedisUtil.get(nameKey) != null;
 	}
@@ -219,6 +222,12 @@ public class GuildHelper {
 			return true;
 		}
 		return RedisUtil.trySet(nameKey, newGuildId);
+	}
+
+	public static void delName(String name) {
+		if (RedisUtil.getRedis() != null) {
+			RedisUtil.delete(getNameKey(name));
+		}
 	}
 
 	public static GuildAllInfo buildAllInfo(GuildServiceInfo serviceInfo, long playerId) {

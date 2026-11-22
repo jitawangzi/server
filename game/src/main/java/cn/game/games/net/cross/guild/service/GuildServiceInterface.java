@@ -160,9 +160,9 @@ public interface GuildServiceInterface extends RemoteCrossServerInterface {
 	/**
 	 * 获取公会操作日志
 	 * @param guildId
-	 * @return 日志列表
+	 * @return 日志响应消息
 	 */
-	List<GuildMsg.GuildLogProto> getGuildLogs(long guildId);
+	GuildMsg.GuildLogResponse_40000026 getGuildLogs(long guildId);
 
 	/**
 	 * 向公会成员广播协议消息（如聊天）

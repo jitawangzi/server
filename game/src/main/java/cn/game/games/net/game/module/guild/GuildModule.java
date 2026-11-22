@@ -148,8 +148,12 @@ public class GuildModule extends BasePlayerModule {
 			}
 		}
 		case GuildDonate -> {
-			GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
-			guildProxy.donate(player.getGuildId(), playerId, event.get(0));
+			try {
+				GuildServiceInterface guildProxy = ServerHelper.getGuildProxy(player.getGuildId());
+				guildProxy.donate(player.getGuildId(), playerId, event.get(0));
+			} catch (Exception e) {
+				log.error("sync donate to cross guild failed, guildId: {}, playerId: {}", player.getGuildId(), playerId, e);
+			}
 		}
 		}
 	}
