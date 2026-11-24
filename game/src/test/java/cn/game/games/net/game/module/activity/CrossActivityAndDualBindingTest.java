@@ -14,6 +14,7 @@ import org.junit.jupiter.api.parallel.Isolated;
 import cn.game.core.base.RunMode;
 import cn.game.core.base.ServerContext;
 import cn.game.core.event.ServerEventTypeEnum;
+import cn.game.core.id.IdUtil;
 import cn.game.games.cache.entity.Player;
 import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.BasePlayerModule;
@@ -272,36 +273,10 @@ public class CrossActivityAndDualBindingTest {
 		Assertions.assertNotNull(rewards, "领取奖励返回非空");
 		Assertions.assertFalse(rankPlayerActivity.hasRed(), "领奖后红点应为 false");
 
-		// 5. 模拟客户端请求 ActivityHandler#list (11000001) 的三源合并去重与安全过滤逻辑
-		Map<Integer, ActivityInfo> playerState = new HashMap<>(activityModule.getShowState());
-		// 模拟全服活动源和服务器活动源均含有 ID 41
-		ActivityInfo globalInfo = ActivityInfo.newBuilder().setId(41).build();
-		ActivityInfo serverInfo = ActivityInfo.newBuilder().setId(41).build();
-
-		// 三源去重逻辑 (对齐 ActivityHandler#list)
-		if (!playerState.containsKey(globalInfo.getId())) {
-			playerState.put(globalInfo.getId(), globalInfo);
-		}
-		if (!playerState.containsKey(serverInfo.getId())) {
-			playerState.put(serverInfo.getId(), serverInfo);
-		}
-
-		// isServerOnly 过滤逻辑：玩家持有 41 实例时安全保留；未持有则移除
-		java.util.Iterator<Map.Entry<Integer, ActivityInfo>> iterator = playerState.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<Integer, ActivityInfo> entry = iterator.next();
-			ActivityConfig config = ActivityManager.instance().getNullable(entry.getKey());
-			if (config == null) {
-				iterator.remove();
-				continue;
-			}
-			if (config.isServerOnly && player.getActivityModule().get(entry.getKey()) == null) {
-				iterator.remove();
-			}
-		}
-
-		Assertions.assertTrue(playerState.containsKey(41), "玩家持有实例时，ID=41 应在三源列表中保留且严格去重为1条");
-		Assertions.assertEquals(1, playerState.values().stream().filter(info -> info.getId() == 41).count());
+		// 5. 调用真实方法 ActivityHandler.getMergedActivityShowState(player) 验证三源合并去重与安全过滤逻辑
+		Map<Integer, ActivityInfo> mergedState = ActivityHandler.getMergedActivityShowState(player);
+		Assertions.assertTrue(mergedState.containsKey(41), "玩家持有实例时，ID=41 应在三源列表中保留且严格去重为1条");
+		Assertions.assertEquals(1, mergedState.values().stream().filter(info -> info.getId() == 41).count());
 
 		// 6. 负向场景断言：isServerOnly=true 但玩家未持有其实例时，必须被安全过滤移除；配表缺失项也安全过滤
 		Map<Integer, ActivityInfo> negativeState = new HashMap<>();
@@ -570,6 +545,33 @@ public class CrossActivityAndDualBindingTest {
 			crossService.destroyActivity(createdUid);
 			Assertions.assertFalse(directory.getActiveUid(configId, scopeKey).isPresent(), "销毁后目录中的 activeUid 必须被 CAS 摘除");
 			Assertions.assertNull(cn.game.games.net.cross.activity.CrossGlobalActivityManager.getInstance().getActivity(createdUid), "销毁后本地容器必须移除该实例");
+
+			// 6. 冷态并发抢锁创建验证：模拟多节点冷启动同时并发抢锁创建
+			String coldScopeKey = "cold_test_scope_1";
+			int coldThreadCount = 8;
+			java.util.concurrent.ExecutorService coldExec = java.util.concurrent.Executors.newFixedThreadPool(coldThreadCount);
+			java.util.concurrent.CountDownLatch coldLatch = new java.util.concurrent.CountDownLatch(coldThreadCount);
+			java.util.Set<Long> coldUids = java.util.concurrent.ConcurrentHashMap.newKeySet();
+			for (int i = 0; i < coldThreadCount; i++) {
+				final long suggestedUid = IdUtil.getId();
+				coldExec.submit(() -> {
+					try {
+						var res = crossService.createOrEnsureActivity(suggestedUid, configId, coldScopeKey, coldScopeKey);
+						if (res != null && res.isSuccess()) {
+							coldUids.add(res.getActivityUid());
+						}
+					} finally {
+						coldLatch.countDown();
+					}
+				});
+			}
+			boolean coldCompleted = coldLatch.await(5, java.util.concurrent.TimeUnit.SECONDS);
+			coldExec.shutdown();
+			Assertions.assertTrue(coldCompleted);
+			Assertions.assertEquals(1, coldUids.size(), "冷态 8 线程并发抢锁创建必须全局唯一且收敛为同一活动 UID");
+			long coldUid = coldUids.iterator().next();
+			Assertions.assertTrue(coldUid > 0);
+			crossService.destroyActivity(coldUid, configId, coldScopeKey);
 		} finally {
 			isCrossField.set(config41, originalIsCross);
 		}
@@ -743,7 +745,7 @@ public class CrossActivityAndDualBindingTest {
 
 		long testUid = 88001122L;
 		int configId = 41;
-		String scopeKey = ServerContext.getInstance().getServerId();
+		String scopeKey = "game_test_1";
 
 		ActivityConfig config41 = ActivityManager.instance().get(configId);
 		Field isCrossField = ActivityConfig.class.getDeclaredField("isCross");
@@ -754,13 +756,16 @@ public class CrossActivityAndDualBindingTest {
 		try {
 			// 1. 创建跨服活动并标记脏数据
 			cn.game.games.net.cross.activity.CrossActivityBase activity = new cn.game.games.net.cross.activity.CrossActivityBase();
+			activity.setServerId(scopeKey);
+			activity.setScopeKey(scopeKey);
 			activity.init(configId, null, true);
 			activity.setUid(testUid);
-			activity.setScopeKey(scopeKey);
 			activity.markDirty();
 			manager.addActivity(activity);
 
 			Assertions.assertTrue(activity.isDirty(), "活动初创并修改时应处于 dirty 状态");
+			Assertions.assertEquals(cn.game.protocol.protobuf.ActivityMsg.ActivityState.START_VALUE, activity.getState());
+			Assertions.assertTrue(activity.getEndTime() > 0, "活动必须计算出有效的未来结束时间");
 
 			// 2. 模拟停服 saveAll(true)
 			int saveCountBefore = memStore.getSaveCount();
@@ -785,6 +790,7 @@ public class CrossActivityAndDualBindingTest {
 			Assertions.assertEquals(testUid, recovered.getUid());
 			Assertions.assertEquals(configId, recovered.getId());
 			Assertions.assertEquals(scopeKey, recovered.getScopeKey());
+			Assertions.assertEquals(cn.game.protocol.protobuf.ActivityMsg.ActivityState.START_VALUE, recovered.getState(), "未过期的跨服活动恢复后必须维持 START 状态");
 
 			// 验证目录与路由已自愈重建
 			java.util.Optional<Long> activeUid = cn.game.games.net.cross.activity.RedisCrossActivityDirectory.getInstance().getActiveUid(configId, scopeKey);
@@ -798,8 +804,19 @@ public class CrossActivityAndDualBindingTest {
 			expiredEntity.setConfigId(configId);
 			expiredEntity.setServerId(scopeKey);
 			expiredEntity.setState((byte) cn.game.protocol.protobuf.ActivityMsg.ActivityState.START_VALUE);
-			expiredEntity.setCreateTime(DateUtil.currentTimeMillis() - 86400000L * 100);
-			expiredEntity.setParams(activity.toSaveString());
+			expiredEntity.setCreateTime(DateUtil.currentTimeMillis() - 86400000L * 10);
+			cn.game.games.net.cross.activity.CrossActivityBase expiredProto = new cn.game.games.net.cross.activity.CrossActivityBase();
+			expiredProto.setServerId(scopeKey);
+			expiredProto.setScopeKey(scopeKey);
+			expiredProto.init(configId, null, true);
+			expiredProto.setUid(expiredUid);
+			Field endField = ActivityBase.class.getDeclaredField("endTime");
+			endField.setAccessible(true);
+			endField.set(expiredProto, DateUtil.currentTimeMillis() - 1000L);
+			Field destroyField = ActivityBase.class.getDeclaredField("destroyTime");
+			destroyField.setAccessible(true);
+			destroyField.set(expiredProto, DateUtil.currentTimeMillis() + 86400000L);
+			expiredEntity.setParams(expiredProto.toSaveString());
 			memStore.save(expiredEntity);
 
 			loader.processData(java.util.List.of(expiredEntity));

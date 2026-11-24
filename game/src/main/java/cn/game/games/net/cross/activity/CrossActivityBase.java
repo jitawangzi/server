@@ -151,6 +151,9 @@ public class CrossActivityBase extends ActivityBase {
 	 * @return 是否允许参与/初始化成功
 	 */
 	public boolean join(long playerId, String serverId, java.util.Map<String, Object> extraData) {
+		if (!canJoin(playerId)) {
+			return false;
+		}
 		markDirty();
 		return true;
 	}

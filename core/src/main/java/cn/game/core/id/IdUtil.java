@@ -98,6 +98,9 @@ public class IdUtil {
         if (snowflakeService != null) {
             return snowflakeService.nextId();
         }
+        if (cn.game.core.base.ServerContext.getInstance().getRunMode().isProduction()) {
+            throw new IllegalStateException("SnowflakeService is not initialized in production mode");
+        }
         return fallbackWorker.nextId();
     }
 

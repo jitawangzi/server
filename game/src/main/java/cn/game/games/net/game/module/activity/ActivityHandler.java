@@ -276,9 +276,7 @@ public class ActivityHandler extends GameBaseHandler {
         client.sendProtocol(resp);
     }
 
-    private void list(NetClient client, Object message) {
-        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
-        ActivityListResponse_11000002.Builder resp = ActivityListResponse_11000002.newBuilder();
+    public static Map<Integer, ActivityInfo> getMergedActivityShowState(Player player) {
         // 按时间开启的活动，全服的
         Collection<ActivityInfo> activityInfos = ActivityStateManager.getInstance().getShowState();
         // 玩家所在服务器的活动
@@ -310,6 +308,13 @@ public class ActivityHandler extends GameBaseHandler {
                 iterator.remove();
             }
         }
+        return playerState;
+    }
+
+    private void list(NetClient client, Object message) {
+        Player player = PlayerManager.getInstance().getPlayer(client.getPlayerId());
+        ActivityListResponse_11000002.Builder resp = ActivityListResponse_11000002.newBuilder();
+        Map<Integer, ActivityInfo> playerState = getMergedActivityShowState(player);
         resp.addAllActivitys(playerState.values());
         client.sendProtocol(resp);
     }

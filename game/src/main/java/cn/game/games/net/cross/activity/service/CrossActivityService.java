@@ -1,6 +1,7 @@
 package cn.game.games.net.cross.activity.service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,7 @@ import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.event.EventHandler;
 import cn.game.core.event.ServerEventTypeEnum;
+import cn.game.core.execute.MailboxProcessor;
 import cn.game.core.id.IdUtil;
 import cn.game.core.task.SchedulerService;
 import cn.game.games.cache.entity.GameActivity;
@@ -88,11 +91,15 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	/** 本地测试无 Redis 互斥锁兜底 */
 	private final ConcurrentHashMap<String, ReentrantLock> localCreateLocks = new ConcurrentHashMap<>();
 
+	/** 跨天 CAS 去重，防止同一天被多重调度重复触发 */
+	private final AtomicReference<LocalDate> lastNewDayDate = new AtomicReference<>();
+
 	private final ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] {
 			ServerEventTypeEnum.NewDay,
 			ServerEventTypeEnum.ActivityOpenTime,
 			ServerEventTypeEnum.ActivityShutDownTime,
-			ServerEventTypeEnum.ActivityDestoryTime
+			ServerEventTypeEnum.ActivityDestoryTime,
+			ServerEventTypeEnum.VirtualServerOpen
 	};
 
 	public static CrossActivityService getInstance() {
@@ -163,8 +170,38 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 			onActivityDestroyEvent(configId);
 			break;
 		}
+		case VirtualServerOpen: {
+			String serverId = event.getStringParameter(0);
+			onVirtualServerOpen(serverId);
+			break;
+		}
 		default:
 			break;
+		}
+	}
+
+	private void onVirtualServerOpen(String serverId) {
+		if (serverId == null || serverId.isEmpty()) {
+			return;
+		}
+		if (!ServerContext.getInstance().isLeader()) {
+			return;
+		}
+		List<ActivityConfig> openDayConfigs = ActivityManager.instance().getOpenTypeList(ActivityHelper.OPENTYPE_SERVER_OPEN_DAY);
+		if (openDayConfigs != null) {
+			for (ActivityConfig config : openDayConfigs) {
+				if (!config.isCross || !config.isMultiplayer) {
+					continue;
+				}
+				if (!ClassManager.getInstance().hasServerActivityClass(config.type)) {
+					continue;
+				}
+				if (!ActivityBase.canOpenForServer(config, serverId)) {
+					continue;
+				}
+				String scopeKey = scopeResolver.resolveScopeKey(config, serverId);
+				ensureActivityLeader(config, scopeKey, serverId);
+			}
 		}
 	}
 
@@ -231,7 +268,8 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				throw new RuntimeException(e);
 			}
 		}
-		if (Objects.equals(CURRENT_MAILBOX_UID.get(), activityUid)) {
+		if (Objects.equals(CURRENT_MAILBOX_UID.get(), activityUid)
+				|| Objects.equals(MailboxProcessor.currentEntityId(), activityUid)) {
 			try {
 				return task.call();
 			} catch (Exception e) {
@@ -259,6 +297,9 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				CURRENT_MAILBOX_UID.remove();
 			}
 			lock.unlock();
+			if (lock.getHoldCount() == 0 && !lock.hasQueuedThreads() && manager.getActivity(activityUid) == null) {
+				mailboxLocks.remove(activityUid, lock);
+			}
 		}
 	}
 
@@ -425,10 +466,19 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	 * 目标节点创建或恢复跨服活动实例
 	 */
 	public CrossActivityCreateResult createOrEnsureActivity(long suggestedUid, int configId, String scopeKey, String serverId) {
-		return runInActivityMailbox(suggestedUid, () -> {
+		String syncKey = ("cross_create_" + configId + "_" + scopeKey).intern();
+		synchronized (syncKey) {
 			CrossActivityBase existing = manager.getActivity(configId, scopeKey);
 			if (existing != null) {
 				return CrossActivityCreateResult.success(existing.getUid(), configId, scopeKey, ServerContext.getInstance().getServerId());
+			}
+
+			Optional<Long> activeUidOpt = directory.getActiveUid(configId, scopeKey);
+			if (activeUidOpt.isPresent()) {
+				CrossActivityBase dirAct = manager.getActivity(activeUidOpt.get());
+				if (dirAct != null) {
+					return CrossActivityCreateResult.success(dirAct.getUid(), configId, scopeKey, ServerContext.getInstance().getServerId());
+				}
 			}
 
 			ActivityConfig config = ActivityManager.instance().getNullable(configId);
@@ -484,18 +534,40 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				act.init(configId, null, true);
 
 				saveActivityToDb(act);
+			} else {
+				// BLOCKER 1: 恢复已有实体时，若已过结束时间则推进 end()
+				if (act.getState() == ActivityState.START_VALUE && act.getEndTime() > 0 && now >= act.getEndTime()) {
+					act.end();
+				}
 			}
 
-			// BLOCKER 1: 写入真实 Redis 路由并更新本地 IdCache
-			IdCache.initServerId(DistributedObjectType.CROSS_ACTIVITY, actualUid);
-			directory.putActive(configId, scopeKey, actualUid);
-			manager.addActivity(act);
+			final long finalUid = actualUid;
+			final CrossActivityBase finalAct = act;
+			return runInActivityMailbox(finalUid, () -> {
+				// MAJOR 2: 原子占坑防裂脑并更新本地 L1 缓存
+				boolean claimed = IdCache.initServerId(DistributedObjectType.CROSS_ACTIVITY, finalUid);
+				if (!claimed) {
+					log.warn("Cross activity uid={} already claimed by another server node, fail createOrEnsureActivity", finalUid);
+					return CrossActivityCreateResult.fail(configId, scopeKey, "Already claimed by another server node: " + finalUid);
+				}
+				var idManager = IdCache.getManager(DistributedObjectType.CROSS_ACTIVITY);
+				if (idManager != null) {
+					idManager.setServerId(finalUid, ServerContext.getInstance().getServerId());
+				}
 
-			manager.scheduleEndTask(act, act.getEndTime() - now);
-			manager.scheduleDestroyTask(act, act.getDestroyTime() - now);
+				directory.putActive(configId, scopeKey, finalUid);
+				manager.addActivity(finalAct);
 
-			return CrossActivityCreateResult.success(actualUid, configId, scopeKey, ServerContext.getInstance().getServerId());
-		});
+				if (finalAct.getEndTime() > now) {
+					manager.scheduleEndTask(finalAct, finalAct.getEndTime() - now);
+				}
+				if (finalAct.getDestroyTime() > now) {
+					manager.scheduleDestroyTask(finalAct, finalAct.getDestroyTime() - now);
+				}
+
+				return CrossActivityCreateResult.success(finalUid, configId, scopeKey, ServerContext.getInstance().getServerId());
+			});
+		}
 	}
 
 	public CrossActivitySnapshot queryActivitySnapshot(long activityUid, long playerId) {
@@ -591,7 +663,7 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				runInActivityMailbox(uid, () -> {
 					ActivityConfig config = ActivityManager.instance().getNullable(entity.getConfigId());
 					if (config == null || !config.isCross) {
-						destroyActivity(uid, entity.getConfigId(), entity.getServerId());
+						log.warn("Skip non-cross activity in cross server loader: id={}, configId={}", uid, entity.getConfigId());
 						return null;
 					}
 					long destroyTime = calcActivityDestroyTime(config, entity.getServerId());
@@ -605,6 +677,10 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 					if (!claimed) {
 						log.warn("Cross activity uid={} already claimed by another server node, skip loading", uid);
 						return null;
+					}
+					var idManager = IdCache.getManager(DistributedObjectType.CROSS_ACTIVITY);
+					if (idManager != null) {
+						idManager.setServerId(uid, ServerContext.getInstance().getServerId());
 					}
 
 					ActivityBase baseAct;
@@ -628,13 +704,15 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 
 					directory.putActive(config.ID, act.getScopeKey(), uid);
 
-					// BLOCKER 6: 恢复时停机已过 endTime 但未到 destroyTime，补调 end() 推进终态
-					if (entity.getState() == ActivityState.START_VALUE && now >= act.getEndTime()) {
+					// BLOCKER 1 & BLOCKER 6: 恢复时停机已过 endTime 但未到 destroyTime，补调 end() 推进终态；防御 endTime==0
+					if (act.getState() == ActivityState.START_VALUE && act.getEndTime() > 0 && now >= act.getEndTime()) {
 						act.end();
-					} else {
+					} else if (act.getEndTime() > now) {
 						manager.scheduleEndTask(act, act.getEndTime() - now);
 					}
-					manager.scheduleDestroyTask(act, act.getDestroyTime() - now);
+					if (act.getDestroyTime() > now) {
+						manager.scheduleDestroyTask(act, act.getDestroyTime() - now);
+					}
 					return null;
 				});
 			} catch (Exception e) {
@@ -644,26 +722,23 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	}
 
 	public void destroyActivity(long activityUid, int configId, String scopeKey) {
-		try {
-			runInActivityMailbox(activityUid, () -> {
-				CrossActivityBase act = manager.removeActivity(activityUid);
-				if (act != null) {
-					// MAJOR 6: 显式触发子类销毁钩子
+		runInActivityMailbox(activityUid, () -> {
+			CrossActivityBase act = manager.removeActivity(activityUid);
+			if (act != null) {
+				// MAJOR 6: 显式触发子类销毁钩子，防重复销毁
+				if (act.getState() != ActivityState.NONE_VALUE) {
 					act.destroy();
 				}
-				int cid = act != null ? act.getId() : configId;
-				String scope = act != null ? act.getScopeKey() : scopeKey;
-				if (cid > 0 && scope != null) {
-					directory.removeIfMatch(cid, scope, activityUid);
-				}
-				cleanupRouteAndCache(activityUid);
-				store.delete(activityUid);
-				return null;
-			});
-		} finally {
-			// BLOCKER 6: 彻底从 mailboxLocks 移除该 UID 锁，消除内存泄漏
-			mailboxLocks.remove(activityUid);
-		}
+			}
+			int cid = act != null ? act.getId() : configId;
+			String scope = act != null ? act.getScopeKey() : scopeKey;
+			if (cid > 0 && scope != null) {
+				directory.removeIfMatch(cid, scope, activityUid);
+			}
+			cleanupRouteAndCache(activityUid);
+			store.delete(activityUid);
+			return null;
+		});
 	}
 
 	public void destroyActivity(long activityUid) {
@@ -687,10 +762,36 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	}
 
 	public void onNewDay() {
-		// 1. 推进当前活跃活动的跨天
+		LocalDate today = DateUtil.nowDate();
+		LocalDate last = lastNewDayDate.get();
+		if (today.equals(last)) {
+			log.info("onNewDay already executed for date={}, skip duplicate trigger", today);
+			return;
+		}
+		if (!lastNewDayDate.compareAndSet(last, today)) {
+			if (today.equals(lastNewDayDate.get())) {
+				return;
+			}
+			lastNewDayDate.set(today);
+		}
+
+		long now = DateUtil.currentTimeMillis();
+		// 1. 推进当前活跃活动的跨天与到期收敛
 		for (CrossActivityBase act : manager.getAllActivities()) {
 			try {
 				runInActivityMailbox(act.getUid(), () -> {
+					if (act.getState() == ActivityState.NONE_VALUE) {
+						destroyActivity(act.getUid(), act.getId(), act.getScopeKey());
+						return null;
+					}
+					long destroyTime = act.getDestroyTime();
+					if (destroyTime > 0 && now >= destroyTime) {
+						destroyActivity(act.getUid(), act.getId(), act.getScopeKey());
+						return null;
+					}
+					if (act.getState() == ActivityState.START_VALUE && act.getEndTime() > 0 && now >= act.getEndTime()) {
+						act.end();
+					}
 					act.newDay();
 					return null;
 				});

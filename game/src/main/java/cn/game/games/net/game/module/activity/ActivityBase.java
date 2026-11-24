@@ -98,6 +98,9 @@ public abstract class ActivityBase {
 
 	/** 彻底销毁活动，不再展示，删除活动数据 */
 	public void destroy() {
+		if (this.state == ActivityState.NONE_VALUE) {
+			return;
+		}
 		this.state = ActivityState.NONE_VALUE;
 		unregisterEvent();
 		afterDestroy();
@@ -208,7 +211,13 @@ public abstract class ActivityBase {
 	 * 计算按开服天数开启的活动的销毁时间
 	 */
 	public static long calcServerOpenDayDestroyTime(ActivityConfig config, String serverId) {
+		if (config == null || StringUtils.isEmpty(serverId)) {
+			return 0L;
+		}
 		int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
+		if (serverOpenDay <= 0) {
+			return 0L;
+		}
 		return DateUtil.nextDayStartTime(DateUtil.currentTimeMillis(), config.destroyDuration - serverOpenDay + 1);
 	}
 

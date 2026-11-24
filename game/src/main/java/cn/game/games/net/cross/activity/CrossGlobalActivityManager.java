@@ -133,14 +133,7 @@ public class CrossGlobalActivityManager extends GlobalActivityManager {
 		if (remaining > 0) {
 			ScheduledFuture<?> future = SchedulerService.getInstance().scheduleTask(() -> {
 				destroyTasksByUid.remove(uid);
-				CrossActivityService.getInstance().runInActivityMailbox(uid, () -> {
-					CrossActivityBase act = activitiesByUid.get(uid);
-					if (act != null) {
-						act.destroy();
-						CrossActivityService.getInstance().destroyActivity(uid);
-					}
-					return null;
-				});
+				CrossActivityService.getInstance().destroyActivity(uid);
 			}, remaining, TimeUnit.MILLISECONDS);
 			destroyTasksByUid.put(uid, future);
 		}
