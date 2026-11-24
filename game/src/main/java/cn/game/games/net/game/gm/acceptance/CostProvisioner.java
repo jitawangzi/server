@@ -85,7 +85,7 @@ public class CostProvisioner {
             } else if (costType == ShopHelper.COST_TYPE_RECHARGE && purchaseParameter.length >= 2) {
                 int rmbCost = purchaseParameter[1];
                 if (rmbCost > 0) {
-                    // 注入足额代金券 (Asset.Vouchers ID = 100023)，触发 Player#pay 同步代金券抵扣
+                    // 注入足额代金券 (Asset.Vouchers ID = 100008)，触发 Player#pay 同步代金券抵扣
                     PlayerHelper.addResources(player, Asset.Vouchers.ID, (int) Math.min(Integer.MAX_VALUE, (long) rmbCost * effectiveCount), OpType.GM, false);
                 }
             } else if (costType == ShopHelper.COST_TYPE_ADVERTISE) {

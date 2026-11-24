@@ -65,10 +65,12 @@ server/                           # [宿主主仓 server.git]
 |---|---|
 | 了解系统拓扑、节点职责、邮箱线程、存储与容错边界 | [doc/01_系统架构设计全景文档.md](doc/01_系统架构设计全景文档.md) |
 | 了解完整研发流程、配表/协议/业务落地与编码约束 | [doc/02_开发流程与研发规范手册.md](doc/02_开发流程与研发规范手册.md) |
-| 搭建 Windows 本地环境（MySQL/Redis/ZK/Apollo）与启停服务 | [doc/deployment_guide.md](doc/deployment_guide.md) |
+| 搭建 Windows 本地环境（MySQL/Redis/ZK/Apollo）、启停服务与 GM 控制台（`18080`） | [doc/deployment_guide.md](doc/deployment_guide.md) |
+| 快速定位 27 个 Game 业务模块、5 个 Cross 子系统与 Login 入口 | [.ai-workspace/context/module-map.md](.ai-workspace/context/module-map.md) |
+| 新增常规功能/独立表（`DbEntity`）/Login 路由/Redis 与面板配方 | [.ai-workspace/context/dev-recipes.md](.ai-workspace/context/dev-recipes.md) |
 | 新人图文快速上手配置文档（**仅面向开发者人工阅读，AI 无需加载**） | [doc/Party项目服务端快速上手配置文档.docx](doc/Party项目服务端快速上手配置文档.docx) |
 | 排查线上/本地 Bug、查看日志与使用 GM Web 工作台 | [.ai-workspace/context/debugging-playbook.md](.ai-workspace/context/debugging-playbook.md) |
-| 查看充值跨进程与崩溃恢复专项验收标准 | [doc/payment-process-recovery.md](doc/payment-process-recovery.md) |
+| 查看充值跨进程与崩溃恢复专项验收标准、S2～S4 专项加固技术档案 | [doc/payment-process-recovery.md](doc/payment-process-recovery.md)、[doc/payment-save-hardening-notes.md](doc/payment-save-hardening-notes.md) |
 | 查看配表结构与生成器规则（外部平级仓库） | [../dic_generate/配置表AI编码规范.md](../dic_generate/配置表AI编码规范.md) |
 | 了解 `.ai-workspace` 恢复与多仓同步方式 | [.ai-workspace/README.md](.ai-workspace/README.md) |
 
@@ -97,10 +99,11 @@ pwsh -NoProfile -File ./ai-sop.ps1 Task -Operation Discover
 pwsh -NoProfile -File ./ai-sop.ps1 Task -Operation Run -Feature <Feature> -TaskId <TaskId> -Agent <Agent> -Profile compile
 pwsh -NoProfile -File ./ai-sop.ps1 Task -Operation Run -Feature <Feature> -TaskId <TaskId> -Agent <Agent> -Profile workspace-contract
 
-# 4. 协议生成 / API 白名单导出 / 模拟客户端
+# 4. 协议生成 / 定向 JUnit 5 单测 / 模拟客户端 / 本地启停
 .\protocol.bat
-.\export_api.bat
+pwsh -NoProfile -File ./.ai-workspace/scripts/run-java-tests.ps1 -Project game -Test <测试类名>
 pwsh -NoProfile -File ./run_client.ps1 -TestClass <完整测试类名>
+.\run_cross.bat   # 联调公会/跨服活动时按需拉起 CrossServer；GM 控制台默认 http://127.0.0.1:18080/gm-console
 ```
 
-> 更多验证 Profile、定向 JUnit 脚本、运行实例联调与多仓同步命令，见 [.ai-workspace/context/project-tooling.md](.ai-workspace/context/project-tooling.md)。
+> 核心 API 不再维护静态导出快照（旧 `export_api.bat` 已退役），直接通过 [.ai-workspace/context/ai-coding.md](.ai-workspace/context/ai-coding.md) 第 16 节类路径速查源码；更多验证 Profile、定向 JUnit 脚本、运行实例联调与多仓同步命令，见 [.ai-workspace/context/project-tooling.md](.ai-workspace/context/project-tooling.md)。

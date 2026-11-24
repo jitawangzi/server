@@ -18,9 +18,10 @@
    - [4.1 协议生成解耦与 PbProtocol 生成](#41-协议生成解耦与-pbprotocol-生成)
    - [4.2 数表导出与资源拷贝](#42-数表导出与资源拷贝)
    - [4.3 全工程 Maven 打包](#43-全工程-maven-打包)
-5. [游戏服务启动 (GameServer 与 LoginServer)](#五游戏服务启动-gameserver-与-loginserver)
+5. [游戏服务启动 (GameServer、CrossServer 与 LoginServer)](#五游戏服务启动-gameservercrossserver-与-loginserver)
    - [5.1 启动参数详解](#51-启动参数详解)
    - [5.2 启动脚本](#52-启动脚本)
+   - [5.3 GM Web 控制台访问与配置 (`GmWebConsoleServer`)](#53-gm-web-控制台访问与配置-gmwebconsoleserver)
 6. [服务状态验证](#六服务状态验证)
 
 ---
@@ -106,22 +107,22 @@ Vert.x 客户端在 ZK 的根命名空间为 `io.vertx`。已初始化 `game_tes
 
 ### 4.1 协议生成解耦与 PbProtocol 生成
 1. 运行 `D:\work-all\game\server\protocol.bat`：
-   脚本内部自动注入：
-   ```cmd
-   -Dworkspace="D:\work-all\game\server"
-   -Dmetafolder="D:\work-all\game\configs\Server"
-   ```
+   - 脚本默认将 `workspace` 与 `metafolder` 均设为当前仓库根目录（`%REPO_ROOT%`，**不会自动指向 `configs\Server`**）；如需让 `metafolder` 指向外部配置目录，请在运行前通过环境变量显式覆盖：
+     ```cmd
+     set metafolder=D:\work-all\game\configs\Server
+     .\protocol.bat
+     ```
 2. 该脚本自动调用 `protoc.exe` 将 `protocol/src/main/proto/*.proto` 编译至 `protocol/src/main/java`，并通过 Velocity 模板生成完整的 `PbProtocol.java`。
 
 ### 4.2 数表导出与资源拷贝
-数表类与 XML 配置源自 `D:\work-all\game\configs\Server\output`：
+数表类与 XML 配置源自 `D:\work-all\game\configs\Server\output`，官方同步脚本为 `game/tool/copy.bat`（需设置 `metafolder` 与 `workspace`）：
 - **Java 配置代码**：
   - `output/java/entity/` -> `protocol/src/main/java/cn/game/protocol/generated/config/`
-  - `output/java/enum/` -> `protocol/src/main/java/cn/game/protocol/generated/enume/`
+  - `output/java/enum/` -> `protocol/src/main/java/cn/game/protocol/generated/enume/`（受 `game/tool/exclude.txt` 过滤）
   - `output/java/init/` -> `protocol/src/main/java/cn/game/protocol/generated/helper/`
   - `output/java/manager/` -> `protocol/src/main/java/cn/game/protocol/generated/manager/`
 - **XML 数表**：
-  - `output/xml/data/*.xml` -> 同步至 `protocol/src/main/resources/xml/`、`game/src/main/resources/xml/` 及 `login/src/main/resources/xml/`。
+  - `copy.bat` 默认将全量 `output/xml/data/*.xml` 同步至 `game/src/main/resources/xml/`，将 `GlobalConst.xml` 同步至 `login/src/main/resources/xml/`（若 `copytotarget=1` 还会覆盖 `target/classes/xml/`；当前工作树中 `protocol/src/main/resources/xml/` 与 `login/src/main/resources/xml/` 亦保留历史全量副本，核对生效表时以运行 classpath 为准）。
 
 ### 4.3 全工程 Maven 打包
 在 `D:\work-all\game\server` 执行：
@@ -132,12 +133,12 @@ mvn package -DskipTests
 
 ---
 
-## 五、游戏服务启动 (GameServer 与 LoginServer)
+## 五、游戏服务启动 (GameServer、CrossServer 与 LoginServer)
 
 ### 5.1 启动参数详解
 各进程使用的 JVM 参数：
 ```cmd
--Dapp.id=game (或 login)
+-Dapp.id=game (或 cross / login)
 -Denv=dev
 -Dapollo.cluster=SYQ
 -Ddev_meta=http://test:9888
@@ -153,20 +154,34 @@ mvn package -DskipTests
 -Dmetafolder=D:\work-all\game\configs\Server
 ```
 > **注意**：
-> 1. Apollo 中若使用 `-Denv=dev`，客户端会自动通过 `dev_meta=http://test:9888` 从远端拉取最新配置；若传 `-Denv=local`，Apollo 会默认走纯本地文件模式，导致因缺少本地缓存报错。
+> 1. Apollo 中若使用 `-Denv=dev`，客户端会自动通过 `dev_meta=http://test:9888` 从远端拉取最新配置；若传 `-Denv=local`，Apollo 会默认走纯本地文件模式，导致因缺少本地缓存报错。`run_cross.bat` 默认使用 `APOLLO_META=http://127.0.0.1:9888`（同时传 `-Dapollo.configService` 与 `-Ddev_meta`），避免受本地 `hosts` 影响。
 > 2. Windows 宿主机上若存在多个虚拟网卡（如 VMware/VPN），需显式指定 `-DdefaultNetworkIp=127.0.0.1`，避免 Vert.x 集群网卡绑定失败。
+> 3. **CrossServer 归属**：`CrossServer` 主类 `cn.game.games.net.cross.CrossServer` 位于 `game/` 模块中，联调公会（`Guild`）与跨服活动（`CrossActivity`）时必须连同 `GameServer` 一并启动，确保同一 ZooKeeper/Redis 集群可见。
 
 ### 5.2 启动脚本
 自动化联调优先使用 `run_server.ps1 -Action Prepare` 生成独立快照，再按 [运行目标证据](../.ai-workspace/context/runtime-verification.md) 启动、核验与停止。默认 Apollo 为回环 9888 / SYQ；Start 需要确认测试数据范围，不会按主类模糊匹配结束已有服务。下列旧手工入口不自动提供严格运行身份。
 
 已在 `D:\work-all\game\server\` 目录下创建便捷启动脚本：
 1. **独立启动**：
-   - GameServer：双击 `run_game.bat`（唯一 ID：`game_test`，WebSocket 端口：7011）
-   - LoginServer：双击 `run_login.bat`（唯一 ID：`login_test`，HTTP 端口：9390）
+   - **GameServer**：双击 `run_game.bat`（唯一 ID：`game_test`，WebSocket 端口：`7011`，内置 GM Web 控制台默认端口：`18080`）
+   - **CrossServer**：双击 `run_cross.bat`（唯一 ID：`cross_test`，工作目录 `game/`，承载公会与跨服活动 RPC）
+   - **LoginServer**：双击 `run_login.bat`（唯一 ID：`login_test`，HTTP 端口：`9390`）
 2. **Windows Terminal 多页签一键启动**：
-   - 双击 `run_servers_wt.bat`，会在同一终端窗口内以两个独立 Tab 启动 GameServer 和 LoginServer。
+   - 双击 `run_servers_wt.bat`，会在同一终端窗口内以两个独立 Tab 启动 `GameServer` 和 `LoginServer`（如需联调公会/跨服活动，再单独启动 `run_cross.bat`）。
 3. **一键停止**：
-   - 双击 `stop_servers.bat`。
+   - 双击 `stop_servers.bat`（同时匹配并停止 `game_test`、`cross_test`、`login_test` 三个本地测试进程）。
+
+### 5.3 GM Web 控制台访问与配置 (`GmWebConsoleServer`)
+`GameServer` 内置基于 Vert.x Web 的可视化 GM 与研发工作台（`GmWebConsoleServer`），集成 GM 指令自省、动态 Protobuf 发包、Trace/Diff 观测及模块双轨验收：
+- **默认访问地址**：`http://127.0.0.1:18080/gm-console`
+- **默认启用策略**：非生产模式（`-Dserver.run.mode=test` / `dev`）下**默认自动启动且免 Token**；生产模式（`PRODUCTION`）默认关闭且强制 Fail-Closed，严禁在生产环境无鉴权开放。
+- **配置键（JVM `-D` / Apollo / 环境变量优先级以 `GmSecurityPolicy` 为准）**：
+  - `gm.http.enabled` / `GM_HTTP_ENABLED`：是否启用（非生产默认 `true`，生产默认 `false`）
+  - `gm.http.port` / `GM_HTTP_PORT`：监听端口（默认 `18080`；**禁止**配置为 `17011`，该端口保留给测试运行身份接口 `/runtime-identity`）
+  - `gm.http.host` / `GM_HTTP_HOST`：绑定网卡地址
+  - `gm.http.requireAuth` / `GM_HTTP_REQUIRE_AUTH`：是否强制 Token 鉴权（生产默认 `true`）
+  - `gm.http.opsToken`（或 `gm.http.token`） / `GM_HTTP_OPS_TOKEN`：鉴权 Token（通过请求头 `X-GM-Token` 或 `Authorization` 传递）
+- **外部热重载面板目录**：`server/gm-console/panels/*.html`（如 `quick-test-panel.html`），修改 HTML 后刷新页面即时生效，详见 [dev-recipes.md](../.ai-workspace/context/dev-recipes.md) 第 5 节。
 
 ---
 
@@ -179,3 +194,6 @@ mvn package -DskipTests
 - `9990`：ZKUI 页面
 - `7011`：GameServer WebSocket 通信端口
 - `9390`：LoginServer 业务 HTTP 接口端口
+- `18080`：GameServer 内置 GM Web 控制台 HTTP 端口（`http://127.0.0.1:18080/gm-console`，非生产默认开启）
+- `17011`：GameServer 测试模式运行身份探针端口（`/runtime-identity`，仅显式开启 `game.runtimeIdentity.enabled=true` 时监听）
+- **CrossServer 节点状态**：不对外开放客户端端口，通过 ZooKeeper / Vert.x 集群与 GM 工作台顶部集群拓扑状态徽章确认 `cross_test` 在线。
