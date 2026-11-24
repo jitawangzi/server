@@ -268,8 +268,7 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				throw new RuntimeException(e);
 			}
 		}
-		if (Objects.equals(CURRENT_MAILBOX_UID.get(), activityUid)
-				|| Objects.equals(MailboxProcessor.currentEntityId(), activityUid)) {
+		if (Objects.equals(CURRENT_MAILBOX_UID.get(), activityUid)) {
 			try {
 				return task.call();
 			} catch (Exception e) {
@@ -466,8 +465,10 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	 * 目标节点创建或恢复跨服活动实例
 	 */
 	public CrossActivityCreateResult createOrEnsureActivity(long suggestedUid, int configId, String scopeKey, String serverId) {
-		String syncKey = ("cross_create_" + configId + "_" + scopeKey).intern();
-		synchronized (syncKey) {
+		String syncKey = "cross_create_" + configId + "_" + scopeKey;
+		ReentrantLock createLock = localCreateLocks.computeIfAbsent(syncKey, k -> new ReentrantLock());
+		createLock.lock();
+		try {
 			CrossActivityBase existing = manager.getActivity(configId, scopeKey);
 			if (existing != null) {
 				return CrossActivityCreateResult.success(existing.getUid(), configId, scopeKey, ServerContext.getInstance().getServerId());
@@ -567,6 +568,8 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 
 				return CrossActivityCreateResult.success(finalUid, configId, scopeKey, ServerContext.getInstance().getServerId());
 			});
+		} finally {
+			createLock.unlock();
 		}
 	}
 

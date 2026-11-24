@@ -276,6 +276,25 @@ public class ActivityHandler extends GameBaseHandler {
         client.sendProtocol(resp);
     }
 
+    public static Map<Integer, ActivityInfo> filterValidActivityShowState(Player player, Map<Integer, ActivityInfo> stateMap) {
+        if (stateMap == null || stateMap.isEmpty()) {
+            return stateMap;
+        }
+        Iterator<Entry<Integer, ActivityInfo>> iterator = stateMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, ActivityInfo> entry = iterator.next();
+            ActivityConfig activityConfig = ActivityManager.instance().getNullable(entry.getKey());
+            if (activityConfig == null) {
+                iterator.remove();
+                continue;
+            }
+            if (activityConfig.isServerOnly && player.getActivityModule().get(entry.getKey()) == null) {
+                iterator.remove();
+            }
+        }
+        return stateMap;
+    }
+
     public static Map<Integer, ActivityInfo> getMergedActivityShowState(Player player) {
         // 按时间开启的活动，全服的
         Collection<ActivityInfo> activityInfos = ActivityStateManager.getInstance().getShowState();
@@ -296,19 +315,7 @@ public class ActivityHandler extends GameBaseHandler {
                 }
             }
         }
-        Iterator<Entry<Integer, ActivityInfo>> iterator = playerState.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, ActivityInfo> entry = iterator.next();
-            ActivityConfig activityConfig = ActivityManager.instance().getNullable(entry.getKey());
-            if (activityConfig == null) {
-                iterator.remove();
-                continue;
-            }
-            if (activityConfig.isServerOnly && player.getActivityModule().get(entry.getKey()) == null) {
-                iterator.remove();
-            }
-        }
-        return playerState;
+        return filterValidActivityShowState(player, playerState);
     }
 
     private void list(NetClient client, Object message) {

@@ -285,18 +285,7 @@ public class CrossActivityAndDualBindingTest {
 		negativeState.put(pureServerOnlyInfo.getId(), pureServerOnlyInfo);
 		negativeState.put(nonExistentInfo.getId(), nonExistentInfo);
 
-		java.util.Iterator<Map.Entry<Integer, ActivityInfo>> negIterator = negativeState.entrySet().iterator();
-		while (negIterator.hasNext()) {
-			Map.Entry<Integer, ActivityInfo> entry = negIterator.next();
-			ActivityConfig config = ActivityManager.instance().getNullable(entry.getKey());
-			if (config == null) {
-				negIterator.remove();
-				continue;
-			}
-			if (config.isServerOnly && player.getActivityModule().get(entry.getKey()) == null) {
-				negIterator.remove();
-			}
-		}
+		ActivityHandler.filterValidActivityShowState(player, negativeState);
 		Assertions.assertFalse(negativeState.containsKey(15), "未开启的 isServerOnly 纯服活动必须被过滤移除");
 		Assertions.assertFalse(negativeState.containsKey(99999), "配表缺失的活动必须被安全过滤移除");
 	}
