@@ -16,6 +16,10 @@ public class GameIdManagerInitializer {
 		IdCache.registerManager(new DistributedIDManager(DistributedObjectType.GUILD,
 				new CacheConfig(1024, cn.game.util.Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.ZONG_MEN_SERVER_ID)));
 
+		// 注册跨服活动ID管理器
+		IdCache.registerManager(new DistributedIDManager(DistributedObjectType.CROSS_ACTIVITY,
+				new CacheConfig(1024, cn.game.util.Config.DEFAULT_REDIS_DISTRIBUTED_OBJECT_EXPIRE_SECONDS, CacheType.CROSS_ACTIVITY_SERVER_ID)));
+
 		// 初始化定时任务
 		IdCache.init();
 	}

@@ -69,6 +69,14 @@ public enum CacheType {
 	EQUIP_TOWER_FLOOR_ID,
 	/****PVEVP战报 */
 	PVEVP_RECORD_ID,
+
+	//************跨服活动相关***********
+	/** 跨服活动在哪个服务器 uid -> crossServerId */
+	CROSS_ACTIVITY_SERVER_ID,
+	/** 跨服活动活跃UID (configId, scopeKey) -> activeUid */
+	CROSS_ACTIVITY_ACTIVE_UID,
+	/** 跨服活动创建分布式锁 (configId, scopeKey) */
+	CROSS_ACTIVITY_CREATE_LOCK,
 	;
 
 	public String key(Object... ks) {

@@ -300,9 +300,13 @@ public class ActivityHandler extends GameBaseHandler {
         }
         Iterator<Entry<Integer, ActivityInfo>> iterator = playerState.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<java.lang.Integer, cn.game.protocol.protobuf.ActivityMsg.ActivityInfo> entry = (Map.Entry<java.lang.Integer, cn.game.protocol.protobuf.ActivityMsg.ActivityInfo>) iterator.next();
-            ActivityConfig activityConfig = ActivityManager.instance().get(entry.getKey());
-            if (activityConfig.isServerOnly) {
+            Map.Entry<Integer, ActivityInfo> entry = iterator.next();
+            ActivityConfig activityConfig = ActivityManager.instance().getNullable(entry.getKey());
+            if (activityConfig == null) {
+                iterator.remove();
+                continue;
+            }
+            if (activityConfig.isServerOnly && player.getActivityModule().get(entry.getKey()) == null) {
                 iterator.remove();
             }
         }
@@ -333,21 +337,25 @@ public class ActivityHandler extends GameBaseHandler {
             return;
         }
         ActivityBase activityBase = activityModule.get(req.getActivityId());
-        int checkCode = activityBase.canReceive(req.getTaskIdsList());
+        if (!(activityBase instanceof PlayerActivityBase playerActivity)) {
+            client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
+            return;
+        }
+        int checkCode = playerActivity.canReceive(req.getTaskIdsList());
         if (checkCode != ErrorMsgEnum.ok.ID) {
             client.sendProtocol(res, checkCode);
             return;
         }
-        if (activityBase instanceof ActivityJQB) {
+        if (playerActivity instanceof ActivityJQB) {
             List<CompletableFuture<List<RewardInfo>>> allFuture = new ArrayList<>();
             int taskId = req.getTaskIds(0);
             PaymentReply reply = new PaymentReply(client);
-            activityBase.asyncReceive(taskId).map(reward -> res.addAllRewards(reward).build()).onSuccess(reply::send)
+            playerActivity.asyncReceive(taskId).map(reward -> res.addAllRewards(reward).build()).onSuccess(reply::send)
                     .onFailure(error -> reply.fail(res.getDefaultInstanceForType(), error, ErrorMsgEnum.unknown.getId()));
         } else {
             // 请神任务 每轮最后一个任务完成之后 自动领取每轮回奖励的任务
             List<Integer> rewardTaskIds = new ArrayList<>(req.getTaskIdsList());
-            if (activityBase instanceof ActivityQingShen activityQingShen) {
+            if (playerActivity instanceof ActivityQingShen activityQingShen) {
                 List<ActivityQingShenConfig> roundConfigList = activityQingShen.getRoundConfigList(activityQingShen.getRound());
                 List<Integer> roundIds = new ArrayList<>();
                 roundConfigList.forEach(roundConfig -> roundIds.add(roundConfig.taskID));
@@ -359,14 +367,14 @@ public class ActivityHandler extends GameBaseHandler {
             }
             log.info(String.format("ActivityQingShen rewardTaskIds:%s", rewardTaskIds));
             rewardTaskIds.forEach(taskId -> {
-                List<RewardInfo> reward = activityBase.receive(taskId);
+                List<RewardInfo> reward = playerActivity.receive(taskId);
                 if (reward == null) {
                     client.sendProtocol(res, ErrorMsgEnum.request_parameter_error.getId());
                     return;
                 }
                 res.addAllRewards(reward);
             });
-            activityBase.checkRefreshActivity();
+            playerActivity.checkRefreshActivity();
             client.sendProtocol(res.build());
         }
     }
@@ -418,7 +426,7 @@ public class ActivityHandler extends GameBaseHandler {
         List<Boolean> redList = new ArrayList<Boolean>();
         for (Integer id : idsList) {
             ActivityBase activityBase = player.getActivityModule().get(id);
-            if (activityBase != null && activityBase.hasRed()) {
+            if (activityBase instanceof PlayerActivityBase playerActivity && playerActivity.hasRed()) {
                 redList.add(true);
             } else {
                 redList.add(false);
@@ -438,7 +446,7 @@ public class ActivityHandler extends GameBaseHandler {
             client.sendProtocol(res, ErrorMsgEnum.activity_not_found.getId());
             return;
         }
-        client.sendProtocol(player.getActivityModule().get(activityId).buildActivityShowInfo());
+        client.sendProtocol(activityWestLucky.buildActivityShowInfo());
     }
 
     private void westLuckyDraw(NetClient client, Object message) {

@@ -1,8 +1,6 @@
 package cn.game.games.net.game.module.activity.impl.global;
 
-import java.util.List;
 
-import com.google.protobuf.Message;
 
 import cn.game.core.base.ServerContext;
 import cn.game.core.event.ServerEventTypeEnum;
@@ -17,11 +15,11 @@ import cn.game.protocol.generated.config.ActivityServerOpenRankConfig;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.enume.RankType;
 import cn.game.protocol.generated.manager.ActivityServerOpenRankManager;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
 @ActivityType(type = ActivityTypeEnum.ServerOpenRank)
 public class ServerOpenRankActivity extends GameActivityBase {
 	private static final ServerEventTypeEnum[] eventTypes = new ServerEventTypeEnum[] { ServerEventTypeEnum.NewDay };
+	private transient int lastRefreshedDay = -1;
 
 	@Override
 	public ServerEventTypeEnum[] getEventTypes() {
@@ -31,6 +29,12 @@ public class ServerOpenRankActivity extends GameActivityBase {
 	@Override
 	protected void afterStart() {
 		refresh();
+	}
+
+	@Override
+	public boolean newDay() {
+		refresh();
+		return super.newDay();
 	}
 
 	@Override
@@ -46,11 +50,15 @@ public class ServerOpenRankActivity extends GameActivityBase {
 
 	}
 
-	private void refresh() {
+	private synchronized void refresh() {
 		if (ServerContext.getInstance().isLeader() == false) {
 			return;
 		}
 		int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
+		if (lastRefreshedDay == serverOpenDay) {
+			return;
+		}
+		lastRefreshedDay = serverOpenDay;
 		ActivityServerOpenRankConfig yestodayConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay -1);
 		ActivityServerOpenRankConfig todayConfig = ActivityServerOpenRankManager.instance().getNullable(serverOpenDay);
 		if (todayConfig != null && todayConfig.RewardRankId == RankType.DaShengLeiTaiServerOpenActivity.ID) {
@@ -74,23 +82,6 @@ public class ServerOpenRankActivity extends GameActivityBase {
 		}
 	}
 
-	@Override
-	public Message buildActivityShowInfo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-
-	@Override
-	public void syncActivityInfo() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public List<RewardInfo> receive(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

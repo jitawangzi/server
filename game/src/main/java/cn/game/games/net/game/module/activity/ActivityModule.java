@@ -15,6 +15,7 @@ import cn.game.games.core.BasePlayerModule;
 import cn.game.games.core.event.EventTypeEnum;
 import cn.game.games.core.event.PlayerEvent;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.enume.Asset;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
@@ -75,6 +76,14 @@ public class ActivityModule extends BasePlayerModule {
 		Iterator<ActivityBase> iterator = playerActivityManager.list().iterator(); 
 		while (iterator.hasNext()) {
 			ActivityBase activityBase = (ActivityBase) iterator.next();
+			ActivityConfig activityConfig = ActivityManager.instance().getNullable(activityBase.getId());
+			if (activityConfig == null
+					|| !cn.game.games.core.clazz.ClassManager.getInstance().hasPlayerActivityClass(activityConfig.type)) {
+				log.warn("检测并剔除历史废弃或未注册的玩家活动实例: playerId={}, activityId={}, type={}",
+						playerId, activityBase.getId(), activityConfig == null ? "null" : activityConfig.type);
+				iterator.remove();
+				continue;
+			}
 			activityBase.init(activityBase.getId(), player, false);
 		}
 //		if (disposableIds.isEmpty()) {// 兼容老数据
@@ -214,6 +223,10 @@ public class ActivityModule extends BasePlayerModule {
 //	public Class<?>[] defaultDbMapperClass() {
 //		return new Class[] { ActivityMapper.class };
 //	}
+
+	public PlayerActivityManager getPlayerActivityManager() {
+		return playerActivityManager;
+	}
 
 	@Override
 	public void buildPlayerAllInfo(Builder builder) {

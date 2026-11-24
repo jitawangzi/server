@@ -22,6 +22,8 @@ public class DistributedIDManager extends GenericDistributedIDManager {
 			return PlayerManager.getInstance().getPlayer(objectId) != null;
 		case GUILD:
 			return GuildManager.getInstance().getGuild(objectId) != null;
+		case CROSS_ACTIVITY:
+			return cn.game.games.net.cross.activity.service.CrossActivityService.getInstance().containsActivity(objectId);
 		default:
 			throw new IllegalArgumentException("Unsupported object type: " + objectType);
 		}
@@ -35,6 +37,8 @@ public class DistributedIDManager extends GenericDistributedIDManager {
 			return PlayerManager.getInstance().getAllPlayer().keySet();
 		case GUILD:
 			return GuildManager.getInstance().getAllGuildIds();
+		case CROSS_ACTIVITY:
+			return cn.game.games.net.cross.activity.service.CrossActivityService.getInstance().getAllActivityIds();
 		default:
 			throw new IllegalArgumentException("Unsupported object type: " + objectType);
 		}

@@ -90,4 +90,8 @@ public interface GameActivityMapper {
 	 * @mbg.generated
 	 */
 	int insertOrUpdate(GameActivity record);
+
+	List<Long> getBatchIdCursor(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+	List<GameActivity> selectListByScopeAndConfig(@Param("serverId") String serverId, @Param("configId") int configId);
 }

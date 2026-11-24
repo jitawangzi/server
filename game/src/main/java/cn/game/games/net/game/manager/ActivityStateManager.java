@@ -53,7 +53,7 @@ public class ActivityStateManager {
 	}
 
 	public void start() {
-		Date nowDate = new Date();
+		Date nowDate = DateUtil.nowDateObj();
 		for (ActivityConfig activityConfig : ActivityManager.instance().list()) {
 			int id = activityConfig.ID;
 			if (activityConfig.disable) {
@@ -225,7 +225,7 @@ public class ActivityStateManager {
 
 		// 若存在 Cron，改为走 Cron 推断，保持旧接口契约（用 i=0 占位返回）
 		if (hasAnyCron(activityConfig)) {
-			ActivityState state = computeStateByCron(activityConfig, new Date());
+			ActivityState state = computeStateByCron(activityConfig, DateUtil.nowDateObj());
 			if (state == ActivityState.START || state == ActivityState.CLOSE) {
 				return new Pair<Integer, ActivityState>(0, state);
 			}
@@ -233,7 +233,7 @@ public class ActivityStateManager {
 		}
 
 		int period = activityConfig.period;
-		Date nowDate = new Date();
+		Date nowDate = DateUtil.nowDateObj();
 		int periodPass = getPeriodPass(id);
 		for (int i = 0; i < activityConfig.startTime.size(); i++) {
 			Date startDate = activityConfig.startTime.get(i);
@@ -298,7 +298,7 @@ public class ActivityStateManager {
 	 */
 	public int getPeriodPass(int id) {
 		ActivityConfig activityConfig = ActivityManager.instance().get(id);
-		long nowTimeMillis = System.currentTimeMillis();
+		long nowTimeMillis = DateUtil.currentTimeMillis();
 		int periodPass = 0;
 		int periodSec = activityConfig.period;
 		if (periodSec <= 0)
@@ -331,7 +331,7 @@ public class ActivityStateManager {
 
 		// Cron 优先：返回“下一次将开始的时间”
 		if (hasAnyCron(cfg) && cfg.startCron != null && !cfg.startCron.isEmpty()) {
-			Date now = new Date();
+			Date now = DateUtil.nowDateObj();
 			Date next = nextByCrons(cfg.startCron, now);
 			return next;
 		}
@@ -364,7 +364,7 @@ public class ActivityStateManager {
 		// Cron 优先：仅依据对应字段是否为空来判断，避免被其他空字段影响
 		List<CronExpression> crons = cronExtractor.apply(cfg);
 		if (crons != null && !crons.isEmpty()) {
-			return nextByCrons(crons, new Date());
+			return nextByCrons(crons, DateUtil.nowDateObj());
 		}
 
 		// 无 Cron，按时间列表计算
@@ -413,7 +413,7 @@ public class ActivityStateManager {
 	 */
 	public int getEndTimeRemaining(int id) {
 		long endTime = getEndTime(id);
-		return (int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000);
+		return (int) (endTime <= 0 ? 0 : (endTime - DateUtil.currentTimeMillis()) / 1000);
 	}
 
 	public long getDestroyTime(int id) {
@@ -428,7 +428,7 @@ public class ActivityStateManager {
 	 */
 	public int getDestroyTimeRemaining(int id) {
 		long endTime = getDestroyTime(id);
-		return (int) (endTime <= 0 ? 0 : (endTime - System.currentTimeMillis()) / 1000);
+		return (int) (endTime <= 0 ? 0 : (endTime - DateUtil.currentTimeMillis()) / 1000);
 	}
 
 	class StartTask implements Runnable {
@@ -629,7 +629,7 @@ public class ActivityStateManager {
 		if (startDate == null) {
 			return 0;
 		}
-		Date now = new Date();
+		Date now = DateUtil.nowDateObj();
 		if (now.after(startDate)) {
 			return 0;
 		}
@@ -646,7 +646,7 @@ public class ActivityStateManager {
 	private void scheduleNextByCron(int id, List<CronExpression> crons, Runnable task) {
 		if (crons == null || crons.isEmpty())
 			return;
-		Date now = new Date();
+		Date now = DateUtil.nowDateObj();
 		Date next = nextByCrons(crons, now);
 		if (next == null)
 			return;
@@ -796,7 +796,7 @@ public class ActivityStateManager {
 	}
 
 	private void scheduleRelativeEndAndDestroy(ActivityConfig cfg, int id) {
-		long timeMillis = System.currentTimeMillis();
+		long timeMillis = DateUtil.currentTimeMillis();
 		long endDelayMs = getEffectiveEndDurationMs(cfg, timeMillis);
 		if (endDelayMs > 0) {
 			SchedulerService.getInstance().scheduleTask(new EndTask(id), endDelayMs, TimeUnit.MILLISECONDS);

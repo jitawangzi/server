@@ -47,6 +47,8 @@ public class MapperConstant {
 	public static final String selectByUid = "selectByUid";
 	/** 查询全部的 */
 	public static final String selectAll = "selectAll";
+	public static final String selectListByScopeAndConfig = "selectListByScopeAndConfig";
+	public static final String getBatchIdCursor = "getBatchIdCursor";
 	/** 删除玩家数据 */
 	public static final String deletePlayerData = "deletePlayerData";
 	public static final String deleteByPlayerId = "deleteByPlayerId";

@@ -17,6 +17,7 @@ public class IdUtil {
     private static SnowflakeService snowflakeService;
     private static RedisIdService redisIdService;
     private static SegmentIdService segmentService;
+    private static final cn.game.util.IdWorker fallbackWorker = new cn.game.util.IdWorker(1, 0);
 
     /**
      * ID类型定义
@@ -94,8 +95,10 @@ public class IdUtil {
     //	没有特殊需求可以使用这个，不涉及到持久化
     // ==========================================
     public static long getId() {
-        checkInit();
-        return snowflakeService.nextId();
+        if (snowflakeService != null) {
+            return snowflakeService.nextId();
+        }
+        return fallbackWorker.nextId();
     }
 
     // ==========================================

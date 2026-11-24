@@ -2,9 +2,11 @@ package cn.game.core.base;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -20,6 +22,7 @@ import com.sun.tools.attach.VirtualMachine;
 
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
+import cn.game.core.leader.LeaderStateListener;
 import cn.game.core.event.AbstractEvent;
 import cn.game.core.event.EventBus;
 import cn.game.core.event.EventDispatcher;
@@ -58,6 +61,7 @@ public class ServerContext {
 	/** 是否是主节点 */
 	private volatile boolean isLeader;
 	private LeaderLatch leaderLatch;
+	private final List<LeaderStateListener> leaderStateListeners = new CopyOnWriteArrayList<>();
 
 	private Processor processor;
 
@@ -274,12 +278,14 @@ public class ServerContext {
 			public void isLeader() {
 				isLeader = true;
 				log.info("I am leader: {}", serverId);
+				notifyLeaderChanged(true);
 			}
 
 			@Override
 			public void notLeader() {
 				isLeader = false;
 				log.info("I am not leader: {}", serverId);
+				notifyLeaderChanged(false);
 			}
 		});
 		try {
@@ -347,6 +353,36 @@ public class ServerContext {
 	 */
 	public boolean isLeader() {
 		return isLeader;
+	}
+
+	public void setLeader(boolean isLeader) {
+		if (runMode != null && runMode.isProduction()) {
+			throw new IllegalStateException("Cannot manually setLeader in production mode");
+		}
+		this.isLeader = isLeader;
+		notifyLeaderChanged(isLeader);
+	}
+
+	public void addLeaderStateListener(LeaderStateListener listener) {
+		if (listener != null) {
+			leaderStateListeners.add(listener);
+		}
+	}
+
+	public void removeLeaderStateListener(LeaderStateListener listener) {
+		if (listener != null) {
+			leaderStateListeners.remove(listener);
+		}
+	}
+
+	private void notifyLeaderChanged(boolean isLeader) {
+		for (LeaderStateListener listener : leaderStateListeners) {
+			try {
+				listener.onLeaderChanged(isLeader);
+			} catch (Exception e) {
+				log.error("Error executing leader state listener", e);
+			}
+		}
 	}
 
 	public EventBus<?, ? extends AbstractEvent<?>> getEventBus() {

@@ -1,6 +1,8 @@
 package cn.game.games.net.game.module.activity;
 
 import cn.game.protocol.generated.config.ActivityConfig;
+import io.vertx.codegen.annotations.Nullable;
+import io.vertx.core.Future;
 
 /**    
  * Game中的全体活动，只是控制活动开启、关闭等，不保存活动数据
@@ -11,8 +13,28 @@ public class GameGlobalActivityManager extends GlobalActivityManager{
 
 	
 	@Override
-	protected boolean canOpen(ActivityConfig config) {
+	public boolean canOpen(ActivityConfig config) {
 		return !config.isCross && super.canOpen(config);
+	}
+
+	@Override
+	protected void afterActivityOpen(ActivityBase activity) {
+		// Game 节点全体活动保持纯内存态，禁止写 t_game_activity
+	}
+
+	@Override
+	protected void afterActivityDestroy(ActivityBase activity) {
+		// Game 节点全体活动保持纯内存态，禁止删 t_game_activity
+	}
+
+	@Override
+	public Future<@Nullable Object> insert(ActivityBase activity) {
+		return Future.succeededFuture();
+	}
+
+	@Override
+	public Future<@Nullable Object> delete(ActivityBase activity) {
+		return Future.succeededFuture();
 	}
 
 	/** 

@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import cn.game.games.cache.entity.Player;
+import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.protocol.generated.config.ActivityConfig;
+import cn.game.protocol.generated.enume.ActivityTypeEnum;
 import cn.game.protocol.generated.manager.ActivityManager;
 import cn.game.util.DateUtil;
 
 public class PlayerActivityManager extends AbstractActivityManager {
+	private static final java.util.Set<Integer> UNREGISTERED_WARN_TYPES = java.util.concurrent.ConcurrentHashMap.newKeySet();
 	private transient Player player;
 	private Set<Integer> disposableIds = new HashSet<>();
 
@@ -26,13 +29,21 @@ public class PlayerActivityManager extends AbstractActivityManager {
 
 	@Override
 	protected boolean canOpen(ActivityConfig config) {
-		if (config.isMultiplayer) {
+		if (!ClassManager.getInstance().hasPlayerActivityClass(config.type)) {
+			if (UNREGISTERED_WARN_TYPES.add(config.type)) {
+				log.warn("跳过未注册玩家活动实现类的配置: id={}, type={}", config.ID, config.type);
+			}
 			return false;
 		}
 		if (config.resetType == 0 && disposableIds.contains(config.ID)) {
 			return false;
 		}
 		return super.canOpen(config);
+	}
+
+	@Override
+	protected ActivityBase createActivity(ActivityConfig config) {
+		return ActivityFactory.createPlayerActivityBase(config.type);
 	}
 
 	@Override

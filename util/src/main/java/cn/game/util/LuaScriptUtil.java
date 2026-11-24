@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -41,6 +42,7 @@ public class LuaScriptUtil {
 		ADD_LIST_BATCH_WITH_FIFO_LIMIT("add_list_batch_with_fifo_limit.lua", "向列表批量添加元素，如果超过大小限制则移除最老的元素", true),
 		TRY_SET_WITH_EXPECT("try_set_with_expect.lua", "条件设置键值对并指定过期时间，仅当键不存在或当前值与预期值相同时才设置", true),
         ZSET_COPY_TOPN("zset_copy_topN.lua", "将源ZSET的前N名复制到目标ZSET，默认不清空目标,支持按member值筛选", true),
+		DELETE_IF_MATCH("delete_if_match.lua", "匹配指定值时安全删除键", true),
         ; 
 
 		private final String filename;
@@ -123,6 +125,10 @@ public class LuaScriptUtil {
 	 * @return
 	 */
 	public static String loadScript(LuaScript script) {
+		if (RedisUtil.getRedis() == null) {
+			logger.warn("Redis client not initialized yet, skipping static loadScript for: {}", script.getFilename());
+			return null;
+		}
 		RScript rScript = RedisUtil.getRedis().getScript();
 		logger.info("Script content: " + script.getContent());
 		return rScript.scriptLoad(script.getContent());
@@ -140,6 +146,9 @@ public class LuaScriptUtil {
 	 * @return 脚本执行结果
 	 */
 	public static <T> CompletionStage<T> executeLuaScriptAsync(LuaScript script, Codec codec, List<Object> keys, Object... values) {
+		if (RedisUtil.getRedis() == null) {
+			return CompletableFuture.completedFuture(null);
+		}
 		final RScript rScript = (codec == null) ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
 		final long startNanos = System.nanoTime();
 
@@ -160,6 +169,29 @@ public class LuaScriptUtil {
 						}
 					});
 			return cf;
+		}
+
+		if (script.getSha1() == null) {
+			CompletableFuture<T> result = new CompletableFuture<>();
+			rScript.scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+				long reloadElapsed = (System.nanoTime() - startNanos) / 1_000_000L;
+				logDuration("scriptLoadAsync(lazy)", script, keys, values, reloadElapsed, true, loadEx);
+				if (loadEx != null) {
+					result.completeExceptionally(loadEx);
+					return;
+				}
+				updateScriptSha(script, newSha);
+				executeLuaScriptAsync(script, codec, keys, values).whenComplete((val2, ex2) -> {
+					if (ex2 != null) {
+						result.completeExceptionally(ex2);
+					} else {
+						@SuppressWarnings("unchecked")
+						T casted2 = (T) val2;
+						result.complete(casted2);
+					}
+				});
+			});
+			return result;
 		}
 
 		// 使用 EVALSHA，若遇到 NOSCRIPT 则自动 LOAD 并重试一次
@@ -240,6 +272,9 @@ public class LuaScriptUtil {
 	}
 
 	public static <T> T executeLuaScript(LuaScript script, Codec codec, List<Object> keys, Object... values) {
+		if (RedisUtil.getRedis() == null) {
+			return null;
+		}
 		RScript rScript = codec == null ? RedisUtil.getRedis().getScript() : RedisUtil.getRedis().getScript(codec);
 		final long startNanos = System.nanoTime();
 		if (!script.useSha1) {
@@ -253,6 +288,14 @@ public class LuaScriptUtil {
 				logDuration("eval(no-sha1)", script, keys, values, elapsedMs, false, ex);
 				throw ex;
 			}
+		}
+
+		if (script.getSha1() == null) {
+			final long loadStart = System.nanoTime();
+			String newSha = rScript.scriptLoad(script.getContent());
+			long loadElapsed = (System.nanoTime() - loadStart) / 1_000_000L;
+			logDuration("scriptLoad(lazy)", script, keys, values, loadElapsed, true, null);
+			updateScriptSha(script, newSha);
 		}
 
 		try {
@@ -286,7 +329,30 @@ public class LuaScriptUtil {
 	// 批量：每个调用对应一组 keys 和 values，返回每个调用的结果 Object 列表（由调用方再做类型映射）
 	public static CompletionStage<List<Object>> executeLuaScriptBatchAsync(LuaScript script, Codec codec, List<List<Object>> batchedKeys,
 			List<Object[]> batchedValues) {
+		if (RedisUtil.getRedis() == null) {
+			return CompletableFuture.completedFuture(Collections.emptyList());
+		}
 		final long startNanos = System.nanoTime();
+
+		if (script.useSha1 && script.getSha1() == null) {
+			CompletableFuture<List<Object>> result = new CompletableFuture<>();
+			RedisUtil.getRedis().getScript().scriptLoadAsync(script.getContent()).whenComplete((newSha, loadEx) -> {
+				if (loadEx != null) {
+					result.completeExceptionally(loadEx);
+					return;
+				}
+				updateScriptSha(script, newSha);
+				executeLuaScriptBatchAsync(script, codec, batchedKeys, batchedValues).whenComplete((v2, ex2) -> {
+					if (ex2 != null) {
+						result.completeExceptionally(ex2);
+					} else {
+						result.complete(v2);
+					}
+				});
+			});
+			return result;
+		}
+
 		RBatch batch = RedisUtil.getRedis().createBatch();
 		RScriptAsync batchScript = (codec == null) ? batch.getScript() : batch.getScript(codec);
 
@@ -527,6 +593,26 @@ public class LuaScriptUtil {
 		public String toString() {
 			return "CopyResult{copiedCount=" + copiedCount + ", totalSourceSize=" + totalSourceSize + '}';
 		}
+	}
+
+	/**
+	 * 当 key 的当前值等于 expectedValue 时删除 key（CAS 删除）
+	 * 使用 StringCodec.INSTANCE 保证纯字符串匹配，杜绝 Redisson 默认 JSON 序列化加引号
+	 * 
+	 * @param key Redis 键
+	 * @param expectedValue 预期值
+	 * @return 是否成功删除
+	 */
+	public static boolean deleteIfMatch(String key, String expectedValue) {
+		if (RedisUtil.getRedis() == null) {
+			return false;
+		}
+		List<Object> keys = List.of(key);
+		Object res = executeLuaScript(LuaScript.DELETE_IF_MATCH, StringCodec.INSTANCE, keys, expectedValue);
+		if (res instanceof Number num) {
+			return num.intValue() == 1;
+		}
+		return false;
 	}
 
 }

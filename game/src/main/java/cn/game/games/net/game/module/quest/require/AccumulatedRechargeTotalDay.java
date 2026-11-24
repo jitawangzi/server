@@ -32,7 +32,7 @@ public class AccumulatedRechargeTotalDay extends AbstractCondition {
             return false;
         }
         ActivityMeiRiBaoLi meiRiBaoLi = (ActivityMeiRiBaoLi) player.getActivityModule().get(activityId);
-        if (DateUtil.isSameDay(System.currentTimeMillis(), meiRiBaoLi.getFinishRechargeTimer())){
+        if (DateUtil.isSameDay(DateUtil.currentTimeMillis(), meiRiBaoLi.getFinishRechargeTimer())){
             return false;
         }
         meiRiBaoLi.addTotalRecharge(event.getIntParameter(0),event);
@@ -50,6 +50,6 @@ public class AccumulatedRechargeTotalDay extends AbstractCondition {
         int activityId = getExtParam()[0];
         ActivityMeiRiBaoLi meiRiBaoLi = (ActivityMeiRiBaoLi) player.getActivityModule().get(activityId);
         meiRiBaoLi.setTotalRecharge(0);
-        meiRiBaoLi.setFinishRechargeTimer(System.currentTimeMillis());
+        meiRiBaoLi.setFinishRechargeTimer(DateUtil.currentTimeMillis());
     }
 }

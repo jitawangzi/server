@@ -247,4 +247,20 @@
     values (#{id,jdbcType=BIGINT}, #{serverId,jdbcType=VARCHAR}, #{configId,jdbcType=INTEGER}, #{state,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{params,jdbcType=LONGVARCHAR})
     on duplicate key update server_id = #{serverId,jdbcType=VARCHAR}, config_id = #{configId,jdbcType=INTEGER}, state = #{state,jdbcType=TINYINT}, create_time = #{createTime,jdbcType=BIGINT}, params = #{params,jdbcType=LONGVARCHAR}
   </insert>
+  <select id="getBatchIdCursor" resultType="java.lang.Long">
+    select id
+    from t_game_activity
+    where id &gt; #{lastId,jdbcType=BIGINT}
+    order by id asc
+    limit #{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectListByScopeAndConfig" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_game_activity
+    where server_id = #{serverId,jdbcType=VARCHAR}
+      and config_id = #{configId,jdbcType=INTEGER}
+  </select>
 </mapper>

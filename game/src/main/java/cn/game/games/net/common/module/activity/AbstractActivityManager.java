@@ -24,6 +24,7 @@ import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
 import cn.game.games.net.game.module.activity.ActivityFactory;
 import cn.game.games.net.game.module.activity.ActivityHelper;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.util.DAO;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
@@ -64,7 +65,9 @@ public abstract class AbstractActivityManager {
 					beforeActivityOpen(activityBase);
 					activityBase.init(activityConfig.ID, owner, true);
 					if (notify) {
-						activityBase.syncActivityInfo();
+						if (activityBase instanceof PlayerActivityBase playerActivity) {
+							playerActivity.syncActivityInfo();
+						}
 					}
 					afterActivityOpen(activityBase);
 					
@@ -116,7 +119,9 @@ public abstract class AbstractActivityManager {
 			beforeActivityDestroy(activityBase);
 			if (notify) {
 				activityBase.setState(ActivityState.NONE_VALUE);
-				activityBase.syncActivityInfo();
+				if (activityBase instanceof PlayerActivityBase playerActivity) {
+					playerActivity.syncActivityInfo();
+				}
 			}
 			activityBase.destroy();
 			afterActivityDestroy(activityBase);
@@ -131,7 +136,9 @@ public abstract class AbstractActivityManager {
 			beforeActivityEnd(activityBase);
 			if (notify) {
 				activityBase.setState(ActivityState.CLOSE_VALUE);
-				activityBase.syncActivityInfo();
+				if (activityBase instanceof PlayerActivityBase playerActivity) {
+					playerActivity.syncActivityInfo();
+				}
 			}
 			activityBase.end();
 			afterActivityEnd(activityBase);
@@ -185,7 +192,7 @@ public abstract class AbstractActivityManager {
 	}
 
 	private void endTimeTask(ActivityBase activityBase) {
-		long nowTime = System.currentTimeMillis();
+		long nowTime = DateUtil.currentTimeMillis();
 		int cid = activityBase.getId();
 		long endTime = activityBase.getEndTime();
 		if (endTime > 0) {
@@ -199,7 +206,7 @@ public abstract class AbstractActivityManager {
 		}
 	}
 	private void destroyTimeTask(ActivityBase activityBase) {
-		long nowTime = System.currentTimeMillis();
+		long nowTime = DateUtil.currentTimeMillis();
 		int cid = activityBase.getId();
 		long destroyTime = activityBase.getDestroyTime();
 		if (destroyTime > 0) {
@@ -269,8 +276,8 @@ public abstract class AbstractActivityManager {
 	public List<RewardInfo> receive(int id, int subId) {
 		ActivityBase activityBase = this.activities.get(id);
 		List<RewardInfo> rewards = new ArrayList<>();
-		if (activityBase != null) {
-			rewards = activityBase.receive(subId);
+		if (activityBase instanceof PlayerActivityBase playerActivity) {
+			rewards = playerActivity.receive(subId);
 			rewards.addAll(rewards);
 			if (rewards != null && rewards.size() > 0) {
 //				update(id);
@@ -308,7 +315,7 @@ public abstract class AbstractActivityManager {
 //				return true;
 //			}
 //		}
-		long now = System.currentTimeMillis(); 
+		long now = DateUtil.currentTimeMillis(); 
 		int state = 0 ; 
 		long endTime = activity.getEndTime();
 		long destroyTime = activity.getDestroyTime();
@@ -387,6 +394,10 @@ public abstract class AbstractActivityManager {
 		}
 	}
 
+	public Map<Integer, ActivityBase> getActivities() {
+		return activities;
+	}
+
 	public void setActivities(Map<Integer, ActivityBase> activities) {
 		this.activities = activities;
 	}
@@ -421,7 +432,7 @@ public abstract class AbstractActivityManager {
 
 			VirtualServerView virtualServerView = validServers.get(serverId);
 			if (virtualServerView != null && virtualServerView.openTime != null) {
-				int days =  DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
+				int days =  DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), DateUtil.nowDate()) + 1; 
 				return days >= config.openParam && days < config.openParam + config.destroyDuration;
 			}
 		}

@@ -75,7 +75,7 @@ public class ActivityQingShen extends PlayerActivityBase {
 
 	@Override
 	public int canReceive(List<Integer> ids) {
-		return canReceive(ids,rewardIdList,player);
+		return canReceive(ids, rewardIdList);
 	}
 
 	@Override

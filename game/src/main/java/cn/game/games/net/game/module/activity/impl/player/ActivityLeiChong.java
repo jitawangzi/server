@@ -116,7 +116,7 @@ public class ActivityLeiChong extends PlayerActivityBase {
 
 	@Override
 	public int canReceive(List<Integer> ids) {
-		return canReceive(ids,rewardTaskIds,player);
+		return canReceive(ids, rewardTaskIds);
 	}
 
 	@Override

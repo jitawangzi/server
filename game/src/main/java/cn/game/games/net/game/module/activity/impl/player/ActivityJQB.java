@@ -109,7 +109,7 @@ public class ActivityJQB extends PlayerActivityBase {
 
 	@Override
 	public int canReceive(List<Integer> ids) {
-		int errcode =  canReceive(ids,rewardIdList,player);
+		int errcode = canReceive(ids, rewardIdList);
 		if (errcode != ErrorMsgEnum.ok.getId()){
 			return errcode;
 		}

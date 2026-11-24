@@ -14,6 +14,7 @@ import cn.game.core.base.ServerContext;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
 import cn.game.core.id.IdUtil;
+import cn.game.core.leader.LeaderStateListener;
 import cn.game.core.net.process.Processor;
 import cn.game.core.net.rpc.CallType;
 import cn.game.core.net.rpc.RpcFactory;
@@ -24,12 +25,16 @@ import cn.game.core.net.vertx.MsgConsumerVerticle;
 import cn.game.core.net.vertx.VxContextRegistry;
 import cn.game.core.net.vertx.VxHolder;
 import cn.game.core.util.AsyncUtils;
-import cn.game.games.net.common.module.activity.CrossActivityService;
+import io.vertx.core.Future;
+import cn.game.games.core.clazz.ClassManager;
+import cn.game.games.core.event.server.ServerEventBus;
+import cn.game.games.net.cross.activity.service.CrossActivityService;
 import cn.game.games.net.cross.data.CrossServerDataLoader;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.cross.guild.GuildManager;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.init.GameIdManagerInitializer;
+import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.protocol.generated.helper.ManagerHelper;
 import cn.game.util.Config;
@@ -90,18 +95,18 @@ public class CrossServer {
 				shutdown();
 			}
 		});
-		// 初始化业务数据
-		CrossActivityService crossActivityService = new CrossActivityService();
-//		crossActivityService.init();
-
+		// 初始化业务与生命周期管理器
+		ServerContext.getInstance().setEventBus(ServerEventBus.getInstance());
 		GameIdManagerInitializer.initialize();
+		ClassManager.getInstance().init();
+		ManagerHelper.init();
+		ActivityStateManager.getInstance().start();
+		GuildManager.getInstance().init();
+		CrossActivityService.getInstance().init();
 		
 		initLeaderTask();
 
 		new Thread(WatchServiceManager.getInstance().setWatchDirs("xml", "config"), "WatchServiceManager").start();
-		ManagerHelper.init();
-		//初始化公会
-		GuildManager.getInstance().init();
 		LoggerType.Stdout.logger.info("跨服[{}]启动成功,耗时[{}]s", serverId, (System.currentTimeMillis() - start) / 1000);
 		System.err.println("Cross Server startup complete");
 
@@ -121,8 +126,23 @@ public class CrossServer {
 		stopWatch.start();
 		LoggerType.Stdout.logger.info("CrossServer shutdown start");
 
+		// 先同步阻塞完成跨服活动与公会数据落库保存
+		try {
+			CrossActivityService.getInstance().saveAll(true);
+		} catch (Exception e) {
+			LoggerType.Stdout.logger.error("Failed to saveAll cross activity", e);
+		}
+		try {
+			Future<Void> guildSaveFuture = GuildManager.getInstance().saveAllGuildData(true);
+			if (guildSaveFuture != null) {
+				AsyncUtils.await(guildSaveFuture, 60, TimeUnit.SECONDS);
+			}
+		} catch (Exception e) {
+			LoggerType.Stdout.logger.error("Failed to saveAll guild data", e);
+		}
+
+		// 数据落库完成后再清除路由缓存
 		IdCache.clearAllCurrentServerId();
-		GuildManager.getInstance().saveAllGuildData(true);
 
 		// 关闭系统服务
 		SpringContextLoader.getContext().close();
@@ -160,10 +180,19 @@ public class CrossServer {
 	}
 
 	private void initLeaderTask() {
-		if (!ServerContext.getInstance().isLeader()) {
-			return;
+		ServerContext.getInstance().addLeaderStateListener(new LeaderStateListener() {
+			@Override
+			public void onLeaderChanged(boolean isLeader) {
+				if (isLeader) {
+					loadCrossDistributedObject();
+					CrossActivityService.getInstance().onLeaderScheduleCheck();
+				}
+			}
+		});
+		if (ServerContext.getInstance().isLeader()) {
+			loadCrossDistributedObject();
+			CrossActivityService.getInstance().onLeaderScheduleCheck();
 		}
-		loadCrossDistributedObject();
 	}
 
 	private void loadCrossDistributedObject() {

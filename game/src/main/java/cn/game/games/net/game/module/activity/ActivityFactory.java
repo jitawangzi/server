@@ -25,4 +25,12 @@ public class ActivityFactory {
 		return ClassManager.getInstance().createActivityClassInstance(type);
 	}
 
+	public static PlayerActivityBase createPlayerActivityBase(int type) {
+		return ClassManager.getInstance().createPlayerActivityClassInstance(type);
+	}
+
+	public static ActivityBase createServerActivityBase(int type) {
+		return ClassManager.getInstance().createServerActivityClassInstance(type);
+	}
+
 }

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import cn.game.core.base.ActiveServerListManager;
+import cn.game.core.base.RunMode;
 import cn.game.core.base.ServerContext;
 import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.id.DistributedObjectType;
@@ -24,6 +26,9 @@ import cn.game.core.net.rpc.RpcFactory;
 import cn.game.core.net.rpc.vertx.VertxRpcClient;
 import cn.game.core.zookeeper.server.ValidServerService;
 import cn.game.games.core.cache.GameCacheService;
+import cn.game.games.net.cross.activity.CrossActivityRouteMissingException;
+import cn.game.games.net.cross.activity.service.CrossActivityServiceInterface;
+import cn.game.games.net.cross.activity.service.CrossActivityServiceImpl;
 import cn.game.games.net.cross.guild.service.GuildService;
 import cn.game.games.net.cross.guild.service.GuildServiceInterface;
 import cn.game.games.net.game.remote.GameServerInterface;
@@ -53,6 +58,9 @@ public class ServerHelper {
 			if (clazz == GuildServiceInterface.class) {
 				ret.add((T) GuildService.getInstance());
 			}
+			if (clazz == CrossActivityServiceInterface.class) {
+				ret.add((T) CrossActivityServiceImpl.getInstance());
+			}
 		}
 		return ret;
 	}
@@ -79,6 +87,9 @@ public class ServerHelper {
 			if (clazz == GuildServiceInterface.class) {
 				return (T) GuildService.getInstance();
 			}
+			if (clazz == CrossActivityServiceInterface.class) {
+				return (T) CrossActivityServiceImpl.getInstance();
+			}
 			return ClassHelper.getSingletonInstance(clazz);
 		}
 		if (ServerContext.getInstance().getServerType() == serverType) {
@@ -86,6 +97,9 @@ public class ServerHelper {
 			if (StringUtils.isEmpty(serverId) || serverId.equals(ServerContext.getInstance().getServerId())) {
 				if (clazz == GuildServiceInterface.class) {
 					return (T) GuildService.getInstance();
+				}
+				if (clazz == CrossActivityServiceInterface.class) {
+					return (T) CrossActivityServiceImpl.getInstance();
 				}
 				return ClassHelper.getSingletonInstance(clazz);
 			}
@@ -111,6 +125,47 @@ public class ServerHelper {
 	public static GuildServiceInterface getGuildProxy(long guildId) {
 		return getRemoteInterfaceProxy(ServerType.Cross, GuildServiceInterface.class, DistributedObjectType.GUILD, guildId);
 	}
+
+	/**
+	 * 获取跨服活动远程代理接口（严格点对点寻址，若路由缺失直接抛出异常，绝不静默降级 LoadBalancer 漂移）
+	 * 
+	 * @param activityUid 活动实例 UID
+	 * @return 跨服活动代理接口
+	 */
+	public static CrossActivityServiceInterface getCrossActivityProxy(long activityUid) {
+		if (activityUid <= 0) {
+			throw new CrossActivityRouteMissingException(activityUid, cn.game.protocol.manual.ErrorMsgEnum.activity_not_found.ID);
+		}
+		String serverId = IdCache.getServerId(DistributedObjectType.CROSS_ACTIVITY, activityUid);
+		if (StringUtils.isEmpty(serverId)) {
+			throw new CrossActivityRouteMissingException(activityUid, cn.game.protocol.manual.ErrorMsgEnum.activity_not_found.ID);
+		}
+		if (ServerContext.getInstance().getServerType() == ServerType.Cross && serverId.equals(ServerContext.getInstance().getServerId())) {
+			return CrossActivityServiceImpl.getInstance();
+		}
+		boolean isSandboxWithoutRpc = ServerContext.getInstance().getRpcClient() == null
+				|| (ServerContext.getInstance().getRpcClient() instanceof VertxRpcClient && ((VertxRpcClient) ServerContext.getInstance().getRpcClient()).getVertx() == null);
+		if (isSandboxWithoutRpc) {
+			return CrossActivityServiceImpl.getInstance();
+		}
+		return RpcFactory.getImpl(CrossActivityServiceInterface.class, ServerContext.getInstance().getRpcClient(),
+				CallType.PointToPoint, serverId, ServerType.Cross, activityUid);
+	}
+
+	/**
+	 * 获取跨服活动负载均衡代理接口（仅供 Leader 创建新活动分派使用）
+	 * 
+	 * @return 跨服活动负载均衡代理
+	 */
+	public static CrossActivityServiceInterface getCrossActivityBalanceProxy() {
+		boolean isSandboxWithoutRpc = ServerContext.getInstance().getRpcClient() == null
+				|| (ServerContext.getInstance().getRpcClient() instanceof VertxRpcClient && ((VertxRpcClient) ServerContext.getInstance().getRpcClient()).getVertx() == null);
+		if (isSandboxWithoutRpc) {
+			return CrossActivityServiceImpl.getInstance();
+		}
+		return RpcFactory.getImpl(CrossActivityServiceInterface.class, ServerContext.getInstance().getRpcClient(),
+				CallType.LoadBalancer, "", ServerType.Cross, 0);
+	}
 	
 	/** 
 	 * 获取玩家的远程代理接口
@@ -132,16 +187,30 @@ public class ServerHelper {
 		if (virtualServerView == null || virtualServerView.openTime == null) {
 			return 0;
 		}
-		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), LocalDate.now()) + 1; 
+		return DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), DateUtil.nowDate()) + 1; 
 	}
 	
+	private static volatile Map<String, VirtualServerView> testServerOpenMap = null;
+
+	public static void setTestServerOpenMap(Map<String, VirtualServerView> map) {
+		if (map != null && ServerContext.getInstance().getRunMode() != null && ServerContext.getInstance().getRunMode().isProduction()) {
+			throw new IllegalStateException("Cannot set testServerOpenMap in production");
+		}
+		testServerOpenMap = map;
+	}
+
 	public static Map<String, VirtualServerView> getServerOpenMap() {
 		ValidServerService validGameService = ServerContext.getInstance().getValidGameService();
-		if (validGameService == null) {
-			return Collections.emptyMap();
+		if (validGameService != null) {
+			Map<String, VirtualServerView> validServers = validGameService.getValidServers();
+			if (validServers != null && !validServers.isEmpty()) {
+				return validServers;
+			}
 		}
-		Map<String, VirtualServerView> validServers = validGameService.getValidServers();
-		return validServers != null ? validServers : Collections.emptyMap();
+		if (testServerOpenMap != null) {
+			return testServerOpenMap;
+		}
+		return Collections.emptyMap();
 //		return GameCacheService.getInstance().getOpenServerMap(); 
 	}
 	public static String[] getServerIds() {

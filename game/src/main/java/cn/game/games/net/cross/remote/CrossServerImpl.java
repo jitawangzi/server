@@ -29,6 +29,9 @@ public class CrossServerImpl implements CrossServerInterface {
 	public <T, ID extends Number> int loadDataDistributed(Class<? extends GenericDataLoader<T, ID>> loaderClass, ID id) {
 		GenericDataLoader<T, ID> loader = SpringContextLoader.getContext().getBean(loaderClass);
 		T data = loader.load(id);
+		if (data == null) {
+			return 0;
+		}
 		loader.processData(List.of(data));
 		return 1;
 	}

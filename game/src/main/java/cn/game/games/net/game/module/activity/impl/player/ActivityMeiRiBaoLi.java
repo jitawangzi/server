@@ -71,7 +71,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 	}
 
    public void addTotalRechargeNum(int num) {
-		long now = System.currentTimeMillis();
+		long now = DateUtil.currentTimeMillis();
 		if (!DateUtil.isSameDay(lastRechargeTimer, now)){
 			this.totalRechargeNum += num;
 			setLastRechargeTimer(now);
@@ -136,7 +136,7 @@ public class ActivityMeiRiBaoLi extends PlayerActivityBase {
 
 	@Override
 	public int canReceive(List<Integer> ids) {
-		return canReceive(ids,rewardIdList,player);
+		return canReceive(ids, rewardIdList);
 	}
 
 	@Override

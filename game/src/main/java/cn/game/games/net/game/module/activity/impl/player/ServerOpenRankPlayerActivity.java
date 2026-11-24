@@ -21,7 +21,7 @@ import cn.game.protocol.manual.OpType;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityServerOpenRankResponse_11000201;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 
-@ActivityType(type = ActivityTypeEnum.ServerOpenRankPlayer)
+@ActivityType(type = ActivityTypeEnum.ServerOpenRank)
 public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 	private static final EventTypeEnum[] eventTypes = new EventTypeEnum[] { EventTypeEnum.DaShengPointsAdd };
 
@@ -64,6 +64,7 @@ public class ServerOpenRankPlayerActivity extends PlayerActivityBase {
 
 	@Override
 	public Message buildActivityShowInfo() {
+		ensureCrossActivityBinding();
 		ActivityServerOpenRankResponse_11000201.Builder builder = ActivityServerOpenRankResponse_11000201.newBuilder();
 		builder.setDayReward(isDayReward); 
 		builder.setOpenDay(ServerHelper.getServerOpenDay(player.getServerId()));

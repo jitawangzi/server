@@ -2,37 +2,32 @@ package cn.game.games.net.game.module.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.IntFunction;
-import java.util.function.LongFunction;
 import java.util.function.ToIntFunction;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.google.protobuf.Message;
 
-import cn.game.games.cache.entity.Player;
-import cn.game.games.net.game.helper.QuestHelper;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
+import cn.game.games.net.common.module.activity.AbstractActivityManager;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
-import cn.game.games.net.game.module.quest.Quest;
-import cn.game.games.net.game.module.quest.QuestModule;
 import cn.game.protocol.generated.config.ActivityConfig;
 import cn.game.protocol.generated.manager.ActivityManager;
-import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityInfo;
 import cn.game.protocol.protobuf.ActivityMsg.ActivityState;
-import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.util.DateUtil;
 import cn.game.util.JsonUtil;
-import io.vertx.core.Future;
 
 /**
- * 基本的活动，这个活动可能是全体活动，也可能是玩家的活动
+ * 基本的活动基类，承载全体活动与玩家活动共享的元信息与生命周期
  * 
  * 2021年6月9日 下午12:15:20
- * @author SYQ
+ * @author shuyongqiang
  */
 public abstract class ActivityBase {
 	protected final static transient Logger log = LoggerFactory.getLogger(ActivityBase.class);
@@ -41,6 +36,7 @@ public abstract class ActivityBase {
 	private static transient final boolean fieldBased = true;
 	private static transient SerializeConfig serializeConfig = new SerializeConfig(fieldBased);
 
+	/** 跨服活动唯一实例 ID */
 	protected long uid;
 
 	/** 配置表id */
@@ -54,22 +50,16 @@ public abstract class ActivityBase {
 	protected long destroyTime;
 	protected String serverId;
 
-	/** 
-	 * 当前活动是否有红点显示
-	 * @return
-	 */
-	public boolean hasRed() {
-		return false;
-	}
-
-	public abstract Message buildActivityShowInfo();
-
 	public abstract void registerEvent();
 
 	public abstract void unregisterEvent();
 
-	public Message buildActivityShowInfo(int id) {
-		return null;
+	public long getUid() {
+		return uid;
+	}
+
+	public void setUid(long uid) {
+		this.uid = uid;
 	}
 
 	// 获取活动参与者列表方法
@@ -86,66 +76,14 @@ public abstract class ActivityBase {
 		ActivityInfo.Builder builder = ActivityInfo.newBuilder();
 		builder.setId(id);
 		builder.setStateValue(state);
-		builder.setEndTime((int) (destroyTime <= 0 ? 0 : (destroyTime - System.currentTimeMillis()) / 1000));
+		builder.setEndTime((int) (destroyTime <= 0 ? 0 : (destroyTime - DateUtil.currentTimeMillis()) / 1000));
 		return builder.build();
 	}
 
-	/** 
-	 * 当活动状态修改时，同步当前活动数据
-	 */
-	public abstract void syncActivityInfo();
-
-	/** 
-	 * 领取活动奖励，看情况使用，适合活动奖励比较简单的情况。 
-	 * @param id
-	 * @return
-	 */
-	public abstract List<RewardInfo> receive(int id);
-
-	@Deprecated
-	public Future<List<RewardInfo>> asyncReceive(int id) {
-		return Future.succeededFuture(receive(id));
-	}
-
-	/**
-	 * 是否能够领取活动奖励
-	 * @param ids 要领取的id集合
-	 * @return 错误码
-	 */
-	@Deprecated
-	public int canReceive(List<Integer> ids) {
-		return ErrorMsgEnum.ok.ID;
-	};
-
-	@Deprecated
-	public int canReceive(List<Integer> ids, List<Integer> rewardIdList, Player player) {
-		int failSize = 0;
-		int errCode = 0;
-		QuestModule questModule = player.getQuestModule();
-		for (int taskId : ids) {
-			if (rewardIdList.contains(taskId)) {
-				failSize++;
-				errCode = ErrorMsgEnum.activity_lei_chong_has_reward.ID;
-				continue;
-			}
-			Quest quest = questModule.get(taskId);
-			if (quest.getState() != QuestHelper.CAN_GIVEWARD) {
-				failSize++;
-				errCode = ErrorMsgEnum.activity_task_not_finish.ID;
-				continue;
-			}
-		}
-		if (failSize == ids.size()) {
-			return errCode;
-		}
-		return ErrorMsgEnum.ok.ID;
-	};
-
 	/** 活动开始，可以参加活动 */
 	private void startUp() {
-//		player.getActivityModule().syncActivityState(id);
 		this.state = ActivityState.START_VALUE;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = DateUtil.currentTimeMillis();
 		this.endTime = calcEndTime();
 		this.destroyTime = calcDestroyTime();
 		afterStart();
@@ -163,7 +101,7 @@ public abstract class ActivityBase {
 		this.state = ActivityState.NONE_VALUE;
 		unregisterEvent();
 		afterDestroy();
-	};
+	}
 
 	/** 
 	 * 活动开始后的一些自定义行为
@@ -181,22 +119,21 @@ public abstract class ActivityBase {
 	}
 
 	/** 
-	 * 
 	 * 跨天
 	 * @return true 跨天活动数据有修改 ，不过现在没什么用了
 	 */
 	public boolean newDay() {
 		return false;
-	};
+	}
 
 	public void init(int id, Object owner, boolean isNew) {
-
 		this.id = id;
 		registerEvent();
 		if (isNew) {
 			startUp();
 		}
 	}
+
 	public void init(int id) {
 		this.id = id;
 	}
@@ -243,6 +180,39 @@ public abstract class ActivityBase {
 	}
 
 	/**
+	 * 检查指定活动在目标服务器上是否满足开启条件
+	 */
+	public static boolean canOpenForServer(ActivityConfig config, String serverId) {
+		if (config == null || config.disable) {
+			return false;
+		}
+		if (config.openType == ActivityHelper.OPENTYPE_SERVER_OPEN_DAY) {
+			if (StringUtils.isEmpty(serverId) || AbstractActivityManager.GLOBAL_SERVER_ID.equals(serverId)) {
+				return false;
+			}
+			Map<String, VirtualServerView> validServers = ServerHelper.getServerOpenMap();
+			VirtualServerView virtualServerView = validServers.get(serverId);
+			if (virtualServerView != null && virtualServerView.openTime != null) {
+				int days = DateUtil.diffDays(virtualServerView.openTime.toLocalDate(), DateUtil.nowDate()) + 1;
+				return days >= config.openParam && days < config.openParam + config.destroyDuration;
+			}
+			return false;
+		}
+		if (config.openType == 0) {
+			return ActivityStateManager.getInstance().getShowIds().contains(config.ID);
+		}
+		return false;
+	}
+
+	/**
+	 * 计算按开服天数开启的活动的销毁时间
+	 */
+	public static long calcServerOpenDayDestroyTime(ActivityConfig config, String serverId) {
+		int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
+		return DateUtil.nextDayStartTime(DateUtil.currentTimeMillis(), config.destroyDuration - serverOpenDay + 1);
+	}
+
+	/**
 	 * 计算通用的结束/销毁时间
 	 * @param durationType 获取时长类型的函数引用（如 cfg -> cfg.endDurationType）
 	 * @param duration 获取时长值的函数引用（如 cfg -> cfg.endDuration）
@@ -266,7 +236,7 @@ public abstract class ActivityBase {
 				}
 				int serverOpenDay = ServerHelper.getServerOpenDay(serverId);
 				int d = duration.applyAsInt(activityConfig);
-				return DateUtil.nextDayStartTime(System.currentTimeMillis(), d - serverOpenDay + 1);
+				return DateUtil.nextDayStartTime(DateUtil.currentTimeMillis(), d - serverOpenDay + 1);
 			}
 			// 计算结束时间
 			int d = duration.applyAsInt(activityConfig);
@@ -299,5 +269,5 @@ public abstract class ActivityBase {
 	 */
 	@Deprecated
 	public void checkRefreshActivity() {
-	};
+	}
 }

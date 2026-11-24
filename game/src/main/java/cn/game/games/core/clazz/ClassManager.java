@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.game.games.net.game.module.activity.ActivityType;
+import cn.game.games.net.cross.activity.CrossActivityBase;
 import cn.game.games.net.game.module.activity.ActivityBase;
+import cn.game.games.net.game.module.activity.PlayerActivityBase;
 import cn.game.games.net.game.module.quest.AbstractCondition;
 import cn.game.games.net.game.module.quest.ConditionType;
 import cn.game.protocol.generated.enume.ActivityTypeEnum;
@@ -21,6 +23,8 @@ import cn.game.util.reflect.ClassHelper;
 public class ClassManager {
     private static ClassManager instance = new ClassManager();
     private final Map<Integer, Class<? extends AbstractCondition>> conditionClass = new HashMap<>();
+    private final Map<Integer, Class<? extends PlayerActivityBase>> playerActivityClass = new HashMap<>();
+    private final Map<Integer, Class<? extends ActivityBase>> serverActivityClass = new HashMap<>();
     private final Map<Integer, Class<? extends ActivityBase>> activityClass = new HashMap<>();
 
     // 缓存所有Condition实例，饿汉式加载
@@ -88,7 +92,6 @@ public class ClassManager {
             newInstance = clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return newInstance;
@@ -102,45 +105,117 @@ public class ClassManager {
     }
 
     /** 
-     * 初始化活动类class
+     * 初始化活动类class，区分玩家侧活动与服务器侧活动双桶注册
      */
     private void initActivityClass() {
+        playerActivityClass.clear();
+        serverActivityClass.clear();
         activityClass.clear();
         Set<Class<? extends ActivityBase>> subclasses = ClassHelper
-                .findSubclasses(ActivityBase.class.getPackageName(), ActivityBase.class);
+                .findSubclasses("cn.game.games", ActivityBase.class);
         for (Class<? extends ActivityBase> c : subclasses) {
+            if (java.lang.reflect.Modifier.isAbstract(c.getModifiers()) || c == CrossActivityBase.class) {
+                continue;
+            }
             ActivityType annotation = c.getAnnotation(ActivityType.class);
             if (annotation == null) {
                 throw new IllegalArgumentException(c.getName() + " 没有配置ActivityType注解");
             }
             ActivityTypeEnum type = annotation.type();
-            if (activityClass.containsKey(type.ID)) {
-                throw new IllegalArgumentException(
-                        MessageFormat.format("class[{0}] 配置了重复的ActivityType注解 [{1}]，已经在[{2}]里配置了", c.getName(), type,
-                                activityClass.get(type.ID)));
+            if (PlayerActivityBase.class.isAssignableFrom(c)) {
+                @SuppressWarnings("unchecked")
+                Class<? extends PlayerActivityBase> playerClass = (Class<? extends PlayerActivityBase>) c;
+                if (playerActivityClass.containsKey(type.ID)) {
+                    throw new IllegalArgumentException(
+                            MessageFormat.format("Player activity class[{0}] 配置了重复的ActivityType注解 [{1}]，已经在[{2}]里配置了", c.getName(), type,
+                                    playerActivityClass.get(type.ID)));
+                }
+                playerActivityClass.put(type.ID, playerClass);
+                activityClass.put(type.ID, c);
+            } else {
+                if (serverActivityClass.containsKey(type.ID)) {
+                    throw new IllegalArgumentException(
+                            MessageFormat.format("Server activity class[{0}] 配置了重复的ActivityType注解 [{1}]，已经在[{2}]里配置了", c.getName(), type,
+                                    serverActivityClass.get(type.ID)));
+                }
+                serverActivityClass.put(type.ID, c);
+                if (!activityClass.containsKey(type.ID)) {
+                    activityClass.put(type.ID, c);
+                }
             }
-            activityClass.put(type.ID, c);
         }
+    }
+
+    public boolean hasPlayerActivityClass(ActivityTypeEnum type) {
+        return type != null && playerActivityClass.containsKey(type.ID);
+    }
+
+    public boolean hasPlayerActivityClass(int type) {
+        return playerActivityClass.containsKey(type);
+    }
+
+    public boolean hasServerActivityClass(ActivityTypeEnum type) {
+        return type != null && serverActivityClass.containsKey(type.ID);
+    }
+
+    public boolean hasServerActivityClass(int type) {
+        return serverActivityClass.containsKey(type);
+    }
+
+    public Class<? extends PlayerActivityBase> getPlayerActivityClass(ActivityTypeEnum type) {
+        return type == null ? null : playerActivityClass.get(type.ID);
+    }
+
+    public Class<? extends PlayerActivityBase> getPlayerActivityClass(int type) {
+        return playerActivityClass.get(type);
+    }
+
+    public Class<? extends ActivityBase> getServerActivityClass(ActivityTypeEnum type) {
+        return type == null ? null : serverActivityClass.get(type.ID);
+    }
+
+    public Class<? extends ActivityBase> getServerActivityClass(int type) {
+        return serverActivityClass.get(type);
     }
 
     public Class<? extends ActivityBase> getActivityClass(int type) {
         return activityClass.get(type);
     }
 
-    public ActivityBase createActivityClassInstance(int type) {
-        ActivityBase newInstance = null;
+    public PlayerActivityBase createPlayerActivityClassInstance(int type) {
         try {
-            Class<? extends ActivityBase> clazz = activityClass.get(type);
+            Class<? extends PlayerActivityBase> clazz = playerActivityClass.get(type);
             if (clazz == null) {
-                throw new IllegalArgumentException("ActivityClass is null, activity type : " + type);
+                throw new IllegalArgumentException("PlayerActivityClass is null, activity type : " + type);
             }
-            newInstance = clazz.getDeclaredConstructor().newInstance();
+            return clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
                 | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return newInstance;
+    }
+
+    public ActivityBase createServerActivityClassInstance(int type) {
+        try {
+            Class<? extends ActivityBase> clazz = serverActivityClass.get(type);
+            if (clazz == null) {
+                throw new IllegalArgumentException("ServerActivityClass is null, activity type : " + type);
+            }
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ActivityBase createActivityClassInstance(int type) {
+        if (playerActivityClass.containsKey(type)) {
+            return createPlayerActivityClassInstance(type);
+        }
+        if (serverActivityClass.containsKey(type)) {
+            return createServerActivityClassInstance(type);
+        }
+        throw new IllegalArgumentException("ActivityClass is null, activity type : " + type);
     }
 
     public List<Class<?>> scanClassesWithAnnotation(String packageName, Class<? extends Annotation> annotation) {
