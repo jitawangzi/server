@@ -207,6 +207,8 @@ public class GmPlatformOptimizationTest {
 
 		Assertions.assertTrue(GmSecurityPolicy.isRoleAllowedForAction(GmRole.READONLY, GmSecurityTier.OPS_SAFE, "gm.inspect"));
 		Assertions.assertFalse(GmSecurityPolicy.isRoleAllowedForAction(GmRole.READONLY, GmSecurityTier.OPS_SAFE, "gm.flushAndColdReload"));
+		Assertions.assertTrue(GmSecurityPolicy.isRoleAllowedForAction(GmRole.READONLY, GmSecurityTier.OPS_SAFE, "custom.readAction", true),
+				"@GmAction(readOnly = true) 应当显式授权 READONLY 角色");
 		Assertions.assertFalse(GmSecurityPolicy.isRoleAllowedForAction(GmRole.READONLY, GmSecurityTier.DEV_TEST_ONLY, "mail.send"));
 		Assertions.assertTrue(GmSecurityPolicy.isRoleAllowedForAction(GmRole.OPERATOR, GmSecurityTier.OPS_SAFE, "gm.flushAndColdReload"));
 		Assertions.assertFalse(GmSecurityPolicy.isRoleAllowedForAction(GmRole.OPERATOR, GmSecurityTier.OPS_REPAIR, "ops.repair"));
@@ -314,10 +316,46 @@ public class GmPlatformOptimizationTest {
 		boolean foundVip = currDiffs.stream().anyMatch(d -> "_scalars.vipLevel".equals(d.get("path")) && Integer.valueOf(9).equals(d.get("after")));
 		Assertions.assertTrue(foundVip, "与 __CURRENT__ 对比必须实时捕捉当前内存中最新字段变动");
 
-		// 验证 GmDispatcher 元动作注册完整
+		// 验证 GmDispatcher 元动作注册完整 & dryRun 强拦截不支持演练的指令
 		GmDispatcher dispatcher = GmDispatcher.getInstance();
 		Assertions.assertTrue(dispatcher.hasCommand("gm.snapshot.diff"));
 		Assertions.assertTrue(dispatcher.hasCommand("gm.audit.list"));
+
+		if (!dispatcher.hasCommand("player.setLevel")) {
+			dispatcher.registerBean(new cn.game.games.net.game.gm.command.PlayerGm());
+		}
+		int beforeLv = testPlayer.getData().getLevel();
+		GmResult dryReject = dispatcher.dispatchAction("player.setLevel", TEST_PLAYER_ID, Map.of("level", 99), null, true);
+		Assertions.assertFalse(dryReject.isOk(), "不支持 dryRun 的指令传入 dryRun=true 必须拒绝执行");
+		Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), dryReject.getErrorCode());
+		Assertions.assertEquals(beforeLv, testPlayer.getData().getLevel(), "dryRun 拦截后玩家状态绝不能被修改");
+
+		// 验证 FeatureWorkbenchService 通用动作收录 gm.inspect
+		if (!dispatcher.hasCommand("gm.inspect")) {
+			dispatcher.registerBean(new PlayerInspectService());
+		}
+		Map<String, Object> workbenchCatalog = new cn.game.games.net.game.gm.web.FeatureWorkbenchService().buildCatalog("");
+		List<Map<String, Object>> commonActions = (List<Map<String, Object>>) workbenchCatalog.get("commonActions");
+		boolean hasGmInspect = commonActions != null
+				&& commonActions.stream().anyMatch(a -> "gm.inspect".equals(a.get("id")));
+		Assertions.assertTrue(hasGmInspect, "FeatureWorkbenchService commonActions 必须收录 gm.inspect");
+
+		// 验证 OpsRepairService 安全参数解析与认证操作人透传
+		cn.game.games.net.game.gm.repair.OpsRepairService repairSvc = cn.game.games.net.game.gm.repair.OpsRepairService.getInstance();
+		cn.game.games.net.game.gm.repair.OpsRepairService.setAuthenticatedOperator("http_alice");
+		try {
+			GmResult badParamRes = repairSvc.execute("tdlv", TEST_PLAYER_ID, "{\"level\":\"abc\"}", "bad param test", true, "spoofed_user");
+			Assertions.assertFalse(badParamRes.isOk(), "非数字字符串参数应返回可控业务错误而非 ClassCastException");
+			Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), badParamRes.getErrorCode());
+
+			GmResult okRepairRes = repairSvc.execute("recalcPower", TEST_PLAYER_ID, "{}", "valid dryRun test", true, "spoofed_user");
+			Assertions.assertTrue(okRepairRes.isOk());
+			List<Map<String, Object>> repairLogs = repairSvc.auditLog(0, 10);
+			Assertions.assertFalse(repairLogs.isEmpty());
+			Assertions.assertEquals("http_alice", repairLogs.get(0).get("operator"), "修数审计操作人应优先取 HTTP 认证身份");
+		} finally {
+			cn.game.games.net.game.gm.repair.OpsRepairService.clearAuthenticatedOperator();
+		}
 	}
 
 	/**

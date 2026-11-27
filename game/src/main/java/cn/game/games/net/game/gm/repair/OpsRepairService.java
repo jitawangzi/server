@@ -88,8 +88,32 @@ public class OpsRepairService {
 	public static final String PROP_AUDIT_FILE = "gm.repair.auditFile";
 	public static final String DEFAULT_AUDIT_FILE = "logs/ops-repair-audit.jsonl";
 	private static final int MAX_IN_MEMORY_AUDIT_LOGS = 200;
+	private static final ThreadLocal<String> AUTHENTICATED_OPERATOR = new ThreadLocal<>();
 
 	private static volatile OpsRepairService instance;
+
+	public static void setAuthenticatedOperator(String operator) {
+		if (operator != null && !operator.isBlank()) {
+			AUTHENTICATED_OPERATOR.set(operator.trim());
+		} else {
+			AUTHENTICATED_OPERATOR.remove();
+		}
+	}
+
+	public static void clearAuthenticatedOperator() {
+		AUTHENTICATED_OPERATOR.remove();
+	}
+
+	private String resolveEffectiveOperator(String paramOperator) {
+		String authOp = AUTHENTICATED_OPERATOR.get();
+		if (authOp != null && !authOp.isBlank()) {
+			return authOp;
+		}
+		if (paramOperator != null && !paramOperator.isBlank()) {
+			return paramOperator.trim();
+		}
+		return "system";
+	}
 
 	private final ConcurrentLinkedDeque<Map<String, Object>> inMemoryAuditLogs = new ConcurrentLinkedDeque<>();
 	private final ConcurrentHashMap<Long, ReentrantLock> processLocks = new ConcurrentHashMap<>();
@@ -133,6 +157,10 @@ public class OpsRepairService {
 		if (prop != null && !prop.isBlank()) {
 			return Paths.get(prop.trim());
 		}
+		if (System.getProperty("surefire.test.class.path") != null
+				|| System.getProperty("surefire.real.class.path") != null) {
+			return Paths.get(System.getProperty("java.io.tmpdir"), "ops-repair-audit-surefire.jsonl");
+		}
 		return Paths.get(DEFAULT_AUDIT_FILE);
 	}
 
@@ -148,10 +176,7 @@ public class OpsRepairService {
 				(player, params) -> {
 					DevelopModule dev = player.getDevelopModule();
 					int oldLevel = dev.getHeavenlyDaoLevel();
-					int targetLevel = oldLevel;
-					if (params.containsKey("level")) {
-						targetLevel = ((Number) params.get("level")).intValue();
-					}
+					int targetLevel = parseIntParam(params, "level", oldLevel, false);
 					if (targetLevel <= 0) {
 						throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "天道等级必须大于0: " + targetLevel);
 					}
@@ -175,7 +200,7 @@ public class OpsRepairService {
 				List.of("QuestModule"),
 				(player, params) -> {
 					QuestModule qm = player.getQuestModule();
-					int targetQuestId = params.containsKey("questId") ? ((Number) params.get("questId")).intValue() : 0;
+					int targetQuestId = parseIntParam(params, "questId", 0, false);
 					int fixCount = 0;
 					if (targetQuestId > 0) {
 						Quest q = qm.get(targetQuestId);
@@ -216,8 +241,8 @@ public class OpsRepairService {
 				(player, params) -> {
 					BattleModule bm = player.getBattleModule();
 					int fixed = 0;
-					if (params.containsKey("highestBattleId")) {
-						int newHighest = ((Number) params.get("highestBattleId")).intValue();
+					if (params.containsKey("highestBattleId") && params.get("highestBattleId") != null) {
+						int newHighest = parseIntParam(params, "highestBattleId", 0, true);
 						bm.setMainBattleHighest(newHighest);
 						fixed++;
 					}
@@ -255,8 +280,8 @@ public class OpsRepairService {
 				true,
 				List.of("ItemModule", "CurrencyModule"),
 				(player, params) -> {
-					int configId = ((Number) params.get("configId")).intValue();
-					long count = ((Number) params.get("count")).longValue();
+					int configId = parseIntParam(params, "configId", 0, true);
+					long count = parseLongParam(params, "count", 0L, true);
 					if (count <= 0) {
 						return "扣除数量非正数，跳过扣除";
 					}
@@ -278,10 +303,7 @@ public class OpsRepairService {
 				false,
 				List.of(),
 				(player, params) -> {
-					String methodName = (String) params.get("methodName");
-					if (methodName == null || methodName.isBlank()) {
-						throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "methodName 不能为空");
-					}
+					String methodName = parseStringParam(params, "methodName", true);
 					DataFixManager dfm = DataFixManager.getInstance();
 					try {
 						Method method = DataFixManager.class.getMethod(methodName);
@@ -310,7 +332,7 @@ public class OpsRepairService {
 				}));
 	}
 
-	@GmAction(name = "list", description = "列出所有受控具名修数任务元数据", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "repair.list")
+	@GmAction(name = "list", description = "列出所有受控具名修数任务元数据", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "repair.list")
 	public List<Map<String, Object>> list() {
 		List<Map<String, Object>> results = new ArrayList<>();
 		for (RepairOperator op : operators.values()) {
@@ -362,13 +384,73 @@ public class OpsRepairService {
 		}
 
 		boolean online = PlayerManager.getInstance().isOnline(playerId);
+		String effectiveOperator = resolveEffectiveOperator(operator);
 		String traceId = UUID.randomUUID().toString();
 
 		if (online) {
-			return executeOnline(op, playerId, parsedParams, reason, dryRun, operator, traceId);
+			return executeOnline(op, playerId, parsedParams, reason, dryRun, effectiveOperator, traceId);
 		} else {
-			return executeOffline(op, playerId, parsedParams, reason, dryRun, operator, traceId);
+			return executeOffline(op, playerId, parsedParams, reason, dryRun, effectiveOperator, traceId);
 		}
+	}
+
+	private int parseIntParam(Map<String, Object> params, String key, int defaultValue, boolean required) {
+		Object raw = params != null ? params.get(key) : null;
+		if (raw == null) {
+			if (required) {
+				throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "缺少必填整数参数: " + key);
+			}
+			return defaultValue;
+		}
+		if (raw instanceof Number n) {
+			return n.intValue();
+		}
+		String str = String.valueOf(raw).trim();
+		if (str.isEmpty()) {
+			if (required) {
+				throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "整数参数不能为空: " + key);
+			}
+			return defaultValue;
+		}
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "参数 " + key + " 必须为合法整数: " + raw);
+		}
+	}
+
+	private long parseLongParam(Map<String, Object> params, String key, long defaultValue, boolean required) {
+		Object raw = params != null ? params.get(key) : null;
+		if (raw == null) {
+			if (required) {
+				throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "缺少必填长整数参数: " + key);
+			}
+			return defaultValue;
+		}
+		if (raw instanceof Number n) {
+			return n.longValue();
+		}
+		String str = String.valueOf(raw).trim();
+		if (str.isEmpty()) {
+			if (required) {
+				throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "长整数参数不能为空: " + key);
+			}
+			return defaultValue;
+		}
+		try {
+			return Long.parseLong(str);
+		} catch (NumberFormatException e) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "参数 " + key + " 必须为合法长整数: " + raw);
+		}
+	}
+
+	private String parseStringParam(Map<String, Object> params, String key, boolean required) {
+		Object raw = params != null ? params.get(key) : null;
+		String val = raw != null ? String.valueOf(raw).trim() : "";
+		if (required && val.isEmpty()) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, key + " 不能为空");
+		}
+		return val;
 	}
 
 	private GmResult executeOnline(RepairOperator op, long playerId, Map<String, Object> params, String reason, boolean dryRun, String operator, String traceId) {
@@ -457,6 +539,19 @@ public class OpsRepairService {
 					}
 				});
 			}
+		} catch (LogicException le) {
+			int code = le.getErrorCode();
+			String errorName = String.valueOf(code);
+			for (ErrorMsgEnum item : ErrorMsgEnum.values()) {
+				if (item.getId() == code) {
+					errorName = item.name();
+					break;
+				}
+			}
+			String msg = le.getErrorMessage() != null && !le.getErrorMessage().isEmpty() ? le.getErrorMessage() : le.getMessage();
+			log.warn("修数算子参数或业务校验失败 repairId={}, playerId={}, code={}, msg={}", op.repairId, playerId, code, msg);
+			writeAudit(traceId, operator, reason, op.repairId, playerId, isOnline, dryRun, params, false, "参数/业务错误: " + msg, Collections.emptyList());
+			return GmResult.fail(code, errorName, "修数算子执行失败: " + msg);
 		} catch (Throwable t) {
 			log.error("修数算子执行业务异常 repairId={}, playerId={}", op.repairId, playerId, t);
 			writeAudit(traceId, operator, reason, op.repairId, playerId, isOnline, dryRun, params, false, "异常: " + t.getMessage(), Collections.emptyList());
@@ -570,7 +665,7 @@ public class OpsRepairService {
 		}
 	}
 
-	@GmAction(name = "auditLog", description = "查询修数审计日志", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "repair.auditLog playerId=1001 limit=20")
+	@GmAction(name = "auditLog", description = "查询修数审计日志", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "repair.auditLog playerId=1001 limit=20")
 	public List<Map<String, Object>> auditLog(
 			@GmParam(name = "playerId", description = "玩家ID过滤（0表示不过滤）", defaultValue = "0") long playerId,
 			@GmParam(name = "limit", description = "返回条数限制", defaultValue = "50") int limit) {
@@ -605,7 +700,7 @@ public class OpsRepairService {
 		data.put("groupCount", groupCount);
 		data.put("elapsedMs", elapsedMs);
 
-		writeAudit(UUID.randomUUID().toString(), "system", "热更重扫", "rescan", 0, false, false, Collections.emptyMap(), true, "重扫动作数: " + actionCount, Collections.emptyList());
+		writeAudit(UUID.randomUUID().toString(), resolveEffectiveOperator(null), "热更重扫", "rescan", 0, false, false, Collections.emptyMap(), true, "重扫动作数: " + actionCount, Collections.emptyList());
 
 		return GmResult.success("热更重扫完成", data);
 	}

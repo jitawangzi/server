@@ -68,6 +68,10 @@ public class VirtualClockService {
 		if (envVal != null && !envVal.isBlank()) {
 			return Paths.get(envVal.trim());
 		}
+		if (System.getProperty("surefire.test.class.path") != null
+				|| System.getProperty("surefire.real.class.path") != null) {
+			return Paths.get(System.getProperty("java.io.tmpdir"), "virtual-clock-surefire.properties");
+		}
 		return Paths.get("logs/virtual-clock.properties");
 	}
 

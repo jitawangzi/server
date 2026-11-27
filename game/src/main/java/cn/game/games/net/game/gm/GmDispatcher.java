@@ -280,6 +280,7 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 					actionAnno.dryRunSupported(),
 					actionAnno.sideEffects(),
 					actionAnno.idempotent(),
+					actionAnno.readOnly(),
 					actionAnno.example(),
 					Collections.unmodifiableList(paramSchemas));
 			RegisteredAction registered = new RegisteredAction(bean, method, actionAnno, schema, paramSpecs);
@@ -561,6 +562,12 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 				log.warn("GM聊天权限校验失败 cmd={}, playerId={}, traceId={}", action.schema.getId(), playerId, traceId, e);
 				return finalizeResult(toErrorResult(e), traceId, startNanos, dryRun);
 			}
+		}
+		if (dryRun && !action.schema.isDryRunSupported()) {
+			return finalizeResult(
+					GmResult.fail(ErrorMsgEnum.request_parameter_error,
+							"该 GM 指令不支持 dryRun 演练模式，已拒绝执行以防误改数据: " + action.schema.getId()),
+					traceId, startNanos, true);
 		}
 
 		boolean requiresPlayer = action.schema.getScope() == GmScope.PLAYER || action.needsPlayer;
@@ -1009,13 +1016,13 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 	@GmGroup(name = "gm", description = "GM平台元信息与Schema目录")
 	private final class GmMetaActions {
 
-		@GmAction(name = "schema", description = "获取按当前RunMode过滤后的GM指令Schema目录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "gm.schema")
+		@GmAction(name = "schema", description = "获取按当前RunMode过滤后的GM指令Schema目录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "gm.schema")
 		public GmSchemaCatalog schema(
 				@GmParam(description = "可选分组过滤", required = false) String group) {
 			return getSchemaCatalog(GmSecurityPolicy.currentRunMode(), group);
 		}
 
-		@GmAction(name = "snapshot.diff", description = "对比两个命名快照或对比快照与当前玩家状态的字段差异", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, idempotent = true, example = "gm.snapshot.diff base=qa_1 target=__CURRENT__")
+		@GmAction(name = "snapshot.diff", description = "对比两个命名快照或对比快照与当前玩家状态的字段差异", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, idempotent = true, readOnly = true, example = "gm.snapshot.diff base=qa_1 target=__CURRENT__")
 		public Map<String, Object> snapshotDiff(
 				Player player,
 				@GmParam(name = "base", description = "基准快照名称", defaultValue = "qa_quick") String base,
@@ -1024,7 +1031,7 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 			return PlayerSnapshotService.getInstance().diffSnapshots(player, base, target, modules);
 		}
 
-		@GmAction(name = "audit.list", description = "查询最近GM控制台操作审计日志", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "gm.audit.list limit=50")
+		@GmAction(name = "audit.list", description = "查询最近GM控制台操作审计日志", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "gm.audit.list limit=50")
 		public Map<String, Object> auditList(
 				@GmParam(name = "operator", description = "操作人过滤", required = false) String operator,
 				@GmParam(name = "keyword", description = "动作或端点关键字", required = false) String keyword,

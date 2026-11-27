@@ -135,7 +135,20 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerDeleteRequest_77000052 req = (GmPlayerDeleteRequest_77000052) o;
 		GmPlayerDeleteResponse_77000053 resp = GmPlayerDeleteResponse_77000053.getDefaultInstance();
 
-		TestHelper.deletePlayerData(Long.parseLong(req.getPlayerId()));
+		if (GmSecurityPolicy.currentRunMode().isProduction()) {
+			log.warn("生产环境禁止通过0x77协议删除玩家数据: playerId={}", req.getPlayerId());
+			client.sendProtocol(resp, ErrorMsgEnum.production_gm_not_allow.getId());
+			return;
+		}
+		long playerId;
+		try {
+			playerId = Long.parseLong(req.getPlayerId().trim());
+		} catch (Exception e) {
+			log.warn("0x77 playerDelete playerId 非法: {}", req.getPlayerId(), e);
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
+		TestHelper.deletePlayerData(playerId);
 		client.sendProtocol(resp);
 
 	}
@@ -145,7 +158,14 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerRenameResponse_77000051 resp = GmPlayerRenameResponse_77000051.getDefaultInstance();
 		String playerIdString = req.getPlayerId();
 		String newName = req.getName();
-		long playerId = Long.parseLong(playerIdString);
+		long playerId;
+		try {
+			playerId = Long.parseLong(playerIdString.trim());
+		} catch (Exception e) {
+			log.warn("0x77 rename playerId 非法: {}", playerIdString, e);
+			client.sendProtocol(resp, ErrorMsgEnum.request_parameter_error.getId());
+			return;
+		}
 		Player me = PlayerManager.getInstance().getPlayer(client.getPlayerId());
 		GameServerInterface gameServerInterface = GameServer.getInstance().getGameServerInterface(DistributedObjectType.PLAYER, playerId);
 		Future<?> renameFuture = gameServerInterface.rename(playerId, newName);
@@ -331,20 +351,37 @@ public class GmHandler extends GmBaseHandler {
 			sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "删除邮件");
 			return;
 		}
-		req.getUidList().forEach(mailId -> {
-			DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, Integer.parseInt(mailId)).onSuccess(r -> {
-				if (r != null && MailHelper.removeGlobalMail(Integer.getInteger(mailId))) {
+		List<Integer> mailIds = new ArrayList<>(req.getUidCount());
+		for (String rawMailId : req.getUidList()) {
+			if (StringUtils.isEmpty(rawMailId)) {
+				sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_error, "删除邮件");
+				return;
+			}
+			try {
+				mailIds.add(Integer.parseInt(rawMailId.trim()));
+			} catch (NumberFormatException e) {
+				log.warn("0x77 delGmMail mailId 非法: {}", rawMailId, e);
+				sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_error, "删除邮件");
+				return;
+			}
+		}
+		List<Future<?>> futures = new ArrayList<>(mailIds.size());
+		for (int mailId : mailIds) {
+			Future<?> future = DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, mailId).onSuccess(r -> {
+				if (r != null && MailHelper.removeGlobalMail(mailId)) {
 					// 该邮件是全服邮件, 通知其他节点删除该邮件
-//                            GameServer.getInstance().getCrossGameServerInterfaceSync().notifyBroadcastDelGlobalGmMail(Integer.parseInt(mailId));
 					VxHolder.broadcastRemoteServer(ServerType.Game,
-							ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(Integer.parseInt(mailId)).build());
+							ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(mailId).build());
 				}
-				sendAndRecordOpt(client, req, res.build(), "删除邮件");
-			}).onFailure(e -> {
-				e.printStackTrace();
-				sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "删除邮件");
 			});
-		});
+			futures.add(future);
+		}
+		Future.all(futures)
+				.onSuccess(v -> sendAndRecordOpt(client, req, res.build(), "删除邮件"))
+				.onFailure(e -> {
+					log.error("0x77 delGmMail 删除邮件失败: mailIds={}", mailIds, e);
+					sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.unknown, "删除邮件");
+				});
 	}
 
 	protected void playerInfo(NetClient client, Object message) {
@@ -352,7 +389,17 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerResponse_77000022.Builder response = GmPlayerResponse_77000022.newBuilder();
 		String channel = request.getChannel();
 		String name = request.getName();
-		SimplePlayer searchPlayer = searchPlayerForInfo(name, request.getPlayerIdBytes().isEmpty() ? 0 : Long.parseLong(request.getPlayerId()));
+		long pid = 0L;
+		if (!request.getPlayerIdBytes().isEmpty()) {
+			try {
+				pid = Long.parseLong(request.getPlayerId().trim());
+			} catch (Exception e) {
+				log.warn("0x77 playerInfo playerId 非法: {}", request.getPlayerId(), e);
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_error, "查询玩家ID非法");
+				return;
+			}
+		}
+		SimplePlayer searchPlayer = searchPlayerForInfo(name, pid);
 		if (searchPlayer != null) {
 			response.setPlayer(searchPlayer.toGmPlayerInfo());
 		}
@@ -408,6 +455,7 @@ public class GmHandler extends GmBaseHandler {
 
 	private void shutdown(NetClient client, Object message) {
 		CompletableFuture.runAsync(() -> {
+			log.warn("收到0x77 GM停服指令: operatorPlayerId={}, runMode={}", client != null ? client.getPlayerId() : 0L, GmSecurityPolicy.currentRunMode());
 			System.exit(0);
 		});
 	}
@@ -437,27 +485,45 @@ public class GmHandler extends GmBaseHandler {
 		} else {
 			unblockTime = request.getEndTime();
 		}
+		if (request.getPlayerIdCount() <= 0) {
+			sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_null, "封号");
+			return;
+		}
+		List<Long> targetPids = new ArrayList<>(request.getPlayerIdCount());
+		for (String rawPlayerId : request.getPlayerIdList()) {
+			if (StringUtils.isEmpty(rawPlayerId)) {
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_error, "封号");
+				return;
+			}
+			try {
+				targetPids.add(Long.parseLong(rawPlayerId.trim()));
+			} catch (NumberFormatException e) {
+				log.warn("0x77 forbidAccount playerId 非法: {}", rawPlayerId, e);
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_error, "封号");
+				return;
+			}
+		}
 		List<Long> pids = new ArrayList<>();
 		VxHolder.vertx.executeBlocking(() -> {
-			request.getPlayerIdList().forEach(playerId -> {
+			boolean allSucceeded = true;
+			for (long playerId : targetPids) {
 				ForbidAccount forbidAccount = PlayerManager.getInstance()
-						.forbidAccount(Long.parseLong(playerId), reason, unblockTime * 1000L + "", type);
+						.forbidAccount(playerId, reason, unblockTime * 1000L + "", type);
 				if (forbidAccount != null) {
-					sendAndRecordOpt(client, request, response.build(), "封号");
 					pids.add(forbidAccount.getPlayerId());
 					if (request.getEndTime() < 0) {// 希望修复永久封停不可用问题，同时对账号附带清榜效果
-						RankService.getInstance().removeRankAsync(Long.parseLong(playerId));
+						RankService.getInstance().removeRankAsync(playerId);
 					}
 				} else {
-					sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
+					allSucceeded = false;
 				}
-				if (PlayerManager.getInstance().isForbidAccount(Long.parseLong(playerId))) {
-					Player optPlayer = PlayerManager.getInstance().getPlayer(Long.parseLong(playerId));
+				if (PlayerManager.getInstance().isForbidAccount(playerId)) {
+					Player optPlayer = PlayerManager.getInstance().getPlayer(playerId);
 					if (optPlayer != null) {
-						GameClientManager.getInstance().logout(Long.parseLong(playerId), LogoutType.GMKick);
+						GameClientManager.getInstance().logout(playerId, LogoutType.GMKick);
 					}
 				}
-			});
+			}
 			// 通知其他game节点添加封号记录
 			if (!pids.isEmpty()) {
 				VxHolder.broadcastRemoteServer(ServerType.Game,
@@ -468,7 +534,16 @@ public class GmHandler extends GmBaseHandler {
 								.setType(request.getType())
 								.build());
 			}
-			return null;
+			return allSucceeded;
+		}).onSuccess(allSucceeded -> {
+			if (Boolean.TRUE.equals(allSucceeded)) {
+				sendAndRecordOpt(client, request, response.build(), "封号");
+			} else {
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
+			}
+		}).onFailure(e -> {
+			log.error("0x77 forbidAccount 执行失败: pids={}", targetPids, e);
+			sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.unknown, reason);
 		});
 	}
 
@@ -476,20 +551,33 @@ public class GmHandler extends GmBaseHandler {
 	private void unblockAccount(NetClient client, Object message) {
 		GmAccountUnblockRequest_77000007 request = (GmAccountUnblockRequest_77000007) message;
 		GmAccountUnblockResponse_77000008.Builder response = GmAccountUnblockResponse_77000008.newBuilder();
-		List<Long> pids = new ArrayList<>();
-		request.getPlayerIdList().forEach(playerId -> {
-			PlayerManager.getInstance().unblockAccount(Long.parseLong(playerId));
-			pids.add(Long.parseLong(playerId));
-			sendAndRecordOpt(client, request, response.build(), "解封账号");
-		});
+		if (request.getPlayerIdCount() <= 0) {
+			sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_null, "解封账号");
+			return;
+		}
+		List<Long> pids = new ArrayList<>(request.getPlayerIdCount());
+		for (String rawPlayerId : request.getPlayerIdList()) {
+			if (StringUtils.isEmpty(rawPlayerId)) {
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_error, "解封账号");
+				return;
+			}
+			try {
+				pids.add(Long.parseLong(rawPlayerId.trim()));
+			} catch (NumberFormatException e) {
+				log.warn("0x77 unblockAccount playerId 非法: {}", rawPlayerId, e);
+				sendAndRecordOpt(client, request, response.build(), ErrorMsgEnum.request_parameter_error, "解封账号");
+				return;
+			}
+		}
+		for (long pid : pids) {
+			PlayerManager.getInstance().unblockAccount(pid);
+		}
 		// 通知其他game节点删除封号记录
 		if (!pids.isEmpty()) {
 			VxHolder.broadcastRemoteServer(ServerType.Game,
 					ServerMsg.NotifyGmDelForbidAccountRequest_7d000056.newBuilder().addAllPids(pids).build());
-//      GameServer.getInstance()
-//          .getCrossGameServerInterfaceSync()
-//          .notifyBroadcastDelForbidAccount(pids);
 		}
+		sendAndRecordOpt(client, request, response.build(), "解封账号");
 	}
 
 	/** 踢玩家下线 */
@@ -497,7 +585,22 @@ public class GmHandler extends GmBaseHandler {
 		GmPlayerLogoutRequest_77000009 request = (GmPlayerLogoutRequest_77000009) message;
 		GmPlayerLogoutResponse_7700000a.Builder response = GmPlayerLogoutResponse_7700000a.newBuilder();
 
-		long playerId = StringUtils.isEmpty(request.getPlayerId()) ? 0 : Long.parseLong(request.getPlayerId());
+		if (StringUtils.isEmpty(request.getPlayerId())) {
+			client.sendProtocol(response, ErrorMsgEnum.request_parameter_null.ID);
+			return;
+		}
+		long playerId;
+		try {
+			playerId = Long.parseLong(request.getPlayerId().trim());
+		} catch (NumberFormatException e) {
+			log.warn("0x77 playerLogout playerId 非法: {}", request.getPlayerId(), e);
+			client.sendProtocol(response, ErrorMsgEnum.request_parameter_error.ID);
+			return;
+		}
+		if (playerId <= 0) {
+			client.sendProtocol(response, ErrorMsgEnum.request_parameter_error.ID);
+			return;
+		}
 		PlayerHelper.submitRecovery(playerId, () -> GameClientManager.getInstance().logout(playerId, LogoutType.GMKick))
                 .onSuccess(result -> client.sendProtocol(response))
                 .onFailure(failure -> { log.warn("GM退出保存失败 playerId={}", playerId, failure);

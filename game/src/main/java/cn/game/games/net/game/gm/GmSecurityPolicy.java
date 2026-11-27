@@ -277,6 +277,19 @@ public final class GmSecurityPolicy {
 	 * @return true表示允许
 	 */
 	public static boolean isRoleAllowedForAction(GmRole role, GmSecurityTier tier, String actionId) {
+		return isRoleAllowedForAction(role, tier, actionId, false);
+	}
+
+	/**
+	 * 判断指定 RBAC 角色是否有权执行目标安全等级、动作 ID 及显式只读标记的 GM 指令
+	 *
+	 * @param role 角色
+	 * @param tier 动作安全等级
+	 * @param actionId 动作规范 ID
+	 * @param readOnly `@GmAction(readOnly = true)` 显式只读标记
+	 * @return true表示允许
+	 */
+	public static boolean isRoleAllowedForAction(GmRole role, GmSecurityTier tier, String actionId, boolean readOnly) {
 		if (role == null || tier == null) {
 			return false;
 		}
@@ -289,9 +302,12 @@ public final class GmSecurityPolicy {
 		if (role == GmRole.OPERATOR) {
 			return tier == GmSecurityTier.OPS_SAFE;
 		}
-		// READONLY：仅放行明确只读的白名单或只读后缀动作，且必须是 OPS_SAFE
+		// READONLY：仅放行显式 readOnly=true 或明确只读白名单/后缀的 OPS_SAFE 动作
 		if (tier != GmSecurityTier.OPS_SAFE) {
 			return false;
+		}
+		if (readOnly) {
+			return true;
 		}
 		String norm = actionId != null ? actionId.trim().toLowerCase(Locale.ROOT) : "";
 		if (READONLY_WHITELIST_ACTIONS.contains(norm)) {

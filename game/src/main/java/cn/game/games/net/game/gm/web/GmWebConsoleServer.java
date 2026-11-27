@@ -244,7 +244,8 @@ public class GmWebConsoleServer {
 			String resolvedActionKey = resolveActionKey(action, cmd);
 			GmActionSchema actionSchema = resolvedActionKey != null ? GmDispatcher.getInstance().getActionSchema(resolvedActionKey) : null;
 			if (actionSchema != null) {
-				if (!GmSecurityPolicy.isRoleAllowedForAction(principal.getRole(), actionSchema.getSecurity(), actionSchema.getId())) {
+				if (!GmSecurityPolicy.isRoleAllowedForAction(principal.getRole(), actionSchema.getSecurity(),
+						actionSchema.getId(), actionSchema.isReadOnly())) {
 					String denyMsg = "当前角色 [" + principal.getRole().name() + "] 无权执行动作: " + actionSchema.getId();
 					GmAuditLogService.getInstance().record(principal, "/gm-console/api/execute", actionSchema.getId(),
 							playerId, dryRun, args, false, ErrorMsgEnum.gm_not.getId(), denyMsg, 0, 0L);
@@ -268,15 +269,20 @@ public class GmWebConsoleServer {
 					: (resolvedActionKey != null ? resolvedActionKey : "");
 
 			effectiveVertx.executeBlocking(() -> {
-				GmResult result;
-				if (action != null && !action.isBlank()) {
-					result = GmDispatcher.getInstance().dispatchAction(action.trim(), playerId, args, traceId, dryRun);
-				} else if (cmd != null && !cmd.isBlank()) {
-					result = GmDispatcher.getInstance().dispatchHttpText(playerId, cmd.trim(), traceId, dryRun);
-				} else {
-					result = GmResult.fail(ErrorMsgEnum.request_parameter_error, "action 与 cmd 不能同时为空");
+				cn.game.games.net.game.gm.repair.OpsRepairService.setAuthenticatedOperator(principal.getOperator());
+				try {
+					GmResult result;
+					if (action != null && !action.isBlank()) {
+						result = GmDispatcher.getInstance().dispatchAction(action.trim(), playerId, args, traceId, dryRun);
+					} else if (cmd != null && !cmd.isBlank()) {
+						result = GmDispatcher.getInstance().dispatchHttpText(playerId, cmd.trim(), traceId, dryRun);
+					} else {
+						result = GmResult.fail(ErrorMsgEnum.request_parameter_error, "action 与 cmd 不能同时为空");
+					}
+					return result;
+				} finally {
+					cn.game.games.net.game.gm.repair.OpsRepairService.clearAuthenticatedOperator();
 				}
-				return result;
 			}, false).onComplete(ar -> {
 				if (ar.succeeded()) {
 					GmResult res = ar.result();

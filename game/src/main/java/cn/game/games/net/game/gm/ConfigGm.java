@@ -40,7 +40,7 @@ public class ConfigGm extends AbstractGm {
 	 *
 	 * @return 配表清单
 	 */
-	@GmAction(name = "tables", description = "查询所有已加载静态配表目录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL)
+	@GmAction(name = "tables", description = "查询所有已加载静态配表目录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true)
 	public Map<String, Object> tables() {
 		return Map.of("schemaVersion", GmResult.SCHEMA_VERSION, "tables", configQueryService.listTables());
 	}
@@ -54,7 +54,7 @@ public class ConfigGm extends AbstractGm {
 	 * @param pageSize 每页条数（默认50，上限200）
 	 * @return 结构化查询结果
 	 */
-	@GmAction(name = "list", description = "分页与条件查询静态配表", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL)
+	@GmAction(name = "list", description = "分页与条件查询静态配表", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true)
 	public GmResult list(
 			@GmParam(description = "配置表名称", example = "ShopItem") String table,
 			@GmParam(description = "JSON格式字段等值过滤", required = false) String filterJson,
@@ -86,7 +86,7 @@ public class ConfigGm extends AbstractGm {
 	 * @param key 字符串键（GlobalConst使用）
 	 * @return 查询结果
 	 */
-	@GmAction(name = "get", description = "按ID或键查询单条配置记录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL)
+	@GmAction(name = "get", description = "按ID或键查询单条配置记录", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true)
 	public GmResult get(
 			@GmParam(description = "配置表名称", example = "ShopItem") String table,
 			@GmParam(description = "配置数值ID", required = false) Integer id,

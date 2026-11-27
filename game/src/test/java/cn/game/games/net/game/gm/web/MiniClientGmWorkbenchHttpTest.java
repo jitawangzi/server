@@ -602,6 +602,7 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertTrue(indexHtml.contains("diffSnapshots"));
 		Assertions.assertTrue(indexHtml.contains("getOpsHealth"));
 		Assertions.assertTrue(indexHtml.contains("validateConfigs"));
+		Assertions.assertTrue(indexHtml.contains("dryRunSupported"));
 
 		HttpResponse<String> wbResp = httpClient.send(
 				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/workbench.js")).GET().build(),
@@ -691,6 +692,17 @@ public class MiniClientGmWorkbenchHttpTest {
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
 		Assertions.assertEquals(403, unknownCmdDeny.statusCode(), "非 ADMIN 执行未注册命令应采用 fail-closed 拦截");
+
+		HttpResponse<String> dryRunRejectHttp = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/execute"))
+						.header("X-GM-Token", "adm_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"action\":\"player.time.status\",\"dryRun\":true}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		JsonNode dryRejectJson = MAPPER.readTree(dryRunRejectHttp.body());
+		Assertions.assertFalse(dryRejectJson.get("ok").asBoolean(), "不支持 dryRun 的指令传入 dryRun=true 必须拒绝");
+		Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), dryRejectJson.get("errorCode").asInt());
 
 		for (String writePath : new String[] {
 				"/gm-console/api/proto/invoke",

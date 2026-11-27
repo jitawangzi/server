@@ -59,7 +59,7 @@ public class ActivityGm extends AbstractGm {
 	 * @param onlyActive 是否仅显示当前非 NONE 状态的活动
 	 * @return 活动状态总表
 	 */
-	@GmAction(name = "status", description = "查询全服活动状态总表（含全局/跨服/玩家个人状态）", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "activity.status playerId=0 onlyActive=false")
+	@GmAction(name = "status", description = "查询全服活动状态总表（含全局/跨服/玩家个人状态）", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "activity.status playerId=0 onlyActive=false")
 	public Map<String, Object> status(
 			@GmParam(description = "可选目标在线玩家ID", required = false, defaultValue = "0") long playerId,
 			@GmParam(description = "按活动ID或类型名关键字过滤", required = false, defaultValue = "") String keyword,

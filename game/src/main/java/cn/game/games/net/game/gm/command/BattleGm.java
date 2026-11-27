@@ -95,7 +95,10 @@ public class BattleGm extends AbstractGm {
 		BattleModule battleModule = player.getBattleModule();
 		ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 		if (battle != null) {
-			BattleConfig battleConfig = BattleManager.instance().get(id);
+			BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+			if (battleConfig == null) {
+				throw new LogicException(ErrorMsgEnum.config_data_not_found.ID, "失落真经关卡配置不存在: " + id);
+			}
 			if (battleConfig.preBattle > 0) {
 				battle.setCompleteBattleId(battleConfig.preBattle);
 			}
@@ -112,7 +115,10 @@ public class BattleGm extends AbstractGm {
 		BattleModule battleModule = player.getBattleModule();
 		MengYanMiJingBattle battle = battleModule.getBattle(DungeonTypeEnum.MengYanMiJing);
 		if (battle != null) {
-			BattleConfig battleConfig = BattleManager.instance().get(id);
+			BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+			if (battleConfig == null) {
+				throw new LogicException(ErrorMsgEnum.config_data_not_found.ID, "梦魇秘境关卡配置不存在: " + id);
+			}
 			if (battleConfig.preBattle > 0) {
 				battle.setCompleteBattleId(battleConfig.preBattle);
 				battle.setMaxBattleId(battleConfig.preBattle);
@@ -129,7 +135,10 @@ public class BattleGm extends AbstractGm {
 		ShiLuoZhenJingBattle battle = battleModule.getBattle(DungeonTypeEnum.ShiLuoZhenJing);
 		if (battle != null) {
 			if (id > 0) {
-				BattleConfig battleConfig = BattleManager.instance().get(id);
+				BattleConfig battleConfig = BattleManager.instance().getNullable(id);
+				if (battleConfig == null) {
+					throw new LogicException(ErrorMsgEnum.config_data_not_found.ID, "失落真经关卡配置不存在: " + id);
+				}
 				if (battleConfig.preBattle > 0) {
 					battle.setCompleteBattleId(battleConfig.preBattle);
 					battle.setHistoryMaxBattleId(battleConfig.preBattle);

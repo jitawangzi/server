@@ -37,9 +37,7 @@ public class HeroGm extends AbstractGm {
 	public void herolv(Player player,
 			@GmParam(description = "英雄配置ID", required = false, defaultValue = "0") int id,
 			@GmParam(description = "目标等级", required = false, defaultValue = "0") int level) {
-		int size = player.getHeroModule().list().size();
-		for (int i = 0; i < size; i++) {
-			var hero = player.getHeroModule().list().stream().toList().get(i);
+		for (var hero : new java.util.ArrayList<>(player.getHeroModule().list())) {
 			if (hero.getConfigId() == id) {
 				hero.setLevel(level);
 			}

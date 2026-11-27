@@ -19,6 +19,7 @@ public class GmActionSchema {
 	private boolean dryRunSupported;
 	private String sideEffects;
 	private boolean idempotent;
+	private boolean readOnly;
 	private String example;
 	private List<GmParamSchema> params;
 
@@ -27,12 +28,18 @@ public class GmActionSchema {
 
 	public GmActionSchema(String id, String group, String action, List<String> aliases, String description,
 			GmSecurityTier security, GmScope scope, boolean dryRunSupported, List<GmParamSchema> params) {
-		this(id, group, action, aliases, description, security, scope, dryRunSupported, "", false, "", params);
+		this(id, group, action, aliases, description, security, scope, dryRunSupported, "", false, false, "", params);
 	}
 
 	public GmActionSchema(String id, String group, String action, List<String> aliases, String description,
 			GmSecurityTier security, GmScope scope, boolean dryRunSupported, String sideEffects,
 			boolean idempotent, String example, List<GmParamSchema> params) {
+		this(id, group, action, aliases, description, security, scope, dryRunSupported, sideEffects, idempotent, false, example, params);
+	}
+
+	public GmActionSchema(String id, String group, String action, List<String> aliases, String description,
+			GmSecurityTier security, GmScope scope, boolean dryRunSupported, String sideEffects,
+			boolean idempotent, boolean readOnly, String example, List<GmParamSchema> params) {
 		this.id = id;
 		this.group = group;
 		this.action = action;
@@ -43,6 +50,7 @@ public class GmActionSchema {
 		this.dryRunSupported = dryRunSupported;
 		this.sideEffects = sideEffects;
 		this.idempotent = idempotent;
+		this.readOnly = readOnly;
 		this.example = example;
 		this.params = params;
 	}
@@ -89,6 +97,10 @@ public class GmActionSchema {
 
 	public boolean isIdempotent() {
 		return idempotent;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
 	public String getExample() {

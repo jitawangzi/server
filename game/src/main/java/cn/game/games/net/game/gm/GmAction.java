@@ -38,6 +38,9 @@ public @interface GmAction {
 	/** 是否幂等 */
 	boolean idempotent() default false;
 
+	/** 是否为严格只读安全动作（用于 READONLY 角色显式授权，替代动作名后缀推断） */
+	boolean readOnly() default false;
+
 	/** 使用示例 */
 	String example() default "";
 }

@@ -3,7 +3,10 @@ package cn.game.games.net.game.gm.command;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.exception.LogicException;
@@ -32,6 +35,7 @@ import cn.game.protocol.protobuf.BaseMsg.AssetInfo;
 import cn.game.protocol.protobuf.RewardMsg.GoodsUpdatePush_55003501;
 import cn.game.protocol.protobuf.RewardMsg.RewardInfo;
 import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
+import io.vertx.core.Future;
 
 /**
  * 道具与资源发放/扣除GM指令分组
@@ -41,6 +45,8 @@ import cn.game.protocol.protobuf.RewardMsg.RewardPush_55000501;
 @Component
 @GmGroup(name = "item", description = "道具与资源调试指令")
 public class ItemGm extends AbstractGm {
+
+	private static final Logger log = LoggerFactory.getLogger(ItemGm.class);
 
 	@GmAction(name = "item", description = "添加道具或资源", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
 	public void item(Player player,
@@ -57,7 +63,15 @@ public class ItemGm extends AbstractGm {
 			@GmParam(description = "扣除数量", required = false, defaultValue = "0") int count) {
 		long pid = targetPlayerId == 0 ? player.getPlayerId() : targetPlayerId;
 		GameServerInterface playerProxy = ServerHelper.getPlayerProxy(pid);
-		playerProxy.delResources(pid, id, count);
+		Future<?> future = playerProxy.delResources(pid, id, count);
+		if (future != null) {
+			try {
+				future.toCompletionStage().toCompletableFuture().get(5, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				log.warn("等待 item.itemdel 远端扣除结果异常: playerId={}, itemId={}, count={}", pid, id, count, e);
+				throw new LogicException(ErrorMsgEnum.unknown.ID, "扣除资源失败: " + e.getMessage());
+			}
+		}
 	}
 
 	/**

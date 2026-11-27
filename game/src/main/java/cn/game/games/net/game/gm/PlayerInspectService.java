@@ -84,6 +84,7 @@ public class PlayerInspectService {
 			scope = GmScope.PLAYER,
 			sideEffects = "无副作用，仅只读内存快照",
 			idempotent = true,
+			readOnly = true,
 			example = "gm.inspect modules=MailModule,FriendModule scope=player")
 	public GmResult inspect(
 			Player player,

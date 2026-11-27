@@ -624,7 +624,7 @@
           </div>
           <div class="form-group" style="display:flex; align-items:center; gap:8px;">
             <input type="checkbox" id="chkDryRun" style="width:auto;" />
-            <label for="chkDryRun" style="margin:0; cursor:pointer;">DryRun (预演不落库)</label>
+            <label id="lblDryRun" for="chkDryRun" style="margin:0; cursor:pointer;">DryRun (预演不落库)</label>
           </div>
           <div id="dynamicParams"></div>
           <button class="btn" onclick="executeSchemaAction()" style="width:100%; justify-content:center; margin-top:12px;">执行指令</button>
@@ -1231,6 +1231,21 @@
       if (!action) return;
 
       document.getElementById("lblActionDesc").textContent = action.description || "";
+      const chkDryRun = document.getElementById("chkDryRun");
+      const lblDryRun = document.getElementById("lblDryRun");
+      if (chkDryRun) {
+        const supportsDryRun = Boolean(action.dryRunSupported);
+        chkDryRun.disabled = !supportsDryRun;
+        if (!supportsDryRun) {
+          chkDryRun.checked = false;
+        }
+        if (lblDryRun) {
+          lblDryRun.textContent = supportsDryRun
+            ? "DryRun (预演不落库)"
+            : "DryRun (该指令不支持预演)";
+          lblDryRun.style.color = supportsDryRun ? "var(--text-main)" : "var(--text-muted)";
+        }
+      }
       if (action.parameters && action.parameters.length > 0) {
         action.parameters.forEach(p => {
           const div = document.createElement("div");
