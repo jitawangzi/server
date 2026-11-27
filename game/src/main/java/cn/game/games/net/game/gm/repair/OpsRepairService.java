@@ -352,6 +352,16 @@ public class OpsRepairService {
 		return results;
 	}
 
+	public GmResult execute(
+			String repairId,
+			long playerId,
+			String params,
+			String reason,
+			boolean dryRun,
+			String operator) {
+		return execute(repairId, playerId, params, reason, dryRun, operator, null);
+	}
+
 	@GmAction(name = "execute", description = "执行受控具名修数任务（支持 dryRun 零副作用验证）", security = GmSecurityTier.OPS_REPAIR, scope = GmScope.GLOBAL, dryRunSupported = true, example = "repair.execute repairId=tdlv playerId=1001 reason='一致性修复' dryRun=true")
 	public GmResult execute(
 			@GmParam(name = "repairId", description = "具名修数算子ID", required = true) String repairId,
@@ -359,7 +369,10 @@ public class OpsRepairService {
 			@GmParam(name = "params", description = "修数入参JSON", defaultValue = "{}") String params,
 			@GmParam(name = "reason", description = "修数原因（必填）", required = true) String reason,
 			@GmParam(name = "dryRun", description = "是否演练模式（仅生成Diff不持久化）", defaultValue = "false") boolean dryRun,
-			@GmParam(name = "operator", description = "操作人标识", defaultValue = "system") String operator) {
+			@GmParam(name = "operator", description = "操作人标识", defaultValue = "system") String operator,
+			GmExecContext context) {
+
+		boolean effectiveDryRun = dryRun || (context != null && context.isDryRun());
 
 		if (repairId == null || repairId.isBlank()) {
 			return GmResult.fail(ErrorMsgEnum.request_parameter_error, "repairId 不能为空");
@@ -371,7 +384,7 @@ public class OpsRepairService {
 		if (reason == null || reason.isBlank()) {
 			return GmResult.fail(ErrorMsgEnum.request_parameter_error, "修数原因 reason 不能为空");
 		}
-		if (dryRun && !op.supportsDryRun) {
+		if (effectiveDryRun && !op.supportsDryRun) {
 			return GmResult.fail(ErrorMsgEnum.request_parameter_error, "算子 " + repairId + " 不支持 dryRun 演练模式");
 		}
 
@@ -388,9 +401,9 @@ public class OpsRepairService {
 		String traceId = UUID.randomUUID().toString();
 
 		if (online) {
-			return executeOnline(op, playerId, parsedParams, reason, dryRun, effectiveOperator, traceId);
+			return executeOnline(op, playerId, parsedParams, reason, effectiveDryRun, effectiveOperator, traceId);
 		} else {
-			return executeOffline(op, playerId, parsedParams, reason, dryRun, effectiveOperator, traceId);
+			return executeOffline(op, playerId, parsedParams, reason, effectiveDryRun, effectiveOperator, traceId);
 		}
 	}
 

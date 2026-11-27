@@ -330,7 +330,7 @@ public class GmPlatformOptimizationTest {
 		Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), dryReject.getErrorCode());
 		Assertions.assertEquals(beforeLv, testPlayer.getData().getLevel(), "dryRun 拦截后玩家状态绝不能被修改");
 
-		// 验证 FeatureWorkbenchService 通用动作收录 gm.inspect
+		// 验证 FeatureWorkbenchService 通用动作同时收录 gm.inspect 与 PlayerGm 的 time.* 等前缀动作
 		if (!dispatcher.hasCommand("gm.inspect")) {
 			dispatcher.registerBean(new PlayerInspectService());
 		}
@@ -338,15 +338,48 @@ public class GmPlatformOptimizationTest {
 		List<Map<String, Object>> commonActions = (List<Map<String, Object>>) workbenchCatalog.get("commonActions");
 		boolean hasGmInspect = commonActions != null
 				&& commonActions.stream().anyMatch(a -> "gm.inspect".equals(a.get("id")));
+		boolean hasTimeStatus = commonActions != null
+				&& commonActions.stream().anyMatch(a -> "time.status".equals(a.get("action")) || "player.time.status".equals(a.get("id")));
 		Assertions.assertTrue(hasGmInspect, "FeatureWorkbenchService commonActions 必须收录 gm.inspect");
+		Assertions.assertTrue(hasTimeStatus, "FeatureWorkbenchService commonActions 必须收录 time.status");
 
-		// 验证 OpsRepairService 安全参数解析与认证操作人透传
+		// 验证 ProtoGm 显式 readOnly=true 与 READONLY 角色放行
+		if (!dispatcher.hasCommand("proto.catalog")) {
+			dispatcher.registerBean(new ProtoGm(null));
+		}
+		GmActionSchema catalogSchema = dispatcher.getActionSchema("proto.catalog");
+		GmActionSchema errorsSchema = dispatcher.getActionSchema("proto.errors");
+		Assertions.assertNotNull(catalogSchema);
+		Assertions.assertNotNull(errorsSchema);
+		Assertions.assertTrue(catalogSchema.isReadOnly(), "proto.catalog 应标记 readOnly=true");
+		Assertions.assertTrue(errorsSchema.isReadOnly(), "proto.errors 应标记 readOnly=true");
+		Assertions.assertTrue(GmSecurityPolicy.isRoleAllowedForAction(
+				GmRole.READONLY, catalogSchema.getSecurity(), catalogSchema.getId(), catalogSchema.isReadOnly()));
+		Assertions.assertTrue(GmSecurityPolicy.isRoleAllowedForAction(
+				GmRole.READONLY, errorsSchema.getSecurity(), errorsSchema.getId(), errorsSchema.isReadOnly()));
+
+		// 验证 OpsRepairService 安全参数解析、认证操作人透传及顶层 GmExecContext.isDryRun 合并
 		cn.game.games.net.game.gm.repair.OpsRepairService repairSvc = cn.game.games.net.game.gm.repair.OpsRepairService.getInstance();
+		if (!dispatcher.hasCommand("repair.execute")) {
+			dispatcher.registerBean(repairSvc);
+		}
 		cn.game.games.net.game.gm.repair.OpsRepairService.setAuthenticatedOperator("http_alice");
 		try {
 			GmResult badParamRes = repairSvc.execute("tdlv", TEST_PLAYER_ID, "{\"level\":\"abc\"}", "bad param test", true, "spoofed_user");
 			Assertions.assertFalse(badParamRes.isOk(), "非数字字符串参数应返回可控业务错误而非 ClassCastException");
 			Assertions.assertEquals(ErrorMsgEnum.request_parameter_error.getId(), badParamRes.getErrorCode());
+
+			int tdLvBefore = testPlayer.getDevelopModule().getHeavenlyDaoLevel();
+			GmResult topDryRunRes = dispatcher.dispatchAction(
+					"repair.execute",
+					TEST_PLAYER_ID,
+					Map.of("repairId", "tdlv", "playerId", TEST_PLAYER_ID, "params", "{\"level\":99}", "reason", "top-level dryRun merge"),
+					null,
+					true);
+			Assertions.assertTrue(topDryRunRes.isOk(), "顶层 dryRun=true 调用 repair.execute 应成功预演: " + topDryRunRes.getSummary());
+			Assertions.assertTrue(topDryRunRes.isDryRun());
+			Assertions.assertEquals(tdLvBefore, testPlayer.getDevelopModule().getHeavenlyDaoLevel(),
+					"顶层 dryRun=true（参数未单独传 dryRun）必须走演练分支，不能真实修改玩家数据");
 
 			GmResult okRepairRes = repairSvc.execute("recalcPower", TEST_PLAYER_ID, "{}", "valid dryRun test", true, "spoofed_user");
 			Assertions.assertTrue(okRepairRes.isOk());

@@ -176,11 +176,16 @@ public class FeatureWorkbenchService {
 		List<Map<String, Object>> allPanels = GmConsolePanelLoader.listPanels(runMode);
 
 		for (Map<String, Object> act : allGmActions) {
-			String actionId = String.valueOf(act.getOrDefault("id", act.get("action")));
+			String actionId = String.valueOf(act.getOrDefault("id", ""));
+			String actionName = String.valueOf(act.getOrDefault("action", ""));
 			if (actionId.startsWith("time.")
 					|| actionId.startsWith("gm.inspect")
 					|| actionId.startsWith("gm.trace.")
-					|| actionId.startsWith("gm.resetModule")) {
+					|| actionId.startsWith("gm.resetModule")
+					|| actionName.startsWith("time.")
+					|| actionName.startsWith("gm.inspect")
+					|| actionName.startsWith("gm.trace.")
+					|| actionName.startsWith("gm.resetModule")) {
 				commonActions.add(act);
 			}
 		}

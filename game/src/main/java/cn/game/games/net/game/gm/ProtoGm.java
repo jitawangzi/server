@@ -28,7 +28,7 @@ public class ProtoGm extends AbstractGm {
 	 * @param keyword 可选协议名或ID关键字
 	 * @return 协议目录数据
 	 */
-	@GmAction(name = "catalog", description = "查询服务端Protobuf协议目录与结构", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL)
+	@GmAction(name = "catalog", description = "查询服务端Protobuf协议目录与结构", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true)
 	public Map<String, Object> catalog(
 			@GmParam(description = "模块十六进制前缀，如0x77", required = false) String module,
 			@GmParam(description = "协议名或ID关键字", required = false) String keyword) {
@@ -41,7 +41,7 @@ public class ProtoGm extends AbstractGm {
 	 * @param keyword 可选关键字过滤
 	 * @return 错误码字典数据
 	 */
-	@GmAction(name = "errors", description = "查询服务端ErrorMsgEnum错误码字典", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL)
+	@GmAction(name = "errors", description = "查询服务端ErrorMsgEnum错误码字典", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, readOnly = true)
 	public Map<String, Object> errors(
 			@GmParam(description = "错误码ID、名称或说明关键字", required = false) String keyword) {
 		return protoCatalogService.listErrors(keyword);

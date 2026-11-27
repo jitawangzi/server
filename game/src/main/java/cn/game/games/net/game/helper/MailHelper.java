@@ -318,8 +318,12 @@ public class MailHelper {
 
 	}
 
-	public static boolean removeGlobalMail(Integer gmMailId) {
+	public static boolean removeGlobalMail(long gmMailId) {
 		return globalMailList.removeIf(gmMail -> gmMail.getId() == gmMailId);
+	}
+
+	public static boolean removeGlobalMail(Integer gmMailId) {
+		return gmMailId != null && removeGlobalMail(gmMailId.longValue());
 	}
 
 	public static List<GmMail> getGlobalMailList() {

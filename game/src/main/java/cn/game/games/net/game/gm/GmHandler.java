@@ -172,7 +172,14 @@ public class GmHandler extends GmBaseHandler {
 		renameFuture.onSuccess(r -> {
 			client.sendProtocol(resp);
 
-		}).onFailure(e -> me.handleFail(e));
+		}).onFailure(e -> {
+			if (me != null) {
+				me.handleFail(e);
+			} else {
+				log.warn("0x77 rename 失败且无操作者玩家上下文: playerId={}", playerId, e);
+				client.sendProtocol(resp, ErrorMsgEnum.unknown.getId());
+			}
+		});
 	}
 
 	private void serverStatus(NetClient client, Object o) {
@@ -351,14 +358,14 @@ public class GmHandler extends GmBaseHandler {
 			sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_null, "删除邮件");
 			return;
 		}
-		List<Integer> mailIds = new ArrayList<>(req.getUidCount());
+		List<Long> mailIds = new ArrayList<>(req.getUidCount());
 		for (String rawMailId : req.getUidList()) {
 			if (StringUtils.isEmpty(rawMailId)) {
 				sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_error, "删除邮件");
 				return;
 			}
 			try {
-				mailIds.add(Integer.parseInt(rawMailId.trim()));
+				mailIds.add(Long.parseLong(rawMailId.trim()));
 			} catch (NumberFormatException e) {
 				log.warn("0x77 delGmMail mailId 非法: {}", rawMailId, e);
 				sendAndRecordOpt(client, req, res.build(), ErrorMsgEnum.request_parameter_error, "删除邮件");
@@ -366,12 +373,16 @@ public class GmHandler extends GmBaseHandler {
 			}
 		}
 		List<Future<?>> futures = new ArrayList<>(mailIds.size());
-		for (int mailId : mailIds) {
+		for (long mailId : mailIds) {
 			Future<?> future = DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, mailId).onSuccess(r -> {
 				if (r != null && MailHelper.removeGlobalMail(mailId)) {
 					// 该邮件是全服邮件, 通知其他节点删除该邮件
-					VxHolder.broadcastRemoteServer(ServerType.Game,
-							ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(mailId).build());
+					if (mailId >= Integer.MIN_VALUE && mailId <= Integer.MAX_VALUE) {
+						VxHolder.broadcastRemoteServer(ServerType.Game,
+								ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId((int) mailId).build());
+					} else {
+						log.warn("0x77 delGmMail 全服邮件ID超出int32跨服广播协议范围，已完成本服删除但跳过跨服广播: mailId={}", mailId);
+					}
 				}
 			});
 			futures.add(future);
