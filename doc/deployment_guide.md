@@ -180,8 +180,8 @@ mvn package -DskipTests
   - `gm.http.port` / `GM_HTTP_PORT`：监听端口（默认 `18080`；**禁止**配置为 `17011`，该端口保留给测试运行身份接口 `/runtime-identity`）
   - `gm.http.host` / `GM_HTTP_HOST`：绑定网卡地址
   - `gm.http.requireAuth` / `GM_HTTP_REQUIRE_AUTH`：是否强制 Token 鉴权（生产默认 `true`）
-  - `gm.http.opsToken`（或 `gm.http.token`） / `GM_HTTP_OPS_TOKEN`：鉴权 Token（通过请求头 `X-GM-Token` 或 `Authorization` 传递）
-- **外部热重载面板目录**：`server/gm-console/panels/*.html`（如 `quick-test-panel.html`），修改 HTML 后刷新页面即时生效，详见 [dev-recipes.md](../.ai-workspace/context/dev-recipes.md) 第 5 节。
+  - `gm.http.opsToken`（或 `gm.http.token`） / `GM_HTTP_OPS_TOKEN`（或 `GM_HTTP_TOKEN`）：鉴权 Token（通过请求头 `X-GM-Token` 或 `Authorization` 传递；`.ai-workspace/scripts/run-live-module-acceptance.ps1` 同时兼容 `-GmToken` 参数与 `GM_OPS_TOKEN` / `GM_HTTP_OPS_TOKEN` / `GM_HTTP_TOKEN` 环境变量）
+- **外部热重载面板目录**：默认 `server/gm-console/panels/*.html`（如 `quick-test-panel.html`，可用 `-Dgm.http.panelsDir` / `GM_HTTP_PANELS_DIR` 覆盖，文件名须匹配 `^[a-zA-Z0-9_-]+\.html$`）。注意内置 `index.html` 与 `workbench.js` 会在启动后内存缓存，仅 `gm-console/panels/*.html` 支持免重启热重载，详见 [dev-recipes.md](../.ai-workspace/context/dev-recipes.md) 第 5 节。
 
 ---
 

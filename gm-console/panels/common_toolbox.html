@@ -1,0 +1,877 @@
+<!-- @gm-panel
+{
+  "id": "common_toolbox",
+  "title": "常用快捷 GM 工具箱",
+  "category": "通用工具",
+  "audience": ["QA", "DEV"],
+  "modules": ["player", "0x01", "item", "0x0b", "battle"],
+  "tags": ["超级账号", "道具搜索", "设资源", "设等级", "差1经验升级", "VIP", "跳关", "全功能", "邮件", "快照", "随机种子"],
+  "order": 1,
+  "summary": "全服通用高频快捷 GM 集合：一键超级账号、全功能解锁、等级/VIP与差1经验即升级、中文搜配表发/设道具与货币、各副本跳关、任务/英雄/邮件快捷操作、模块重置与快照冷重载。"
+}
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>常用快捷 GM 工具箱</title>
+  <style>
+    .tb-wrap { display: flex; flex-direction: column; gap: 14px; color: var(--text-main); }
+    .tb-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .tb-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .tb-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tb-tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .tb-tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tb-tab.active {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      border-color: var(--primary);
+    }
+    .tb-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .tb-kpi {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .tb-kpi-label { font-size: 0.74rem; color: var(--text-muted); margin-bottom: 2px; }
+    .tb-kpi-val { font-size: 0.98rem; font-weight: 700; color: var(--text-main); }
+    .tb-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+    .tb-subbox {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .tb-subbox h4 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--primary); }
+    .tb-btn-sm { padding: 4px 9px; font-size: 0.78rem; }
+    .tb-table-wrap { overflow-x: auto; max-height: 380px; border: 1px solid var(--border-color); border-radius: 6px; }
+    .tb-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .tb-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      text-align: left;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .tb-table td { padding: 6px 10px; border-bottom: 1px solid var(--row-border); vertical-align: middle; }
+    .tb-banner {
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-size: 0.83rem;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+    }
+    .tb-banner.ok { border-color: var(--success); background: var(--acceptance-bg); color: var(--success-text); }
+    .tb-banner.err { border-color: var(--danger-border); background: var(--danger-soft-bg); color: var(--danger-soft-text); }
+    .tb-banner.warn { border-color: var(--warning-border); background: var(--warning-soft-bg); color: var(--warning-text); }
+    .tb-mod-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .tb-mod-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="tb-wrap" id="commonToolboxRoot">
+    <!-- 顶部状态提示 -->
+    <div id="tbBanner" class="tb-banner">
+      🧰 欢迎使用常用快捷 GM 工具箱。先在顶部选择调试玩家（或点「➕ 测试登录」），所有操作均支持在底部「🔧 开发者诊断抽屉」回溯详情。
+    </div>
+
+    <!-- 实时玩家基础属性看板 -->
+    <div class="tb-card">
+      <div class="tb-title">
+        <span>👤 玩家实时核心状态</span>
+        <div class="tb-row">
+          <button class="btn tb-btn-sm" onclick="window.CommonToolbox.refreshState()">🔄 刷新玩家状态</button>
+          <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.super', '一键超级测试账号')">⚡ 一键超级账号</button>
+          <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.init', '拉满全部货币')">💰 拉满货币</button>
+          <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.openAllFunc', '解锁全部功能')">🔓 全功能解锁</button>
+          <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.newday', '个人跨天刷新')">🌅 个人跨天</button>
+        </div>
+      </div>
+      <div class="tb-kpi-grid">
+        <div class="tb-kpi"><div class="tb-kpi-label">玩家等级 / 经验</div><div class="tb-kpi-val" id="tbKpiLevel">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">VIP 等级 / 经验</div><div class="tb-kpi-val" id="tbKpiVip">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">元宝 (100001)</div><div class="tb-kpi-val" id="tbKpiDiamond">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">金币 (100002)</div><div class="tb-kpi-val" id="tbKpiGold">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">代金券 (100008)</div><div class="tb-kpi-val" id="tbKpiVouchers">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">体力 (100301)</div><div class="tb-kpi-val" id="tbKpiEnergy">--</div></div>
+        <div class="tb-kpi"><div class="tb-kpi-label">主线最高关卡</div><div class="tb-kpi-val" id="tbKpiMainBattle">--</div></div>
+      </div>
+    </div>
+
+    <!-- 功能子页签 -->
+    <div class="tb-card">
+      <div class="tb-tabs" id="tbTabs">
+        <button class="tb-tab active" data-tbtab="growth" onclick="window.CommonToolbox.switchTab('growth')">📈 等级 / VIP / 预设</button>
+        <button class="tb-tab" data-tbtab="resources" onclick="window.CommonToolbox.switchTab('resources')">💎 道具搜索与资源设置</button>
+        <button class="tb-tab" data-tbtab="battle" onclick="window.CommonToolbox.switchTab('battle')">⚔️ 副本与关卡进度</button>
+        <button class="tb-tab" data-tbtab="questmail" onclick="window.CommonToolbox.switchTab('questmail')">📜 任务 / 英雄 / 邮件</button>
+        <button class="tb-tab" data-tbtab="sandbox" onclick="window.CommonToolbox.switchTab('sandbox')">🛡️ 重置 / 快照 / 冷重载 / 随机</button>
+      </div>
+
+      <!-- Tab 1: 等级 / VIP / 预设 -->
+      <div id="tbPane_growth" style="margin-top:14px;">
+        <div class="tb-grid-2">
+          <!-- 玩家等级控制 -->
+          <div class="tb-subbox">
+            <h4>📈 玩家等级 & 升级边界模拟 (player.setLevel)</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+              支持直接设置目标等级，或把经验设为<b>当前等级最大经验 - 1</b>，再点「+1 玩家经验」即可完整走一遍真实升级、发奖、解锁功能链路。
+            </p>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <label style="margin:0; font-size:0.82rem;">目标等级:</label>
+              <input type="number" id="tbTargetLevel" value="20" min="1" style="width:90px; padding:5px 8px;" />
+              <label style="margin:0; font-size:0.82rem;">可选精确经验:</label>
+              <input type="number" id="tbTargetLevelExp" placeholder="留空按默认" style="width:110px; padding:5px 8px;" />
+            </div>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.setLevel(false, true)">设置目标等级</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setLevel(true, true)">设目标等级 + 差1经验升级</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setLevel(true, false)">🔥 当前等级差1经验升级</button>
+            </div>
+            <div class="tb-row">
+              <button class="btn tb-btn-sm" style="background:var(--success); color:#fff;" onclick="window.CommonToolbox.addAsset(100201, 1, '玩家经验')">➕ +1 玩家经验 (触发升级)</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addAsset(100201, 1000, '玩家经验')">+1000 经验</button>
+            </div>
+          </div>
+
+          <!-- VIP 等级控制 -->
+          <div class="tb-subbox">
+            <h4>👑 VIP 等级 & VIP 升级边界模拟 (player.setVip)</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+              直接设置 VIP 等级（0 起步），或将当前 VIP 经验设为<b>当前 VIP 等级最大经验 - 1</b>，再加 1 点 VIP 经验测试 VIP 升级流程。
+            </p>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <label style="margin:0; font-size:0.82rem;">目标 VIP:</label>
+              <input type="number" id="tbTargetVip" value="5" min="0" style="width:90px; padding:5px 8px;" />
+              <label style="margin:0; font-size:0.82rem;">可选精确经验:</label>
+              <input type="number" id="tbTargetVipExp" placeholder="留空按默认" style="width:110px; padding:5px 8px;" />
+            </div>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.setVip(false, true)">设置目标 VIP</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setVip(true, true)">设目标VIP + 差1经验升级</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setVip(true, false)">🔥 当前VIP差1经验升级</button>
+            </div>
+            <div class="tb-row">
+              <button class="btn tb-btn-sm" style="background:var(--success); color:#fff;" onclick="window.CommonToolbox.addAsset(100007, 1, 'VIP经验')">➕ +1 VIP经验 (触发升级)</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addAsset(100007, 500, 'VIP经验')">+500 VIP经验</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tb-subbox" style="margin-top:12px;">
+          <h4>⚡ 其他成长与账号预设</h4>
+          <div class="tb-row">
+            <label style="margin:0; font-size:0.82rem;">天道修为等级 (player.tdlv):</label>
+            <input type="number" id="tbTdlv" value="10" min="1" style="width:90px; padding:5px 8px;" />
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setTdlv()">设置天道修为</button>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.openAllFunc', '解锁全部功能')">🔓 一键解锁全部功能 (InitialUI)</button>
+            <button class="btn tb-btn-sm" onclick="window.CommonToolbox.runPreset('player.super', '一键超级测试号')">⚡ 一键超级测试号 (满资源+主线+Lv60+全功能)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 道具搜索与资源精确设置 -->
+      <div id="tbPane_resources" style="display:none; margin-top:14px;">
+        <div class="tb-subbox" style="margin-bottom:12px;">
+          <h4>💰 常用货币一键发 / 精确设置</h4>
+          <div class="tb-table-wrap" style="max-height:260px;">
+            <table class="tb-table">
+              <thead>
+                <tr><th>ID</th><th>货币名称</th><th>当前余额</th><th>快捷操作</th><th>精确设置目标值</th></tr>
+              </thead>
+              <tbody id="tbCurrencyTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tb-subbox">
+          <h4>🔍 全品类物品 2 级联动搜索与发放（支持全部物品大类配置表）</h4>
+          <div class="tb-row" style="margin-bottom:8px;">
+            <select id="tbGoodsCategory" style="min-width:220px; padding:6px 8px; font-size:0.82rem;" onchange="window.CommonToolbox.onGoodsCategoryChange()">
+              <option value="">-- 第1级：选择物品大类 --</option>
+            </select>
+            <input type="text" id="tbItemSearch" placeholder="按 ID、中文名或备注过滤当前大类..." style="width:240px; padding:6px 10px; font-size:0.82rem;" oninput="window.CommonToolbox.renderItemSearchTable()" />
+            <select id="tbGoodsItemSelect" style="flex:1; min-width:220px; padding:6px 8px; font-size:0.82rem;" onchange="window.CommonToolbox.onGoodsItemDropdownSelect()">
+              <option value="">-- 第2级：快速定位具体物品 --</option>
+            </select>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.loadGoodsCategories(true)">🔄 刷新目录</button>
+          </div>
+          <div class="tb-row" style="margin-bottom:10px; padding:8px 10px; background:var(--card-bg); border:1px solid var(--border-color); border-radius:6px;">
+            <span style="font-size:0.8rem; color:var(--text-muted);">直接按 ID 精确操作:</span>
+            <input type="number" id="tbDirectId" value="100001" placeholder="ID" style="width:110px; padding:5px 8px;" />
+            <input type="number" id="tbDirectCnt" value="100" placeholder="数量" style="width:96px; padding:5px 8px;" />
+            <button class="btn tb-btn-sm" onclick="window.CommonToolbox.directResourceOp('add')">➕ 发放</button>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.directResourceOp('set')">🎯 设为精确值</button>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.directResourceOp('del')">➖ 扣除</button>
+            <span id="tbGoodsCategoryHint" style="font-size:0.78rem; color:var(--text-muted); margin-left:6px;"></span>
+          </div>
+          <div class="tb-table-wrap">
+            <table class="tb-table">
+              <thead>
+                <tr><th>配置ID</th><th>名称 / 说明</th><th>类型 / 品质</th><th>操作</th></tr>
+              </thead>
+              <tbody id="tbItemSearchTbody">
+                <tr><td colspan="4" style="text-align:center; padding:18px; color:var(--text-muted);">正在准备全物品大类目录，请选择大类浏览任意配置 ID</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: 副本与关卡进度 -->
+      <div id="tbPane_battle" style="display:none; margin-top:14px;">
+        <div class="tb-grid-2">
+          <div class="tb-subbox">
+            <h4>🗺️ 主线通关进度 (battle.zxgk)</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">支持填第 N 关序号（如 10）或具体关卡 ID（如 110025），自动补齐前置章节通关并刷新功能开放。</p>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <input type="number" id="tbMainStage" value="15" style="width:120px; padding:5px 8px;" />
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.setMainStage()">设置主线进度</button>
+            </div>
+            <div class="tb-row">
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setMainStage(5)">第 5 关</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setMainStage(15)">第 15 关</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setMainStage(30)">第 30 关</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setMainStage(40)">第 40 关(满)</button>
+            </div>
+          </div>
+
+          <div class="tb-subbox">
+            <h4>🗼 其他副本进度跳关</h4>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <label style="margin:0; width:96px; font-size:0.8rem;">宝石塔/灵玉塔:</label>
+              <input type="number" id="tbLyId" value="10" placeholder="关卡ID" style="width:110px; padding:4px 8px;" />
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execBattle('battle.ly', { id: Number(document.getElementById('tbLyId').value) }, '灵玉塔跳关')">设置</button>
+            </div>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <label style="margin:0; width:96px; font-size:0.8rem;">灵山问禅层数:</label>
+              <input type="number" id="tbLingShan" value="10" placeholder="层数" style="width:110px; padding:4px 8px;" />
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execBattle('battle.lingshan', { floor: Number(document.getElementById('tbLingShan').value) }, '灵山问禅层数')">设置</button>
+            </div>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <label style="margin:0; width:96px; font-size:0.8rem;">失落真经:</label>
+              <input type="number" id="tbSlzjId" placeholder="关卡ID" style="width:100px; padding:4px 8px;" />
+              <input type="number" id="tbSlzjStage" value="1" placeholder="阶段" style="width:70px; padding:4px 8px;" />
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execBattle('battle.slzj', { id: Number(document.getElementById('tbSlzjId').value)||0, stage: Number(document.getElementById('tbSlzjStage').value)||0 }, '失落真经')">设置</button>
+            </div>
+            <div class="tb-row">
+              <label style="margin:0; width:96px; font-size:0.8rem;">梦魇秘境:</label>
+              <input type="number" id="tbMymjId" placeholder="关卡ID" style="width:110px; padding:4px 8px;" />
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execBattle('battle.mymj', { id: Number(document.getElementById('tbMymjId').value)||0 }, '梦魇秘境')">设置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: 任务 / 英雄 / 邮件 -->
+      <div id="tbPane_questmail" style="display:none; margin-top:14px;">
+        <div class="tb-grid-2">
+          <div class="tb-subbox">
+            <h4>📜 任务调试 (quest.*)</h4>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <input type="number" id="tbQuestId" placeholder="任务ID" style="width:120px; padding:5px 8px;" />
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.execPlayer('quest.finish', { id: Number(document.getElementById('tbQuestId').value) }, '完成任务')">完成任务</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('quest.accept', { id: Number(document.getElementById('tbQuestId').value) }, '开启任务')">开启</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('quest.reset', { id: Number(document.getElementById('tbQuestId').value) }, '重置任务')">重置</button>
+            </div>
+            <div class="tb-row">
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('quest.finishAll', { type: 0 }, '一键完成全部进行中任务')">✅ 一键完成全部进行中任务</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('quest.list', { type: 0 }, '查询进行中任务')">📋 查看进行中任务</button>
+            </div>
+          </div>
+
+          <div class="tb-subbox">
+            <h4>🦸 英雄调试 (hero.*)</h4>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <input type="number" id="tbHeroId" placeholder="英雄配置ID" style="width:110px; padding:5px 8px;" />
+              <input type="number" id="tbHeroVal" value="1" placeholder="数量或等级" style="width:100px; padding:5px 8px;" />
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.execPlayer('hero.hero', { id: Number(document.getElementById('tbHeroId').value), count: Number(document.getElementById('tbHeroVal').value)||1 }, '发放英雄')">发放英雄</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('hero.herolv', { id: Number(document.getElementById('tbHeroId').value), level: Number(document.getElementById('tbHeroVal').value)||1 }, '设英雄等级')">设为等级</button>
+            </div>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('hero.qingshen', {}, '刷新请神招募池')">🔄 刷新请神招募池</button>
+          </div>
+        </div>
+
+        <div class="tb-subbox" style="margin-top:12px;">
+          <h4>✉️ 测试邮件发放与清理 (mail.*)</h4>
+          <div class="tb-row" style="margin-bottom:8px;">
+            <input type="text" id="tbMailTitle" value="QA测试邮件" placeholder="标题" style="width:160px; padding:5px 8px;" />
+            <input type="text" id="tbMailContent" value="这是一封测试附件邮件" placeholder="正文" style="flex:1; min-width:180px; padding:5px 8px;" />
+            <input type="number" id="tbMailItemId" value="100001" placeholder="附件ID(0无)" style="width:110px; padding:5px 8px;" />
+            <input type="number" id="tbMailItemCnt" value="100" placeholder="附件数量" style="width:90px; padding:5px 8px;" />
+          </div>
+          <div class="tb-row">
+            <button class="btn tb-btn-sm" onclick="window.CommonToolbox.sendTestMail()">📨 发送测试邮件</button>
+            <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.execPlayer('mail.receive', { mailId: 0 }, '一键领取全部邮件')">🎁 一键领取全部附件</button>
+            <button class="btn btn-danger tb-btn-sm" onclick="window.CommonToolbox.execPlayer('mail.clear', {}, '清空玩家邮件')">🗑️ 清空邮件</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: 重置 / 快照 / 冷重载 / 可控随机 -->
+      <div id="tbPane_sandbox" style="display:none; margin-top:14px;">
+        <div class="tb-grid-2">
+          <div class="tb-subbox">
+            <h4>♻️ 定向模块数据重置 (gm.resetModule)</h4>
+            <div class="tb-mod-grid" id="tbResetModChips"></div>
+            <div class="tb-row">
+              <button class="btn btn-danger tb-btn-sm" onclick="window.CommonToolbox.resetCheckedModules()">重置已勾选模块</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.resetAllModules()">重置全部模块 (all)</button>
+            </div>
+          </div>
+
+          <div class="tb-subbox">
+            <h4>💾 命名快照 & 强制落盘冷重载</h4>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <input type="text" id="tbSnapName" value="qa_case_1" placeholder="快照名" style="width:150px; padding:5px 8px;" />
+              <button class="btn tb-btn-sm" onclick="window.CommonToolbox.saveNamedSnapshot()">💾 保存快照</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.restoreNamedSnapshot()">⏪ 回滚快照</button>
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.listSnapshots()">📋 快照列表</button>
+            </div>
+            <div class="tb-row" style="margin-bottom:8px;">
+              <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.coldReload()">🧊 强制落盘并从 DB 冷重载</button>
+            </div>
+            <div style="border-top:1px solid var(--row-border); padding-top:8px;">
+              <div style="font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">🎲 可控随机源 (复现抽卡/掉落概率 Bug)</div>
+              <div class="tb-row">
+                <input type="number" id="tbRngSeed" value="12345" style="width:110px; padding:4px 8px;" />
+                <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.seedRng()">固定种子</button>
+                <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.resetRng()">恢复默认随机</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 最近输出详情 -->
+      <details style="margin-top:14px;" open>
+        <summary style="cursor:pointer; font-size:0.82rem; color:var(--text-muted);">📋 最近操作返回详情</summary>
+        <pre id="tbLastOutput" style="margin-top:8px; max-height:220px; font-size:0.78rem;">等待操作...</pre>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const COMMON_ASSETS = [
+        { id: 100001, name: '元宝' },
+        { id: 100002, name: '金币' },
+        { id: 100003, name: '银币' },
+        { id: 100008, name: '代金券(直购)' },
+        { id: 100301, name: '体力' },
+        { id: 100004, name: '神威令' },
+        { id: 100005, name: '魂火' },
+        { id: 100006, name: '友情点' },
+        { id: 100009, name: '神通宝券' },
+        { id: 100010, name: '灵叶' },
+        { id: 100205, name: '通行证经验' },
+        { id: 100303, name: '游历体力' },
+        { id: 100704, name: '仙会徽章' },
+        { id: 100801, name: '龙渊舍利丹' },
+        { id: 101001, name: '凌霄莲花' }
+      ];
+
+      const RESET_MODULES = [
+        'CurrencyModule', 'ItemModule', 'ShopModule', 'MonthCardModule',
+        'HeroModule', 'BattleModule', 'QuestModule', 'MailModule',
+        'DevelopModule', 'ActivityModule', 'XianShiLiBaoModule', 'LimitedTimeGiftModule'
+      ];
+
+      const state = {
+        activeTab: 'growth',
+        inspectModules: null,
+        goodsCategories: [],
+        goodsCategoriesLoaded: false,
+        activeGoodsTypeId: 0,
+        goodsItemsByType: {},
+        itemRows: []
+      };
+
+      function esc(s) {
+        return window.GmConsole ? window.GmConsole.escapeHtml(s) : String(s == null ? '' : s);
+      }
+
+      function setBanner(html, level = '') {
+        const el = document.getElementById('tbBanner');
+        if (!el) return;
+        el.className = 'tb-banner' + (level ? ' ' + level : '');
+        el.innerHTML = html;
+      }
+
+      function showOutput(label, res) {
+        const pre = document.getElementById('tbLastOutput');
+        if (pre) pre.textContent = JSON.stringify(res, null, 2);
+        if (res && res.ok) {
+          setBanner(`✅ <b>${esc(label)}</b> 执行成功`, 'ok');
+          window.GmConsole.toast(`${label} 成功`, 'ok');
+        } else {
+          setBanner(`❌ <b>${esc(label)}</b> 失败: ${esc(res?.summary || res?.message || '未知错误')}`, 'err');
+          window.GmConsole.toast(`${label} 失败`, 'error');
+        }
+      }
+
+      function readMapValue(obj, key) {
+        if (!obj || typeof obj !== 'object') return 0;
+        const candidates = [obj.currencyMap, obj.expLevelMap, obj.map, obj];
+        for (const c of candidates) {
+          if (c && typeof c === 'object') {
+            if (c[key] != null) return c[key];
+            if (c[String(key)] != null) return c[String(key)];
+            if (c.map && c.map[String(key)] != null) return c.map[String(key)];
+          }
+        }
+        return 0;
+      }
+
+      function renderCurrencyTable() {
+        const tbody = document.getElementById('tbCurrencyTbody');
+        if (!tbody) return;
+        const curMod = state.inspectModules?.CurrencyModule || {};
+        tbody.innerHTML = COMMON_ASSETS.map(a => {
+          const bal = state.inspectModules ? readMapValue(curMod, a.id) : '--';
+          return `
+            <tr>
+              <td><code>${a.id}</code></td>
+              <td><b>${esc(a.name)}</b></td>
+              <td>${esc(bal)}</td>
+              <td>
+                <div class="tb-row">
+                  <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addAsset(${a.id}, 10000, '${esc(a.name)}')">+1万</button>
+                  <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addAsset(${a.id}, 100000, '${esc(a.name)}')">+10万</button>
+                  <button class="btn btn-danger tb-btn-sm" onclick="window.CommonToolbox.setAsset(${a.id}, 0, '${esc(a.name)}')">清零</button>
+                </div>
+              </td>
+              <td>
+                <div class="tb-row">
+                  <input type="number" id="tbSetCur_${a.id}" value="100" style="width:90px; padding:3px 6px; font-size:0.78rem;" />
+                  <button class="btn tb-btn-sm" onclick="window.CommonToolbox.setAsset(${a.id}, Number(document.getElementById('tbSetCur_${a.id}').value)||0, '${esc(a.name)}')">设为</button>
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
+      }
+
+      function renderResetModChips() {
+        const box = document.getElementById('tbResetModChips');
+        if (!box) return;
+        box.innerHTML = RESET_MODULES.map(m => `
+          <label class="tb-mod-chip">
+            <input type="checkbox" class="tb-reset-chk" value="${esc(m)}" style="width:auto;" />
+            <span>${esc(m)}</span>
+          </label>
+        `).join('');
+      }
+
+      function renderItemSearchTable() {
+        const tbody = document.getElementById('tbItemSearchTbody');
+        const selItem = document.getElementById('tbGoodsItemSelect');
+        if (!tbody) return;
+        const rows = state.itemRows || [];
+        if (rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:18px; color:var(--text-muted);">请选择上方物品大类（或点击「刷新目录」）以浏览对应配置表</td></tr>`;
+          if (selItem) selItem.innerHTML = `<option value="">-- 当前大类暂无数据 --</option>`;
+          return;
+        }
+        const kw = (document.getElementById('tbItemSearch')?.value || '').trim().toLowerCase();
+        const filtered = rows.filter(row => {
+          if (!kw) return true;
+          return `${row.id || ''} ${row.name || ''} ${row.subType || ''} ${row.qualityName || ''} ${row.note || ''}`.toLowerCase().includes(kw);
+        });
+
+        if (selItem) {
+          const dropList = filtered.slice(0, 300);
+          selItem.innerHTML = `<option value="">-- 第2级：快速定位 (${filtered.length} 项${filtered.length > 300 ? '，显示前300' : ''}) --</option>` + dropList.map(r => {
+            const tag = [r.qualityName, r.subType].filter(Boolean).join('/');
+            return `<option value="${Number(r.id)}">${Number(r.id)} - ${esc(r.name || '')}${tag ? ' [' + esc(tag) + ']' : ''}</option>`;
+          }).join('');
+        }
+
+        const shown = filtered.slice(0, 100);
+        if (shown.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:18px; color:var(--text-muted);">未匹配到配置条目</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = shown.map(r => {
+          const id = Number(r.id);
+          const title = r.name || ('物品#' + id);
+          const meta = [r.qualityName ? ('品质:' + r.qualityName) : '', r.subType || ''].filter(Boolean).join(' · ') || '-';
+          const noteHtml = r.note ? `<div style="font-size:0.74rem; color:var(--text-muted);">${esc(r.note)}</div>` : '';
+          const setBtns = r.canSet
+            ? `<button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.setItemById(${id}, 1)">设为1</button>
+               <button class="btn btn-danger tb-btn-sm" onclick="window.CommonToolbox.setItemById(${id}, 0)">清零</button>`
+            : `<span style="font-size:0.74rem; color:var(--text-muted); padding:0 4px;">仅发放</span>`;
+          return `
+            <tr>
+              <td><b>${id}</b></td>
+              <td><div>${esc(title)}</div>${noteHtml}</td>
+              <td><span style="color:var(--text-muted);">${esc(meta)}</span></td>
+              <td>
+                <div class="tb-row">
+                  <button class="btn tb-btn-sm" onclick="window.CommonToolbox.addItemById(${id}, 1)">+1</button>
+                  <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addItemById(${id}, 10)">+10</button>
+                  <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.addItemById(${id}, 100)">+100</button>
+                  ${setBtns}
+                  <button class="btn btn-secondary tb-btn-sm" onclick="window.CommonToolbox.fillDirectId(${id})">填入ID</button>
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
+      }
+
+      window.CommonToolbox = {
+        switchTab: function (tab) {
+          state.activeTab = tab;
+          document.querySelectorAll('#tbTabs .tb-tab').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-tbtab') === tab);
+          });
+          ['growth', 'resources', 'battle', 'questmail', 'sandbox'].forEach(k => {
+            const el = document.getElementById('tbPane_' + k);
+            if (el) el.style.display = (k === tab) ? 'block' : 'none';
+          });
+          if (tab === 'resources' && !state.goodsCategoriesLoaded) {
+            this.loadGoodsCategories(false);
+          }
+        },
+
+        refreshState: async function () {
+          const pid = window.GmConsole.getSelectedPlayerId();
+          if (pid <= 0) {
+            renderCurrencyTable();
+            return;
+          }
+          const res = await window.GmConsole.inspectPlayer(['PlayerModule', 'CurrencyModule', 'BattleModule'], pid);
+          if (res && res.ok && res.data && res.data.modules) {
+            state.inspectModules = res.data.modules;
+            const pm = state.inspectModules.PlayerModule || {};
+            const cm = state.inspectModules.CurrencyModule || {};
+            const bm = state.inspectModules.BattleModule || {};
+            const lv = readMapValue(pm, 100201);
+            const exp = readMapValue(cm, 100201);
+            const vip = readMapValue(pm, 100007);
+            const vipExp = readMapValue(cm, 100007);
+
+            document.getElementById('tbKpiLevel').textContent = `Lv.${lv} (Exp: ${exp})`;
+            document.getElementById('tbKpiVip').textContent = `VIP.${vip} (Exp: ${vipExp})`;
+            document.getElementById('tbKpiDiamond').textContent = String(readMapValue(cm, 100001));
+            document.getElementById('tbKpiGold').textContent = String(readMapValue(cm, 100002));
+            document.getElementById('tbKpiVouchers').textContent = String(readMapValue(cm, 100008));
+            document.getElementById('tbKpiEnergy').textContent = String(readMapValue(cm, 100301));
+            document.getElementById('tbKpiMainBattle').textContent = String(bm.mainBattleHighest ?? '--');
+            renderCurrencyTable();
+          }
+        },
+
+        runPreset: async function (action, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.executeAction(action, {});
+          showOutput(label, res);
+          await window.GmConsole.refreshPlayers();
+          await this.refreshState();
+        },
+
+        setLevel: async function (nearLevelUp, useInputLevel) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const lv = useInputLevel ? (parseInt(document.getElementById('tbTargetLevel')?.value, 10) || 1) : 0;
+          const rawExp = (document.getElementById('tbTargetLevelExp')?.value || '').trim();
+          const opts = { nearLevelUp };
+          if (!nearLevelUp && rawExp !== '') opts.exp = parseInt(rawExp, 10);
+          const res = await window.GmConsole.setPlayerLevel(lv, opts);
+          const label = nearLevelUp ? (useInputLevel ? `设等级 Lv.${lv} 且差1经验升级` : '设当前等级差1经验升级') : `设置玩家等级 Lv.${lv}`;
+          showOutput(label, res);
+          await window.GmConsole.refreshPlayers();
+          await this.refreshState();
+        },
+
+        setVip: async function (nearLevelUp, useInputVip) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const vip = useInputVip ? (parseInt(document.getElementById('tbTargetVip')?.value, 10) || 0) : -1;
+          const rawExp = (document.getElementById('tbTargetVipExp')?.value || '').trim();
+          const opts = { nearLevelUp };
+          if (!nearLevelUp && rawExp !== '') opts.exp = parseInt(rawExp, 10);
+          const res = await window.GmConsole.setVipLevel(vip, opts);
+          const label = nearLevelUp ? (useInputVip ? `设 VIP.${vip} 且差1经验升级` : '设当前 VIP 差1经验升级') : `设置 VIP.${vip}`;
+          showOutput(label, res);
+          await this.refreshState();
+        },
+
+        setTdlv: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const lv = parseInt(document.getElementById('tbTdlv')?.value, 10) || 1;
+          const res = await window.GmConsole.executeAction('player.tdlv', { level: lv });
+          showOutput(`设置天道修为 Lv.${lv}`, res);
+          await this.refreshState();
+        },
+
+        addAsset: async function (id, count, name) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.addResource(id, count);
+          showOutput(`发放 ${name || id} × ${count}`, res);
+          await window.GmConsole.refreshPlayers();
+          await this.refreshState();
+        },
+
+        setAsset: async function (id, count, name) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.setResource(id, count);
+          showOutput(`设置 ${name || id} = ${count}`, res);
+          await this.refreshState();
+        },
+
+        directResourceOp: async function (op) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const id = parseInt(document.getElementById('tbDirectId')?.value, 10) || 0;
+          const cnt = parseInt(document.getElementById('tbDirectCnt')?.value, 10) || 0;
+          if (id <= 0) { setBanner('请输入合法的资源/道具 ID', 'warn'); return; }
+          if (op === 'add') await this.addAsset(id, cnt, String(id));
+          else if (op === 'set') await this.setAsset(id, cnt, String(id));
+          else {
+            const res = await window.GmConsole.delResource(id, cnt);
+            showOutput(`扣除 ${id} × ${cnt}`, res);
+            await this.refreshState();
+          }
+        },
+
+        addItemById: async function (id, count) {
+          const row = (state.itemRows || []).find(r => Number(r.id) === Number(id));
+          const title = row ? (row.name || ('物品#' + id)) : ('物品#' + id);
+          await this.addAsset(id, count, title);
+        },
+
+        setItemById: async function (id, count) {
+          const row = (state.itemRows || []).find(r => Number(r.id) === Number(id));
+          const title = row ? (row.name || ('物品#' + id)) : ('物品#' + id);
+          await this.setAsset(id, count, title);
+        },
+
+        fillDirectId: function (id) {
+          const el = document.getElementById('tbDirectId');
+          if (el) el.value = String(id);
+          window.GmConsole.toast(`已填入配置 ID: ${id}`, 'ok');
+        },
+
+        onGoodsItemDropdownSelect: function () {
+          const id = parseInt(document.getElementById('tbGoodsItemSelect')?.value, 10) || 0;
+          if (id <= 0) return;
+          const el = document.getElementById('tbDirectId');
+          if (el) el.value = String(id);
+          const row = (state.itemRows || []).find(r => Number(r.id) === id);
+          const cntEl = document.getElementById('tbDirectCnt');
+          if (row && !row.canSet && cntEl && Number(cntEl.value) >= 100) {
+            cntEl.value = '1';
+          }
+        },
+
+        loadGoodsCategories: async function (forceRefresh) {
+          if (forceRefresh) {
+            state.goodsItemsByType = {};
+            state.goodsCategoriesLoaded = false;
+          }
+          const sel = document.getElementById('tbGoodsCategory');
+          if (sel) sel.innerHTML = '<option value="">-- 正在加载物品大类... --</option>';
+          const res = await window.GmConsole.getGoodsCatalog(0, '');
+          if (!res || !res.ok || !res.data || !Array.isArray(res.data.categories)) {
+            if (sel) sel.innerHTML = '<option value="">-- 加载物品大类失败 --</option>';
+            return;
+          }
+          state.goodsCategories = res.data.categories;
+          state.goodsCategoriesLoaded = true;
+          if (sel) {
+            sel.innerHTML = '<option value="">-- 第1级：选择物品大类 --</option>' + state.goodsCategories.map(c => {
+              const cnt = Number(c.count || 0) > 0 ? ` (${c.count}项)` : ' (空表)';
+              const cap = c.supportsSet ? '' : ' [仅发放]';
+              return `<option value="${Number(c.typeId)}">[${esc(c.table)}] ${esc(c.label)}${cnt}${cap}</option>`;
+            }).join('');
+            const preferred = state.goodsCategories.find(c => Number(c.typeId) === 2 && Number(c.count) > 0)
+              || state.goodsCategories.find(c => Number(c.count) > 0);
+            if (preferred) {
+              sel.value = String(preferred.typeId);
+              await this.onGoodsCategoryChange();
+            }
+          }
+        },
+
+        onGoodsCategoryChange: async function () {
+          const typeId = parseInt(document.getElementById('tbGoodsCategory')?.value, 10) || 0;
+          state.activeGoodsTypeId = typeId;
+          const searchEl = document.getElementById('tbItemSearch');
+          if (searchEl) searchEl.value = '';
+          const hintEl = document.getElementById('tbGoodsCategoryHint');
+          if (typeId <= 0) {
+            state.itemRows = [];
+            if (hintEl) hintEl.textContent = '';
+            renderItemSearchTable();
+            return;
+          }
+          const cat = state.goodsCategories.find(c => Number(c.typeId) === typeId);
+          if (!state.goodsItemsByType[typeId]) {
+            setBanner(`正在加载 ${esc(cat ? cat.label : ('大类#' + typeId))} 配置表...`, '');
+            const res = await window.GmConsole.getGoodsCatalog(typeId, '');
+            state.goodsItemsByType[typeId] = (res && res.ok && res.data && Array.isArray(res.data.items)) ? res.data.items : [];
+          }
+          state.itemRows = state.goodsItemsByType[typeId];
+          if (hintEl && cat) {
+            hintEl.textContent = `${cat.table} 共 ${state.itemRows.length} 项：${cat.hint || ''}`;
+          }
+          renderItemSearchTable();
+          if (cat) {
+            setBanner(`✅ 已切换至 <b>${esc(cat.label)}</b>（${esc(cat.table)}），共加载 <b>${state.itemRows.length}</b> 项。`, 'ok');
+          }
+        },
+
+        renderItemSearchTable: renderItemSearchTable,
+
+        setMainStage: async function (preset) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const id = preset != null ? Number(preset) : (parseInt(document.getElementById('tbMainStage')?.value, 10) || 1);
+          const res = await window.GmConsole.setMainStage(id);
+          showOutput(`设置主线通关进度=${id}`, res);
+          await this.refreshState();
+        },
+
+        execBattle: async function (action, args, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.executeAction(action, args);
+          showOutput(label, res);
+          await this.refreshState();
+        },
+
+        execPlayer: async function (action, args, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.executeAction(action, args);
+          showOutput(label, res);
+        },
+
+        sendTestMail: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const args = {
+            mailId: 0,
+            title: document.getElementById('tbMailTitle')?.value || 'QA测试邮件',
+            content: document.getElementById('tbMailContent')?.value || '',
+            itemId: parseInt(document.getElementById('tbMailItemId')?.value, 10) || 0,
+            count: parseInt(document.getElementById('tbMailItemCnt')?.value, 10) || 0
+          };
+          const res = await window.GmConsole.executeAction('mail.send', args);
+          showOutput('发送测试邮件', res);
+        },
+
+        resetCheckedModules: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const checked = Array.from(document.querySelectorAll('.tb-reset-chk:checked')).map(el => el.value);
+          if (checked.length === 0) { setBanner('请先勾选要重置的模块', 'warn'); return; }
+          const res = await window.GmConsole.resetModules(checked);
+          showOutput(`重置模块 [${checked.join(',')}]`, res);
+          await this.refreshState();
+        },
+
+        resetAllModules: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          if (!confirm('确定重置当前玩家的全部模块状态？')) return;
+          const res = await window.GmConsole.resetModules('all');
+          showOutput('重置全部模块', res);
+          await this.refreshState();
+        },
+
+        saveNamedSnapshot: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const name = (document.getElementById('tbSnapName')?.value || '').trim() || 'qa_case_1';
+          const res = await window.GmConsole.saveSnapshot(name);
+          showOutput(`保存快照 ${name}`, res);
+        },
+
+        restoreNamedSnapshot: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const name = (document.getElementById('tbSnapName')?.value || '').trim() || 'qa_case_1';
+          const res = await window.GmConsole.restoreSnapshot(name);
+          showOutput(`回滚快照 ${name}`, res);
+          await this.refreshState();
+        },
+
+        listSnapshots: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.listSnapshots();
+          showOutput('查询快照列表', res);
+        },
+
+        coldReload: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.flushAndColdReload();
+          showOutput('强制落盘冷重载', res);
+          await window.GmConsole.refreshPlayers();
+          await this.refreshState();
+        },
+
+        seedRng: async function () {
+          const seed = parseInt(document.getElementById('tbRngSeed')?.value, 10) || 12345;
+          const res = await window.GmConsole.seedRng(seed);
+          showOutput(`固定随机种子 ${seed}`, res);
+        },
+
+        resetRng: async function () {
+          const res = await window.GmConsole.resetRng();
+          showOutput('恢复默认随机源', res);
+        }
+      };
+
+      renderResetModChips();
+      renderCurrencyTable();
+
+      const unsub = window.GmConsole ? window.GmConsole.onPlayerChange(() => {
+        window.CommonToolbox.refreshState();
+      }) : null;
+      window.__gmPanelCleanup = function () {
+        if (typeof unsub === 'function') unsub();
+      };
+
+      if (window.GmConsole && window.GmConsole.getSelectedPlayerId() > 0) {
+        window.CommonToolbox.refreshState();
+      }
+    })();
+  </script>
+</body>
+</html>

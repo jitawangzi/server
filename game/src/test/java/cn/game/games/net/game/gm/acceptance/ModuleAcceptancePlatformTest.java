@@ -33,6 +33,7 @@ import cn.game.games.cache.entity.PlayerData;
 import cn.game.games.core.clazz.ClassManager;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
+import cn.game.games.net.game.gm.acceptance.suites.CrossGuildWarModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.GuildModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ItemModuleAcceptanceSuite;
 import cn.game.games.net.game.gm.acceptance.suites.ShopModuleAcceptanceSuite;
@@ -591,6 +592,35 @@ public class ModuleAcceptancePlatformTest {
         } catch (Exception e) {
             Assertions.fail("TC-MAP-05 执行异常: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * TC-MAP-07: 跨服宗门争霸模块（0x1152）验收套件元数据、双节点拓扑声明与离线强校验链路验证
+     */
+    @Test
+    public void testCrossGuildWarModuleAcceptanceSuiteMetadataAndTopology() {
+        ModuleAcceptanceEngine engine = ModuleAcceptanceEngine.getInstance();
+        ModuleAcceptanceSuite suite = engine.getSuite(0x1152);
+        Assertions.assertInstanceOf(CrossGuildWarModuleAcceptanceSuite.class, suite,
+                "ModuleAcceptanceEngine 必须自动注册 0x1152 CrossGuildWarModuleAcceptanceSuite");
+        Assertions.assertEquals(0x1152, suite.getModuleId());
+        Assertions.assertEquals("crossGuildWar", suite.getModuleKey());
+        Assertions.assertEquals(List.of(cn.game.util.ServerType.Game, cn.game.util.ServerType.Cross),
+                suite.getRequiredServerTypes(), "0x1152 套件必须声明依赖 Game 与 Cross 双节点");
+        Assertions.assertEquals(List.of("ActivityConfig", "ActivityCrossGuildWarConfig", "MailConfig"),
+                suite.getRelatedTables(), "0x1152 套件关联配置表声明必须完整");
+
+        Map<String, Object> summary = engine.getSuiteSummary(0x1152);
+        Assertions.assertEquals(Boolean.TRUE, summary.get("available"));
+        Assertions.assertEquals(0x1152, summary.get("moduleId"));
+        Assertions.assertEquals("crossGuildWar", summary.get("moduleKey"));
+        @SuppressWarnings("unchecked")
+        List<String> reqTypes = (List<String>) summary.get("requiredServerTypes");
+        Assertions.assertTrue(reqTypes.contains("Game") && reqTypes.contains("Cross"));
+
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            engine.runSuite(0x1152, AcceptanceRunMode.CONTRACT, null, 10, true);
+        }, "离线 JUnit 未启动真实 GameServer+CrossServer 集群时，0x1152 requireLiveCluster=true 必须硬拦截");
     }
 
     private static void reloadFresh(long id) {

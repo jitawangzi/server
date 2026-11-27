@@ -1,0 +1,1201 @@
+<!-- @gm-panel
+{
+  "id": "shop",
+  "title": "商店与礼包测试台",
+  "category": "核心玩法",
+  "audience": ["QA", "DEV"],
+  "modules": ["shop", "0x15"],
+  "tags": ["商店", "黑市", "月卡", "章节礼包", "通行证", "直购", "限购", "宝箱"],
+  "order": 10,
+  "summary": "面向 QA 功能测试与开发 Bug 复现的商店业务测试台：支持动态读表、一键补货币/代金券、货架购买、黑市刷新、月卡/礼包/通行证/宝箱操作、数据重置与边界场景一键复现。"
+}
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>商店与礼包测试台</title>
+  <style>
+    .shop-qa { display: flex; flex-direction: column; gap: 14px; color: var(--text-main); }
+    .shop-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .shop-box-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .shop-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .shop-subtabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .shop-subtab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .shop-subtab.active {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      border-color: var(--primary);
+    }
+    .shop-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .shop-kpi {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .shop-kpi-label { font-size: 0.74rem; color: var(--text-muted); margin-bottom: 2px; }
+    .shop-kpi-val { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .shop-table-wrap { overflow-x: auto; max-height: 460px; border: 1px solid var(--border-color); border-radius: 6px; }
+    .shop-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .shop-table th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .shop-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--row-border);
+      vertical-align: middle;
+    }
+    .shop-table tr:hover td { background: var(--surface-subtle); }
+    .shop-btn-sm { padding: 4px 8px; font-size: 0.76rem; }
+    .shop-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+    .shop-tag-free { background: var(--acceptance-bg); color: var(--success-text); border-color: var(--success); }
+    .shop-tag-rmb { background: var(--warning-soft-bg); color: var(--warning-text); border-color: var(--warning-border); }
+    .shop-tag-cur { background: var(--info-soft-bg); color: var(--accent-text); border-color: var(--info-border); }
+    .shop-tag-err { background: var(--danger-soft-bg); color: var(--danger-text); border-color: var(--danger-border); }
+    .shop-banner {
+      padding: 9px 12px;
+      border-radius: 6px;
+      font-size: 0.83rem;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+    }
+    .shop-banner.ok { border-color: var(--success); background: var(--acceptance-bg); color: var(--success-text); }
+    .shop-banner.err { border-color: var(--danger-border); background: var(--danger-soft-bg); color: var(--danger-soft-text); }
+    .shop-banner.warn { border-color: var(--warning-border); background: var(--warning-soft-bg); color: var(--warning-text); }
+  </style>
+</head>
+<body>
+  <div class="shop-qa" id="shopQaRoot">
+    <!-- 1. 顶部操作反馈条 -->
+    <div id="shopLastBanner" class="shop-banner">
+      💡 请先在上方选择在线调试玩家（或点击「➕ 测试登录」），然后点击 <b>「🔄 同步配置与玩家状态」</b> 开始测试。涉及 RMB 直购时可一键发放 <b>代金券 (100008)</b> 免 SDK 同步完成支付。
+    </div>
+
+    <!-- 2. 场景造数与数据重置区 -->
+    <div class="shop-box">
+      <div class="shop-box-title">
+        <span>🛠️ 场景准备、造数与数据重置 (QA & 复现共用)</span>
+        <div class="shop-row">
+          <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.refreshAll()">🔄 同步配置与玩家状态</button>
+          <button class="btn btn-secondary shop-btn-sm" onclick="window.GmConsole.toggleDiagnosticsDrawer(true)">🔧 查看开发诊断流水</button>
+        </div>
+      </div>
+
+      <div class="shop-row" style="margin-bottom:10px;">
+        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">快捷造数:</span>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100001, 100000, '元宝')">+10万 元宝</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100002, 1000000, '金币')">+100万 金币</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100008, 10000, '代金券')" title="Asset.Vouchers=100008，Player.pay 遇到 RMB 直购会自动用代金券同步结算">+1万 代金券 (测直购)</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100004, 10000, '神威令')">+1万 神威令</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100005, 10000, '魂火')">+1万 魂火</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100704, 10000, '仙会徽章')">+1万 仙会徽章</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100205, 5000, '通行证经验')">+5000 通行证经验</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.runPlayerGm('player.init', '拉满全部货币')">💰 一键拉满货币</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.runPlayerGm('player.super', '超级测试账号')">⚡ 超级测试号</button>
+      </div>
+
+      <div class="shop-row" style="margin-bottom:10px;">
+        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">自定义发/扣:</span>
+        <input type="number" id="shopCustomAssetId" value="100001" placeholder="资源/道具ID" style="width:120px; padding:4px 8px; font-size:0.8rem;" />
+        <input type="number" id="shopCustomAssetCnt" value="1000" placeholder="数量" style="width:110px; padding:4px 8px; font-size:0.8rem;" />
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantCustomAsset()">发放</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.deductCustomAsset()">扣除</button>
+        <span style="margin-left:10px; font-size:0.8rem; color:var(--text-muted); font-weight:600;">重置与跨周期:</span>
+        <button class="btn btn-danger shop-btn-sm" onclick="window.ShopQaPanel.resetTargetModules('ShopModule', '商店模块')">重置商店</button>
+        <button class="btn btn-danger shop-btn-sm" onclick="window.ShopQaPanel.resetTargetModules('MonthCardModule', '月卡模块')">重置月卡</button>
+        <button class="btn btn-danger shop-btn-sm" onclick="window.ShopQaPanel.resetTargetModules('CurrencyModule', '货币模块(清空测拦截)')">清空货币</button>
+        <button class="btn btn-danger shop-btn-sm" onclick="window.ShopQaPanel.resetTargetModules('ShopModule,MonthCardModule,XianShiLiBaoModule,LimitedTimeGiftModule', '商店全套模块')">重置商店全套</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.triggerNewDay()">🌅 个人跨天</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.advanceClock('+1d')">⏭️ 虚拟时钟+1天</button>
+        <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.advanceClock('+1h')">⏭️ +1小时 (测宝箱CD)</button>
+      </div>
+
+      <!-- 实时白盒状态总览 -->
+      <div class="shop-kpi-grid" id="shopKpiGrid">
+        <div class="shop-kpi"><div class="shop-kpi-label">元宝 (100001)</div><div class="shop-kpi-val" id="kpiDiamond">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">金币 (100002)</div><div class="shop-kpi-val" id="kpiGold">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">代金券 (100008)</div><div class="shop-kpi-val" id="kpiVouchers">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">黑市已刷次数</div><div class="shop-kpi-val" id="kpiHeishiRefresh">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">宝箱免费已开</div><div class="shop-kpi-val" id="kpiFreeBox">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">已激活月卡</div><div class="shop-kpi-val" id="kpiMonthCards">--</div></div>
+        <div class="shop-kpi"><div class="shop-kpi-label">已购通行证数</div><div class="shop-kpi-val" id="kpiFundPass">--</div></div>
+      </div>
+
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer; font-size:0.8rem; color:var(--text-muted);">🔍 展开原始白盒状态 JSON (ShopModule / MonthCardModule / CurrencyModule)</summary>
+        <pre id="shopRawInspect" style="margin-top:8px; max-height:260px; font-size:0.78rem;">尚未拉取状态...</pre>
+      </details>
+    </div>
+
+    <!-- 3. 业务功能子页签 -->
+    <div class="shop-box">
+      <div class="shop-subtabs" id="shopSubTabs">
+        <button class="shop-subtab active" data-subtab="normal" onclick="window.ShopQaPanel.switchSubTab('normal')">🏪 常规商店 & 黑市</button>
+        <button class="shop-subtab" data-subtab="monthcard" onclick="window.ShopQaPanel.switchSubTab('monthcard')">💳 月卡与双月卡</button>
+        <button class="shop-subtab" data-subtab="packs" onclick="window.ShopQaPanel.switchSubTab('packs')">🎁 章节礼包 & 直购充值</button>
+        <button class="shop-subtab" data-subtab="fundpass" onclick="window.ShopQaPanel.switchSubTab('fundpass')">🎖️ 基金通行证</button>
+        <button class="shop-subtab" data-subtab="boxgift" onclick="window.ShopQaPanel.switchSubTab('boxgift')">📦 商店宝箱 & 限时礼包</button>
+        <button class="shop-subtab" data-subtab="scenarios" onclick="window.ShopQaPanel.switchSubTab('scenarios')">🐞 边界与 Bug 复现脚本</button>
+      </div>
+
+      <!-- 子页签 1: 常规商店 & 黑市 -->
+      <div id="shopTab_normal" style="margin-top:12px;">
+        <div class="shop-row" style="margin-bottom:12px;">
+          <label style="margin:0; font-size:0.84rem;">选择商店:</label>
+          <select id="shopSelect" style="width:280px; padding:6px 8px;" onchange="window.ShopQaPanel.loadShopShelf()"></select>
+          <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.loadShopShelf()">📋 拉取当前货架</button>
+          <button id="btnHeishiRefresh" class="btn btn-secondary shop-btn-sm" style="display:none;" onclick="window.ShopQaPanel.refreshHeishi()">🔄 手动刷新黑市</button>
+          <label style="margin:0 0 0 8px; font-size:0.82rem;">购买数量:</label>
+          <input type="number" id="shopBuyCount" value="1" min="1" style="width:76px; padding:4px 8px;" />
+          <span id="shopMetaTip" style="font-size:0.78rem; color:var(--text-muted);"></span>
+        </div>
+        <div class="shop-table-wrap">
+          <table class="shop-table">
+            <thead>
+              <tr>
+                <th>商品ID</th>
+                <th>消耗方式</th>
+                <th>奖励内容</th>
+                <th>已购 / 限购</th>
+                <th>解锁/购买条件</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="shopShelfTbody">
+              <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">选择玩家并点击「同步配置与玩家状态」加载货架</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 子页签 2: 月卡 -->
+      <div id="shopTab_monthcard" style="display:none; margin-top:12px;">
+        <div class="shop-row" style="margin-bottom:12px;">
+          <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.claimDoubleMonthCardBonus()">🎁 领取双月卡一次性奖励</button>
+          <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.inspectState()">🔄 刷新月卡状态</button>
+          <span style="font-size:0.8rem; color:var(--text-muted);">说明：RMB 价格月卡可先点「补代金券」再点「购买月卡」，重复点击可验证 <code>month_card_repeated</code> 拦截。</span>
+        </div>
+        <div class="shop-table-wrap">
+          <table class="shop-table">
+            <thead>
+              <tr>
+                <th>月卡ID</th>
+                <th>名称</th>
+                <th>价格</th>
+                <th>有效期</th>
+                <th>当前玩家状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="shopMonthCardTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 子页签 3: 章节礼包 & 直购充值 -->
+      <div id="shopTab_packs" style="display:none; margin-top:12px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap:14px;">
+          <div>
+            <div style="font-weight:700; margin-bottom:8px; color:var(--primary);">📦 章节礼包 (ChapterPacks)</div>
+            <div class="shop-table-wrap">
+              <table class="shop-table">
+                <thead>
+                  <tr><th>ID</th><th>礼包名</th><th>价格</th><th>条件ID</th><th>操作</th></tr>
+                </thead>
+                <tbody id="shopChapterPacksTbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div style="font-weight:700; margin-bottom:8px; color:var(--primary);">💎 直购充值档位 (Recharge)</div>
+            <div class="shop-table-wrap">
+              <table class="shop-table">
+                <thead>
+                  <tr><th>ID</th><th>角标</th><th>价格</th><th>奖励内容</th><th>操作</th></tr>
+                </thead>
+                <tbody id="shopRechargeTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 子页签 4: 基金通行证 -->
+      <div id="shopTab_fundpass" style="display:none; margin-top:12px;">
+        <div class="shop-row" style="margin-bottom:12px;">
+          <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.grantAsset(100205, 5000, '通行证经验')">+5000 通行证经验 (100205)</button>
+          <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.inspectState()">🔄 刷新通行证状态</button>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1.4fr; gap:14px;">
+          <div>
+            <div style="font-weight:700; margin-bottom:8px; color:var(--primary);">通行证档位 (FundPass)</div>
+            <div class="shop-table-wrap">
+              <table class="shop-table">
+                <thead>
+                  <tr><th>ID</th><th>价格</th><th>状态</th><th>操作</th></tr>
+                </thead>
+                <tbody id="shopFundPassTbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <div style="font-weight:700; margin-bottom:8px; color:var(--primary);">通行证奖励档位 (FundPassRewards)</div>
+            <div class="shop-row" style="margin-bottom:8px;">
+              <label style="margin:0; font-size:0.8rem;">按通行证筛选:</label>
+              <select id="shopFundPassFilter" style="width:180px; padding:4px 8px; font-size:0.8rem;" onchange="window.ShopQaPanel.renderFundPassTable()"></select>
+              <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.claimSelectedFundPassRewards()">🎁 领取当前列表未领奖励</button>
+            </div>
+            <div class="shop-table-wrap">
+              <table class="shop-table">
+                <thead>
+                  <tr><th>奖励ID</th><th>所属通行证</th><th>等级/条件</th><th>奖励内容</th><th>操作</th></tr>
+                </thead>
+                <tbody id="shopFundPassRewardsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 子页签 5: 宝箱 & 限时礼包 -->
+      <div id="shopTab_boxgift" style="display:none; margin-top:12px;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap:14px;">
+          <div class="shop-box" style="margin:0;">
+            <div class="shop-box-title"><span>🧰 商店开宝箱</span></div>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">
+              广告免费开宝箱受每日次数与冷却时间（<code>GlobalConst.BoxAdvertTime</code>）限制；钻石开箱直接扣钻石。
+            </p>
+            <div class="shop-row">
+              <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.openShopBox(true)">📺 看广告免费开宝箱</button>
+              <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.openShopBox(false)">💎 钻石开宝箱</button>
+            </div>
+          </div>
+
+          <div class="shop-box" style="margin:0;">
+            <div class="shop-box-title"><span>⏳ 旧版限时礼包 (XianShiLiBao)</span></div>
+            <div class="shop-row" style="margin-bottom:8px;">
+              <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.queryOldLimitedGift()">📋 查询当前激活礼包</button>
+              <input type="number" id="shopOldGiftId" placeholder="礼包ID" style="width:110px; padding:4px 8px;" />
+              <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.buyOldLimitedGift()">购买</button>
+            </div>
+            <pre id="shopOldGiftPre" style="max-height:140px; font-size:0.78rem;">点击查询加载当前玩家已触发的限时礼包组...</pre>
+          </div>
+
+          <div class="shop-box" style="margin:0;">
+            <div class="shop-box-title"><span>⚡ 新版限时礼包 (LimitedTimeGift)</span></div>
+            <div class="shop-row" style="margin-bottom:8px;">
+              <input type="number" id="shopNewGiftId" placeholder="LimitedTimeGift ID" style="width:160px; padding:4px 8px;" />
+              <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyNewLimitedGift()">购买新版限时礼包</button>
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-muted);">
+              提示：新版限时礼包需先满足触发条件或由模块激活；可展开顶部白盒 JSON 中的 <code>LimitedTimeGiftModule</code> 查看当前激活 ID 与截止时间。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 子页签 6: 边界与 Bug 复现脚本 -->
+      <div id="shopTab_scenarios" style="display:none; margin-top:12px;">
+        <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:12px;">
+          以下场景按真实业务规则编排，全部通过正式协议发包并在底部 <b>「🔧 开发者诊断抽屉」</b> 记录完整 Request/Response/Trace/Diff，适合 QA 回归或开发一键复现边界 Bug。
+        </p>
+        <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap:12px; margin-bottom:12px;">
+          <div class="shop-box" style="margin:0;">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">1. 货币不足拦截验证</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">自动保存快照 → 清空货币 → 尝试购买当前货架首个货币商品 → 验证返回余额不足 → 回滚快照。</div>
+            <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.runScenarioInsufficientCurrency()">▶ 运行此场景</button>
+          </div>
+          <div class="shop-box" style="margin:0;">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">2. 月卡重复购买防刷验证</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">重置月卡 → 补代金券 → 购买首张月卡 → 立即重复购买同月卡 → 验证返回 <code>month_card_repeated</code>。</div>
+            <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.runScenarioMonthCardRepeat()">▶ 运行此场景</button>
+          </div>
+          <div class="shop-box" style="margin:0;">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">3. 限购满额 + 跨天刷新验证</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">在当前货架寻找限购商品 → 补钱并买满限购 → 再买 1 次验证 <code>shop_item_buy_count_max</code> → 个人跨天验证刷新。</div>
+            <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.runScenarioQuotaAndNewDay()">▶ 运行此场景</button>
+          </div>
+          <div class="shop-box" style="margin:0;">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">4. 黑市连续刷新上限验证</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">自动定位黑市商店 (Type=2) → 重置商店 → 连续刷新直至触发 <code>times_limit</code> 次数上限。</div>
+            <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.runScenarioHeishiLimit()">▶ 运行此场景</button>
+          </div>
+        </div>
+        <pre id="shopScenarioOutput" style="max-height:260px; font-size:0.8rem;">点击上方任意场景按钮开始执行...</pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const ASSET_NAMES = {
+        100001: '元宝', 100002: '金币', 100003: '银币', 100004: '神威令',
+        100005: '魂火', 100006: '友情点', 100007: 'VIP经验', 100008: '代金券',
+        100009: '神通宝券', 100010: '灵叶', 100201: '玩家经验', 100205: '通行证经验',
+        100301: '体力', 100704: '仙会徽章', 100801: '龙渊舍利丹', 101001: '凌霄莲花'
+      };
+
+      const state = {
+        activeSubTab: 'normal',
+        shops: [],
+        shopItemMap: new Map(),
+        monthCards: [],
+        chapterPacks: [],
+        recharges: [],
+        fundPasses: [],
+        fundPassRewards: [],
+        currentShelf: [],
+        inspectData: null,
+        configsLoaded: false
+      };
+
+      function esc(s) {
+        return window.GmConsole ? window.GmConsole.escapeHtml(s) : String(s == null ? '' : s);
+      }
+
+      function setBanner(text, type = '') {
+        const el = document.getElementById('shopLastBanner');
+        if (!el) return;
+        el.className = 'shop-banner' + (type ? ' ' + type : '');
+        el.innerHTML = text;
+      }
+
+      function assetLabel(id) {
+        const n = Number(id);
+        return ASSET_NAMES[n] ? `${ASSET_NAMES[n]}(${n})` : `ID:${n}`;
+      }
+
+      function formatRewards(items2d) {
+        if (!Array.isArray(items2d) || items2d.length === 0) return '-';
+        return items2d.map(pair => {
+          if (Array.isArray(pair) && pair.length >= 2) {
+            return `${assetLabel(pair[0])} × ${pair[1]}`;
+          }
+          return JSON.stringify(pair);
+        }).join('，');
+      }
+
+      function formatCostBadge(param) {
+        if (!Array.isArray(param) || param.length === 0 || Number(param[0]) === 0) {
+          return `<span class="shop-tag shop-tag-free">免费</span>`;
+        }
+        const costType = Number(param[0]);
+        if (costType === 1 && param.length >= 3) {
+          return `<span class="shop-tag shop-tag-cur">${esc(assetLabel(param[1]))} × ${param[2]}</span>`;
+        }
+        if (costType === 2) {
+          const rmb = param.length >= 2 ? param[1] : 0;
+          return `<span class="shop-tag shop-tag-rmb">直购 ¥${rmb} (需代金券×${rmb})</span>`;
+        }
+        if (costType === 3) {
+          return `<span class="shop-tag shop-tag-free">看广告</span>`;
+        }
+        return `<span class="shop-tag">${esc(JSON.stringify(param))}</span>`;
+      }
+
+      async function provisionCostParam(param, count = 1) {
+        if (!Array.isArray(param) || param.length === 0 || Number(param[0]) === 0 || Number(param[0]) === 3) {
+          setBanner('该商品为免费或广告获取，无需额外补齐货币。', 'ok');
+          return true;
+        }
+        const costType = Number(param[0]);
+        const mult = Math.max(1, parseInt(count, 10) || 1);
+        let res;
+        if (costType === 1 && param.length >= 3) {
+          res = await window.GmConsole.addResource(Number(param[1]), Number(param[2]) * mult);
+          if (res && res.ok) {
+            setBanner(`已补齐货币：<b>${esc(assetLabel(param[1]))} × ${Number(param[2]) * mult}</b>`, 'ok');
+            return true;
+          }
+        } else if (costType === 2 && param.length >= 2) {
+          const vouchers = Number(param[1]) * mult;
+          res = await window.GmConsole.addResource(100008, vouchers);
+          if (res && res.ok) {
+            setBanner(`已补齐直购代金券：<b>代金券(100008) × ${vouchers}</b>（购买时自动同步抵扣）`, 'ok');
+            return true;
+          }
+        }
+        setBanner(`补齐消耗失败: ${esc(res?.summary || res?.message || '未知错误')}`, 'err');
+        return false;
+      }
+
+      async function loadTableRows(tableName) {
+        const allRows = [];
+        try {
+          for (let page = 1; page <= 20; page++) {
+            const res = await window.GmConsole.queryConfigList(tableName, { page, pageSize: 200 });
+            if (!res || !res.ok || !res.data || !Array.isArray(res.data.rows)) {
+              break;
+            }
+            allRows.push(...res.data.rows);
+            const totalPages = Number(res.data.totalPages || 1);
+            if (page >= totalPages) {
+              break;
+            }
+          }
+        } catch (e) {}
+        return allRows;
+      }
+
+      async function loadConfigs() {
+        const [shops, shopItems, monthCards, chapterPacks, recharges, fundPasses, fundPassRewards] = await Promise.all([
+          loadTableRows('Shop'),
+          loadTableRows('ShopItem'),
+          loadTableRows('MonthCard'),
+          loadTableRows('ChapterPacks'),
+          loadTableRows('Recharge'),
+          loadTableRows('FundPass'),
+          loadTableRows('FundPassRewards')
+        ]);
+        state.shops = shops.sort((a, b) => (Number(a.Order || 0) - Number(b.Order || 0)) || (Number(a.ID) - Number(b.ID)));
+        state.shopItemMap = new Map();
+        shopItems.forEach(item => state.shopItemMap.set(Number(item.ID), item));
+        state.monthCards = monthCards;
+        state.chapterPacks = chapterPacks;
+        state.recharges = recharges;
+        state.fundPasses = fundPasses;
+        state.fundPassRewards = fundPassRewards;
+        state.configsLoaded = true;
+
+        renderShopSelect();
+        renderMonthCardTable();
+        renderPacksAndRechargeTables();
+        renderFundPassFilter();
+        renderFundPassTable();
+      }
+
+      function renderShopSelect() {
+        const sel = document.getElementById('shopSelect');
+        if (!sel) return;
+        const prev = sel.value;
+        if (state.shops.length === 0) {
+          sel.innerHTML = `<option value="1">1 - 默认商店 (未加载到Shop配表)</option>`;
+          return;
+        }
+        sel.innerHTML = state.shops.map(s => {
+          const refreshMap = { 0: '不刷新', 1: '每日', 2: '每周', 3: '每月', 4: '按商品' };
+          const tag = s.Type === 2 ? ' [黑市]' : '';
+          return `<option value="${s.ID}">${s.ID} - ${esc(s.Name || ('商店' + s.ID))}${tag} (Type=${s.Type}, ${refreshMap[s.Refresh] || s.Refresh})</option>`;
+        }).join('');
+        if (prev && state.shops.some(s => String(s.ID) === String(prev))) {
+          sel.value = prev;
+        }
+      }
+
+      function findCurrencyAmount(currencyModule, assetId) {
+        if (!currencyModule || typeof currencyModule !== 'object') return '--';
+        const candidates = [currencyModule.currencyMap, currencyModule.map, currencyModule.id_items, currencyModule.items, currencyModule];
+        for (const obj of candidates) {
+          if (obj && typeof obj === 'object') {
+            if (obj[assetId] != null) return obj[assetId];
+            if (obj[String(assetId)] != null) return obj[String(assetId)];
+            if (obj.map && obj.map[String(assetId)] != null) return obj.map[String(assetId)];
+          }
+        }
+        return '--';
+      }
+
+      async function inspectState() {
+        const pid = window.GmConsole.getSelectedPlayerId();
+        if (pid <= 0) {
+          return null;
+        }
+        let res = await window.GmConsole.inspectPlayer(['ShopModule', 'MonthCardModule', 'CurrencyModule', 'XianShiLiBaoModule', 'LimitedTimeGiftModule'], pid);
+        if (!res || !res.ok) {
+          res = await window.GmConsole.inspectPlayer(['ShopModule', 'MonthCardModule', 'CurrencyModule'], pid);
+        }
+        if (res && res.ok && res.data && res.data.modules) {
+          state.inspectData = res.data.modules;
+          const curMod = state.inspectData.CurrencyModule || {};
+          const shopMod = state.inspectData.ShopModule || {};
+          const mcMod = state.inspectData.MonthCardModule || {};
+
+          document.getElementById('kpiDiamond').textContent = String(findCurrencyAmount(curMod, 100001));
+          document.getElementById('kpiGold').textContent = String(findCurrencyAmount(curMod, 100002));
+          document.getElementById('kpiVouchers').textContent = String(findCurrencyAmount(curMod, 100008));
+
+          const heishiMap = shopMod.heishiRefreshTimesMap?.map || shopMod.heishiRefreshTimesMap || {};
+          const heishiEntries = Object.entries(heishiMap).map(([k, v]) => `店${k}:${v}次`);
+          document.getElementById('kpiHeishiRefresh').textContent = heishiEntries.length ? heishiEntries.join(' / ') : '0次';
+          document.getElementById('kpiFreeBox').textContent = `${shopMod.freeOpenBoxCount ?? 0} 次`;
+
+          const mcMap = mcMod.monthCards || {};
+          const mcKeys = Object.keys(mcMap);
+          document.getElementById('kpiMonthCards').textContent = mcKeys.length ? mcKeys.map(k => `#${k}`).join(', ') : '无';
+
+          const fpMap = shopMod.fundPassRewardsMap || {};
+          document.getElementById('kpiFundPass').textContent = `${Object.keys(fpMap).length} 个`;
+
+          document.getElementById('shopRawInspect').textContent = JSON.stringify(state.inspectData, null, 2);
+          renderMonthCardTable();
+          renderFundPassTable();
+          return state.inspectData;
+        }
+        return null;
+      }
+
+      async function loadShopShelf() {
+        try {
+          window.GmConsole.requirePlayerId();
+        } catch (e) { return; }
+        const shopId = parseInt(document.getElementById('shopSelect')?.value, 10) || 1;
+        const shopCfg = state.shops.find(s => Number(s.ID) === shopId);
+        const btnHeishi = document.getElementById('btnHeishiRefresh');
+        if (btnHeishi) {
+          btnHeishi.style.display = (shopCfg && Number(shopCfg.Type) === 2) ? 'inline-flex' : 'none';
+        }
+        const metaTip = document.getElementById('shopMetaTip');
+        if (metaTip && shopCfg) {
+          metaTip.textContent = `ShopID=${shopCfg.ID} | Type=${shopCfg.Type} | ItemRefreshType=${shopCfg.ItemRefreshType}`;
+        }
+
+        const res = await window.GmConsole.invokeProto('ShopItemListRequest_15000001', { shopId });
+        if (!res || !res.ok) {
+          setBanner(`拉取商店 ${shopId} 货架失败: [${res?.errorCode || ''}] ${esc(res?.errorName || '')} ${esc(res?.errorDesc || res?.summary || '')}`, 'err');
+          return;
+        }
+        state.currentShelf = res.response?.payload?.items || [];
+        renderShelfTable(shopId);
+        setBanner(`已加载商店 <b>#${shopId} ${esc(shopCfg?.Name || '')}</b> 货架，共 <b>${state.currentShelf.length}</b> 件商品。`, 'ok');
+      }
+
+      function renderShelfTable(shopId) {
+        const tbody = document.getElementById('shopShelfTbody');
+        if (!tbody) return;
+        if (!state.currentShelf || state.currentShelf.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--text-muted);">当前商店货架为空（可能功能未解锁、等级不足或该商店尚未初始化，可尝试点击上方「超级测试号」或「重置商店」后重新拉取）</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = state.currentShelf.map(item => {
+          const itemId = Number(item.itemId);
+          const buyTimes = Number(item.buyTimes || 0);
+          const cfg = state.shopItemMap.get(itemId);
+          const quota = cfg ? Number(cfg.ShopItemQuota || 0) : 0;
+          const quotaText = quota > 0 ? `${buyTimes} / ${quota}` : `${buyTimes} / 不限`;
+          const isSoldOut = quota > 0 && buyTimes >= quota;
+          const condText = cfg ? `解锁:${cfg.UnlockCondition || 0} / 购买:${cfg.BuyCondition || 0}` : '-';
+          return `
+            <tr>
+              <td><b>${itemId}</b></td>
+              <td>${cfg ? formatCostBadge(cfg.PurchaseParameter) : '<span class="shop-tag">未知配置</span>'}</td>
+              <td>${cfg ? esc(formatRewards(cfg.Item)) : '-'}</td>
+              <td>${isSoldOut ? `<span class="shop-tag shop-tag-err">${quotaText} (已满)</span>` : `<b>${quotaText}</b>`}</td>
+              <td style="color:var(--text-muted);">${esc(condText)}</td>
+              <td>
+                <div class="shop-row">
+                  <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyShopItem(${shopId}, ${itemId})">🛒 购买</button>
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.provisionShopItem(${itemId})">💰 补钱</button>
+                  ${quota > 0 ? `<button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.testQuotaOverflow(${shopId}, ${itemId}, ${quota}, ${buyTimes})" title="补齐钱并买满后再多买1次以验证限购拦截">🚫 测限购</button>` : ''}
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
+      }
+
+      function renderMonthCardTable() {
+        const tbody = document.getElementById('shopMonthCardTbody');
+        if (!tbody) return;
+        const mcMap = state.inspectData?.MonthCardModule?.monthCards || {};
+        if (!state.monthCards || state.monthCards.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:18px; color:var(--text-muted);">未加载到 MonthCard 配置表</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = state.monthCards.map(mc => {
+          const owned = mcMap[String(mc.ID)] || mcMap[mc.ID];
+          let statusHtml = `<span class="shop-tag">未购买</span>`;
+          if (owned) {
+            const exp = owned.expireTime ? new Date(Number(owned.expireTime)).toLocaleString() : '永久';
+            statusHtml = `<span class="shop-tag shop-tag-free">已激活</span> <span style="font-size:0.74rem; color:var(--text-muted);">到期: ${esc(exp)}</span>`;
+          }
+          return `
+            <tr>
+              <td><b>${mc.ID}</b></td>
+              <td>${esc(mc.FuncName || ('月卡' + mc.ID))}</td>
+              <td>${formatCostBadge(mc.Price)}</td>
+              <td>${Number(mc.Expiration) === 0 ? '永久' : (mc.Expiration + ' 天')}</td>
+              <td>${statusHtml}</td>
+              <td>
+                <div class="shop-row">
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.provisionMonthCard(${mc.ID})">💰 补代金券</button>
+                  <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyMonthCard(${mc.ID})">购买月卡</button>
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.claimMonthCardReward(${mc.ID}, 'buy')">领购买奖</button>
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.claimMonthCardReward(${mc.ID}, 'day')">领每日奖</button>
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
+      }
+
+      function renderPacksAndRechargeTables() {
+        const cpBody = document.getElementById('shopChapterPacksTbody');
+        if (cpBody) {
+          cpBody.innerHTML = (state.chapterPacks || []).map(cp => `
+            <tr>
+              <td><b>${cp.ID}</b></td>
+              <td>${esc(cp.giftName || ('礼包' + cp.ID))}</td>
+              <td>${formatCostBadge(cp.PurchaseParameter)}</td>
+              <td>${cp.Condition || 0}</td>
+              <td>
+                <div class="shop-row">
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.provisionChapterPack(${cp.ID})">💰 补钱</button>
+                  <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyChapterPack(${cp.ID})">购买</button>
+                </div>
+              </td>
+            </tr>
+          `).join('') || `<tr><td colspan="5" style="text-align:center; padding:16px; color:var(--text-muted);">无 ChapterPacks 配表数据</td></tr>`;
+        }
+
+        const rcBody = document.getElementById('shopRechargeTbody');
+        if (rcBody) {
+          rcBody.innerHTML = (state.recharges || []).map(rc => `
+            <tr>
+              <td><b>${rc.ID}</b></td>
+              <td>${esc(rc.CornerMarker || '-')}</td>
+              <td>${formatCostBadge(rc.PurchaseParameter)}</td>
+              <td>${esc(formatRewards(rc.Item))}</td>
+              <td>
+                <div class="shop-row">
+                  <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.provisionRecharge(${rc.ID})">💰 补代金券</button>
+                  <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyRecharge(${rc.ID})">直购充值</button>
+                </div>
+              </td>
+            </tr>
+          `).join('') || `<tr><td colspan="5" style="text-align:center; padding:16px; color:var(--text-muted);">无 Recharge 配表数据</td></tr>`;
+        }
+      }
+
+      function renderFundPassFilter() {
+        const sel = document.getElementById('shopFundPassFilter');
+        if (!sel) return;
+        sel.innerHTML = `<option value="ALL">全部通行证</option>` + (state.fundPasses || []).map(fp =>
+          `<option value="${fp.ID}">通行证 #${fp.ID}</option>`
+        ).join('');
+      }
+
+      function renderFundPassTable() {
+        const fpBody = document.getElementById('shopFundPassTbody');
+        const fpMap = state.inspectData?.ShopModule?.fundPassRewardsMap || {};
+        if (fpBody) {
+          fpBody.innerHTML = (state.fundPasses || []).map(fp => {
+            const claimed = fpMap[String(fp.ID)] || fpMap[fp.ID];
+            const ownedHtml = claimed
+              ? `<span class="shop-tag shop-tag-free">已激活 (已领${claimed.length}项)</span>`
+              : `<span class="shop-tag">未购买</span>`;
+            return `
+              <tr>
+                <td><b>${fp.ID}</b></td>
+                <td>${formatCostBadge(fp.Price)}</td>
+                <td>${ownedHtml}</td>
+                <td>
+                  <div class="shop-row">
+                    <button class="btn btn-secondary shop-btn-sm" onclick="window.ShopQaPanel.provisionFundPass(${fp.ID})">💰 补钱</button>
+                    <button class="btn shop-btn-sm" onclick="window.ShopQaPanel.buyFundPass(${fp.ID})">购买</button>
+                  </div>
+                </td>
+              </tr>`;
+          }).join('') || `<tr><td colspan="4" style="text-align:center; padding:16px; color:var(--text-muted);">无 FundPass 配表数据</td></tr>`;
+        }
+
+        const rBody = document.getElementById('shopFundPassRewardsTbody');
+        if (rBody) {
+          const filterVal = document.getElementById('shopFundPassFilter')?.value || 'ALL';
+          const rows = (state.fundPassRewards || []).filter(r => filterVal === 'ALL' || String(r.Index) === String(filterVal));
+          rBody.innerHTML = rows.slice(0, 80).map(r => {
+            const claimedList = fpMap[String(r.Index)] || fpMap[r.Index] || [];
+            const isClaimed = Array.isArray(claimedList) && claimedList.map(Number).includes(Number(r.ID));
+            return `
+              <tr>
+                <td><b>${r.ID}</b></td>
+                <td>#${r.Index}</td>
+                <td>Lv:${r.LvCondition || 0} / Cond:${r.Condition || 0}</td>
+                <td>${esc(formatRewards(r.Reward))}</td>
+                <td>
+                  ${isClaimed
+                    ? `<span class="shop-tag shop-tag-free">已领取</span>`
+                    : `<button class="btn shop-btn-sm" onclick="window.ShopQaPanel.claimFundPassReward([${r.ID}])">领取</button>`}
+                </td>
+              </tr>`;
+          }).join('') || `<tr><td colspan="5" style="text-align:center; padding:16px; color:var(--text-muted);">无 FundPassRewards 配表数据</td></tr>`;
+        }
+      }
+
+      function reportProtoResult(actionLabel, res) {
+        if (res && res.ok) {
+          const rewards = res.response?.payload?.rewards;
+          const rewardTip = Array.isArray(rewards) && rewards.length > 0 ? ` | 获得奖励条目: ${rewards.length}` : '';
+          setBanner(`✅ <b>${esc(actionLabel)}</b> 成功 (${res.elapsedMs || 0}ms)${rewardTip}`, 'ok');
+          window.GmConsole.toast(`${actionLabel} 成功`, 'ok');
+        } else {
+          setBanner(`❌ <b>${esc(actionLabel)}</b> 拦截/失败: [${res?.errorCode || ''}] <code>${esc(res?.errorName || '')}</code> ${esc(res?.errorDesc || res?.summary || res?.message || '')}`, 'err');
+          window.GmConsole.toast(`${actionLabel} 失败: ${res?.errorName || res?.errorCode || ''}`, 'error');
+        }
+      }
+
+      window.ShopQaPanel = {
+        switchSubTab: function (tab) {
+          state.activeSubTab = tab;
+          document.querySelectorAll('#shopSubTabs .shop-subtab').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-subtab') === tab);
+          });
+          ['normal', 'monthcard', 'packs', 'fundpass', 'boxgift', 'scenarios'].forEach(k => {
+            const el = document.getElementById('shopTab_' + k);
+            if (el) el.style.display = (k === tab) ? 'block' : 'none';
+          });
+        },
+
+        refreshAll: async function () {
+          setBanner('正在加载商店配置表与玩家白盒状态...', '');
+          if (!state.configsLoaded) {
+            await loadConfigs();
+          }
+          const pid = window.GmConsole.getSelectedPlayerId();
+          if (pid > 0) {
+            await inspectState();
+            await loadShopShelf();
+          } else {
+            setBanner('配置表已加载完成；请在上方选择在线玩家或点击「➕ 测试登录」以拉取玩家实时货架与状态。', 'warn');
+          }
+        },
+
+        inspectState: async function () {
+          await inspectState();
+          window.GmConsole.toast('已刷新玩家白盒状态', 'ok');
+        },
+
+        loadShopShelf: loadShopShelf,
+        renderFundPassTable: renderFundPassTable,
+
+        grantAsset: async function (id, count, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.addResource(id, count);
+          if (res && res.ok) {
+            setBanner(`✅ 已发放 <b>${esc(label || assetLabel(id))} × ${count}</b>`, 'ok');
+            await inspectState();
+          } else {
+            setBanner(`❌ 发放失败: ${esc(res?.summary || res?.message || '未知错误')}`, 'err');
+          }
+        },
+
+        grantCustomAsset: async function () {
+          const id = parseInt(document.getElementById('shopCustomAssetId')?.value, 10) || 0;
+          const cnt = parseInt(document.getElementById('shopCustomAssetCnt')?.value, 10) || 0;
+          if (id <= 0 || cnt <= 0) { setBanner('请输入合法的资源ID与数量', 'warn'); return; }
+          await this.grantAsset(id, cnt, assetLabel(id));
+        },
+
+        deductCustomAsset: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const id = parseInt(document.getElementById('shopCustomAssetId')?.value, 10) || 0;
+          const cnt = parseInt(document.getElementById('shopCustomAssetCnt')?.value, 10) || 0;
+          if (id <= 0 || cnt <= 0) { setBanner('请输入合法的资源ID与数量', 'warn'); return; }
+          const res = await window.GmConsole.delResource(id, cnt);
+          if (res && res.ok) {
+            setBanner(`✅ 已扣除 <b>${esc(assetLabel(id))} × ${cnt}</b>`, 'ok');
+            await inspectState();
+          } else {
+            setBanner(`❌ 扣除失败: ${esc(res?.summary || res?.message || '未知错误')}`, 'err');
+          }
+        },
+
+        runPlayerGm: async function (action, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.executeAction(action, {});
+          if (res && res.ok) {
+            setBanner(`✅ 已执行 <b>${esc(label)}</b> (${esc(action)})`, 'ok');
+            await inspectState();
+            await loadShopShelf();
+          } else {
+            setBanner(`❌ 执行 ${esc(action)} 失败: ${esc(res?.summary || res?.message || '')}`, 'err');
+          }
+        },
+
+        resetTargetModules: async function (modules, label) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.resetModules(modules);
+          if (res && res.ok) {
+            setBanner(`✅ 已重置 <b>${esc(label)}</b> (<code>${esc(modules)}</code>)`, 'ok');
+            await inspectState();
+            await loadShopShelf();
+          } else {
+            setBanner(`❌ 重置失败: ${esc(res?.summary || res?.message || '')}`, 'err');
+          }
+        },
+
+        triggerNewDay: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.newDay();
+          if (res && res.ok) {
+            setBanner('✅ 已触发个人跨天刷新 (player.newday)，货架与每日限购/黑市次数已重新拉取。', 'ok');
+            await inspectState();
+            await loadShopShelf();
+          } else {
+            setBanner(`❌ 个人跨天失败: ${esc(res?.summary || res?.message || '')}`, 'err');
+          }
+        },
+
+        advanceClock: async function (expr) {
+          const res = await window.GmConsole.offsetTime(expr);
+          if (res && res.ok) {
+            setBanner(`✅ 虚拟时钟已推进 <b>${esc(expr)}</b>`, 'ok');
+            if (window.GmConsole.getSelectedPlayerId() > 0) {
+              await inspectState();
+              await loadShopShelf();
+            }
+          } else {
+            setBanner(`❌ 虚拟时钟推进失败: ${esc(res?.summary || res?.message || '')}`, 'err');
+          }
+        },
+
+        provisionShopItem: async function (itemId) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const cfg = state.shopItemMap.get(Number(itemId));
+          const count = parseInt(document.getElementById('shopBuyCount')?.value, 10) || 1;
+          if (!cfg) { setBanner(`未找到商品 ${itemId} 配置`, 'warn'); return; }
+          await provisionCostParam(cfg.PurchaseParameter, count);
+          await inspectState();
+        },
+
+        buyShopItem: async function (shopId, itemId) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const count = parseInt(document.getElementById('shopBuyCount')?.value, 10) || 1;
+          const res = await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId, count });
+          reportProtoResult(`购买商品 #${itemId} × ${count}`, res);
+          await inspectState();
+          await loadShopShelf();
+        },
+
+        testQuotaOverflow: async function (shopId, itemId, quota, bought) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const cfg = state.shopItemMap.get(Number(itemId));
+          const remain = Math.max(0, Number(quota) - Number(bought));
+          if (remain > 0 && cfg) {
+            await provisionCostParam(cfg.PurchaseParameter, remain + 1);
+            await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId, count: remain });
+          }
+          const overflowRes = await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId, count: 1 });
+          if (overflowRes && !overflowRes.ok && overflowRes.errorName === 'shop_item_buy_count_max') {
+            setBanner(`✅ 限购拦截验证通过！商品 #${itemId} 满额后再买返回预期错误: <code>shop_item_buy_count_max</code>`, 'ok');
+          } else {
+            reportProtoResult(`商品 #${itemId} 超限购测试`, overflowRes);
+          }
+          await inspectState();
+          await loadShopShelf();
+        },
+
+        refreshHeishi: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const shopId = parseInt(document.getElementById('shopSelect')?.value, 10) || 2;
+          const res = await window.GmConsole.invokeProto('ShopHeishiRefreshRequest_15000005', { shopId });
+          reportProtoResult(`刷新黑市商店 #${shopId}`, res);
+          await inspectState();
+          await loadShopShelf();
+        },
+
+        provisionMonthCard: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const mc = state.monthCards.find(m => Number(m.ID) === Number(id));
+          if (mc) await provisionCostParam(mc.Price, 1);
+          await inspectState();
+        },
+
+        buyMonthCard: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('MonthCardBuyRequest_15000010', { id });
+          reportProtoResult(`购买月卡 #${id}`, res);
+          await inspectState();
+        },
+
+        claimMonthCardReward: async function (id, kind) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const proto = kind === 'day' ? 'MonthCardDayRewardRequest_15000014' : 'MonthCardBuyRewardRequest_15000012';
+          const res = await window.GmConsole.invokeProto(proto, { id });
+          reportProtoResult(kind === 'day' ? `领取月卡 #${id} 每日奖` : `领取月卡 #${id} 购买奖`, res);
+          await inspectState();
+        },
+
+        claimDoubleMonthCardBonus: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('MonthCardDoubleBonusRequest_15000016', {});
+          reportProtoResult('领取双月卡一次性奖励', res);
+          await inspectState();
+        },
+
+        provisionChapterPack: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const cp = state.chapterPacks.find(c => Number(c.ID) === Number(id));
+          if (cp) await provisionCostParam(cp.PurchaseParameter, 1);
+          await inspectState();
+        },
+
+        buyChapterPack: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('ShopChapterPacksBuyRequest_15000020', { id });
+          reportProtoResult(`购买章节礼包 #${id}`, res);
+          await inspectState();
+        },
+
+        provisionRecharge: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const rc = state.recharges.find(r => Number(r.ID) === Number(id));
+          if (rc) await provisionCostParam(rc.PurchaseParameter, 1);
+          await inspectState();
+        },
+
+        buyRecharge: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('ShopRechargeRequest_15000022', { id });
+          reportProtoResult(`直购充值档位 #${id}`, res);
+          await inspectState();
+        },
+
+        provisionFundPass: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const fp = state.fundPasses.find(f => Number(f.ID) === Number(id));
+          if (fp) await provisionCostParam(fp.Price, 1);
+          await inspectState();
+        },
+
+        buyFundPass: async function (id) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('ShopFundPassBuyRequest_15000030', { id });
+          reportProtoResult(`购买基金通行证 #${id}`, res);
+          await inspectState();
+        },
+
+        claimFundPassReward: async function (idList) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('ShopFundPassRewardRequest_15000032', { id: idList });
+          reportProtoResult(`领取通行证奖励 [${idList.join(',')}]`, res);
+          await inspectState();
+        },
+
+        claimSelectedFundPassRewards: async function () {
+          const filterVal = document.getElementById('shopFundPassFilter')?.value || 'ALL';
+          const fpMap = state.inspectData?.ShopModule?.fundPassRewardsMap || {};
+          const ids = (state.fundPassRewards || [])
+            .filter(r => filterVal === 'ALL' || String(r.Index) === String(filterVal))
+            .filter(r => {
+              const claimed = fpMap[String(r.Index)] || fpMap[r.Index];
+              return Array.isArray(claimed) && !claimed.map(Number).includes(Number(r.ID));
+            })
+            .slice(0, 10)
+            .map(r => Number(r.ID));
+          if (ids.length === 0) {
+            setBanner('当前筛选下没有已激活且未领取的通行证奖励', 'warn');
+            return;
+          }
+          await this.claimFundPassReward(ids);
+        },
+
+        openShopBox: async function (watchAds) {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('ShopBoxOpenRequest_15000040', { watchAds: Boolean(watchAds) });
+          reportProtoResult(watchAds ? '看广告免费开宝箱' : '钻石开宝箱', res);
+          await inspectState();
+        },
+
+        queryOldLimitedGift: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const res = await window.GmConsole.invokeProto('GetXianShiLiBaoInfoRequest_15000050', {});
+          reportProtoResult('查询限时礼包(旧)', res);
+          const pre = document.getElementById('shopOldGiftPre');
+          if (pre) pre.textContent = JSON.stringify(res?.response?.payload || res, null, 2);
+        },
+
+        buyOldLimitedGift: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const id = parseInt(document.getElementById('shopOldGiftId')?.value, 10) || 0;
+          if (id <= 0) { setBanner('请输入旧版限时礼包ID', 'warn'); return; }
+          const res = await window.GmConsole.invokeProto('BuyXianShiLiBaoRequest_15000052', { id });
+          reportProtoResult(`购买限时礼包(旧) #${id}`, res);
+          await inspectState();
+        },
+
+        buyNewLimitedGift: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const id = parseInt(document.getElementById('shopNewGiftId')?.value, 10) || 0;
+          if (id <= 0) { setBanner('请输入新版限时礼包ID', 'warn'); return; }
+          const res = await window.GmConsole.invokeProto('LimitedTimeGiftBuyRequest_15000061', { id });
+          reportProtoResult(`购买限时礼包(新) #${id}`, res);
+          await inspectState();
+        },
+
+        runScenarioInsufficientCurrency: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const logs = [];
+          const out = document.getElementById('shopScenarioOutput');
+          const log = (s) => { logs.push(s); if (out) out.textContent = logs.join('\n'); };
+          log('▶ [场景1] 货币不足拦截验证开始...');
+          await window.GmConsole.saveSnapshot('shop_sc1_tmp');
+          log('1. 已保存临时快照 shop_sc1_tmp');
+          const shopId = parseInt(document.getElementById('shopSelect')?.value, 10) || 1;
+          await loadShopShelf();
+          const paidItem = state.currentShelf.find(it => {
+            const cfg = state.shopItemMap.get(Number(it.itemId));
+            return cfg && Array.isArray(cfg.PurchaseParameter) && Number(cfg.PurchaseParameter[0]) === 1;
+          });
+          if (!paidItem) {
+            log('⚠️ 当前选中商店货架中没有货币消耗类商品，请切换商店后重试。');
+            return;
+          }
+          await window.GmConsole.resetModules('CurrencyModule');
+          log(`2. 已清空货币模块，尝试购买商店 #${shopId} 商品 #${paidItem.itemId}`);
+          const res = await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId: Number(paidItem.itemId), count: 1 });
+          log(`3. 协议回包: ok=${res.ok}, errorCode=${res.errorCode}, errorName=${res.errorName || ''}, desc=${res.errorDesc || ''}`);
+          await window.GmConsole.restoreSnapshot('shop_sc1_tmp');
+          log('4. 已回滚临时快照 shop_sc1_tmp');
+          log(res.errorName === 'resource_not_enough' ? '✅ 结论: 命中预期拦截 resource_not_enough！' : '⚠️ 结论: 实际错误码与 resource_not_enough 不同，请在底部诊断抽屉核查。');
+          await inspectState();
+        },
+
+        runScenarioMonthCardRepeat: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const logs = [];
+          const out = document.getElementById('shopScenarioOutput');
+          const log = (s) => { logs.push(s); if (out) out.textContent = logs.join('\n'); };
+          if (!state.monthCards || state.monthCards.length === 0) {
+            log('⚠️ 未加载到 MonthCard 配表，请先同步配置。');
+            return;
+          }
+          const mc = state.monthCards[0];
+          log(`▶ [场景2] 月卡 #${mc.ID} 重复购买防刷验证开始...`);
+          await window.GmConsole.resetModules('MonthCardModule');
+          await provisionCostParam(mc.Price, 2);
+          log('1. 已重置 MonthCardModule 并补齐 2 份月卡价格/代金券');
+          const r1 = await window.GmConsole.invokeProto('MonthCardBuyRequest_15000010', { id: Number(mc.ID) });
+          log(`2. 首次购买结果: ok=${r1.ok}, errorCode=${r1.errorCode} ${r1.errorName || ''}`);
+          const r2 = await window.GmConsole.invokeProto('MonthCardBuyRequest_15000010', { id: Number(mc.ID) });
+          log(`3. 重复购买结果: ok=${r2.ok}, errorCode=${r2.errorCode} ${r2.errorName || ''}`);
+          log(r1.ok && !r2.ok && r2.errorName === 'month_card_repeated'
+            ? '✅ 结论: 首次成功 + 二次准确拦截 month_card_repeated！'
+            : '⚠️ 结论: 未完全命中预期，请展开底部开发诊断抽屉查看详细回包与日志。');
+          await inspectState();
+        },
+
+        runScenarioQuotaAndNewDay: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const logs = [];
+          const out = document.getElementById('shopScenarioOutput');
+          const log = (s) => { logs.push(s); if (out) out.textContent = logs.join('\n'); };
+          const shopId = parseInt(document.getElementById('shopSelect')?.value, 10) || 1;
+          await loadShopShelf();
+          const target = state.currentShelf.find(it => {
+            const cfg = state.shopItemMap.get(Number(it.itemId));
+            return cfg && Number(cfg.ShopItemQuota) > 0 && Number(cfg.ShopItemQuota) <= 20;
+          });
+          if (!target) {
+            log('⚠️ 当前货架中未找到限购次数 <= 20 的商品，请切换商店重试。');
+            return;
+          }
+          const cfg = state.shopItemMap.get(Number(target.itemId));
+          const remain = Math.max(0, Number(cfg.ShopItemQuota) - Number(target.buyTimes || 0));
+          log(`▶ [场景3] 商店 #${shopId} 商品 #${target.itemId} (限购 ${cfg.ShopItemQuota}) 满额与跨天验证...`);
+          if (remain > 0) {
+            await provisionCostParam(cfg.PurchaseParameter, remain + 1);
+            const rFill = await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId: Number(target.itemId), count: remain });
+            log(`1. 补满剩余 ${remain} 次: ok=${rFill.ok}, code=${rFill.errorCode}`);
+          }
+          const rOver = await window.GmConsole.invokeProto('ShopItemBuyRequest_15000003', { shopId, itemId: Number(target.itemId), count: 1 });
+          log(`2. 超限再买 1 次: ok=${rOver.ok}, code=${rOver.errorCode} ${rOver.errorName || ''}`);
+          await window.GmConsole.newDay();
+          await loadShopShelf();
+          const after = state.currentShelf.find(it => Number(it.itemId) === Number(target.itemId));
+          log(`3. 个人跨天后货架状态: ${after ? ('buyTimes=' + (after.buyTimes || 0)) : '商品随商店刷新已变更'}`);
+          log('✅ 场景执行完成，可在底部诊断抽屉核对每一步 Diff/Trace。');
+          await inspectState();
+        },
+
+        runScenarioHeishiLimit: async function () {
+          try { window.GmConsole.requirePlayerId(); } catch (e) { return; }
+          const logs = [];
+          const out = document.getElementById('shopScenarioOutput');
+          const log = (s) => { logs.push(s); if (out) out.textContent = logs.join('\n'); };
+          const heishi = state.shops.find(s => Number(s.Type) === 2);
+          if (!heishi) {
+            log('⚠️ Shop 表中未找到 Type=2 的黑市商店。');
+            return;
+          }
+          log(`▶ [场景4] 黑市商店 #${heishi.ID} (${heishi.Name || '黑市'}) 连续刷新上限验证...`);
+          await window.GmConsole.resetModules('ShopModule');
+          await window.GmConsole.addResource(100001, 50000);
+          let hitLimit = false;
+          for (let i = 1; i <= 25; i++) {
+            const res = await window.GmConsole.invokeProto('ShopHeishiRefreshRequest_15000005', { shopId: Number(heishi.ID) });
+            if (!res.ok) {
+              log(`第 ${i} 次刷新停止: code=${res.errorCode} ${res.errorName || ''} (${res.errorDesc || ''})`);
+              hitLimit = (res.errorName === 'times_limit');
+              break;
+            }
+            if (i <= 3 || i % 5 === 0) {
+              log(`第 ${i} 次刷新成功，返回商品数=${res.response?.payload?.items?.length || 0}`);
+            }
+          }
+          log(hitLimit ? '✅ 结论: 成功触发黑市刷新次数上限 times_limit！' : 'ℹ️ 未在 25 次内命中 times_limit（可能 VIP 刷新次数较高或已提前遇到其他限制）。');
+          await inspectState();
+        }
+      };
+
+      const unsub = window.GmConsole ? window.GmConsole.onPlayerChange(() => {
+        window.ShopQaPanel.refreshAll();
+      }) : null;
+      window.__gmPanelCleanup = function () {
+        if (typeof unsub === 'function') unsub();
+      };
+
+      // 打开页面后自动初始化配表与当前选中玩家状态
+      if (window.GmConsole) {
+        window.ShopQaPanel.refreshAll();
+      }
+    })();
+  </script>
+</body>
+</html>

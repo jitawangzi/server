@@ -4,26 +4,216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GameServer GM Console</title>
+  <script>
+    (function () {
+      var THEME_BG = {
+        "dark": "#0f172a",
+        "light-day": "#f4f6f9",
+        "light-warm": "#f3efe6"
+      };
+      try {
+        var saved = window.localStorage && window.localStorage.getItem("gm_console_theme");
+        var initial = (saved && THEME_BG[saved]) ? saved : "dark";
+        document.documentElement.setAttribute("data-theme", initial);
+        document.documentElement.style.backgroundColor = THEME_BG[initial];
+        document.documentElement.style.colorScheme = initial === "dark" ? "dark" : "light";
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.documentElement.style.backgroundColor = THEME_BG["dark"];
+        document.documentElement.style.colorScheme = "dark";
+      }
+    })();
+  </script>
   <style>
-    :root {
+    :root,
+    :root[data-theme="dark"] {
+      color-scheme: dark;
       --bg-color: #0f172a;
       --card-bg: #1e293b;
+      --surface-subtle: #0f172a;
+      --surface-deep: #0b1120;
+      --input-bg: #0f172a;
+      --code-bg: #090d16;
+      --code-text: #38bdf8;
       --border-color: #334155;
+      --row-border: #1e293b;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --primary: #38bdf8;
       --primary-hover: #0284c7;
-      --success: #22c55e;
+      --primary-contrast: #0f172a;
+      --accent-text: #67e8f9;
+      --selected-bg: #172554;
+      --selected-text: #67e8f9;
+      --clock-bar-bg: #172554;
+      --clock-bar-border: #1e3a8a;
+      --btn-secondary-bg: #475569;
+      --btn-secondary-hover: #64748b;
+      --btn-secondary-text: #ffffff;
+      --btn-secondary-border: transparent;
+      --badge-dev-bg: #0369a1;
+      --badge-dev-text: #e0f2fe;
+      --badge-prod-bg: #b91c1c;
+      --badge-prod-text: #fee2e2;
+      --badge-clock-bg: #047857;
+      --badge-clock-text: #d1fae5;
+      --success: #10b981;
+      --success-text: #4ade80;
+      --success-soft-bg: rgba(16, 185, 129, 0.12);
       --warning: #f59e0b;
+      --warning-text: #fde68a;
+      --warning-soft-bg: #451a03;
+      --warning-border: #d97706;
       --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-text: #f87171;
+      --danger-soft-text: #fca5a5;
+      --danger-soft-bg: #450a0a;
+      --danger-border: #b91c1c;
+      --info-soft-bg: #1e1b4b;
+      --info-border: #4338ca;
+      --info-text: #c7d2fe;
+      --acceptance-bg: linear-gradient(to right, rgba(16, 185, 129, 0.06), rgba(15, 23, 42, 0.8));
+      --modal-backdrop: rgba(0, 0, 0, 0.7);
+      --card-shadow: none;
+    }
+    :root[data-theme="light-day"] {
+      color-scheme: light;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --surface-deep: #e8eef5;
+      --input-bg: #ffffff;
+      --code-bg: #f8fafc;
+      --code-text: #1e3a5f;
+      --border-color: #d8e0ea;
+      --row-border: #e6ecf2;
+      --text-main: #1f2937;
+      --text-muted: #5b6778;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-contrast: #ffffff;
+      --accent-text: #0f5298;
+      --selected-bg: #eff6ff;
+      --selected-text: #1d4ed8;
+      --clock-bar-bg: #eaf0f7;
+      --clock-bar-border: #d0dbe8;
+      --btn-secondary-bg: #e9eef5;
+      --btn-secondary-hover: #dce4ef;
+      --btn-secondary-text: #1f2937;
+      --btn-secondary-border: #cbd5e1;
+      --badge-dev-bg: #dbeafe;
+      --badge-dev-text: #1e40af;
+      --badge-prod-bg: #fee2e2;
+      --badge-prod-text: #991b1b;
+      --badge-clock-bg: #dcfce7;
+      --badge-clock-text: #166534;
+      --success: #16a34a;
+      --success-text: #15803d;
+      --success-soft-bg: #ecfdf5;
+      --warning: #d97706;
+      --warning-text: #92400e;
+      --warning-soft-bg: #fffbeb;
+      --warning-border: #f59e0b;
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+      --danger-text: #b91c1c;
+      --danger-soft-text: #991b1b;
+      --danger-soft-bg: #fef2f2;
+      --danger-border: #fca5a5;
+      --info-soft-bg: #eef2ff;
+      --info-border: #a5b4fc;
+      --info-text: #3730a3;
+      --acceptance-bg: linear-gradient(to right, rgba(22, 163, 74, 0.08), rgba(255, 255, 255, 0.96));
+      --modal-backdrop: rgba(15, 23, 42, 0.45);
+      --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    :root[data-theme="light-warm"] {
+      color-scheme: light;
+      --bg-color: #f3efe6;
+      --card-bg: #faf7f0;
+      --surface-subtle: #eee8db;
+      --surface-deep: #e7dfd0;
+      --input-bg: #fffdf8;
+      --code-bg: #f5f0e4;
+      --code-text: #274c5e;
+      --border-color: #dad1be;
+      --row-border: #e6decb;
+      --text-main: #2d2922;
+      --text-muted: #686155;
+      --primary: #2b6cb0;
+      --primary-hover: #215387;
+      --primary-contrast: #ffffff;
+      --accent-text: #245b73;
+      --selected-bg: #e6eff4;
+      --selected-text: #1e4d6b;
+      --clock-bar-bg: #eae2d3;
+      --clock-bar-border: #d5cab4;
+      --btn-secondary-bg: #e7dfd0;
+      --btn-secondary-hover: #dad0bc;
+      --btn-secondary-text: #2d2922;
+      --btn-secondary-border: #cfc4ae;
+      --badge-dev-bg: #dceaf5;
+      --badge-dev-text: #1e4d6b;
+      --badge-prod-bg: #f9dede;
+      --badge-prod-text: #8c2323;
+      --badge-clock-bg: #dcefe2;
+      --badge-clock-text: #1f5c3a;
+      --success: #2f855a;
+      --success-text: #276749;
+      --success-soft-bg: #edf7f0;
+      --warning: #b7791f;
+      --warning-text: #8a5610;
+      --warning-soft-bg: #fdf6e2;
+      --warning-border: #d69e2e;
+      --danger: #c53030;
+      --danger-hover: #9b2c2c;
+      --danger-text: #9b2c2c;
+      --danger-soft-text: #822727;
+      --danger-soft-bg: #fdf0ef;
+      --danger-border: #e8b4b4;
+      --info-soft-bg: #eceff7;
+      --info-border: #b4c0de;
+      --info-text: #354778;
+      --acceptance-bg: linear-gradient(to right, rgba(47, 133, 90, 0.08), rgba(250, 247, 240, 0.96));
+      --modal-backdrop: rgba(45, 41, 34, 0.45);
+      --card-shadow: 0 1px 2px rgba(45, 41, 34, 0.06);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      min-height: 100%;
+      background-color: var(--bg-color);
+    }
+    html[data-theme="dark"],
+    html[data-theme="dark"] body {
+      color-scheme: dark;
+      background-color: #0f172a;
+    }
+    html[data-theme="light-day"],
+    html[data-theme="light-day"] body {
+      color-scheme: light;
+      background-color: #f4f6f9;
+    }
+    html[data-theme="light-warm"],
+    html[data-theme="light-warm"] body {
+      color-scheme: light;
+      background-color: #f3efe6;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
       line-height: 1.5;
+      min-height: 100vh;
       padding-bottom: 40px;
+    }
+    code {
+      background-color: var(--surface-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85em;
     }
     header {
       background-color: var(--card-bg);
@@ -36,7 +226,9 @@
       gap: 16px;
     }
     .brand { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-    .server-info { display: flex; align-items: center; gap: 12px; font-size: 0.875rem; }
+    .server-info { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 0.875rem; }
+    .theme-switcher { display: flex; align-items: center; gap: 6px; }
+    .theme-switcher select { width: auto; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; }
     .badge {
       padding: 2px 8px;
       border-radius: 4px;
@@ -44,13 +236,13 @@
       font-size: 0.75rem;
       text-transform: uppercase;
     }
-    .badge-dev { background-color: #0369a1; color: #e0f2fe; }
-    .badge-prod { background-color: #b91c1c; color: #fee2e2; }
-    .badge-clock { background-color: #047857; color: #d1fae5; }
+    .badge-dev { background-color: var(--badge-dev-bg); color: var(--badge-dev-text); }
+    .badge-prod { background-color: var(--badge-prod-bg); color: var(--badge-prod-text); }
+    .badge-clock { background-color: var(--badge-clock-bg); color: var(--badge-clock-text); }
     
     .clock-bar {
-      background-color: #172554;
-      border-bottom: 1px solid #1e3a8a;
+      background-color: var(--clock-bar-bg);
+      border-bottom: 1px solid var(--clock-bar-border);
       padding: 8px 24px;
       display: flex;
       flex-wrap: wrap;
@@ -60,7 +252,7 @@
       font-size: 0.875rem;
     }
     .clock-item { display: flex; align-items: center; gap: 6px; }
-    .clock-value { font-weight: 600; color: #67e8f9; font-family: monospace; }
+    .clock-value { font-weight: 600; color: var(--accent-text); font-family: monospace; }
     
     .nav-tabs {
       display: flex;
@@ -96,6 +288,7 @@
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
+      box-shadow: var(--card-shadow);
     }
     .card-title {
       font-size: 1.1rem;
@@ -112,47 +305,237 @@
     label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
     input, select, textarea {
       width: 100%;
-      background-color: #0f172a;
+      background-color: var(--input-bg);
       border: 1px solid var(--border-color);
       color: var(--text-main);
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 0.9rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    input[type="checkbox"], input[type="radio"] {
+      accent-color: var(--primary);
+    }
+    option {
+      background-color: var(--input-bg);
+      color: var(--text-main);
     }
     input:focus, select:focus, textarea:focus { border-color: var(--primary); }
     
     .btn {
       background-color: var(--primary);
-      color: #0f172a;
+      color: var(--primary-contrast);
       font-weight: 600;
-      border: none;
+      border: 1px solid transparent;
       padding: 8px 16px;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, border-color 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .btn:hover { background-color: var(--primary-hover); }
-    .btn-secondary { background-color: #475569; color: #fff; }
-    .btn-secondary:hover { background-color: #64748b; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-secondary {
+      background-color: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border-color: var(--btn-secondary-border);
+    }
+    .btn-secondary:hover { background-color: var(--btn-secondary-hover); }
     .btn-danger { background-color: var(--danger); color: #fff; }
-    .btn-danger:hover { background-color: #dc2626; }
+    .btn-danger:hover { background-color: var(--danger-hover); }
     
     pre {
-      background-color: #090d16;
+      background-color: var(--code-bg);
       border: 1px solid var(--border-color);
       border-radius: 6px;
       padding: 14px;
       overflow-x: auto;
       font-family: "Courier New", Courier, monospace;
       font-size: 0.85rem;
-      color: #38bdf8;
+      color: var(--code-text);
       max-height: 400px;
     }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+    .pill-qa { background: var(--info-soft-bg); color: var(--accent-text); border-color: var(--info-border); }
+    .pill-dev { background: var(--warning-soft-bg); color: var(--warning-text); border-color: var(--warning-border); }
+    .category-chip {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .category-chip.active {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      border-color: var(--primary);
+    }
+    .panel-stage-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+    }
+    .dev-drawer {
+      margin-top: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .dev-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .gm-toast-wrap {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 10050;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 420px;
+      pointer-events: none;
+    }
+    .gm-toast {
+      pointer-events: auto;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+    .gm-toast.ok { border-color: var(--success); background: var(--acceptance-bg); color: var(--success-text); }
+    .gm-toast.error { border-color: var(--danger-border); background: var(--danger-soft-bg); color: var(--danger-soft-text); }
+    .gm-toast.warn { border-color: var(--warning-border); background: var(--warning-soft-bg); color: var(--warning-text); }
+
+    .quick-gm-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-backdrop);
+      z-index: 9980;
+      display: none;
+      justify-content: flex-end;
+    }
+    .quick-gm-backdrop.open { display: flex; }
+    .quick-gm-drawer {
+      width: min(860px, 95vw);
+      max-width: 96vw;
+      height: 100%;
+      background: var(--card-bg);
+      color: var(--text-main);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.25);
+    }
+    .quick-gm-head {
+      padding: 14px 18px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .quick-gm-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .quick-gm-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+    .quick-gm-cascade-grid {
+      display: grid;
+      grid-template-columns: minmax(210px, 1.15fr) minmax(150px, 0.85fr) minmax(240px, 1.55fr);
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .quick-gm-meta-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    @media (max-width: 760px) {
+      .quick-gm-grid-2,
+      .quick-gm-cascade-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .quick-gm-section {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .quick-gm-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .quick-gm-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .quick-gm-chip {
+      padding: 3px 8px;
+      font-size: 0.74rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .quick-gm-chip:hover { border-color: var(--primary); color: var(--primary); }
   </style>
 </head>
 <body>
@@ -163,6 +546,14 @@
     <div class="server-info">
       <div>Server: <span id="lblServerId" class="clock-value">loading...</span></div>
       <div>Mode: <span id="lblRunMode" class="badge badge-dev">DEV</span></div>
+      <div class="theme-switcher">
+        <label for="selTheme" style="margin:0; font-size:0.8rem;">主题:</label>
+        <select id="selTheme" aria-label="界面主题切换" onchange="applyTheme(this.value)">
+          <option value="dark">深邃夜蓝 (默认)</option>
+          <option value="light-day">晴日浅灰 (浅色)</option>
+          <option value="light-warm">暖纸护眼 (浅色)</option>
+        </select>
+      </div>
       <div style="display:flex; align-items:center; gap:6px;">
         <label style="margin:0; font-size:0.8rem;">Token:</label>
         <input type="password" id="txtToken" placeholder="Ops Token" style="width:140px; padding:4px 8px; font-size:0.8rem;" />
@@ -186,7 +577,7 @@
     </div>
     <div class="clock-item">
       <span>周期:</span>
-      <span>D: <b id="lblDay" style="color:#67e8f9">--</b> | W: <b id="lblWeek" style="color:#67e8f9">--</b> | M: <b id="lblMonth" style="color:#67e8f9">--</b></span>
+      <span>D: <b id="lblDay" style="color:var(--accent-text)">--</b> | W: <b id="lblWeek" style="color:var(--accent-text)">--</b> | M: <b id="lblMonth" style="color:var(--accent-text)">--</b></span>
     </div>
     <div style="display:flex; gap:6px;">
       <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="quickOffset('+1h')">+1小时</button>
@@ -196,17 +587,20 @@
     </div>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('tabWorkbench')">功能协议工作台</button>
-    <button class="tab-btn" onclick="switchTab('tabSchema')">Schema 动态表单</button>
-    <button class="tab-btn" onclick="switchTab('tabCommand')">命令行执行器</button>
-    <button class="tab-btn" onclick="switchTab('tabClock')">虚拟时钟运维</button>
-    <button class="tab-btn" onclick="switchTab('tabPanels')">自定义热载面板</button>
+  <div class="nav-tabs" style="align-items:center;">
+    <button class="tab-btn active" data-tab="tabPanels" onclick="switchTab('tabPanels')">🧪 业务测试台 (QA/复现)</button>
+    <button class="tab-btn" data-tab="tabWorkbench" onclick="switchTab('tabWorkbench')">功能协议工作台 (开发)</button>
+    <button class="tab-btn" data-tab="tabSchema" onclick="switchTab('tabSchema')">Schema 动态表单</button>
+    <button class="tab-btn" data-tab="tabCommand" onclick="switchTab('tabCommand')">命令行执行器</button>
+    <button class="tab-btn" data-tab="tabClock" onclick="switchTab('tabClock')">虚拟时钟运维</button>
+    <div style="margin-left:auto; display:flex; align-items:center; gap:8px; padding:6px 0;">
+      <button class="btn" style="padding:5px 12px; font-size:0.82rem;" onclick="toggleQuickGmDrawer(true)" title="在任何页面随时呼出通用快捷GM（发道具/设资源/设等级与差1经验升级/跳关/超级账号）">⚡ 快捷 GM</button>
+    </div>
   </div>
 
   <div class="container">
-    <!-- Tab 0: 功能协议工作台 -->
-    <div id="tabWorkbench" class="tab-content active"></div>
+    <!-- Tab 0: 功能协议工作台（面向开发人员） -->
+    <div id="tabWorkbench" class="tab-content"></div>
 
     <!-- Tab 1: Schema 表单 -->
     <div id="tabSchema" class="tab-content">
@@ -295,28 +689,269 @@
       </div>
     </div>
 
-    <!-- Tab 4: 自定义面板 -->
-    <div id="tabPanels" class="tab-content">
-      <div class="card">
-        <div class="card-title">
-          <span>自定义 HTML 面板 (动态热重载)</span>
-          <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem;" onclick="loadPanelsList()">刷新面板列表</button>
+    <!-- Tab 4: 业务功能测试台 (QA/复现 + 自定义热载面板) -->
+    <div id="tabPanels" class="tab-content active">
+      <!-- 1. 业务测试台门户视图（按玩法/分类卡片组织，与协议模块解耦） -->
+      <div id="panelPortalView">
+        <div class="card">
+          <div class="card-title" style="flex-wrap:wrap; gap:10px;">
+            <div>
+              <span>🧪 业务功能测试台</span>
+              <span style="font-size:0.8rem; font-weight:400; color:var(--text-muted); margin-left:8px;">按玩法独立成页（QA 功能测试 & 开发 Bug 复现共用，修改 gm-console/panels/*.html 免重启生效）</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <label style="margin:0; font-size:0.82rem;">调试玩家:</label>
+              <select id="panelPortalPlayerSelect" style="width:220px; padding:5px 8px; font-size:0.82rem;" onchange="onSharedPlayerSelect(this.value)"></select>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="openSharedTestLogin()">➕ 测试登录</button>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="refreshOnlinePlayers()">🔄 玩家</button>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="loadPanelsList()">♻️ 刷新目录</button>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+            <div id="panelCategoryChips" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="txtPanelSearch" placeholder="搜索玩法名 / 标签 / 关联模块..." style="width:260px; padding:6px 10px; font-size:0.84rem;" oninput="renderPanelsPortal()" />
+              <select id="selPanel" style="width:200px; padding:6px 8px; font-size:0.82rem;" onchange="renderSelectedPanel()" title="快速下拉直达面板"></select>
+            </div>
+          </div>
+
+          <div id="panelCardsGrid"></div>
         </div>
-        <div class="form-group">
-          <label>选择面板:</label>
-          <select id="selPanel" onchange="renderSelectedPanel()"></select>
+      </div>
+
+      <!-- 2. 单个业务测试页视图 -->
+      <div id="panelStageView" style="display:none;">
+        <div class="panel-stage-bar">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.82rem;" onclick="showPanelsPortal()">← 测试台列表</button>
+            <strong id="lblActivePanelTitle" style="font-size:1.1rem; color:var(--primary);">业务测试页</strong>
+            <span id="lblActivePanelBadges" style="display:inline-flex; gap:6px; flex-wrap:wrap;"></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <label style="margin:0; font-size:0.8rem;">调试玩家:</label>
+            <select id="panelPlayerSelect" style="width:220px; padding:5px 8px; font-size:0.82rem;" onchange="onSharedPlayerSelect(this.value)"></select>
+            <button class="btn btn-secondary" style="padding:5px 9px; font-size:0.78rem;" onclick="openSharedTestLogin()">➕ 测试登录</button>
+            <label style="display:inline-flex; align-items:center; gap:4px; margin:0; font-size:0.78rem; cursor:pointer;" title="开启后业务测试页发出的模拟协议响应将同步镜像到真实游戏客户端">
+              <input type="checkbox" id="chkPanelMirrorReal" style="width:auto;" onchange="sharedMirrorToRealClient=this.checked" />
+              <span>镜像真端</span>
+            </label>
+            <button class="btn btn-secondary" style="padding:5px 9px; font-size:0.78rem;" onclick="quickPanelSaveSnapshot()" title="保存当前玩家快照，方便随时回滚">💾 存快照</button>
+            <button class="btn btn-secondary" style="padding:5px 9px; font-size:0.78rem;" onclick="quickPanelRestoreSnapshot()" title="回滚到最近保存的快照">⏪ 回滚</button>
+            <button class="btn btn-secondary" style="padding:5px 9px; font-size:0.78rem;" onclick="reloadActivePanel()" title="免重启从磁盘重新加载当前测试页">♻️ 热重载本页</button>
+          </div>
         </div>
-        <div id="panelContainer" style="min-height:300px; border:1px solid var(--border-color); border-radius:6px; padding:16px; background:#0f172a;">
-          请选择自定义面板
+
+        <div id="panelContainer" style="min-height:300px; border:1px solid var(--border-color); border-radius:8px; padding:16px; background:var(--surface-subtle);">
+          请选择业务测试页
+        </div>
+
+        <!-- 面向开发的底部可折叠诊断抽屉（QA 日常可保持折叠，开发复现 Bug 展开即看协议/Trace/Diff） -->
+        <div class="dev-drawer" id="panelDevDrawer">
+          <div class="dev-drawer-header" onclick="toggleDevDrawer()">
+            <div>
+              <span>🔧 开发者诊断抽屉 (请求 / 响应 / Push / Trace / Diff)</span>
+              <span id="lblDevDrawerSummary" style="margin-left:10px; font-weight:400; color:var(--text-muted);">暂无调用记录</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); clearDevDiagnostics();">清空</button>
+              <span id="lblDevDrawerToggle" style="color:var(--primary);">▼ 展开</span>
+            </div>
+          </div>
+          <div id="panelDevDrawerBody" style="display:none; padding:12px 14px; border-top:1px solid var(--border-color);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="gmToastWrap" class="gm-toast-wrap"></div>
+
+  <!-- 全局随手「⚡ 快捷 GM」右侧滑出抽屉（跨页面随时呼出，不打断当前测试页） -->
+  <div id="quickGmBackdrop" class="quick-gm-backdrop" onclick="if(event.target===this) toggleQuickGmDrawer(false)">
+    <div class="quick-gm-drawer" role="dialog" aria-label="快捷 GM 工具抽屉">
+      <div class="quick-gm-head">
+        <div>
+          <strong style="color:var(--primary); font-size:1rem;">⚡ 常用快捷 GM 抽屉</strong>
+          <div style="font-size:0.74rem; color:var(--text-muted);">无需离开当前测试页，随时调资源/等级/关卡/超级账号</div>
+        </div>
+        <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.82rem;" onclick="toggleQuickGmDrawer(false)">✕</button>
+      </div>
+      <div class="quick-gm-body">
+        <!-- 第一行（双栏）：当前调试玩家 + 一键账号预设 -->
+        <div class="quick-gm-grid-2">
+          <div class="quick-gm-section">
+            <div class="quick-gm-section-title">
+              <span>🎮 当前调试玩家</span>
+              <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.74rem;" onclick="openSharedTestLogin()">➕ 测试登录</button>
+            </div>
+            <div class="quick-gm-row">
+              <select id="quickGmPlayerSelect" style="flex:1; min-width:160px; padding:6px 8px; font-size:0.82rem;" onchange="onSharedPlayerSelect(this.value)"></select>
+              <button class="btn btn-secondary" style="padding:6px 8px; font-size:0.78rem;" onclick="refreshOnlinePlayers()" title="刷新在线玩家列表">🔄</button>
+            </div>
+          </div>
+
+          <div class="quick-gm-section">
+            <div class="quick-gm-section-title">
+              <span>🚀 一键账号预设</span>
+              <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="toggleQuickGmDrawer(false); openPanelPage('common_toolbox.html', true);">🧰 完整工具箱 →</button>
+            </div>
+            <div class="quick-gm-row">
+              <button class="btn" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickGmPreset('player.super', '一键超级账号')">⚡ 超级测试号</button>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickGmPreset('player.init', '拉满全部货币')">💰 拉满货币</button>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickGmPreset('player.openAllFunc', '解锁全部功能')">🔓 全功能解锁</button>
+              <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickGmPreset('player.newday', '个人跨天刷新')">🌅 个人跨天</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 第二行（通栏）：全物品大类 2 级联动选品与资源操作 -->
+        <div class="quick-gm-section">
+          <div class="quick-gm-section-title">
+            <span>💎 加道具 / 设置资源数量（全物品大类 2 级联动）</span>
+            <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.72rem;" onclick="loadQuickGoodsCategories(true)" title="重新拉取服务端物品配表目录">🔄 刷新配置目录</button>
+          </div>
+          <!-- 高频常用快捷芯片 -->
+          <div class="quick-gm-row" style="margin-bottom:8px;">
+            <span style="font-size:0.74rem; color:var(--text-muted);">高频快捷:</span>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100001)">元宝 100001</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100002)">金币 100002</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100008)">代金券 100008</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100301)">体力 100301</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100003)">银币 100003</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100201)">经验 100201</button>
+            <button class="quick-gm-chip" onclick="pickQuickAsset(100007)">VIP经验 100007</button>
+          </div>
+          <!-- 2 级联动菜单：大类 -> 关键字筛选 -> 配表条目 -->
+          <div class="quick-gm-cascade-grid">
+            <select id="qgmGoodsCategory" style="padding:6px 8px; font-size:0.82rem;" onchange="onQuickGoodsCategoryChange()">
+              <option value="">-- 正在加载物品大类... --</option>
+            </select>
+            <input type="text" id="qgmGoodsSearch" placeholder="按 ID 或中文名筛选..." style="padding:6px 8px; font-size:0.82rem;" oninput="renderQuickGoodsItemOptions()" />
+            <select id="qgmGoodsItem" style="padding:6px 8px; font-size:0.82rem;" onchange="onQuickGoodsItemSelect()">
+              <option value="">-- 请先选择物品大类 --</option>
+            </select>
+          </div>
+          <div id="qgmGoodsHint" class="quick-gm-meta-hint">
+            提示：选择左侧「物品大类」可动态联动对应配置表（资源/道具/英雄/装备/宝石/灵宠/神通/仙友/皮肤等），选中条目后自动回填下方 ID。
+          </div>
+          <!-- ID / 数量 / 快捷数值 / 操作按钮同行排列 -->
+          <div class="quick-gm-row">
+            <label style="margin:0; font-size:0.78rem; color:var(--text-muted);">ID:</label>
+            <input type="number" id="qgmAssetId" value="100001" placeholder="资源/道具ID" style="width:118px; padding:6px 8px; font-size:0.82rem;" oninput="onQuickAssetIdManualInput()" />
+            <label style="margin:0; font-size:0.78rem; color:var(--text-muted);">数量:</label>
+            <input type="number" id="qgmAssetCount" value="10000" placeholder="数量" style="width:105px; padding:6px 8px; font-size:0.82rem;" />
+            <button class="quick-gm-chip" onclick="setQuickAssetCount(1)">×1</button>
+            <button class="quick-gm-chip" onclick="setQuickAssetCount(10)">×10</button>
+            <button class="quick-gm-chip" onclick="setQuickAssetCount(100)">×100</button>
+            <button class="quick-gm-chip" onclick="setQuickAssetCount(10000)">×1万</button>
+            <button class="btn" style="padding:5px 11px; font-size:0.78rem;" onclick="runQuickAssetOp('add')">➕ 发放</button>
+            <button id="btnQgmSet" class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickAssetOp('set')">🎯 设为精确值</button>
+            <button id="btnQgmDel" class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickAssetOp('del')">➖ 扣除</button>
+            <button id="btnQgmZero" class="btn btn-danger" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickAssetOp('zero')">清零(设0)</button>
+          </div>
+        </div>
+
+        <!-- 第三行（双栏）：等级与 VIP | 主线关卡 + 快照冷重载 -->
+        <div class="quick-gm-grid-2">
+          <!-- 等级与 VIP（含差1经验即升级） -->
+          <div class="quick-gm-section">
+            <div class="quick-gm-section-title"><span>📈 玩家等级 & VIP（支持差1经验即升级）</span></div>
+            <div class="quick-gm-row" style="margin-bottom:8px;">
+              <label style="margin:0; font-size:0.78rem; width:56px;">玩家等级:</label>
+              <input type="number" id="qgmLevel" value="20" min="1" style="width:72px; padding:5px 8px; font-size:0.82rem;" />
+              <button class="btn" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetLevel(false, true)">设等级</button>
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetLevel(true, true)" title="设为目标等级且当前经验=最大经验-1">设等级+差1升级</button>
+            </div>
+            <div class="quick-gm-row" style="margin-bottom:10px;">
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetLevel(true, false)" title="保持当前等级不变，把经验直接设为当前等级最大经验-1">🔥 当前级差1经验升级</button>
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickAddExp(100201, 1, '玩家经验')" title="加1点玩家经验，立即触发真实升级流程与奖励">➕ +1经验测升级</button>
+            </div>
+            <div class="quick-gm-row" style="margin-bottom:8px; border-top:1px solid var(--row-border); padding-top:8px;">
+              <label style="margin:0; font-size:0.78rem; width:56px;">VIP 等级:</label>
+              <input type="number" id="qgmVipLevel" value="5" min="0" style="width:72px; padding:5px 8px; font-size:0.82rem;" />
+              <button class="btn" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetVip(false, true)">设VIP</button>
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetVip(true, true)">设VIP+差1升级</button>
+            </div>
+            <div class="quick-gm-row">
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickSetVip(true, false)">🔥 当前VIP差1经验升级</button>
+              <button class="btn btn-secondary" style="padding:4px 9px; font-size:0.76rem;" onclick="runQuickAddExp(100007, 1, 'VIP经验')">➕ +1 VIP经验</button>
+            </div>
+          </div>
+
+          <!-- 右侧组合：主线关卡 + 快照与冷重载 -->
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="quick-gm-section">
+              <div class="quick-gm-section-title"><span>⚔️ 主线通关进度 (battle.zxgk)</span></div>
+              <div class="quick-gm-row" style="margin-bottom:8px;">
+                <input type="number" id="qgmStageId" value="10" placeholder="第几关或关卡ID" style="width:128px; padding:5px 8px; font-size:0.82rem;" />
+                <button class="btn" style="padding:5px 10px; font-size:0.78rem;" onclick="runQuickSetStage()">设置主线关卡</button>
+              </div>
+              <div class="quick-gm-row">
+                <button class="quick-gm-chip" onclick="runQuickSetStage(5)">第5关</button>
+                <button class="quick-gm-chip" onclick="runQuickSetStage(15)">第15关</button>
+                <button class="quick-gm-chip" onclick="runQuickSetStage(30)">第30关</button>
+                <button class="quick-gm-chip" onclick="runQuickSetStage(40)">第40关(满)</button>
+              </div>
+            </div>
+
+            <div class="quick-gm-section" style="flex:1;">
+              <div class="quick-gm-section-title"><span>🛡️ 快照回滚与持久化校验</span></div>
+              <div class="quick-gm-row">
+                <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.76rem;" onclick="quickPanelSaveSnapshot()">💾 存快照</button>
+                <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.76rem;" onclick="quickPanelRestoreSnapshot()">⏪ 回滚快照</button>
+                <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.76rem;" onclick="runQuickColdReload()">🧊 落盘冷重载</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 第四行（通栏）：最近执行结果 -->
+        <div class="quick-gm-section">
+          <div class="quick-gm-section-title"><span>📋 最近快捷执行结果</span></div>
+          <pre id="quickGmOutput" style="max-height:150px; font-size:0.76rem; padding:8px;">等待操作...</pre>
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    const THEME_BG_COLORS = {
+      "dark": "#0f172a",
+      "light-day": "#f4f6f9",
+      "light-warm": "#f3efe6"
+    };
+    const SUPPORTED_THEMES = Object.keys(THEME_BG_COLORS);
     let bootstrapData = null;
     let token = localStorage.getItem("gm_token") || "";
     document.getElementById("txtToken").value = token;
+
+    function getCurrentTheme() {
+      const attr = document.documentElement.getAttribute("data-theme");
+      return SUPPORTED_THEMES.includes(attr) ? attr : "dark";
+    }
+
+    function applyTheme(theme) {
+      const normalized = SUPPORTED_THEMES.includes(theme) ? theme : "dark";
+      const bgColor = THEME_BG_COLORS[normalized];
+      const scheme = normalized === "dark" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", normalized);
+      document.documentElement.style.backgroundColor = bgColor;
+      document.documentElement.style.colorScheme = scheme;
+      if (document.body) {
+        document.body.setAttribute("data-theme", normalized);
+        document.body.style.backgroundColor = bgColor;
+        document.body.style.colorScheme = scheme;
+      }
+      try {
+        localStorage.setItem("gm_console_theme", normalized);
+      } catch (e) {}
+      const selTheme = document.getElementById("selTheme");
+      if (selTheme && selTheme.value !== normalized) {
+        selTheme.value = normalized;
+      }
+      return normalized;
+    }
+
+    applyTheme(getCurrentTheme());
 
     function saveToken() {
       token = document.getElementById("txtToken").value.trim();
@@ -325,20 +960,56 @@
       refreshBootstrap();
     }
 
+    let sharedPanels = [];
+    let activePanelCategory = "ALL";
+    let activePanelFile = "";
+    let sharedOnlinePlayers = [];
+    let sharedSelectedPlayerId = 0;
+    let sharedMirrorToRealClient = false;
+    let devDrawerOpen = false;
+    const devDiagnosticsLog = [];
+    const playerChangeListeners = new Set();
+
+    function escapeHtmlInline(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function showToast(message, level = "info") {
+      const wrap = document.getElementById("gmToastWrap");
+      if (!wrap) return;
+      const el = document.createElement("div");
+      el.className = "gm-toast " + (level === "ok" || level === "success" ? "ok" : (level === "error" ? "error" : (level === "warn" ? "warn" : "")));
+      el.textContent = String(message || "");
+      wrap.appendChild(el);
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 3200);
+    }
+
     function switchTab(tabId) {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        const isMatch = b.getAttribute("data-tab") === tabId;
+        b.classList.toggle("active", isMatch);
+      });
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      if (typeof event !== "undefined" && event && event.target && event.target.classList) {
-        event.target.classList.add("active");
-      }
       const targetContent = document.getElementById(tabId);
       if (targetContent) targetContent.classList.add("active");
+      if (tabId === "tabPanels" && (!sharedPanels || sharedPanels.length === 0)) {
+        loadPanelsList();
+      }
     }
 
     async function apiRequest(url, method = "GET", body = null) {
       const headers = { "Content-Type": "application/json" };
       if (token) {
         headers["X-GM-Token"] = token;
+        headers["Authorization"] = "Bearer " + token;
       }
       const opts = { method, headers };
       if (body) {
@@ -351,6 +1022,90 @@
       } catch (e) {
         return { ok: false, message: text, statusCode: resp.status };
       }
+    }
+
+    function renderSharedPlayerSelects() {
+      const ids = ["panelPortalPlayerSelect", "panelPlayerSelect", "quickGmPlayerSelect"];
+      let opts = `<option value="0" ${sharedSelectedPlayerId === 0 ? "selected" : ""}>-- 选择在线玩家 --</option>`;
+      sharedOnlinePlayers.forEach(p => {
+        const isSel = Number(p.playerId) === Number(sharedSelectedPlayerId) ? "selected" : "";
+        const tag = p.hasRealWsClient ? "真实客户端" : (p.isVirtualClient ? "虚拟客户端" : "在线");
+        opts += `<option value="${p.playerId}" ${isSel}>${p.playerId} - ${escapeHtmlInline(p.name || "未命名")} (Lv.${p.level}) [${tag}]</option>`;
+      });
+      ids.forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) sel.innerHTML = opts;
+      });
+    }
+
+    function setSharedSelectedPlayerId(playerId, notifyExternal = true) {
+      const parsed = parseInt(playerId, 10) || 0;
+      const changed = parsed !== sharedSelectedPlayerId;
+      sharedSelectedPlayerId = parsed;
+      renderSharedPlayerSelects();
+      const txtPid = document.getElementById("txtPlayerId");
+      if (txtPid && parsed > 0 && (!txtPid.value || txtPid.value === "0")) {
+        txtPid.value = String(parsed);
+      }
+      if (notifyExternal && window.WorkbenchApp && typeof window.WorkbenchApp.syncPlayerFromShared === "function") {
+        window.WorkbenchApp.syncPlayerFromShared(parsed, sharedOnlinePlayers);
+      }
+      if (changed) {
+        playerChangeListeners.forEach(fn => {
+          try { fn(parsed, sharedOnlinePlayers); } catch (e) {}
+        });
+      }
+      return parsed;
+    }
+
+    function onSharedPlayerSelect(val) {
+      setSharedSelectedPlayerId(val, true);
+    }
+
+    async function refreshOnlinePlayers() {
+      const res = await apiRequest("/gm-console/api/workbench/players");
+      if (res && res.ok && res.data) {
+        const prevSelected = sharedSelectedPlayerId;
+        sharedOnlinePlayers = res.data.players || [];
+        const stillOnline = sharedSelectedPlayerId > 0 && sharedOnlinePlayers.some(p => Number(p.playerId) === Number(sharedSelectedPlayerId));
+        if (!stillOnline) {
+          sharedSelectedPlayerId = sharedOnlinePlayers.length > 0 ? (Number(sharedOnlinePlayers[0].playerId) || 0) : 0;
+        }
+        renderSharedPlayerSelects();
+        if (window.WorkbenchApp && typeof window.WorkbenchApp.syncPlayerFromShared === "function") {
+          window.WorkbenchApp.syncPlayerFromShared(sharedSelectedPlayerId, sharedOnlinePlayers);
+        }
+        if (prevSelected !== sharedSelectedPlayerId) {
+          playerChangeListeners.forEach(fn => {
+            try { fn(sharedSelectedPlayerId, sharedOnlinePlayers); } catch (e) {}
+          });
+        }
+      }
+      return sharedOnlinePlayers;
+    }
+
+    function openSharedTestLogin() {
+      if (window.WorkbenchApp && typeof window.WorkbenchApp.quickTestLogin === "function") {
+        window.WorkbenchApp.quickTestLogin();
+      } else {
+        showToast("测试登录模块正在初始化，请稍后重试", "warn");
+      }
+    }
+
+    function requireSharedPlayerId() {
+      if (sharedSelectedPlayerId > 0) {
+        return sharedSelectedPlayerId;
+      }
+      showToast("请先选择在线调试玩家或点击「测试登录」创建角色", "warn");
+      openSharedTestLogin();
+      const err = new Error("未选择目标调试玩家");
+      err.code = "NO_PLAYER";
+      throw err;
+    }
+
+    function handleQuickGmError(label, e) {
+      if (e && e.code === "NO_PLAYER") return;
+      showToast(`${label} 异常: ${e && e.message ? e.message : String(e)}`, "error");
     }
 
     async function refreshBootstrap() {
@@ -368,6 +1123,8 @@
       updateClockDisplay(bootstrapData.virtualClock);
       initSchemaDropdowns(bootstrapData.schema);
       initPanelsDropdown(bootstrapData.panels);
+      await refreshOnlinePlayers();
+      handlePanelHashRoute();
     }
 
     function updateClockDisplay(clock) {
@@ -418,7 +1175,7 @@
           const div = document.createElement("div");
           div.className = "form-group";
           div.innerHTML = `
-            <label>${p.name} ${p.required ? "<b style='color:red'>*</b>" : ""} (${p.type}): <span style="color:#64748b">${p.description || ""}</span></label>
+            <label>${p.name} ${p.required ? "<b style='color:var(--danger)'>*</b>" : ""} (${p.type}): <span style="color:var(--text-muted)">${p.description || ""}</span></label>
             <input type="${p.type === "int" || p.type === "long" ? "number" : "text"}" id="param_${p.name}" value="${p.defaultValue || ""}" placeholder="${p.name}" />
           `;
           container.appendChild(div);
@@ -490,13 +1247,171 @@
     }
 
     function initPanelsDropdown(panels) {
+      sharedPanels = Array.isArray(panels) ? panels : [];
       const sel = document.getElementById("selPanel");
-      sel.innerHTML = "<option value=''>-- 选择自定义面板 --</option>";
-      if (panels && panels.length > 0) {
-        panels.forEach(p => {
-          sel.innerHTML += `<option value="${p.file}">${p.name} (${p.file})</option>`;
+      if (sel) {
+        sel.innerHTML = "<option value=''>-- 快速选择测试页 --</option>";
+        sharedPanels.forEach(p => {
+          const label = p.title && p.title !== p.name ? `${p.title} (${p.file})` : `${p.name} (${p.file})`;
+          sel.innerHTML += `<option value="${escapeHtmlInline(p.file)}">${escapeHtmlInline(label)}</option>`;
         });
       }
+      renderPanelsPortal();
+    }
+
+    function renderPanelsPortal() {
+      const chipsEl = document.getElementById("panelCategoryChips");
+      const gridEl = document.getElementById("panelCardsGrid");
+      if (!chipsEl || !gridEl) return;
+
+      const categories = ["ALL"];
+      sharedPanels.forEach(p => {
+        const cat = p.category || "自定义面板";
+        if (!categories.includes(cat)) categories.push(cat);
+      });
+      if (!categories.includes(activePanelCategory)) {
+        activePanelCategory = "ALL";
+      }
+
+      chipsEl.innerHTML = categories.map(cat => {
+        const label = cat === "ALL" ? `全部 (${sharedPanels.length})` : `${cat} (${sharedPanels.filter(p => (p.category || "自定义面板") === cat).length})`;
+        return `<button class="category-chip ${activePanelCategory === cat ? "active" : ""}" onclick="selectPanelCategory('${escapeHtmlInline(cat)}')">${escapeHtmlInline(label)}</button>`;
+      }).join("");
+
+      const kw = (document.getElementById("txtPanelSearch")?.value || "").trim().toLowerCase();
+      const filtered = sharedPanels.filter(p => {
+        const cat = p.category || "自定义面板";
+        if (activePanelCategory !== "ALL" && cat !== activePanelCategory) return false;
+        if (!kw) return true;
+        const haystack = [
+          p.title, p.name, p.file, p.category, p.summary,
+          ...(Array.isArray(p.tags) ? p.tags : []),
+          ...(Array.isArray(p.modules) ? p.modules : [])
+        ].join(" ").toLowerCase();
+        return haystack.includes(kw);
+      });
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = `<div style="text-align:center; padding:42px 16px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:8px;">
+          未找到匹配的业务测试页。可在 <code>gm-console/panels/</code> 下新增 <code>*.html</code> 测试页（支持免重启热重载）。
+        </div>`;
+        return;
+      }
+
+      // 按分类分组展示，让“一个玩法一个测试页”在活动/养成很多时也能清晰浏览
+      const grouped = new Map();
+      filtered.forEach(p => {
+        const cat = p.category || "自定义面板";
+        if (!grouped.has(cat)) grouped.set(cat, []);
+        grouped.get(cat).push(p);
+      });
+
+      let html = "";
+      grouped.forEach((items, cat) => {
+        html += `<div style="margin-bottom:18px;">
+          <div style="font-size:0.92rem; font-weight:700; color:var(--text-main); margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+            <span>📂 ${escapeHtmlInline(cat)}</span>
+            <span class="pill">${items.length} 页</span>
+          </div>
+          <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:14px;">`;
+        items.forEach(p => {
+          const audienceHtml = (Array.isArray(p.audience) ? p.audience : ["QA", "DEV"]).map(a => {
+            const cls = String(a).toUpperCase() === "QA" ? "pill-qa" : "pill-dev";
+            return `<span class="pill ${cls}">${escapeHtmlInline(a)}</span>`;
+          }).join(" ");
+          const tagsHtml = (Array.isArray(p.tags) ? p.tags : []).slice(0, 6).map(t => `<span class="pill">#${escapeHtmlInline(t)}</span>`).join(" ");
+          const modHtml = (Array.isArray(p.modules) && p.modules.length > 0)
+            ? `<span style="font-size:0.75rem; color:var(--text-muted);">关联协议: <code>${escapeHtmlInline(p.modules.join(", "))}</code></span>`
+            : `<span style="font-size:0.75rem; color:var(--text-muted);">文件: <code>${escapeHtmlInline(p.file)}</code></span>`;
+          html += `
+            <div class="card" style="margin:0; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; transition:border-color 0.15s;"
+                 onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-color)'"
+                 onclick="openPanelPage('${escapeHtmlInline(p.file)}')">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+                  <div style="font-weight:700; font-size:1.02rem; color:var(--primary);">${escapeHtmlInline(p.title || p.name)}</div>
+                  <div style="display:flex; gap:4px; flex-shrink:0;">${audienceHtml}</div>
+                </div>
+                <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.45; margin-bottom:10px; min-height:36px;">
+                  ${escapeHtmlInline(p.summary || "点击进入该玩法的专属业务测试与 Bug 复现页面")}
+                </div>
+              </div>
+              <div>
+                ${tagsHtml ? `<div style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px;">${tagsHtml}</div>` : ""}
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--row-border); padding-top:8px;">
+                  ${modHtml}
+                  <span style="font-size:0.8rem; color:var(--primary); font-weight:600;">进入测试页 →</span>
+                </div>
+              </div>
+            </div>`;
+        });
+        html += `</div></div>`;
+      });
+      gridEl.innerHTML = html;
+    }
+
+    function selectPanelCategory(cat) {
+      activePanelCategory = cat;
+      renderPanelsPortal();
+    }
+
+    function showPanelsPortal(updateHash = true) {
+      if (typeof window.__gmPanelCleanup === "function") {
+        try { window.__gmPanelCleanup(); } catch (e) {}
+        window.__gmPanelCleanup = null;
+      }
+      activePanelFile = "";
+      const portalEl = document.getElementById("panelPortalView");
+      const stageEl = document.getElementById("panelStageView");
+      if (portalEl) portalEl.style.display = "block";
+      if (stageEl) stageEl.style.display = "none";
+      const sel = document.getElementById("selPanel");
+      if (sel) sel.value = "";
+      if (updateHash && window.location.hash !== "#/panels") {
+        window.location.hash = "#/panels";
+      }
+      renderPanelsPortal();
+    }
+
+    async function openPanelPage(file, updateHash = true) {
+      if (!file) {
+        showPanelsPortal(updateHash);
+        return;
+      }
+      switchTab("tabPanels");
+      activePanelFile = file;
+      const sel = document.getElementById("selPanel");
+      if (sel) sel.value = file;
+      if (updateHash) {
+        const targetHash = "#/panel/" + encodeURIComponent(file);
+        if (window.location.hash !== targetHash) {
+          window.location.hash = targetHash;
+        }
+      }
+      const portalEl = document.getElementById("panelPortalView");
+      const stageEl = document.getElementById("panelStageView");
+      if (portalEl) portalEl.style.display = "none";
+      if (stageEl) stageEl.style.display = "block";
+
+      const meta = sharedPanels.find(p => p.file === file) || { file, name: file.replace(/\.html$/i, ""), title: file };
+      const titleEl = document.getElementById("lblActivePanelTitle");
+      if (titleEl) titleEl.textContent = meta.title || meta.name || file;
+
+      const badgesEl = document.getElementById("lblActivePanelBadges");
+      if (badgesEl) {
+        const chips = [];
+        if (meta.category) chips.push(`<span class="pill">${escapeHtmlInline(meta.category)}</span>`);
+        (Array.isArray(meta.audience) ? meta.audience : []).forEach(a => {
+          chips.push(`<span class="pill ${String(a).toUpperCase() === "QA" ? "pill-qa" : "pill-dev"}">${escapeHtmlInline(a)}</span>`);
+        });
+        if (Array.isArray(meta.modules) && meta.modules.length > 0) {
+          const jumpTarget = meta.modules.find(m => /^0x/i.test(m)) || meta.modules[0];
+          chips.push(`<button class="btn btn-secondary" style="padding:2px 8px; font-size:0.74rem;" onclick="window.GmConsole.openModuleWorkbench('${escapeHtmlInline(jumpTarget)}')" title="切换到开发向协议工作台查看底层 Protobuf 协议">🔧 开发协议台 (${escapeHtmlInline(meta.modules.join("/") )})</button>`);
+        }
+        badgesEl.innerHTML = chips.join("");
+      }
+
+      await renderPanelFile(file);
     }
 
     async function loadPanelsList() {
@@ -504,18 +1419,41 @@
       if (res.ok) {
         initPanelsDropdown(res.data);
       }
+      return sharedPanels;
     }
 
     async function renderSelectedPanel() {
       const file = document.getElementById("selPanel").value;
-      const container = document.getElementById("panelContainer");
       if (!file) {
-        container.innerHTML = "请选择自定义面板";
+        showPanelsPortal();
+        return;
+      }
+      await openPanelPage(file, true);
+    }
+
+    async function reloadActivePanel() {
+      if (!activePanelFile) return;
+      await renderPanelFile(activePanelFile);
+      showToast("已从磁盘热重载测试页: " + activePanelFile, "ok");
+    }
+
+    async function renderPanelFile(file) {
+      const container = document.getElementById("panelContainer");
+      if (!container) return;
+      if (typeof window.__gmPanelCleanup === "function") {
+        try { window.__gmPanelCleanup(); } catch (e) {}
+        window.__gmPanelCleanup = null;
+      }
+      if (!file) {
+        container.innerHTML = "请选择业务测试页";
         return;
       }
       const headers = {};
-      if (token) headers["X-GM-Token"] = token;
-      const resp = await fetch("/gm-console/panels/" + file, { headers });
+      if (token) {
+        headers["X-GM-Token"] = token;
+        headers["Authorization"] = "Bearer " + token;
+      }
+      const resp = await fetch("/gm-console/panels/" + encodeURIComponent(file), { headers, cache: "no-store" });
       if (resp.ok) {
         container.innerHTML = await resp.text();
         const scripts = container.querySelectorAll("script");
@@ -532,15 +1470,625 @@
           }
         });
       } else {
-        container.innerHTML = `<span style='color:red'>加载面板失败 (HTTP ${resp.status}): ${await resp.text()}</span>`;
+        container.innerHTML = `<span style='color:var(--danger-text)'>加载面板失败 (HTTP ${resp.status}): ${escapeHtmlInline(await resp.text())}</span>`;
       }
     }
 
-    // Window GM Console SDK
+    function recordDevDiagnostic(entry) {
+      devDiagnosticsLog.unshift({
+        time: new Date().toLocaleTimeString(),
+        ...entry
+      });
+      if (devDiagnosticsLog.length > 50) {
+        devDiagnosticsLog.length = 50;
+      }
+      renderDevDiagnostics();
+    }
+
+    function clearDevDiagnostics() {
+      devDiagnosticsLog.length = 0;
+      renderDevDiagnostics();
+    }
+
+    function toggleDevDrawer(forceOpen) {
+      devDrawerOpen = typeof forceOpen === "boolean" ? forceOpen : !devDrawerOpen;
+      const body = document.getElementById("panelDevDrawerBody");
+      const toggle = document.getElementById("lblDevDrawerToggle");
+      if (body) body.style.display = devDrawerOpen ? "block" : "none";
+      if (toggle) toggle.textContent = devDrawerOpen ? "▲ 收起" : "▼ 展开";
+      if (devDrawerOpen) renderDevDiagnostics();
+    }
+
+    function renderDevDiagnostics() {
+      const summaryEl = document.getElementById("lblDevDrawerSummary");
+      const bodyEl = document.getElementById("panelDevDrawerBody");
+      if (summaryEl) {
+        if (devDiagnosticsLog.length === 0) {
+          summaryEl.textContent = "暂无调用记录";
+        } else {
+          const latest = devDiagnosticsLog[0];
+          const statusIcon = latest.ok ? "✅" : "❌";
+          summaryEl.textContent = `共 ${devDiagnosticsLog.length} 条 | 最近: [${latest.kind}] ${latest.label} ${statusIcon}${latest.errorCode ? " code=" + latest.errorCode : ""} (${latest.elapsedMs || 0}ms)`;
+        }
+      }
+      if (!bodyEl || !devDrawerOpen) return;
+      if (devDiagnosticsLog.length === 0) {
+        bodyEl.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem;">在上方业务测试页中点击任意操作后，这里会自动捕获底层协议/GM 的请求参数、回包、伴随 Push、Trace 资源流水与状态 Diff，便于开发直接复现定位 Bug。</div>`;
+        return;
+      }
+      bodyEl.innerHTML = devDiagnosticsLog.map((item, idx) => {
+        const badgeStyle = item.ok
+          ? "background:var(--success); color:#fff;"
+          : "background:var(--danger); color:#fff;";
+        const traceResources = item.raw?.trace?.resourceEvents || [];
+        const traceErrors = item.raw?.trace?.errorEvents || [];
+        const diffList = Array.isArray(item.raw?.diff) ? item.raw.diff : [];
+        const pushes = Array.isArray(item.raw?.pushes) ? item.raw.pushes : [];
+        const extraMeta = [
+          `player=${item.playerId || 0}`,
+          `${item.elapsedMs || 0}ms`,
+          pushes.length ? `pushes=${pushes.length}` : "",
+          traceResources.length ? `resEvents=${traceResources.length}` : "",
+          traceErrors.length ? `ERROR日志=${traceErrors.length}` : "",
+          diffList.length ? `diff=${diffList.length}` : ""
+        ].filter(Boolean).join(" | ");
+        return `
+          <details ${idx === 0 ? "open" : ""} style="margin-bottom:8px; border:1px solid var(--border-color); border-radius:6px; background:var(--surface-subtle); padding:8px 10px;">
+            <summary style="cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:0.84rem;">
+              <span>
+                <span style="color:var(--text-muted);">[${escapeHtmlInline(item.time)}]</span>
+                <span class="badge" style="${badgeStyle} margin:0 6px;">${item.ok ? "OK" : ("ERR " + (item.errorCode || ""))}</span>
+                <b>${escapeHtmlInline(item.kind)}: ${escapeHtmlInline(item.label)}</b>
+                ${item.summary ? `<span style="color:var(--text-muted); margin-left:6px;">${escapeHtmlInline(item.summary)}</span>` : ""}
+              </span>
+              <span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtmlInline(extraMeta)}</span>
+            </summary>
+            <div style="margin-top:8px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <div>
+                <div style="font-size:0.76rem; color:var(--text-muted); margin-bottom:4px; display:flex; justify-content:space-between;">
+                  <span>请求载荷 (Request)</span>
+                  <button class="btn btn-secondary" style="padding:1px 6px; font-size:0.7rem;" onclick="copyDiagnosticCurl(${idx})">📋 复制 cURL</button>
+                </div>
+                <pre style="max-height:220px; font-size:0.78rem;">${escapeHtmlInline(JSON.stringify(item.requestBody, null, 2))}</pre>
+              </div>
+              <div>
+                <div style="font-size:0.76rem; color:var(--text-muted); margin-bottom:4px;">返回结果 / Push / Trace / Diff</div>
+                <pre style="max-height:220px; font-size:0.78rem;">${escapeHtmlInline(JSON.stringify(item.raw, null, 2))}</pre>
+              </div>
+            </div>
+          </details>`;
+      }).join("");
+    }
+
+    function copyDiagnosticCurl(idx) {
+      const item = devDiagnosticsLog[idx];
+      if (!item) return;
+      const origin = (window.location && window.location.origin && window.location.origin !== "null")
+        ? window.location.origin
+        : "http://127.0.0.1:18080";
+      const curl = `curl -X POST "${origin}${item.endpoint}" \\\n  -H "Content-Type: application/json" \\\n  -d '${JSON.stringify(item.requestBody, null, 2)}'`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(curl).then(() => showToast("已复制 cURL 到剪贴板", "ok")).catch(() => prompt("请手动复制 cURL:", curl));
+      } else {
+        prompt("请手动复制 cURL:", curl);
+      }
+    }
+
+    async function quickPanelSaveSnapshot() {
+      try {
+        const pid = requireSharedPlayerId();
+        const res = await window.GmConsole.saveSnapshot("qa_quick", pid);
+        if (res && res.ok) {
+          showToast(`已保存玩家 ${pid} 快照 (qa_quick)`, "ok");
+        } else {
+          showToast("保存快照失败: " + (res?.summary || res?.message || "未知错误"), "error");
+        }
+      } catch (e) { handleQuickGmError("保存快照", e); }
+    }
+
+    async function quickPanelRestoreSnapshot() {
+      try {
+        const pid = requireSharedPlayerId();
+        const res = await window.GmConsole.restoreSnapshot("qa_quick", pid);
+        if (res && res.ok) {
+          showToast(`已回滚玩家 ${pid} 至快照 (qa_quick)`, "ok");
+          playerChangeListeners.forEach(fn => { try { fn(pid, sharedOnlinePlayers); } catch (e) {} });
+        } else {
+          showToast("回滚快照失败: " + (res?.summary || res?.message || "请先保存快照"), "error");
+        }
+      } catch (e) { handleQuickGmError("回滚快照", e); }
+    }
+
+    const quickGoodsState = {
+      categories: [],
+      loaded: false,
+      itemsByType: {}
+    };
+
+    async function fetchGoodsCatalogApi(typeId = 0, keyword = "") {
+      const params = [];
+      if (typeId && Number(typeId) > 0) params.push("typeId=" + encodeURIComponent(String(Number(typeId))));
+      if (keyword && String(keyword).trim()) params.push("k=" + encodeURIComponent(String(keyword).trim()));
+      const qs = params.length > 0 ? ("?" + params.join("&")) : "";
+      return await apiRequest("/gm-console/api/workbench/goods-catalog" + qs);
+    }
+
+    function updateQuickGoodsActionButtons(canSet, canDel, hintText) {
+      const btnSet = document.getElementById("btnQgmSet");
+      const btnDel = document.getElementById("btnQgmDel");
+      const btnZero = document.getElementById("btnQgmZero");
+      if (btnSet) btnSet.disabled = (canSet === false);
+      if (btnZero) btnZero.disabled = (canSet === false);
+      if (btnDel) btnDel.disabled = (canDel === false);
+      const hintEl = document.getElementById("qgmGoodsHint");
+      if (hintEl && hintText) {
+        hintEl.textContent = hintText;
+      }
+    }
+
+    async function loadQuickGoodsCategories(forceRefresh = false) {
+      if (quickGoodsState.loaded && !forceRefresh) return;
+      if (forceRefresh) {
+        quickGoodsState.itemsByType = {};
+      }
+      const selCat = document.getElementById("qgmGoodsCategory");
+      if (selCat) {
+        selCat.innerHTML = "<option value=''>-- 正在加载物品大类... --</option>";
+      }
+      const res = await fetchGoodsCatalogApi(0, "");
+      if (!res || !res.ok || !res.data || !Array.isArray(res.data.categories)) {
+        if (selCat) selCat.innerHTML = "<option value=''>-- 加载物品大类失败 --</option>";
+        return;
+      }
+      quickGoodsState.categories = res.data.categories;
+      quickGoodsState.loaded = true;
+      if (!selCat) return;
+      selCat.innerHTML = "<option value=''>-- 第1级：选择物品大类 --</option>" + quickGoodsState.categories.map(c => {
+        const countLabel = Number(c.count || 0) > 0 ? ` (${c.count}项)` : " (空表)";
+        const capTag = c.supportsSet ? "" : " [仅发放]";
+        return `<option value="${Number(c.typeId)}">[${escapeHtmlInline(c.table)}] ${escapeHtmlInline(c.label)}${countLabel}${capTag}</option>`;
+      }).join("");
+
+      const defaultCat = quickGoodsState.categories.find(c => Number(c.typeId) === 1 && Number(c.count) > 0)
+        || quickGoodsState.categories.find(c => Number(c.count) > 0);
+      if (defaultCat) {
+        selCat.value = String(defaultCat.typeId);
+        await onQuickGoodsCategoryChange();
+      }
+    }
+
+    async function onQuickGoodsCategoryChange() {
+      const selCat = document.getElementById("qgmGoodsCategory");
+      const selItem = document.getElementById("qgmGoodsItem");
+      const searchEl = document.getElementById("qgmGoodsSearch");
+      if (searchEl) searchEl.value = "";
+      const typeId = parseInt(selCat?.value, 10) || 0;
+      if (typeId <= 0) {
+        if (selItem) selItem.innerHTML = "<option value=''>-- 请先选择物品大类 --</option>";
+        updateQuickGoodsActionButtons(true, true, "提示：选择左侧「物品大类」可动态联动对应配置表，或直接在下方输入任意 ID。");
+        return;
+      }
+      const catMeta = quickGoodsState.categories.find(c => Number(c.typeId) === typeId);
+      if (!quickGoodsState.itemsByType[typeId]) {
+        if (selItem) selItem.innerHTML = "<option value=''>-- 正在加载配置条目... --</option>";
+        const res = await fetchGoodsCatalogApi(typeId, "");
+        if (res && res.ok && res.data && Array.isArray(res.data.items)) {
+          quickGoodsState.itemsByType[typeId] = res.data.items;
+        } else {
+          quickGoodsState.itemsByType[typeId] = [];
+        }
+      }
+      renderQuickGoodsItemOptions();
+      if (catMeta) {
+        updateQuickGoodsActionButtons(catMeta.supportsSet, catMeta.supportsDel,
+          `[${catMeta.table}] ${catMeta.label}：共 ${quickGoodsState.itemsByType[typeId].length} 项。${catMeta.hint || ""}`);
+      }
+    }
+
+    function renderQuickGoodsItemOptions() {
+      const selCat = document.getElementById("qgmGoodsCategory");
+      const selItem = document.getElementById("qgmGoodsItem");
+      if (!selItem) return;
+      const typeId = parseInt(selCat?.value, 10) || 0;
+      const allItems = quickGoodsState.itemsByType[typeId] || [];
+      const kw = (document.getElementById("qgmGoodsSearch")?.value || "").trim().toLowerCase();
+      const filtered = kw ? allItems.filter(it => {
+        const hay = `${it.id} ${it.name || ""} ${it.subType || ""} ${it.qualityName || ""} ${it.note || ""}`.toLowerCase();
+        return hay.includes(kw);
+      }) : allItems;
+
+      if (filtered.length === 0) {
+        selItem.innerHTML = "<option value=''>-- 当前大类无匹配条目 --</option>";
+        return;
+      }
+      const displayList = filtered.slice(0, 400);
+      const headerLabel = filtered.length > 400
+        ? `-- 第2级：选择配置条目 (共 ${filtered.length} 项，展示前 400 项，请输入关键字精筛) --`
+        : `-- 第2级：选择配置条目 (${filtered.length} 项) --`;
+      selItem.innerHTML = `<option value="">${escapeHtmlInline(headerLabel)}</option>` + displayList.map(it => {
+        const metaParts = [it.qualityName, it.subType].filter(Boolean).join("/");
+        const suffix = metaParts ? ` [${metaParts}]` : "";
+        const setTag = it.canSet ? "" : " (仅发放)";
+        return `<option value="${Number(it.id)}">${Number(it.id)} - ${escapeHtmlInline(it.name || "")}${escapeHtmlInline(suffix)}${setTag}</option>`;
+      }).join("");
+
+      const currentId = parseInt(document.getElementById("qgmAssetId")?.value, 10) || 0;
+      if (currentId > 0 && displayList.some(it => Number(it.id) === currentId)) {
+        selItem.value = String(currentId);
+      }
+    }
+
+    function onQuickGoodsItemSelect() {
+      const selCat = document.getElementById("qgmGoodsCategory");
+      const selItem = document.getElementById("qgmGoodsItem");
+      const id = parseInt(selItem?.value, 10) || 0;
+      if (id <= 0) return;
+      const idInput = document.getElementById("qgmAssetId");
+      if (idInput) idInput.value = String(id);
+
+      const typeId = parseInt(selCat?.value, 10) || 0;
+      const items = quickGoodsState.itemsByType[typeId] || [];
+      const item = items.find(it => Number(it.id) === id);
+      if (item) {
+        const countEl = document.getElementById("qgmAssetCount");
+        if (countEl && !item.canSet && Number(countEl.value) >= 1000) {
+          countEl.value = "1";
+        }
+        const capDesc = item.canSet ? "支持：发放 / 设为精确值 / 扣除 / 清零" : "仅支持「➕ 发放」（非堆叠/自动开启/经验类不支持精确设值或按ID扣减）";
+        const noteStr = item.note ? ` | 说明：${item.note}` : "";
+        updateQuickGoodsActionButtons(item.canSet, item.canDel, `已选中：${item.id} - ${item.name}（${capDesc}${noteStr}）`);
+      }
+    }
+
+    function setQuickAssetCount(val) {
+      const el = document.getElementById("qgmAssetCount");
+      if (el) el.value = String(val);
+    }
+
+    function onQuickAssetIdManualInput() {
+      updateQuickGoodsActionButtons(true, true, "已手动输入 ID：可直接执行发放/设值/扣除（非堆叠或经验类将由服务端返回准确提示）。");
+    }
+
+    function toggleQuickGmDrawer(forceOpen) {
+      const el = document.getElementById("quickGmBackdrop");
+      if (!el) return;
+      const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !el.classList.contains("open");
+      el.classList.toggle("open", shouldOpen);
+      if (shouldOpen) {
+        renderSharedPlayerSelects();
+        loadQuickGoodsCategories(false);
+      }
+    }
+
+    function pickQuickAsset(id) {
+      const el = document.getElementById("qgmAssetId");
+      if (el) el.value = String(id);
+      const resItems = quickGoodsState.itemsByType[1] || [];
+      const matched = resItems.find(it => Number(it.id) === Number(id));
+      if (matched) {
+        const selCat = document.getElementById("qgmGoodsCategory");
+        if (selCat && selCat.value !== "1") {
+          selCat.value = "1";
+          renderQuickGoodsItemOptions();
+        }
+        const selItem = document.getElementById("qgmGoodsItem");
+        if (selItem) selItem.value = String(id);
+        const capDesc = matched.canSet ? "支持：发放 / 设为精确值 / 扣除 / 清零" : "经验类仅支持「➕ 发放」或使用下方「设等级/VIP」";
+        updateQuickGoodsActionButtons(matched.canSet, matched.canDel, `已快捷选中：${matched.id} - ${matched.name}（${capDesc}）`);
+      } else {
+        updateQuickGoodsActionButtons(true, true, `已填入快捷资源 ID: ${id}`);
+      }
+    }
+
+    function showQuickGmOutput(label, res) {
+      const out = document.getElementById("quickGmOutput");
+      if (out) {
+        out.textContent = JSON.stringify({ action: label, ok: Boolean(res && res.ok), summary: res?.summary || res?.message || "", data: res?.data ?? null }, null, 2);
+      }
+      if (res && res.ok) {
+        showToast(`${label} 成功`, "ok");
+        playerChangeListeners.forEach(fn => { try { fn(sharedSelectedPlayerId, sharedOnlinePlayers); } catch (e) {} });
+      } else {
+        showToast(`${label} 失败: ${res?.summary || res?.message || "未知错误"}`, "error");
+      }
+    }
+
+    async function runQuickGmPreset(action, label) {
+      try {
+        const pid = requireSharedPlayerId();
+        const res = await window.GmConsole.executeAction(action, {}, pid);
+        showQuickGmOutput(label, res);
+        await refreshOnlinePlayers();
+      } catch (e) { handleQuickGmError(label, e); }
+    }
+
+    async function runQuickAssetOp(op) {
+      try {
+        const pid = requireSharedPlayerId();
+        const id = parseInt(document.getElementById("qgmAssetId")?.value, 10) || 0;
+        const count = parseInt(document.getElementById("qgmAssetCount")?.value, 10) || 0;
+        if (id <= 0) { showToast("请输入有效的资源/道具 ID", "warn"); return; }
+        let res;
+        if (op === "add") {
+          res = await window.GmConsole.addResource(id, count, pid);
+          showQuickGmOutput(`发放资源 ${id} × ${count}`, res);
+        } else if (op === "del") {
+          res = await window.GmConsole.delResource(id, count, pid);
+          showQuickGmOutput(`扣除资源 ${id} × ${count}`, res);
+        } else if (op === "zero") {
+          res = await window.GmConsole.setResource(id, 0, pid);
+          showQuickGmOutput(`清零资源 ${id}`, res);
+        } else {
+          res = await window.GmConsole.setResource(id, count, pid);
+          showQuickGmOutput(`设置资源 ${id} = ${count}`, res);
+        }
+      } catch (e) { handleQuickGmError("资源快捷操作", e); }
+    }
+
+    async function runQuickSetLevel(nearLevelUp, useInputLevel) {
+      try {
+        const pid = requireSharedPlayerId();
+        const lv = useInputLevel ? (parseInt(document.getElementById("qgmLevel")?.value, 10) || 1) : 0;
+        const res = await window.GmConsole.setPlayerLevel(lv, { nearLevelUp }, pid);
+        const label = nearLevelUp ? (useInputLevel ? `设等级 Lv.${lv} 且差1经验升级` : "设当前等级差1经验升级") : `设玩家等级 Lv.${lv}`;
+        showQuickGmOutput(label, res);
+        await refreshOnlinePlayers();
+      } catch (e) { handleQuickGmError("设置等级", e); }
+    }
+
+    async function runQuickSetVip(nearLevelUp, useInputVip) {
+      try {
+        const pid = requireSharedPlayerId();
+        const vip = useInputVip ? (parseInt(document.getElementById("qgmVipLevel")?.value, 10) || 0) : -1;
+        const res = await window.GmConsole.setVipLevel(vip, { nearLevelUp }, pid);
+        const label = nearLevelUp ? (useInputVip ? `设 VIP.${vip} 且差1经验升级` : "设当前 VIP 差1经验升级") : `设 VIP.${vip}`;
+        showQuickGmOutput(label, res);
+      } catch (e) { handleQuickGmError("设置 VIP", e); }
+    }
+
+    async function runQuickAddExp(assetId, count, label) {
+      try {
+        const pid = requireSharedPlayerId();
+        const res = await window.GmConsole.addResource(assetId, count, pid);
+        showQuickGmOutput(`+${count} ${label}(触发升级)`, res);
+        await refreshOnlinePlayers();
+      } catch (e) { handleQuickGmError(`增加${label}`, e); }
+    }
+
+    async function runQuickSetStage(presetId) {
+      try {
+        const pid = requireSharedPlayerId();
+        const id = presetId != null ? Number(presetId) : (parseInt(document.getElementById("qgmStageId")?.value, 10) || 1);
+        const res = await window.GmConsole.setMainStage(id, pid);
+        showQuickGmOutput(`设置主线通关进度=${id}`, res);
+      } catch (e) { handleQuickGmError("设置主线关卡", e); }
+    }
+
+    async function runQuickColdReload() {
+      try {
+        const pid = requireSharedPlayerId();
+        const res = await window.GmConsole.flushAndColdReload(pid);
+        showQuickGmOutput("强制落盘冷重载", res);
+        await refreshOnlinePlayers();
+      } catch (e) { handleQuickGmError("强制落盘冷重载", e); }
+    }
+
+    function handlePanelHashRoute() {
+      const hash = window.location.hash || "";
+      if (hash.startsWith("#/panel/")) {
+        const file = decodeURIComponent(hash.substring("#/panel/".length).trim());
+        if (file) {
+          openPanelPage(file, false);
+        }
+      } else if (hash === "#/panels") {
+        switchTab("tabPanels");
+        showPanelsPortal(false);
+      }
+    }
+
+    window.addEventListener("hashchange", handlePanelHashRoute);
+
+    // Window GM Console SDK v2（面向业务测试页与开发复现页的统一契约）
     window.GmConsole = {
-      executeAction: (action, args = {}, playerId = 0) => apiRequest("/gm-console/api/execute", "POST", { action, args, playerId }),
-      executeCmd: (cmd, playerId = 0) => apiRequest("/gm-console/api/execute", "POST", { cmd, playerId }),
-      getBootstrap: () => bootstrapData
+      version: "2.0",
+      apiRequest: (url, method = "GET", body = null) => apiRequest(url, method, body),
+      executeAction: async (action, args = {}, playerId = null, opts = {}) => {
+        const pid = playerId === null || playerId === undefined ? sharedSelectedPlayerId : Number(playerId) || 0;
+        const reqBody = { action, args: args || {}, playerId: pid, dryRun: Boolean(opts.dryRun) };
+        const res = await apiRequest("/gm-console/api/execute", "POST", reqBody);
+        recordDevDiagnostic({
+          kind: "GM",
+          label: action,
+          endpoint: "/gm-console/api/execute",
+          requestBody: reqBody,
+          playerId: pid,
+          ok: Boolean(res && res.ok),
+          errorCode: res?.errorCode || 0,
+          summary: res?.summary || res?.message || "",
+          elapsedMs: res?.elapsedMs || 0,
+          raw: res
+        });
+        if (res && res.ok && (String(action).startsWith("time.") || String(action).startsWith("player.time."))) {
+          refreshBootstrap();
+        }
+        return res;
+      },
+      executeCmd: async (cmd, playerId = null) => {
+        const pid = playerId === null || playerId === undefined ? sharedSelectedPlayerId : Number(playerId) || 0;
+        const reqBody = { cmd, playerId: pid };
+        const res = await apiRequest("/gm-console/api/execute", "POST", reqBody);
+        recordDevDiagnostic({
+          kind: "CMD",
+          label: cmd,
+          endpoint: "/gm-console/api/execute",
+          requestBody: reqBody,
+          playerId: pid,
+          ok: Boolean(res && res.ok),
+          errorCode: res?.errorCode || 0,
+          summary: res?.summary || res?.message || "",
+          elapsedMs: res?.elapsedMs || 0,
+          raw: res
+        });
+        return res;
+      },
+      invokeProto: async (msgIdOrName, payload = {}, opts = {}) => {
+        const pid = opts.playerId != null ? Number(opts.playerId) : requireSharedPlayerId();
+        const reqBody = {
+          playerId: pid,
+          payload: payload || {},
+          withTrace: opts.withTrace !== false,
+          withDiff: opts.withDiff !== false,
+          mirrorToRealClient: opts.mirrorToRealClient != null ? Boolean(opts.mirrorToRealClient) : sharedMirrorToRealClient,
+          timeoutMs: opts.timeoutMs || 5000
+        };
+        if (Array.isArray(opts.diffModules) && opts.diffModules.length > 0) {
+          reqBody.diffModules = opts.diffModules;
+        }
+        let label = String(msgIdOrName);
+        if (typeof msgIdOrName === "number") {
+          reqBody.msgId = msgIdOrName;
+          label = "0x" + msgIdOrName.toString(16);
+        } else if (/^0x[0-9a-fA-F]+$/.test(label.trim())) {
+          reqBody.msgId = parseInt(label.trim(), 16);
+        } else if (/^\d+$/.test(label.trim())) {
+          reqBody.msgId = parseInt(label.trim(), 10);
+        } else {
+          reqBody.msgName = label.trim();
+        }
+        const res = await apiRequest("/gm-console/api/proto/invoke", "POST", reqBody);
+        recordDevDiagnostic({
+          kind: "PROTO",
+          label: res?.request?.msgName || label,
+          endpoint: "/gm-console/api/proto/invoke",
+          requestBody: reqBody,
+          playerId: pid,
+          ok: Boolean(res && res.ok),
+          errorCode: res?.errorCode || 0,
+          summary: res?.errorCode ? `${res.errorName || ""} ${res.errorDesc || ""}`.trim() : "ok",
+          elapsedMs: res?.elapsedMs || 0,
+          raw: res
+        });
+        return res;
+      },
+      inspectPlayer: (modules = [], playerId = null) => {
+        const modStr = Array.isArray(modules) ? modules.join(",") : String(modules || "");
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.inspect", modStr ? { modules: modStr } : {}, pid);
+      },
+      resetModules: (modules = [], playerId = null) => {
+        const modStr = Array.isArray(modules) ? modules.join(",") : String(modules || "all");
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.resetModule", { modules: modStr || "all" }, pid);
+      },
+      addResource: (id, count, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("item.item", { id: Number(id), count: Number(count) }, pid);
+      },
+      delResource: (id, count, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("item.itemdel", { targetPlayerId: pid, id: Number(id), count: Number(count) }, pid);
+      },
+      setResource: (id, count, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("item.set", { id: Number(id), count: Number(count) }, pid);
+      },
+      setPlayerLevel: (level = 0, opts = {}, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        const args = { level: Number(level) || 0, nearLevelUp: Boolean(opts.nearLevelUp) };
+        if (opts.exp != null && Number(opts.exp) >= 0) args.exp = Number(opts.exp);
+        return window.GmConsole.executeAction("player.setLevel", args, pid);
+      },
+      setVipLevel: (vipLevel = -1, opts = {}, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        const args = { vipLevel: Number(vipLevel), nearLevelUp: Boolean(opts.nearLevelUp) };
+        if (opts.exp != null && Number(opts.exp) >= 0) args.exp = Number(opts.exp);
+        return window.GmConsole.executeAction("player.setVip", args, pid);
+      },
+      openAllFunc: (playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("player.openAllFunc", {}, pid);
+      },
+      setMainStage: (stageIdOrIndex, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("battle.zxgk", { id: Number(stageIdOrIndex) }, pid);
+      },
+      flushAndColdReload: (playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.flushAndColdReload", { playerId: pid }, pid);
+      },
+      toggleQuickGmDrawer: (forceOpen) => toggleQuickGmDrawer(forceOpen),
+      saveSnapshot: (snapshotName = "qa_baseline", playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.snapshot.save", { snapshotName }, pid);
+      },
+      restoreSnapshot: (snapshotName = "qa_baseline", playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.snapshot.restore", { snapshotName }, pid);
+      },
+      listSnapshots: (playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.snapshot.list", {}, pid);
+      },
+      deleteSnapshot: (snapshotName = "", all = false, playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.snapshot.delete", { snapshotName, all: Boolean(all) }, pid);
+      },
+      queryConfigTables: () => window.GmConsole.executeAction("config.tables", {}, 0),
+      queryConfigList: (table, opts = {}) => {
+        const args = { table, page: opts.page || 1, pageSize: opts.pageSize || 200 };
+        if (opts.filter) {
+          args.filterJson = typeof opts.filter === "string" ? opts.filter : JSON.stringify(opts.filter);
+        }
+        return window.GmConsole.executeAction("config.list", args, 0);
+      },
+      queryConfigGet: (table, opts = {}) => {
+        const args = { table };
+        if (opts.id != null) args.id = Number(opts.id);
+        if (opts.key != null) args.key = String(opts.key);
+        return window.GmConsole.executeAction("config.get", args, 0);
+      },
+      getGoodsCatalog: (typeId = 0, keyword = "") => fetchGoodsCatalogApi(typeId, keyword),
+      offsetTime: (offset, opts = {}) => window.GmConsole.executeAction("time.offset", {
+        offset,
+        allowBackward: Boolean(opts.allowBackward),
+        kickClients: Boolean(opts.kickClients)
+      }, 0),
+      newDay: (playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("player.newday", {}, pid);
+      },
+      seedRng: (seed) => window.GmConsole.executeAction("gm.rng.seed", { seed: Number(seed) }, 0),
+      resetRng: () => window.GmConsole.executeAction("gm.rng.reset", {}, 0),
+      getSelectedPlayerId: () => sharedSelectedPlayerId,
+      setSelectedPlayerId: (playerId) => setSharedSelectedPlayerId(playerId, true),
+      requirePlayerId: () => requireSharedPlayerId(),
+      getOnlinePlayers: () => sharedOnlinePlayers.slice(),
+      refreshPlayers: () => refreshOnlinePlayers(),
+      openTestLogin: () => openSharedTestLogin(),
+      onPlayerChange: (listener) => {
+        if (typeof listener !== "function") return () => {};
+        playerChangeListeners.add(listener);
+        return () => playerChangeListeners.delete(listener);
+      },
+      openPanel: (file) => openPanelPage(file, true),
+      openPanelsPortal: () => showPanelsPortal(true),
+      openModuleWorkbench: (moduleIdOrKey) => {
+        if (window.switchTab) window.switchTab("tabWorkbench");
+        if (window.WorkbenchApp && typeof window.WorkbenchApp.openModule === "function") {
+          window.WorkbenchApp.openModule(moduleIdOrKey);
+        } else {
+          window.location.hash = "#/module/" + encodeURIComponent(String(moduleIdOrKey));
+        }
+      },
+      getDiagnosticsLog: () => devDiagnosticsLog.slice(),
+      clearDiagnosticsLog: () => clearDevDiagnostics(),
+      toggleDiagnosticsDrawer: (forceOpen) => toggleDevDrawer(forceOpen),
+      toast: (msg, level = "info") => showToast(msg, level),
+      escapeHtml: (str) => escapeHtmlInline(str),
+      getBootstrap: () => bootstrapData,
+      refreshBootstrap: () => refreshBootstrap(),
+      getTheme: () => getCurrentTheme(),
+      setTheme: (theme) => applyTheme(theme)
     };
 
     window.onload = refreshBootstrap;

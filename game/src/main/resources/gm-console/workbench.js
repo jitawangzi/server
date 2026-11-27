@@ -79,8 +79,17 @@
       const res = await apiFetch('/gm-console/api/workbench/players');
       if (res && res.ok && res.data) {
         state.onlinePlayers = res.data.players || [];
+        if (window.GmConsole && typeof window.GmConsole.getSelectedPlayerId === 'function') {
+          const sharedPid = window.GmConsole.getSelectedPlayerId();
+          if (sharedPid > 0) {
+            state.selectedPlayerId = sharedPid;
+          }
+        }
         if (state.selectedPlayerId === 0 && state.onlinePlayers.length > 0) {
           state.selectedPlayerId = state.onlinePlayers[0].playerId;
+          if (window.GmConsole && typeof window.GmConsole.setSelectedPlayerId === 'function') {
+            window.GmConsole.setSelectedPlayerId(state.selectedPlayerId);
+          }
         }
       }
     } catch (e) {
@@ -89,13 +98,27 @@
   }
 
   function handleRoute() {
-    const hash = window.location.hash || '#/home';
+    const hash = window.location.hash || '';
+    if (hash.startsWith('#/panel/') || hash === '#/panels') {
+      if (!state.currentModule) {
+        renderModuleCatalog();
+      }
+      return;
+    }
     if (hash.startsWith('#/module/')) {
-      const modIdStr = hash.substring('#/module/'.length).trim();
-      const modId = (modIdStr.startsWith('0x') || modIdStr.startsWith('0X'))
+      if (window.switchTab) window.switchTab('tabWorkbench');
+      const modIdStr = decodeURIComponent(hash.substring('#/module/'.length).trim());
+      let modId = (modIdStr.startsWith('0x') || modIdStr.startsWith('0X'))
         ? parseInt(modIdStr, 16)
         : parseInt(modIdStr, 10);
+      if (Number.isNaN(modId)) {
+        const matched = state.modules.find(m => String(m.moduleKey).toLowerCase() === modIdStr.toLowerCase());
+        if (matched) modId = matched.moduleId;
+      }
       renderModuleWorkbench(modId);
+    } else if (hash === '#/home') {
+      if (window.switchTab) window.switchTab('tabWorkbench');
+      renderModuleCatalog();
     } else {
       renderModuleCatalog();
     }
@@ -142,11 +165,12 @@
             <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">
               Key: <code>${escapeHtml(m.moduleKey)}</code>${fnBadge}
             </div>
-            <div style="display:flex; gap:12px; font-size:0.8rem; color:#94a3b8; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; gap:12px; font-size:0.8rem; color:var(--text-muted); align-items:center; flex-wrap:wrap;">
               <span>⚡ 请求: <b>${reqCount}</b></span>
               <span>📡 推送: <b>${pushCount}</b></span>
               <span>🛠️ 快捷GM: <b>${actCount}</b></span>
-              ${m.acceptanceSuite && m.acceptanceSuite.available ? `<span class="badge" style="background:#10b981; color:#fff;">✅ 自动化验收 (${(m.acceptanceSuite.declaredBranches||[]).length}分支)</span>` : ''}
+              ${(m.matchedPanels || []).length > 0 ? `<span class="badge" style="background:var(--info-soft-bg); color:var(--accent-text); border:1px solid var(--info-border);">🧪 业务测试页 (${m.matchedPanels.length})</span>` : ''}
+              ${m.acceptanceSuite && m.acceptanceSuite.available ? `<span class="badge" style="background:var(--success); color:#fff;">✅ 自动化验收 (${(m.acceptanceSuite.declaredBranches||[]).length}分支)</span>` : ''}
             </div>
           </div>
         `;
@@ -169,20 +193,20 @@
     const reqNodes = (mod.acceptanceSuite.requiredServerTypes || ['Game']).join(' + ');
     const topo = mod.acceptanceSuite.clusterTopology || {};
     const topoBadge = topo.ready
-      ? `<span class="badge" style="background:#0284c7; color:#fff;">🌐 集群拓扑就绪 (${escapeHtml(reqNodes)})</span>`
-      : `<span class="badge" style="background:#f59e0b; color:#000;" title="缺少节点: ${escapeHtml((topo.missingServerTypes||[]).join(','))}">⚠️ 需真实节点: ${escapeHtml(reqNodes)}</span>`;
+      ? `<span class="badge badge-dev">🌐 集群拓扑就绪 (${escapeHtml(reqNodes)})</span>`
+      : `<span class="badge" style="background:var(--warning-soft-bg); color:var(--warning-text); border:1px solid var(--warning-border);" title="缺少节点: ${escapeHtml((topo.missingServerTypes||[]).join(','))}">⚠️ 需真实节点: ${escapeHtml(reqNodes)}</span>`;
     return `
-      <div class="card" style="margin-bottom:16px; border:1px solid #10b981; background:linear-gradient(to right, rgba(16, 185, 129, 0.05), rgba(15, 23, 42, 0.8));">
+      <div class="card" style="margin-bottom:16px; border:1px solid var(--success); background:var(--acceptance-bg);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span style="font-size:1.1rem; font-weight:700; color:#10b981;">🛡️ 模块自动化验收与配表全集扫描中心</span>
-            <span class="badge" style="background:#10b981; color:#fff;">已接入 (${(mod.acceptanceSuite.declaredBranches||[]).length} 分支)</span>
+            <span style="font-size:1.1rem; font-weight:700; color:var(--success-text);">🛡️ 模块自动化验收与配表全集扫描中心</span>
+            <span class="badge" style="background:var(--success); color:#fff;">已接入 (${(mod.acceptanceSuite.declaredBranches||[]).length} 分支)</span>
             ${topoBadge}
           </div>
-          <div style="display:flex; gap:10px;">
-            <button class="btn btn-secondary" style="border-color:#38bdf8; color:#38bdf8;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'CONTRACT')">🧪 功能契约验收 (CONTRACT)</button>
-            <button class="btn btn-secondary" style="border-color:#f59e0b; color:#f59e0b;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'MATRIX_SCAN')">📊 多态全量配表扫描 (MATRIX_SCAN)</button>
-            <button class="btn btn-primary" style="background:#10b981;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'ALL')">🚀 一键全量验收 (ALL)</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" style="border-color:var(--primary); color:var(--primary);" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'CONTRACT')">🧪 功能契约验收 (CONTRACT)</button>
+            <button class="btn btn-secondary" style="border-color:var(--warning); color:var(--warning-text);" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'MATRIX_SCAN')">📊 多态全量配表扫描 (MATRIX_SCAN)</button>
+            <button class="btn btn-primary" style="background:var(--success); color:#fff;" onclick="window.WorkbenchApp.runAcceptance(${mod.moduleId}, 'ALL')">🚀 一键全量验收 (ALL)</button>
           </div>
         </div>
         ${report ? renderAcceptanceReport(report, mod.moduleId) : '<div style="font-size:0.85rem; color:var(--text-muted);">尚未执行验收。点击上方按钮启动进程内双轨验收与配表全集扫描。</div>'}
@@ -195,13 +219,13 @@
     const failedItems = report.failedItems || [];
 
     let branchHtml = branches.map(b => {
-      let badgeStyle = 'background:#10b981; color:#fff;';
+      let badgeStyle = 'background:var(--success); color:#fff;';
       let text = `✅ ${escapeHtml(b.branchKey)} (${b.passed}/${b.total})`;
       if (b.total === 0) {
-        badgeStyle = 'background:#eab308; color:#000;';
+        badgeStyle = 'background:var(--warning-soft-bg); color:var(--warning-text); border:1px solid var(--warning-border);';
         text = `⚠️ ${escapeHtml(b.branchKey)} (0命中)`;
       } else if (b.failed > 0) {
-        badgeStyle = 'background:#ef4444; color:#fff;';
+        badgeStyle = 'background:var(--danger); color:#fff;';
         text = `❌ ${escapeHtml(b.branchKey)} (${b.failed}失败)`;
       }
       return `<span class="badge" style="${badgeStyle}; padding:4px 8px; margin:2px;">${text}</span>`;
@@ -211,24 +235,24 @@
     if (failedItems.length > 0) {
       failedHtml = `
         <div style="margin-top:14px;">
-          <div style="font-weight:700; color:#ef4444; margin-bottom:8px;">❌ 失败用例与配表缺陷诊断 (${failedItems.length} 项)</div>
+          <div style="font-weight:700; color:var(--danger-text); margin-bottom:8px;">❌ 失败用例与配表缺陷诊断 (${failedItems.length} 项)</div>
           <div style="display:flex; flex-direction:column; gap:8px;">
             ${failedItems.map(item => `
-              <div style="background:#0f172a; border:1px solid #ef4444; border-radius:6px; padding:10px;">
+              <div style="background:var(--danger-soft-bg); border:1px solid var(--danger-border); border-radius:6px; padding:10px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                   <div>
-                    <span style="font-weight:700; color:#f87171;">${escapeHtml(item.caseId || '')}</span>
-                    <span class="badge" style="background:#dc2626; color:#fff; margin-left:6px;">${escapeHtml(item.status || '')}</span>
-                    <span class="badge" style="background:#64748b; color:#fff; margin-left:4px;">${escapeHtml(item.defectCategory || '')}</span>
-                    ${item.configTable ? `<span style="font-size:0.8rem; color:#94a3b8; margin-left:8px;">配表: <code>${escapeHtml(item.configTable)}:${item.configId}</code></span>` : ''}
-                    ${item.branchKey ? `<span style="font-size:0.8rem; color:#38bdf8; margin-left:8px;">分支: <code>${escapeHtml(item.branchKey)}</code></span>` : ''}
+                    <span style="font-weight:700; color:var(--danger-text);">${escapeHtml(item.caseId || '')}</span>
+                    <span class="badge" style="background:var(--danger); color:#fff; margin-left:6px;">${escapeHtml(item.status || '')}</span>
+                    <span class="badge" style="background:var(--btn-secondary-bg); color:var(--btn-secondary-text); border:1px solid var(--btn-secondary-border); margin-left:4px;">${escapeHtml(item.defectCategory || '')}</span>
+                    ${item.configTable ? `<span style="font-size:0.8rem; color:var(--text-muted); margin-left:8px;">配表: <code>${escapeHtml(item.configTable)}:${item.configId}</code></span>` : ''}
+                    ${item.branchKey ? `<span style="font-size:0.8rem; color:var(--primary); margin-left:8px;">分支: <code>${escapeHtml(item.branchKey)}</code></span>` : ''}
                   </div>
                   <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="window.WorkbenchApp.runAcceptance(${moduleId}, '${report.mode}', '${escapeHtml(item.caseId)}')">🔄 单条重试</button>
                 </div>
-                <div style="margin-top:6px; font-size:0.85rem; color:#fca5a5;">
+                <div style="margin-top:6px; font-size:0.85rem; color:var(--danger-soft-text);">
                   <b>${item.errorCode ? `错误码 [${item.errorCode}] ${escapeHtml(item.errorName || '')}: ` : ''}</b>${escapeHtml(item.message || '')}
                 </div>
-                ${item.stackExcerpt ? `<pre style="margin-top:6px; padding:6px; background:#020617; border-radius:4px; font-size:0.75rem; color:#fca5a5; overflow-x:auto;">${escapeHtml(item.stackExcerpt)}</pre>` : ''}
+                ${item.stackExcerpt ? `<pre style="margin-top:6px; padding:6px; background:var(--code-bg); border-radius:4px; font-size:0.75rem; color:var(--danger-soft-text); overflow-x:auto;">${escapeHtml(item.stackExcerpt)}</pre>` : ''}
               </div>
             `).join('')}
           </div>
@@ -238,16 +262,16 @@
 
     return `
       <div>
-        <div style="display:flex; gap:16px; font-size:0.9rem; margin-bottom:10px; background:#0f172a; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
+        <div style="display:flex; gap:16px; font-size:0.9rem; margin-bottom:10px; background:var(--surface-subtle); padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
           <span>模式: <b>${escapeHtml(report.mode)}</b></span>
           <span>总执行: <b>${report.totalCases}</b></span>
           <span>通过: <b>${report.passedCases}</b></span>
-          <span style="color:#ef4444;">失败: <b>${report.failedCases}</b></span>
+          <span style="color:var(--danger-text);">失败: <b>${report.failedCases}</b></span>
           <span>耗时: <b>${report.elapsedMs} ms</b></span>
-          ${report.clusterTopology ? `<span>节点拓扑: <b>${escapeHtml((report.clusterTopology.requiredServerTypes||[]).join('+'))}</b> (${report.clusterTopology.ready ? '<span style="color:#10b981;">真实集群已就绪</span>' : '<span style="color:#f59e0b;">缺:' + escapeHtml((report.clusterTopology.missingServerTypes||[]).join(',')) + '</span>'})</span>` : ''}
+          ${report.clusterTopology ? `<span>节点拓扑: <b>${escapeHtml((report.clusterTopology.requiredServerTypes||[]).join('+'))}</b> (${report.clusterTopology.ready ? '<span style="color:var(--success-text);">真实集群已就绪</span>' : '<span style="color:var(--warning-text);">缺:' + escapeHtml((report.clusterTopology.missingServerTypes||[]).join(',')) + '</span>'})</span>` : ''}
         </div>
         <div style="margin-bottom:8px;">
-          <div style="font-size:0.85rem; font-weight:600; color:#94a3b8; margin-bottom:4px;">多态分支覆盖度:</div>
+          <div style="font-size:0.85rem; font-weight:600; color:var(--text-muted); margin-bottom:4px;">多态分支覆盖度:</div>
           <div style="display:flex; flex-wrap:wrap; gap:4px;">${branchHtml}</div>
         </div>
         ${failedHtml}
@@ -304,17 +328,29 @@
             ${renderRequestList(mod.requests)}
           </div>
 
-          <div style="font-size:0.9rem; font-weight:700; color:#38bdf8; margin-bottom:8px;">📡 模块推送 (Pushes)</div>
+          <div style="font-size:0.9rem; font-weight:700; color:var(--primary); margin-bottom:8px;">📡 模块推送 (Pushes)</div>
           <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:20px; font-size:0.85rem;">
             ${(mod.pushes || []).map(p => `
-              <div style="padding:4px 8px; background:#0f172a; border-radius:4px; border:1px solid var(--border-color);">
-                <span style="color:#67e8f9">${escapeHtml(p.msgName)}</span>
+              <div style="padding:4px 8px; background:var(--surface-subtle); border-radius:4px; border:1px solid var(--border-color);">
+                <span style="color:var(--accent-text)">${escapeHtml(p.msgName)}</span>
                 <span style="color:var(--text-muted); font-size:0.75rem; float:right;">${escapeHtml(p.msgIdHex)}</span>
               </div>
             `).join('') || '<div style="color:var(--text-muted); font-size:0.8rem;">无推送协议</div>'}
           </div>
 
-          <div style="font-size:0.9rem; font-weight:700; color:#f59e0b; margin-bottom:8px;">🛠️ 关联 GM 动作</div>
+          <div style="font-size:0.9rem; font-weight:700; color:var(--accent-text); margin-bottom:8px;">🧪 关联业务测试页 (QA/复现)</div>
+          <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:20px; font-size:0.85rem;">
+            ${(mod.matchedPanels || []).map(p => `
+              <button class="btn btn-secondary" style="padding:6px 10px; font-size:0.8rem; justify-content:space-between; text-align:left;"
+                      title="${escapeHtml(p.summary || p.file)}"
+                      onclick="window.GmConsole && window.GmConsole.openPanel('${escapeHtml(p.file)}')">
+                <span>🧪 ${escapeHtml(p.title || p.name)}</span>
+                <span style="font-size:0.72rem; color:var(--text-muted);">${escapeHtml(p.category || '测试页')}</span>
+              </button>
+            `).join('') || '<div style="color:var(--text-muted); font-size:0.8rem;">暂无专属业务测试页（可在 gm-console/panels/ 按玩法生成）</div>'}
+          </div>
+
+          <div style="font-size:0.9rem; font-weight:700; color:var(--warning-text); margin-bottom:8px;">🛠️ 关联 GM 动作</div>
           <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:20px; font-size:0.85rem;">
             ${(mod.actions || []).map(act => `
               <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem; justify-content:space-between;"
@@ -325,11 +361,11 @@
             `).join('') || '<div style="color:var(--text-muted); font-size:0.8rem;">无关联GM动作</div>'}
           </div>
 
-          <div style="font-size:0.9rem; font-weight:700; color:#ef4444; margin-bottom:8px;">⚠️ 模块错误码</div>
+          <div style="font-size:0.9rem; font-weight:700; color:var(--danger-text); margin-bottom:8px;">⚠️ 模块错误码</div>
           <div style="display:flex; flex-direction:column; gap:4px; font-size:0.8rem;">
             ${(mod.errors || []).map(err => `
-              <div style="padding:4px 6px; background:#0f172a; border-radius:4px; border:1px solid var(--border-color);">
-                <div style="color:#f87171; font-weight:600;">${escapeHtml(err.name)} (${err.id})</div>
+              <div style="padding:4px 6px; background:var(--surface-subtle); border-radius:4px; border:1px solid var(--border-color);">
+                <div style="color:var(--danger-text); font-weight:600;">${escapeHtml(err.name)} (${err.id})</div>
                 <div style="color:var(--text-muted); font-size:0.75rem;">${escapeHtml(err.desc || '')}</div>
               </div>
             `).join('') || '<div style="color:var(--text-muted); font-size:0.8rem;">无专属错误码</div>'}
@@ -362,14 +398,14 @@
     }
     return requests.map(r => {
       const isSelected = state.currentRequest && state.currentRequest.msgId === r.msgId;
-      const border = isSelected ? 'border-color:var(--primary); background:#172554;' : 'border-color:var(--border-color); background:#0f172a;';
+      const border = isSelected ? 'border-color:var(--primary); background:var(--selected-bg);' : 'border-color:var(--border-color); background:var(--surface-subtle);';
       const disabledBadge = !r.simulatable ? `<span class="badge badge-prod" style="font-size:0.65rem;" title="${escapeHtml(r.unsupportedReason || '')}">不可模拟</span>` : '';
-      const commentLine = r.comment ? `<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(r.comment)}">${escapeHtml(r.comment)}</div>` : '';
+      const commentLine = r.comment ? `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(r.comment)}">${escapeHtml(r.comment)}</div>` : '';
       return `
         <div style="padding:8px 10px; border-radius:6px; border:1px solid; ${border} cursor:pointer;"
              onclick="window.WorkbenchApp.selectRequest(${r.msgId})">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:0.85rem; font-weight:600; color:${isSelected ? '#67e8f9' : '#f8fafc'};">${escapeHtml(r.msgName)}</span>
+            <span style="font-size:0.85rem; font-weight:600; color:${isSelected ? 'var(--selected-text)' : 'var(--text-main)'};">${escapeHtml(r.msgName)}</span>
             ${disabledBadge}
           </div>
           ${commentLine}
@@ -419,7 +455,7 @@
 
     const isSimulatable = req.simulatable !== false;
     const reqCommentHtml = req.comment
-      ? `<div style="font-size:0.85rem; color:#94a3b8; margin:-6px 0 12px 0;">📝 ${escapeHtml(req.comment)}</div>`
+      ? `<div style="font-size:0.85rem; color:var(--text-muted); margin:-6px 0 12px 0;">📝 ${escapeHtml(req.comment)}</div>`
       : '';
 
     return `
@@ -441,13 +477,13 @@
         ${reqCommentHtml}
 
         ${!isSimulatable ? `
-          <div style="padding:10px 14px; background:#7f1d1d; border-radius:6px; margin-bottom:14px; font-size:0.85rem; color:#fee2e2;">
+          <div style="padding:10px 14px; background:var(--danger-soft-bg); border:1px solid var(--danger-border); border-radius:6px; margin-bottom:14px; font-size:0.85rem; color:var(--danger-soft-text);">
             ⛔ <b>不可模拟协议:</b> ${escapeHtml(req.unsupportedReason || '该协议不支持直接模拟')}
           </div>
         ` : ''}
 
         <!-- 调试选项条 -->
-        <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; background:#0f172a; padding:10px 14px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:14px; font-size:0.85rem;">
+        <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; background:var(--surface-subtle); padding:10px 14px; border-radius:6px; border:1px solid var(--border-color); margin-bottom:14px; font-size:0.85rem;">
           <label style="display:flex; align-items:center; gap:6px; margin:0; cursor:pointer;">
             <input type="checkbox" id="wbWithTrace" ${state.withTrace ? 'checked' : ''} onchange="state.withTrace=this.checked" style="width:auto;" />
             <span>开启隔离 Trace 录制</span>
@@ -517,21 +553,21 @@
   // 3. 动态 Protobuf 表单生成器
   function renderProtobufForm(schema, pathPrefix = '') {
     if (!schema) {
-      return `<div style="color:var(--text-muted); font-size:0.85rem; padding:12px; background:#0f172a; border-radius:6px;">该协议无 Schema 定义 (可在 JSON 视图手动编辑)</div>`;
+      return `<div style="color:var(--text-muted); font-size:0.85rem; padding:12px; background:var(--surface-subtle); border-radius:6px;">该协议无 Schema 定义 (可在 JSON 视图手动编辑)</div>`;
     }
     if (schema.truncated) {
       const existing = getValueAtPath(state.currentPayload, pathPrefix);
       const rawJson = existing !== undefined ? JSON.stringify(existing, null, 2) : '{}';
       return `
-        <div style="padding:10px; background:#1e1b4b; border:1px solid #4338ca; border-radius:6px;">
-          <div style="font-size:0.8rem; color:#c7d2fe; margin-bottom:6px;">⚠️ 嵌套层级超过上限，已自动降级为 JSON 片段录入:</div>
+        <div style="padding:10px; background:var(--info-soft-bg); border:1px solid var(--info-border); border-radius:6px;">
+          <div style="font-size:0.8rem; color:var(--info-text); margin-bottom:6px;">⚠️ 嵌套层级超过上限，已自动降级为 JSON 片段录入:</div>
           <textarea rows="4" style="font-family:monospace; font-size:0.8rem; width:100%;"
                     onchange="window.WorkbenchApp.updateJsonField('${escapeHtml(pathPrefix)}', this.value)">${escapeHtml(rawJson)}</textarea>
         </div>
       `;
     }
     if (!schema.fields || schema.fields.length === 0) {
-      return `<div style="color:var(--text-muted); font-size:0.85rem; padding:12px; background:#0f172a; border-radius:6px;">该协议无需输入参数 (Empty Message)</div>`;
+      return `<div style="color:var(--text-muted); font-size:0.85rem; padding:12px; background:var(--surface-subtle); border-radius:6px;">该协议无需输入参数 (Empty Message)</div>`;
     }
 
     let html = `<div style="display:flex; flex-direction:column; gap:12px;">`;
@@ -542,7 +578,7 @@
       const curVal = getValueAtPath(state.currentPayload, fieldPath);
 
       html += `<div class="form-group" style="margin-bottom:8px;">`;
-      html += `<label style="font-weight:600; font-size:0.85rem;">${escapeHtml(f.name)} <span style="font-size:0.75rem; color:#38bdf8;">(${escapeHtml(f.protoType || f.javaType)}${f.repeated && !f.mapField ? '[]' : ''})</span>${commentHtml}</label>`;
+      html += `<label style="font-weight:600; font-size:0.85rem;">${escapeHtml(f.name)} <span style="font-size:0.75rem; color:var(--accent-text);">(${escapeHtml(f.protoType || f.javaType)}${f.repeated && !f.mapField ? '[]' : ''})</span>${commentHtml}</label>`;
 
       if (f.mapField) {
         const mapJson = (curVal && typeof curVal === 'object') ? JSON.stringify(curVal, null, 2) : '{}';
@@ -557,7 +593,7 @@
         html += renderScalarOrEnumInput(f, fieldPath, curVal);
       } else if (f.javaType === 'MESSAGE' && f.nestedSchema) {
         html += `
-          <div style="padding:10px 14px; background:#0b1120; border:1px solid var(--border-color); border-radius:6px; margin-top:4px;">
+          <div style="padding:10px 14px; background:var(--surface-deep); border:1px solid var(--border-color); border-radius:6px; margin-top:4px;">
             ${renderProtobufForm(f.nestedSchema, fieldPath)}
           </div>
         `;
@@ -620,19 +656,19 @@
     for (let i = 0; i < arr.length; i++) {
       const itemPath = `${fieldPath}[${i}]`;
       const inner = (f.javaType === 'MESSAGE' && f.nestedSchema)
-        ? `<div style="flex:1; padding:8px; background:#0f172a; border:1px solid var(--border-color); border-radius:4px;">${renderProtobufForm(f.nestedSchema, itemPath)}</div>`
+        ? `<div style="flex:1; padding:8px; background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:4px;">${renderProtobufForm(f.nestedSchema, itemPath)}</div>`
         : `<div style="flex:1;">${renderScalarOrEnumInput(f, itemPath, arr[i])}</div>`;
       rowsHtml += `
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="font-size:0.75rem; color:var(--text-muted); padding-top:6px;">#${i}</span>
           ${inner}
-          <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:#f87171;"
+          <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:var(--danger-text);"
                   onclick="window.WorkbenchApp.removeRepeatedItem('${safePath}', ${i})">✕</button>
         </div>
       `;
     }
     return `
-      <div style="background:#0b1120; padding:10px; border-radius:6px; border:1px solid var(--border-color);">
+      <div style="background:var(--surface-deep); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
         <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:${arr.length > 0 ? '8px' : '0'};">
           ${rowsHtml}
         </div>
@@ -665,16 +701,16 @@
 
       if (res.errorPush) {
         html += `
-          <div style="padding:10px 14px; background:#450a0a; border:1px solid #b91c1c; border-radius:6px; margin-bottom:12px;">
-            <div style="color:#f87171; font-weight:700; margin-bottom:4px;">🚨 业务异常推送 (PlayerErrorPush_01000099)</div>
-            <pre style="margin:0; background:transparent; border:none; padding:0; color:#fca5a5;">${escapeHtml(JSON.stringify(res.errorPush, null, 2))}</pre>
+          <div style="padding:10px 14px; background:var(--danger-soft-bg); border:1px solid var(--danger-border); border-radius:6px; margin-bottom:12px;">
+            <div style="color:var(--danger-text); font-weight:700; margin-bottom:4px;">🚨 业务异常推送 (PlayerErrorPush_01000099)</div>
+            <pre style="margin:0; background:transparent; border:none; padding:0; color:var(--danger-soft-text);">${escapeHtml(JSON.stringify(res.errorPush, null, 2))}</pre>
           </div>
         `;
       }
 
       if (res.warnings && res.warnings.length > 0) {
         html += `
-          <div style="padding:8px 12px; background:#451a03; border:1px solid #d97706; border-radius:6px; margin-bottom:12px; font-size:0.85rem; color:#fde68a;">
+          <div style="padding:8px 12px; background:var(--warning-soft-bg); border:1px solid var(--warning-border); border-radius:6px; margin-bottom:12px; font-size:0.85rem; color:var(--warning-text);">
             ${res.warnings.map(w => `<div>⚠️ ${escapeHtml(w)}</div>`).join('')}
           </div>
         `;
@@ -692,9 +728,9 @@
       return `
         <div style="display:flex; flex-direction:column; gap:10px;">
           ${pushes.map((p, idx) => `
-            <div style="background:#0f172a; border:1px solid var(--border-color); border-radius:6px; padding:10px;">
+            <div style="background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:6px; padding:10px;">
               <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <span style="font-weight:700; color:#38bdf8;">#${p.index || idx + 1} ${escapeHtml(p.msgName)} (${escapeHtml(p.msgIdHex)})</span>
+                <span style="font-weight:700; color:var(--primary);">#${p.index || idx + 1} ${escapeHtml(p.msgName)} (${escapeHtml(p.msgIdHex)})</span>
                 <span style="color:var(--text-muted); font-size:0.75rem;">seq: ${p.seq}</span>
               </div>
               <pre style="margin:0; max-height:200px;">${escapeHtml(JSON.stringify(p.payload, null, 2))}</pre>
@@ -711,17 +747,17 @@
       }
       return `
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:#0f172a; padding:10px; border-radius:6px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:var(--surface-subtle); border:1px solid var(--border-color); padding:10px; border-radius:6px;">
             <div>Trace ID: <code>${escapeHtml(trace.traceId || '--')}</code></div>
             <div>耗时: <b>${trace.elapsedMs || 0}ms</b></div>
             <div>错误码: <b>${trace.errorCode || 0}</b></div>
           </div>
           <div>
-            <div style="font-weight:700; color:#38bdf8; margin-bottom:6px;">💰 资源流水变动 (${(trace.resourceEvents || []).length})</div>
+            <div style="font-weight:700; color:var(--primary); margin-bottom:6px;">💰 资源流水变动 (${(trace.resourceEvents || []).length})</div>
             ${renderResourceEventsTable(trace.resourceEvents)}
           </div>
           <div>
-            <div style="font-weight:700; color:#f87171; margin-bottom:6px;">🚨 ERROR 日志与异常事件 (${(trace.errorEvents || []).length})</div>
+            <div style="font-weight:700; color:var(--danger-text); margin-bottom:6px;">🚨 ERROR 日志与异常事件 (${(trace.errorEvents || []).length})</div>
             ${renderErrorEventsTable(trace.errorEvents)}
           </div>
         </div>
@@ -736,18 +772,18 @@
       return `
         <table style="width:100%; border-collapse:collapse; font-size:0.85rem; font-family:monospace;">
           <thead>
-            <tr style="background:#0f172a; border-bottom:1px solid var(--border-color); text-align:left;">
+            <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
               <th style="padding:8px 12px; color:var(--primary);">字段路径 (Path)</th>
-              <th style="padding:8px 12px; color:#f87171;">变更前 (Before)</th>
-              <th style="padding:8px 12px; color:#4ade80;">变更后 (After)</th>
+              <th style="padding:8px 12px; color:var(--danger-text);">变更前 (Before)</th>
+              <th style="padding:8px 12px; color:var(--success-text);">变更后 (After)</th>
             </tr>
           </thead>
           <tbody>
             ${diffList.map(d => `
-              <tr style="border-bottom:1px solid #1e293b;">
-                <td style="padding:6px 12px; color:#38bdf8;">${escapeHtml(d.path)}</td>
-                <td style="padding:6px 12px; color:#fca5a5;">${escapeHtml(JSON.stringify(d.before))}</td>
-                <td style="padding:6px 12px; color:#86efac;">${escapeHtml(JSON.stringify(d.after))}</td>
+              <tr style="border-bottom:1px solid var(--row-border);">
+                <td style="padding:6px 12px; color:var(--accent-text);">${escapeHtml(d.path)}</td>
+                <td style="padding:6px 12px; color:var(--danger-soft-text);">${escapeHtml(JSON.stringify(d.before))}</td>
+                <td style="padding:6px 12px; color:var(--success-text);">${escapeHtml(JSON.stringify(d.after))}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -765,7 +801,7 @@
     return `
       <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
         <thead>
-          <tr style="background:#0f172a; border-bottom:1px solid var(--border-color); text-align:left;">
+          <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
             <th style="padding:6px 10px;">道具/资源ID</th>
             <th style="padding:6px 10px;">变动数量</th>
             <th style="padding:6px 10px;">操作类型</th>
@@ -773,9 +809,9 @@
         </thead>
         <tbody>
           ${events.map(e => `
-            <tr style="border-bottom:1px solid #1e293b;">
+            <tr style="border-bottom:1px solid var(--row-border);">
               <td style="padding:6px 10px;">${e.id}</td>
-              <td style="padding:6px 10px; color:${e.isAdd ? '#4ade80' : '#f87171'}; font-weight:700;">${e.isAdd ? '+' : '-'}${e.count}</td>
+              <td style="padding:6px 10px; color:${e.isAdd ? 'var(--success-text)' : 'var(--danger-text)'}; font-weight:700;">${e.isAdd ? '+' : '-'}${e.count}</td>
               <td style="padding:6px 10px; color:var(--text-muted);">${escapeHtml(e.opType || '')}</td>
             </tr>
           `).join('')}
@@ -791,7 +827,7 @@
     return `
       <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
         <thead>
-          <tr style="background:#0f172a; border-bottom:1px solid var(--border-color); text-align:left;">
+          <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
             <th style="padding:6px 10px;">Logger</th>
             <th style="padding:6px 10px;">异常类</th>
             <th style="padding:6px 10px;">错误内容</th>
@@ -799,10 +835,10 @@
         </thead>
         <tbody>
           ${events.map(e => `
-            <tr style="border-bottom:1px solid #1e293b;">
+            <tr style="border-bottom:1px solid var(--row-border);">
               <td style="padding:6px 10px; color:var(--text-muted);">${escapeHtml(e.loggerName || '')}</td>
-              <td style="padding:6px 10px; color:#f87171;">${escapeHtml(e.exceptionClass || '')}</td>
-              <td style="padding:6px 10px; color:#fca5a5;">${escapeHtml(e.message || '')}</td>
+              <td style="padding:6px 10px; color:var(--danger-text);">${escapeHtml(e.exceptionClass || '')}</td>
+              <td style="padding:6px 10px; color:var(--danger-soft-text);">${escapeHtml(e.message || '')}</td>
             </tr>
           `).join('')}
         </tbody>
@@ -864,15 +900,46 @@
     },
     onPlayerChange: function (val) {
       state.selectedPlayerId = parseInt(val, 10) || 0;
+      if (window.GmConsole && typeof window.GmConsole.setSelectedPlayerId === 'function') {
+        window.GmConsole.setSelectedPlayerId(state.selectedPlayerId);
+      }
+    },
+    syncPlayerFromShared: function (playerId, players) {
+      if (Array.isArray(players)) {
+        state.onlinePlayers = players.slice();
+      }
+      state.selectedPlayerId = parseInt(playerId, 10) || 0;
+      const sel = document.getElementById('wbPlayerSelect');
+      if (sel) {
+        sel.innerHTML = renderPlayerOptions();
+      }
+    },
+    openModule: async function (moduleIdOrKey) {
+      if (!state.modules || state.modules.length === 0) {
+        await loadCatalog();
+      }
+      const raw = String(moduleIdOrKey || '').trim();
+      let targetId = /^0x/i.test(raw) ? parseInt(raw, 16) : parseInt(raw, 10);
+      if (Number.isNaN(targetId)) {
+        const matched = state.modules.find(m => String(m.moduleKey).toLowerCase() === raw.toLowerCase());
+        if (matched) targetId = matched.moduleId;
+      }
+      if (!Number.isNaN(targetId) && targetId > 0) {
+        window.location.hash = '#/module/' + targetId;
+        renderModuleWorkbench(targetId);
+      } else {
+        window.location.hash = '#/home';
+        renderModuleCatalog();
+      }
     },
     quickTestLogin: function () {
       let modal = document.getElementById('wbTestLoginModal');
       if (!modal) {
         modal = document.createElement('div');
         modal.id = 'wbTestLoginModal';
-        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:var(--modal-backdrop, rgba(0,0,0,0.7));display:flex;align-items:center;justify-content:center;z-index:9999;';
         modal.innerHTML = `
-          <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border-color, #334155); border-radius:8px; width:440px; max-width:90vw; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+          <div style="background:var(--card-bg, #1e293b); border:1px solid var(--border-color, #334155); color:var(--text-main, #f8fafc); border-radius:8px; width:440px; max-width:90vw; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.35);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
               <h3 style="margin:0; font-size:1.15rem; color:var(--primary, #38bdf8); display:flex; align-items:center; gap:8px;">
                 <span>🎮</span> 测试登录通道 (DEV/TEST)
@@ -881,7 +948,7 @@
             </div>
             
             <div style="display:flex; gap:16px; margin-bottom:16px; border-bottom:1px solid var(--border-color, #334155); padding-bottom:8px;">
-              <label id="wbRadioLabelAccount" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; color:#38bdf8;">
+              <label id="wbRadioLabelAccount" style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:600; color:var(--primary, #38bdf8);">
                 <input type="radio" name="wbLoginMode" value="account" checked onchange="window.WorkbenchApp.switchLoginMode('account')">
                 <span>账号名登录 (推荐)</span>
               </label>
@@ -893,17 +960,17 @@
 
             <div id="wbAccountLoginField" style="margin-bottom:16px;">
               <label style="display:block; font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:6px;">账号名 / Account ID:</label>
-              <input type="text" id="wbAccountInput" placeholder="例如: test_user_01 / admin" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:#0f172a; color:#fff; font-size:0.9rem;" value="tester_01">
-              <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">输入任意账号名，系统自动检索已有角色或快速创建新测试角色</div>
+              <input type="text" id="wbAccountInput" placeholder="例如: test_user_01 / admin" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:var(--input-bg, #0f172a); color:var(--text-main, #fff); font-size:0.9rem;" value="tester_01">
+              <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-top:4px;">输入任意账号名，系统自动检索已有角色或快速创建新测试角色</div>
             </div>
 
             <div id="wbPlayerIdLoginField" style="margin-bottom:16px; display:none;">
               <label style="display:block; font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:6px;">玩家 ID (数值):</label>
-              <input type="number" id="wbPlayerIdInput" placeholder="例如: 10001 (留空或0自动分配)" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:#0f172a; color:#fff; font-size:0.9rem;" value="">
-              <div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">输入指定数值 playerId，若已在线则直接激活，未激活自动就绪</div>
+              <input type="number" id="wbPlayerIdInput" placeholder="例如: 10001 (留空或0自动分配)" style="width:100%; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color, #334155); background:var(--input-bg, #0f172a); color:var(--text-main, #fff); font-size:0.9rem;" value="">
+              <div style="font-size:0.75rem; color:var(--text-muted, #94a3b8); margin-top:4px;">输入指定数值 playerId，若已在线则直接激活，未激活自动就绪</div>
             </div>
 
-            <div id="wbLoginTip" style="display:none; padding:8px 12px; border-radius:4px; font-size:0.85rem; margin-bottom:16px;"></div>
+            <div id="wbLoginTip" style="display:none; padding:8px 12px; border-radius:4px; font-size:0.85rem; margin-bottom:16px; border:1px solid var(--danger-border, #b91c1c);"></div>
 
             <div style="display:flex; justify-content:flex-end; gap:10px;">
               <button class="btn btn-secondary" onclick="window.WorkbenchApp.closeLoginModal()">取消</button>
@@ -930,7 +997,7 @@
       const lblAcc = document.getElementById('wbRadioLabelAccount');
       const lblPid = document.getElementById('wbRadioLabelPlayerId');
       if (mode === 'account') {
-        if (lblAcc) lblAcc.style.color = '#38bdf8';
+        if (lblAcc) lblAcc.style.color = 'var(--primary, #38bdf8)';
         if (lblPid) lblPid.style.color = 'var(--text-muted, #94a3b8)';
         if (accField) accField.style.display = 'block';
         if (pidField) pidField.style.display = 'none';
@@ -938,7 +1005,7 @@
         if (inp) inp.focus();
       } else {
         if (lblAcc) lblAcc.style.color = 'var(--text-muted, #94a3b8)';
-        if (lblPid) lblPid.style.color = '#38bdf8';
+        if (lblPid) lblPid.style.color = 'var(--primary, #38bdf8)';
         if (accField) accField.style.display = 'none';
         if (pidField) pidField.style.display = 'block';
         const inp = document.getElementById('wbPlayerIdInput');
@@ -962,8 +1029,8 @@
         if (!acc) {
           if (tip) {
             tip.style.display = 'block';
-            tip.style.background = '#450a0a';
-            tip.style.color = '#fca5a5';
+            tip.style.background = 'var(--danger-soft-bg, #450a0a)';
+            tip.style.color = 'var(--danger-soft-text, #fca5a5)';
             tip.innerText = '请输入有效的账号名';
           }
           return;
@@ -988,14 +1055,18 @@
           alert(`测试登录成功!\n账号: ${res.data.accountId || '无'}\n玩家ID: ${res.data.playerId}\n名称: ${res.data.name || '未命名'}\n状态: ${res.data.reused ? '复用已有角色' : '新创建测试角色'}`);
           await loadOnlinePlayers();
           state.selectedPlayerId = res.data.playerId;
-          if (state.currentModule) {
+          if (window.GmConsole && typeof window.GmConsole.refreshPlayers === 'function') {
+            await window.GmConsole.refreshPlayers();
+            window.GmConsole.setSelectedPlayerId(res.data.playerId);
+          }
+          if (state.currentModule && document.getElementById('tabWorkbench')?.classList.contains('active')) {
             renderModuleWorkbench(state.currentModule.moduleId);
           }
         } else {
           if (tip) {
             tip.style.display = 'block';
-            tip.style.background = '#450a0a';
-            tip.style.color = '#fca5a5';
+            tip.style.background = 'var(--danger-soft-bg, #450a0a)';
+            tip.style.color = 'var(--danger-soft-text, #fca5a5)';
             tip.innerText = `测试登录失败: ${res?.summary || res?.message || '未知错误'}`;
           } else {
             alert(`测试登录失败: ${res?.summary || res?.message || '未知错误'}`);
@@ -1004,8 +1075,8 @@
       } catch (e) {
         if (tip) {
           tip.style.display = 'block';
-          tip.style.background = '#450a0a';
-          tip.style.color = '#fca5a5';
+          tip.style.background = 'var(--danger-soft-bg, #450a0a)';
+          tip.style.color = 'var(--danger-soft-text, #fca5a5)';
           tip.innerText = `测试登录异常: ${e.message}`;
         } else {
           alert(`测试登录请求异常: ${e.message}`);

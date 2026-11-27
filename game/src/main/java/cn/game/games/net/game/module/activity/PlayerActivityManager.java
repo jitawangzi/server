@@ -35,7 +35,8 @@ public class PlayerActivityManager extends AbstractActivityManager {
 			}
 			return false;
 		}
-		if (config.resetType == 0 && disposableIds.contains(config.ID)) {
+		// 多周期跨服多人活动（如跨服世界Boss）每期销毁后老玩家需在新周期重开，豁免一次性禁用拦截
+		if (config.resetType == 0 && !(config.isCross && config.isMultiplayer) && disposableIds.contains(config.ID)) {
 			return false;
 		}
 		return super.canOpen(config);
@@ -75,7 +76,8 @@ public class PlayerActivityManager extends AbstractActivityManager {
 	@Override
 	protected void afterActivityOpen(ActivityBase activity) {
 		ActivityConfig config = ActivityManager.instance().get(activity.getId());
-		if (config.resetType == 0) {
+		// 多周期跨服多人活动不写入 disposableIds，避免第 1 期销毁后永久锁死第 2 期重开
+		if (config.resetType == 0 && !(config.isCross && config.isMultiplayer)) {
 			disposableIds.add(config.ID);
 		}
 	}

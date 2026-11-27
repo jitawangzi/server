@@ -8,6 +8,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import cn.game.core.base.ServerContext;
@@ -39,12 +41,24 @@ import cn.game.games.net.game.helper.TestHelper;
 import cn.game.games.net.game.manager.GameClientManager;
 import cn.game.games.net.game.manager.PlayerManager;
 import cn.game.games.net.game.module.battle.BattleModule;
+import cn.game.games.net.game.module.vip.VipModule;
 import cn.game.protocol.generated.config.BattleConfig;
+import cn.game.protocol.generated.config.ExpConfig;
+import cn.game.protocol.generated.config.UserUpgradeConfig;
+import cn.game.protocol.generated.config.VIPConfig;
+import cn.game.protocol.generated.enume.Asset;
+import cn.game.protocol.generated.enume.InitialUI;
 import cn.game.protocol.generated.manager.BattleManager;
+import cn.game.protocol.generated.manager.UserUpgradeManager;
+import cn.game.protocol.generated.manager.VIPManager;
 import cn.game.protocol.manual.ErrorMsgEnum;
 import cn.game.protocol.manual.OpType;
+import cn.game.protocol.protobuf.PlayerMsg.ExpLevelInfo;
+import cn.game.protocol.protobuf.PlayerMsg.PlayerExpLevelPush_01100050;
 import cn.game.protocol.protobuf.PlayerMsg.PlayerResetPush_01100016;
+import cn.game.protocol.protobuf.VipMsg;
 import cn.game.util.DateUtil;
+import cn.game.util.IntMapWrapper;
 import cn.game.util.LinuxTimeShift;
 import cn.game.util.LinuxTimeShift.PreviewResult;
 import cn.game.util.ServerType;
@@ -57,6 +71,8 @@ import cn.game.util.ServerType;
 @Component
 @GmGroup(name = "player", description = "玩家数据与时间调试指令")
 public class PlayerGm extends AbstractGm {
+
+	private static final Logger log = LoggerFactory.getLogger(PlayerGm.class);
 
 	@GmAction(name = "tdlv", description = "设置玩家天道修为等级", security = GmSecurityTier.OPS_REPAIR, scope = GmScope.PLAYER)
 	public void tdlv(Player player,
@@ -164,11 +180,239 @@ public class PlayerGm extends AbstractGm {
 			chapter.setPass(true);
 			battleConfig = BattleManager.instance().getNullable(battleConfig.preBattle);
 		}
+		// 同步提升角色基础等级并解锁全部功能，避免中后期玩法被等级或功能门禁阻挡
+		int currentLv = player.getPlayerModule().getExpLevelMap().getValue(Asset.playerExp.ID);
+		if (currentLv < 60) {
+			setLevel(player, 60, false, -1);
+		}
+		if (player.getFuncModule() != null) {
+			player.getFuncModule().gmUnlockAllFuncs();
+		}
 	}
 
 	@GmAction(name = "init", description = "将当前玩家货币拉满", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER)
 	public void initCmd(Player player) {
 		TestHelper.setMaxCurrency(player, OpType.Test);
+	}
+
+	/**
+	 * 直接设置玩家等级，并支持一键将当前经验设为当前等级最大经验减 1（差 1 点经验即升级，方便测试升级流程）
+	 *
+	 * @param player 目标在线玩家
+	 * @param level 目标等级（<=0 表示保持当前等级不变，仅调整经验）
+	 * @param nearLevelUp true 时自动将当前经验设置为当前等级升级所需经验 - 1
+	 * @param exp 指定精确经验值（>=0 且 nearLevelUp=false 时生效；<0 且修改等级时默认清零）
+	 * @return 设置后的等级与经验详情
+	 */
+	@GmAction(name = "setLevel", aliases = {"setlevel", "lv"}, description = "设置玩家等级或将经验设为差1点升级状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, sideEffects = "修改玩家等级与当前经验值并刷新功能开放", example = "player.setLevel level=20 nearLevelUp=true")
+	public Map<String, Object> setLevel(Player player,
+			@GmParam(required = false, defaultValue = "0", description = "目标等级(0表示保持当前等级不变)") int level,
+			@GmParam(required = false, defaultValue = "false", description = "是否将当前经验设为当前等级最大经验-1(差1点即升级)") boolean nearLevelUp,
+			@GmParam(required = false, defaultValue = "-1", description = "精确经验值(>=0且nearLevelUp=false时生效)") int exp) {
+		if (player == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "目标玩家不存在");
+		}
+		IntMapWrapper levelsMap = player.getPlayerModule().getExpLevelMap();
+		int beforeLevel = levelsMap.getValue(Asset.playerExp.ID);
+		if (beforeLevel <= 0) {
+			beforeLevel = Math.max(1, player.getData() != null ? player.getData().getLevel() : 1);
+		}
+		int maxLevel = resolveMaxPlayerLevel();
+		int targetLevel = level > 0 ? Math.min(level, maxLevel) : beforeLevel;
+		if (targetLevel < 1) {
+			targetLevel = 1;
+		}
+		boolean levelChanged = (targetLevel != beforeLevel);
+		levelsMap.setValue(Asset.playerExp.ID, targetLevel);
+		if (player.getData() != null) {
+			player.getData().setLevel(targetLevel);
+		}
+
+		ExpConfig curCfg = safeGetExpConfig(Asset.playerExp.ID, targetLevel);
+		ExpConfig nextCfg = safeGetExpConfig(Asset.playerExp.ID, targetLevel + 1);
+		int maxExpForLevel = curCfg != null ? curCfg.experience : 0;
+		boolean isMaxLevel = (nextCfg == null && curCfg != null);
+
+		long targetExp = player.getCurrencyModule().getCount(Asset.playerExp.ID);
+		String warning = null;
+		if (nearLevelUp) {
+			if (isMaxLevel) {
+				targetExp = levelChanged ? 0L : Math.min(targetExp, maxExpForLevel);
+				warning = "当前已达玩家最高等级(" + targetLevel + ")，无法进入差1经验即升级状态";
+			} else {
+				targetExp = maxExpForLevel > 0 ? (maxExpForLevel - 1L) : 0L;
+			}
+		} else if (exp >= 0) {
+			targetExp = (maxExpForLevel > 0 && nextCfg != null && exp >= maxExpForLevel) ? (maxExpForLevel - 1L) : exp;
+		} else if (levelChanged) {
+			targetExp = 0L;
+		}
+		player.getCurrencyModule().setCount(Asset.playerExp.ID, targetExp);
+
+		if (levelChanged && player.getFuncModule() != null) {
+			player.getFuncModule().refreshFuncOpen();
+		}
+		pushExpLevel(player, Asset.playerExp.ID, targetLevel, targetExp);
+
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("beforeLevel", beforeLevel);
+		result.put("level", targetLevel);
+		result.put("maxLevel", maxLevel);
+		result.put("exp", targetExp);
+		result.put("maxExpForLevel", maxExpForLevel);
+		result.put("expToNextLevel", (nextCfg != null && maxExpForLevel > targetExp) ? (maxExpForLevel - targetExp) : 0L);
+		result.put("nearLevelUp", nearLevelUp && !isMaxLevel);
+		result.put("isMaxLevel", isMaxLevel);
+		if (warning != null) {
+			result.put("warning", warning);
+		}
+		return result;
+	}
+
+	/**
+	 * 直接设置玩家 VIP 等级，并支持一键将当前 VIP 经验设为当前 VIP 等级最大经验减 1（差 1 点 VIP 经验即升级）
+	 *
+	 * @param player 目标在线玩家
+	 * @param vipLevel 目标 VIP 等级（<0 表示保持当前 VIP 等级不变，仅调整 VIP 经验）
+	 * @param nearLevelUp true 时自动将当前 VIP 经验设置为升级所需经验 - 1
+	 * @param exp 指定精确 VIP 经验值（>=0 且 nearLevelUp=false 时生效；<0 且修改等级时默认清零）
+	 * @return 设置后的 VIP 等级与经验详情
+	 */
+	@GmAction(name = "setVip", aliases = {"setvip", "vip"}, description = "设置玩家VIP等级或将VIP经验设为差1点升级状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, sideEffects = "修改玩家VIP等级与VIP经验值", example = "player.setVip vipLevel=5 nearLevelUp=true")
+	public Map<String, Object> setVip(Player player,
+			@GmParam(required = false, defaultValue = "-1", description = "目标VIP等级(-1表示保持当前VIP等级不变)") int vipLevel,
+			@GmParam(required = false, defaultValue = "false", description = "是否将当前VIP经验设为当前VIP等级最大经验-1(差1点即升级)") boolean nearLevelUp,
+			@GmParam(required = false, defaultValue = "-1", description = "精确VIP经验值(>=0且nearLevelUp=false时生效)") int exp) {
+		if (player == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "目标玩家不存在");
+		}
+		IntMapWrapper levelsMap = player.getPlayerModule().getExpLevelMap();
+		int beforeVip = levelsMap.getValue(Asset.VIPExp.ID);
+		int maxVip = resolveMaxVipLevel();
+		int targetVip = vipLevel >= 0 ? Math.min(vipLevel, maxVip) : beforeVip;
+		if (targetVip < 0) {
+			targetVip = 0;
+		}
+		boolean vipChanged = (targetVip != beforeVip);
+		levelsMap.setValue(Asset.VIPExp.ID, targetVip);
+		if (player.getData() != null) {
+			player.getData().setVipLevel(targetVip);
+		}
+
+		ExpConfig curCfg = safeGetExpConfig(Asset.VIPExp.ID, targetVip);
+		ExpConfig nextCfg = safeGetExpConfig(Asset.VIPExp.ID, targetVip + 1);
+		int maxExpForLevel = curCfg != null ? curCfg.experience : 0;
+		boolean isMaxLevel = (nextCfg == null && curCfg != null);
+
+		long targetExp = player.getCurrencyModule().getCount(Asset.VIPExp.ID);
+		String warning = null;
+		if (nearLevelUp) {
+			if (isMaxLevel) {
+				targetExp = vipChanged ? 0L : Math.min(targetExp, maxExpForLevel);
+				warning = "当前已达最高VIP等级(" + targetVip + ")，无法进入差1经验即升级状态";
+			} else {
+				targetExp = maxExpForLevel > 0 ? (maxExpForLevel - 1L) : 0L;
+			}
+		} else if (exp >= 0) {
+			targetExp = (maxExpForLevel > 0 && nextCfg != null && exp >= maxExpForLevel) ? (maxExpForLevel - 1L) : exp;
+		} else if (vipChanged) {
+			targetExp = 0L;
+		}
+		player.getCurrencyModule().setCount(Asset.VIPExp.ID, targetExp);
+		pushExpLevel(player, Asset.VIPExp.ID, targetVip, targetExp);
+		if (vipChanged && player.getGameClient() != null) {
+			VipModule vipModule = player.getModule(VipModule.class);
+			if (vipModule != null) {
+				player.getGameClient().sendProtocol(
+						VipMsg.getVipInfoResponse_34000002.newBuilder().setInfo(vipModule.toPb()).build());
+			}
+		}
+
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("beforeVipLevel", beforeVip);
+		result.put("vipLevel", targetVip);
+		result.put("maxVipLevel", maxVip);
+		result.put("exp", targetExp);
+		result.put("maxExpForLevel", maxExpForLevel);
+		result.put("expToNextLevel", (nextCfg != null && maxExpForLevel > targetExp) ? (maxExpForLevel - targetExp) : 0L);
+		result.put("nearLevelUp", nearLevelUp && !isMaxLevel);
+		result.put("isMaxLevel", isMaxLevel);
+		if (warning != null) {
+			result.put("warning", warning);
+		}
+		return result;
+	}
+
+	/**
+	 * 一键解锁玩家全部 InitialUI 功能入口并正常触发 FuncOpen 初始化事件
+	 *
+	 * @param player 目标在线玩家
+	 * @return 新解锁数量与功能总数摘要
+	 */
+	@GmAction(name = "openAllFunc", aliases = {"openallfunc", "unlockallfunc"}, description = "一键解锁玩家全部功能模块(InitialUI)", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, sideEffects = "解锁玩家全部功能并触发FuncOpen事件", example = "player.openAllFunc")
+	public Map<String, Object> openAllFunc(Player player) {
+		if (player == null || player.getFuncModule() == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "目标玩家或功能模块不存在");
+		}
+		int newlyUnlocked = player.getFuncModule().gmUnlockAllFuncs();
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("newlyUnlocked", newlyUnlocked);
+		result.put("totalFunctions", InitialUI.values().length);
+		return result;
+	}
+
+	private int resolveMaxPlayerLevel() {
+		int maxLv = 100;
+		if (UserUpgradeManager.instance() != null && UserUpgradeManager.instance().list() != null && !UserUpgradeManager.instance().list().isEmpty()) {
+			int found = 0;
+			for (UserUpgradeConfig cfg : UserUpgradeManager.instance().list()) {
+				if (cfg.ID > found) {
+					found = cfg.ID;
+				}
+			}
+			if (found > 0) {
+				maxLv = found;
+			}
+		}
+		return maxLv;
+	}
+
+	private int resolveMaxVipLevel() {
+		int maxVip = 15;
+		if (VIPManager.instance() != null && VIPManager.instance().list() != null && !VIPManager.instance().list().isEmpty()) {
+			int found = 0;
+			for (VIPConfig cfg : VIPManager.instance().list()) {
+				if (cfg.ID > found) {
+					found = cfg.ID;
+				}
+			}
+			if (found > 0) {
+				maxVip = found;
+			}
+		}
+		return maxVip;
+	}
+
+	private ExpConfig safeGetExpConfig(int expId, int level) {
+		try {
+			return PlayerHelper.getExpConfig(expId, level, 0);
+		} catch (Exception e) {
+			log.debug("查询升级配置未命中 expId={}, level={}", expId, level, e);
+			return null;
+		}
+	}
+
+	private void pushExpLevel(Player player, int expId, int level, long exp) {
+		if (player.getGameClient() == null) {
+			return;
+		}
+		player.getGameClient().sendProtocol(PlayerExpLevelPush_01100050.newBuilder()
+				.setExpLevel(ExpLevelInfo.newBuilder()
+						.setId(expId)
+						.setExp((int) Math.min(Integer.MAX_VALUE, Math.max(0L, exp)))
+						.setLevel(level)
+						.build())
+				.build());
 	}
 
 	/**

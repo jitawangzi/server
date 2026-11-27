@@ -28,6 +28,15 @@ public interface CrossActivityStore {
 	void save(GameActivity activity);
 
 	/**
+	 * 强制保存或更新活动记录；当底层持久化失败时必须抛出异常，严禁静默吞异常
+	 *
+	 * @param activity 待持久化的跨服活动实体
+	 */
+	default void saveOrThrow(GameActivity activity) {
+		save(activity);
+	}
+
+	/**
 	 * 按主键 UID 删除活动记录
 	 */
 	void delete(long activityUid);

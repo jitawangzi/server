@@ -10,7 +10,11 @@ import cn.game.protocol.protobuf.PlayerMsg.PlayerAllInfo.Builder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FuncModule extends BasePlayerModule {
+	private static final Logger log = LoggerFactory.getLogger(FuncModule.class);
 	private static EventTypeEnum[] events = new EventTypeEnum[] { EventTypeEnum.PLAYER_CREATE, EventTypeEnum.LevelUp,
 			EventTypeEnum.LoginSuccess, EventTypeEnum.ChapterWin };
 	Map<InitialUI, Boolean> funcOpenMap = new HashMap<>();
@@ -136,6 +140,29 @@ public class FuncModule extends BasePlayerModule {
 		} else {
 			funcOpenMap.forEach((k, v) -> setFuncOpen(k));
 		}
+	}
+
+	/**
+	 * 非生产测试用：确保所有功能条目均已登记并一键解锁全部功能，同时正常触发 FuncOpen 事件（单功能监听异常隔离，避免阻断后续功能解锁）
+	 *
+	 * @return 本次新解锁的功能数量
+	 */
+	public int gmUnlockAllFuncs() {
+		int newlyUnlocked = 0;
+		for (InitialUI initialUI : InitialUI.values()) {
+			if (!funcOpenMap.containsKey(initialUI)) {
+				funcOpenMap.put(initialUI, false);
+			}
+			if (Boolean.FALSE.equals(funcOpenMap.get(initialUI))) {
+				try {
+					setFuncOpen(initialUI);
+				} catch (Throwable t) {
+					log.warn("GM一键解锁功能触发FuncOpen监听异常 func={}, playerId={}", initialUI, player != null ? player.getPlayerId() : 0L, t);
+				}
+				newlyUnlocked++;
+			}
+		}
+		return newlyUnlocked;
 	}
 
 	@Override

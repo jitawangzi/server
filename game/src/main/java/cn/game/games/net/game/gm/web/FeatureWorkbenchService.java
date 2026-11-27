@@ -198,8 +198,7 @@ public class FeatureWorkbenchService {
 				}
 			}
 			for (Map<String, Object> panel : allPanels) {
-				String panelName = String.valueOf(panel.get("name")).toLowerCase(Locale.ROOT);
-				if (panelName.contains(key) || panelName.contains(mb.moduleIdHex.toLowerCase(Locale.ROOT))) {
+				if (GmConsolePanelLoader.matchesModule(panel, mb.moduleId, mb.moduleIdHex, mb.moduleKey)) {
 					mb.matchedPanels.add(panel);
 				}
 			}

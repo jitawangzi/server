@@ -66,6 +66,8 @@ import cn.game.games.core.collector.PlayerConcurrencyCollector;
 import cn.game.games.core.event.server.ServerEventBus;
 import cn.game.games.core.push.PushService;
 import cn.game.games.core.vertx.WebSocketVerticle;
+import cn.game.games.net.common.module.activity.CrossGuildWarConfigValidator;
+import cn.game.games.net.common.module.activity.CrossWorldBossConfigValidator;
 import cn.game.games.net.common.module.activity.GameActivityService;
 import cn.game.games.net.cross.remote.CrossServerInterface;
 import cn.game.games.net.game.helper.MailHelper;
@@ -83,6 +85,13 @@ import cn.game.games.net.game.remote.GameServerInterface;
 import cn.game.games.util.BIHelper;
 import cn.game.protocol.generated.config.VirtualServerConfig;
 import cn.game.protocol.generated.helper.ManagerHelper;
+import cn.game.protocol.generated.manager.ActivityCrossGuildWarManager;
+import cn.game.protocol.generated.manager.ActivityCrossWorldBossManager;
+import cn.game.protocol.generated.manager.ActivityManager;
+import cn.game.protocol.generated.manager.ItemManager;
+import cn.game.protocol.generated.manager.MailManager;
+import cn.game.protocol.generated.manager.RandomGivenManager;
+import cn.game.protocol.generated.manager.RandomGroupManager;
 import cn.game.protocol.generated.manager.VirtualServerManager;
 import cn.game.protocol.protobuf.ServerMsg.GameStatusPublish_7d000017;
 import cn.game.util.Config;
@@ -198,6 +207,15 @@ public class GameServer implements GameServerMBean {
 
 		// ******************** 业务逻辑启动 **************************
 		ManagerHelper.init();
+		CrossWorldBossConfigValidator.validateAll();
+		ActivityCrossWorldBossManager.instance().addReloadConsumer(CrossWorldBossConfigValidator::validateAll);
+		CrossGuildWarConfigValidator.validateAll();
+		ActivityCrossGuildWarManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
+		ActivityManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
+		MailManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
+		ItemManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
+		RandomGivenManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
+		RandomGroupManager.instance().addReloadConsumer(CrossGuildWarConfigValidator::validateAll);
 		PlayerManager.getInstance().init2();
 		ClassManager.getInstance().init();
 		

@@ -3,11 +3,13 @@ package cn.game.games.net.cross.activity.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.game.core.base.ServerContext;
+import cn.game.core.base.VirtualServerRegistry.VirtualServerView;
 import cn.game.core.cache.CacheType;
 import cn.game.core.cache.id.DistributedObjectType;
 import cn.game.core.cache.id.IdCache;
@@ -43,6 +46,8 @@ import cn.game.games.net.cross.activity.RedisCrossActivityDirectory;
 import cn.game.games.net.cross.activity.dto.CrossActivityActionResult;
 import cn.game.games.net.cross.activity.dto.CrossActivityCreateResult;
 import cn.game.games.net.cross.activity.dto.CrossActivitySnapshot;
+import cn.game.games.net.cross.activity.impl.CrossGuildWarActivity;
+import cn.game.games.net.cross.activity.impl.CrossWorldBossActivity;
 import cn.game.games.net.game.helper.ServerHelper;
 import cn.game.games.net.game.manager.ActivityStateManager;
 import cn.game.games.net.game.module.activity.ActivityBase;
@@ -79,7 +84,7 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 
 	private final CrossGlobalActivityManager manager = CrossGlobalActivityManager.getInstance();
 	private final CrossActivityDirectory directory = RedisCrossActivityDirectory.getInstance();
-	private final ActivityScopeResolver scopeResolver = DefaultActivityScopeResolver.getInstance();
+	private volatile ActivityScopeResolver scopeResolver = DefaultActivityScopeResolver.getInstance();
 	private volatile CrossActivityStore store = new DefaultCrossActivityStore();
 
 	private volatile boolean initialized = false;
@@ -112,6 +117,24 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 
 	public CrossActivityStore getStore() {
 		return store;
+	}
+
+	/**
+	 * 注入作用域解析器（传入 null 时回退为默认解析器，供测试隔离战区策略）
+	 *
+	 * @param scopeResolver 作用域解析器
+	 */
+	public void setScopeResolver(ActivityScopeResolver scopeResolver) {
+		this.scopeResolver = (scopeResolver != null ? scopeResolver : DefaultActivityScopeResolver.getInstance());
+	}
+
+	/**
+	 * 获取当前生效的活动作用域解析器
+	 *
+	 * @return 作用域解析器
+	 */
+	public ActivityScopeResolver getScopeResolver() {
+		return scopeResolver;
 	}
 
 	public synchronized void init() {
@@ -201,6 +224,33 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				}
 				String scopeKey = scopeResolver.resolveScopeKey(config, serverId);
 				ensureActivityLeader(config, scopeKey, serverId);
+			}
+		}
+
+		// 支持按战区分组的跨服活动在新服开启时动态归入既有战区或按新战区自动拉起实例
+		Collection<ActivityConfig> allConfigs = ActivityManager.instance().list();
+		if (allConfigs != null) {
+			for (ActivityConfig config : allConfigs) {
+				if (!DefaultActivityScopeResolver.isZoneGroupedActivity(config)) {
+					continue;
+				}
+				if (!config.isCross || !config.isMultiplayer) {
+					continue;
+				}
+				if (!ClassManager.getInstance().hasServerActivityClass(config.type)) {
+					continue;
+				}
+				if (!manager.canOpen(config)) {
+					continue;
+				}
+				if (config.openType == ActivityHelper.OPENTYPE_DATE
+						&& ActivityStateManager.getInstance().getState(config.ID) != ActivityState.START_VALUE) {
+					continue;
+				}
+				String scopeKey = scopeResolver.resolveScopeKey(config, serverId);
+				if (!StringUtils.isEmpty(scopeKey)) {
+					ensureActivityLeader(config, scopeKey, null);
+				}
 			}
 		}
 	}
@@ -344,12 +394,24 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 				}
 			}
 		} else {
-			// 普通全局跨服活动
+			// 按时间开启的全局或战区分组跨服活动
 			if (!manager.canOpen(config)) {
 				return;
 			}
-			String scopeKey = scopeResolver.resolveScopeKey(config, null);
-			ensureActivityLeader(config, scopeKey, null);
+			// VIEW 预告期不提前创建 START 战斗实例；仅在正式进入 START（或非日期型已就绪）时创建
+			if (config.openType == ActivityHelper.OPENTYPE_DATE
+					&& ActivityStateManager.getInstance().getState(config.ID) != ActivityState.START_VALUE) {
+				return;
+			}
+			Map<String, VirtualServerView> serverOpenMap = ServerHelper.getServerOpenMap();
+			Collection<VirtualServerView> servers = serverOpenMap != null ? serverOpenMap.values() : Collections.emptyList();
+			Set<String> scopeKeys = scopeResolver.resolveActiveScopeKeys(config, servers);
+			for (String scopeKey : scopeKeys) {
+				if (StringUtils.isEmpty(scopeKey)) {
+					continue;
+				}
+				ensureActivityLeader(config, scopeKey, null);
+			}
 		}
 	}
 
@@ -588,6 +650,20 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 			snapshot.setEndTime(act.getEndTime());
 			snapshot.setDestroyTime(act.getDestroyTime());
 			snapshot.setServerId(ServerContext.getInstance().getServerId());
+			if (act instanceof CrossWorldBossActivity bossAct) {
+				snapshot.getExtra().put("maxHp", bossAct.getMaxHp());
+				snapshot.getExtra().put("currentHp", bossAct.getCurrentHp());
+				snapshot.getExtra().put("killed", bossAct.isKilled());
+				snapshot.getExtra().put("killerPlayerId", bossAct.getKillerPlayerId());
+				snapshot.getExtra().put("rankSettled", bossAct.isRankSettled());
+				snapshot.getExtra().put("participantCount", bossAct.getParticipantCount());
+			} else if (act instanceof CrossGuildWarActivity warAct) {
+				snapshot.getExtra().put("strongholdCount", warAct.getStrongholdCount());
+				snapshot.getExtra().put("guildCount", warAct.getGuildCount());
+				snapshot.getExtra().put("participantCount", warAct.getParticipantCount());
+				snapshot.getExtra().put("rankSettled", warAct.isRankSettled());
+				snapshot.getExtra().put("finalRankCount", warAct.getFinalRankCount());
+			}
 			return snapshot;
 		});
 	}
@@ -617,11 +693,25 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 	}
 
 	public void periodicDirtySave() {
+		long now = DateUtil.currentTimeMillis();
 		for (CrossActivityBase act : manager.getAllActivities()) {
-			if (act.isDirty()) {
+			boolean needSettleRetry = act.getState() == ActivityState.CLOSE_VALUE
+					&& act instanceof CrossGuildWarActivity warAct
+					&& !warAct.isRankSettled()
+					&& warAct.canRetryEndSettlement(now);
+			if (act.isDirty() || needSettleRetry) {
 				try {
 					runInActivityMailbox(act.getUid(), () -> {
-						if (act.isDirty()) {
+						if (act.getState() == ActivityState.CLOSE_VALUE
+								&& act instanceof CrossGuildWarActivity warActInBox
+								&& !warActInBox.isRankSettled()
+								&& warActInBox.canRetryEndSettlement(DateUtil.currentTimeMillis())) {
+							warActInBox.compensateEndSettlement();
+						}
+						if (act.isDirty()
+								&& !(act instanceof CrossGuildWarActivity warActAfter
+										&& warActAfter.getState() == ActivityState.CLOSE_VALUE
+										&& !warActAfter.isRankSettled())) {
 							saveActivityToDb(act);
 							act.clearDirty();
 							act.setLastSaveTime(DateUtil.currentTimeMillis());
@@ -710,6 +800,10 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 					// BLOCKER 1 & BLOCKER 6: 恢复时停机已过 endTime 但未到 destroyTime，补调 end() 推进终态；防御 endTime==0
 					if (act.getState() == ActivityState.START_VALUE && act.getEndTime() > 0 && now >= act.getEndTime()) {
 						act.end();
+					} else if (act.getState() == ActivityState.CLOSE_VALUE
+							&& act instanceof CrossGuildWarActivity warAct
+							&& !warAct.isRankSettled()) {
+						warAct.compensateEndSettlement();
 					} else if (act.getEndTime() > now) {
 						manager.scheduleEndTask(act, act.getEndTime() - now);
 					}
@@ -794,6 +888,11 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 					}
 					if (act.getState() == ActivityState.START_VALUE && act.getEndTime() > 0 && now >= act.getEndTime()) {
 						act.end();
+					} else if (act.getState() == ActivityState.CLOSE_VALUE
+							&& act instanceof CrossGuildWarActivity warAct
+							&& !warAct.isRankSettled()
+							&& warAct.canRetryEndSettlement(now)) {
+						warAct.compensateEndSettlement();
 					}
 					act.newDay();
 					return null;
@@ -813,7 +912,35 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 		}
 	}
 
-	private void saveActivityToDb(CrossActivityBase act) {
+	/**
+	 * 在活动所属邮箱内强制同步落盘活动实体，仅当 {@code saveOrThrow} 无异常返回后才清除脏标记
+	 *
+	 * @param activity 待强刷落盘的跨服活动实例
+	 */
+	public void flushActivityInMailbox(CrossActivityBase activity) {
+		if (activity == null) {
+			return;
+		}
+		if (activity.getUid() > 0 && !Objects.equals(CURRENT_MAILBOX_UID.get(), activity.getUid())) {
+			runInActivityMailbox(activity.getUid(), () -> {
+				flushActivityInMailbox(activity);
+				return null;
+			});
+			return;
+		}
+		GameActivity entity = buildGameActivityEntity(activity);
+		store.saveOrThrow(entity);
+		activity.clearDirty();
+		activity.setLastSaveTime(DateUtil.currentTimeMillis());
+	}
+
+	/**
+	 * 构造跨服活动持久化实体
+	 *
+	 * @param act 跨服活动领域对象
+	 * @return 可落库的 GameActivity 实体
+	 */
+	private GameActivity buildGameActivityEntity(CrossActivityBase act) {
 		GameActivity entity = new GameActivity();
 		entity.setId(act.getUid());
 		entity.setServerId(act.getScopeKey());
@@ -821,6 +948,10 @@ public class CrossActivityService implements EventHandler<ServerEventTypeEnum, S
 		entity.setState((byte) act.getState());
 		entity.setCreateTime(act.getStartTime() > 0 ? act.getStartTime() : DateUtil.currentTimeMillis());
 		entity.setParams(act.toSaveString());
-		store.save(entity);
+		return entity;
+	}
+
+	private void saveActivityToDb(CrossActivityBase act) {
+		store.save(buildGameActivityEntity(act));
 	}
 }

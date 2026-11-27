@@ -5,23 +5,29 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.game.core.base.RunMode;
 import cn.game.core.exception.LogicException;
 import cn.game.protocol.manual.ErrorMsgEnum;
 
 /**
- * GM自定义面板热重载加载器，具备正则白名单与路径穿越防御 (DC-12)
+ * GM自定义面板与业务测试页热重载加载器，具备正则白名单、路径穿越防御与 @gm-panel 元数据解析能力 (DC-12)
  *
  * @author shuyongqiang
  */
@@ -34,6 +40,11 @@ public final class GmConsolePanelLoader {
 	public static final String DEFAULT_PANELS_DIR = "gm-console/panels";
 
 	private static final Pattern PANEL_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]+\\.html$");
+	private static final Pattern METADATA_BLOCK_PATTERN = Pattern.compile("<!--\\s*@gm-panel\\s*(\\{[\\s\\S]*?\\})\\s*-->");
+	private static final int METADATA_SCAN_LIMIT = 8192;
+	private static final ObjectMapper METADATA_MAPPER = new ObjectMapper();
+	private static final TypeReference<Map<String, Object>> MAP_TYPE_REF = new TypeReference<Map<String, Object>>() {
+	};
 
 	private GmConsolePanelLoader() {
 	}
@@ -94,13 +105,146 @@ public final class GmConsolePanelLoader {
 						} catch (IOException e) {
 							log.warn("读取自定义面板文件属性失败 file={}", filename, e);
 						}
+						applyPanelMetadata(p, name, item);
 						panels.add(item);
 					});
 		} catch (IOException e) {
 			log.error("扫描自定义面板目录失败 dir={}", rootDir, e);
 			return Collections.emptyList();
 		}
+		panels.sort(Comparator
+				.comparingInt((Map<String, Object> m) -> toInt(m.get("order"), 100))
+				.thenComparing(m -> String.valueOf(m.getOrDefault("file", ""))));
 		return panels;
+	}
+
+	/**
+	 * 判断指定业务测试页是否关联到目标协议模块（优先按 @gm-panel.modules 多对多匹配，兼容旧文件名规则）
+	 *
+	 * @param panel 面板元数据Map
+	 * @param moduleId 十进制模块号
+	 * @param moduleIdHex 十六进制模块号（如 0x15）
+	 * @param moduleKey 模块英文键（如 shop）
+	 * @return true 表示关联到目标模块
+	 */
+	@SuppressWarnings("unchecked")
+	public static boolean matchesModule(Map<String, Object> panel, int moduleId, String moduleIdHex, String moduleKey) {
+		if (panel == null) {
+			return false;
+		}
+		String normKey = moduleKey != null ? moduleKey.trim().toLowerCase(Locale.ROOT) : "";
+		String normHex = moduleIdHex != null ? moduleIdHex.trim().toLowerCase(Locale.ROOT) : "";
+		String bareHex = normHex.startsWith("0x") ? normHex.substring(2) : normHex;
+		String decStr = moduleId > 0 ? String.valueOf(moduleId) : "";
+
+		Object modulesObj = panel.get("modules");
+		if (modulesObj instanceof List<?>) {
+			List<Object> declaredModules = (List<Object>) modulesObj;
+			if (!declaredModules.isEmpty()) {
+				for (Object entry : declaredModules) {
+					if (entry == null) {
+						continue;
+					}
+					String token = String.valueOf(entry).trim().toLowerCase(Locale.ROOT);
+					if (token.isEmpty()) {
+						continue;
+					}
+					if (!normKey.isEmpty() && token.equals(normKey)) {
+						return true;
+					}
+					if (!normHex.isEmpty() && token.equals(normHex)) {
+						return true;
+					}
+					if (!bareHex.isEmpty() && (token.equals(bareHex) || token.equals("0x" + bareHex))) {
+						return true;
+					}
+					if (!decStr.isEmpty() && token.equals(decStr)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+
+		// 兼容未声明 @gm-panel.modules 的历史面板：按文件名包含模块键或十六进制模块号匹配
+		String panelName = String.valueOf(panel.getOrDefault("name", "")).toLowerCase(Locale.ROOT);
+		if (!normKey.isEmpty() && panelName.contains(normKey)) {
+			return true;
+		}
+		return !normHex.isEmpty() && panelName.contains(normHex);
+	}
+
+	/**
+	 * 从 HTML 面板顶部解析声明式 <!-- @gm-panel {...} --> 元数据；未声明或解析失败时平稳回退默认值
+	 *
+	 * @param path 面板文件路径
+	 * @param defaultName 默认名称（不含 .html 后缀）
+	 * @param target 写入的目标元数据 Map
+	 */
+	private static void applyPanelMetadata(Path path, String defaultName, Map<String, Object> target) {
+		Map<String, Object> parsed = Collections.emptyMap();
+		try {
+			String content = Files.readString(path, StandardCharsets.UTF_8);
+			String head = content.length() > METADATA_SCAN_LIMIT ? content.substring(0, METADATA_SCAN_LIMIT) : content;
+			Matcher matcher = METADATA_BLOCK_PATTERN.matcher(head);
+			if (matcher.find()) {
+				String jsonBlock = matcher.group(1);
+				Map<String, Object> raw = METADATA_MAPPER.readValue(jsonBlock, MAP_TYPE_REF);
+				if (raw != null) {
+					parsed = raw;
+				}
+			}
+		} catch (Exception e) {
+			log.warn("解析自定义面板 @gm-panel 元数据失败，已回退默认值 file={}", path.getFileName(), e);
+		}
+
+		target.put("id", nonBlankString(parsed.get("id"), defaultName));
+		target.put("title", nonBlankString(parsed.get("title"), defaultName));
+		target.put("category", nonBlankString(parsed.get("category"), "自定义面板"));
+		target.put("summary", nonBlankString(parsed.get("summary"), ""));
+		target.put("audience", toStringList(parsed.get("audience"), Arrays.asList("QA", "DEV")));
+		target.put("modules", toStringList(parsed.get("modules"), Collections.emptyList()));
+		target.put("tags", toStringList(parsed.get("tags"), Collections.emptyList()));
+		target.put("order", toInt(parsed.get("order"), 100));
+		target.put("hasMetadata", !parsed.isEmpty());
+	}
+
+	private static String nonBlankString(Object value, String fallback) {
+		if (value == null) {
+			return fallback;
+		}
+		String str = String.valueOf(value).trim();
+		return str.isEmpty() ? fallback : str;
+	}
+
+	private static List<String> toStringList(Object value, List<String> fallback) {
+		if (!(value instanceof List<?>)) {
+			return new ArrayList<>(fallback);
+		}
+		List<String> list = new ArrayList<>();
+		for (Object item : (List<?>) value) {
+			if (item != null) {
+				String s = String.valueOf(item).trim();
+				if (!s.isEmpty()) {
+					list.add(s);
+				}
+			}
+		}
+		return list.isEmpty() && !fallback.isEmpty() ? new ArrayList<>(fallback) : list;
+	}
+
+	private static int toInt(Object value, int fallback) {
+		if (value instanceof Number) {
+			return ((Number) value).intValue();
+		}
+		if (value != null) {
+			try {
+				return Integer.parseInt(String.valueOf(value).trim());
+			} catch (NumberFormatException e) {
+				log.debug("忽略非法面板排序值 value={}", value, e);
+			}
+		}
+		return fallback;
 	}
 
 	/**

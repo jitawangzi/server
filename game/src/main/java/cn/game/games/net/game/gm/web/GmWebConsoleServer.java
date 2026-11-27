@@ -1,7 +1,11 @@
 package cn.game.games.net.game.gm.web;
 
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,6 +71,9 @@ public class GmWebConsoleServer {
 	private static final Logger log = LoggerFactory.getLogger(GmWebConsoleServer.class);
 	private static final ObjectMapper MAPPER = new ObjectMapper();
 
+	public static final String PROP_STATIC_DIR = "gm.http.staticDir";
+	public static final String ENV_STATIC_DIR = "GM_HTTP_STATIC_DIR";
+
 	private static volatile GmWebConsoleServer instance;
 
 	private final Vertx vertx;
@@ -74,8 +81,6 @@ public class GmWebConsoleServer {
 
 	private HttpServer server;
 	private int activePort;
-	private String cachedIndexHtml;
-	private String cachedWorkbenchJs;
 
 	public GmWebConsoleServer() {
 		this(null);
@@ -497,9 +502,18 @@ public class GmWebConsoleServer {
 			newPlayer.setGameClient(vClient);
 
 			try {
+				if (newPlayer.getModules().isEmpty()) {
+					newPlayer.initModule(new java.util.HashMap<String, cn.game.games.core.BasePlayerModule>());
+				}
 				PlayerManager.getInstance().initAdd(newPlayer);
+				if (newPlayer.getPlayerModule() != null) {
+					newPlayer.getPlayerModule().initLevel();
+				}
+				if (newPlayer.getFuncModule() != null) {
+					newPlayer.getFuncModule().initFuncOpenData();
+				}
 			} catch (Throwable t) {
-				log.warn("initAdd test player warning: pid={}, msg={}", allocatedPid, t.getMessage());
+				log.warn("初始化测试玩家基础模块告警: pid={}", allocatedPid, t);
 			}
 
 			Map<String, Object> respData = new LinkedHashMap<>();
@@ -516,7 +530,10 @@ public class GmWebConsoleServer {
 		// 10. GET /gm-console/workbench.js
 		router.get("/gm-console/workbench.js").handler(ctx -> {
 			String js = loadWorkbenchJs();
-			ctx.response().putHeader("Content-Type", "application/javascript; charset=utf-8").end(js);
+			ctx.response()
+					.putHeader("Content-Type", "application/javascript; charset=utf-8")
+					.putHeader("Cache-Control", "no-store")
+					.end(js);
 		});
 
 		// 11. GET /gm-console/api/workbench/acceptance/suites
@@ -612,10 +629,66 @@ public class GmWebConsoleServer {
 			});
 		});
 
+		// 13. GET /gm-console/api/workbench/goods-catalog
+		router.get("/gm-console/api/workbench/goods-catalog").handler(ctx -> {
+			RunMode mode = GmSecurityPolicy.currentRunMode();
+			if (mode.isProduction()) {
+				Map<String, Object> prodData = new LinkedHashMap<>();
+				prodData.put("simulationEnabled", false);
+				prodData.put("categories", Collections.emptyList());
+				prodData.put("items", Collections.emptyList());
+				sendJson(ctx, GmResult.success("ok", prodData));
+				return;
+			}
+			String typeIdParam = ctx.request().getParam("typeId");
+			Integer parsedTypeId = null;
+			if (typeIdParam != null && !typeIdParam.isBlank()) {
+				try {
+					parsedTypeId = Integer.parseInt(typeIdParam.trim());
+				} catch (NumberFormatException e) {
+					ctx.response().setStatusCode(400);
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "typeId 必须为整数: " + typeIdParam));
+					return;
+				}
+			}
+			String keywordParam = ctx.request().getParam("keyword");
+			if (keywordParam == null) {
+				keywordParam = ctx.request().getParam("k");
+			}
+			String limitParam = ctx.request().getParam("limit");
+			Integer parsedLimit = null;
+			if (limitParam != null && !limitParam.isBlank()) {
+				try {
+					parsedLimit = Integer.parseInt(limitParam.trim());
+				} catch (NumberFormatException e) {
+					ctx.response().setStatusCode(400);
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.request_parameter_error, "limit 必须为整数: " + limitParam));
+					return;
+				}
+			}
+			final Integer finalTypeId = parsedTypeId;
+			final String finalKeyword = keywordParam;
+			final Integer finalLimit = parsedLimit;
+			effectiveVertx.executeBlocking(() -> {
+				GoodsCatalogService service = new GoodsCatalogService();
+				return service.queryCatalog(finalTypeId, finalKeyword, finalLimit);
+			}, false).onComplete(ar -> {
+				if (ar.succeeded()) {
+					sendJson(ctx, GmResult.success("ok", ar.result()));
+				} else {
+					log.error("查询物品目录异常 typeId={}", finalTypeId, ar.cause());
+					sendJson(ctx, GmResult.fail(ErrorMsgEnum.unknown, "查询物品目录异常: " + ar.cause().getMessage()));
+				}
+			});
+		});
+
 		// 5. 静态首页单页控制台
 		Handler<RoutingContext> indexHandler = ctx -> {
 			String html = loadIndexHtml();
-			ctx.response().putHeader("Content-Type", "text/html; charset=utf-8").end(html);
+			ctx.response()
+					.putHeader("Content-Type", "text/html; charset=utf-8")
+					.putHeader("Cache-Control", "no-store")
+					.end(html);
 		};
 		router.get("/gm-console").handler(indexHandler);
 		router.get("/gm-console/").handler(indexHandler);
@@ -651,33 +724,77 @@ public class GmWebConsoleServer {
 		}
 	}
 
-	private synchronized String loadIndexHtml() {
-		if (cachedIndexHtml != null) {
-			return cachedIndexHtml;
-		}
-		try (InputStream in = getClass().getClassLoader().getResourceAsStream("gm-console/index.html")) {
-			if (in != null) {
-				cachedIndexHtml = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-				return cachedIndexHtml;
-			}
-		} catch (Exception e) {
-			log.warn("读取 classpath gm-console/index.html 失败", e);
-		}
-		return "<!DOCTYPE html><html><head><title>GM Console</title></head><body><h1>GM Console</h1><p>Ready</p></body></html>";
+	/**
+	 * 实时读取控制台首页 HTML（免内存缓存，优先磁盘直读，支持全运行模式免重启热生效）
+	 *
+	 * @return index.html 内容
+	 */
+	private String loadIndexHtml() {
+		return loadStaticConsoleAsset("index.html",
+				"<!DOCTYPE html><html><head><title>GM Console</title></head><body><h1>GM Console</h1><p>Ready</p></body></html>");
 	}
 
-	private synchronized String loadWorkbenchJs() {
-		if (cachedWorkbenchJs != null) {
-			return cachedWorkbenchJs;
+	/**
+	 * 实时读取协议工作台脚本 workbench.js（免内存缓存，优先磁盘直读，支持全运行模式免重启热生效）
+	 *
+	 * @return workbench.js 内容
+	 */
+	private String loadWorkbenchJs() {
+		return loadStaticConsoleAsset("workbench.js", "/* gm workbench.js not found */");
+	}
+
+	/**
+	 * 按“自定义静态目录 -> 源码资源目录 -> 运行目录外置 gm-console -> classpath（禁缓存）”顺序实时加载前端静态文件
+	 *
+	 * @param fileName 固定白名单静态文件名（如 index.html / workbench.js）
+	 * @param fallback 全部来源均缺失时的兜底内容
+	 * @return 文件文本内容
+	 */
+	private String loadStaticConsoleAsset(String fileName, String fallback) {
+		List<Path> candidates = resolveStaticAssetCandidates(fileName);
+		for (Path candidate : candidates) {
+			if (candidate != null && Files.isRegularFile(candidate)) {
+				try {
+					return Files.readString(candidate, StandardCharsets.UTF_8);
+				} catch (Exception e) {
+					log.warn("从磁盘热加载 GM 控制台静态文件失败: path={}", candidate, e);
+				}
+			}
 		}
-		try (InputStream in = getClass().getClassLoader().getResourceAsStream("gm-console/workbench.js")) {
-			if (in != null) {
-				cachedWorkbenchJs = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-				return cachedWorkbenchJs;
+		try {
+			URL resource = getClass().getClassLoader().getResource("gm-console/" + fileName);
+			if (resource != null) {
+				URLConnection conn = resource.openConnection();
+				conn.setUseCaches(false);
+				try (InputStream in = conn.getInputStream()) {
+					return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+				}
 			}
 		} catch (Exception e) {
-			log.warn("读取 classpath gm-console/workbench.js 失败", e);
+			log.warn("读取 classpath gm-console/{} 失败", fileName, e);
 		}
-		return "/* gm workbench.js not found */";
+		return fallback;
+	}
+
+	/**
+	 * 解析静态资源磁盘候选路径列表（按优先级排序）
+	 *
+	 * @param fileName 静态文件名
+	 * @return 候选磁盘路径列表
+	 */
+	private List<Path> resolveStaticAssetCandidates(String fileName) {
+		List<Path> candidates = new ArrayList<>(5);
+		String configured = System.getProperty(PROP_STATIC_DIR);
+		if (configured == null || configured.isBlank()) {
+			configured = System.getenv(ENV_STATIC_DIR);
+		}
+		if (configured != null && !configured.isBlank()) {
+			candidates.add(Path.of(configured.trim()).resolve(fileName).toAbsolutePath().normalize());
+		}
+		candidates.add(Path.of("game", "src", "main", "resources", "gm-console", fileName).toAbsolutePath().normalize());
+		candidates.add(Path.of("src", "main", "resources", "gm-console", fileName).toAbsolutePath().normalize());
+		candidates.add(Path.of("gm-console", fileName).toAbsolutePath().normalize());
+		candidates.add(Path.of("..", "gm-console", fileName).toAbsolutePath().normalize());
+		return candidates;
 	}
 }

@@ -295,3 +295,14 @@
 453,ShopBuyRequest_29000003,0x29000003,,,,,,购买商品请求
 454,ShopInfoRequest_29000001,0x29000001,,,,,,获取商店信息请求
 455,ShopRefreshRequest_29000005,0x29000005,,,,,,刷新商店请求
+456,ActivityCrossWorldBossAttackRequest_11000403,0x11000403,,,,,,2. 发起攻打跨服世界Boss
+457,ActivityCrossWorldBossBuyCountRequest_11000407,0x11000407,,,,,,4. 购买今日额外挑战次数（货币扣除通过 GoodsUpdatePush_55003501 推送）
+458,ActivityCrossWorldBossInfoRequest_11000401,0x11000401,,,,,,1. 查询跨服世界Boss活动详情
+459,ActivityCrossWorldBossRankRequest_11000409,0x11000409,,,,,,5. 分页查询本战区伤害排行榜
+460,ActivityCrossWorldBossRewardRequest_11000405,0x11000405,,,,,,3. 领取跨服世界Boss奖励（阶段里程碑奖 或 断线兜底补领最后一击奖）
+461,ActivityCrossGuildWarAttackRequest_11000503,0x11000503,,,,,,2. 发起据点出征攻打
+462,ActivityCrossGuildWarBuyCountRequest_11000507,0x11000507,,,,,,4. 购买今日额外出征次数（货币扣除走隐式 GoodsUpdatePush_55003501）
+463,ActivityCrossGuildWarGuildRankRequest_11000509,0x11000509,,,,,,5. 分页查询战区宗门排行榜
+464,ActivityCrossGuildWarInfoRequest_11000501,0x11000501,,,,,,1. 查询跨服宗门争霸详情
+465,ActivityCrossGuildWarMemberRankRequest_1100050b,0x1100050b,,,,,,6. 分页查询指定宗门成员战功贡献榜
+466,ActivityCrossGuildWarRewardRequest_11000505,0x11000505,,,,,,3. 领取阶段奖励（1=个人战功目标奖，2=锁定宗门战功阶段奖）

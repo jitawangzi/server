@@ -59,6 +59,29 @@ public class DefaultCrossActivityStore implements CrossActivityStore {
 		}
 	}
 
+	/**
+	 * 强制同步落盘跨服活动记录，底层 DAO 异常时记录错误并重抛 {@link IllegalStateException}
+	 *
+	 * @param activity 待落盘的活动实体
+	 * @throws IllegalArgumentException 实体为空时抛出
+	 * @throws IllegalStateException    数据库持久化失败时抛出
+	 */
+	@Override
+	public void saveOrThrow(GameActivity activity) {
+		if (activity == null) {
+			throw new IllegalArgumentException("GameActivity cannot be null");
+		}
+		if (SpringContextLoader.getContext() == null) {
+			return;
+		}
+		try {
+			DAO.executeSync(GameActivityMapper.class, MapperConstant.insertOrUpdate, activity);
+		} catch (Exception e) {
+			log.error("Failed to saveOrThrow GameActivity uid={}", activity.getId(), e);
+			throw new IllegalStateException("Failed to saveOrThrow GameActivity uid=" + activity.getId(), e);
+		}
+	}
+
 	@Override
 	public void delete(long activityUid) {
 		if (SpringContextLoader.getContext() == null) {

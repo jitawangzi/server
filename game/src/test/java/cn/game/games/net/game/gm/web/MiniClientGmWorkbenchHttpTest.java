@@ -6,6 +6,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Isolated;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -78,6 +81,7 @@ public class MiniClientGmWorkbenchHttpTest {
 		ServerContext.getInstance().setRunMode();
 		System.clearProperty(GmSecurityPolicy.PROP_REQUIRE_AUTH);
 		System.clearProperty(GmSecurityPolicy.PROP_OPS_TOKEN);
+		System.clearProperty(GmWebConsoleServer.PROP_STATIC_DIR);
 
 		PlayerData data = new PlayerData();
 		ObjUtil.setDefaultValue(data);
@@ -108,6 +112,7 @@ public class MiniClientGmWorkbenchHttpTest {
 		System.clearProperty(GmSecurityPolicy.PROP_HTTP_HOST);
 		System.clearProperty(GmSecurityPolicy.PROP_REQUIRE_AUTH);
 		System.clearProperty(GmSecurityPolicy.PROP_OPS_TOKEN);
+		System.clearProperty(GmWebConsoleServer.PROP_STATIC_DIR);
 		System.setProperty(ServerContext.SERVER_RUN_MODE, "DEV");
 		ServerContext.getInstance().setRunMode();
 	}
@@ -173,6 +178,19 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertTrue(playersJson.get("ok").asBoolean());
 		Assertions.assertFalse(playersJson.get("data").get("simulationEnabled").asBoolean());
 		Assertions.assertEquals(0, playersJson.get("data").get("players").size());
+
+		// (e) GET /gm-console/api/workbench/goods-catalog 生产模式短路返回空目录
+		HttpRequest goodsProdReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/goods-catalog"))
+				.header("X-GM-Token", "ProductionOpsToken999")
+				.GET()
+				.build();
+		HttpResponse<String> goodsProdResp = httpClient.send(goodsProdReq, HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(200, goodsProdResp.statusCode());
+		JsonNode goodsProdJson = MAPPER.readTree(goodsProdResp.body());
+		Assertions.assertTrue(goodsProdJson.get("ok").asBoolean());
+		Assertions.assertFalse(goodsProdJson.get("data").get("simulationEnabled").asBoolean());
+		Assertions.assertEquals(0, goodsProdJson.get("data").get("categories").size());
 
 		// 2. 验证非生产下的 Token 鉴权拦截
 		System.setProperty(ServerContext.SERVER_RUN_MODE, "TEST");
@@ -324,10 +342,31 @@ public class MiniClientGmWorkbenchHttpTest {
 		HttpResponse<String> indexResp = httpClient.send(indexReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 		Assertions.assertEquals(200, indexResp.statusCode());
 		Assertions.assertTrue(indexResp.headers().firstValue("Content-Type").orElse("").contains("text/html"));
+		Assertions.assertEquals("no-store", indexResp.headers().firstValue("Cache-Control").orElse(""));
 		String html = indexResp.body();
 		Assertions.assertTrue(html.contains("workbench.js"), "首页必须引用 workbench.js");
 		Assertions.assertTrue(html.contains("tabWorkbench"), "首页必须包含 tabWorkbench 容器");
 		Assertions.assertTrue(html.contains("功能协议工作台"), "首页必须包含工作台导航项");
+		Assertions.assertTrue(html.contains("data-theme=\"light-day\""), "首页必须定义晴日浅灰浅色主题");
+		Assertions.assertTrue(html.contains("data-theme=\"light-warm\""), "首页必须定义暖纸护眼浅色主题");
+		Assertions.assertTrue(html.contains("html[data-theme=\"light-day\"]"), "首页必须显式声明浅色主题根节点与body背景");
+		Assertions.assertTrue(html.contains("html[data-theme=\"light-warm\"]"), "首页必须显式声明暖纸主题根节点与body背景");
+		Assertions.assertTrue(html.contains("THEME_BG_COLORS"), "首页切换主题时必须同步更新html与body根背景色");
+		Assertions.assertTrue(html.contains("id=\"selTheme\""), "首页必须提供主题切换控件");
+		Assertions.assertTrue(html.contains("gm_console_theme"), "首页必须支持主题选择持久化");
+		Assertions.assertTrue(html.contains("panelPortalView"), "首页必须提供面向玩法的业务测试台门户");
+		Assertions.assertTrue(html.contains("panelDevDrawer"), "首页必须提供面向开发的底部可折叠诊断抽屉");
+		Assertions.assertTrue(html.contains("quickGmBackdrop"), "首页必须提供跨页面随手呼出的快捷GM抽屉");
+		Assertions.assertTrue(html.contains("min(860px, 95vw)"), "快捷GM抽屉必须加宽至宽屏双栏布局");
+		Assertions.assertTrue(html.contains("qgmGoodsCategory"), "快捷GM抽屉必须包含第1级物品大类联动下拉");
+		Assertions.assertTrue(html.contains("qgmGoodsItem"), "快捷GM抽屉必须包含第2级物品配置联动下拉");
+		Assertions.assertTrue(html.contains("getGoodsCatalog:"), "window.GmConsole SDK v2 必须暴露 getGoodsCatalog");
+		Assertions.assertFalse(html.contains("var(--header-bg)"), "首页不得引用未定义的 CSS 变量 --header-bg");
+		Assertions.assertTrue(html.contains("setPlayerLevel:"), "window.GmConsole SDK v2 必须暴露 setPlayerLevel");
+		Assertions.assertTrue(html.contains("setResource:"), "window.GmConsole SDK v2 必须暴露 setResource");
+		Assertions.assertTrue(html.contains("invokeProto:"), "window.GmConsole SDK v2 必须暴露 invokeProto");
+		Assertions.assertTrue(html.contains("inspectPlayer:"), "window.GmConsole SDK v2 必须暴露 inspectPlayer");
+		Assertions.assertTrue(html.contains("resetModules:"), "window.GmConsole SDK v2 必须暴露 resetModules");
 
 		// 2. GET /gm-console/workbench.js 静态脚本
 		HttpRequest jsReq = HttpRequest.newBuilder()
@@ -337,9 +376,111 @@ public class MiniClientGmWorkbenchHttpTest {
 		HttpResponse<String> jsResp = httpClient.send(jsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 		Assertions.assertEquals(200, jsResp.statusCode());
 		Assertions.assertTrue(jsResp.headers().firstValue("Content-Type").orElse("").contains("application/javascript"));
+		Assertions.assertEquals("no-store", jsResp.headers().firstValue("Cache-Control").orElse(""));
 		String js = jsResp.body();
 		Assertions.assertTrue(js.contains("window.WorkbenchApp"), "workbench.js 必须暴露 window.WorkbenchApp");
 		Assertions.assertTrue(js.contains("renderProtobufForm"), "workbench.js 必须包含 Protobuf 动态表单渲染逻辑");
+		Assertions.assertTrue(js.contains("matchedPanels"), "workbench.js 必须在开发协议工作台侧边栏关联业务测试页");
+		Assertions.assertTrue(js.contains("var(--surface-subtle)"), "workbench.js 必须使用主题语义变量以适配浅色主题");
+		Assertions.assertFalse(js.contains("background:#0f172a"), "workbench.js 不得残留硬编码深色背景");
+		Assertions.assertFalse(js.contains("background:#0b1120"), "workbench.js 不得残留硬编码极深蓝背景");
+
+		// 3. 验证首个标杆业务测试页 shop.html 元数据扫描、多对多模块匹配与免重启热读取
+		HttpRequest panelsReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/panels"))
+				.GET()
+				.build();
+		HttpResponse<String> panelsResp = httpClient.send(panelsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, panelsResp.statusCode());
+		JsonNode panelsData = MAPPER.readTree(panelsResp.body()).path("data");
+		Assertions.assertTrue(panelsData.isArray());
+		JsonNode shopPanel = null;
+		for (JsonNode p : panelsData) {
+			if ("shop.html".equals(p.path("file").asText())) {
+				shopPanel = p;
+				break;
+			}
+		}
+		Assertions.assertNotNull(shopPanel, "必须扫描到商店业务测试页 shop.html");
+		Assertions.assertEquals("商店与礼包测试台", shopPanel.path("title").asText());
+		Assertions.assertEquals("核心玩法", shopPanel.path("category").asText());
+		Assertions.assertTrue(shopPanel.path("hasMetadata").asBoolean());
+
+		HttpRequest shopHtmlReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/panels/shop.html"))
+				.GET()
+				.build();
+		HttpResponse<String> shopHtmlResp = httpClient.send(shopHtmlReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, shopHtmlResp.statusCode());
+		Assertions.assertTrue(shopHtmlResp.body().contains("ShopQaPanel"), "shop.html 必须包含 ShopQaPanel 交互实现");
+		Assertions.assertTrue(shopHtmlResp.body().contains("ShopItemBuyRequest_15000003"), "shop.html 必须对接商店真实协议");
+		Assertions.assertTrue(shopHtmlResp.body().contains("totalPages"), "shop.html 必须按 totalPages 分页加载完整配表");
+
+		HttpRequest toolboxReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/panels/common_toolbox.html"))
+				.GET()
+				.build();
+		HttpResponse<String> toolboxResp = httpClient.send(toolboxReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, toolboxResp.statusCode());
+		Assertions.assertTrue(toolboxResp.body().contains("CommonToolbox"), "common_toolbox.html 必须包含 CommonToolbox 实现");
+		Assertions.assertTrue(toolboxResp.body().contains("nearLevelUp"), "common_toolbox.html 必须支持差1经验即升级操作");
+		Assertions.assertTrue(toolboxResp.body().contains("tbGoodsCategory"), "common_toolbox.html 必须支持全品类物品2级联动下拉");
+		Assertions.assertTrue(toolboxResp.body().contains("getGoodsCatalog"), "common_toolbox.html 必须调用 window.GmConsole.getGoodsCatalog");
+
+		// 3.5 验证全物品大类 2 级联动目录 API (GET /gm-console/api/workbench/goods-catalog)
+		HttpRequest catReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/goods-catalog"))
+				.GET()
+				.build();
+		HttpResponse<String> catResp = httpClient.send(catReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, catResp.statusCode());
+		JsonNode catJson = MAPPER.readTree(catResp.body());
+		Assertions.assertTrue(catJson.path("ok").asBoolean());
+		JsonNode categories = catJson.path("data").path("categories");
+		Assertions.assertTrue(categories.isArray() && categories.size() >= 10, "物品大类目录必须覆盖全部主流 GoodsTypeEnum");
+		JsonNode resourceCat = null;
+		for (JsonNode c : categories) {
+			if (c.path("typeId").asInt() == 1) {
+				resourceCat = c;
+				break;
+			}
+		}
+		Assertions.assertNotNull(resourceCat, "必须包含 Resource(1) 玩家资源大类");
+		Assertions.assertTrue(resourceCat.path("count").asInt() > 10, "Asset 枚举资源数应大于 10");
+		Assertions.assertTrue(resourceCat.path("supportsSet").asBoolean());
+
+		// 按 typeId=1 与关键字过滤检索元宝与经验，验证 canSet 能力标记
+		HttpRequest resItemsReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/workbench/goods-catalog?typeId=1"))
+				.GET()
+				.build();
+		HttpResponse<String> resItemsResp = httpClient.send(resItemsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, resItemsResp.statusCode());
+		JsonNode resItems = MAPPER.readTree(resItemsResp.body()).path("data").path("items");
+		Assertions.assertTrue(resItems.isArray() && resItems.size() > 10);
+		boolean checkedDiamond = false;
+		boolean checkedPlayerExp = false;
+		for (JsonNode it : resItems) {
+			int id = it.path("id").asInt();
+			if (id == 100001) {
+				checkedDiamond = true;
+				Assertions.assertEquals("元宝", it.path("name").asText());
+				Assertions.assertTrue(it.path("canSet").asBoolean());
+			} else if (id == 100201) {
+				checkedPlayerExp = true;
+				Assertions.assertFalse(it.path("canSet").asBoolean(), "经验类资产必须标记 canSet=false");
+			}
+		}
+		Assertions.assertTrue(checkedDiamond && checkedPlayerExp, "必须返回 100001 元宝与 100201 玩家经验");
+
+		// 4. 验证 GmConsolePanelLoader.matchesModule 支持 1 协议模块对应多个独立玩法测试页（如 Activity 下多活动）
+		Map<String, Object> actPanelA = Map.of("name", "activity_seven_days", "modules", java.util.List.of("activity", "0x11"));
+		Map<String, Object> actPanelB = Map.of("name", "activity_dragon_boat", "modules", java.util.List.of("0x11"));
+		Map<String, Object> shopPanelMeta = Map.of("name", "shop", "modules", java.util.List.of("shop", "0x15"));
+		Assertions.assertTrue(GmConsolePanelLoader.matchesModule(actPanelA, 0x11, "0x11", "activity"));
+		Assertions.assertTrue(GmConsolePanelLoader.matchesModule(actPanelB, 0x11, "0x11", "activity"));
+		Assertions.assertFalse(GmConsolePanelLoader.matchesModule(shopPanelMeta, 0x11, "0x11", "activity"));
+		Assertions.assertTrue(GmConsolePanelLoader.matchesModule(shopPanelMeta, 0x15, "0x15", "shop"));
 	}
 
 	/**
@@ -382,6 +523,55 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertEquals(200, execResp.statusCode());
 		JsonNode execJson = MAPPER.readTree(execResp.body());
 		Assertions.assertTrue(execJson.get("ok").asBoolean());
+	}
+
+	/**
+	 * 验证 index.html 与 workbench.js 在 DEV 与 PRODUCTION 模式下均免缓存实时热重载（无需重启服务端）
+	 */
+	@Test
+	public void testStaticAssetsHotReloadInDevAndProduction(@TempDir Path tempStaticDir) throws Exception {
+		Path indexFile = tempStaticDir.resolve("index.html");
+		Path jsFile = tempStaticDir.resolve("workbench.js");
+		Files.writeString(indexFile, "<html><body>GM-HOT-V1</body></html>", StandardCharsets.UTF_8);
+		Files.writeString(jsFile, "window.__HOT_VER__='V1';", StandardCharsets.UTF_8);
+		System.setProperty(GmWebConsoleServer.PROP_STATIC_DIR, tempStaticDir.toString());
+
+		HttpRequest indexReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console"))
+				.GET()
+				.build();
+		HttpRequest jsReq = HttpRequest.newBuilder()
+				.uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/workbench.js"))
+				.GET()
+				.build();
+
+		// 1. DEV 模式读取 V1
+		HttpResponse<String> idxV1 = httpClient.send(indexReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		HttpResponse<String> jsV1 = httpClient.send(jsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertTrue(idxV1.body().contains("GM-HOT-V1"));
+		Assertions.assertTrue(jsV1.body().contains("V1"));
+		Assertions.assertEquals("no-store", idxV1.headers().firstValue("Cache-Control").orElse(""));
+		Assertions.assertEquals("no-store", jsV1.headers().firstValue("Cache-Control").orElse(""));
+
+		// 2. 不重启服务修改为 V2，DEV 模式立刻生效
+		Files.writeString(indexFile, "<html><body>GM-HOT-V2</body></html>", StandardCharsets.UTF_8);
+		Files.writeString(jsFile, "window.__HOT_VER__='V2';", StandardCharsets.UTF_8);
+		HttpResponse<String> idxV2 = httpClient.send(indexReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		HttpResponse<String> jsV2 = httpClient.send(jsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertTrue(idxV2.body().contains("GM-HOT-V2"), "DEV 模式下 index.html 必须免重启热生效");
+		Assertions.assertTrue(jsV2.body().contains("V2"), "DEV 模式下 workbench.js 必须免重启热生效");
+
+		// 3. 切换 PRODUCTION 模式修改为 V3，同样免缓存热生效
+		System.setProperty(ServerContext.SERVER_RUN_MODE, "PRODUCTION");
+		ServerContext.getInstance().setRunMode();
+		Files.writeString(indexFile, "<html><body>GM-HOT-PROD-V3</body></html>", StandardCharsets.UTF_8);
+		Files.writeString(jsFile, "window.__HOT_VER__='PROD-V3';", StandardCharsets.UTF_8);
+		HttpResponse<String> idxV3 = httpClient.send(indexReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		HttpResponse<String> jsV3 = httpClient.send(jsReq, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertTrue(idxV3.body().contains("GM-HOT-PROD-V3"), "PRODUCTION 模式下 index.html 必须免重启热生效");
+		Assertions.assertTrue(jsV3.body().contains("PROD-V3"), "PRODUCTION 模式下 workbench.js 必须免重启热生效");
+		Assertions.assertEquals("no-store", idxV3.headers().firstValue("Cache-Control").orElse(""));
+		Assertions.assertEquals("no-store", jsV3.headers().firstValue("Cache-Control").orElse(""));
 	}
 
 	@SuppressWarnings("unchecked")

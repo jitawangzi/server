@@ -1,3 +1,15 @@
+<!-- @gm-panel
+{
+  "id": "quick-test-panel",
+  "title": "快速时钟示例面板",
+  "category": "通用工具",
+  "audience": ["QA", "DEV"],
+  "modules": [],
+  "tags": ["虚拟时钟", "示例", "SDK"],
+  "order": 900,
+  "summary": "最小自定义热重载面板示例，演示如何通过 window.GmConsole SDK 查询与推进虚拟时钟。"
+}
+-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,29 +18,30 @@
   <style>
     .quick-panel {
       padding: 16px;
-      background: #1e293b;
-      border: 1px solid #334155;
+      background: var(--card-bg, #1e293b);
+      border: 1px solid var(--border-color, #334155);
       border-radius: 6px;
-      color: #f8fafc;
+      color: var(--text-main, #f8fafc);
       font-family: sans-serif;
     }
-    .quick-panel h3 { margin-bottom: 12px; color: #38bdf8; }
+    .quick-panel h3 { margin-bottom: 12px; color: var(--primary, #38bdf8); }
     .quick-panel button {
-      background: #0284c7;
-      color: white;
+      background: var(--primary, #0284c7);
+      color: var(--primary-contrast, #ffffff);
       border: none;
       padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
       margin-right: 8px;
     }
-    .quick-panel button:hover { background: #0369a1; }
+    .quick-panel button:hover { background: var(--primary-hover, #0369a1); }
     .quick-panel pre {
-      background: #0f172a;
+      background: var(--code-bg, #0f172a);
+      border: 1px solid var(--border-color, #334155);
       padding: 8px;
       margin-top: 12px;
       border-radius: 4px;
-      color: #38bdf8;
+      color: var(--code-text, #38bdf8);
       max-height: 200px;
       overflow-y: auto;
     }
@@ -37,7 +50,7 @@
 <body>
   <div class="quick-panel">
     <h3>🛠️ 快速测试示例面板 (Quick Test Panel)</h3>
-    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:12px;">演示使用 window.GmConsole SDK 实时调用 GM 指令并展示结果。</p>
+    <p style="font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:12px;">演示使用 window.GmConsole SDK 实时调用 GM 指令并展示结果。</p>
     <div>
       <button onclick="checkClock()">查询时钟状态 (time.status)</button>
       <button onclick="advanceOneHour()">快进1小时 (+1h)</button>

@@ -3,6 +3,36 @@
 > **定位**：本档案承接从 [01_系统架构设计全景文档.md](01_系统架构设计全景文档.md) 与 [02_开发流程与研发规范手册.md](02_开发流程与研发规范手册.md) 拆出的 S2B～S4 专项加固批次细则（保存协调器、五分钟写保护、支付履约与同库持久去重、离线证据/封存/清理预检/启用预检/历史盘点 CLI、数据库超时边界及有界请求计时基线）。
 > **阅读方式**：日常了解架构全景与研发流程直接读 `doc/01` 与 `doc/02` 精简摘要；仅在排查或修改保存协调器、支付履约、离线运维 CLI 或请求计时指标时查阅本档案。跨进程强杀恢复契约另见 [payment-process-recovery.md](payment-process-recovery.md)。
 
+## 目录
+
+- [一、架构、保存协调、支付契约与计时细则](#一架构保存协调支付契约与计时细则摘自原-doc01)
+  - [9.2.1 S2B：同玩家保存保序与结果不明](#921-s2b同玩家保存保序与结果不明)
+  - [9.2.2 S2C：五分钟风险预算与写入保护](#922-s2c五分钟风险预算与写入保护)
+  - [9.2.3 S3A：可支付订单发布门槛](#923-s3a可支付订单发布门槛)
+  - [9.2.4 S3A：发货实例归属与离线收尾](#924-s3a发货实例归属与离线收尾)
+  - [9.2.5 S3A：充值奖励完成契约](#925-s3a充值奖励完成契约)
+  - [9.2.6 S3A：重复通知与单调回执](#926-s3a重复通知与单调回执)
+  - [S3B：证据保留与有界离线核对](#s3b证据保留与有界离线核对)
+  - [S3C：订单容量观测](#s3c订单容量观测s3c-payment-capacity-monitoringt2)
+  - [S3C：单订单可信证据封存](#s3c单订单可信证据封存s3c-payment-trusted-archivet2)
+  - [S3D：Game 同库持久履约去重](#s3dgame-同库持久履约去重s3d-payment-durable-dedupt2)
+  - [S3D：逐单只读安全清理预检](#s3d逐单只读安全清理预检s3d-payment-safe-cleanup-gatet2)
+  - [S3E：持久去重启用结构预检](#s3e持久去重启用结构预检s3e-payment-enable-preflightt2)
+  - [Task4：数据库等待与未知结果边界](#task4数据库等待与未知结果边界s3e-payment-database-timeout-boundariest2)
+  - [Task5：有界只读历史订单盘点](#task5有界只读历史订单盘点s3e-payment-legacy-inventoryt2)
+  - [S4：有界请求计时与 10ms 基线](#s4有界请求计时与10ms基线)
+- [二、专项运维命令、部署顺序与回归验收细则](#二专项运维命令部署顺序与回归验收细则摘自原-doc02)
+  - [S2C 玩家变更与保存风险约束](#s2c-玩家变更与保存风险约束)
+  - [S2 存储层真实数据库验收](#s2-存储层真实数据库验收)
+  - [S3A 支付回复 / 推单 / 发货 / 奖励 / 重复通知验收](#s3a-前置支付结果消费与异步回复)
+  - [S3B 证据保留与只读核对验收](#s3b-证据保留与只读核对验收)
+  - [S3C 订单容量观测、修复与可信封存运维验收](#s3c-订单容量观测验收与独立复跑)
+  - [S3D 持久去重部署、回滚与逐单清理预检](#s3d-持久去重部署回滚与验收)
+  - [S3E 启用结构预检与隔离验收](#s3e-启用结构预检与隔离验收)
+  - [Task4 数据库超时验收与操作限制](#task4-数据库超时验收与操作限制)
+  - [Task5 历史订单只读盘点操作与验收](#task5历史订单只读盘点操作与验收)
+  - [S4 请求计时诊断与可复现基线](#s4请求计时诊断与可复现基线)
+
 ---
 
 ## 一、架构、保存协调、支付契约与计时细则（摘自原 doc/01）
@@ -35,7 +65,6 @@ S2B 单元验收使用真实保存装配、真实邮箱及专用事务写入器�
 
 可控时钟和真实网络分派/邮箱的回归见 `PlayerSaveRiskTest` 与 `save-risk-regression-expected.json`：预算边界、冷加载、部分确认、作用域跨快照、连续失败、重试上限、迟到超时、UNKNOWN、断线维护和拒绝回包。事务使用受控替身；**未连接实际数据库，不作为 S2-C3 冷读取证**。
 
-
 ### 9.2.3 S3A：可支付订单发布门槛
 
 现金充值在代金券与测试免支付分支之后进入 `PaymentOrderPublisher`。仅聚合表模式允许向 Login 创单；捕获原玩家、连接、会话、请求序号及复制后的参数，RPC 返回后重新进入玩家邮箱。先拒绝无效或重复订单，再在写保护作用域内加入 `PlayerModule.payItems`，关闭作用域后调用统一保存通道；只有本次保存返回玩家提交回执才注册临时付款回调并尝试发送可支付订单。
@@ -60,7 +89,6 @@ S2B 单元验收使用真实保存装配、真实邮箱及专用事务写入器�
 
 `PaymentDeliveryLifecycleTest` 直接调用实际 ship/find/process/persist/cleanup，使用真实邮箱、callback、Charge 分派、离线 PayType 分支及保存协调器；仅替代加载/事务 IO 和最终活动奖励依赖。真实库用例 `offlineDeliveryCommitsBeforeReplyAndCleanup` 在 JDBC/SpringManaged 两种事务下拦住实际 commit，确认提交前零回复/零清理，再用新 Session、新 Player 核对订单及测试奖励标记。该标记验证保存生命周期，不等于所有商品奖励或真实平台发货已经验收。
 
-
 ### 9.2.5 S3A：充值奖励完成契约
 
 依据任务 `s3a-payment-completion-contract`，现金支付把三个结果分开：`Player.pay` 的付款承诺、`PaymentCompletion` 的完整奖励执行、`PlayerSaveCoordinator.Receipt` 的玩家快照提交。订单发布后绑定的 Boolean Promise 不再直接触发发奖；`execPayCallback` 必须找到显式奖励步骤，并在原发货邮箱等待其实际结果。缺失完整绑定是明确失败，不能退回离线发奖。没有在线回调时才沿用对应 `PayType.offlinePay`。
@@ -81,7 +109,6 @@ S2B 单元验收使用真实保存装配、真实邮箱及专用事务写入器�
 
 证明范围：真实发货入口、真实奖励绑定与玩家保存协调器的受控测试，三类实际购买 Handler 到发货的接线，以及月卡实际离线购买到邮件结果的等待。JSON 往返只证明字段兼容，不是冷读验收；月卡邮件 IO 在本轮测试中受控。本轮未连接真实数据库/充值平台，不证明跨重启恰好一次、全平台对账、跨节点接管、全项目任意异步事件或网络送达。进程在阻断状态保存前崩溃的恢复窗口仍属于后续孤儿订单治理，不能用内存状态宣称已解决。
 
-
 ### 9.2.6 S3A：重复通知与单调回执
 
 本批依据用户明确要求实现任务 `s3a-payment-idempotency`（T2）。完整奖励、同步 Charge 与日志正常完成后，`PayItem` 创建 version=1 的 `completionProof`，绑定 playerId/orderId/sdkOrderId、金额、购买类型、商品和附加参数。凭证与奖励、finish 一同写入原玩家聚合快照，不另起一次保存。新生成的内存凭证由不序列化的等待位锁住；仅原保存回执确认且原权威实例仍有效后启用。失败、UNKNOWN、等待超时及迟到提交不解锁内存凭证、不重发奖励。可信数据库冷读得到的同版本、同身份、同参数凭证可以直接成功回复本次 Login RPC，不再执行奖励、Charge、邮件或保存。JSON 往返不是提交证据，只有现有受信存储加载链可提供冷读来源。
@@ -100,8 +127,6 @@ Login 真实库验收使用 PaymentOrderDatabaseIT 和独立清单，先通过 J
 
 本批测试覆盖真实 Game/畅游处理链和精确 fixture 的数据库冷读，实际执行结果与限制以本任务 development-report.json 为准。原请求连接/序号、同玩家邮箱、权威实例/重连保护和保存失败驻留机制继续使用既有路径。没有全局事务、自动对账或孤儿补偿，不启动生产服务或调用真实充值平台。
 
-
-
 本轮关联修复任务 `s3a-payment-review-fixes`：GM 对非数字第三方单号直接走第三方查询，拒绝空请求、未知支付状态、无效订单/玩家/金额，同步及异步异常均结束原 HTTP。Login 的 PayOrder 没有 itemId 字段，不伪造商品约束；实际购买参数由 Game 的持久 PayItem 前置校验。四入口均以创单绑定的 thirdOrderId 作为 SDK 身份，null/blank 统一空串；微信 mchOrderNo/transactionId 不冒充 thirdOrderId，iOS prepayId 与 transactionId 不是同一种标识。
 
 微信/iOS 验证原账号、金额、支付状态及已有流水后，先用条件 SQL 绑定支付事实（delivered=false），再请求 Game；SQL 同时检查 mch_order_no 冲突，避免并发不同流水先发奖后才拒绝。支付事实的提前记录不代表交付，Game 原快照提交和最终 Login 合并成功后才响应成功；失败不回退终态。iOS SDK 配置延迟到实际验签/创单时初始化，测试加载处理链不下载证书。
@@ -109,7 +134,6 @@ Login 真实库验收使用 PaymentOrderDatabaseIT 和独立清单，先通过 J
 微信创单的 goodsPrice 原价写入本地 price，回调核对 GoodsInfo.OrigPrice 的分值；ActualPrice 必填且非负，允许优惠后实付低于原价。不乘 Quantity、不套用畅游元转分。单位依据[腾讯官方小游戏支付参数](https://intl.cloud.tencent.com/jp/document/product/1219/69511)，该文档是 SAS 同名字段契约；本项目当前 buyQuantity 固定 1；正式商品/优惠活动、非微信渠道缺省 WeChatPayInfo 的适用范围仍须正式平台资料验证，不宣称本轮已经真实平台验收。当前入口沿用已有 WeChatPayInfo 处理范围。
 
 PayItem 与 CompletionProof 局部忽略未知 JSON 字段，未知凭证版本仍拒绝成功去重；全局 JSON 策略不变。此兼容仅作用于升级后的读取器，不修复已发行旧 JAR；前述停旧写入器、整体升级及禁止直接回滚约束继续适用。本轮真实 HTTP 接口代理测试调用 GM/微信 handle 与 iOS 完整生产处理链，仅替换验签、存储、RPC/审计边界，不调用外部支付平台。
-
 
 ### S3B：证据保留与有界离线核对
 
@@ -201,7 +225,6 @@ JVM 启动属性统一前缀 `payment.capacity.`，首次确认保存时读取�
 
 检查后至claim/奖励/receipt事务仍有并发DDL窗口；部署应停受理、隔离旧写入器并冻结DDL。不能因预检通过直接在线启用。DDL/连接/权限/SQL mode/容量或外部副作用仍可能造成晚期故障；原同事务聚合+receipt提交、失败/UNKNOWN永久隔离及不自动重放语义继续适用。未证明数据库权限、部署fencing或历史完成订单迁移完成，生产命名新表不存在仍是预期默认关闭状态。
 
-
 ### Task4：数据库等待与未知结果边界（s3e-payment-database-timeout-boundaries，T2）
 
 实际Game启动由`GameServer`的`SpringApolloLoader`加载`dataserver.xml,gameserver.xml`，远程配置为`SqlSessionFactoryBean`、`HikariConfig/HikariDataSource`，连接获取配置60000ms；本地Login Druid及替代`DynamicDataSource`不证明当前Game接线。当前依赖HikariCP 6.2.1、Connector/J 8.0.26、MyBatis 3.5.10/mybatis-spring 2.0.7。本任务只读核对Apollo，不更改远程设置、不启动服务或启用持久去重。
@@ -250,7 +273,6 @@ REQUEST不含socket读取、此前解码、客户端网络或确认收包；异�
 有限基准 `RequestTimingBenchmark` 在新JVM运行：真实TaskExecutorService、IdVirtualThreadProcessor、BaseHandler/GameBaseHandler、PlayerHandler.heartbeat、Protobuf解析及GameClient二进制响应构造，只有分发注册及WebSocket传输为本地替身。每次新建独占GameClient/seq=1，只发一次合法空心跳，使用固定进程内实体键，不登录、不加载实际账号、不触碰共享用户；单实体热点与按生产者分散实体分别测试1/4/16并发，队列容量64，虚拟线程消费者、1/4/16生产线程，无DB池。固定seed=84017；每矩阵配置128预热、512测量，OFF/ON各一轮，共24窗口/7680次，预热1536与测量6144分开。所有原始纳秒、精确最近秩分位数、>10ms分子/分母、错误数、排空时长、直方图与丢样均保存；每阶段count+dropped核对真实完成数，校验执行类字节前后哈希及资源退出。每操作最多等待5秒、窗口等待30秒，子JVM总90秒，失败强制回收子进程；正常关闭还必须确认消费者与生产线程退出。原有服务close仍沿用既有等待契约。
 
 首次开发测量环境：JDK21.0.9+7-LTS-338、HotSpot64、Windows10.0 amd64、Intel64 Family6 Model151 Stepping5、8逻辑处理器。开启观测测量窗口的p99为0.052–0.597ms，六窗均0/512超过10ms；16并发热点的排队p95桶上界256us，执行p95桶上界16us，显示该场景队列占比更高。分散并发出现观测争用丢样，完整原始基准样本仍逐次保留。此结果仅是一次进程内空心跳基线，非已部署Game/Login、认证、真实网络或DB/RPC/快照E2E；相关DB/RPC/快照样本明确为0，不能推断支付/保存或所有请求10ms达标。OFF/ON固定顺序且宿主未校准，不宣称仪表开销百分比或性能提升。真实DB拆分另由本轮独有fixture保存、SQL/连接/事务观测与冷读验证，不冒称请求负载基准。平台延迟、GC和部署实例环境仍需后续有归属测试环境测量，不能为满足10ms削弱持久化。
-
 
 ---
 
@@ -304,7 +326,6 @@ pwsh -NoProfile -File ./.ai-workspace/scripts/run-java-tests.ps1 -Project game -
 
 使用 `PaymentDeliveryLifecycleTest` 与 `payment-delivery-lifecycle-expected.json` 验证实际入口、正常离线默认标志、初始化在途/失败残留、排队/保存期间归属变化、同对象换连接、提交前零回复、UNKNOWN/超时保留、提交后发送/清理异常不双回复，以及 Charge 异常后的保守拒绝。真实库清单包含第五项提交门槛与冷读，使用专用行及测试奖励标记；不代替正式账号和真实平台的完整履约验收。本批建立下述奖励完成契约；本批仅对新版本完成凭证开放幂等成功，不能只凭 finish 放行。
 
-
 ### S3A 奖励完成与最终成功验收
 
 验收顺序固定为：完整奖励 Future 明确完成 → 同步 Charge 正常返回 → finish/REWARDS_COMPLETED → 关闭业务作用域 → 同一保存协调器确认 → 原请求购买成功及 Login 成功。`PaymentCompletion` 的奖励 Supplier 不包含最终成功响应。异步步骤必须返回真实业务结果，不能把 Future 创建、任务受理或网络发送受理作为发奖完成。现行注册消费清单、旧订单兼容和保守恢复边界见 01 文档 9.2.5；不改变各入口奖励数量和协议消息格式。
@@ -318,10 +339,9 @@ mvn -B '-DskipTests' test-compile
 pwsh -NoProfile -File ./.ai-workspace/scripts/run-java-tests.ps1 -Project game -Test 'PaymentCompletionTest,PaymentFailureResponseTest,PaymentDeliveryLifecycleTest,PaymentOrderPublisherTest,PlayerSaveRiskTest' -ExpectedTestsFile ./game/src/test/resources/payment-completion-expected.json
 ```
 
-本机沙箱中 protocol 的 Git 信任未包含在四个已授权路径内，读取提交号失败；本次验证仅以 `-Dexec.skip=true` 跳过 POM 的 Git 元数据 exec 插件，仍执行真实 reactor 编译及 Surefire，用例与新 XML 检查不跳过，不改变 Git 信任、沙箱或项目配置。测试脚本运行时可在该验证子进程的 MAVEN_OPTS 附加此 JVM 属性。原失败及修正命令保留在 SOP。`.git/index.lock` 的写权限拒绝使新增文件暂存无法完成，须由有权限的控制器按精确清单登记；不得改用宽权限、删除锁或 git add -A。
+在受限环境中若 POM 的 Git 元数据 exec 插件读取提交号受阻，可在验证子进程的 `MAVEN_OPTS` 附加 `-Dexec.skip=true` 仅跳过该插件，仍执行真实 reactor 编译及 Surefire，用例与新 XML 检查不跳过，不修改 Git 信任或项目配置。
 
-部分执行失败只隔离待核对，不假设奖励可回滚。核对前禁止清空 completionState、reset finish、删除驻留 Player 或重新发送礼包；后续恢复需单独限定订单、实际副作用及保存/邮件终态。未确认保存的最终购买响应不发送成功；资源/邮件推送仍可能在失败之前已产生。本轮不启动业务服务、不连接真实数据库，不复用上一批数据库/审核通过作为本批证据；真实平台、跨重启/跨节点、十天清理、全平台对账与完整业务环境另验。本批独立审核由工作台 AGY 只读完成，开发 CLI 不另派子 Agent。
-
+部分执行失败只隔离待核对，不假设奖励可回滚。核对前禁止清空 completionState、reset finish、删除驻留 Player 或重新发送礼包；后续恢复需单独限定订单、实际副作用及保存/邮件终态。未确认保存的最终购买响应不发送成功；资源/邮件推送仍可能在失败之前已产生。本轮不启动业务服务、不连接真实数据库，不复用上一批数据库/审核通过作为本批证据；真实平台、跨重启/跨节点、十天清理、全平台对账与完整业务环境另验。
 
 ### S3A 重复通知验收与平台边界
 
@@ -339,12 +359,11 @@ $env:MAVEN_OPTS += ' -Dexec.skip=true'
 
 验收包含提交前零成功、并发及成功后重投只执行一次业务、身份/商品/金额不匹配、历史 finish、异常及保存 FAILED/UNKNOWN/timeout 的保守处理、新协调器和新玩家从真实数据库恢复后无副作用去重。冷读 IT 只证明本批隔离玩家聚合快照及受控奖励计数，不代表真实邮件平台、全部 SKU、跨节点或任意故障下恰好一次。
 
-畅游字符串 SKU 与内部 itemId 的对应、固定数量及历史 debug_text 不是可证明的约束，已移除上轮猜测限制，回归验证历史 Login 行仍走原验单及 Game 链。身份、精确金额和已绑定单号检查继续保留。正式商品/金额单位、验单与本地订单绑定、平台更新正文及重试语义仍缺契约；MD5 不含秘密，不是可信绑定证据，不能声称真实平台全链已验收。微信/iOS 的其他外部字段和完整支付环境仍需独立平台验收；本批不启动业务服务或进行真实支付。AGY 由工作台独立只读审核，开发不关闭 bug，不自报审核通过。
+畅游字符串 SKU 与内部 itemId 的对应、固定数量及历史 debug_text 不是可证明的约束，已移除上轮猜测限制，回归验证历史 Login 行仍走原验单及 Game 链。身份、精确金额和已绑定单号检查继续保留。正式商品/金额单位、验单与本地订单绑定、平台更新正文及重试语义仍缺契约；MD5 不含秘密，不是可信绑定证据，不能声称真实平台全链已验收。微信/iOS 的其他外部字段和完整支付环境仍需独立平台验收；本批不启动业务服务或进行真实支付。
 
 Login 真实库独立清单逐方法要求并发/迟到失败、冲突及未知支付状态；回执使用真实 JSON 列合法夹具，双影响行数配置均需执行，条件删除后冷查为空。若无对应订单表则失败，不创建表或改用模拟数据库掩盖。本批凭证新增字段经基线模式验证旧 Jackson 不可读，按不兼容格式更新停机排空旧 Game 写入器，写入后只允许前向修复，不支持旧 JAR 直接回滚或新旧混跑。该边界不声称已执行集群停机演练。
 
-
-S3A 审查修复验证：关联任务 s3a-payment-review-fixes 保留原 DONE 任务与全部失败历史。GM/微信实际 handle 和 iOS 共用生产处理链的回归纳入 Login 逐方法 payment-idempotency-expected.json；覆盖同步异常结束 HTTP、非数字单号、空 SDK 身份、状态/金额/流水冲突、并发乱序及异步失败。PayItem 未知字段与未知版本同时验证；Login 真实库冲突断言增加 mch_order_no。所有本轮证据须重新 Task Run，不能复用原任务通过记录。工作台 AGY 独立复审前不宣称批准，不关闭外部历史标签或未注册 bug。
+S3A 审查修复验证：关联任务 `s3a-payment-review-fixes` 保留原任务与全部历史记录。GM/微信实际 handle 和 iOS 共用生产处理链的回归纳入 Login 逐方法 `payment-idempotency-expected.json`；覆盖同步异常结束 HTTP、非数字单号、空 SDK 身份、状态/金额/流水冲突、并发乱序及异步失败。PayItem 未知字段与未知版本同时验证；Login 真实库冲突断言增加 `mch_order_no`。本轮证据均需重新执行并留证，不能复用原任务通过记录。
 
 ### S3B 证据保留与只读核对验收
 
@@ -352,11 +371,11 @@ S3A 审查修复验证：关联任务 s3a-payment-review-fixes 保留原 DONE �
 
 清单 `game/src/test/resources/payment-evidence-expected.json` 逐方法覆盖本批实际初始化清理和 CLI 树读、十天边界、旧/新/未知凭证、冲突、异常字段、损坏 JSON、无记录、输入及大小限制、查询失败/超时、重复执行只读性，并保留既有支付/保存回归。`payment-evidence-database-expected.json` 要求唯一 fixture 的真实持久化→新会话冷读→实际初始化清理→CLI 两库核对重复两次→完整 modules 不变→精确清理后冷查为空，并保留实际发货/重启去重回归。Login 本批没有修改，不以 Game reactor 声称覆盖 Login 行为；CLI 对 Login 的查询只读且不读取 receipt。
 
-所有命令由当前任务 Task Run 记录，使用 compile-tests、payment-evidence、payment-database 批次。仅以验证子进程 MAVEN_OPTS 的 -Dexec.skip=true 跳过受沙箱 Git 信任限制的元数据 exec 插件；真实编译与测试不能跳过。定向测试通过 .ai-workspace/scripts/run-java-tests.ps1 显式 Surefire 3.5.2 执行，要求本轮 XML 与精确方法清单；真实库仅唯一 fixture，禁止业务账号/平台请求/启动服务。结果以本任务新证据为准，不复用旧批准。AGY 独立只读审核由工作台执行，开发 CLI 不自报批准或关闭 bug。
+验收批次为 `compile-tests`、`payment-evidence`、`payment-database`。受限环境下仅允许在验证子进程 `MAVEN_OPTS` 附加 `-Dexec.skip=true` 跳过 Git 元数据 exec 插件，真实编译与测试不可跳过。定向测试通过 `.ai-workspace/scripts/run-java-tests.ps1` 显式 Surefire 3.5.2 执行，要求本轮 XML 与精确方法清单；真实库仅唯一 fixture，禁止业务账号/平台请求/启动服务，结果以本轮新证据为准，不复用历史记录。
 
 ### S3C 订单容量观测验收与独立复跑
 
-任务 `s3c-payment-capacity-monitoring`（T2）只完成每玩家保留订单数、完整 modules UTF-8 字节、可配置预算和有界限频告警，以及只读诊断容量信息；配置键、默认值、等值触发、无效回退、指标口径和人工处置见架构文档 S3C。归档、安全删除、持久去重索引和平台终态证明仍待另行任务，不能把原 `payment-evidence-capacity-and-archive` 全部关闭。开发完成不代替工作台 AGY 独立审查，不自报审核通过，不关闭 bug。
+任务 `s3c-payment-capacity-monitoring`（T2）只完成每玩家保留订单数、完整 modules UTF-8 字节、可配置预算和有界限频告警，以及只读诊断容量信息；配置键、默认值、等值触发、无效回退、指标口径和人工处置见本文 S3C 架构章节。归档、安全删除、持久去重索引和平台终态证明仍待另行任务，不能把原 `payment-evidence-capacity-and-archive` 全部关闭。
 
 独立入口：`pwsh -NoProfile -File ./.ai-workspace/specs/features/ServerArchitectureAndAgentReadiness/tasks/s3c-payment-capacity-monitoring/evidence/run-review-tests.ps1`。默认 All 运行六模块真实 test-compile，再运行 Game/Login 定向测试；`-Mode Compile` 与 `-Mode Test` 可由 Task Run 分别登记 compile-tests/payment-capacity。Test 同样执行 test-compile，不使用旧 class 代替编译。只跳过 Git 元数据 exec 插件，显式开启测试并固定 Surefire 3.5.2。
 
@@ -370,7 +389,7 @@ S3A 审查修复验证：关联任务 s3a-payment-review-fixes 保留原 DONE �
 
 本任务关联已 DONE 的容量监控任务，仅修复慢 observer 对保存回执的影响、墙钟跳变导致的限频静默，以及故障日志隔离边界。来源任务的报告、runner、expected 和验证历史保留；当前源码 expected 扩展新增六个方法。回执先完成，生产指标/告警与注入 observer 使用同一有界后台出口（单线程、一个排队样本，繁忙丢弃）；故障日志另有相同上界，日志自身失败不递归。确认容量仍按代次保留在 status，不改变 UNKNOWN、保存推进、幂等或已支付履约。
 
-复跑使用新任务 `evidence/run-review-tests.ps1`，基于原 runner，每次在 `.ai-workspace/.runtime/payment-capacity-review-fixes/<随机ID>` 创建当前身份独占目录，Maven 堆上限 1024 MiB、测试 JVM 512 MiB。六模块真实 test-compile 后，按当前逐方法清单运行完整容量/支付/保存回归及 Login 13 方法，核对 fresh XML；失败、跳过、额外或遗漏均非零。新增闩锁覆盖 observer/metrics/真实生产告警日志阻塞时回执已完成、多代次及跨玩家仍推进、被丢弃任务与线程/队列上界、释放及异常后资源恢复；真实探针失败时故障日志阻塞/抛错也不能影响封存或保存。告警与故障限频按生产相同的单调经过毫秒契约注入，覆盖墙钟快进/回归、精确 elapsed 边界、满表回收及并发预留。本批不连接数据库/平台，不改数据库，不复跑旧 DB IT，不声称业务环境或负载 SLA 已验收；开发验证不代表 AGY 复审批准，不关闭 bug。
+复跑使用新任务 `evidence/run-review-tests.ps1`，基于原 runner，每次在 `.ai-workspace/.runtime/payment-capacity-review-fixes/<随机ID>` 创建当前身份独占目录，Maven 堆上限 1024 MiB、测试 JVM 512 MiB。六模块真实 test-compile 后，按当前逐方法清单运行完整容量/支付/保存回归及 Login 13 方法，核对 fresh XML；失败、跳过、额外或遗漏均非零。新增闩锁覆盖 observer/metrics/真实生产告警日志阻塞时回执已完成、多代次及跨玩家仍推进、被丢弃任务与线程/队列上界、释放及异常后资源恢复；真实探针失败时故障日志阻塞/抛错也不能影响封存或保存。告警与故障限频按生产相同的单调经过毫秒契约注入，覆盖墙钟快进/回归、精确 elapsed 边界、满表回收及并发预留。本批不连接数据库/平台，不改数据库，不复跑旧 DB IT，不声称业务环境或负载 SLA 已验收。
 
 等待辅助方法以 `nanoTime - start` 计算超时，不比较绝对截止读数；首次观察到就绪后直接返回，避免共享执行器状态在重复读取间变化导致即时误报。`s3c-payment-capacity-await-fix` 在既有回归方法中补充单次就绪、纳秒计数回绕和超时边界断言，保留原 140 方法清单与独立复跑入口。
 
@@ -395,7 +414,7 @@ SEALED_AND_VERIFIED 表示新文件经 force 和冷读验证，VERIFIED 表示�
 
 两库配置中无前缀键属于 Game，`login.*` 属于 Login；Login 独立回归优先读取 `login.*`，仅旧单库配置兼容无前缀键，不能将 Game 库上的执行计为 Login 验收。
 
-归档单测独立核对磁盘字节和JCA MAC，覆盖签名/内容/身份/结论篡改、缺key/错key/未知version、错期望单号、重复键/超深/超大、同内容幂等与冲突不覆写、线程及进程锁竞争、半写/截断、write/force/read故障、源数据保留、风险无删除/补发权限、真实junction路径边界与新JVM stdout脱敏。开发报告保留精确文件/行/证据；AGY由工作台独立只读复审，开发不关闭bug、不自报复审通过。截至S3C仅容量观测及可验证封存完成；后续S3D交付同库持久去重及隔离DB验收，原 payment-evidence-capacity-and-archive 的平台独立终态和安全清理仍未完成，整体待办保持PENDING。
+归档单测独立核对磁盘字节和 JCA MAC，覆盖签名/内容/身份/结论篡改、缺 key/错 key/未知 version、错期望单号、重复键/超深/超大、同内容幂等与冲突不覆写、线程及进程锁竞争、半写/截断、write/force/read 故障、源数据保留、风险无删除/补发权限、真实 junction 路径边界与新 JVM stdout 脱敏。截至 S3C 仅容量观测及可验证封存完成；后续 S3D 交付同库持久去重及隔离 DB 验收，原 `payment-evidence-capacity-and-archive` 的平台独立终态和安全清理仍未完成，整体待办保持 PENDING。
 
 ### S3D 持久去重部署、回滚与验收
 
@@ -414,7 +433,7 @@ SEALED_AND_VERIFIED 表示新文件经 force 和冷读验证，VERIFIED 表示�
 
 DB配置每轮只从Apollo的Game/Login实时只读端点获取，不读取旧缓存；当前执行身份创建随机私有runtime，配置逐字符JavaProperties转义，finally删除；子JVM日志使用file:/// URI。只为本轮在Game库创建`s3d_claim_<32位随机十六进制>`和`s3d_receipt_<同后缀>`，结构直接来源迁移SQL，标识符严格校验，生产固定表名不受业务输入控制。每张测试表有本轮comment身份，只有实际创建并冷查确认该身份后才DROP。先等待本轮写线程退出，再按精确id/uid/account/device条件清理自己的Game行，旧回归按原精确条件清理Login行；新连接查玩家为空、information_schema查两测试表为空，保存清理计数。绝不对现有业务表应用生产DDL或清理其他账号/表。
 
-新增真实库覆盖JDBC/Spring原子提交与回滚、凭证INSERT失败/唯一键冲突导致聚合不提交、同单/SDK不同参数竞争、重复通知、真实移走测试热记录后的冷加载、错身份/各购买字段/版本/摘要、缺表/缺唯一约束/查询故障、保存超时后迟到commit、真实commit后确认丢失、部分奖励隔离和离线原清理顺序。仅测试fixture模拟未来无热记录，不增加生产清理能力。保留旧DONE任务runner和证据，不关闭任何BUG；开发完成后由工作台独立运行本任务All及AGY只读审核。
+新增真实库覆盖 JDBC/Spring 原子提交与回滚、凭证 INSERT 失败/唯一键冲突导致聚合不提交、同单/SDK 不同参数竞争、重复通知、真实移走测试热记录后的冷加载、错身份/各购买字段/版本/摘要、缺表/缺唯一约束/查询故障、保存超时后迟到 commit、真实 commit 后确认丢失、部分奖励隔离和离线原清理顺序。仅测试 fixture 模拟未来无热记录，不增加生产清理能力；独立验收应重新运行本任务 `All` 入口并核对全量通过。
 
 ### S3D 逐单只读预检操作与验收
 
@@ -426,7 +445,7 @@ DB配置每轮只从Apollo的Game/Login实时只读端点获取，不读取旧�
 
 没有默认玩家、订单、key或扫描范围，不支持force、assume-terminal、自动恢复或backfill。CLI只输出固定安全状态/原因码/所需下一步证据，不输出玩家或订单ID、SDK单号、购买正文、连接/路径/key/凭据。退出码1为INVALID_INPUT；2为局部一致但缺外部证明（BLOCKED_EXTERNAL_PROOFS）；3为局部证据阻断，包括认证/配置/读取故障（BLOCKED_LOCAL_EVIDENCE）。没有退出0或“已清理”结果，localEvidenceReady不能用作删除/补发条件。ARCHIVE_AUTHENTICATION_OR_FORMAT_FAILED先核对归档/key/私有权限并保全原产物；CURRENT_*或DURABLE_*按具体冲突调查当前冷记录及事务，不自动改写；外部阻断需要未来接入可信平台终态与写入者隔离/UNKNOWN排除证据，不能由布尔开关代替。
 
-新任务独立入口为`tasks/s3d-payment-safe-cleanup-gate/evidence/run-review-tests.ps1`，默认All，也可按Compile/Test/Database分组定位失败。完整保留当前181方法（Game146、Login13、DB Game18/Login4），新增10个定向单测和3个真实库方法。Fresh JUnit逐方法完整集合恰好一次，失败/错误/skip/缺失/额外项均失败；摘要小于12000字符，完整日志和报告留本轮私有runtime，失败尝试保留。输入快照覆盖六模块源码/资源/POM、相关文档和runner，结束核对未变化。独立工作台运行同一All入口，不以开发自报替代AGY审核。
+新任务独立入口为 `tasks/s3d-payment-safe-cleanup-gate/evidence/run-review-tests.ps1`，默认 All，也可按 Compile/Test/Database 分组定位失败。完整保留当前 181 方法（Game 146、Login 13、DB Game 18/Login 4），新增 10 个定向单测和 3 个真实库方法。Fresh JUnit 逐方法完整集合恰好一次，失败/错误/skip/缺失/额外项均失败；摘要小于 12000 字符，完整日志和报告留本轮私有 runtime，失败尝试保留。输入快照覆盖六模块源码/资源/POM、相关文档和 runner，验收时应重跑同一 `All` 入口并核对输入快照未变。
 
 每次DB阶段从`http://test:9888/configs/game/default/jdbc`及`/configs/login/default/jdbc`只读获取新配置，私有随机目录、逐字符JavaProperties Unicode转义，finally删除并核对配置不存在。新测试每个Case精确创建一Game/一Login行、随机带本轮comment的两表；真实JDBC/Spring聚合和receipt事务commit后，以认证归档加实际CLI/reader预检，冷查Game/Login/claim/receipt全部字段和归档字节前后相等。故障仅修改本轮fixture，缺表仅DROP实际创建且comment再次冷查匹配的精确测试表。清理等待写线程退出，精确身份删除fixture并新连接查行/表不存在，销毁测试key/归档目录。测试产物销毁不代表生产归档/凭证可以删除。
 
@@ -442,8 +461,7 @@ DB配置每轮只从Apollo的Game/Login实时只读端点获取，不读取旧�
 
 本任务验证入口为 `tasks/s3e-payment-enable-preflight/evidence/run-review-tests.ps1`（相对本功能规格目录），All/Compile/Test/Database模式。沿用S3D逐方法fresh JUnit及精确夹具冷查门禁，保留原194方法并加入schema/CLI故障单测及真实DDL变体。Compile执行六模块clean test-compile；Test/Database显式执行Surefire3.5.2并要求完整expected集合各一次、无skip/失败/额外/缺失。All在同轮完成全部步骤；私有runtime保存原始日志、XML、输入前后哈希、gate.json，stdout为小于12000字符的摘要。失败轮次保留，不以其他成功覆盖。
 
-Database每轮从Apollo Game/Login只读HTTP端点-NoProxy获取新配置；只在当前身份专有ACL目录写逐字符Unicode转义Properties，finally删除。保留旧真实双库验收，新schema测试只操作唯一玩家以及随机32hex后缀、实际创建集合+持久comment双重确认的测试表。新连接冷查两表无claim/receipt、玩家聚合无变更来断言错误schema在占位/奖励/Charge/保存前拒绝；finally先等写线程结束，再精确删除本轮行并确认所有本轮表不存在。玩家非事务引擎用自有影子表测试，不ALTER生产t_player_data；生产新表不执行DDL。独立Studio控制器需运行新All入口，指定AGY模型只读审查同一源/输入快照后才能由控制器分别提交源码与specs；开发不提交、不关闭BUG、不自报审查通过。
-
+Database 每轮从 Apollo Game/Login 只读 HTTP 端点 `-NoProxy` 获取新配置；只在当前身份专有 ACL 目录写逐字符 Unicode 转义 Properties，finally 删除。保留旧真实双库验收，新 schema 测试只操作唯一玩家以及随机 32hex 后缀、实际创建集合+持久 comment 双重确认的测试表。新连接冷查两表无 claim/receipt、玩家聚合无变更来断言错误 schema 在占位/奖励/Charge/保存前拒绝；finally 先等写线程结束，再精确删除本轮行并确认所有本轮表不存在。玩家非事务引擎用自有影子表测试，不 ALTER 生产 `t_player_data`；生产新表不执行 DDL。独立验收需重跑本任务 `All` 入口并核对源码与输入快照哈希一致。
 
 ### Task4 数据库超时验收与操作限制
 
@@ -453,7 +471,7 @@ Database每轮从Apollo Game/Login只读HTTP端点-NoProxy获取新配置；只�
 
 新任务evidence/run-review-tests.ps1支持Compile/Test/Database/All，fresh六模块clean test-compile、逐方法无缺失/额外/重复/跳过、双库实际回归；所有源码/资源/POM及期望清单和runner前后hash必须一致。每轮新取Apollo jdbc，当前身份ACL私有目录、Java Properties每字符转义、Log4j file:/// URI、finally删除S2_DB_CONFIG；不打印配置。新表仅随机32hex后缀及所有权注释；按精确主键/owner清理后新连接冷查为空并确认表不存在，保留失败证据，不删热订单/归档/claim/receipt。原194及Task3的19方法不删减，旧runner不弱化。
 
-独立Studio控制器运行本任务runner All并核对当前source/spec/input哈希后，独立只读审核由控制器执行。开发者不关闭BUG、不提交或推送；审核后的修复登记新的相关任务，不能Resume已经DONE的任务。运行报告仅为开发验证，不能替代独立审核。源文件与精确任务规格由控制器分别提交，排除runtime和原暂存.ai-sop。
+独立验收需运行本任务 `run-review-tests.ps1 -Mode All` 并核对 `source/spec/input` 哈希一致；如需后续修复应登记新的关联任务，提交时按仓库区分并排除 `.ai-workspace/.runtime/` 产物。
 
 ### Task5：历史订单只读盘点操作与验收
 
@@ -463,13 +481,13 @@ Database每轮从Apollo Game/Login只读HTTP端点-NoProxy获取新配置；只�
 
 分类、严格解析和无授权语义见架构Task5段。先核对Game/Login身份、完整V1或历史风险及依赖，再由人工收集独立平台终态、旧写入者/UNKNOWN隔离、实际可信证据；需要归档时使用原payment-archive的HMAC流程。即使完整当前receipt/claim，canDelete/canResend/canBackfill仍恒false；禁止自动回填/重放/删除/退款/解冻。本任务没有执行真实业务清单，只对本轮新建Game/Login随机归属表验收。
 
-Task5独立控制器入口：`pwsh -NoProfile -File ./.ai-workspace/specs/features/ServerArchitectureAndAgentReadiness/tasks/s3e-payment-legacy-inventory/evidence/run-review-tests.ps1 -Mode All`。Compile为六模块fresh clean test-compile；Test保留既有181 Game+13 Login并加入13个新单元方法；Database保留既有37 Game+4 Login并加入7个真实两库方法（总255）。逐方法expected严格核对一一执行、无额外/缺失/重复/skip；新fixture只创建本轮32hex表，核对comment后清理并新连接查不存在，源全字段字节前后相等，实际子JVM验证退出码和Player/PlayerModule不初始化。每轮fresh Apollo只读配置仅供隔离验收，私有日志/配置finally删除/输入哈希稳定检查沿用Task4安全方法；原失败证据保留，不能以旧成功替代。开发不提交或推送，独立Studio及指定Flash审核由控制器执行，runtime不入源提交。
+Task5 独立验收入口：`pwsh -NoProfile -File ./.ai-workspace/specs/features/ServerArchitectureAndAgentReadiness/tasks/s3e-payment-legacy-inventory/evidence/run-review-tests.ps1 -Mode All`。Compile 为六模块 fresh clean test-compile；Test 保留既有 181 Game + 13 Login 并加入 13 个新单元方法；Database 保留既有 37 Game + 4 Login 并加入 7 个真实两库方法（总 255）。逐方法 expected 严格核对一一执行、无额外/缺失/重复/skip；新 fixture 只创建本轮 32hex 表，核对 comment 后清理并新连接查不存在，源全字段字节前后相等，实际子 JVM 验证退出码和 Player/PlayerModule 不初始化。每轮 fresh Apollo 只读配置仅供隔离验收，私有日志/配置 finally 删除/输入哈希稳定检查沿用 Task4 安全方法；原失败证据保留，不能以旧成功替代，提交时排除 `.ai-workspace/.runtime/` 产物。
 
 ### S4：请求计时诊断与可复现基线
 
 默认不开启，受控实例使用本地JVM参数 `-Dgame.timing.enabled=true`；无需Apollo变更、共享池变更或监控服务。通过现有 `TaskExecutorService.getMonitor().collectStatistics().timings` 或 `TimingMetrics.current().snapshot()` 在监控线程拉取，保留stage/route/outcome/count/dropped/over10ms/maxNanos与p50/p95/p99UpperMicros及窗口enabled/dropped/failures。精确计数、桶上界近似分位数、争用丢样偏差、重置、相邻协议响应和异步边界限制见架构S4。诊断读取者可慢，但生产记录者只tryLock丢样；不把快照拉取加到每个业务请求。`TimingMetrics.reset(boolean)` 是本地新窗口操作，不清除在途业务；采集全量可比阶段时先自然排空自有负载，不暂停共享业务玩家。
 
-独立控制器门禁入口：
+独立验收门禁入口：
 
 ```powershell
 pwsh -NoProfile -File ./.ai-workspace/specs/features/ServerArchitectureAndAgentReadiness/tasks/s4-request-timing-baseline/evidence/run-review-tests.ps1 -Mode All
@@ -483,4 +501,4 @@ Benchmark模式执行 `RequestTimingBenchmarkTest.freshJvmProducesCompleteRecomp
 
 measurementScope固定为IN_PROCESS_REAL_MAILBOX_PROTOBUF_GAMECLIENT_SYNTHETIC_TRANSPORT。传输替身不测真实WebSocket/内核往返，未运行authenticated deployed Game/Login，不加载业务用户；DB/RPC/快照工作不在空心跳基准内，报告这些样本为0。完整部署基线需要实际加载新代码的隔离实例、归属明确的测试账号及网络/依赖环境；本次不启动共享实例或对实际用户压测。OFF/ON仅保存观测，没有校准因果开销或速度提升；热点队列和分散并发遥测争用是本次可观察限制，保存/支付路径仍可能占邮箱数十秒，不能宣称普遍10ms。
 
-本任务由开发完成T2验证、RecordSync与Complete；Studio控制器另运行同一All gate并执行独立只读审核。开发不自行调用替代审核者、不提交/推送、不关闭BUG；新审核修复须另建相关任务，不能Resume DONE。控制器以审核源码/spec/input快照相等后按实际仓库分别提交，排除runtime与基线暂存.ai-sop及其他无关资产。
+独立验收需重跑上述 `All` 门禁并核对源码、规格与输入快照哈希一致；如需后续修复应新建关联任务，提交时按所属仓库分别提交并排除 `.ai-workspace/.runtime/` 等运行态产物。
