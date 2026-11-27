@@ -523,11 +523,20 @@
                     onblur="window.WorkbenchApp.onJsonBlur(this.value)">${escapeHtml(JSON.stringify(state.currentPayload, null, 2))}</textarea>
         </div>
 
-        <div style="margin-top:16px; display:flex; gap:12px;">
-          <button class="btn" style="flex:1; justify-content:center; padding:10px; font-size:1rem;"
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <button class="btn" style="flex:1; min-width:200px; justify-content:center; padding:10px; font-size:1rem;"
                   ${!isSimulatable ? 'disabled' : ''} onclick="window.WorkbenchApp.invoke()">
             🚀 发起模拟调用 (Invoke)
           </button>
+          <div style="display:flex; align-items:center; gap:6px; background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:6px; padding:4px 8px;">
+            <label for="wbConcurrency" style="margin:0; font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">并发数:</label>
+            <input id="wbConcurrency" type="number" min="2" max="20" value="5" style="width:56px; padding:4px 6px; font-size:0.84rem;" />
+            <button class="btn btn-secondary" style="padding:7px 12px; font-size:0.86rem; white-space:nowrap;"
+                    ${!isSimulatable ? 'disabled' : ''} onclick="window.WorkbenchApp.invokeConcurrent()"
+                    title="并发连发测试幂等性与防刷锁（VirtualThread 同时起跑）">
+              ⚡ 并发连发测防刷
+            </button>
+          </div>
         </div>
       </div>
 
@@ -679,6 +688,9 @@
   }
   // 4. 检视结果渲染
   function renderResultTabContent() {
+    if (state.lastResultMode === 'concurrent' && state.lastConcurrentResult) {
+      return renderConcurrentResultTabContent(state.lastConcurrentResult);
+    }
     const res = state.lastResult;
     if (!res) {
       return `<pre style="color:var(--text-muted); margin:0;">尚未执行模拟调用，请在上方配置参数并点击「发起模拟调用」</pre>`;
@@ -792,6 +804,129 @@
     }
 
     return '';
+  }
+
+  function renderConcurrentResultTabContent(res) {
+    if (state.activeResultTab === 'diff') {
+      const diffList = res.aggregateDiff || [];
+      if (diffList.length === 0) {
+        return `<pre style="color:var(--text-muted); margin:0;">并发 burst 执行前后无整体状态变化 (aggregateDiff 为空)</pre>`;
+      }
+      return `
+        <div style="margin-bottom:8px; font-size:0.82rem; color:var(--text-muted);">并发压测 (${res.concurrency || 0} 线程) 前后总状态净变更 (${diffList.length} 项):</div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; font-family:monospace;">
+          <thead>
+            <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
+              <th style="padding:8px 12px; color:var(--primary);">字段路径 (Path)</th>
+              <th style="padding:8px 12px; color:var(--danger-text);">压测前 (Before)</th>
+              <th style="padding:8px 12px; color:var(--success-text);">压测后 (After)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${diffList.map(d => `
+              <tr style="border-bottom:1px solid var(--row-border);">
+                <td style="padding:6px 12px; color:var(--accent-text);">${escapeHtml(d.path)}</td>
+                <td style="padding:6px 12px; color:var(--danger-soft-text);">${escapeHtml(JSON.stringify(d.before))}</td>
+                <td style="padding:6px 12px; color:var(--success-text);">${escapeHtml(JSON.stringify(d.after))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    if (state.activeResultTab === 'pushes') {
+      const attempts = res.attempts || [];
+      const rows = [];
+      attempts.forEach(a => {
+        const idx = a.attempt != null ? a.attempt : (a.attemptIndex || 0);
+        const pushes = Array.isArray(a.pushes) ? a.pushes : [];
+        pushes.forEach(p => rows.push({ attempt: idx, push: p }));
+      });
+      if (rows.length === 0) {
+        return `<pre style="color:var(--text-muted); margin:0;">本次并发连发未捕获到伴随推送 (Pushes)</pre>`;
+      }
+      return `
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${rows.map(item => `
+            <div style="background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:6px; padding:10px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span style="font-weight:700; color:var(--primary);">[并发#${item.attempt}] ${escapeHtml(item.push.msgName || '')} (${escapeHtml(item.push.msgIdHex || '')})</span>
+                <span style="color:var(--text-muted); font-size:0.75rem;">seq: ${item.push.seq || 0}</span>
+              </div>
+              <pre style="margin:0; max-height:180px;">${escapeHtml(JSON.stringify(item.push.payload, null, 2))}</pre>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    if (state.activeResultTab === 'trace') {
+      const attempts = res.attempts || [];
+      return `
+        <div style="background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:0.84rem;">
+          <div>并发请求数: <b>${res.concurrency || 0}</b> | 成功: <b style="color:var(--success-text);">${res.successCount || 0}</b> | 失败/拦截: <b style="color:var(--danger-text);">${res.failCount || 0}</b> | 总耗时: <b>${res.elapsedMs || 0}ms</b></div>
+          <div style="margin-top:4px; color:var(--text-muted);">错误码分布: <code>${escapeHtml(JSON.stringify(res.errorCodeCounts || {}))}</code> | 总净差异字段数: <b>${res.diffCount || 0}</b></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          ${attempts.map(a => `
+            <div style="padding:6px 10px; border:1px solid var(--border-color); border-radius:5px; font-size:0.8rem; display:flex; justify-content:space-between;">
+              <span><b>#${a.attempt != null ? a.attempt : (a.attemptIndex || 0)}</b> ${a.ok ? '✅ OK' : ('❌ ' + escapeHtml(a.errorName || String(a.errorCode || '')))}</span>
+              <span style="color:var(--text-muted);">${a.elapsedMs || 0}ms | pushes=${Array.isArray(a.pushes) ? a.pushes.length : 0}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    const attempts = res.attempts || [];
+    const warnings = res.warnings || [];
+    const okBadge = res.ok !== false ? 'badge-clock' : 'badge-prod';
+    let html = `
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+        <div>
+          <span class="badge ${okBadge}" style="font-size:0.85rem; padding:4px 10px;">⚡ 并发 ${res.concurrency || 0} 次完成</span>
+          <span style="font-size:0.85rem; margin-left:10px;">成功: <b style="color:var(--success-text);">${res.successCount || 0}</b> | 失败/拦截: <b style="color:var(--danger-text);">${res.failCount || 0}</b> | 总耗时: <b>${res.elapsedMs || 0}ms</b></span>
+        </div>
+        <span style="font-size:0.8rem; color:var(--text-muted);">错误码分布: <code>${escapeHtml(JSON.stringify(res.errorCodeCounts || {}))}</code></span>
+      </div>
+    `;
+    if (warnings.length > 0) {
+      html += `
+        <div style="padding:8px 12px; background:var(--warning-soft-bg); border:1px solid var(--warning-border); border-radius:6px; margin-bottom:12px; font-size:0.85rem; color:var(--warning-text);">
+          ${warnings.map(w => `<div>⚠️ ${escapeHtml(w)}</div>`).join('')}
+        </div>
+      `;
+    }
+    html += `
+      <table style="width:100%; border-collapse:collapse; font-size:0.82rem; margin-bottom:12px;">
+        <thead>
+          <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
+            <th style="padding:6px 10px;">序号</th>
+            <th style="padding:6px 10px;">结果</th>
+            <th style="padding:6px 10px;">错误码</th>
+            <th style="padding:6px 10px;">耗时(ms)</th>
+            <th style="padding:6px 10px;">摘要 / 响应</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${attempts.map(a => `
+            <tr style="border-bottom:1px solid var(--row-border);">
+              <td style="padding:6px 10px;">#${a.attempt != null ? a.attempt : (a.attemptIndex || 0)}</td>
+              <td style="padding:6px 10px;">${a.ok ? "<span style='color:var(--success-text); font-weight:700;'>OK</span>" : "<span style='color:var(--danger-text); font-weight:700;'>FAIL</span>"}</td>
+              <td style="padding:6px 10px;">${a.errorCode || 0} ${escapeHtml(a.errorName || '')}</td>
+              <td style="padding:6px 10px;">${a.elapsedMs || 0}</td>
+              <td style="padding:6px 10px;"><code style="font-size:0.75rem;">${escapeHtml(JSON.stringify(a.response || a.errorDesc || ''))}</code></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <details>
+        <summary style="cursor:pointer; font-size:0.82rem; color:var(--text-muted);">查看原始并发报告 JSON</summary>
+        <pre style="margin-top:8px; max-height:260px;">${escapeHtml(JSON.stringify(res, null, 2))}</pre>
+      </details>
+    `;
+    return html;
   }
 
   function renderResourceEventsTable(events) {
@@ -1207,11 +1342,52 @@
 
       try {
         const res = await apiFetch('/gm-console/api/proto/invoke', 'POST', reqBody);
+        state.lastResultMode = 'single';
         state.lastResult = res;
         const el = document.getElementById('wbResultContent');
         if (el) el.innerHTML = renderResultTabContent();
       } catch (e) {
         alert(`协议模拟请求异常: ${e.message}`);
+      }
+    },
+    invokeConcurrent: async function () {
+      if (!state.currentRequest) return;
+      if (state.activeSubTab === 'json') {
+        const ta = document.getElementById('wbJsonTextarea');
+        if (ta) {
+          try {
+            state.currentPayload = JSON.parse(ta.value || '{}');
+          } catch (e) {
+            alert('输入的 JSON 格式非法: ' + e.message);
+            return;
+          }
+        }
+      }
+      if (state.selectedPlayerId <= 0) {
+        alert('请先在右上角选择调试玩家或点击「测试登录」创建测试角色！');
+        return;
+      }
+      const rawConc = parseInt(document.getElementById('wbConcurrency')?.value, 10) || 5;
+      const concurrency = Math.min(20, Math.max(2, rawConc));
+      const reqBody = {
+        playerId: state.selectedPlayerId,
+        msgId: state.currentRequest.msgId,
+        msgName: state.currentRequest.msgName,
+        payload: state.currentPayload,
+        concurrency: concurrency,
+        withTrace: state.withTrace,
+        mirrorToRealClient: state.mirrorToRealClient,
+        timeoutMs: state.timeoutMs
+      };
+      try {
+        const res = await apiFetch('/gm-console/api/proto/invoke-concurrent', 'POST', reqBody);
+        state.lastResultMode = 'concurrent';
+        state.lastConcurrentResult = res;
+        state.activeResultTab = 'response';
+        const el = document.getElementById('wbResultContent');
+        if (el) el.innerHTML = renderResultTabContent();
+      } catch (e) {
+        alert(`并发连发测试异常: ${e.message}`);
       }
     },
     saveTemplate: function () {

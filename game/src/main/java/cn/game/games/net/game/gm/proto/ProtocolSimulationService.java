@@ -1,15 +1,19 @@
 package cn.game.games.net.game.gm.proto;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +33,7 @@ import cn.game.core.net.socket.controller.DispatcherImpl;
 import cn.game.games.cache.entity.Player;
 import cn.game.util.HexUtil;
 import cn.game.games.net.client.GameClient;
+import cn.game.games.net.game.gm.GmResult;
 import cn.game.games.net.game.gm.GmSecurityPolicy;
 import cn.game.games.net.game.gm.GmStateDiffUtil;
 import cn.game.games.net.game.gm.PlayerInspectService;
@@ -284,6 +289,178 @@ public class ProtocolSimulationService {
 			return failResult(playerId, msgId, msgName, req.getSeq(),
 					ErrorMsgEnum.unknown.getId(), "执行中断: " + e.getMessage(), requestMessage, elapsedMs(startNs));
 		}
+	}
+
+	/**
+	 * 并发连发同协议以验证幂等性与防刷锁机制（仅非生产环境可用）
+	 *
+	 * @param baseReq 基础模拟发包请求
+	 * @param concurrency 并发次数（限制 2~20）
+	 * @return 汇总每次请求结果、成功/失败统计、防刷告警与聚合状态 Diff
+	 */
+	public Map<String, Object> invokeConcurrent(ProtoInvokeRequest baseReq, int concurrency) {
+		long startNs = System.nanoTime();
+		if (baseReq == null) {
+			return failResult(0L, 0, null, 0, ErrorMsgEnum.request_parameter_error.getId(), "请求参数不能为空", null, 0L);
+		}
+		if (GmSecurityPolicy.currentRunMode().isProduction()) {
+			return failResult(baseReq.getPlayerId(), baseReq.resolveMsgId(), baseReq.getMsgName(), baseReq.getSeq(),
+					ErrorMsgEnum.production_gm_not_allow.getId(), "生产环境严禁执行并发协议连发测试", null, elapsedMs(startNs));
+		}
+		int n = Math.max(2, Math.min(20, concurrency <= 0 ? 5 : concurrency));
+		long playerId = baseReq.getPlayerId();
+		if (playerId <= 0) {
+			return failResult(playerId, baseReq.resolveMsgId(), baseReq.getMsgName(), baseReq.getSeq(),
+					ErrorMsgEnum.request_parameter_error.getId(), "目标 playerId 必须大于 0", null, elapsedMs(startNs));
+		}
+		Player player = PlayerManager.getInstance().getPlayer(playerId);
+		if (player == null || player.isIslogouting() || !player.isOnline()) {
+			return failResult(playerId, baseReq.resolveMsgId(), baseReq.getMsgName(), baseReq.getSeq(),
+					ErrorMsgEnum.player_not_online.getId(), "目标玩家不存在、未在线或正在登出中: " + playerId, null, elapsedMs(startNs));
+		}
+
+		// 确定聚合 Diff 监控模块
+		Set<String> monitorModules = new LinkedHashSet<>();
+		if (baseReq.getDiffModules() != null && !baseReq.getDiffModules().isEmpty()) {
+			monitorModules.addAll(baseReq.getDiffModules());
+		} else {
+			monitorModules.add("CurrencyModule");
+			monitorModules.add("ItemModule");
+		}
+
+		Map<String, Object> beforeState = captureSnapshotSafe(player, monitorModules);
+		CountDownLatch readyLatch = new CountDownLatch(n);
+		CountDownLatch startLatch = new CountDownLatch(1);
+		CountDownLatch doneLatch = new CountDownLatch(n);
+		@SuppressWarnings("unchecked")
+		Map<String, Object>[] attemptResults = new Map[n];
+		AtomicInteger baseSeq = new AtomicInteger(Math.max(1, baseReq.getSeq()));
+
+		for (int i = 0; i < n; i++) {
+			final int index = i;
+			Thread.startVirtualThread(() -> {
+				readyLatch.countDown();
+				try {
+					startLatch.await();
+					ProtoInvokeRequest cloned = new ProtoInvokeRequest();
+					cloned.setPlayerId(baseReq.getPlayerId());
+					cloned.setMsgId(baseReq.getMsgId());
+					cloned.setMsgName(baseReq.getMsgName());
+					cloned.setPayload(baseReq.getPayload());
+					cloned.setSeq(baseSeq.getAndIncrement());
+					cloned.setWithTrace(baseReq.isWithTrace());
+					cloned.setWithDiff(false);
+					cloned.setMirrorToRealClient(baseReq.isMirrorToRealClient());
+					cloned.setTimeoutMs(baseReq.getTimeoutMs());
+					attemptResults[index] = invoke(cloned);
+				} catch (Throwable t) {
+					log.warn("并发协议测试工作线程异常 idx={} playerId={}", index, playerId, t);
+					attemptResults[index] = failResult(playerId, baseReq.resolveMsgId(), baseReq.getMsgName(), index + 1,
+							ErrorMsgEnum.unknown.getId(), "并发执行异常: " + t.getMessage(), null, 0L);
+				} finally {
+					doneLatch.countDown();
+				}
+			});
+		}
+
+		try {
+			readyLatch.await(3, TimeUnit.SECONDS);
+			startLatch.countDown();
+			long waitMs = Math.max(10000L, (long) Math.max(500, baseReq.getTimeoutMs()) * 2L);
+			doneLatch.await(waitMs, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+			log.warn("等待并发协议连发测试完成被中断 playerId={}", playerId, ie);
+		}
+
+		Map<String, Object> afterState = captureSnapshotSafe(player, monitorModules);
+		List<Map<String, Object>> aggregateDiff = GmStateDiffUtil.computeNestedDiff(beforeState, afterState);
+
+		int successCount = 0;
+		int failCount = 0;
+		Map<String, Integer> errorCodeCounts = new LinkedHashMap<>();
+		List<Map<String, Object>> attempts = new ArrayList<>(n);
+		String resolvedName = baseReq.getMsgName();
+		int resolvedMsgId = baseReq.resolveMsgId();
+
+		for (int i = 0; i < n; i++) {
+			Map<String, Object> res = attemptResults[i];
+			if (res == null) {
+				res = failResult(playerId, resolvedMsgId, resolvedName, i + 1,
+						ErrorMsgEnum.unknown.getId(), "并发任务未在超时窗口内返回", null, 0L);
+			}
+			boolean ok = Boolean.TRUE.equals(res.get("ok"));
+			if (ok) {
+				successCount++;
+			} else {
+				failCount++;
+			}
+			int errCode = res.get("errorCode") instanceof Number num ? num.intValue() : 0;
+			String codeKey = String.valueOf(errCode);
+			errorCodeCounts.put(codeKey, errorCodeCounts.getOrDefault(codeKey, 0) + 1);
+
+			if (res.get("request") instanceof Map<?, ?> reqMap) {
+				if (reqMap.get("msgName") != null) {
+					resolvedName = String.valueOf(reqMap.get("msgName"));
+				}
+				if (reqMap.get("msgId") instanceof Number mid) {
+					resolvedMsgId = mid.intValue();
+				}
+			}
+
+			Map<String, Object> attemptSummary = new LinkedHashMap<>();
+			attemptSummary.put("attempt", i + 1);
+			attemptSummary.put("ok", ok);
+			attemptSummary.put("errorCode", errCode);
+			attemptSummary.put("errorName", res.getOrDefault("errorName", ""));
+			attemptSummary.put("errorDesc", res.getOrDefault("errorDesc", ""));
+			attemptSummary.put("elapsedMs", res.getOrDefault("elapsedMs", 0L));
+			attemptSummary.put("response", res.get("response"));
+			attemptSummary.put("pushes", res.get("pushes"));
+			attempts.add(attemptSummary);
+		}
+
+		List<String> warnings = new ArrayList<>();
+		if (successCount > 1) {
+			warnings.add("并发 " + n + " 次请求中有 " + successCount + " 次返回成功；若目标接口属于限购/领奖/消耗类一次性操作，请排查并发锁或幂等防刷机制");
+		}
+
+		Map<String, Object> summary = new LinkedHashMap<>();
+		summary.put("ok", true);
+		summary.put("playerId", playerId);
+		summary.put("msgId", resolvedMsgId);
+		summary.put("msgIdHex", HexUtil.toHexString(resolvedMsgId));
+		summary.put("msgName", resolvedName != null ? resolvedName : "");
+		summary.put("concurrency", n);
+		summary.put("successCount", successCount);
+		summary.put("failCount", failCount);
+		summary.put("errorCodeCounts", errorCodeCounts);
+		summary.put("attempts", attempts);
+		summary.put("aggregateDiff", aggregateDiff);
+		summary.put("diffCount", aggregateDiff != null ? aggregateDiff.size() : 0);
+		summary.put("warnings", warnings);
+		summary.put("elapsedMs", elapsedMs(startNs));
+		return summary;
+	}
+
+	private Map<String, Object> captureSnapshotSafe(Player player, Collection<String> moduleFilters) {
+		try {
+			GmResult res = explicitInspectService.inspectPlayer(player, moduleFilters, "player",
+					this.explicitProcessor != null ? this.explicitProcessor : ServerContext.getInstance().getProcessor());
+			if (res != null && res.isOk() && res.getData() instanceof Map<?, ?> map) {
+				Object mods = map.get("modules");
+				if (mods instanceof Map<?, ?> modMap) {
+					Map<String, Object> copy = new LinkedHashMap<>();
+					for (Map.Entry<?, ?> entry : modMap.entrySet()) {
+						copy.put(String.valueOf(entry.getKey()), entry.getValue());
+					}
+					return copy;
+				}
+			}
+		} catch (Throwable t) {
+			log.warn("并发测试采集玩家模块快照异常 playerId={}", player.getPlayerId(), t);
+		}
+		return Collections.emptyMap();
 	}
 
 	private Map<String, Object> assembleOutcome(long playerId, int reqMsgId, String reqMsgName, int seq,

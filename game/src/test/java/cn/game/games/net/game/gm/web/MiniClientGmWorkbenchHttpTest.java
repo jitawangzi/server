@@ -81,7 +81,10 @@ public class MiniClientGmWorkbenchHttpTest {
 		ServerContext.getInstance().setRunMode();
 		System.clearProperty(GmSecurityPolicy.PROP_REQUIRE_AUTH);
 		System.clearProperty(GmSecurityPolicy.PROP_OPS_TOKEN);
+		System.clearProperty(GmSecurityPolicy.PROP_RBAC_TOKENS);
 		System.clearProperty(GmWebConsoleServer.PROP_STATIC_DIR);
+		System.clearProperty(cn.game.games.net.game.gm.GmAuditLogService.PROP_AUDIT_FILE);
+		cn.game.games.net.game.gm.GmAuditLogService.getInstance().clearMemoryForTest();
 
 		PlayerData data = new PlayerData();
 		ObjUtil.setDefaultValue(data);
@@ -112,7 +115,10 @@ public class MiniClientGmWorkbenchHttpTest {
 		System.clearProperty(GmSecurityPolicy.PROP_HTTP_HOST);
 		System.clearProperty(GmSecurityPolicy.PROP_REQUIRE_AUTH);
 		System.clearProperty(GmSecurityPolicy.PROP_OPS_TOKEN);
+		System.clearProperty(GmSecurityPolicy.PROP_RBAC_TOKENS);
 		System.clearProperty(GmWebConsoleServer.PROP_STATIC_DIR);
+		System.clearProperty(cn.game.games.net.game.gm.GmAuditLogService.PROP_AUDIT_FILE);
+		cn.game.games.net.game.gm.GmAuditLogService.getInstance().clearMemoryForTest();
 		System.setProperty(ServerContext.SERVER_RUN_MODE, "DEV");
 		ServerContext.getInstance().setRunMode();
 	}
@@ -572,6 +578,191 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertTrue(jsV3.body().contains("PROD-V3"), "PRODUCTION 模式下 workbench.js 必须免重启热生效");
 		Assertions.assertEquals("no-store", idxV3.headers().firstValue("Cache-Control").orElse(""));
 		Assertions.assertEquals("no-store", jsV3.headers().firstValue("Cache-Control").orElse(""));
+	}
+
+	/**
+	 * 验证全平台 P0/P1/P2 优化新增运维路由、RBAC 分级鉴权、审计落盘、并发协议入口、新热更面板与生产安全门禁
+	 */
+	@Test
+	public void testPlatformOptimizationRoutesRbacAndPanels(@TempDir Path tempAuditDir) throws Exception {
+		Path auditFile = tempAuditDir.resolve("http-ops-audit.jsonl");
+		System.setProperty(cn.game.games.net.game.gm.GmAuditLogService.PROP_AUDIT_FILE, auditFile.toString());
+
+		// 1. 静态前端契约与三大新热重载面板校验
+		HttpResponse<String> indexResp = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console")).GET().build(),
+				HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, indexResp.statusCode());
+		String indexHtml = indexResp.body();
+		Assertions.assertTrue(indexHtml.contains("tabOps"));
+		Assertions.assertTrue(indexHtml.contains("lblPrincipalBadge"));
+		Assertions.assertTrue(indexHtml.contains("exportDevScenario"));
+		Assertions.assertTrue(indexHtml.contains("runImportedScenario"));
+		Assertions.assertTrue(indexHtml.contains("invokeProtoConcurrent"));
+		Assertions.assertTrue(indexHtml.contains("diffSnapshots"));
+		Assertions.assertTrue(indexHtml.contains("getOpsHealth"));
+		Assertions.assertTrue(indexHtml.contains("validateConfigs"));
+
+		HttpResponse<String> wbResp = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/workbench.js")).GET().build(),
+				HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+		Assertions.assertEquals(200, wbResp.statusCode());
+		Assertions.assertTrue(wbResp.body().contains("invokeConcurrent"));
+		Assertions.assertTrue(wbResp.body().contains("/gm-console/api/proto/invoke-concurrent"));
+
+		for (String panelFile : new String[] { "player_inspector.html", "activity_scheduler.html", "config_center.html" }) {
+			HttpResponse<String> pResp = httpClient.send(
+					HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/panels/" + panelFile)).GET().build(),
+					HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+			Assertions.assertEquals(200, pResp.statusCode(), "面板必须可热加载访问: " + panelFile);
+			Assertions.assertTrue(pResp.body().contains("@gm-panel"));
+		}
+
+		// 2. DEV 模式校验 /api/bootstrap principal + /api/ops/* 只读与跨服接口
+		JsonNode bootstrap = MAPPER.readTree(httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/bootstrap")).GET().build(),
+				HttpResponse.BodyHandlers.ofString()).body());
+		Assertions.assertNotNull(bootstrap.get("data").get("principal"));
+
+		for (String getPath : new String[] {
+				"/gm-console/api/ops/health",
+				"/gm-console/api/ops/players/search?keyword=HttpTestPlayer",
+				"/gm-console/api/ops/players/" + HTTP_TEST_PLAYER_ID + "/detail",
+				"/gm-console/api/ops/audit",
+				"/gm-console/api/ops/config/summary",
+				"/gm-console/api/ops/config/validate",
+				"/gm-console/api/ops/cluster" }) {
+			HttpResponse<String> opsResp = httpClient.send(
+					HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + getPath)).GET().build(),
+					HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+			Assertions.assertEquals(200, opsResp.statusCode(), "GET " + getPath);
+			JsonNode json = MAPPER.readTree(opsResp.body());
+			Assertions.assertTrue(json.get("ok").asBoolean(), "GET " + getPath + " 应返回 ok=true: " + opsResp.body());
+		}
+
+		// 3. 开启多角色 RBAC Token 校验 401/403 分权边界与审计落盘
+		System.setProperty(GmSecurityPolicy.PROP_REQUIRE_AUTH, "true");
+		System.setProperty(GmSecurityPolicy.PROP_RBAC_TOKENS, "qa_ro:READONLY:ro_tok,ops_op:OPERATOR:op_tok,sec_adm:ADMIN:adm_tok");
+
+		HttpResponse<String> unauth = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/health")).GET().build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(401, unauth.statusCode());
+
+		HttpResponse<String> roHealth = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/health"))
+						.header("X-GM-Token", "ro_tok").GET().build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(200, roHealth.statusCode());
+
+		HttpResponse<String> roDeniedMail = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/players/" + HTTP_TEST_PLAYER_ID + "/mail"))
+						.header("X-GM-Token", "ro_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"title\":\"t\",\"content\":\"c\"}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(403, roDeniedMail.statusCode(), "READONLY 角色严禁发送运维补偿邮件");
+
+		HttpResponse<String> opDeniedReload = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/config/reload"))
+						.header("X-GM-Token", "op_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"table\":\"ShopItem\"}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(403, opDeniedReload.statusCode(), "OPERATOR 角色严禁触发配表热更新");
+
+		// 3.5 引号命令绕过防护（\"player.super\"）、未知指令 fail-closed 与非 execute 写接口 RBAC 校验
+		HttpResponse<String> quotedBypass = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/execute"))
+						.header("X-GM-Token", "ro_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"cmd\":\"\\\"player.super\\\"\",\"playerId\":" + HTTP_TEST_PLAYER_ID + "}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(403, quotedBypass.statusCode(), "带引号命令不可绕过文本命令 RBAC 鉴权");
+
+		HttpResponse<String> unknownCmdDeny = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/execute"))
+						.header("X-GM-Token", "op_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"cmd\":\"nonexistent.cmd.bypass\"}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(403, unknownCmdDeny.statusCode(), "非 ADMIN 执行未注册命令应采用 fail-closed 拦截");
+
+		for (String writePath : new String[] {
+				"/gm-console/api/proto/invoke",
+				"/gm-console/api/proto/invoke-concurrent",
+				"/gm-console/api/workbench/test-login",
+				"/gm-console/api/workbench/acceptance/run" }) {
+			HttpResponse<String> roDeniedWrite = httpClient.send(
+					HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + writePath))
+							.header("X-GM-Token", "ro_tok")
+							.header("Content-Type", "application/json")
+							.POST(HttpRequest.BodyPublishers.ofString("{}"))
+							.build(),
+					HttpResponse.BodyHandlers.ofString());
+			Assertions.assertEquals(403, roDeniedWrite.statusCode(), "READONLY 严禁调用写/调试接口: " + writePath);
+		}
+
+		// 3.6 运维 POST 接口传入畸形 JSON 返回 400 而非 500
+		for (String malformedTarget : new String[] {
+				"/gm-console/api/ops/players/" + HTTP_TEST_PLAYER_ID + "/mail",
+				"/gm-console/api/ops/config/reload",
+				"/gm-console/api/ops/cluster/action" }) {
+			HttpResponse<String> badJsonResp = httpClient.send(
+					HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + malformedTarget))
+							.header("X-GM-Token", "adm_tok")
+							.header("Content-Type", "application/json")
+							.POST(HttpRequest.BodyPublishers.ofString("{bad_json"))
+							.build(),
+					HttpResponse.BodyHandlers.ofString());
+			Assertions.assertEquals(400, badJsonResp.statusCode(), "畸形 JSON 必须返回 400: " + malformedTarget);
+		}
+
+		// 3.7 验证 401 鉴权失败已记入审计日志
+		HttpResponse<String> auditAfterDeny = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/audit?keyword=auth.deny&onlyFailed=true"))
+						.header("X-GM-Token", "ro_tok").GET().build(),
+				HttpResponse.BodyHandlers.ofString());
+		JsonNode auditDenyJson = MAPPER.readTree(auditAfterDeny.body());
+		Assertions.assertTrue(auditDenyJson.get("data").get("matchedTotal").asInt() >= 1, "401 鉴权失败必须写入审计日志");
+
+		// 4. PRODUCTION 模式下运维只读接口保持可用，并发协议与跨服调试接口严格阻断
+		System.setProperty(ServerContext.SERVER_RUN_MODE, "PRODUCTION");
+		ServerContext.getInstance().setRunMode();
+
+		HttpResponse<String> prodHealth = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/health"))
+						.header("X-GM-Token", "ro_tok").GET().build(),
+				HttpResponse.BodyHandlers.ofString());
+		Assertions.assertEquals(200, prodHealth.statusCode(), "PRODUCTION 下合法 RBAC 只读账号仍可查看健康诊断");
+
+		HttpResponse<String> prodConcurrent = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/proto/invoke-concurrent"))
+						.header("X-GM-Token", "adm_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"playerId\":" + HTTP_TEST_PLAYER_ID + ",\"msgName\":\"PlayerNameRequest_01000011\",\"concurrency\":3}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		JsonNode prodConcJson = MAPPER.readTree(prodConcurrent.body());
+		Assertions.assertFalse(prodConcJson.get("ok").asBoolean(), "PRODUCTION 下禁止并发协议压测");
+		Assertions.assertEquals(ErrorMsgEnum.production_gm_not_allow.getId(), prodConcJson.get("errorCode").asInt());
+
+		HttpResponse<String> prodClusterAction = httpClient.send(
+				HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:" + listenPort + "/gm-console/api/ops/cluster/action"))
+						.header("X-GM-Token", "adm_tok")
+						.header("Content-Type", "application/json")
+						.POST(HttpRequest.BodyPublishers.ofString("{\"op\":\"rank.top\",\"params\":{}}"))
+						.build(),
+				HttpResponse.BodyHandlers.ofString());
+		JsonNode prodClusterJson = MAPPER.readTree(prodClusterAction.body());
+		Assertions.assertFalse(prodClusterJson.get("ok").asBoolean(), "PRODUCTION 下禁止跨服联调写动作");
+		Assertions.assertEquals(ErrorMsgEnum.production_gm_not_allow.getId(), prodClusterJson.get("errorCode").asInt());
+
+		Assertions.assertTrue(Files.exists(auditFile), "操作与越权拒绝审计日志必须已持久化到 JSONL 文件");
 	}
 
 	@SuppressWarnings("unchecked")

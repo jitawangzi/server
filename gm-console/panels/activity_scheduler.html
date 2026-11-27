@@ -1,0 +1,234 @@
+<!-- @gm-panel
+{
+  "id": "activity_scheduler",
+  "title": "活动调度与周期事件控制",
+  "category": "通用工具",
+  "audience": ["QA", "DEV"],
+  "modules": ["activity", "0x11"],
+  "tags": ["活动调度", "周期事件", "跨天", "跨周", "活动开启关闭", "activity"],
+  "order": 3,
+  "summary": "查看全服与玩家活动实时状态，支持一键强制开启/结束/销毁/重置活动，以及免等真实时间手动触发跨天/跨周/跨月/活动开启结算等全服周期事件。"
+}
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>活动调度与周期事件控制</title>
+  <style>
+    .act-wrap { display: flex; flex-direction: column; gap: 14px; color: var(--text-main); }
+    .act-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .act-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .act-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .act-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .act-table th, .act-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--row-border);
+      text-align: left;
+    }
+    .act-table th {
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+<div class="act-wrap">
+  <!-- 1. 周期事件与虚拟时钟快捷控制 -->
+  <div class="act-card">
+    <div class="act-title">
+      <span>⏰ 服务端周期事件主动触发 & 时钟推进</span>
+      <span style="font-size:0.78rem; font-weight:400; color:var(--text-muted);">用于秒级测试活动开启、结算销毁、个人与全服跨日/跨周/跨月结算逻辑</span>
+    </div>
+    <div class="act-row" style="margin-bottom:10px;">
+      <button class="btn" onclick="window.ActivitySchedulerPanel.triggerEvent('NewDay')">🌅 触发 NewDay (全服日刷)</button>
+      <button class="btn btn-secondary" onclick="window.ActivitySchedulerPanel.triggerEvent('NewWeek')">📅 触发 NewWeek (跨周)</button>
+      <button class="btn btn-secondary" onclick="window.ActivitySchedulerPanel.triggerEvent('NewMonth')">🗓️ 触发 NewMonth (跨月)</button>
+      <button class="btn btn-secondary" onclick="window.ActivitySchedulerPanel.triggerEvent('ActivityOpenTime')">▶ 全服检查活动开启</button>
+      <button class="btn btn-secondary" onclick="window.ActivitySchedulerPanel.triggerEvent('ActivityShutDownTime')">⏸ 全服检查活动结束</button>
+      <button class="btn btn-secondary" onclick="window.ActivitySchedulerPanel.triggerEvent('ActivityDestoryTime')">🗑 全服检查活动销毁</button>
+    </div>
+    <div class="act-row">
+      <span style="font-size:0.8rem; color:var(--text-muted);">虚拟时钟推进:</span>
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="window.ActivitySchedulerPanel.offsetTime('+1h')">+1 小时</button>
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="window.ActivitySchedulerPanel.offsetTime('+1d')">+1 天</button>
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="window.ActivitySchedulerPanel.offsetTime('+7d')">+7 天</button>
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="window.ActivitySchedulerPanel.playerNewDay()">👤 当前玩家个人跨天 (player.newday)</button>
+    </div>
+  </div>
+
+  <!-- 2. 活动状态表与单活动操作 -->
+  <div class="act-card">
+    <div class="act-title">
+      <span>🎯 活动生命周期调度台</span>
+      <div class="act-row">
+        <input id="actFilterKw" type="text" placeholder="按活动 ID 或名称过滤..." style="width:190px;" oninput="window.ActivitySchedulerPanel.renderRows()" />
+        <label style="display:inline-flex; align-items:center; gap:4px; margin:0; font-size:0.8rem;">
+          <input id="actOnlyActive" type="checkbox" style="width:auto;" onchange="window.ActivitySchedulerPanel.loadStatus()" />
+          <span>仅显示运行/已开活动</span>
+        </label>
+        <input id="actManualId" type="number" placeholder="手动输入活动ID" style="width:130px;" />
+        <button class="btn" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ActivitySchedulerPanel.manualOp('open')">▶ 开</button>
+        <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ActivitySchedulerPanel.manualOp('end')">⏸ 停</button>
+        <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ActivitySchedulerPanel.manualOp('reset')">♻️ 置</button>
+        <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ActivitySchedulerPanel.loadStatus()">🔄 刷新</button>
+      </div>
+    </div>
+    <div id="actSummaryInfo" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">正在读取活动列表...</div>
+    <div id="actTableWrap" style="max-height:420px; overflow:auto;"></div>
+  </div>
+
+  <div class="act-card">
+    <div class="act-title"><span>📋 最近调度输出</span></div>
+    <pre id="actOutput" style="max-height:160px; font-size:0.78rem;">等待操作...</pre>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const esc = (s) => window.GmConsole ? window.GmConsole.escapeHtml(s) : String(s == null ? '' : s);
+  const toast = (m, l) => window.GmConsole && window.GmConsole.toast(m, l);
+
+  const state = {
+    activities: []
+  };
+
+  function showOut(label, res) {
+    const pre = document.getElementById('actOutput');
+    if (pre) pre.textContent = JSON.stringify(res, null, 2);
+    toast(res && res.ok ? `${label} 成功` : `${label} 失败: ${res?.message || ''}`, res && res.ok ? 'ok' : 'error');
+  }
+
+  function renderRows() {
+    const wrap = document.getElementById('actTableWrap');
+    if (!wrap) return;
+    const kw = (document.getElementById('actFilterKw')?.value || '').trim().toLowerCase();
+    const rows = kw
+      ? state.activities.filter(a => String(a.id).includes(kw)
+          || String(a.typeName || '').toLowerCase().includes(kw)
+          || String(a.name || '').toLowerCase().includes(kw))
+      : state.activities;
+    if (rows.length === 0) {
+      wrap.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem; padding:8px;">无匹配活动记录</div>`;
+      return;
+    }
+    wrap.innerHTML = `
+      <table class="act-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>活动名称 / 类型</th>
+            <th>全服状态</th>
+            <th>开启 ~ 结束 ~ 销毁</th>
+            <th>玩家个人状态</th>
+            <th>快捷操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(a => `
+            <tr>
+              <td><code>${a.id}</code></td>
+              <td><b>${esc(a.typeName || '')}</b> <span style="color:var(--text-muted);">(type=${a.type || 0}${a.disable ? ', disabled' : ''}${a.isCross ? ', 跨服' : ''})</span></td>
+              <td>${a.globalState > 0 ? `<span style="color:var(--success-text); font-weight:700;">${esc(a.globalStateName || 'ACTIVE')} (${a.globalState})</span>` : `<span style="color:var(--text-muted);">NONE (0)</span>`}</td>
+              <td style="font-size:0.76rem; color:var(--text-muted);">openType=${a.openType || 0} reset=${a.resetType || 0} cross=${esc(a.crossStateName || 'NONE')}</td>
+              <td>${a.playerState > 0 ? `<span style="color:var(--accent-text);">${esc(a.playerStateName || 'OPEN')} (${a.playerState})</span>` : `<span style="color:var(--text-muted);">${esc(a.playerStateName || 'NONE')}</span>`}</td>
+              <td class="act-row">
+                <button class="btn" style="padding:3px 8px; font-size:0.74rem;" onclick="window.ActivitySchedulerPanel.runAct('open', ${a.id})">开启</button>
+                <button class="btn btn-secondary" style="padding:3px 8px; font-size:0.74rem;" onclick="window.ActivitySchedulerPanel.runAct('end', ${a.id})">结束</button>
+                <button class="btn btn-secondary" style="padding:3px 8px; font-size:0.74rem;" onclick="window.ActivitySchedulerPanel.runAct('destroy', ${a.id})">销毁</button>
+                <button class="btn btn-secondary" style="padding:3px 8px; font-size:0.74rem;" onclick="window.ActivitySchedulerPanel.runAct('reset', ${a.id})">重置</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  async function loadStatus() {
+    const pid = window.GmConsole ? window.GmConsole.getSelectedPlayerId() : 0;
+    const onlyActive = Boolean(document.getElementById('actOnlyActive')?.checked);
+    const res = await window.GmConsole.executeAction('activity.status', { playerId: pid || 0, onlyActive }, pid || 0);
+    const info = document.getElementById('actSummaryInfo');
+    if (!res || !res.ok || !res.data) {
+      if (info) info.textContent = `加载活动状态失败: ${res?.message || res?.summary || '未知错误'}`;
+      return;
+    }
+    state.activities = res.data.activities || [];
+    if (info) {
+      info.textContent = `当前时间: ${res.data.nowStr || new Date().toLocaleString()} | 配置活动数: ${res.data.total || state.activities.length} | 目标玩家: ${pid || '未选(仅全服)'}`;
+    }
+    renderRows();
+  }
+
+  window.ActivitySchedulerPanel = {
+    loadStatus,
+    renderRows,
+    runAct: async function (op, id) {
+      const pid = window.GmConsole ? window.GmConsole.getSelectedPlayerId() : 0;
+      const action = 'activity.' + op;
+      const args = op === 'open' ? { id: Number(id), force: true } : { id: Number(id) };
+      const res = await window.GmConsole.executeAction(action, args, pid || 0);
+      showOut(`${action}(${id})`, res);
+      await loadStatus();
+    },
+    manualOp: async function (op) {
+      const id = parseInt(document.getElementById('actManualId')?.value, 10) || 0;
+      if (id <= 0) {
+        toast('请输入有效的活动 ID', 'warn');
+        return;
+      }
+      await window.ActivitySchedulerPanel.runAct(op, id);
+    },
+    triggerEvent: async function (eventType) {
+      const id = parseInt(document.getElementById('actManualId')?.value, 10) || 0;
+      if (eventType && eventType.startsWith('Activity') && id <= 0) {
+        toast('触发 Activity*Time 生命周期事件请先在左侧「手动输入活动ID」填入活动 ID', 'warn');
+        return;
+      }
+      const pid = window.GmConsole ? window.GmConsole.getSelectedPlayerId() : 0;
+      const res = await window.GmConsole.executeAction('activity.triggerEvent', { eventType, activityId: id }, pid || 0);
+      showOut(`事件 ${eventType}`, res);
+      await loadStatus();
+    },
+    offsetTime: async function (expr) {
+      const res = await window.GmConsole.offsetTime(expr, { allowBackward: true });
+      showOut(`时钟推进 ${expr}`, res);
+      await loadStatus();
+    },
+    playerNewDay: async function () {
+      const res = await window.GmConsole.newDay();
+      showOut('玩家个人跨天', res);
+      await loadStatus();
+    }
+  };
+
+  const unsub = window.GmConsole ? window.GmConsole.onPlayerChange(() => loadStatus()) : null;
+  window.__gmPanelCleanup = function () {
+    if (typeof unsub === 'function') unsub();
+  };
+  loadStatus();
+})();
+</script>
+</body>
+</html>

@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -189,6 +193,106 @@ public class PlayerSnapshotService {
 		result.put("playerId", playerId);
 		result.put("deletedCount", deletedCount);
 		return result;
+	}
+
+	/**
+	 * 只读对比两个命名快照，或对比基准快照与玩家当前在线状态的模块字段差异（不修改任何玩家状态）
+	 *
+	 * @param player 目标在线玩家
+	 * @param baseSnapshotName 基准快照名
+	 * @param targetSnapshotName 目标快照名（传空或 "__CURRENT__" 时与玩家当前实时内存状态对比）
+	 * @param modulesCsv 可选逗号分隔的模块过滤（留空对比全部模块）
+	 * @return 字段级差异汇总 Map
+	 */
+	public Map<String, Object> diffSnapshots(Player player, String baseSnapshotName, String targetSnapshotName, String modulesCsv) {
+		if (GmSecurityPolicy.currentRunMode().isProduction()) {
+			throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID, "生产环境禁止执行玩家快照对比");
+		}
+		if (player == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "目标玩家不存在");
+		}
+		String baseName = (baseSnapshotName != null && !baseSnapshotName.isBlank()) ? baseSnapshotName.trim() : "default";
+		String targetName = (targetSnapshotName != null && !targetSnapshotName.isBlank()) ? targetSnapshotName.trim() : "__CURRENT__";
+
+		LinkedHashMap<String, PlayerSnapshotEntry> map = playerSnapshots.get(player.getPlayerId());
+		PlayerSnapshotEntry baseEntry = null;
+		PlayerSnapshotEntry targetEntry = null;
+		if (map != null) {
+			synchronized (map) {
+				baseEntry = map.get(baseName);
+				if (!"__CURRENT__".equalsIgnoreCase(targetName)) {
+					targetEntry = map.get(targetName);
+				}
+			}
+		}
+		if (baseEntry == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "基准快照不存在: " + baseName);
+		}
+		if (!"__CURRENT__".equalsIgnoreCase(targetName) && targetEntry == null) {
+			throw new LogicException(ErrorMsgEnum.request_parameter_error.ID, "目标快照不存在: " + targetName);
+		}
+
+		Set<String> filterSet = new LinkedHashSet<>();
+		if (modulesCsv != null && !modulesCsv.isBlank()) {
+			for (String part : modulesCsv.split(",")) {
+				if (part != null && !part.isBlank()) {
+					filterSet.add(part.trim().toLowerCase(Locale.ROOT));
+				}
+			}
+		}
+
+		Map<String, Object> beforeView = buildComparableView(baseEntry, null, filterSet);
+		Map<String, Object> afterView = "__CURRENT__".equalsIgnoreCase(targetName)
+				? buildComparableView(null, player, filterSet)
+				: buildComparableView(targetEntry, null, filterSet);
+
+		List<Map<String, Object>> allDiffs = GmStateDiffUtil.computeNestedDiff(beforeView, afterView);
+		int maxDiffs = 500;
+		boolean truncated = allDiffs.size() > maxDiffs;
+		List<Map<String, Object>> slicedDiffs = truncated ? new ArrayList<>(allDiffs.subList(0, maxDiffs)) : allDiffs;
+
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("playerId", player.getPlayerId());
+		result.put("baseSnapshot", baseName);
+		result.put("targetSnapshot", "__CURRENT__".equalsIgnoreCase(targetName) ? "CURRENT" : targetName);
+		result.put("diffCount", allDiffs.size());
+		result.put("truncated", truncated);
+		result.put("diffs", slicedDiffs);
+		return result;
+	}
+
+	private Map<String, Object> buildComparableView(PlayerSnapshotEntry snapshotEntry, Player livePlayer, Set<String> filters) {
+		Map<String, Object> root = new LinkedHashMap<>();
+		Map<String, Object> scalars = snapshotEntry != null ? snapshotEntry.getScalarSummary() : extractScalars(livePlayer);
+		if (filters.isEmpty() || filters.contains("_scalars") || filters.contains("playerdata")) {
+			root.put("_scalars", scalars);
+		}
+
+		Map<String, BasePlayerModule> rawModules = new TreeMap<>();
+		if (snapshotEntry != null) {
+			HashMap<String, BasePlayerModule> restored = CborSnappyUtil.decompress(snapshotEntry.getCompressedModules());
+			if (restored != null) {
+				rawModules.putAll(restored);
+			}
+		} else if (livePlayer != null && livePlayer.getModules() != null) {
+			rawModules.putAll(livePlayer.getModules());
+		}
+
+		for (BasePlayerModule mod : rawModules.values()) {
+			if (mod == null) {
+				continue;
+			}
+			String simpleName = mod.getClass().getSimpleName();
+			if (!filters.isEmpty() && !filters.contains(simpleName.toLowerCase(Locale.ROOT))) {
+				continue;
+			}
+			try {
+				root.put(simpleName, mod.inspectState());
+			} catch (Throwable t) {
+				log.warn("快照Diff读取模块状态异常 module={}", simpleName, t);
+			}
+		}
+		return root;
 	}
 
 	/**

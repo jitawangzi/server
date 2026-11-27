@@ -1,0 +1,236 @@
+<!-- @gm-panel
+{
+  "id": "config_center",
+  "title": "配表浏览与一致性巡检",
+  "category": "通用工具",
+  "audience": ["QA", "DEV"],
+  "modules": ["config"],
+  "tags": ["配表", "热更新", "配置校验", "ShopItem", "FundPassRewards", "XML"],
+  "order": 4,
+  "summary": "在线分页检索全服 XML 静态配表数据，支持单表/全表热重载与一键外键引用完整性巡检，提前拦截悬空物品ID/异常奖励与未闭环配表错误。"
+}
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>配表浏览与一致性巡检</title>
+  <style>
+    .cc-wrap { display: flex; flex-direction: column; gap: 14px; color: var(--text-main); }
+    .cc-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .cc-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.96rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .cc-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .cc-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .cc-table th, .cc-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--row-border);
+      text-align: left;
+      word-break: break-word;
+    }
+    .cc-table th {
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+<div class="cc-wrap">
+  <!-- 1. 一键完整性巡检 & 热重载 -->
+  <div class="cc-card">
+    <div class="cc-title">
+      <span>🛡️ 配表热更新与引用一致性巡检</span>
+      <div class="cc-row">
+        <button class="btn" onclick="window.ConfigCenterPanel.validateAll()">🛡️ 一键全服配表巡检</button>
+        <button class="btn btn-secondary" onclick="window.ConfigCenterPanel.reloadSelected()">♻️ 热更当前选中表 (ADMIN)</button>
+        <button class="btn btn-secondary" onclick="window.ConfigCenterPanel.reloadAll()">♻️ 全量配表热更 (ADMIN)</button>
+      </div>
+    </div>
+    <div id="ccValidateSummary" style="font-size:0.82rem; color:var(--text-muted);">点击「一键全服配表巡检」检查 ShopItem / FundPassRewards / Item 等奖励引用及跨服活动配置。</div>
+    <div id="ccValidateResult" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- 2. 配表在线检索浏览器 -->
+  <div class="cc-card">
+    <div class="cc-title">
+      <span>📚 静态 XML 配表分页浏览器</span>
+      <span id="ccTableMeta" style="font-size:0.78rem; font-weight:400; color:var(--text-muted);">加载表目录中...</span>
+    </div>
+    <div class="cc-row" style="margin-bottom:10px;">
+      <label style="margin:0; font-size:0.82rem; color:var(--text-muted);">选择表:</label>
+      <select id="ccTableSelect" style="width:230px;" onchange="window.ConfigCenterPanel.loadPage(1)"></select>
+      <input id="ccSearchKw" type="text" placeholder="前端关键字高亮过滤 (ID/名称)..." style="width:220px;" oninput="window.ConfigCenterPanel.renderTable()" />
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ConfigCenterPanel.prevPage()">◀ 上一页</button>
+      <span id="ccPageInfo" style="font-size:0.8rem; color:var(--text-muted);">第 1 页</span>
+      <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.8rem;" onclick="window.ConfigCenterPanel.nextPage()">下一页 ▶</button>
+    </div>
+    <div id="ccRowsContainer" style="max-height:420px; overflow:auto;"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const esc = (s) => window.GmConsole ? window.GmConsole.escapeHtml(s) : String(s == null ? '' : s);
+  const toast = (m, l) => window.GmConsole && window.GmConsole.toast(m, l);
+
+  const state = {
+    tables: [],
+    currentTable: '',
+    page: 1,
+    totalPages: 1,
+    rows: []
+  };
+
+  async function init() {
+    const res = await window.GmConsole.queryConfigTables();
+    const sel = document.getElementById('ccTableSelect');
+    const meta = document.getElementById('ccTableMeta');
+    if (!res || !res.ok || !res.data) {
+      if (meta) meta.textContent = `读取表目录失败: ${res?.message || ''}`;
+      return;
+    }
+    const list = res.data.tables || res.data || [];
+    state.tables = list.map(t => typeof t === 'string' ? t : (t.name || t.table || String(t))).sort();
+    if (sel) {
+      sel.innerHTML = state.tables.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+      if (state.tables.includes('ShopItem')) sel.value = 'ShopItem';
+      else if (state.tables.length > 0) sel.value = state.tables[0];
+    }
+    if (meta) meta.textContent = `共发现 ${state.tables.length} 张静态配置表`;
+    await loadPage(1);
+  }
+
+  async function loadPage(page) {
+    const sel = document.getElementById('ccTableSelect');
+    const table = sel ? sel.value : '';
+    if (!table) return;
+    state.currentTable = table;
+    state.page = Math.max(1, Number(page) || 1);
+    const res = await window.GmConsole.queryConfigList(table, { page: state.page, pageSize: 100 });
+    const container = document.getElementById('ccRowsContainer');
+    const pageInfo = document.getElementById('ccPageInfo');
+    if (!res || !res.ok || !res.data) {
+      if (container) container.innerHTML = `<div style="color:var(--danger-text);">查询失败: ${esc(res?.message || '')}</div>`;
+      return;
+    }
+    state.rows = res.data.rows || [];
+    state.totalPages = Math.max(1, Number(res.data.totalPages || 1));
+    if (pageInfo) pageInfo.textContent = `第 ${state.page} / ${state.totalPages} 页 (总 ${res.data.total || state.rows.length} 条)`;
+    renderTable();
+  }
+
+  function renderTable() {
+    const container = document.getElementById('ccRowsContainer');
+    if (!container) return;
+    const kw = (document.getElementById('ccSearchKw')?.value || '').trim().toLowerCase();
+    const rows = kw
+      ? state.rows.filter(r => JSON.stringify(r).toLowerCase().includes(kw))
+      : state.rows;
+    if (rows.length === 0) {
+      container.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem; padding:8px;">当前页无匹配数据</div>`;
+      return;
+    }
+    const cols = [];
+    const seen = new Set();
+    rows.slice(0, 20).forEach(r => {
+      Object.keys(r || {}).forEach(k => {
+        if (!seen.has(k) && cols.length < 10) {
+          seen.add(k);
+          cols.push(k);
+        }
+      });
+    });
+    container.innerHTML = `
+      <table class="cc-table">
+        <thead>
+          <tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+          ${rows.map(r => `<tr>${cols.map(c => `<td>${esc(typeof r[c] === 'object' ? JSON.stringify(r[c]) : r[c])}</td>`).join('')}</tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  window.ConfigCenterPanel = {
+    loadPage,
+    renderTable,
+    prevPage: () => { if (state.page > 1) loadPage(state.page - 1); },
+    nextPage: () => { if (state.page < state.totalPages) loadPage(state.page + 1); },
+    validateAll: async function () {
+      const sum = document.getElementById('ccValidateSummary');
+      const box = document.getElementById('ccValidateResult');
+      if (sum) sum.textContent = '正在扫描关键配置表与跨服校验器...';
+      const res = await window.GmConsole.validateConfigs();
+      if (!res || !res.data) {
+        if (sum) sum.textContent = `巡检请求失败: ${res?.message || ''}`;
+        return;
+      }
+      const d = res.data;
+      if (sum) {
+        sum.innerHTML = `版本: <code>${esc(d.resourceVersion || '')}</code> | 检查项: ${(d.checkedTables || []).join(', ')} | 发现问题: <b>${d.issueCount || 0}</b> (ERROR=${d.errorCount || 0}, WARN=${d.warnCount || 0})`;
+      }
+      const issues = d.issues || [];
+      if (box) {
+        if (issues.length === 0) {
+          box.innerHTML = `<div style="padding:8px 10px; background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:6px; color:var(--success-text);">✅ 未发现引用错误或悬空物品 ID。</div>`;
+        } else {
+          box.innerHTML = `
+            <div style="max-height:240px; overflow:auto;">
+              <table class="cc-table">
+                <thead><tr><th>级别</th><th>表名</th><th>行标识</th><th>问题详情</th></tr></thead>
+                <tbody>
+                  ${issues.map(it => `
+                    <tr>
+                      <td style="color:${it.severity === 'ERROR' ? 'var(--danger-text)' : 'var(--warning-text)'}; font-weight:700;">${esc(it.severity)}</td>
+                      <td><code>${esc(it.table)}</code></td>
+                      <td><code>${esc(it.rowKey != null ? it.rowKey : it.id)}</code></td>
+                      <td>${esc(it.message || it.detail || '')}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+      }
+    },
+    reloadSelected: async function () {
+      const table = document.getElementById('ccTableSelect')?.value || '';
+      if (!table) return;
+      const res = await window.GmConsole.reloadConfig(table);
+      toast(res && res.ok ? `表 ${table} 热更成功` : `热更失败: ${res?.message || ''}`, res && res.ok ? 'ok' : 'error');
+      await loadPage(state.page);
+    },
+    reloadAll: async function () {
+      const res = await window.GmConsole.reloadConfig('');
+      toast(res && res.ok ? '全量配表热更完成' : `热更失败: ${res?.message || ''}`, res && res.ok ? 'ok' : 'error');
+      await init();
+    }
+  };
+
+  window.__gmPanelCleanup = function () {};
+  init();
+})();
+</script>
+</body>
+</html>

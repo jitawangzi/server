@@ -343,6 +343,20 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 	}
 
 	/**
+	 * 获取指定命令名、别名或规范动作ID对应的 Schema 元数据（供 HTTP 网关 RBAC 校验与审计使用）
+	 *
+	 * @param command 命令名、别名或 group.action
+	 * @return 动作 Schema，未找到返回 null
+	 */
+	public GmActionSchema getActionSchema(String command) {
+		if (command == null || command.isBlank()) {
+			return null;
+		}
+		RegisteredAction reg = lookupIndex.get(normalizeKey(command));
+		return reg != null ? reg.schema : null;
+	}
+
+	/**
 	 * 获取按当前或指定RunMode裁剪后的GM Schema目录
 	 *
 	 * @param runMode 运行模式（传null则使用当前ServerContext运行模式）
@@ -999,6 +1013,25 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		public GmSchemaCatalog schema(
 				@GmParam(description = "可选分组过滤", required = false) String group) {
 			return getSchemaCatalog(GmSecurityPolicy.currentRunMode(), group);
+		}
+
+		@GmAction(name = "snapshot.diff", description = "对比两个命名快照或对比快照与当前玩家状态的字段差异", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, idempotent = true, example = "gm.snapshot.diff base=qa_1 target=__CURRENT__")
+		public Map<String, Object> snapshotDiff(
+				Player player,
+				@GmParam(name = "base", description = "基准快照名称", defaultValue = "qa_quick") String base,
+				@GmParam(name = "target", description = "目标快照名称(__CURRENT__表示当前实时状态)", required = false, defaultValue = "__CURRENT__") String target,
+				@GmParam(name = "modules", description = "可选模块过滤(逗号分隔)", required = false, defaultValue = "") String modules) {
+			return PlayerSnapshotService.getInstance().diffSnapshots(player, base, target, modules);
+		}
+
+		@GmAction(name = "audit.list", description = "查询最近GM控制台操作审计日志", security = GmSecurityTier.OPS_SAFE, scope = GmScope.GLOBAL, idempotent = true, example = "gm.audit.list limit=50")
+		public Map<String, Object> auditList(
+				@GmParam(name = "operator", description = "操作人过滤", required = false) String operator,
+				@GmParam(name = "keyword", description = "动作或端点关键字", required = false) String keyword,
+				@GmParam(name = "playerId", description = "目标玩家ID过滤", required = false, defaultValue = "0") long playerId,
+				@GmParam(name = "onlyFailed", description = "是否仅看失败记录", required = false, defaultValue = "false") boolean onlyFailed,
+				@GmParam(name = "limit", description = "返回条数上限", required = false, defaultValue = "50") int limit) {
+			return GmAuditLogService.getInstance().query(operator, keyword, playerId > 0 ? playerId : null, onlyFailed, limit);
 		}
 	}
 

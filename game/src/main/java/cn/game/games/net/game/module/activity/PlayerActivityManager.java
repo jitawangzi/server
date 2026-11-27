@@ -104,6 +104,16 @@ public class PlayerActivityManager extends AbstractActivityManager {
 		this.disposableIds = disposableIds;
 	}
 
+	/**
+	 * 从一次性活动记录中移除指定活动 ID，便于 GM/测试重置并重开一次性活动
+	 *
+	 * @param activityId 活动配置 ID
+	 * @return true表示原本存在并已移除
+	 */
+	public boolean clearDisposableIdForGm(int activityId) {
+		return disposableIds != null && disposableIds.remove(activityId);
+	}
+
 	public void setPlayer(Player player) {
 		this.player = player;
 	}

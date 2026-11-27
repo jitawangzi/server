@@ -632,4 +632,37 @@
     union_name = #{unionName,jdbcType=VARCHAR}
     where player_id = #{playerId,jdbcType=BIGINT}
   </update>
+
+  <select id="selectSummaryByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_player_data
+    where player_id = #{playerId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectSummaryByExactMatch" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_player_data
+    where (
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT} or
+      </if>
+      name = #{name,jdbcType=VARCHAR}
+      or account_id = #{accountId,jdbcType=VARCHAR}
+    )
+    limit #{limit,jdbcType=INTEGER}
+  </select>
+
+  <select id="searchSummaryFuzzy" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_player_data
+    <if test="keyword != null and keyword != ''">
+      where name like concat('%', #{keyword,jdbcType=VARCHAR}, '%')
+         or account_id like concat('%', #{keyword,jdbcType=VARCHAR}, '%')
+    </if>
+    order by offLine_time desc
+    limit #{limit,jdbcType=INTEGER}
+  </select>
 </mapper>

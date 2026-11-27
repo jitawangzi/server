@@ -2,6 +2,8 @@ package cn.game.games.net.game.gm;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Locale;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +30,19 @@ public final class GmSecurityPolicy {
 	public static final String PROP_REQUIRE_AUTH = "gm.http.requireAuth";
 	public static final String PROP_OPS_TOKEN = "gm.http.opsToken";
 	public static final String PROP_TOKEN = "gm.http.token";
+	public static final String PROP_RBAC_TOKENS = "gm.http.rbacTokens";
 	public static final String ENV_HTTP_ENABLED = "GM_HTTP_ENABLED";
 	public static final String ENV_HTTP_PORT = "GM_HTTP_PORT";
 	public static final String ENV_HTTP_HOST = "GM_HTTP_HOST";
 	public static final String ENV_REQUIRE_AUTH = "GM_HTTP_REQUIRE_AUTH";
 	public static final String ENV_OPS_TOKEN = "GM_HTTP_OPS_TOKEN";
 	public static final String ENV_TOKEN = "GM_HTTP_TOKEN";
+	public static final String ENV_RBAC_TOKENS = "GM_HTTP_RBAC_TOKENS";
+
+	private static final Set<String> READONLY_WHITELIST_ACTIONS = Set.of(
+			"config.tables", "config.list", "config.get",
+			"gm.inspect", "gm.schema", "gm.help", "gm.audit.list",
+			"time.status", "player.time.status", "activity.status");
 	public static final int DEFAULT_HTTP_PORT = 18080;
 	public static final int RESERVED_IDENTITY_PORT = 17011;
 
@@ -208,23 +217,103 @@ public final class GmSecurityPolicy {
 	}
 
 	/**
+	 * 常量时间校验请求携带的Token并返回鉴权主体与 RBAC 角色（优先匹配 rbacTokens，兼容旧 opsToken 默认 ADMIN）
+	 *
+	 * @param providedToken 请求端传入的Token
+	 * @param remoteIp 来源IP
+	 * @return 鉴权成功返回主体信息，失败返回 null
+	 */
+	public static GmAuthPrincipal authenticateToken(String providedToken, String remoteIp) {
+		if (providedToken == null || providedToken.isBlank()) {
+			return null;
+		}
+		byte[] providedBytes = providedToken.trim().getBytes(StandardCharsets.UTF_8);
+
+		// 1. 优先匹配多账号 RBAC Token（格式：operator:ROLE:token,operator2:ROLE2:token2）
+		String rbacSpec = readConfigValue(PROP_RBAC_TOKENS, ENV_RBAC_TOKENS);
+		if (rbacSpec != null && !rbacSpec.isBlank()) {
+			String[] entries = rbacSpec.split("[,;]");
+			for (String rawEntry : entries) {
+				if (rawEntry == null || rawEntry.isBlank()) {
+					continue;
+				}
+				String[] parts = rawEntry.trim().split(":", 3);
+				if (parts.length != 3) {
+					log.warn("忽略格式非法的 rbacTokens 配置条目（格式应为 operator:ROLE:token）");
+					continue;
+				}
+				String operator = parts[0].trim();
+				GmRole role = GmRole.parseOrNull(parts[1]);
+				String entryToken = parts[2].trim();
+				if (operator.isEmpty() || role == null || entryToken.isEmpty()) {
+					log.warn("忽略无效的 rbacTokens 条目: operator={}, rawRole={}", operator, parts[1]);
+					continue;
+				}
+				if (MessageDigest.isEqual(entryToken.getBytes(StandardCharsets.UTF_8), providedBytes)) {
+					return new GmAuthPrincipal(operator, role, remoteIp, true);
+				}
+			}
+		}
+
+		// 2. 兼容既有单一运维 opsToken（授予 ADMIN 角色，仍受 RunMode 约束）
+		String serverToken = getOpsToken();
+		if (serverToken != null && !serverToken.isBlank()) {
+			if (MessageDigest.isEqual(serverToken.getBytes(StandardCharsets.UTF_8), providedBytes)) {
+				return new GmAuthPrincipal("ops_token", GmRole.ADMIN, remoteIp, true);
+			}
+		}
+		if ((rbacSpec == null || rbacSpec.isBlank()) && (serverToken == null || serverToken.isBlank())) {
+			log.warn("服务端未配置GM HTTP鉴权Token (gm.http.opsToken / gm.http.rbacTokens), 拒绝访问");
+		}
+		return null;
+	}
+
+	/**
+	 * 判断指定 RBAC 角色是否有权执行目标安全等级与动作 ID 的 GM 指令
+	 *
+	 * @param role 角色
+	 * @param tier 动作安全等级
+	 * @param actionId 动作规范 ID
+	 * @return true表示允许
+	 */
+	public static boolean isRoleAllowedForAction(GmRole role, GmSecurityTier tier, String actionId) {
+		if (role == null || tier == null) {
+			return false;
+		}
+		if (role == GmRole.ADMIN) {
+			return true;
+		}
+		if (role == GmRole.REPAIR) {
+			return tier == GmSecurityTier.OPS_SAFE || tier == GmSecurityTier.OPS_REPAIR;
+		}
+		if (role == GmRole.OPERATOR) {
+			return tier == GmSecurityTier.OPS_SAFE;
+		}
+		// READONLY：仅放行明确只读的白名单或只读后缀动作，且必须是 OPS_SAFE
+		if (tier != GmSecurityTier.OPS_SAFE) {
+			return false;
+		}
+		String norm = actionId != null ? actionId.trim().toLowerCase(Locale.ROOT) : "";
+		if (READONLY_WHITELIST_ACTIONS.contains(norm)) {
+			return true;
+		}
+		return norm.endsWith(".list")
+				|| norm.endsWith(".get")
+				|| norm.endsWith(".status")
+				|| norm.endsWith(".tables")
+				|| norm.endsWith(".inspect")
+				|| norm.endsWith(".schema")
+				|| norm.endsWith(".help");
+	}
+
+	/**
 	 * 常量时间校验请求携带的Token是否与配置的服务端Token一致 (DR-06)
 	 *
 	 * @param providedToken 请求端传入的Token
 	 * @return true表示鉴权通过
 	 */
 	public static boolean validateToken(String providedToken) {
-		String serverToken = getOpsToken();
-		if (serverToken == null || serverToken.isBlank()) {
-			log.warn("服务端未配置GM HTTP鉴权Token (gm.http.opsToken), 拒绝访问");
-			return false;
-		}
-		if (providedToken == null || providedToken.isBlank()) {
-			return false;
-		}
-		byte[] a = serverToken.getBytes(StandardCharsets.UTF_8);
-		byte[] b = providedToken.trim().getBytes(StandardCharsets.UTF_8);
-		return MessageDigest.isEqual(a, b);
+		return authenticateToken(providedToken, "") != null;
 	}
 
 	/**

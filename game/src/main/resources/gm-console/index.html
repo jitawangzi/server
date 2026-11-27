@@ -546,6 +546,7 @@
     <div class="server-info">
       <div>Server: <span id="lblServerId" class="clock-value">loading...</span></div>
       <div>Mode: <span id="lblRunMode" class="badge badge-dev">DEV</span></div>
+      <div id="lblPrincipalWrap">身份: <span id="lblPrincipalBadge" class="badge badge-dev">ADMIN</span></div>
       <div class="theme-switcher">
         <label for="selTheme" style="margin:0; font-size:0.8rem;">主题:</label>
         <select id="selTheme" aria-label="界面主题切换" onchange="applyTheme(this.value)">
@@ -593,6 +594,7 @@
     <button class="tab-btn" data-tab="tabSchema" onclick="switchTab('tabSchema')">Schema 动态表单</button>
     <button class="tab-btn" data-tab="tabCommand" onclick="switchTab('tabCommand')">命令行执行器</button>
     <button class="tab-btn" data-tab="tabClock" onclick="switchTab('tabClock')">虚拟时钟运维</button>
+    <button class="tab-btn" data-tab="tabOps" onclick="switchTab('tabOps')">🛡️ 运维诊断 (全模式)</button>
     <div style="margin-left:auto; display:flex; align-items:center; gap:8px; padding:6px 0;">
       <button class="btn" style="padding:5px 12px; font-size:0.82rem;" onclick="toggleQuickGmDrawer(true)" title="在任何页面随时呼出通用快捷GM（发道具/设资源/设等级与差1经验升级/跳关/超级账号）">⚡ 快捷 GM</button>
     </div>
@@ -689,6 +691,28 @@
       </div>
     </div>
 
+    <!-- Tab Ops: 生产可用运维诊断与治理中心 -->
+    <div id="tabOps" class="tab-content">
+      <div class="card">
+        <div class="card-title" style="flex-wrap:wrap; gap:10px;">
+          <div>
+            <span>🛡️ 运维诊断与治理中心</span>
+            <span style="font-size:0.8rem; font-weight:400; color:var(--text-muted); margin-left:8px;">遵循服务端 RBAC 角色授权与审计策略，运行健康 / 玩家排查 / 审计日志在 PRODUCTION 模式下同样可用</span>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;" id="opsSubTabs">
+            <button class="tab-btn active" data-ops-tab="health" onclick="switchOpsSubTab('health')">🩺 运行健康</button>
+            <button class="tab-btn" data-ops-tab="players" onclick="switchOpsSubTab('players')">👤 玩家检索与校验</button>
+            <button class="tab-btn" data-ops-tab="audit" onclick="switchOpsSubTab('audit')">📜 审计日志</button>
+            <button class="tab-btn" data-ops-tab="config" onclick="switchOpsSubTab('config')">📚 配表与校验</button>
+            <button class="tab-btn" data-ops-tab="cluster" onclick="switchOpsSubTab('cluster')">🌐 跨服与集群</button>
+          </div>
+        </div>
+        <div id="opsTabBody" style="min-height:240px;">
+          <div style="color:var(--text-muted); font-size:0.88rem;">切换到此标签页后自动加载服务端诊断信息...</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Tab 4: 业务功能测试台 (QA/复现 + 自定义热载面板) -->
     <div id="tabPanels" class="tab-content active">
       <!-- 1. 业务测试台门户视图（按玩法/分类卡片组织，与协议模块解耦） -->
@@ -746,17 +770,37 @@
           请选择业务测试页
         </div>
 
-        <!-- 面向开发的底部可折叠诊断抽屉（QA 日常可保持折叠，开发复现 Bug 展开即看协议/Trace/Diff） -->
+        <!-- 面向开发的底部可折叠诊断抽屉（QA 日常可保持折叠，开发复现 Bug 展开即看协议/Trace/Diff/场景录制回放） -->
         <div class="dev-drawer" id="panelDevDrawer">
           <div class="dev-drawer-header" onclick="toggleDevDrawer()">
             <div>
-              <span>🔧 开发者诊断抽屉 (请求 / 响应 / Push / Trace / Diff)</span>
+              <span>🔧 开发者诊断抽屉 (请求 / 响应 / Push / Trace / Diff / 场景录制)</span>
               <span id="lblDevDrawerSummary" style="margin-left:10px; font-weight:400; color:var(--text-muted);">暂无调用记录</span>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); exportDevScenario();">📦 导出场景</button>
+              <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); toggleScenarioReplayBox();">▶ 回放场景</button>
               <button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="event.stopPropagation(); clearDevDiagnostics();">清空</button>
               <span id="lblDevDrawerToggle" style="color:var(--primary);">▼ 展开</span>
             </div>
+          </div>
+          <div id="panelScenarioReplayBox" style="display:none; padding:12px 14px; border-top:1px solid var(--border-color); background:var(--surface-deep);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+              <strong style="font-size:0.86rem; color:var(--primary);">🎬 多步复现场景 JSON（自动按录制的逆序即发生顺序回放）</strong>
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <label style="margin:0; font-size:0.76rem; color:var(--text-muted);">步间延时(ms):</label>
+                <input id="numScenarioDelay" type="number" min="0" max="5000" value="80" style="width:74px; padding:3px 6px; font-size:0.78rem;" />
+                <label style="display:inline-flex; align-items:center; gap:4px; margin:0; font-size:0.76rem; cursor:pointer;">
+                  <input id="chkScenarioStopOnFail" type="checkbox" style="width:auto;" checked />
+                  <span>遇错即停</span>
+                </label>
+                <button class="btn" style="padding:4px 10px; font-size:0.76rem;" onclick="runImportedScenario()">▶ 一键回放</button>
+                <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.76rem;" onclick="downloadDevScenario()">⬇ 下载 JSON</button>
+                <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.76rem;" onclick="toggleScenarioReplayBox(false)">收起</button>
+              </div>
+            </div>
+            <textarea id="txtScenarioJson" rows="6" style="width:100%; font-family:Consolas,monospace; font-size:0.78rem;" placeholder='点击「📦 导出场景」自动生成当前操作序列，或在此粘贴他人分享的场景 JSON...'></textarea>
+            <div id="lblScenarioReplayStatus" style="margin-top:6px; font-size:0.78rem; color:var(--text-muted);"></div>
           </div>
           <div id="panelDevDrawerBody" style="display:none; padding:12px 14px; border-top:1px solid var(--border-color);"></div>
         </div>
@@ -1003,6 +1047,9 @@
       if (tabId === "tabPanels" && (!sharedPanels || sharedPanels.length === 0)) {
         loadPanelsList();
       }
+      if (tabId === "tabOps") {
+        initOpsTab();
+      }
     }
 
     async function apiRequest(url, method = "GET", body = null) {
@@ -1015,12 +1062,16 @@
       if (body) {
         opts.body = JSON.stringify(body);
       }
-      const resp = await fetch(url, opts);
-      const text = await resp.text();
       try {
-        return JSON.parse(text);
+        const resp = await fetch(url, opts);
+        const text = await resp.text();
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          return { ok: false, message: text, statusCode: resp.status };
+        }
       } catch (e) {
-        return { ok: false, message: text, statusCode: resp.status };
+        return { ok: false, message: "网络请求失败: " + (e && e.message ? e.message : String(e)), networkError: true };
       }
     }
 
@@ -1120,6 +1171,16 @@
       runModeEl.textContent = bootstrapData.runMode || "DEV";
       runModeEl.className = "badge " + (bootstrapData.production ? "badge-prod" : "badge-dev");
 
+      const principal = bootstrapData.principal || {};
+      const principalBadge = document.getElementById("lblPrincipalBadge");
+      if (principalBadge) {
+        const role = principal.role || "ADMIN";
+        const op = principal.operator || "local";
+        principalBadge.textContent = `${role} (${op})`;
+        principalBadge.title = principal.roleDesc || role;
+        principalBadge.className = "badge " + (role === "ADMIN" || role === "REPAIR" ? "badge-dev" : "badge-clock");
+      }
+
       updateClockDisplay(bootstrapData.virtualClock);
       initSchemaDropdowns(bootstrapData.schema);
       initPanelsDropdown(bootstrapData.panels);
@@ -1188,6 +1249,11 @@
       const playerId = parseInt(document.getElementById("txtPlayerId").value) || 0;
       const dryRun = document.getElementById("chkDryRun").checked;
       const action = bootstrapData.schema.actions.find(a => a.id === actionId);
+      if (bootstrapData && bootstrapData.production && !dryRun && action && (action.tier === "OPS_REPAIR" || action.tier === "ADMIN")) {
+        if (!confirm(`当前为 PRODUCTION 环境，确认非 dryRun 执行 [${actionId}] 吗？`)) {
+          return;
+        }
+      }
       const args = {};
       if (action && action.parameters) {
         action.parameters.forEach(p => {
@@ -1210,7 +1276,13 @@
     async function executeTextCommand() {
       const cmd = document.getElementById("txtCommand").value.trim();
       if (!cmd) return;
-      const res = await apiRequest("/gm-console/api/execute", "POST", { cmd, playerId: 0 });
+      if (bootstrapData && bootstrapData.production) {
+        if (!confirm(`当前为 PRODUCTION 环境，确认执行文本指令 [${cmd}] 吗？`)) {
+          return;
+        }
+      }
+      const pid = Number(sharedSelectedPlayerId) || 0;
+      const res = await apiRequest("/gm-console/api/execute", "POST", { cmd, playerId: pid });
       document.getElementById("preCommandResult").textContent = JSON.stringify(res, null, 2);
       if (res.ok && cmd.startsWith("time")) {
         refreshBootstrap();
@@ -1572,6 +1644,463 @@
       } else {
         prompt("请手动复制 cURL:", curl);
       }
+    }
+
+    function buildDevScenarioObject(name = "gm_bug_repro") {
+      const chronological = devDiagnosticsLog.slice().reverse().map((item, idx) => ({
+        step: idx + 1,
+        kind: item.kind || "GM",
+        label: item.label || "",
+        endpoint: item.endpoint || (item.kind === "PROTO" ? "/gm-console/api/proto/invoke" : "/gm-console/api/execute"),
+        playerId: Number(item.playerId || 0),
+        requestBody: item.requestBody || {}
+      }));
+      return {
+        version: "1.0",
+        name: name || "gm_bug_repro",
+        createdAt: new Date().toISOString(),
+        serverId: bootstrapData?.serverId || "",
+        activePanel: activePanelFile || "",
+        playerId: Number(sharedSelectedPlayerId || 0),
+        stepCount: chronological.length,
+        steps: chronological
+      };
+    }
+
+    function toggleScenarioReplayBox(forceOpen) {
+      const box = document.getElementById("panelScenarioReplayBox");
+      if (!box) return;
+      const show = typeof forceOpen === "boolean" ? forceOpen : (box.style.display === "none");
+      box.style.display = show ? "block" : "none";
+      if (show) {
+        toggleDevDrawer(true);
+      }
+    }
+
+    function exportDevScenario() {
+      const scenario = buildDevScenarioObject("qa_repro_" + (activePanelFile || "session").replace(/\.html$/i, ""));
+      const jsonText = JSON.stringify(scenario, null, 2);
+      toggleScenarioReplayBox(true);
+      const ta = document.getElementById("txtScenarioJson");
+      if (ta) ta.value = jsonText;
+      const st = document.getElementById("lblScenarioReplayStatus");
+      if (st) st.textContent = `已导出 ${scenario.stepCount} 个复现步骤。可直接复制 JSON 分享或点击「▶ 一键回放」。`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(jsonText).then(() => showToast(`已导出 ${scenario.stepCount} 步场景并复制到剪贴板`, "ok")).catch(() => {});
+      } else {
+        showToast(`已导出 ${scenario.stepCount} 步场景到文本框`, "ok");
+      }
+      return scenario;
+    }
+
+    function downloadDevScenario() {
+      const ta = document.getElementById("txtScenarioJson");
+      const raw = (ta && ta.value.trim()) ? ta.value.trim() : JSON.stringify(buildDevScenarioObject(), null, 2);
+      const blob = new Blob([raw], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `gm_scenario_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    async function runScenarioSteps(scenarioInput, opts = {}) {
+      const scenario = typeof scenarioInput === "string" ? JSON.parse(scenarioInput) : scenarioInput;
+      const steps = Array.isArray(scenario) ? scenario : (scenario && Array.isArray(scenario.steps) ? scenario.steps : []);
+      const delayMs = Math.max(0, Number(opts.delayMs != null ? opts.delayMs : 80));
+      const stopOnFail = opts.stopOnFail !== false;
+      const overridePlayerId = opts.playerId != null ? Number(opts.playerId) : 0;
+      const results = [];
+      for (let i = 0; i < steps.length; i++) {
+        const s = steps[i] || {};
+        const endpoint = s.endpoint || (s.kind === "PROTO" ? "/gm-console/api/proto/invoke" : "/gm-console/api/execute");
+        const body = Object.assign({}, s.requestBody || {});
+        if (overridePlayerId > 0) {
+          body.playerId = overridePlayerId;
+        } else if ((!body.playerId || Number(body.playerId) <= 0) && Number(sharedSelectedPlayerId) > 0) {
+          body.playerId = Number(sharedSelectedPlayerId);
+        }
+        const t0 = performance.now();
+        const res = await apiRequest(endpoint, "POST", body);
+        const elapsed = Math.round(performance.now() - t0);
+        const ok = Boolean(res && res.ok);
+        results.push({ step: i + 1, label: s.label || endpoint, ok, res });
+        recordDevDiagnostic({
+          kind: "REPLAY",
+          label: `#${i + 1} ${s.label || s.kind || "STEP"}`,
+          endpoint,
+          requestBody: body,
+          playerId: body.playerId || 0,
+          ok,
+          errorCode: res?.errorCode || 0,
+          summary: res?.summary || res?.message || (ok ? "ok" : "failed"),
+          elapsedMs: res?.elapsedMs || elapsed,
+          raw: res
+        });
+        if (typeof opts.onStep === "function") {
+          opts.onStep(i + 1, steps.length, ok, res);
+        }
+        if (!ok && stopOnFail) {
+          return { ok: false, stoppedAt: i + 1, total: steps.length, results };
+        }
+        if (delayMs > 0 && i + 1 < steps.length) {
+          await new Promise(r => setTimeout(r, delayMs));
+        }
+      }
+      return { ok: true, completed: steps.length, total: steps.length, results };
+    }
+
+    async function runImportedScenario() {
+      const ta = document.getElementById("txtScenarioJson");
+      const st = document.getElementById("lblScenarioReplayStatus");
+      if (!ta || !ta.value.trim()) {
+        showToast("请先导出或粘贴场景 JSON", "warn");
+        return;
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(ta.value.trim());
+      } catch (e) {
+        if (st) st.textContent = "JSON 解析失败: " + e.message;
+        showToast("场景 JSON 格式错误: " + e.message, "error");
+        return;
+      }
+      const delayMs = parseInt(document.getElementById("numScenarioDelay")?.value, 10) || 80;
+      const stopOnFail = Boolean(document.getElementById("chkScenarioStopOnFail")?.checked);
+      if (st) st.textContent = "正在顺序回放场景...";
+      const out = await runScenarioSteps(parsed, {
+        delayMs,
+        stopOnFail,
+        onStep: (idx, total, ok) => {
+          if (st) st.textContent = `回放进度: ${idx}/${total} ${ok ? "✅" : "❌"}`;
+        }
+      });
+      if (out.ok) {
+        if (st) st.textContent = `✅ 回放完成: 共执行 ${out.completed}/${out.total} 步。`;
+        showToast(`场景回放完成 (${out.completed}步)`, "ok");
+      } else {
+        if (st) st.textContent = `❌ 在第 ${out.stoppedAt}/${out.total} 步中断。请查看下方诊断明细。`;
+        showToast(`场景回放在第 ${out.stoppedAt} 步失败`, "error");
+      }
+    }
+
+    // ==================== 运维诊断与治理中心 (#tabOps) ====================
+    let activeOpsSubTab = "health";
+    let opsInitialized = false;
+
+    function initOpsTab() {
+      if (!opsInitialized) {
+        opsInitialized = true;
+      }
+      switchOpsSubTab(activeOpsSubTab);
+    }
+
+    function switchOpsSubTab(subTab) {
+      activeOpsSubTab = subTab;
+      document.querySelectorAll("#opsSubTabs [data-ops-tab]").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-ops-tab") === subTab);
+      });
+      if (subTab === "health") opsLoadHealth();
+      else if (subTab === "players") opsRenderPlayersView();
+      else if (subTab === "audit") opsRenderAuditView();
+      else if (subTab === "config") opsRenderConfigView();
+      else if (subTab === "cluster") opsLoadCluster();
+    }
+
+    async function opsLoadHealth() {
+      const body = document.getElementById("opsTabBody");
+      if (!body) return;
+      body.innerHTML = `<div style="color:var(--text-muted);">正在采集服务端运行时诊断指标...</div>`;
+      const res = await apiRequest("/gm-console/api/ops/health");
+      if (!res.ok || !res.data) {
+        body.innerHTML = `<div style="color:var(--danger-text);">加载健康指标失败: ${escapeHtmlInline(res.message || res.summary || "未知错误")}</div>`;
+        return;
+      }
+      const d = res.data;
+      const jvm = d.jvm || {};
+      const pl = d.players || {};
+      const comp = d.components || {};
+      const tr = d.trace || {};
+      body.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="font-size:0.86rem; color:var(--text-muted);">
+            服务器: <b>${escapeHtmlInline(d.serverId || "--")}</b> | 模式: <b>${escapeHtmlInline(d.runMode || "--")}</b> | 配表版本: <code>${escapeHtmlInline(d.resourceVersion || "default")}</code>
+          </div>
+          <button class="btn btn-secondary" style="padding:5px 12px; font-size:0.82rem;" onclick="opsLoadHealth()">🔄 刷新指标</button>
+        </div>
+        <div class="grid-3" style="margin-bottom:14px;">
+          <div class="card" style="margin-bottom:0; background:var(--surface-subtle);">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:8px;">☕ JVM 与线程状态</div>
+            <div style="font-size:0.84rem; line-height:1.7;">
+              <div>堆内存: <b>${jvm.heapUsedMb || 0} MB</b> / ${jvm.heapMaxMb || 0} MB (已提交 ${jvm.heapCommittedMb || 0} MB)</div>
+              <div>存活线程: <b>${jvm.threadCount || 0}</b> (峰值 ${jvm.peakThreadCount || 0}, 守护 ${jvm.daemonThreadCount || 0})</div>
+              <div>CPU 核心: ${jvm.availableProcessors || 0} | 运行时长: ${Math.round((jvm.uptimeMs || 0) / 1000)}s</div>
+              <div>GC: ${escapeHtmlInline(JSON.stringify(jvm.gc || []))}</div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0; background:var(--surface-subtle);">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:8px;">👥 在线玩家统计</div>
+            <div style="font-size:0.84rem; line-height:1.7;">
+              <div>内存缓存总数: <b>${pl.onlineCount || 0}</b> (托管 ${pl.managedCount || 0})</div>
+              <div>真实 WebSocket 玩家: <b>${pl.realWsClientCount || 0}</b></div>
+              <div>虚拟测试客户端: <b>${pl.virtualClientCount || 0}</b></div>
+              <div>登出队列中: <b>${pl.logoutingCount || 0}</b></div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0; background:var(--surface-subtle);">
+            <div style="font-weight:700; color:var(--primary); margin-bottom:8px;">⏱️ 时钟、审计与组件</div>
+            <div style="font-size:0.84rem; line-height:1.7;">
+              <div>物理时间: ${escapeHtmlInline(d.physicalTime || "")}</div>
+              <div>虚拟时钟: ${escapeHtmlInline(d.virtualClock?.effectiveTime || "")} (偏移 ${d.virtualClock?.offsetSeconds || 0}s)</div>
+              <div>审计缓冲记录: ${comp.auditBufferedCount || 0} | 配表数: ${comp.loadedConfigTableCount || 0}</div>
+              <div>组件就绪: Spring=${Boolean(comp.springReady)} | Vertx=${Boolean(comp.vertxReady)} | Processor=${Boolean(comp.processorReady)}</div>
+            </div>
+          </div>
+        </div>
+        <pre style="max-height:240px;">${escapeHtmlInline(JSON.stringify(d, null, 2))}</pre>
+      `;
+    }
+
+    function opsRenderPlayersView() {
+      const body = document.getElementById("opsTabBody");
+      if (!body) return;
+      body.innerHTML = `
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+          <input type="text" id="opsPlayerKw" placeholder="输入 PlayerId / 昵称 / 账号 检索在线+离线玩家..." style="flex:1; min-width:240px;" />
+          <button class="btn" onclick="opsSearchPlayers()">🔍 检索玩家</button>
+        </div>
+        <div id="opsPlayersResult" style="display:grid; grid-template-columns: 1.2fr 1fr; gap:14px;">
+          <div id="opsPlayersList" style="color:var(--text-muted); font-size:0.85rem;">正在加载玩家列表...</div>
+          <div id="opsPlayerDetailPane" style="background:var(--surface-subtle); border:1px solid var(--border-color); border-radius:8px; padding:12px; font-size:0.84rem; color:var(--text-muted);">点击左侧「详情/一致性校验」查看内存与 DB 摘要对比及安全补发邮件</div>
+        </div>
+      `;
+      opsSearchPlayers();
+    }
+
+    async function opsSearchPlayers() {
+      const kw = encodeURIComponent((document.getElementById("opsPlayerKw")?.value || "").trim());
+      const listEl = document.getElementById("opsPlayersList");
+      if (!listEl) return;
+      const res = await apiRequest(`/gm-console/api/ops/players/search?keyword=${kw}&limit=40`);
+      if (!res.ok || !res.data) {
+        listEl.innerHTML = `<div style="color:var(--danger-text);">检索失败: ${escapeHtmlInline(res.message || "")}</div>`;
+        return;
+      }
+      const rows = res.data.players || [];
+      listEl.innerHTML = `
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">
+          共找到 ${rows.length} 条 | DB 查询可用: <b>${res.data.dbAvailable ? "是" : "否(仅内存)"}</b> ${res.data.dbNote ? "(" + escapeHtmlInline(res.data.dbNote) + ")" : ""}
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+          <thead>
+            <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
+              <th style="padding:6px 8px;">PlayerId</th>
+              <th style="padding:6px 8px;">角色名 / 账号</th>
+              <th style="padding:6px 8px;">等级</th>
+              <th style="padding:6px 8px;">状态</th>
+              <th style="padding:6px 8px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(p => `
+              <tr style="border-bottom:1px solid var(--row-border);">
+                <td style="padding:6px 8px;"><code>${p.playerId}</code></td>
+                <td style="padding:6px 8px;">${escapeHtmlInline(p.name || "--")} <span style="color:var(--text-muted); font-size:0.75rem;">(${escapeHtmlInline(p.accountId || "")})</span></td>
+                <td style="padding:6px 8px;">Lv.${p.level || 0}</td>
+                <td style="padding:6px 8px;">${p.online ? "<span style='color:var(--success-text);'>在线</span>" : "<span style='color:var(--text-muted);'>离线</span>"}</td>
+                <td style="padding:6px 8px;"><button class="btn btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="opsInspectPlayerDetail(${p.playerId})">详情/一致性</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function opsInspectPlayerDetail(playerId) {
+      const pane = document.getElementById("opsPlayerDetailPane");
+      if (!pane) return;
+      pane.innerHTML = `<div style="color:var(--text-muted);">正在比对 Player ${playerId} 内存与 DB 一致性...</div>`;
+      const res = await apiRequest(`/gm-console/api/ops/players/${playerId}/detail`);
+      if (!res.ok || !res.data) {
+        pane.innerHTML = `<div style="color:var(--danger-text);">查询失败: ${escapeHtmlInline(res.message || "")}</div>`;
+        return;
+      }
+      const d = res.data;
+      const drifts = d.consistencyDrifts || [];
+      pane.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="color:var(--primary);">玩家 ${playerId} 档案核对</strong>
+          <span class="badge ${d.consistent ? "badge-clock" : "badge-prod"}">${d.consistent ? "内存与DB一致" : `存在 ${drifts.length} 项偏移`}</span>
+        </div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+          在线: ${Boolean(d.online)} | 在内存: ${Boolean(d.inMemory)} | 在DB: ${Boolean(d.inDb)} | 模块数: ${(d.moduleNames || []).length}
+        </div>
+        ${drifts.length > 0 ? `<pre style="max-height:120px; margin-bottom:8px; color:var(--warning-text);">${escapeHtmlInline(JSON.stringify(drifts, null, 2))}</pre>` : ""}
+        <div style="border-top:1px solid var(--border-color); padding-top:8px; margin-top:8px;">
+          <div style="font-weight:700; margin-bottom:6px;">✉️ 发送安全补偿邮件 (OPERATOR+)</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <input type="text" id="opsMailTitle" value="GM运营补偿" placeholder="邮件标题" />
+            <input type="text" id="opsMailContent" value="感谢您的反馈与支持，请查收补偿附件。" placeholder="邮件正文" />
+            <div style="display:flex; gap:6px;">
+              <input type="number" id="opsMailItemId" value="100001" placeholder="附件ID(0无)" style="flex:1;" />
+              <input type="number" id="opsMailCount" value="100" placeholder="数量" style="width:110px;" />
+            </div>
+            <button class="btn" style="padding:6px 12px; font-size:0.82rem;" onclick="opsSendMail(${playerId})">发送邮件</button>
+          </div>
+          <pre id="opsMailResult" style="margin-top:8px; max-height:140px; font-size:0.75rem;"></pre>
+        </div>
+        <pre style="margin-top:8px; max-height:180px; font-size:0.75rem;">${escapeHtmlInline(JSON.stringify({ memorySummary: d.memorySummary, dbSummary: d.dbSummary }, null, 2))}</pre>
+      `;
+    }
+
+    async function opsSendMail(playerId) {
+      const title = document.getElementById("opsMailTitle")?.value || "运营通知";
+      const content = document.getElementById("opsMailContent")?.value || "";
+      const itemId = parseInt(document.getElementById("opsMailItemId")?.value, 10) || 0;
+      const count = parseInt(document.getElementById("opsMailCount")?.value, 10) || 0;
+      const res = await apiRequest(`/gm-console/api/ops/players/${playerId}/mail`, "POST", { title, content, itemId, count });
+      const out = document.getElementById("opsMailResult");
+      if (out) out.textContent = JSON.stringify(res, null, 2);
+      showToast(res.ok ? "邮件发送成功" : ("发送失败: " + (res.message || "")), res.ok ? "ok" : "error");
+    }
+
+    function opsRenderAuditView() {
+      const body = document.getElementById("opsTabBody");
+      if (!body) return;
+      body.innerHTML = `
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+          <input type="text" id="opsAuditOp" placeholder="操作人 (operator)" style="width:160px;" />
+          <input type="text" id="opsAuditKw" placeholder="指令/接口/摘要关键字..." style="flex:1; min-width:200px;" />
+          <label style="display:inline-flex; align-items:center; gap:4px; margin:0; font-size:0.82rem;">
+            <input type="checkbox" id="opsAuditFailOnly" style="width:auto;" />
+            <span>仅失败/拒绝</span>
+          </label>
+          <button class="btn" onclick="opsLoadAudit()">🔍 查询审计</button>
+        </div>
+        <div id="opsAuditResult" style="color:var(--text-muted); font-size:0.85rem;">正在加载审计日志...</div>
+      `;
+      opsLoadAudit();
+    }
+
+    async function opsLoadAudit() {
+      const op = encodeURIComponent((document.getElementById("opsAuditOp")?.value || "").trim());
+      const kw = encodeURIComponent((document.getElementById("opsAuditKw")?.value || "").trim());
+      const onlyFailed = Boolean(document.getElementById("opsAuditFailOnly")?.checked);
+      const res = await apiRequest(`/gm-console/api/ops/audit?operator=${op}&keyword=${kw}&onlyFailed=${onlyFailed}&limit=100`);
+      const el = document.getElementById("opsAuditResult");
+      if (!el) return;
+      if (!res.ok || !res.data) {
+        el.innerHTML = `<div style="color:var(--danger-text);">加载审计日志失败: ${escapeHtmlInline(res.message || "")}</div>`;
+        return;
+      }
+      const d = res.data;
+      const rows = d.records || [];
+      el.innerHTML = `
+        <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">
+          审计文件: <code>${escapeHtmlInline(d.auditFile || "")}</code> | 内存缓冲: ${d.bufferedTotal || 0} | 匹配: ${d.matchedTotal || 0}
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+          <thead>
+            <tr style="background:var(--surface-subtle); border-bottom:1px solid var(--border-color); text-align:left;">
+              <th style="padding:6px 8px;">时间</th>
+              <th style="padding:6px 8px;">操作人/角色</th>
+              <th style="padding:6px 8px;">动作</th>
+              <th style="padding:6px 8px;">目标玩家</th>
+              <th style="padding:6px 8px;">结果</th>
+              <th style="padding:6px 8px;">摘要</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr style="border-bottom:1px solid var(--row-border);">
+                <td style="padding:6px 8px; white-space:nowrap;">${escapeHtmlInline(r.virtualTime || r.timestamp || "")}</td>
+                <td style="padding:6px 8px;">${escapeHtmlInline(r.operator || "")} <span style="color:var(--text-muted);">(${escapeHtmlInline(r.role || "")})</span></td>
+                <td style="padding:6px 8px;"><code>${escapeHtmlInline(r.action || "")}</code></td>
+                <td style="padding:6px 8px;">${r.playerId || 0}</td>
+                <td style="padding:6px 8px;">${r.ok ? "<span style='color:var(--success-text);'>OK</span>" : "<span style='color:var(--danger-text);'>DENY/ERR</span>"}</td>
+                <td style="padding:6px 8px;">${escapeHtmlInline(r.summary || "")}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function opsRenderConfigView() {
+      const body = document.getElementById("opsTabBody");
+      if (!body) return;
+      body.innerHTML = `
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+          <button class="btn" onclick="opsValidateConfigs()">🛡️ 一键全表一致性巡检</button>
+          <input type="text" id="opsCfgReloadName" placeholder="表名 (留空则全量热更新)" style="width:220px;" />
+          <button class="btn btn-secondary" onclick="opsReloadConfig()">♻️ 热更配表 (ADMIN)</button>
+          <button class="btn btn-secondary" onclick="openPanelPage('config_center.html', true); switchTab('tabPanels');">↗ 打开独立配表测试页</button>
+        </div>
+        <div id="opsCfgResult" style="color:var(--text-muted); font-size:0.84rem;">正在加载配表摘要...</div>
+      `;
+      opsLoadConfigSummary();
+    }
+
+    async function opsLoadConfigSummary() {
+      const el = document.getElementById("opsCfgResult");
+      if (!el) return;
+      const res = await apiRequest("/gm-console/api/ops/config/summary");
+      if (!res.ok || !res.data) {
+        el.innerHTML = `<div style="color:var(--danger-text);">加载配表摘要失败: ${escapeHtmlInline(res.message || "")}</div>`;
+        return;
+      }
+      el.innerHTML = `<div style="margin-bottom:8px;">当前配表版本: <code>${escapeHtmlInline(res.data.resourceVersion || "")}</code> | 已加载表数: <b>${res.data.tableCount || 0}</b></div><pre style="max-height:360px;">${escapeHtmlInline(JSON.stringify(res.data.tables || [], null, 2))}</pre>`;
+    }
+
+    async function opsValidateConfigs() {
+      const el = document.getElementById("opsCfgResult");
+      if (!el) return;
+      el.innerHTML = `<div style="color:var(--text-muted);">正在执行全表引用一致性校验...</div>`;
+      const res = await apiRequest("/gm-console/api/ops/config/validate");
+      el.innerHTML = `<pre style="max-height:420px;">${escapeHtmlInline(JSON.stringify(res, null, 2))}</pre>`;
+    }
+
+    async function opsReloadConfig() {
+      const table = (document.getElementById("opsCfgReloadName")?.value || "").trim();
+      const res = await apiRequest("/gm-console/api/ops/config/reload", "POST", { table });
+      const el = document.getElementById("opsCfgResult");
+      if (el) el.innerHTML = `<pre style="max-height:420px;">${escapeHtmlInline(JSON.stringify(res, null, 2))}</pre>`;
+      showToast(res.ok ? "配表热更完成" : ("热更失败: " + (res.message || "")), res.ok ? "ok" : "error");
+    }
+
+    async function opsLoadCluster() {
+      const body = document.getElementById("opsTabBody");
+      if (!body) return;
+      body.innerHTML = `<div style="color:var(--text-muted);">正在查询跨服活动与排行榜状态...</div>`;
+      const res = await apiRequest("/gm-console/api/ops/cluster");
+      if (!res.ok || !res.data) {
+        body.innerHTML = `<div style="color:var(--danger-text);">查询失败: ${escapeHtmlInline(res.message || "")}</div>`;
+        return;
+      }
+      const d = res.data;
+      body.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <div style="font-size:0.85rem; color:var(--text-muted);">
+            Vert.x 集群就绪: <b>${Boolean(d.vertxReady)}</b> | 跨服全服活动数: <b>${d.crossActivityCount || 0}</b>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary" onclick="opsRunClusterAction('rank.top', {rankType:1, limit:20})">🏆 查询跨服排行 Top20 (DEV)</button>
+            <button class="btn btn-secondary" onclick="opsRunClusterAction('cross.activity.newday', {})">🔄 触发跨服活动检查 (DEV)</button>
+            <button class="btn btn-secondary" onclick="opsLoadCluster()">🔄 刷新</button>
+          </div>
+        </div>
+        <pre id="opsClusterPre" style="max-height:400px;">${escapeHtmlInline(JSON.stringify(d, null, 2))}</pre>
+      `;
+    }
+
+    async function opsRunClusterAction(op, params = {}) {
+      const res = await apiRequest("/gm-console/api/ops/cluster/action", "POST", { op, params });
+      const pre = document.getElementById("opsClusterPre");
+      if (pre) pre.textContent = JSON.stringify(res, null, 2);
+      showToast(res.ok ? "跨服运维操作执行成功" : ("执行拒绝: " + (res.message || "")), res.ok ? "ok" : "error");
     }
 
     async function quickPanelSaveSnapshot() {
@@ -2086,6 +2615,63 @@
       toast: (msg, level = "info") => showToast(msg, level),
       escapeHtml: (str) => escapeHtmlInline(str),
       getBootstrap: () => bootstrapData,
+      invokeProtoConcurrent: async (msgIdOrName, payload = {}, opts = {}) => {
+        const pid = opts.playerId != null ? Number(opts.playerId) : requireSharedPlayerId();
+        const isNumeric = typeof msgIdOrName === "number" || /^0x[0-9a-f]+$/i.test(String(msgIdOrName)) || /^\d+$/.test(String(msgIdOrName));
+        const reqBody = {
+          playerId: pid,
+          payload: payload || {},
+          concurrency: Math.min(20, Math.max(2, Number(opts.concurrency || 5))),
+          mirrorToRealClient: opts.mirrorToRealClient !== undefined ? Boolean(opts.mirrorToRealClient) : Boolean(sharedMirrorToRealClient),
+          withTrace: opts.withTrace !== undefined ? Boolean(opts.withTrace) : true,
+          timeoutMs: opts.timeoutMs || 5000
+        };
+        if (opts.diffModules) reqBody.diffModules = opts.diffModules;
+        if (isNumeric) reqBody.msgId = typeof msgIdOrName === "number" ? msgIdOrName : parseInt(String(msgIdOrName), String(msgIdOrName).toLowerCase().startsWith("0x") ? 16 : 10);
+        else reqBody.msgName = String(msgIdOrName);
+        const res = await apiRequest("/gm-console/api/proto/invoke-concurrent", "POST", reqBody);
+        recordDevDiagnostic({
+          kind: "PROTO_BURST",
+          label: `${reqBody.msgName || reqBody.msgId} ×${reqBody.concurrency}`,
+          endpoint: "/gm-console/api/proto/invoke-concurrent",
+          requestBody: reqBody,
+          playerId: pid,
+          ok: Boolean(res && res.ok),
+          errorCode: res?.failCount || 0,
+          summary: `成功 ${res?.successCount || 0}/${reqBody.concurrency}, 失败 ${res?.failCount || 0}`,
+          elapsedMs: res?.elapsedMs || 0,
+          raw: res
+        });
+        return res;
+      },
+      diffSnapshots: (baseSnapshotName, targetSnapshotName = "__CURRENT__", modules = "", playerId = null) => {
+        const pid = playerId != null ? Number(playerId) : requireSharedPlayerId();
+        return window.GmConsole.executeAction("gm.snapshot.diff", {
+          base: baseSnapshotName,
+          target: targetSnapshotName || "__CURRENT__",
+          modules: Array.isArray(modules) ? modules.join(",") : String(modules || "")
+        }, pid);
+      },
+      exportScenario: (name = "gm_bug_repro") => buildDevScenarioObject(name),
+      runScenario: (scenario, opts = {}) => runScenarioSteps(scenario, opts),
+      getOpsHealth: () => apiRequest("/gm-console/api/ops/health"),
+      getAuditLogs: (query = {}) => {
+        const qs = new URLSearchParams();
+        if (query.operator) qs.set("operator", query.operator);
+        if (query.keyword) qs.set("keyword", query.keyword);
+        if (query.playerId) qs.set("playerId", String(query.playerId));
+        if (query.onlyFailed) qs.set("onlyFailed", "true");
+        if (query.limit) qs.set("limit", String(query.limit));
+        const q = qs.toString();
+        return apiRequest("/gm-console/api/ops/audit" + (q ? "?" + q : ""));
+      },
+      searchPlayers: (keyword = "", limit = 30) => apiRequest(`/gm-console/api/ops/players/search?keyword=${encodeURIComponent(keyword)}&limit=${Number(limit) || 30}`),
+      getPlayerDetail: (playerId) => apiRequest(`/gm-console/api/ops/players/${Number(playerId)}/detail`),
+      sendOpsMail: (playerId, mailPayload) => apiRequest(`/gm-console/api/ops/players/${Number(playerId)}/mail`, "POST", mailPayload || {}),
+      validateConfigs: () => apiRequest("/gm-console/api/ops/config/validate"),
+      reloadConfig: (table = "") => apiRequest("/gm-console/api/ops/config/reload", "POST", { table }),
+      getClusterOverview: () => apiRequest("/gm-console/api/ops/cluster"),
+      runClusterAction: (op, params = {}) => apiRequest("/gm-console/api/ops/cluster/action", "POST", { op, params }),
       refreshBootstrap: () => refreshBootstrap(),
       getTheme: () => getCurrentTheme(),
       setTheme: (theme) => applyTheme(theme)

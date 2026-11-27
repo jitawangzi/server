@@ -37,6 +37,16 @@ public class WatchServiceManager implements Runnable {
 	public long resourceVersion() { return resourceVersion.get(); }
 
 	/**
+	 * 手动触发配置热更后同步递增全局资源版本号
+	 *
+	 * @return 递增后的最新全局资源版本号
+	 * @author shuyongqiang
+	 */
+	public long bumpResourceVersion() {
+		return resourceVersion.incrementAndGet();
+	}
+
+	/**
 	 * 分派实际文件事件；观察者先于任何加载执行，加载异常也不能恢复旧身份。
 	 * @param kind 文件系统事件类型
 	 * @param path 相对文件名；OVERFLOW 可为空

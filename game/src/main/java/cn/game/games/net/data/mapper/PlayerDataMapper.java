@@ -127,6 +127,22 @@ public interface PlayerDataMapper {
 	int updatePlayerUnion(@Param("playerId") long playerId, @Param("unionId") long unionId, @Param("unionName") String unionName);
 
 	/**
+	 * 运维检索专用的轻量主键查询（不读取 modules BLOB）
+	 */
+	PlayerData selectSummaryByPrimaryKey(@Param("playerId") long playerId);
+
+	/**
+	 * 生产环境受控精确检索（仅允许按 UID / 精确昵称 / 精确账号查询，禁止全表模糊扫描，不读取 modules BLOB）
+	 */
+	List<PlayerData> selectSummaryByExactMatch(@Param("uid") Long uid, @Param("name") String name,
+			@Param("accountId") String accountId, @Param("limit") int limit);
+
+	/**
+	 * 非生产环境全库轻量模糊检索（按昵称或账号模糊匹配，按离线时间倒序，不读取 modules BLOB）
+	 */
+	List<PlayerData> searchSummaryFuzzy(@Param("keyword") String keyword, @Param("limit") int limit);
+
+	/**
 	 * @Description 执行一条sql语句
 	 * @param sql
 	 * @return
