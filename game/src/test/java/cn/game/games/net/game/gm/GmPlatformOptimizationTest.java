@@ -486,4 +486,30 @@ public class GmPlatformOptimizationTest {
 		Assertions.assertEquals(Boolean.TRUE, prodTrace.get("productionMuted"));
 		Assertions.assertThrows(IllegalStateException.class, () -> clusterSvc.executeDevAction("rank.top", Map.of()));
 	}
+
+	/**
+	 * 验证 64 位雪花全服邮件 ID 经 NotifyDelGlobalGmMailRequest_7d000062(int64) 编解码及 MailHelper 缓存移除不截断
+	 */
+	@Test
+	void testGlobalMailDelete64BitProtocolAndCache() throws Exception {
+		long bigMailId = 9_000_000_000_123_456L;
+		cn.game.games.cache.entity.GmMail gmMail = new cn.game.games.cache.entity.GmMail();
+		gmMail.setId(bigMailId);
+		gmMail.setTitle("64位全服邮件删除测试");
+		cn.game.games.net.game.helper.MailHelper.getGlobalMailList().add(gmMail);
+		try {
+			cn.game.protocol.protobuf.ServerMsg.NotifyDelGlobalGmMailRequest_7d000062 encoded =
+					cn.game.protocol.protobuf.ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder()
+							.setDelGmMailId(bigMailId)
+							.build();
+			cn.game.protocol.protobuf.ServerMsg.NotifyDelGlobalGmMailRequest_7d000062 decoded =
+					cn.game.protocol.protobuf.ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.parseFrom(encoded.toByteArray());
+			Assertions.assertEquals(bigMailId, decoded.getDelGmMailId(), "NotifyDelGlobalGmMailRequest_7d000062 必须完整承载 int64 邮件ID");
+			Assertions.assertTrue(cn.game.games.net.game.helper.MailHelper.removeGlobalMail(decoded.getDelGmMailId()),
+					"收到 64 位跨服删全服邮件广播后应命中并移除本地 globalMailList");
+			Assertions.assertFalse(cn.game.games.net.game.helper.MailHelper.removeGlobalMail(bigMailId));
+		} finally {
+			cn.game.games.net.game.helper.MailHelper.removeGlobalMail(bigMailId);
+		}
+	}
 }

@@ -377,12 +377,8 @@ public class GmHandler extends GmBaseHandler {
 			Future<?> future = DAO.execute(GmMailMapper.class, MapperConstant.deleteByPrimaryKey, mailId).onSuccess(r -> {
 				if (r != null && MailHelper.removeGlobalMail(mailId)) {
 					// 该邮件是全服邮件, 通知其他节点删除该邮件
-					if (mailId >= Integer.MIN_VALUE && mailId <= Integer.MAX_VALUE) {
-						VxHolder.broadcastRemoteServer(ServerType.Game,
-								ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId((int) mailId).build());
-					} else {
-						log.warn("0x77 delGmMail 全服邮件ID超出int32跨服广播协议范围，已完成本服删除但跳过跨服广播: mailId={}", mailId);
-					}
+					VxHolder.broadcastRemoteServer(ServerType.Game,
+							ServerMsg.NotifyDelGlobalGmMailRequest_7d000062.newBuilder().setDelGmMailId(mailId).build());
 				}
 			});
 			futures.add(future);

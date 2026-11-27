@@ -296,7 +296,7 @@ public class ServerHandler extends GameBaseHandler {
 	private void delGlobalGmMail(NetClient client, Object o) {
 		ServerMsg.NotifyDelGlobalGmMailRequest_7d000062 req = (ServerMsg.NotifyDelGlobalGmMailRequest_7d000062)o;
 		MailHelper.removeGlobalMail(req.getDelGmMailId());
-		log.info("delGlobalGmMail: ", req.getDelGmMailId());
+		log.info("delGlobalGmMail: {}", req.getDelGmMailId());
 		ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.Builder res = ServerMsg.NotifyDelGlobalGmMailResponse_7d000063.newBuilder().setResult(true);
 		client.sendProtocol(res.build());
 	}
@@ -304,7 +304,7 @@ public class ServerHandler extends GameBaseHandler {
 	private void ddGlobalGmMail(NetClient client, Object o) {
 		ServerMsg.NotifyAddGlobalGmMailRequest_7d000060 req = (ServerMsg.NotifyAddGlobalGmMailRequest_7d000060)o;
 		MailHelper.addGlobalMail(req.getAddGmMailId());
-		log.info("ddGlobalGmMail: ", req.getAddGmMailId());
+		log.info("ddGlobalGmMail: {}", req.getAddGmMailId());
 		ServerMsg.NotifyAddGlobalGmMailResponse_7d000061.Builder res = ServerMsg.NotifyAddGlobalGmMailResponse_7d000061.newBuilder().setResult(true);
 		client.sendProtocol(res.build());
 	}
