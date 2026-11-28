@@ -512,4 +512,61 @@ public class GmPlatformOptimizationTest {
 			cn.game.games.net.game.helper.MailHelper.removeGlobalMail(bigMailId);
 		}
 	}
+
+	/**
+	 * 验证只读 GM 指令（gm.inspect / gm.snapshot.list）跳过 PlayerWriteGuard，玩家写保护时仍可白盒排查且写操作会暴露底层 SaveFailure 原因
+	 */
+	@Test
+	public void testReadOnlyInspectBypassesWriteGuardAndSurfacesWriteFailureCause() {
+		long protectedPid = 77_889_901L;
+		PlayerData data = new PlayerData();
+		ObjUtil.setDefaultValue(data);
+		data.setPlayerId(protectedPid);
+		data.setUid(protectedPid);
+		data.setAccountId("acc_protected_inspect");
+		data.setName("ProtectedTester");
+		data.setServerId("game_test_opt");
+		data.setLevel(15);
+
+		Player protectedPlayer = new Player(data);
+		protectedPlayer.setOnline(true);
+		protectedPlayer.setIslogouting(false);
+		protectedPlayer.setGameClient(new VirtualGameClient(protectedPid));
+		protectedPlayer.initModule(new HashMap<String, BasePlayerModule>());
+		PlayerManager.getInstance().initAdd(protectedPlayer);
+		try {
+			GmDispatcher dispatcher = GmDispatcher.getInstance();
+			if (!dispatcher.hasCommand("gm.inspect")) {
+				dispatcher.registerBean(new PlayerInspectService());
+			}
+			if (!dispatcher.hasCommand("player.setLevel")) {
+				dispatcher.registerBean(new cn.game.games.net.game.gm.command.PlayerGm());
+			}
+
+			// 模拟玩家触发保存失败/写保护锁定
+			cn.game.games.net.game.helper.PlayerSaveCoordinator.shared()
+					.freezePayment(protectedPid, protectedPlayer, new IllegalStateException("simulated save lock"));
+
+			// 只读自省与快照列表即使在 WRITE_PROTECTED 下仍应正常读取，不误入 PlayerWriteGuard
+			GmResult inspectRes = dispatcher.dispatchAction("gm.inspect", protectedPid, Map.of(), null, false);
+			Assertions.assertTrue(inspectRes.isOk(), "gm.inspect 为只读自省，在写保护状态下仍应可读: " + inspectRes.getSummary());
+
+			GmResult snapListRes = dispatcher.dispatchAction("player.gm.snapshot.list", protectedPid, Map.of(), null, false);
+			Assertions.assertTrue(snapListRes.isOk(), "gm.snapshot.list 为只读查询，在写保护状态下仍应可读: " + snapListRes.getSummary());
+
+			// 写操作必须被 PlayerWriteGuard 拦截并向外透传底层 SaveFailure 原因
+			GmResult writeRes = dispatcher.dispatchAction("player.setLevel", protectedPid, Map.of("level", 20), null, false);
+			Assertions.assertFalse(writeRes.isOk(), "写保护状态下执行写 GM 指令必须失败");
+			Assertions.assertTrue(writeRes.getSummary() != null && writeRes.getSummary().contains("WRITE_PROTECTED"),
+					"写操作被拦截时应透传 SaveFailure/WRITE_PROTECTED 根因，实际 summary=" + writeRes.getSummary());
+		} finally {
+			protectedPlayer.cancelAllTimer();
+			try {
+				PlayerManager.getInstance().deletePlayer(protectedPid);
+			} catch (Throwable t) {
+				log.debug("清理写保护测试玩家告警 playerId={}", protectedPid, t);
+			}
+			PlayerSnapshotService.getInstance().delete(protectedPid, null, true);
+		}
+	}
 }

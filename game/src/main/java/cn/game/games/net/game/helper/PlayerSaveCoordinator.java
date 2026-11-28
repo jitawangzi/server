@@ -38,6 +38,28 @@ public final class PlayerSaveCoordinator {
     private static final Logger log = LoggerFactory.getLogger(PlayerSaveCoordinator.class);
     /** 自动化验收沙盒玩家起始号段；该号段仅驻留内存并在变更时即时虚拟确认，不写入持久化介质。 */
     public static final long SANDBOX_PLAYER_ID_MIN = 900_000_000_000L;
+    /** 运行时临时标记的纯内存测试玩家ID（如测试控制台用指定小号段ID创建的虚拟角色），同样免落盘并不触发写保护。 */
+    private static final Set<Long> MEMORY_ONLY_SANDBOX_IDS = ConcurrentHashMap.newKeySet();
+
+    /**
+     * 标记指定玩家ID为纯内存沙盒玩家，避免无库记录时因自动保存失败触发 WRITE_PROTECTED 锁死
+     *
+     * @param playerId 玩家ID
+     */
+    public static void markMemoryOnlySandboxPlayer(long playerId) {
+        if (playerId > 0 && playerId < SANDBOX_PLAYER_ID_MIN) {
+            MEMORY_ONLY_SANDBOX_IDS.add(playerId);
+        }
+    }
+
+    /**
+     * 取消纯内存沙盒玩家标记
+     *
+     * @param playerId 玩家ID
+     */
+    public static void unmarkMemoryOnlySandboxPlayer(long playerId) {
+        MEMORY_ONLY_SANDBOX_IDS.remove(playerId);
+    }
 
     /**
      * 判断指定玩家是否为自动化验收沙盒玩家
@@ -46,7 +68,7 @@ public final class PlayerSaveCoordinator {
      * @return true表示属于沙盒免落盘号段
      */
     public static boolean isSandboxPlayerId(long playerId) {
-        return playerId >= SANDBOX_PLAYER_ID_MIN;
+        return playerId >= SANDBOX_PLAYER_ID_MIN || MEMORY_ONLY_SANDBOX_IDS.contains(playerId);
     }
     /** 当前进程共享保存通道；首次使用才初始化资源。 */
     private static final class Shared {
@@ -709,6 +731,9 @@ public final class PlayerSaveCoordinator {
         lanes.compute(id, (key, lane) -> {
             if (lane != null && (lane.owner != owner || lane.risky() || lane.paymentFrozen)) { return lane; }
             removed.set(remove.getAsBoolean());
+            if (removed.get()) {
+                MEMORY_ONLY_SANDBOX_IDS.remove(id);
+            }
             return removed.get() ? null : lane;
         });
         return removed.get();

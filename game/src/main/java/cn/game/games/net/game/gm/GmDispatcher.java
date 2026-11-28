@@ -602,7 +602,7 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		}
 
 		GmResult result;
-		// 仅 PLAYER 作用域动作进入玩家邮箱与 PlayerWriteGuard；GLOBAL 动作（如 config/proto/gm.schema）直接执行避免锁耦合
+		// 仅 PLAYER 作用域动作进入玩家邮箱；只读动作（readOnly=true）免入 PlayerWriteGuard 以免误标脏或受 WRITE_PROTECTED 阻断
 		if (action.schema.getScope() == GmScope.PLAYER && targetPlayer != null) {
 			long targetId = targetPlayer.getPlayerId();
 			Processor proc = resolveProcessor();
@@ -611,11 +611,14 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 				try {
 					result = proc.process(targetId, () -> runInPlayerWriteScope(finalPlayer, action, boundArgs, context));
 				} catch (Throwable e) {
-					log.error("GM指令队列派发异常 cmd={}, playerId={}, traceId={}", action.schema.getId(), targetId, traceId, e);
-					result = GmResult.fail(ErrorMsgEnum.unknown, "GM指令派发异常: " + e.getMessage());
+					result = failFromDispatchException(action.schema.getId(), targetId, traceId, e);
 				}
 			} else {
-				result = runInPlayerWriteScope(targetPlayer, action, boundArgs, context);
+				try {
+					result = runInPlayerWriteScope(targetPlayer, action, boundArgs, context);
+				} catch (Throwable e) {
+					result = failFromDispatchException(action.schema.getId(), targetId, traceId, e);
+				}
 			}
 		} else {
 			result = invokeSafely(action, boundArgs, context);
@@ -627,11 +630,35 @@ public class GmDispatcher implements ApplicationContextAware, SmartInitializingS
 		return finalizeResult(result, traceId, startNanos, dryRun);
 	}
 
+	private GmResult failFromDispatchException(String actionId, long targetId, String traceId, Throwable e) {
+		Throwable root = unwrapRootCause(e);
+		String detail = e.getMessage();
+		if (root != e) {
+			String rootMsg = root.getMessage();
+			detail = (detail != null ? detail : e.getClass().getSimpleName())
+					+ " (" + root.getClass().getSimpleName()
+					+ (rootMsg != null && !rootMsg.isEmpty() ? ": " + rootMsg : "") + ")";
+		}
+		log.error("GM指令队列派发异常 cmd={}, playerId={}, traceId={}", actionId, targetId, traceId, e);
+		return GmResult.fail(ErrorMsgEnum.unknown, "GM指令派发异常: " + detail);
+	}
+
+	private static Throwable unwrapRootCause(Throwable t) {
+		Throwable cur = t;
+		for (int i = 0; i < 16 && cur != null && cur.getCause() != null && cur.getCause() != cur; i++) {
+			cur = cur.getCause();
+		}
+		return cur != null ? cur : t;
+	}
+
 	private GmResult runInPlayerWriteScope(Player player, RegisteredAction action, Object[] boundArgs, GmExecContext context) {
 		long targetId = player.getPlayerId();
 		Long previous = CURRENT_MAILBOX_PLAYER_ID.get();
 		CURRENT_MAILBOX_PLAYER_ID.set(targetId);
 		try {
+			if (action.schema.isReadOnly()) {
+				return invokeSafely(action, boundArgs, context);
+			}
 			return PlayerWriteGuard.call(player, () -> invokeSafely(action, boundArgs, context));
 		} finally {
 			if (previous == null) {

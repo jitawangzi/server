@@ -301,6 +301,8 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertFalse(offlineData.get("reused").asBoolean(), "新创建测试玩家 reused=false");
 		Assertions.assertEquals(newPlayerId, offlineData.get("playerId").asLong());
 		Assertions.assertTrue(offlineData.get("isVirtualClient").asBoolean());
+		Assertions.assertTrue(cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(newPlayerId),
+				"test-login 指定的纯内存离线 playerId 必须标记为免落盘沙盒玩家，避免5分钟后被 WRITE_PROTECTED 锁死");
 
 		// 2. 再次使用相同的 playerId 登录，应当复用已在线角色
 		HttpResponse<String> reusePidResp = httpClient.send(offlineReq, HttpResponse.BodyHandlers.ofString());
@@ -322,7 +324,10 @@ public class MiniClientGmWorkbenchHttpTest {
 		JsonNode accountData = accountJson.get("data");
 		Assertions.assertEquals(accountName, accountData.get("accountId").asText());
 		Assertions.assertEquals(accountName, accountData.get("name").asText());
-		Assertions.assertTrue(accountData.get("playerId").asLong() > 0);
+		long generatedAccountPid = accountData.get("playerId").asLong();
+		Assertions.assertTrue(generatedAccountPid >= cn.game.games.net.game.helper.PlayerSaveCoordinator.SANDBOX_PLAYER_ID_MIN,
+				"test-login 自动生成的纯内存玩家ID应分配在沙盒免落盘号段，实际=" + generatedAccountPid);
+		Assertions.assertTrue(cn.game.games.net.game.helper.PlayerSaveCoordinator.isSandboxPlayerId(generatedAccountPid));
 
 		// 4. 再次使用相同的 accountId 登录，应当复用已在线角色
 		HttpResponse<String> reuseAccResp = httpClient.send(accountReq, HttpResponse.BodyHandlers.ofString());
@@ -330,9 +335,10 @@ public class MiniClientGmWorkbenchHttpTest {
 		Assertions.assertTrue(reuseAccJson.get("ok").asBoolean());
 		Assertions.assertTrue(reuseAccJson.get("data").get("reused").asBoolean(), "相同账号名再次登录应当 reused=true");
 
-		// 清理新创建的测试玩家
+		// 清理新创建的测试玩家与沙盒标记
 		unregisterPlayer(newPlayerId);
-		unregisterPlayer(accountData.get("playerId").asLong());
+		cn.game.games.net.game.helper.PlayerSaveCoordinator.unmarkMemoryOnlySandboxPlayer(newPlayerId);
+		unregisterPlayer(generatedAccountPid);
 	}
 
 	/**

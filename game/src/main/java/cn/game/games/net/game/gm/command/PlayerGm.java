@@ -440,7 +440,7 @@ public class PlayerGm extends AbstractGm {
 		return rawVal.isEmpty() ? new String[] { rawOp } : new String[] { rawOp, rawVal };
 	}
 
-		@GmAction(name = "time.status", aliases = {"timestatus"}, description = "获取当前物理时间、JVM虚拟时间、偏移量与周期序号状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, example = "time.status")
+		@GmAction(name = "time.status", aliases = {"timestatus"}, description = "获取当前物理时间、JVM虚拟时间、偏移量与周期序号状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "time.status")
 	public Map<String, Object> timeStatus() {
 		return VirtualClockService.getInstance().getStatus().toMap();
 	}
@@ -509,7 +509,7 @@ public class PlayerGm extends AbstractGm {
 		return Rnd.getControlledRandomStatus();
 	}
 
-	@GmAction(name = "gm.rng.status", aliases = {"rng.status"}, description = "获取当前随机源可控状态与序列剩余", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, example = "gm.rng.status")
+	@GmAction(name = "gm.rng.status", aliases = {"rng.status"}, description = "获取当前随机源可控状态与序列剩余", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "gm.rng.status")
 	public Map<String, Object> rngStatus() {
 		return Rnd.getControlledRandomStatus();
 	}
@@ -667,7 +667,7 @@ public class PlayerGm extends AbstractGm {
 		return RequestTraceService.getInstance().status();
 	}
 
-	@GmAction(name = "gm.trace.status", aliases = {"trace.status"}, description = "查询非生产请求Trace录制器状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, example = "gm.trace.status")
+	@GmAction(name = "gm.trace.status", aliases = {"trace.status"}, description = "查询非生产请求Trace录制器状态", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "gm.trace.status")
 	public Map<String, Object> traceStatus(Player player) {
 		if (cn.game.games.net.game.gm.GmSecurityPolicy.currentRunMode().isProduction()) {
 			throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID, "生产环境禁止查询Trace录制");
@@ -675,7 +675,7 @@ public class PlayerGm extends AbstractGm {
 		return RequestTraceService.getInstance().status();
 	}
 
-	@GmAction(name = "gm.trace.query", aliases = {"trace.query"}, description = "多维过滤检索Trace请求记录", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, example = "gm.trace.query playerId=1001 onlyErrors=true limit=20")
+	@GmAction(name = "gm.trace.query", aliases = {"trace.query"}, description = "多维过滤检索Trace请求记录", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.GLOBAL, idempotent = true, readOnly = true, example = "gm.trace.query playerId=1001 onlyErrors=true limit=20")
 	public List<RequestTraceService.TraceRecord> traceQuery(
 			Player player,
 			@GmParam(required = false, defaultValue = "0", description = "玩家ID过滤(0为不过滤)") long playerId,
@@ -732,7 +732,7 @@ public class PlayerGm extends AbstractGm {
 		return snapshotRestore(player, snapshotName, "");
 	}
 
-	@GmAction(name = "gm.snapshot.list", aliases = {"snapshot.list"}, description = "列出当前玩家已保存的快照元数据", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, idempotent = true, example = "gm.snapshot.list")
+	@GmAction(name = "gm.snapshot.list", aliases = {"snapshot.list"}, description = "列出当前玩家已保存的快照元数据", security = GmSecurityTier.DEV_TEST_ONLY, scope = GmScope.PLAYER, idempotent = true, readOnly = true, example = "gm.snapshot.list")
 	public List<Map<String, Object>> snapshotList(Player player) {
 		if (cn.game.games.net.game.gm.GmSecurityPolicy.currentRunMode().isProduction()) {
 			throw new LogicException(ErrorMsgEnum.production_gm_not_allow.ID, "生产环境禁止查询快照列表");

@@ -526,16 +526,18 @@ public class GmWebConsoleServer {
 			}
 
 			// 若角色不存在，在非生产测试环境下自闭环快速创建测试角色并挂载 VirtualGameClient
+			// 自动分配的纯内存虚拟玩家直接落入沙盒免落盘号段，避免未入库 5 分钟后触发 PlayerSaveCoordinator 写保护锁死
 			long allocatedPid = playerId > 0 ? playerId : 0L;
 			if (allocatedPid <= 0) {
 				if (accountId != null && !accountId.isEmpty()) {
-					long hashPid = Math.abs((long) accountId.hashCode()) % 900000L + 100000L;
+					long base = cn.game.games.net.game.helper.PlayerSaveCoordinator.SANDBOX_PLAYER_ID_MIN + 100_000L;
+					long hashPid = base + (Math.abs((long) accountId.hashCode()) % 900_000L);
 					while (PlayerManager.getInstance().getPlayer(hashPid) != null) {
 						hashPid++;
 					}
 					allocatedPid = hashPid;
 				} else {
-					long autoPid = 200001L;
+					long autoPid = cn.game.games.net.game.helper.PlayerSaveCoordinator.SANDBOX_PLAYER_ID_MIN + 200_001L;
 					while (PlayerManager.getInstance().getPlayer(autoPid) != null) {
 						autoPid++;
 					}
@@ -561,6 +563,9 @@ public class GmWebConsoleServer {
 			VirtualGameClient vClient = new VirtualGameClient(allocatedPid);
 			newPlayer.setGameClient(vClient);
 
+			if (allocatedPid < cn.game.games.net.game.helper.PlayerSaveCoordinator.SANDBOX_PLAYER_ID_MIN) {
+				cn.game.games.net.game.helper.PlayerSaveCoordinator.markMemoryOnlySandboxPlayer(allocatedPid);
+			}
 			try {
 				if (newPlayer.getModules().isEmpty()) {
 					newPlayer.initModule(new java.util.HashMap<String, cn.game.games.core.BasePlayerModule>());
